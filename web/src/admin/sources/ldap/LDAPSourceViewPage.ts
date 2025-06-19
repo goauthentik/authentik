@@ -135,8 +135,8 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update LDAP Source")} </span>
-                                <ak-source-ldap-form 
-                                    slot="form" 
+                                <ak-source-ldap-form
+                                    slot="form"
                                     .instancePk=${this.source.slug}
                                     @ak-form-successful-submit=${createSourceFormSubmitHandler()}
                                 >

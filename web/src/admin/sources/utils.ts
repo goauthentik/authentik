@@ -34,10 +34,10 @@ export function sourceBindingTypeNotices() {
 
 /**
  * Create a form submit handler for source forms that bubbles up the event
- * 
+ *
  * This is used in specific source view pages to bubble up the form submission event
  * to the parent SourceViewPage component.
- * 
+ *
  * @returns A function that can be used as an event handler for ak-form-successful-submit events
  */
 export function createSourceFormSubmitHandler() {

@@ -24,16 +24,16 @@ export class SourceViewPage extends AKElement {
         this._sourceSlug = slug;
         this.fetchSource(slug);
     }
-    
+
     get sourceSlug(): string {
         return this._sourceSlug || "";
     }
-    
+
     _sourceSlug?: string;
 
     @property({ attribute: false })
     source?: Source;
-    
+
     fetchSource(slug: string): void {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesAllRetrieve({
@@ -43,8 +43,9 @@ export class SourceViewPage extends AKElement {
                 this.source = source;
             });
     }
-    
+
     updated(changedProperties: Map<string | number | symbol, unknown>): void {
+        super.updated(changedProperties);
         if (changedProperties.has("_sourceSlug") && this._sourceSlug) {
             this.fetchSource(this._sourceSlug);
         }
@@ -54,16 +55,12 @@ export class SourceViewPage extends AKElement {
         if (!this.source) {
             return html`<ak-empty-state loading fullHeight></ak-empty-state>`;
         }
-        
+
         const handleFormSubmit = (e: CustomEvent) => {
             const source = e.detail as Source;
-            ModelForm.handleIdentifierChange(
-                this.sourceSlug || "",
-                source.slug,
-                "/core/sources/",
-            );
+            ModelForm.handleIdentifierChange(this.sourceSlug || "", source.slug, "/core/sources/");
         };
-        
+
         switch (this.source?.component) {
             case "ak-source-kerberos-form":
                 return html`<ak-source-kerberos-view

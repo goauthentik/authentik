@@ -2,7 +2,10 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceConnectivity";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
-import { createSourceFormSubmitHandler, sourceBindingTypeNotices } from "@goauthentik/admin/sources/utils";
+import {
+    createSourceFormSubmitHandler,
+    sourceBindingTypeNotices,
+} from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";

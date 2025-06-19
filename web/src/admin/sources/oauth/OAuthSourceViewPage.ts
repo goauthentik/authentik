@@ -2,7 +2,10 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/oauth/OAuthSourceDiagram";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
-import { createSourceFormSubmitHandler, sourceBindingTypeNotices } from "@goauthentik/admin/sources/utils";
+import {
+    createSourceFormSubmitHandler,
+    sourceBindingTypeNotices,
+} from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -191,8 +194,8 @@ export class OAuthSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update OAuth Source")} </span>
-                                <ak-source-oauth-form 
-                                    slot="form" 
+                                <ak-source-oauth-form
+                                    slot="form"
                                     .instancePk=${this.source.slug}
                                     @ak-form-successful-submit=${createSourceFormSubmitHandler()}
                                 >
