@@ -28,6 +28,8 @@ export class Map extends OlMap {
         return html`
             <style>
                 ${OL}
+            </style>
+            <style>
                 :host {
                     display: block;
                 }
