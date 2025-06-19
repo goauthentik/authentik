@@ -51,11 +51,16 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
-        const showHeader = this.loading || this.slots.hasSlotted("header");
-        const header = () =>
-            this.slots.hasSlotted("header")
-                ? html`<slot name="header"></slot>`
-                : html`<span>${msg("Loading")}</span>`;
+        const showHeader = this.loading || this.slots.hasSlotted("header") || !!this.header;
+        const header = () => {
+            if (this.slots.hasSlotted("header")) {
+                return html`<slot name="header"></slot>`;
+            } else if (this.header) {
+                return html`<span>${this.header}</span>`;
+            } else {
+                return html`<span>${msg("Loading")}</span>`;
+            }
+        };
 
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
@@ -85,9 +90,18 @@ export class EmptyState extends AKElement implements IEmptyState {
 }
 
 export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
+    // If we have a header property, convert it to a slot
+    const headerSlot = properties.header 
+        ? html`<span slot="header">${properties.header}</span>` 
+        : nothing;
+        
     const message =
         typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
-    return html`<ak-empty-state ${spread(properties as Spread)}>${message}</ak-empty-state>`;
+        
+    // Combine header slot and content
+    const combinedContent = [headerSlot, message];
+    
+    return html`<ak-empty-state ${spread(properties as Spread)}>${combinedContent}</ak-empty-state>`;
 }
 
 declare global {
