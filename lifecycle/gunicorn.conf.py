@@ -7,10 +7,9 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from cryptography.hazmat.backends.openssl.backend import backend
-from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
+import authentik.lib.setup  # noqa
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
@@ -27,11 +26,6 @@ if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
     from authentik.root.asgi import AuthentikAsgi
-
-defuse_stdlib()
-
-if CONFIG.get_bool("compliance.fips.enabled", False):
-    backend._enable_fips()
 
 wait_for_db()
 
