@@ -30,6 +30,6 @@ export const DocusaurusURL = DocusaurusURLByEnvironment[NodeEnvironment];
  * @satisfies {Record<string, string>}
  */
 export const SocialURL = /** @type {const} */ ({
-    Discord: "https://discord.goauthentik.io",
+    Discord: "https://goauthentik.io/discord",
     GitHub: "https://github.com/goauthentik/authentik",
 });
