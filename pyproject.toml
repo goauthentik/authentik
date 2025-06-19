@@ -20,7 +20,7 @@ dependencies = [
     "django-guardian==3.0.0",
     "django-model-utils==5.0.0",
     "django-pglock==1.7.2",
-    "django-prometheus==2.3.1",
+    "django-prometheus==2.4.0",
     "django-redis==6.0.0",
     "django-storages[s3]==1.14.6",
     "django-tenants==3.8.0",
