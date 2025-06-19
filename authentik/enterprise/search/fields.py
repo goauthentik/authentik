@@ -14,9 +14,10 @@ class JSONSearchField(StrField):
 
     model: Model
 
-    def __init__(self, model=None, name=None, nullable=None):
+    def __init__(self, model=None, name=None, nullable=None, suggest_nested=True):
         # Set this in the constructor to not clobber the type variable
         self.type = "relation"
+        self.suggest_nested = suggest_nested
         super().__init__(model, name, nullable)
 
     def get_lookup(self, path, operator, value):
@@ -58,6 +59,8 @@ class JSONSearchField(StrField):
 
     def get_nested_options(self) -> OrderedDict:
         """Get keys of all nested objects to show autocomplete"""
+        if not self.suggest_nested:
+            return OrderedDict()
         base_model_name = f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
 
         def recursive_function(parts: list[str], parent_parts: list[str] | None = None):
