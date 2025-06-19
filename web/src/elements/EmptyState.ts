@@ -91,17 +91,19 @@ export class EmptyState extends AKElement implements IEmptyState {
 
 export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
     // If we have a header property, convert it to a slot
-    const headerSlot = properties.header 
-        ? html`<span slot="header">${properties.header}</span>` 
+    const headerSlot = properties.header
+        ? html`<span slot="header">${properties.header}</span>`
         : nothing;
-        
+
     const message =
         typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
-        
+
     // Combine header slot and content
     const combinedContent = [headerSlot, message];
-    
-    return html`<ak-empty-state ${spread(properties as Spread)}>${combinedContent}</ak-empty-state>`;
+
+    return html`<ak-empty-state ${spread(properties as Spread)}
+        >${combinedContent}</ak-empty-state
+    >`;
 }
 
 declare global {
