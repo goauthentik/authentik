@@ -22,14 +22,14 @@ const metadata: Meta<StoryArgs> = {
                 component: `
 # Loading Overlay Component
                 
-                A full-screen overlay component that displays a loading state with optional heading and body content.
+A full-screen overlay component that displays a loading state with optional heading and body content.
 
-A variant of the EmptyState component that includes a protective background for loads that may
-take a significant amount of time.
+A variant of the EmptyState component that includes a protective background for load or import
+operations during which the user should be prevented from interacting with the page.
 
 It has two named slots, both optional:
 
-- **heading**: Main title (renders in an \`h1\`)
+- **heading**: Main title (renders in an \`<h1>\`)
 - **body**: Any text to describe the state
 `,
             },

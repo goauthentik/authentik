@@ -75,6 +75,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     }
 
     render() {
+        // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...
         return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifDefined(this.icon)}>
             ${this.hasSlotted(null) ? html`<span><slot></slot></span>` : nothing}
             ${this.hasSlotted("body")
@@ -104,6 +105,8 @@ export function akLoadingOverlay(
     properties: ILoadingOverlay = {},
     content: ILoadingOverlayContent = {},
 ) {
+    // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete
+    // slot-name.
     const stringToSlot = (name: string, c: ContentValue) =>
         name === "heading" ? html`<span>${c}</span>` : html`<span slot=${name}>${c}</span>`;
 

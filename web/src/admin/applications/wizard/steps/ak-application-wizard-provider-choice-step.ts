@@ -83,7 +83,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                           }}
                       ></ak-wizard-page-type-create>
                   </form>`
-            : html`<ak-empty-state loading><span>${msg("Loading")}</span></ak-empty-state>`;
+            : html`<ak-empty-state default></ak-empty-state>`;
     }
 }
 

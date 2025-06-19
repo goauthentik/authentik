@@ -299,7 +299,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state loading><span>${msg("Loading")}</span></ak-empty-state>
+                    <ak-empty-state default></ak-empty-state>
                 </div>
             </td>
         </tr>`;

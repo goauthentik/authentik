@@ -73,7 +73,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 ><span>${msg("You may close this page now.")}</span>
             </ak-empty-state>`;
         }
-        return html`<ak-empty-state loading><span>${msg("Loading")}> </span></ak-empty-state>`;
+        return html`<ak-empty-state default></ak-empty-state>`;
     }
 
     render(): TemplateResult {

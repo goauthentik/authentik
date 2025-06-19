@@ -139,7 +139,7 @@ export class UserSourceSettingsPage extends AKElement {
                                 })}
                             `}
                   `
-                : html`<ak-empty-state loading><span>${msg("Loading")}</span> </ak-empty-state>`}
+                : html`<ak-empty-state default></ak-empty-state>`}
         </ul>`;
     }
 }

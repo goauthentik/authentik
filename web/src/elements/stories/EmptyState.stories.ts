@@ -28,9 +28,19 @@ icon is a question mark in a circle.
 
 It has three named slots:
 
-- **heading**: Main title (renders in an \`h1\`)
+- The default slot: The heading (renders larger and more bold)
 - **body**: Any text to describe the state
 - **primary**: Action buttons or other interactive elements
+
+For the loading attributes:
+
+- The attribute \`loading\` will show the spinner
+- The attribute \`default\` will show the spinner and the default header of "Loading"
+
+If either of these attributes is active and the element contains content not assigned to one of the
+named slots, it will be shown in the header.  This overrides the default text of \`default\`.  You
+do not need both attributes for \`default\` to work; it assumes loading.
+
 `,
             },
         },
@@ -42,6 +52,10 @@ It has three named slots:
             description: "Font Awesome icon class (without 'fa-' prefix)",
         },
         loading: {
+            control: "boolean",
+            description: "Show loading spinner instead of icon",
+        },
+        default: {
             control: "boolean",
             description: "Show loading spinner instead of icon",
         },
@@ -72,12 +86,14 @@ const Template: Story = {
     args: {
         icon: "fa-circle-radiation",
         loading: false,
+        default: false,
         fullHeight: false,
     },
     render: (args) => html`
         <ak-empty-state
             icon=${ifDefined(args.icon)}
             ?loading=${args.loading}
+            ?default=${args.default}
             ?full-height=${args.fullHeight}
         >
             ${args.headingText ? html`<span>${args.headingText}</span>` : nothing}
@@ -102,6 +118,16 @@ export const Basic: Story = {
     },
 };
 
+export const Empty: Story = {
+    ...Template,
+    args: {
+        icon: "",
+    },
+    render: () =>
+        html`<p>Note that a completely empty &lt;ak-empty-state&gt; is just that: empty.</p>
+            <ak-empty-state></ak-empty-state>`,
+};
+
 export const WithAction: Story = {
     ...Template,
     args: {
@@ -119,11 +145,34 @@ export const Loading: Story = {
     },
 };
 
-export const LoadingWithMessage: Story = {
+export const LoadingWithCustomMessage: Story = {
     ...Template,
     args: {
         loading: true,
         headingText: html`<span>I <em>know</em> it's here, somewhere...</span>`,
+    },
+};
+
+export const LoadingWithDefaultMessage: Story = {
+    ...Template,
+    args: {
+        default: true,
+    },
+};
+
+export const LoadingDefaultWithOverride: Story = {
+    ...Template,
+    args: {
+        default: true,
+        headingText: html`<span>Have they got a chance? Eh. It would take a miracle.</span>`,
+    },
+};
+
+export const LoadingDefaultWithButton: Story = {
+    ...Template,
+    args: {
+        default: true,
+        primaryButtonText: html`<button>Cancel</button>`,
     },
 };
 
@@ -138,14 +187,10 @@ export const FullHeight: Story = {
     },
 };
 
-export const EmptyAndLoading: Story = {
-    render: (args) => html` <ak-empty-and-loading> </ak-empty-and-loading>`,
-};
-
 export const ProgrammaticUsage: Story = {
     ...Template,
     args: {
-        icon: "fa-cubes",
+        icon: "fa-beer",
         headingText: "Hold My Beer",
         bodyText: "I saw this in a cartoon once. I'm sure I can pull it off.",
         primaryButtonText: html`<button>Leave The Scene Immediately</button>`,

@@ -3,18 +3,18 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
-import { component } from "haunted";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html, nothing, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
- * Interface defining the properties for the EmptyState component
+ * Props for the EmptyState component
  */
 export interface IEmptyState {
     /** Font Awesome icon class (e.g., "fa-user", "fa-folder") to display */
@@ -22,6 +22,12 @@ export interface IEmptyState {
 
     /** When true, will automatically show the loading spinner.  Overrides `icon`. */
     loading?: boolean;
+
+    /**
+     * When true, will automatically fill the header with the "Loading" message and show the loading
+     * spinner. Overrides 'loading'.
+     */
+    default?: boolean;
 
     /** Whether the empty state should take up the full height of its container */
     fullHeight?: boolean;
@@ -44,13 +50,16 @@ export interface IEmptyState {
 @customElement("ak-empty-state")
 export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: String })
-    icon = "";
+    public icon = "";
 
-    @property({ type: Boolean })
-    loading = false;
+    @property({ type: Boolean, reflect: true })
+    public loading = false;
+
+    @property({ type: Boolean, reflect: true })
+    public default = false;
 
     @property({ type: Boolean, attribute: "full-height" })
-    fullHeight = false;
+    public fullHeight = false;
 
     static get styles() {
         return [
@@ -66,16 +75,30 @@ export class EmptyState extends AKElement implements IEmptyState {
         ];
     }
 
+    willUpdate() {
+        if (this.default) {
+            if (this.querySelector("span:not([slot])") === null) {
+                render(html`<span>${msg("Loading")}</span>`, this);
+            }
+        }
+    }
+
+    get localAriaLabel() {
+        const result = this.querySelector("span:not([slot])");
+        return result instanceof HTMLElement ? result.innerText || undefined : undefined;
+    }
+
     render() {
         const hasHeading = this.hasSlotted(null);
+        const loading = this.loading || this.default;
+        const classes = {
+            "pf-c-empty-state": true,
+            "pf-m-full-height": this.fullHeight,
+        };
 
-        return html`<div
-            class="pf-c-empty-state ${hasHeading
-                ? html`aria-labelledby="empty-state-heading"`
-                : ""} ${this.fullHeight && "pf-m-full-height"}"
-        >
-            <div class="pf-c-empty-state__content">
-                ${this.loading
+        return html`<div aria-label=${this.localAriaLabel ?? nothing} class="${classMap(classes)}">
+            <div class="pf-c-empty-state__content" role="progressbar">
+                ${loading
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                       </div>`
@@ -117,7 +140,7 @@ type ContentKey = keyof IEmptyStateContent;
 type ContentValue = SlottedTemplateResult | undefined;
 
 /**
- * Function to create `<ak-empty-state>` programmatically
+ * Generate `<ak-empty-state>` programmatically
  *
  * @param properties - properties to apply to the component.
  * @param content - strings or TemplateResults for the slots in `<ak-empty-state>`
@@ -125,6 +148,8 @@ type ContentValue = SlottedTemplateResult | undefined;
  *
  */
 export function akEmptyState(properties: IEmptyState = {}, content: IEmptyStateContent = {}) {
+    // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete
+    // slot-name.
     const stringToSlot = (name: string, c: ContentValue) =>
         name === "heading" ? html`<span>${c}</span>` : html`<span slot=${name}>${c}</span>`;
 
@@ -138,19 +163,8 @@ export function akEmptyState(properties: IEmptyState = {}, content: IEmptyStateC
     return html`<ak-empty-state ${spread(properties as Spread)}>${items}</ak-empty-state>`;
 }
 
-export const EmptyAndLoading = component(function () {
-    return html`<ak-empty-state loading><span>${msg("Loading")}</span></ak-empty-state>`;
-});
-
-customElements.define("ak-empty-and-loading", EmptyAndLoading);
-
-export function akEmptyAndLoading() {
-    return html` <ak-empty-and-loading> </ak-empty-and-loading>`;
-}
-
 declare global {
     interface HTMLElementTagNameMap {
         "ak-empty-state": EmptyState;
-        "ak-empty-and-loading": typeof EmptyAndLoading;
     }
 }
