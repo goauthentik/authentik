@@ -77,9 +77,6 @@ export class HorizontalFormElement extends AKElement {
     @property({ attribute: false })
     errorMessages: string[] | string[][] = [];
 
-    @property({ type: Boolean })
-    slugMode = false;
-
     _invalid = false;
 
     /* If this property changes, we want to make sure the parent control is "opened" so
@@ -109,13 +106,6 @@ export class HorizontalFormElement extends AKElement {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
-        if (this.name === "slug" || this.slugMode) {
-            this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
-                input.addEventListener("keyup", () => {
-                    input.value = formatSlug(input.value);
-                });
-            });
-        }
         this.querySelectorAll("*").forEach((input) => {
             if (isAkControl(input) && !input.getAttribute("name")) {
                 input.setAttribute("name", this.name);
