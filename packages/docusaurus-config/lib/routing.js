@@ -19,7 +19,7 @@ export const DocusaurusURLByEnvironment = /** @type {const} */ ({
     },
     production: {
         Docs: "https://docs.goauthentik.io",
-        Integrations: "https://docs.goauthentik.io/integrations",
+        Integrations: "https://integrations.goauthentik.io",
         WWW: "https://goauthentik.io",
     },
 });
