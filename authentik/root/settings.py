@@ -357,7 +357,7 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
-    "task_class": "authentik.tasks.models.Task",
+    "task_model": "authentik.tasks.models.Task",
     "autodiscovery": {
         "enabled": True,
         "setup_module": "authentik.tasks.setup",
@@ -366,8 +366,12 @@ DRAMATIQ = {
     "worker": {
         "processes": CONFIG.get_int("worker.processes", 2),
         "threads": CONFIG.get_int("worker.threads", 1),
+        "consumer_listen_timeout": CONFIG.get_int("worker.consumer_listen_timeout", 30),
     },
+    "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
+    "schedule_model": "authentik.tasks.schedules.models.Schedule",
     "middlewares": (
+        ("django_dramatiq_postgres.middleware.SchedulerMiddleware", {}),
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),

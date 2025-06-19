@@ -83,7 +83,7 @@ class PostgresBroker(Broker):
 
     @cached_property
     def model(self) -> type[TaskBase]:
-        return import_string(Conf().task_class)
+        return import_string(Conf().task_model)
 
     @property
     def query_set(self) -> QuerySet:
@@ -231,7 +231,7 @@ class _PostgresConsumer(Consumer):
 
         # Override because dramatiq doesn't allow us setting this manually
         # TODO: turn it into a setting
-        self.timeout = 30000 // 1000
+        self.timeout = Conf().worker["consumer_listen_timeout"]
 
     @property
     def connection(self) -> DatabaseWrapper:

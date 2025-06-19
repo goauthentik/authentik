@@ -1,3 +1,5 @@
+from time import sleep
+from django_dramatiq_postgres.conf import Conf
 import pglock
 from django_dramatiq_postgres.scheduler import Scheduler as SchedulerBase
 from structlog.stdlib import get_logger
@@ -20,5 +22,8 @@ class Scheduler(SchedulerBase):
             with tenant:
                 with self._lock(tenant) as lock_acquired:
                     if not lock_acquired:
+                        self.logger.debug("Could not acquire lock, skipping scheduling")
                         return
-                    self._run()
+                    count = self._run()
+                    self.logger.info(f"Sent {count} scheduled tasks")
+                    sleep(Conf().scheduler_interval)

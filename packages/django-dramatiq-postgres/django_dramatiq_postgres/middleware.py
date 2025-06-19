@@ -1,10 +1,13 @@
 import contextvars
+from threading import Event
 from typing import Any
 
+from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     close_old_connections,
     connections,
 )
+from django.utils.module_loading import import_string
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.logging import get_logger
@@ -13,6 +16,7 @@ from dramatiq.middleware.middleware import Middleware
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
+from django_dramatiq_postgres.scheduler import Scheduler
 
 
 class DbConnectionMiddleware(Middleware):
@@ -74,5 +78,39 @@ class CurrentTask(Middleware):
             self.logger.warning("Task was None, not saving. This should not happen.")
             return
         else:
-            tasks[-1].save()
+            task = tasks[-1]
+            fields_to_exclude = {
+                "message_id",
+                "queue_name",
+                "actor_name",
+                "message",
+                "state",
+                "mtime",
+                "result",
+                "result_expiry",
+            }
+            fields_to_update = [
+                f.name
+                for f in task._meta.get_fields()
+                if f.name not in fields_to_exclude and not f.auto_created and f.column
+            ]
+            if fields_to_update:
+                tasks[-1].save(update_fields=fields_to_update)
         self._TASKS.set(tasks[:-1])
+
+
+class SchedulerMiddleware(Middleware):
+    def __init__(self):
+        self.logger = get_logger(__name__, type(self))
+
+        if not Conf().schedule_model:
+            raise ImproperlyConfigured(
+                "When using the scheduler, DRAMATIQ.schedule_class must be set."
+            )
+
+        self.scheduler_stop_event = Event()
+        self.scheduler: Scheduler = import_string(Conf().scheduler_class)(self.scheduler_stop_event)
+
+    def after_process_boot(self, broker: Broker):
+        self.scheduler.broker = broker
+        self.scheduler.start()

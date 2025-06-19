@@ -1,3 +1,5 @@
+from threading import Event, Thread
+from time import sleep
 import pglock
 from django.db import router, transaction
 from django.db.models import QuerySet
@@ -11,14 +13,17 @@ from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import ScheduleBase
 
 
-class Scheduler:
-    def __init__(self, broker: Broker):
+class Scheduler(Thread):
+    broker: Broker
+
+    def __init__(self, stop_event: Event, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stop_event = stop_event
         self.logger = get_logger(__name__, type(self))
-        self.broker = broker
 
     @cached_property
     def model(self) -> type[ScheduleBase]:
-        return import_string(Conf().task_class)
+        return import_string(Conf().schedule_model)
 
     @property
     def query_set(self) -> QuerySet:
@@ -36,15 +41,22 @@ class Scheduler:
             timeout=0,
         )
 
-    def _run(self):
+    def _run(self) -> int:
+        count = 0
         with transaction.atomic(using=router.db_for_write(self.model)):
             for schedule in self.query_set.select_for_update().filter(
                 next_run__lt=now(),
             ):
                 self.process_schedule(schedule)
+                count += 1
+        return count
 
     def run(self):
-        with self._lock() as lock_acquired:
-            if not lock_acquired:
-                return
-            self._run()
+        while not self.stop_event.is_set():
+            with self._lock() as lock_acquired:
+                if not lock_acquired:
+                    self.logger.debug("Could not acquire lock, skipping scheduling")
+                    return
+                count = self._run()
+                self.logger.info(f"Sent {count} scheduled tasks")
+            sleep(Conf().scheduler_interval)

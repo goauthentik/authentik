@@ -1,4 +1,6 @@
-import authentik.lib.setup  # noqa
+from authentik.root.setup import setup
+
+setup()
 
 import django  # noqa: E402
 

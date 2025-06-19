@@ -10,8 +10,8 @@ class Conf:
             _ = settings.DRAMATIQ
         except AttributeError as exc:
             raise ImproperlyConfigured("Setting DRAMATIQ not set.") from exc
-        if "task_class" not in self.conf:
-            raise ImproperlyConfigured("DRAMATIQ.task_class not defined")
+        if "task_model" not in self.conf:
+            raise ImproperlyConfigured("DRAMATIQ.task_model not defined")
 
     @property
     def conf(self) -> dict[str, Any]:
@@ -53,8 +53,8 @@ class Conf:
         return self.conf.get("channel_prefix", "dramatiq")
 
     @property
-    def task_class(self) -> str:
-        return self.conf["task_class"]
+    def task_model(self) -> str:
+        return self.conf["task_model"]
 
     @property
     def autodiscovery(self) -> dict[str, Any]:
@@ -81,8 +81,21 @@ class Conf:
             "watch_use_polling": False,
             "processes": None,
             "threads": None,
+            "consumer_listen_timeout": 30,
             **self.conf.get("worker", {}),
         }
+
+    @property
+    def scheduler_class(self) -> str:
+        return self.conf.get("scheduler_class", "django_dramatiq_postgres.scheduler.Scheduler")
+
+    @property
+    def schedule_model(self) -> str | None:
+        return self.conf.get("schedule_model")
+
+    @property
+    def scheduler_interval(self) -> int:
+        return self.conf.get("scheduler_interval", 60)
 
     @property
     def test(self) -> bool:

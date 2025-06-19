@@ -159,6 +159,7 @@ web:
 worker:
   processes: 2
   threads: 1
+  consumer_listen_timeout: 30
 
 storage:
   media:
