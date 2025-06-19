@@ -51,11 +51,12 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
-        const showHeader = this.loading || this.slots.hasSlotted("header") || !!this.header;
-        const header = () => {
+        const showHeader =
+            this.loading || this.slots.hasSlotted("header") || this.header !== undefined;
+        const renderHeader = () => {
             if (this.slots.hasSlotted("header")) {
                 return html`<slot name="header"></slot>`;
-            } else if (this.header) {
+            } else if (this.header !== undefined) {
                 return html`<span>${this.header}</span>`;
             } else {
                 return html`<span>${msg("Loading")}</span>`;
@@ -73,7 +74,9 @@ export class EmptyState extends AKElement implements IEmptyState {
                           "fa-question-circle"} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                ${showHeader ? html` <h1 class="pf-c-title pf-m-lg">${header()}</h1>` : nothing}
+                ${showHeader
+                    ? html` <h1 class="pf-c-title pf-m-lg">${renderHeader()}</h1>`
+                    : nothing}
                 ${this.slots.hasSlotted("body")
                     ? html` <div class="pf-c-empty-state__body">
                           <slot name="body"></slot>
@@ -98,11 +101,8 @@ export function akEmptyState(properties: IEmptyState, content: SlottedTemplateRe
     const message =
         typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
 
-    // Combine header slot and content
-    const combinedContent = [headerSlot, message];
-
     return html`<ak-empty-state ${spread(properties as Spread)}
-        >${combinedContent}</ak-empty-state
+        >${headerSlot}${message}</ak-empty-state
     >`;
 }
 
