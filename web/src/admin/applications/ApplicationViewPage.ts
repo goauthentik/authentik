@@ -76,18 +76,26 @@ export class ApplicationViewPage extends AKElement {
     }
 
     fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
-            this.application = app;
-            if (
-                app.providerObj &&
-                [
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
-                ].includes(app.providerObj.metaModelName)
-            ) {
-                this.fetchIsMissingOutpost([app.provider || 0]);
-            }
-        });
+        new CoreApi(DEFAULT_CONFIG)
+            .coreApplicationsRetrieve({
+                slug: slug,
+            })
+            .then((app) => {
+                this.application = app;
+                const providersByPk = [];
+                if (app.provider) {
+                    providersByPk.push(app.provider);
+                }
+                if (app.backchannelProviders) {
+                    providersByPk.push(...app.backchannelProviders);
+                }
+                this.fetchIsMissingOutpost(providersByPk);
+            })
+            .catch((error) => {
+                console.error(`Failed to fetch application with slug ${slug}:`, error);
+                // set application to null which indicates loading is complete but application doesn't exist
+                this.application = null as unknown as Application;
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -119,8 +127,17 @@ export class ApplicationViewPage extends AKElement {
     }
 
     renderApp(): TemplateResult {
-        if (!this.application) {
+        if (this.application === undefined) {
             return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+        }
+        
+        if (this.application === null) {
+            return html`<ak-empty-state 
+                header=${msg("Application not found")}
+                icon="fa fa-exclamation-triangle"
+            >
+                <p>${msg("The requested application does not exist or you don't have permission to view it.")}</p>
+            </ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
@@ -221,6 +238,9 @@ export class ApplicationViewPage extends AKElement {
                                                         e: CustomEvent,
                                                     ) => {
                                                         const app = e.detail as Application;
+                                                        if (!this.applicationSlug) {
+                                                            console.warn("Old identifier (applicationSlug) is undefined or empty. Ensure this is intentional.");
+                                                        }
                                                         ModelForm.handleIdentifierChange(
                                                             this.applicationSlug || "",
                                                             app.slug,

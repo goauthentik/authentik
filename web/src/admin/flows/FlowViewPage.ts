@@ -47,9 +47,18 @@ export class FlowViewPage extends AKElement {
     }
 
     fetchFlow(slug: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
-            this.flow = flow;
-        });
+        new FlowsApi(DEFAULT_CONFIG)
+            .flowsInstancesRetrieve({
+                slug: slug,
+            })
+            .then((flow) => {
+                this.flow = flow;
+            })
+            .catch((error) => {
+                console.error(`Failed to fetch flow with slug ${slug}:`, error);
+                // Set flow to null which indicates loading is complete but flow doesn't exist
+                this.flow = null as unknown as Flow;
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -59,9 +68,19 @@ export class FlowViewPage extends AKElement {
     }
 
     render(): TemplateResult {
-        if (!this.flow) {
-            return html``;
+        if (this.flow === undefined) {
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
+        
+        if (this.flow === null) {
+            return html`<ak-empty-state 
+                header=${msg("Flow not found")}
+                icon="fa fa-exclamation-triangle"
+            >
+                <p>${msg("The requested flow does not exist or you don't have permission to view it.")}</p>
+            </ak-empty-state>`;
+        }
+
         return html`<ak-page-header
                 icon="pf-icon pf-icon-process-automation"
                 header=${this.flow.name}
@@ -131,6 +150,9 @@ export class FlowViewPage extends AKElement {
                                                             e: CustomEvent,
                                                         ) => {
                                                             const flow = e.detail as Flow;
+                                                            if (!this.flowSlug) {
+                                                                console.warn("Old identifier (flowSlug) is undefined or empty. Ensure this is intentional.");
+                                                            }
                                                             ModelForm.handleIdentifierChange(
                                                                 this.flowSlug || "",
                                                                 flow.slug,

@@ -35,6 +35,13 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         newIdentifier: string,
         basePath: string,
     ): boolean {
+        if (!oldIdentifier) {
+            console.warn("Old identifier is undefined or empty. Ensure this is intentional.");
+        }
+        if (!newIdentifier) {
+            console.warn("New identifier is undefined or empty. Navigation may fail.");
+        }
+        
         if (oldIdentifier !== newIdentifier) {
             window.location.hash = `${basePath}${newIdentifier}`;
             return true;
