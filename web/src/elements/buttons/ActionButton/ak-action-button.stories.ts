@@ -46,7 +46,9 @@ const container = (testItem: TemplateResult) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
     const doc = new DOMParser().parseFromString(
-        `<li><i>Event</i>: ${"result" in result.detail ? result.detail.result : result.detail.error}</li>`,
+        `<li><i>Event</i>: ${
+            "result" in result.detail ? result.detail.result : result.detail.error
+        }</li>`,
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");

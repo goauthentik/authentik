@@ -147,7 +147,9 @@ export class RacInterface extends WithBrandConfig(Interface) {
 
     async firstUpdated(): Promise<void> {
         this.updateTitle();
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${window.location.host}/ws/rac/${this.token}/`;
+        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
+            window.location.host
+        }/ws/rac/${this.token}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.receiveTimeout = 10 * 1000; // 10 seconds
         this.tunnel.onerror = (status) => {

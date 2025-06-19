@@ -76,8 +76,11 @@ export const CryptoCertificateSearch = () => {
     const showMessage = (ev: CustomEvent<any>) => {
         const detail = ev.detail;
         delete detail.target;
-        document.getElementById("message-pad")!.innerText =
-            `Event: ${JSON.stringify(detail, null, 2)}`;
+        document.getElementById("message-pad")!.innerText = `Event: ${JSON.stringify(
+            detail,
+            null,
+            2,
+        )}`;
     };
 
     return container(

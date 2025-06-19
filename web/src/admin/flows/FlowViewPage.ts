@@ -147,7 +147,11 @@ export class FlowViewPage extends AKElement {
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
-                                                        const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                        const finalURL = `${
+                                                            window.location.origin
+                                                        }/if/flow/${this.flow.slug}/${AndNext(
+                                                            `${window.location.pathname}#${window.location.hash}`,
+                                                        )}`;
                                                         window.open(finalURL, "_blank");
                                                     }}
                                                 >
@@ -161,7 +165,11 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }${AndNext(
+                                                                    `${window.location.pathname}#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}
@@ -176,7 +184,11 @@ export class FlowViewPage extends AKElement {
                                                                 slug: this.flow.slug,
                                                             })
                                                             .then((link) => {
-                                                                const finalURL = `${link.link}?${encodeURI(`inspector=open&next=/#${window.location.hash}`)}`;
+                                                                const finalURL = `${
+                                                                    link.link
+                                                                }?${encodeURI(
+                                                                    `inspector=open&next=/#${window.location.hash}`,
+                                                                )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
                                                             .catch(async (error: unknown) => {
