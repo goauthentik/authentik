@@ -9,6 +9,7 @@
         "build:api": "docusaurus gen-api-docs all",
         "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
         "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build:integrations": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build --config integrations/docusaurus.config.cjs",
         "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
@@ -21,7 +22,8 @@
         "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "run-s build:schema build:api start"
+        "watch": "run-s build:schema build:api start",
+        "watch:integrations": "docusaurus start --config integrations/docusaurus.config.cjs"
     },
     "dependencies": {
         "@docusaurus/core": "^3.7.0",
@@ -55,7 +57,7 @@
         "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "@types/lodash": "^4.17.17",
+        "@types/lodash": "^4.17.18",
         "@types/node": "^24.0.3",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^18.3.22",
@@ -65,6 +67,7 @@
         "cross-env": "^7.0.3",
         "eslint": "^9.29.0",
         "fast-glob": "^3.3.3",
+        "netlify-plugin-cache": "^1.0.3",
         "npm-run-all": "^4.1.5",
         "prettier": "^3.5.3",
         "prettier-plugin-packagejson": "^2.5.15",
