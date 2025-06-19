@@ -12,10 +12,11 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
-import authentik.lib.setup  # noqa
+from authentik.root.setup import setup
 
 # DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
 
+setup()
 django.setup()
 
 

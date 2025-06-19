@@ -6,11 +6,11 @@ import sys
 
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
 
-import authentik.lib.setup  # noqa
-
+from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 
+setup()
 
 if __name__ == "__main__":
     wait_for_db()
