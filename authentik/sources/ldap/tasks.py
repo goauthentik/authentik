@@ -72,6 +72,7 @@ def ldap_sync_single(source_pk: str):
         # Delete all sync tasks from the cache
         DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
         task = chain(
+            group(),
             # User and group sync can happen at once, they have no dependencies on each other
             group(
                 ldap_sync_paginator(source, UserLDAPSynchronizer)
