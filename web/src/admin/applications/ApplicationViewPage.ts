@@ -97,6 +97,7 @@ export class ApplicationViewPage extends AKElement {
     }
 
     updated(changedProperties: PropertyValues<this>) {
+        super.updated(changedProperties);
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }

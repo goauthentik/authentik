@@ -22,7 +22,6 @@ export class SourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
         this._sourceSlug = slug;
-        this.fetchSource(slug);
     }
 
     get sourceSlug(): string {
