@@ -19,7 +19,7 @@ For instructions to add a specific source, refer to the documentation links in t
 
 To have sources show on the default login screen you will need to add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click the **default-authentication-flow**.
 4. Click the **Stage Bindings** tab.

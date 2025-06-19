@@ -1,5 +1,6 @@
 import { me } from "@goauthentik/common/users.js";
 import { isUserRoute } from "@goauthentik/elements/router/utils.js";
+import { deepmerge, deepmergeInto } from "deepmerge-ts";
 
 import { UiThemeEnum, UserSelf } from "@goauthentik/api";
 import { CurrentBrand } from "@goauthentik/api";
@@ -96,13 +97,12 @@ export class DefaultUIConfig implements UIConfig {
 let globalUiConfig: Promise<UIConfig>;
 
 export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings;
-    let config = new DefaultUIConfig();
+    const settings = user.settings as UIConfig;
+    const config = new DefaultUIConfig();
     if (!settings) {
         return config;
     }
-    config = Object.assign(new DefaultUIConfig(), settings);
-    return config;
+    return deepmerge({ ...config }, settings);
 }
 
 export function uiConfig(): Promise<UIConfig> {

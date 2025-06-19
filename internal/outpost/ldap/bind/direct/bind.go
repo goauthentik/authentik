@@ -27,8 +27,9 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{
-		Session: fe.GetSession(),
-		UserPk:  flags.InvalidUserPK,
+		Session:    fe.SessionCookie(),
+		SessionJWT: fe.Session(),
+		UserPk:     flags.InvalidUserPK,
 	}
 	// only set flags if we don't have flags for this DN yet
 	// as flags are only checked during the bind, we can remember whether a certain DN

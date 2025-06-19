@@ -33,7 +33,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
 
     renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -41,12 +41,12 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Session duration")}
-                        ?required=${true}
+                        required
                         name="sessionDuration"
                     >
                         <input
@@ -63,7 +63,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                        <ak-alert ?inline=${true}>
+                        <ak-alert inline>
                             ${msg(
                                 "Different browsers handle session cookies differently, and might not remove them even when the browser is closed.",
                             )}
@@ -77,7 +77,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Stay signed in offset")}
-                        ?required=${true}
+                        required
                         name="rememberMeOffset"
                     >
                         <input
@@ -97,7 +97,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Network binding")}
-                        ?required=${true}
+                        required
                         name="networkBinding"
                     >
                         <ak-radio
@@ -131,7 +131,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("GeoIP binding")}
-                        ?required=${true}
+                        required
                         name="geoipBinding"
                     >
                         <ak-radio

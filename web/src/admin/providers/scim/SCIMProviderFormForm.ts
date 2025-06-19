@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -40,7 +41,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     .errorMessages=${errors?.url ?? []}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-switch-input
@@ -50,7 +51,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 >
                 </ak-switch-input>
 
-                <ak-text-input
+                <ak-hidden-text-input
                     name="token"
                     label=${msg("Token")}
                     value="${provider?.token ?? ""}"
@@ -59,8 +60,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     help=${msg(
                         "Token to authenticate with. Currently only bearer authentication is supported.",
                     )}
-                    inputHint="code"
-                ></ak-text-input>
+                    input-hint="code"
+                ></ak-hidden-text-input>
                 <ak-radio-input
                     name="compatibilityMode"
                     label=${msg("Compatibility Mode")}

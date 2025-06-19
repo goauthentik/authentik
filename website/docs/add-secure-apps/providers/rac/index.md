@@ -36,11 +36,12 @@ The _Endpoint_ object specifies the hostname/IP of the machine to connect to, as
 
 Configuration details such as credentials can be specified through _settings_, which can be specified on different levels and are all merged together when connecting:
 
-1. Provider settings
-2. Endpoint settings
-3. Connection settings
+1. Default settings
+2. Provider settings
+3. Endpoint settings
 4. Provider property mapping settings
 5. Endpoint property mapping settings
+6. Connection settings
 
 ### Connection settings
 

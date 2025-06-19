@@ -130,7 +130,7 @@ class SyncTasks:
     def sync_objects(
         self, object_type: str, page: int, provider_pk: int, override_dry_run=False, **filter
     ):
-        _object_type = path_to_class(object_type)
+        _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
@@ -156,7 +156,11 @@ class SyncTasks:
         messages.append(
             asdict(
                 LogEvent(
-                    _("Syncing page {page} of groups".format(page=page)),
+                    _(
+                        "Syncing page {page} of {object_type}".format(
+                            page=page, object_type=_object_type._meta.verbose_name_plural
+                        )
+                    ),
                     log_level="info",
                     logger=f"{provider._meta.verbose_name}@{object_type}",
                 )

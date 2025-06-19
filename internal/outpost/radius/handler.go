@@ -2,6 +2,7 @@ package radius
 
 import (
 	"crypto/sha512"
+	"encoding/hex"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -68,7 +69,9 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		}
 	}
 	if pi == nil {
-		nr.Log().WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
+		hs := sha512.Sum512([]byte(r.Secret))
+		bs := hex.EncodeToString(hs[:])
+		nr.Log().WithField("hashed_secret", bs).Warning("No provider found")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}

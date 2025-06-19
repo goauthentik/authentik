@@ -48,7 +48,7 @@ Finally, you need to publish the Facebook app.
 
 ## authentik configuration
 
-1. Log into authentik as admin, and then navigate to **Directory -> Federation & Social login**
+1. Log in to authentik as admin, and then navigate to **Directory -> Federation & Social login**
 2. Click **Create**.
 3. In the **New Source** box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
 4. Define the following fields:

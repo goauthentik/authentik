@@ -37,7 +37,6 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
             .model=${this.model}
             .objectPk=${this.objectPk}
             slot="form"
-            .embedded=${true}
         >
         </ak-rbac-object-permission-page>`;
     }

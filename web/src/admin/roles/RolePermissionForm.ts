@@ -67,7 +67,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                         <ak-chip-group>
                             ${this.permissionsToAdd.map((permission) => {
                                 return html`<ak-chip
-                                    .removable=${true}
+                                    removable
                                     value=${`${permission.appLabel}.${permission.codename}`}
                                     @remove=${() => {
                                         const idx = this.permissionsToAdd.indexOf(permission);

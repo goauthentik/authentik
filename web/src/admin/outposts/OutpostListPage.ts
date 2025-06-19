@@ -112,12 +112,12 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
-                    ? html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    ? html`<ak-label color=${PFColor.Orange} compact>
                           ${msg(
                               "Warning: authentik Domain is not configured, authentication will not work.",
                           )}
                       </ak-label>`
-                    : html`<ak-label color=${PFColor.Green} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Green} compact>
                           ${msg(str`Logging in via ${item.config.authentik_host}.`)}
                       </ak-label>`}`,
             html`${TypeToLabel(item.type)}`,

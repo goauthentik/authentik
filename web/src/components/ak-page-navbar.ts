@@ -147,7 +147,7 @@ export class AKPageNavbar
                         }
 
                         .accent-icon {
-                            height: 1em;
+                            height: 1.2em;
                             width: 1em;
 
                             @media (max-width: 768px) {
@@ -157,6 +157,7 @@ export class AKPageNavbar
                     }
 
                     &.page-description {
+                        padding-top: 0.3em;
                         grid-area: description;
                         margin-block-end: var(--pf-global--spacer--md);
 

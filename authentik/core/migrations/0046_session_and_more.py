@@ -79,6 +79,7 @@ def _migrate_session(
         AuthenticatedSession.objects.using(db_alias).create(
             session=session,
             user=old_auth_session.user,
+            uuid=old_auth_session.uuid,
         )
 
 

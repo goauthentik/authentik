@@ -269,11 +269,55 @@ class LDAPSyncTests(TestCase):
         self.source.group_membership_field = "memberUid"
         self.source.user_object_filter = "(objectClass=posixAccount)"
         self.source.group_object_filter = "(objectClass=posixGroup)"
+        self.source.user_membership_attribute = "uid"
         self.source.user_property_mappings.set(
+            [
+                *LDAPSourcePropertyMapping.objects.filter(
+                    Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                    | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+                ).all(),
+                LDAPSourcePropertyMapping.objects.create(
+                    name="name",
+                    expression='return {"attributes": {"uid": list_flatten(ldap.get("uid"))}}',
+                ),
+            ]
+        )
+        self.source.group_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
-                Q(managed__startswith="goauthentik.io/sources/ldap/default")
-                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+                managed="goauthentik.io/sources/ldap/openldap-cn"
             )
+        )
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            self.source.save()
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync_full()
+            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync.sync_full()
+            # Test if membership mapping based on memberUid works.
+            posix_group = Group.objects.filter(name="group-posix").first()
+            self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_groups_openldap_posix_group_nonstandard_membership_attribute(self):
+        """Test posix group sync"""
+        self.source.object_uniqueness_field = "cn"
+        self.source.group_membership_field = "memberUid"
+        self.source.user_object_filter = "(objectClass=posixAccount)"
+        self.source.group_object_filter = "(objectClass=posixGroup)"
+        self.source.user_membership_attribute = "cn"
+        self.source.user_property_mappings.set(
+            [
+                *LDAPSourcePropertyMapping.objects.filter(
+                    Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                    | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+                ).all(),
+                LDAPSourcePropertyMapping.objects.create(
+                    name="name",
+                    expression='return {"attributes": {"cn": list_flatten(ldap.get("cn"))}}',
+                ),
+            ]
         )
         self.source.group_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(

@@ -141,7 +141,7 @@ In this mode, the regular expressions are matched against the Request's full URL
 
 ## Dynamic backend selection
 
-You can configure the backend the proxy should access dynamically via _Scope mappings_. To do so, create a new _Scope mapping_, with a name and scope of your choice. As expression, use this:
+You can configure the backend the proxy should access dynamically via scope mappings. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 return {
@@ -151,4 +151,34 @@ return {
 }
 ```
 
-Afterwards, edit the _Proxy provider_ and add this new mapping. The expression is only evaluated when the user logs into the application.
+Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+
+## Host header:ak-version[2025.6.1]
+
+By default, the proxy provider will use the forwarded host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the host header with a property mapping. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
+
+```python
+return {
+    "ak_proxy": {
+        "host_header": "my-internal-host-header"
+    }
+}
+```
+
+Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.
+
+### Dynamically setting host header
+
+You can dynamically set the host header to match the **Internal host** value set on the proxy provider. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
+
+```python
+from urllib.parse import urlparse
+parsed_url = urlparse(provider.proxyprovider.internal_host)
+return {
+    "ak_proxy": {
+        "host_header": parsed_url.netloc
+    }
+}
+```
+
+Afterwards, edit the proxy provider and add this new mapping. The expression is only evaluated when the user logs into the application.

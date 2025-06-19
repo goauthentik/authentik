@@ -100,6 +100,10 @@ class LDAPSource(Source):
         default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
+    user_membership_attribute = models.TextField(
+        default=LDAP_DISTINGUISHED_NAME,
+        help_text=_("Attribute which matches the value of `group_membership_field`."),
+    )
     group_membership_field = models.TextField(
         default="member", help_text=_("Field which contains members of a group.")
     )
