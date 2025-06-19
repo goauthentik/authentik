@@ -106,7 +106,7 @@
         "@patternfly/elements": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^9.30.0",
-        "@spotlightjs/spotlight": "^3.0.0",
+        "@spotlightjs/spotlight": "^3.0.1",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "change-case": "^5.4.4",
         "chart.js": "^4.4.9",
