@@ -76,10 +76,8 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     willUpdate() {
-        if (this.default) {
-            if (this.querySelector("span:not([slot])") === null) {
-                render(html`<span>${msg("Loading")}</span>`, this);
-            }
+        if (this.default && this.querySelector("span:not([slot])") === null) {
+            render(html`<span>${msg("Loading")}</span>`, this);
         }
     }
 
