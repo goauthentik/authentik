@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"syscall"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -20,7 +19,6 @@ import (
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
-	"goauthentik.io/internal/worker"
 )
 
 var rootCmd = &cobra.Command{
@@ -58,14 +56,6 @@ var rootCmd = &cobra.Command{
 			panic(err)
 		}
 
-		worker := worker.New()
-		if config.Get().Worker.Embedded {
-			err = worker.Start()
-			if err != nil {
-				panic(err)
-			}
-		}
-
 		ws := web.NewWebServer()
 		ws.Core().AddHealthyCallback(func() {
 			if config.Get().Outposts.DisableEmbeddedOutpost {
@@ -77,7 +67,6 @@ var rootCmd = &cobra.Command{
 		<-ex
 		l.Info("shutting down webserver")
 		go ws.Shutdown()
-		go worker.Kill(syscall.SIGTERM)
 	},
 }
 
