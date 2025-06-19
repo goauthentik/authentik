@@ -123,7 +123,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
                 <div slot="body">
                     ${msg(
-                        "This application does currently not have any application entitlement defined.",
+                        "This application does currently not have any application entitlements defined.",
                     )}
                 </div>
                 <div slot="primary"></div>
