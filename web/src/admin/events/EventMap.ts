@@ -4,8 +4,7 @@ import { PaginatedResponse } from "#elements/table/Table";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
 import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector";
-import "@openlayers-elements/core/ol-map";
-import type OlMap from "@openlayers-elements/core/ol-map";
+import OlMap from "@openlayers-elements/core/ol-map";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
 import Feature from "ol/Feature";
@@ -19,8 +18,31 @@ import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import OL from "ol/ol.css";
 
 import { Event } from "@goauthentik/api";
+
+@customElement("ak-map")
+export class Map extends OlMap {
+    public render() {
+        return html`
+            <style>
+                ${OL}
+            </style>
+            <style>
+                :host {
+                    display: block;
+                }
+
+                #map {
+                    height: 100%;
+                }
+            </style>
+            <div id="map"></div>
+            <slot></slot>
+        `;
+    }
+}
 
 /**
  *
@@ -36,8 +58,8 @@ export class EventMap extends AKElement {
     @query("ol-layer-vector")
     vectorLayer?: OlLayerVector;
 
-    @query("ol-map")
-    map?: OlMap;
+    @query("ak-map")
+    map?: Map;
 
     @property({ type: Number })
     zoomPaddingPx = 100;
@@ -116,7 +138,7 @@ export class EventMap extends AKElement {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-            <ol-map>
+            <ak-map>
                 <ol-select
                     @feature-selected=${(ev: CustomEvent<{ feature: Feature }>) => {
                         const eventId = ev.detail.feature.getId();
@@ -133,7 +155,7 @@ export class EventMap extends AKElement {
                 ></ol-select>
                 <ol-layer-openstreetmap></ol-layer-openstreetmap>
                 <ol-layer-vector></ol-layer-vector>
-            </ol-map>
+            </ak-map>
         </div>`;
     }
 }
