@@ -303,7 +303,6 @@ class _PostgresConsumer(Consumer):
 
     def _poll_for_notify(self):
         with self.listen_connection.cursor() as cursor:
-            self.logger.debug(f"timeout is {self.timeout}")
             notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
             self.logger.debug(
                 f"Received {len(notifies)} postgres notifies on channel {self.postgres_channel}"

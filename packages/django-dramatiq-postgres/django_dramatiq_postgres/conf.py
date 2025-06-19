@@ -7,11 +7,15 @@ from django.core.exceptions import ImproperlyConfigured
 class Conf:
     def __init__(self):
         try:
-            self.conf = settings.DRAMATIQ
+            _ = settings.DRAMATIQ
         except AttributeError as exc:
             raise ImproperlyConfigured("Setting DRAMATIQ not set.") from exc
         if "task_class" not in self.conf:
             raise ImproperlyConfigured("DRAMATIQ.task_class not defined")
+
+    @property
+    def conf(self) -> dict[str, Any]:
+        return settings.DRAMATIQ
 
     @property
     def encoder_class(self) -> str:
@@ -51,6 +55,34 @@ class Conf:
     @property
     def task_class(self) -> str:
         return self.conf["task_class"]
+
+    @property
+    def autodiscovery(self) -> dict[str, Any]:
+        autodiscovery = {
+            "enabled": False,
+            "setup_module": "django_dramatiq_postgres.setup",
+            "apps_prefix": None,
+            "actors_module_name": "tasks",
+            "modules_callback": None,
+            **self.conf.get("autodiscovery", {}),
+        }
+        if not autodiscovery["enabled"] and not autodiscovery["modules_callback"]:
+            raise ImproperlyConfigured(
+                "One of DRAMATIQ.autodiscovery.enabled or "
+                "DRAMATIQ.autodiscovery.modules_callback must be configured."
+            )
+        return autodiscovery
+
+    @property
+    def worker(self) -> dict[str, Any]:
+        return {
+            "use_gevent": False,
+            "watch": settings.DEBUG,
+            "watch_use_polling": False,
+            "processes": None,
+            "threads": None,
+            **self.conf.get("worker", {}),
+        }
 
     @property
     def test(self) -> bool:

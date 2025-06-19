@@ -41,6 +41,7 @@ REDIS_ENV_KEYS = [
 # Old key -> new key
 DEPRECATIONS = {
     "geoip": "events.context_processors.geoip",
+    "worker.concurrency": "worker.processes",
     "redis.broker_url": "broker.url",
     "redis.broker_transport_options": "broker.transport_options",
     "redis.cache_timeout": "cache.timeout",

@@ -357,6 +357,15 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_class": "authentik.tasks.models.Task",
+    "autodiscovery": {
+        "enabled": True,
+        "setup_module": "authentik.tasks.setup",
+        "apps_prefix": "authentik",
+    },
+    "worker": {
+        "processes": CONFIG.get_int("worker.processes", 2),
+        "threads": CONFIG.get_int("worker.threads", 1),
+    },
     "middlewares": (
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),

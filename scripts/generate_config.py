@@ -47,7 +47,8 @@ def generate_local_config():
             "api_key": generate_id(),
         },
         "worker": {
-            "embedded": True,
+            "processes": 1,
+            "threads": 1,
         },
     }
 
