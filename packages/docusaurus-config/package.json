@@ -4,7 +4,9 @@
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p ."
+        "build": "tsc -p .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
     },
     "type": "module",
     "exports": {
