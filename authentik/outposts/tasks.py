@@ -12,6 +12,7 @@ from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.db.models.base import Model
 from django.utils.text import slugify
+from django_dramatiq_postgres.middleware import CurrentTask
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
@@ -42,7 +43,7 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
@@ -109,7 +110,7 @@ def outpost_service_connection_monitor(connection_pk: Any):
 @actor
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     self.set_uid(outpost_pk)
     logs = []
     if from_cache:
@@ -144,7 +145,7 @@ def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
     """
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
@@ -227,7 +228,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 @actor
 def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     if not CONFIG.get_bool("outposts.discover"):
         self.info("Outpost integration discovery is disabled")
         return

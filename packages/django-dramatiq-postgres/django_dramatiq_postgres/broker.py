@@ -23,6 +23,7 @@ from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
+from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware import (
     Middleware,
@@ -30,12 +31,11 @@ from dramatiq.middleware import (
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
 from psycopg.errors import AdminShutdown
-from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
 
-LOGGER = get_logger()
+logger = get_logger(__name__)
 
 
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
@@ -62,7 +62,7 @@ class PostgresBroker(Broker):
         **kwargs,
     ):
         super().__init__(*args, middleware=[], **kwargs)
-        self.logger = get_logger().bind()
+        self.logger = get_logger(__name__, type(self))
 
         self.queues = set()
 
@@ -131,7 +131,7 @@ class PostgresBroker(Broker):
         reraise=True,
         wait=tenacity.wait_random_exponential(multiplier=1, max=30),
         stop=tenacity.stop_after_attempt(10),
-        before_sleep=tenacity.before_sleep_log(LOGGER, logging.INFO, exc_info=True),
+        before_sleep=tenacity.before_sleep_log(logger, logging.INFO, exc_info=True),
     )
     def enqueue(self, message: Message, *, delay: int | None = None) -> Message:
         canonical_queue_name = message.queue_name
@@ -148,20 +148,26 @@ class PostgresBroker(Broker):
 
         self.declare_queue(canonical_queue_name)
         self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
+
+        message.options["model_defaults"] = self.model_defaults(message)
         self.emit_before("enqueue", message, delay)
+
         query = {
             "message_id": message.message_id,
         }
-        defaults = self.model_defaults(message)
+        defaults = message.options["model_defaults"]
+        del message.options["model_defaults"]
         create_defaults = {
             **query,
             **defaults,
         }
+
         self.query_set.update_or_create(
             **query,
             defaults=defaults,
             create_defaults=create_defaults,
         )
+
         self.emit_after("enqueue", message, delay)
         return message
 
@@ -209,7 +215,7 @@ class _PostgresConsumer(Consumer):
         timeout: int,
         **kwargs,
     ):
-        self.logger = get_logger().bind()
+        self.logger = get_logger(__name__, type(self))
 
         self.notifies: list[Notify] = []
         self.broker = broker

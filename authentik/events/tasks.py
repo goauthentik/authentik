@@ -3,6 +3,7 @@
 from uuid import UUID
 
 from django.db.models.query_utils import Q
+from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
@@ -16,7 +17,7 @@ from authentik.events.models import (
 )
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
@@ -110,7 +111,7 @@ def gdpr_cleanup(user_pk: int):
 @actor
 def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     notifications.delete()

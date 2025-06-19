@@ -1,4 +1,5 @@
 from django.db.models.aggregates import Count
+from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog import get_logger
 
@@ -6,7 +7,7 @@ from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
@@ -16,7 +17,7 @@ def check_and_purge_password_history():
     """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
     This is run on a schedule instead of being triggered by policy binding deletion.
     """
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
 
     if not UniquePasswordPolicy.objects.exists():
         UserPasswordHistory.objects.all().delete()
@@ -29,7 +30,7 @@ def check_and_purge_password_history():
 
 @actor
 def trim_password_histories():
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
 
     """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.

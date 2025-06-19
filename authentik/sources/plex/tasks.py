@@ -1,5 +1,6 @@
 """Plex tasks"""
 
+from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
 
@@ -7,13 +8,13 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 
 @actor
 def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     sources = PlexSource.objects.filter(pk=source_pk)
     if not sources.exists():
         return

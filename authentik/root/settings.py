@@ -367,6 +367,7 @@ DRAMATIQ = {
         "threads": CONFIG.get_int("worker.threads", 1),
     },
     "middlewares": (
+        ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
@@ -384,10 +385,9 @@ DRAMATIQ = {
             {"max_retries": 20 if not TEST else 0},
         ),
         # TODO: results
-        ("authentik.tasks.middleware.FullyQualifiedActorName", {}),
-        ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
-        ("authentik.tasks.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.RelObjMiddleware", {}),
+        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
     ),
     "test": TEST,
 }

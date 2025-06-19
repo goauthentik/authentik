@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.core.cache import cache
+from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from dramatiq.message import Message
@@ -20,7 +21,7 @@ from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDele
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 SYNC_CLASSES = [
@@ -118,7 +119,7 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
 @actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         # Because the source couldn't be found, we don't have a UID

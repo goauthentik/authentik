@@ -10,6 +10,7 @@ from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -35,7 +36,7 @@ from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
-from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
 
@@ -147,7 +148,7 @@ def blueprints_find() -> list[BlueprintFile]:
 @actor(throws=(DatabaseError, ProgrammingError, InternalError))
 def blueprints_discovery(path: str | None = None):
     """Find blueprints and check if they need to be created in the database"""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     count = 0
     for blueprint in blueprints_find():
         if path and blueprint.path != path:
@@ -187,7 +188,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 @actor
 def apply_blueprint(instance_pk: UUID):
     """Apply single blueprint"""
-    self = CurrentTask.get_task()
+    self: Task = CurrentTask.get_task()
     self.set_uid(str(instance_pk))
     instance: BlueprintInstance | None = None
     try:
