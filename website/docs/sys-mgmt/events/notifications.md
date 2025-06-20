@@ -8,9 +8,7 @@ To prevent infinite loops (events created by policies which are attached to a No
 
 ## Filtering Events
 
-Starting with authentik 0.15, you can create notification rules, which can alert you based on the creation of certain events.
-
-Filtering is done by using the Policy Engine. You can do simple filtering using the "Event Matcher Policy" type.
+An authentik administrator can create notification rules based on the creation of specified events. Filtering is done by using the Policy Engine. You can do simple filtering using the "Event Matcher Policy" type.
 
 ![](./event_matcher.png)
 
