@@ -181,8 +181,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.continent != new_geo.continent:
                 raise SessionBindingBroken(
                     "geoip.continent",
-                    last_geo.continent,
-                    new_geo.continent,
+                    last_geo.continent.to_dict(),
+                    new_geo.continent.to_dict(),
                     last_ip,
                     new_ip,
                 )
@@ -194,8 +194,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.country != new_geo.country:
                 raise SessionBindingBroken(
                     "geoip.country",
-                    last_geo.country,
-                    new_geo.country,
+                    last_geo.country.to_dict(),
+                    new_geo.country.to_dict(),
                     last_ip,
                     new_ip,
                 )
@@ -204,8 +204,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.city != new_geo.city:
                 raise SessionBindingBroken(
                     "geoip.city",
-                    last_geo.city,
-                    new_geo.city,
+                    last_geo.city.to_dict(),
+                    new_geo.city.to_dict(),
                     last_ip,
                     new_ip,
                 )

@@ -246,4 +246,4 @@ class TestUserLoginStage(FlowTestCase):
                 request = HttpRequest()
                 request.session = self.client.session
                 request.user = self.user
-                # logout_extra(request, cm.exception)
+                logout_extra(request, cm.exception)
