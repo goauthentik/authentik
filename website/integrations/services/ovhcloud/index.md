@@ -58,7 +58,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with OVH Cloud, first log out of your account. On the OVHcloud login page, enter your [OVH Customer ID/NIC handle](https://help.ovhcloud.com/csm/en-account-create-ovhcloud-account?id=kb_article_view&sysparm_article=KB0043022#what-is-my-nic-handle) followed by `/idp` (e.g. `xx1111-ovh/idp`) without entering a password, and click the Login button.
+To verify that authentik is properly integrated with OVHcloud, start by logging out of your account. On the OVHcloud login page, enter your [OVH Customer ID/NIC handle](https://help.ovhcloud.com/csm/en-account-create-ovhcloud-account?id=kb_article_view&sysparm_article=KB0043022#what-is-my-nic-handle) followed by `/idp` (e.g., `xx1111-ovh/idp`)—leave the password field blank—and click **Login**.
 
 You will be redirected to your authentik installation for authentication. Once authenticated you will be logged in to OVHcloud.
 
