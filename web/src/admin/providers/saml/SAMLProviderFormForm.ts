@@ -84,7 +84,7 @@ export function renderForm(
             </p>
         </ak-form-element-horizontal>
 
-        <ak-form-group expanded>
+        <ak-form-group .expanded=${true}>
             <span slot="header"> ${msg("Protocol settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-text-input
@@ -127,6 +127,7 @@ export function renderForm(
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
+                    ?required=${false}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -235,7 +236,7 @@ export function renderForm(
                         .selected=${(item: SAMLPropertyMapping): boolean => {
                             return provider?.nameIdMapping === item.pk;
                         }}
-                        blankable
+                        ?blankable=${true}
                     >
                     </ak-search-select>
                     <p class="pf-c-form__helper-text">
@@ -270,7 +271,7 @@ export function renderForm(
                         .selected=${(item: SAMLPropertyMapping): boolean => {
                             return provider?.authnContextClassRefMapping === item.pk;
                         }}
-                        blankable
+                        ?blankable=${true}
                     >
                     </ak-search-select>
                     <p class="pf-c-form__helper-text">

@@ -11,7 +11,7 @@ from authentik.events.models import NotificationRule
 class NotificationRuleSerializer(ModelSerializer):
     """NotificationRule Serializer"""
 
-    destination_group_obj = GroupSerializer(read_only=True, source="destination_group")
+    group_obj = GroupSerializer(read_only=True, source="group")
 
     class Meta:
         model = NotificationRule
@@ -20,9 +20,8 @@ class NotificationRuleSerializer(ModelSerializer):
             "name",
             "transports",
             "severity",
-            "destination_group",
-            "destination_group_obj",
-            "destination_event_user",
+            "group",
+            "group_obj",
         ]
 
 
@@ -31,6 +30,6 @@ class NotificationRuleViewSet(UsedByMixin, ModelViewSet):
 
     queryset = NotificationRule.objects.all()
     serializer_class = NotificationRuleSerializer
-    filterset_fields = ["name", "severity", "destination_group__name"]
+    filterset_fields = ["name", "severity", "group__name"]
     ordering = ["name"]
-    search_fields = ["name", "destination_group__name"]
+    search_fields = ["name", "group__name"]

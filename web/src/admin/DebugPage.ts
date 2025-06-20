@@ -67,17 +67,6 @@ export class DebugPage extends AKElement {
                             >
                                 POST System
                             </button>
-                            <button
-                                class="pf-c-button pf-m-primary"
-                                @click=${() => {
-                                    showMessage({
-                                        level: MessageLevel.info,
-                                        message: `lorem ipsum ${Date.now()}`,
-                                    });
-                                }}
-                            >
-                                Message
-                            </button>
                         </div>
                     </div>
                 </div>

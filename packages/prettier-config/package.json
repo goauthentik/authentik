@@ -1,12 +1,10 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "2.0.1",
+    "version": "2.0.0",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "build": "tsc -p ."
     },
     "type": "module",
     "exports": "./index.js",
@@ -15,17 +13,17 @@
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
         "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.15",
-        "typescript": "^5.8.3"
+        "prettier-plugin-packagejson": "^2.5.14",
+        "typescript": "^5.8.2"
     },
     "peerDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
         "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.15"
+        "prettier-plugin-packagejson": "^2.5.14"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=20.11"
     },
     "types": "./out/index.d.ts",
     "files": [

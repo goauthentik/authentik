@@ -1,18 +1,35 @@
 #!/usr/bin/env python
 """Django manage.py"""
-
 import os
 import sys
+import warnings
 
+from authentik.lib.config import CONFIG
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
 
-from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 
-setup()
+warnings.filterwarnings("ignore", "SelectableGroups dict interface")
+warnings.filterwarnings(
+    "ignore",
+    "defusedxml.lxml is no longer supported and will be removed in a future release.",
+)
+warnings.filterwarnings(
+    "ignore",
+    "defusedxml.cElementTree is deprecated, import from defusedxml.ElementTree instead.",
+)
+
+defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
+
 
 if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
     wait_for_db()
     if (
         len(sys.argv) > 1

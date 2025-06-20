@@ -199,7 +199,7 @@ export class TreeView extends AKElement {
                 <ak-treeview-node
                     .item=${rootItem}
                     activePath=${this.activePath}
-                    open
+                    ?open=${true}
                     separator=${this.separator}
                     .host=${this}
                 ></ak-treeview-node>

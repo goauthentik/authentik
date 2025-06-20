@@ -56,14 +56,18 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     protected readonly ws: WebsocketClient;
 
-    @property({ type: Object, attribute: false })
+    @property({
+        type: Object,
+        attribute: false,
+        reflect: false,
+    })
     public user?: SessionUser;
 
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
 
     @property({ type: Boolean, reflect: true })
-    public sidebarOpen = false;
+    public sidebarOpen: boolean;
 
     @eventOptions({ passive: true })
     protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {

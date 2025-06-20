@@ -1,8 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-hidden-text-input";
-import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -76,14 +74,14 @@ export function renderForm(
         <ak-form-group expanded>
             <span slot="header"> ${msg("Protocol settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-hidden-text-input
+                <ak-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
                     .errorMessages=${errors?.sharedSecret ?? []}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
-                    input-hint="code"
-                ></ak-hidden-text-input>
+                    inputHint="code"
+                ></ak-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
@@ -91,7 +89,7 @@ export function renderForm(
                     .errorMessages=${errors?.clientNetworks ?? []}
                     required
                     help=${clientNetworksHelp}
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}

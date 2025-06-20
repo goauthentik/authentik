@@ -1,12 +1,11 @@
 """authentik core app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikStagePasswordConfig(ManagedAppConfig):
+class AuthentikStagePasswordConfig(AppConfig):
     """authentik password stage config"""
 
     name = "authentik.stages.password"
     label = "authentik_stages_password"
     verbose_name = "authentik Stages.Password"
-    default = True

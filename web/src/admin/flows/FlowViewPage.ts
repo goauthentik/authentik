@@ -270,10 +270,7 @@ export class FlowViewPage extends AKElement {
                             ${msg("These bindings control which users can access this flow.")}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list
-                                .target=${this.flow.policybindingmodelPtrId}
-                                .policyEngineMode=${this.flow.policyEngineMode}
-                            >
+                            <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
                             </ak-bound-policies-list>
                         </div>
                     </div>

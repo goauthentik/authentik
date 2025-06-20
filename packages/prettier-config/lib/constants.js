@@ -45,6 +45,7 @@ export const AuthentikPrettierConfig = {
         "^(@goauthentik/|#)user.+",
         "^(@goauthentik/|#)admin.+",
         "^(@goauthentik/|#)flow.+",
+        "^(@goauthentik/|#)flow.+",
 
         "^#.+",
         "^@goauthentik.+",

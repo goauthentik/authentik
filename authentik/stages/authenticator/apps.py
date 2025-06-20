@@ -1,12 +1,11 @@
 """Authenticator"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikStageAuthenticatorConfig(ManagedAppConfig):
+class AuthentikStageAuthenticatorConfig(AppConfig):
     """Authenticator App config"""
 
     name = "authentik.stages.authenticator"
     label = "authentik_stages_authenticator"
     verbose_name = "authentik Stages.Authenticator"
-    default = True

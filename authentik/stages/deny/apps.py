@@ -1,12 +1,11 @@
 """authentik deny stage app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikStageDenyConfig(ManagedAppConfig):
+class AuthentikStageDenyConfig(AppConfig):
     """authentik deny stage config"""
 
     name = "authentik.stages.deny"
     label = "authentik_stages_deny"
     verbose_name = "authentik Stages.Deny"
-    default = True

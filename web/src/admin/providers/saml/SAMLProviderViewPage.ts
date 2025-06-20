@@ -489,7 +489,7 @@ export class SAMLProviderViewPage extends AKElement {
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
                                       mode=${CodeMirrorMode.XML}
-                                      readOnly
+                                      ?readOnly=${true}
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
@@ -539,7 +539,7 @@ export class SAMLProviderViewPage extends AKElement {
                                     .selected=${(user: User): boolean => {
                                         return user.pk === this.previewUser?.pk;
                                     }}
-                                    blankable
+                                    ?blankable=${true}
                                     @ak-change=${(ev: CustomEvent) => {
                                         this.previewUser = ev.detail.value;
                                         this.fetchPreview();

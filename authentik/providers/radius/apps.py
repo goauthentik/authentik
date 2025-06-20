@@ -1,12 +1,11 @@
 """authentik radius provider app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikProviderRadiusConfig(ManagedAppConfig):
+class AuthentikProviderRadiusConfig(AppConfig):
     """authentik radius provider app config"""
 
     name = "authentik.providers.radius"
     label = "authentik_providers_radius"
     verbose_name = "authentik Providers.Radius"
-    default = True

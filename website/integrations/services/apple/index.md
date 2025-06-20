@@ -209,7 +209,7 @@ You can always find your provider's generated values by navigating to **Provider
 
 ### 4. Create Shared Signals Framework provider
 
-While the OIDC provider handles the authentication flow, you'll need to create a [Shared Signals Framework provider](/docs/add-secure-apps/providers/ssf/) to handle the backchannel communication between authentik and Apple Business Manager.
+While the OIDC provider handles the authentication flow, you'll need to create a [Shared Signals Framework provider](../../../docs/add-secure-apps/providers/ssf/) to handle the backchannel communication between authentik and Apple Business Manager.
 
 1. From the authentik Admin interface, navigate to **Applications -> Providers** and click **Create**.
 2. Select **Shared Signals Framework Provider** and use the following values.

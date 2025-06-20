@@ -76,6 +76,7 @@ export class ObjectChangelog extends Table<Event> {
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
+
                 <small>${EventGeo(item)}</small>`,
         ];
     }
@@ -93,8 +94,7 @@ export class ObjectChangelog extends Table<Event> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                ><span slot="header">${msg("No Events found.")}</span>
+            html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

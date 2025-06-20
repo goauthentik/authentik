@@ -49,7 +49,6 @@ class TestEndpointsAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -102,7 +101,6 @@ class TestEndpointsAPI(APITestCase):
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,

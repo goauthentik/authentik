@@ -387,7 +387,8 @@ class TestAuthorize(OAuthTestCase):
             self.assertEqual(
                 response.url,
                 (
-                    f"http://localhost#id_token={provider.encode(token.id_token.to_dict())}"
+                    f"http://localhost#access_token={token.token}"
+                    f"&id_token={provider.encode(token.id_token.to_dict())}"
                     f"&token_type={TOKEN_TYPE}"
                     f"&expires_in={int(expires)}&state={state}"
                 ),
@@ -562,6 +563,7 @@ class TestAuthorize(OAuthTestCase):
                 "url": "http://localhost",
                 "title": f"Redirecting to {app.name}...",
                 "attrs": {
+                    "access_token": token.token,
                     "id_token": provider.encode(token.id_token.to_dict()),
                     "token_type": TOKEN_TYPE,
                     "expires_in": "3600",

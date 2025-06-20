@@ -1,12 +1,10 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "2.1.1",
+    "version": "1.1.0",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "build": "tsc -p ."
     },
     "type": "module",
     "exports": {
@@ -22,29 +20,27 @@
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "^3.8.1",
-        "@docusaurus/theme-search-algolia": "^3.8.1",
-        "@docusaurus/types": "^3.8.1",
-        "@goauthentik/prettier-config": "^2.0.0",
-        "@goauthentik/tsconfig": "^1.0.4",
-        "@types/react": "^19.1.6",
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-search-algolia": "^3.7.0",
+        "@docusaurus/types": "^3.7.0",
+        "@goauthentik/prettier-config": "^1.0.1",
+        "@goauthentik/tsconfig": "^1.0.1",
+        "@types/react": "^19.1.5",
         "@types/react-dom": "^19.1.5",
         "prettier": "^3.5.3",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "typescript": "^5.8.3"
     },
     "peerDependencies": {
-        "@docusaurus/theme-common": "^3.8.1",
-        "@docusaurus/theme-search-algolia": "^3.8.1",
-        "@docusaurus/types": "^3.8.0",
-        "react": ">=18",
-        "react-dom": ">=18"
-    },
-    "optionalDependencies": {
-        "react": ">=18",
-        "react-dom": ">=18"
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-search-algolia": "^3.7.0",
+        "@docusaurus/types": "^3.7.0",
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=20.11"
     },
     "types": "./out/index.d.ts",
     "files": [
@@ -56,12 +52,6 @@
     "prettier": "@goauthentik/prettier-config",
     "peerDependenciesMeta": {
         "@docusaurus/theme-search-algolia": {
-            "optional": true
-        },
-        "react": {
-            "optional": true
-        },
-        "react-dom": {
             "optional": true
         }
     },

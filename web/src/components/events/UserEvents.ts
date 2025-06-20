@@ -66,8 +66,7 @@ export class UserEvents extends Table<Event> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                ><span slot="header">${msg("No Events found.")}</span>
+            html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

@@ -49,7 +49,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
-                required
+                ?required=${true}
                 name="identifier"
             >
                 <input

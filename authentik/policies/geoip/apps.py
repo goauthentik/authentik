@@ -1,12 +1,11 @@
 """Authentik policy geoip app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikPolicyGeoIPConfig(ManagedAppConfig):
+class AuthentikPolicyGeoIPConfig(AppConfig):
     """Authentik policy_geoip app config"""
 
     name = "authentik.policies.geoip"
     label = "authentik_policies_geoip"
     verbose_name = "authentik Policies.GeoIP"
-    default = True

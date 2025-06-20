@@ -1,6 +1,6 @@
+import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
@@ -117,16 +117,18 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("Application's display Name.")}
+                    id="ak-application-wizard-details-name"
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
                     value=${ifDefined(app.slug)}
                     label=${msg("Slug")}
+                    source="#ak-application-wizard-details-name"
                     required
                     ?invalid=${errors.slug ?? this.errors.has("slug")}
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-slug-input>
                 <ak-text-input
                     name="group"
@@ -136,13 +138,13 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     help=${msg(
                         "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                     )}
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Policy engine mode")}
                     required
                     name="policyEngineMode"
-                    .options=${policyEngineModes}
+                    .options=${policyOptions}
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
@@ -159,7 +161,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                             )}
-                            input-hint="code"
+                            inputHint="code"
                         ></ak-text-input>
                         <ak-switch-input
                             name="openInNewTab"

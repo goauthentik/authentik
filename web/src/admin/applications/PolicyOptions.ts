@@ -3,7 +3,7 @@ import { html } from "lit";
 
 import { PolicyEngineMode } from "@goauthentik/api";
 
-export const policyEngineModes = [
+export const policyOptions = [
     {
         label: "any",
         value: PolicyEngineMode.Any,

@@ -14,7 +14,7 @@ declare module "module" {
          * const relativeDirname = dirname(fileURLToPath(import.meta.url));
          * ```
          */
-
+        // eslint-disable-next-line no-var
         var __dirname: string;
     }
 }

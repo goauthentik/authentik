@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-19 00:10+0000\n"
+"POT-Creation-Date: 2025-06-02 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -764,12 +764,6 @@ msgid ""
 msgstr ""
 
 #: authentik/events/models.py
-msgid ""
-"When enabled, notification will be sent to user the user that triggered the "
-"event.When destination_group is configured, notification is sent to both."
-msgstr ""
-
-#: authentik/events/models.py
 msgid "Notification Rule"
 msgstr ""
 
@@ -976,7 +970,7 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of {object_type}"
+msgid "Syncing page {page} of groups"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py

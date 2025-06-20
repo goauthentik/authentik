@@ -39,7 +39,7 @@ To support the integration of Frappe with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`.
+    - Set a `Strict` redirect URI to <kbd>https://<em>frappe.company</em>/api/method/frappe.integrations.oauth2_logins.custom/provider</kbd>.
     - Select any available signing key.
     - Under **Advanced Protocol Settings**, set **Subject mode** to be `Based on the Users's username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -72,11 +72,11 @@ To support the integration of Frappe with authentik, you need to create an appli
 
     - **Identity Details**
 
-        - **Base URL**: `https://authentik.company/`
+        - **Base URL**: <kbd>https://<em>authentik.company</em>/</kbd>
         - **Client URLs**:
             - **Authorize URL**: `/application/o/authorize/`
             - **Access Token URL**: `/application/o/token/`
-            - **Redirect URL**: `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`
+            - **Redirect URL**: <kbd>https://<em>frappe.company</em>/api/method/frappe.integrations.oauth2_logins.custom/provider</kbd>
             - **API Endpoint**: `/application/o/userinfo/`
               ![](./frappe3.png)
 

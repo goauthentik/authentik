@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -62,13 +61,17 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
                     value="${ifDefined(this.installID)}"
                 />
             </ak-form-element-horizontal>
-            <ak-secret-textarea-input
+            <ak-form-element-horizontal
                 name="key"
-                ?revealed=${this.instance === undefined}
+                ?writeOnly=${this.instance !== undefined}
                 label=${msg("License key")}
-                input-hint="code"
             >
-            </ak-secret-textarea-input>`;
+                <textarea
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                ></textarea>
+            </ak-form-element-horizontal>`;
     }
 }
 

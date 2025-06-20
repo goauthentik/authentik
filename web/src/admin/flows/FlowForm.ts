@@ -1,9 +1,7 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-slug-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -20,6 +18,7 @@ import {
     FlowDesignationEnum,
     FlowLayoutEnum,
     FlowsApi,
+    PolicyEngineMode,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-form")
@@ -75,7 +74,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -83,7 +82,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Title")} required name="title">
+            <ak-form-element-horizontal label=${msg("Title")} ?required=${true} name="title">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.title)}"
@@ -92,17 +91,22 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 />
                 <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
-
-            <ak-slug-input
-                name="slug"
-                value=${ifDefined(this.instance?.slug)}
-                label=${msg("Slug")}
-                required
-                help=${msg("Visible in the URL.")}
-                input-hint="code"
-            ></ak-slug-input>
-
-            <ak-form-element-horizontal label=${msg("Designation")} required name="designation">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.slug)}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                />
+                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Designation")}
+                ?required=${true}
+                name="designation"
+            >
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>
                         ---------
@@ -161,7 +165,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication")}
-                required
+                ?required=${true}
                 name="authentication"
             >
                 <select class="pf-c-form-control">
@@ -236,7 +240,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Denied action")}
-                        required
+                        ?required=${true}
                         name="deniedAction"
                     >
                         <ak-radio
@@ -275,11 +279,27 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Policy engine mode")}
-                        required
+                        ?required=${true}
                         name="policyEngineMode"
                     >
                         <ak-radio
-                            .options=${policyEngineModes}
+                            .options=${[
+                                {
+                                    label: "any",
+                                    value: PolicyEngineMode.Any,
+                                    default: true,
+                                    description: html`${msg(
+                                        "Any policy must match to grant access",
+                                    )}`,
+                                },
+                                {
+                                    label: "all",
+                                    value: PolicyEngineMode.All,
+                                    description: html`${msg(
+                                        "All policies must match to grant access",
+                                    )}`,
+                                },
+                            ]}
                             .value=${this.instance?.policyEngineMode}
                         >
                         </ak-radio>
@@ -289,7 +309,11 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             <ak-form-group>
                 <span slot="header"> ${msg("Appearance settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Layout")} required name="layout">
+                    <ak-form-element-horizontal
+                        label=${msg("Layout")}
+                        ?required=${true}
+                        name="layout"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=${FlowLayoutEnum.Stacked}

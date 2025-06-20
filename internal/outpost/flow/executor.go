@@ -127,7 +127,7 @@ func (fe *FlowExecutor) getAnswer(stage StageComponent) string {
 	return ""
 }
 
-func (fe *FlowExecutor) SessionCookie() *http.Cookie {
+func (fe *FlowExecutor) GetSession() *http.Cookie {
 	return fe.session
 }
 

@@ -14,19 +14,3 @@ class AuthentikAdminConfig(ManagedAppConfig):
     label = "authentik_admin"
     verbose_name = "authentik Admin"
     default = True
-
-    @ManagedAppConfig.reconcile_global
-    def clear_update_notifications(self):
-        """Clear update notifications on startup if the notification was for the version
-        we're running now."""
-        from packaging.version import parse
-
-        from authentik.admin.tasks import LOCAL_VERSION
-        from authentik.events.models import EventAction, Notification
-
-        for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
-            if "new_version" not in notification.event.context:
-                continue
-            notification_version = notification.event.context["new_version"]
-            if LOCAL_VERSION >= parse(notification_version):
-                notification.delete()
