@@ -1,11 +1,12 @@
 """authentik redirect app"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageRedirectConfig(AppConfig):
+class AuthentikStageRedirectConfig(ManagedAppConfig):
     """authentik redirect app"""
 
     name = "authentik.stages.redirect"
     label = "authentik_stages_redirect"
     verbose_name = "authentik Stages.Redirect"
+    default = True
