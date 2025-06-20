@@ -6,7 +6,7 @@ Events are authentik's built-in logging system. Every event is logged, whether i
 
 Events can be used to define [notification rules](notifications.md), with specified [transport options](transports.md) of local (in the authentik UI), email or webhook.
 
-Certain information is stripped from events, to ensure no passwords or other credentials are saved in the log.
+Certain information is stripped from events, to ensure that no passwords or other credentials are saved in the log.
 
 ## Event retention
 
