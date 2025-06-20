@@ -2,17 +2,21 @@
 title: Events
 ---
 
-Events are authentik's built-in logging system. Whenever any of the following actions occur, an event is created:
+Events are authentik's built-in logging system. Every event is logged, whether it is initiated by a user or by authentik.
+
+Events can be used to define [notification rules](notifications.md), with specified [transport options](transports.md) of local (in the authentik UI), email or webhook.
 
 Certain information is stripped from events, to ensure no passwords or other credentials are saved in the log.
 
 ## Event retention
 
-The event retention is configured in the system settings interface, with the default being set to 365 days.
+The event retention is configured in the **System > Settings** area of the Admin interface, with the default being set to 365 days.
 
 If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info". For this configuration, it is also recommended to set the internal retention pretty low (for example, `days=1`).
 
 ## Event actions
+
+Whenever any of the following actions occur, an event is created.
 
 ### `login`
 
