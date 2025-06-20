@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## authentik Configuration
+## authentik configuration
 
 To support the integration of OVHcloud with authentik, you need to create an application/provider pair in authentik.
 
