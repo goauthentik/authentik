@@ -58,23 +58,17 @@ Add the following required environment variables to your Planka deployment:
 OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
 OIDC_CLIENT_ID=<client if from authentik>
 OIDC_CLIENT_SECRET=<client secret from authentik>
-```
 
-Optionally, if you want to provision users with administrator access, include the following environment variable:
-
-```yaml
+#Optionally, if you want to provision users with administrator access, include the following environment variable:
 OIDC_ADMIN_ROLES=<authentik group name>
-```
 
-Optionally, if you want to enforce the use of SSO and disable local authentication, include the following environment variable:
-
-```yaml
+#Optionally, if you want to enforce the use of SSO and disable local authentication, include the following environment variable:
 OIDC_ENFORCED=true
 ```
 
 ## Configuration verification
 
-To verify the integration with Planka, log out and attempt to log back in using the **Log in with SSO** button. You should be redirected to authentik. Once authenticated, you should be redirected to the Planka dashboard.
+To verify the integration with Planka, log out and attempt to log back in using the **Log in with SSO** button. You should be redirected to authentik. Once authenticated, you should then be redirected to the Planka dashboard.
 
 ## Resources
 
