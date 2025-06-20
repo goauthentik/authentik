@@ -41,7 +41,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Download metadata file
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your **SAML Metadata** file and it will be required in the next section.
 
@@ -56,7 +56,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
     - Open the File you downloaded in [Download metadata file](#download-metadata-file). Copy the content and paste it into the **XML-Metadata** field.
 6. Close the window by clicking **Confirm**.
 
-## Configuration Verification
+## Configuration verification
 
 To verify that authentik is correctly integrated with OVH Cloud, first log out of your account. On the OVHcloud login page, enter your [OVH Customer ID/NIC handle](https://help.ovhcloud.com/csm/en-account-create-ovhcloud-account?id=kb_article_view&sysparm_article=KB0043022#what-is-my-nic-handle) followed by `/idp` (e.g. `xx1111-ovh/idp`) without entering a password, and click the Login button.
 
