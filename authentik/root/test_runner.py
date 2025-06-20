@@ -11,6 +11,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
 from structlog.stdlib import get_logger
 
+from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
@@ -67,6 +69,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         CONFIG.set("error_reporting.sample_rate", 0)
         CONFIG.set("error_reporting.environment", "testing")
         CONFIG.set("error_reporting.send_pii", True)
+
+        ASN_CONTEXT_PROCESSOR.load()
+        GEOIP_CONTEXT_PROCESSOR.load()
+
         sentry_init()
 
         pre_startup.send(sender=self, mode="test")
