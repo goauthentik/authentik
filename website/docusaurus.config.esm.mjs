@@ -7,6 +7,8 @@
  */
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import { createRequire } from "node:module";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -17,6 +19,9 @@ import remarkSupportDirective from "./remark/support-directive.mjs";
 import remarkVersionDirective from "./remark/version-directive.mjs";
 
 const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const { version } = require(path.resolve(__dirname, "../package.json"));
 
 /**
  * Documentation site configuration for Docusaurus.
@@ -90,6 +95,9 @@ const config = createDocusaurusConfig({
             indexName: "goauthentik",
             externalUrlRegex: /(:\/\/goauthentik\.io|integrations\.goauthentik\.io)/.toString(),
         },
+    },
+    customFields: {
+        currentVersion: version,
     },
     presets: [
         [
