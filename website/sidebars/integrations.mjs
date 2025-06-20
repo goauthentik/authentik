@@ -160,6 +160,7 @@ const items = [
             "services/jellyfin/index",
             "services/komga/index",
             "services/miniflux/index",
+            "services/seafile/index",
             "services/sonarr/index",
             "services/tautulli/index",
         ],
