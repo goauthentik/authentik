@@ -108,6 +108,7 @@
         "@sentry/browser": "^9.30.0",
         "@spotlightjs/spotlight": "^3.0.1",
         "@webcomponents/webcomponentsjs": "^2.8.0",
+        "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
         "chart.js": "^4.4.9",
         "chartjs-adapter-date-fns": "^3.0.0",
@@ -139,7 +140,6 @@
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.7.1",
         "unist-util-visit": "^5.0.0",
-        "webauthn-polyfills": "^0.1.7",
         "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.8.0"
     },
