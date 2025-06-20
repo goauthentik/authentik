@@ -4,6 +4,7 @@ from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 
+from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tasks.models import Task, TaskStatus
 from authentik.tenants.models import Tenant
@@ -66,3 +67,8 @@ class LoggingMiddleware(Middleware):
                 "Task finished processing with errors",
                 exception=exception_to_string(exception),
             )
+            Event.new(
+                EventAction.SYSTEM_TASK_EXCEPTION,
+                message=f"Task {task.actor_name} encountered an error: "
+                "{exception_to_string(exception)}",
+            ).save()
