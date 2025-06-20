@@ -9,7 +9,7 @@ import { SKIP, visit } from "unist-util-visit";
 /**
  * MDAST plugin to transform `ak-preview` directives into preview badges.
  */
-function remarkPreviewDirective() {
+export function remarkPreviewDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */

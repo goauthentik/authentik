@@ -11,7 +11,7 @@ support_level: community
 > -- https://writefreely.org/
 
 :::caution
-Currently it is not possible to connect writefreely to authentik without making an adjustment in the database. See [here](https://github.com/writefreely/writefreely/issues/516) and [Writefreely Setup](https://goauthentik.io/integrations/services/writefreely/#writefreely-setup)
+Currently it is not possible to connect Writefreely to authentik without making an adjustment in the database. See [here](https://github.com/writefreely/writefreely/issues/516) and [Writefreely Setup](../writefreely/index.md#writefreely-setup)
 :::
 
 ## Preparation

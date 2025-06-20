@@ -1,28 +1,33 @@
 /**
  * @import { Root } from "mdast";
  */
-import { visit } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
+
+/**
+ * @typedef {[pattern: string | RegExp, replacement: string]} Rewrite
+ */
 
 /**
  * Remark plugin to transform relative links to docs to absolute URLs
- * @param {Map<string, string>} rewriteMap Map of urls to rewrite where the key is the prefix to check for and the value is the domain to add
+ * @param {Iterable<[string, string]>} rewrites Map of urls to rewrite where the key is the prefix to check for and the value is the domain to add
  */
-function remarkLinkRewrite(rewriteMap) {
+export function remarkLinkRewrite(rewrites) {
+    const map = new Map(rewrites);
+
     return () => {
         /**
          * @param {Root} tree The MDAST tree to transform.
          */
-        return async (tree) => {
-            visit(tree, (node) => {
-                if (node.type !== "link") {
-                    return;
+        return (tree) => {
+            visit(tree, "link", (node) => {
+
+                for (const [pattern, replacement] of map) {
+                    if (!node.url.startsWith(pattern)) continue;
+
+                    node.url = node.url.replace(pattern, replacement);
                 }
-                rewriteMap.forEach((v, k) => {
-                    if (!node.url.startsWith(k)) {
-                        return;
-                    }
-                    node.url = `${v}${node.url}`;
-                });
+
+                return SKIP;
             });
         };
     };

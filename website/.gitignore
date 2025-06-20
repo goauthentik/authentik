@@ -27,4 +27,4 @@ yarn-error.log*
 static/docker-compose.yml
 static/schema.yml
 static/releases.gen.json
-docs/developer-docs/api/reference/**
+api/reference/**

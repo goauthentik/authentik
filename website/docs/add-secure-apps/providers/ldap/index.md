@@ -70,7 +70,7 @@ This enables you to bind on port 636 using LDAPS.
 
 ## Integrations
 
-See the integration guide for [sssd](/integrations/services/sssd) for an example guide.
+See the integration guide for [sssd](/integrations/services/sssd/) for an example guide.
 
 ## Binding & Bind Modes
 

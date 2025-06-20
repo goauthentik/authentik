@@ -7,7 +7,7 @@ import FastGlob from "fast-glob";
 import assert from "node:assert";
 import test from "node:test";
 
-import sidebar from "./integrations.mjs";
+import sidebar from "./sidebar.mjs";
 
 const getSidebarItems = () => {
     /**

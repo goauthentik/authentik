@@ -60,7 +60,7 @@ To support the integration of MinIO with authentik, you need to create an applic
     return None
     ```
 
-You can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, which will stop the user from accessing the MinIO instance. For more information on writing expressions, see [Expressions](/docs/add-secure-apps/providers/property-mappings/expression) and [User](/docs/users-sources/user/user_ref#object-properties) docs.
+You can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, which will stop the user from accessing the MinIO instance. For more information on writing expressions, see [Expressions](/docs/add-secure-apps/providers/property-mappings/expression) and [User](/docs/users-sources/user/user_ref.mdx#object-properties) docs.
 
 ### Create an application and provider in authentik
 
