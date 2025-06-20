@@ -49,6 +49,7 @@ class LoggingMiddleware(Middleware):
         task: Task = message.options["task"]
         task.log(str(type(self)), TaskStatus.INFO, "Task is being processed")
 
+    # TODO: also after_skip_message
     def after_process_message(
         self,
         broker: Broker,

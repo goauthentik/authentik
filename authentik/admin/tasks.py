@@ -36,7 +36,6 @@ def _set_prom_info():
 @actor(description=_("Update latest version info"))
 def update_latest_version():
     self: Task = CurrentTask.get_task()
-    raise RuntimeError("whatever")
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.info("Version check disabled.")
