@@ -230,7 +230,6 @@ class _PostgresConsumer(Consumer):
         self.postgres_channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
 
         # Override because dramatiq doesn't allow us setting this manually
-        # TODO: turn it into a setting
         self.timeout = Conf().worker["consumer_listen_timeout"]
 
     @property
@@ -403,16 +402,16 @@ class _PostgresConsumer(Consumer):
             self.unlock_queue.task_done()
 
     def _auto_purge(self):
-        # TODO: allow configuring this
-        # Automatically purge messages on average every 100k iteration.
-        # Dramatiq defaults to 1s, so this means one purge every 28 hours.
-        if randint(0, 100_000):  # nosec
+        # Automatically purge messages on average every n iterations.
+        # We manually set the timeout to 30s, so we need to divide by 30 to
+        # get the number of actual iterations.
+        iterations = Conf().task_purge_interval // 30
+        if randint(0, iterations):  # nosec
             return
         self.logger.debug("Running garbage collector")
         count = self.query_set.filter(
             state__in=(TaskState.DONE, TaskState.REJECTED),
-            # TODO: allow configuring this
-            mtime__lte=timezone.now() - timezone.timedelta(days=30),
+            mtime__lte=timezone.now() - timezone.timedelta(seconds=Conf().task_purge_interval),
             result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info(f"Purged {count} messages in all queues")

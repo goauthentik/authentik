@@ -159,7 +159,9 @@ web:
 worker:
   processes: 2
   threads: 1
-  consumer_listen_timeout: 30
+  consumer_listen_timeout: "seconds=30"
+  task_purge_interval: "days=1"
+  task_expiration: "days=30"
 
 storage:
   media:

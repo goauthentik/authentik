@@ -49,7 +49,7 @@ def generate_local_config():
         "worker": {
             "processes": 1,
             "threads": 1,
-            "consumer_listen_timeout": 10,
+            "consumer_listen_timeout": "seconds=10",
         },
     }
 
