@@ -108,8 +108,7 @@ class SchedulerMiddleware(Middleware):
                 "When using the scheduler, DRAMATIQ.schedule_class must be set."
             )
 
-        self.scheduler_stop_event = Event()
-        self.scheduler: Scheduler = import_string(Conf().scheduler_class)(self.scheduler_stop_event)
+        self.scheduler: Scheduler = import_string(Conf().scheduler_class)()
 
     def after_process_boot(self, broker: Broker):
         self.scheduler.broker = broker

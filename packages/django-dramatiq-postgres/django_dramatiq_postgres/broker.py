@@ -405,7 +405,7 @@ class _PostgresConsumer(Consumer):
         # Automatically purge messages on average every n iterations.
         # We manually set the timeout to 30s, so we need to divide by 30 to
         # get the number of actual iterations.
-        iterations = Conf().task_purge_interval // 30
+        iterations = int(Conf().task_purge_interval / 30)
         if randint(0, iterations):  # nosec
             return
         self.logger.debug("Running garbage collector")

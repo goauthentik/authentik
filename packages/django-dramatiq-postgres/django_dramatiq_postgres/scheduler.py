@@ -17,9 +17,8 @@ from django_dramatiq_postgres.models import ScheduleBase
 class Scheduler(Thread):
     broker: Broker
 
-    def __init__(self, stop_event: Event, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.stop_event = stop_event
         self.logger = get_logger(__name__, type(self))
 
     @cached_property
@@ -53,11 +52,10 @@ class Scheduler(Thread):
         return count
 
     def run(self):
-        while not self.stop_event.is_set():
-            with self._lock() as lock_acquired:
-                if not lock_acquired:
-                    self.logger.debug("Could not acquire lock, skipping scheduling")
-                    return
-                count = self._run()
-                self.logger.info(f"Sent {count} scheduled tasks")
-            sleep(Conf().scheduler_interval)
+        with self._lock() as lock_acquired:
+            if not lock_acquired:
+                self.logger.debug("Could not acquire lock, skipping scheduling")
+                return
+            count = self._run()
+            self.logger.info(f"Sent {count} scheduled tasks")
+        sleep(Conf().scheduler_interval)
