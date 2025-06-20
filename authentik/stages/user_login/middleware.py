@@ -101,9 +101,9 @@ class BoundSessionMiddleware(SessionMiddleware):
             SESSION_KEY_BINDING_GEO, GeoIPBinding.NO_BINDING
         )
         if configured_binding_net != NetworkBinding.NO_BINDING:
-            self.recheck_session_net(configured_binding_net, last_ip, new_ip)
+            BoundSessionMiddleware.recheck_session_net(configured_binding_net, last_ip, new_ip)
         if configured_binding_geo != GeoIPBinding.NO_BINDING:
-            self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
+            BoundSessionMiddleware.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
         # If we got to this point without any error being raised, we need to
         # update the last saved IP to the current one
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
@@ -111,7 +111,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             # (== basically requires the user to be logged in)
             request.session[request.session.model.Keys.LAST_IP] = new_ip
 
-    def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
+    @staticmethod
+    def recheck_session_net(binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""
         last_asn = ASN_CONTEXT_PROCESSOR.asn(last_ip)
         new_asn = ASN_CONTEXT_PROCESSOR.asn(new_ip)
@@ -158,7 +159,8 @@ class BoundSessionMiddleware(SessionMiddleware):
                     new_ip,
                 )
 
-    def recheck_session_geo(self, binding: GeoIPBinding, last_ip: str, new_ip: str):
+    @staticmethod
+    def recheck_session_geo(binding: GeoIPBinding, last_ip: str, new_ip: str):
         """Check GeoIP binding"""
         last_geo = GEOIP_CONTEXT_PROCESSOR.city(last_ip)
         new_geo = GEOIP_CONTEXT_PROCESSOR.city(new_ip)
