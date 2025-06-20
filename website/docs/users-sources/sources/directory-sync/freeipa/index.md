@@ -104,7 +104,7 @@ In the improbable case that you want to sync only direct memberships, you can us
 - Lookup using user attribute: *disabled*
 :::
 
-## Manual synchronization
+### Manual synchronization
 
 After you save the source, you can kick off a synchronization by navigating to the source, clicking on the **Sync** tab, and clicking the **Run sync again** button.
 
@@ -112,3 +112,48 @@ Lastly, verify that the **User database + LDAP password** backend is selected in
 
 ![](./07_password_stage.png)
 
+### Blueprints
+
+You can also configure the LDAP source with a blueprint:
+
+```yaml
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: FreeIPA LDAP Source
+  labels:
+    blueprints.goauthentik.io/description: "LDAP Source configuration for FreeIPA"
+entries:
+  - model: authentik_sources_ldap.ldapsource
+    identifiers:
+      slug: ldap-source-freeipa
+    attrs:
+      enabled: true
+      base_dn: dc=freeipa,dc=company
+      additional_user_dn: cn=users,cn=accounts
+      additional_group_dn: cn=groups,cn=accounts
+      bind_cn: !Env FREEIPA_DN
+      bind_password: !Env FREEIPA_PASSWORD
+      delete_not_found_objects: true
+      group_membership_field: memberOf
+      group_object_filter: (objectClass=groupofnames)
+      lookup_groups_from_user: true
+      object_uniqueness_field: ipaUniqueID
+      server_uri: ldaps://ipa1.freeipa.company,ldaps://ipa2.freeipa.company
+      sni: true
+      sync_groups: true
+      sync_users: true
+      sync_users_password: true
+      user_membership_attribute: distinguishedName
+      user_object_filter: (objectClass=person)
+      user_property_mappings:
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-cn ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-uid ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-mail ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-dn-path ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-name ]]
+      group_property_mappings:
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-cn ]]
+```
+
+You must set the username (dn) and password in the environment variables FREEIPA_DN and FREEIPA_PASSWORD.
