@@ -85,6 +85,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
+    supportsQL = true;
 
     searchEnabled(): boolean {
         return true;
