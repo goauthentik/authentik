@@ -65,4 +65,4 @@ You will be redirected to your authentik installation for authentication. Once a
 ## References
 
 - [User management & Federation - OVHcloud help center](https://help.ovhcloud.com/csm/en-ie-documentation-manage-operate-user-federation?id=kb_browse_cat&kb_id=3d4a8129a884a950f07829d7d5c75243&kb_category=21734cbe50d47d90476b12dfd60b3542&spa=1)
-- [User management & Federation - OVHcloud US help center](https://support.us.ovhcloud.com/hc/en-us/sections/27230986868883-Federation)
+- [OVHcloud US Help Center - User management & Federation](https://support.us.ovhcloud.com/hc/en-us/sections/27230986868883-Federation)
