@@ -162,6 +162,7 @@ worker:
   consumer_listen_timeout: "seconds=30"
   task_purge_interval: "days=1"
   task_expiration: "days=30"
+  scheduler_interval: "seconds=60"
 
 storage:
   media:

@@ -376,6 +376,9 @@ DRAMATIQ = {
     },
     "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
+    "scheduler_interval": timedelta_from_string(
+        CONFIG.get("worker.scheduler_interval")
+    ).total_seconds(),
     "middlewares": (
         ("django_dramatiq_postgres.middleware.SchedulerMiddleware", {}),
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),

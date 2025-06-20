@@ -50,6 +50,7 @@ def generate_local_config():
             "processes": 1,
             "threads": 1,
             "consumer_listen_timeout": "seconds=10",
+            "scheduler_interval": "seconds=30",
         },
     }
 
