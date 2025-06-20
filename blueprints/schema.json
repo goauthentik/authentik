@@ -7381,6 +7381,7 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
+                        "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.core",
@@ -7393,8 +7394,7 @@
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
-                        "authentik.enterprise.stages.source",
-                        "authentik.tasks.schedules"
+                        "authentik.enterprise.stages.source"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -7493,6 +7493,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
+                        "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
@@ -7509,8 +7510,7 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
-                        "authentik_stages_source.sourcestage",
-                        "authentik_tasks_schedules.schedule"
+                        "authentik_stages_source.sourcestage"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."

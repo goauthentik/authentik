@@ -40669,7 +40669,19 @@ paths:
       - in: query
         name: aggregated_status
         schema:
-          type: string
+          type: array
+          items:
+            type: string
+            enum:
+            - consumed
+            - done
+            - error
+            - info
+            - queued
+            - rejected
+            - warning
+        explode: true
+        style: form
       - name: ordering
         required: false
         in: query
@@ -41307,6 +41319,16 @@ components:
       required:
       - pending_user
       - pending_user_avatar
+    AggregatedStatusEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
     AlgEnum:
       enum:
       - rsa
@@ -41378,6 +41400,7 @@ components:
       - authentik.stages.user_login
       - authentik.stages.user_logout
       - authentik.stages.user_write
+      - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
       - authentik.core
@@ -41391,7 +41414,6 @@ components:
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
-      - authentik.tasks.schedules
       type: string
     AppleChallengeResponseRequest:
       type: object
@@ -48811,6 +48833,7 @@ components:
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
       - authentik_stages_user_write.userwritestage
+      - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_core.group
@@ -48828,7 +48851,6 @@ components:
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
-      - authentik_tasks_schedules.schedule
       type: string
     MutualTLSStage:
       type: object
@@ -60357,7 +60379,7 @@ components:
           items:
             $ref: '#/components/schemas/LogEvent'
         aggregated_status:
-          type: string
+          $ref: '#/components/schemas/AggregatedStatusEnum'
       required:
       - actor_name
       - aggregated_status

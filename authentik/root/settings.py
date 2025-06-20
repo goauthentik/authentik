@@ -390,9 +390,10 @@ DRAMATIQ = {
             {"max_retries": 20 if not TEST else 0},
         ),
         # TODO: results
+        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.LoggingMiddleware", {}),
     ),
     "test": TEST,
 }

@@ -1,8 +1,11 @@
+from typing import Any
+
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 
-from authentik.tasks.models import Task
+from authentik.lib.utils.errors import exception_to_string
+from authentik.tasks.models import Task, TaskStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -28,3 +31,38 @@ class RelObjMiddleware(Middleware):
         if rel_obj := message.options.get("rel_obj"):
             del message.options["rel_obj"]
         message.options["model_defaults"]["rel_obj"] = rel_obj
+
+
+class LoggingMiddleware(Middleware):
+    def before_enqueue(self, broker: Broker, message: Message, delay: int):
+        message.options["model_defaults"]["_messages"] = [
+            Task._make_message(
+                str(type(self)),
+                TaskStatus.INFO,
+                "Task is being queued",
+                delay=delay,
+            )
+        ]
+
+    def before_process_message(self, broker: Broker, message: Message):
+        task: Task = message.options["task"]
+        task.log(str(type(self)), TaskStatus.INFO, "Task is being processed")
+
+    def after_process_message(
+        self,
+        broker: Broker,
+        message: Message,
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ):
+        task: Task = message.options["task"]
+        if exception is None:
+            task.log(str(type(self)), TaskStatus.INFO, "Task finished processing without errors")
+        else:
+            task.log(
+                str(type(self)),
+                TaskStatus.ERROR,
+                "Task finished processing with errors",
+                exception=exception_to_string(exception),
+            )

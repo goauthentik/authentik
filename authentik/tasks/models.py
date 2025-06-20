@@ -1,11 +1,11 @@
-from enum import StrEnum, auto
+from typing import Any
 from uuid import UUID
 
 import pgtrigger
 from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.models import TaskBase
+from django_dramatiq_postgres.models import TaskBase, TaskState
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
@@ -13,21 +13,17 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tenants.models import Tenant
 
-CHANNEL_PREFIX = "authentik.tasks"
 
+class TaskStatus(models.TextChoices):
+    """Task aggregated status. Reported by the task runners"""
 
-class ChannelIdentifier(StrEnum):
-    ENQUEUE = auto()
-    LOCK = auto()
-
-
-class TaskState(models.TextChoices):
-    """Task system-state. Reported by the task runners"""
-
-    QUEUED = "queued"
-    CONSUMED = "consumed"
-    REJECTED = "rejected"
-    DONE = "done"
+    QUEUED = TaskState.QUEUED
+    CONSUMED = TaskState.CONSUMED
+    REJECTED = TaskState.REJECTED
+    DONE = TaskState.DONE
+    INFO = "info"
+    WARNING = "warning"
+    ERROR = "error"
 
 
 class Task(SerializerModel, TaskBase):
@@ -44,7 +40,7 @@ class Task(SerializerModel, TaskBase):
     _uid = models.TextField(blank=True, null=True)
     _messages = models.JSONField(default=list)
 
-    aggregated_status = models.TextField()
+    aggregated_status = models.TextField(choices=TaskStatus.choices)
 
     class Meta(TaskBase.Meta):
         default_permissions = ("view",)
@@ -96,23 +92,50 @@ class Task(SerializerModel, TaskBase):
         if save:
             self.save()
 
-    def log(self, log_level: str, message: str | Exception, save: bool = False, **attributes):
-        self._messages: list
+    @classmethod
+    def _make_message(
+        cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
+    ) -> dict[str, Any]:
         if isinstance(message, Exception):
             message = exception_to_string(message)
-        log = LogEvent(message, logger=self.uid, log_level=log_level, attributes=attributes)
-        self._messages.append(sanitize_item(log))
+        log = LogEvent(
+            message,
+            logger=logger,
+            log_level=log_level.value,
+            attributes=attributes,
+        )
+        return sanitize_item(log)
+
+    def log(
+        self,
+        logger: str,
+        log_level: TaskStatus,
+        message: str | Exception,
+        save: bool = False,
+        **attributes,
+    ):
+        self._messages: list
+        self._messages.append(
+            sanitize_item(
+                self._make_message(
+                    logger,
+                    log_level,
+                    message,
+                    **attributes,
+                )
+            )
+        )
         if save:
             self.save()
 
     def info(self, message: str | Exception, save: bool = False, **attributes):
-        self.log("info", message, save=save, **attributes)
+        self.log(self.uid, TaskStatus.INFO, message, save=save, **attributes)
 
     def warning(self, message: str | Exception, save: bool = False, **attributes):
-        self.log("warning", message, save=save, **attributes)
+        self.log(self.uid, TaskStatus.WARNING, message, save=save, **attributes)
 
     def error(self, message: str | Exception, save: bool = False, **attributes):
-        self.log("error", message, save=save, **attributes)
+        self.log(self.uid, TaskStatus.ERROR, message, save=save, **attributes)
 
 
 class TasksModel(models.Model):

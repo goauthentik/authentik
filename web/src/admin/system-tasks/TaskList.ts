@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Task, TasksApi, TasksTasksListStateEnum } from "@goauthentik/api";
+import { Task, TasksApi, TasksTasksListAggregatedStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -32,6 +32,9 @@ export class TaskList extends Table<Task> {
 
     @property()
     showOnlyStandalone: boolean = true;
+
+    @property()
+    excludeSuccessful: boolean = true;
 
     searchEnabled(): boolean {
         return true;
@@ -51,12 +54,22 @@ export class TaskList extends Table<Task> {
                 : this.showOnlyStandalone
                   ? true
                   : undefined;
+        const aggregatedStatus = this.excludeSuccessful
+            ? [
+                  TasksTasksListAggregatedStatusEnum.Queued,
+                  TasksTasksListAggregatedStatusEnum.Consumed,
+                  TasksTasksListAggregatedStatusEnum.Rejected,
+                  TasksTasksListAggregatedStatusEnum.Warning,
+                  TasksTasksListAggregatedStatusEnum.Error,
+              ]
+            : undefined;
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
             relObjContentTypeAppLabel: this.relObjAppLabel,
             relObjContentTypeModel: this.relObjModel,
             relObjId: this.relObjId,
             relObjIdIsnull,
+            aggregatedStatus,
         });
     }
 
@@ -66,32 +79,51 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
+    #toggleExcludeSuccessful = () => {
+        this.excludeSuccessful = !this.excludeSuccessful;
+        this.page = 1;
+        return this.fetch();
+    };
+
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Task"), "actor_name"),
             new TableColumn(msg("Queue"), "queue_name"),
             new TableColumn(msg("Last updated"), "mtime"),
-            new TableColumn(msg("State"), "state"),
+            new TableColumn(msg("Status"), "aggregated_status"),
             new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarAfter(): TemplateResult {
-        console.log("task show standalone");
-        console.log(this.showOnlyStandalone);
-        if (this.relObjId !== undefined) {
-            return html``;
-        }
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
                     <div class="pf-c-input-group">
+                        ${this.relObjId === undefined
+                            ? html` <label class="pf-c-switch">
+                                  <input
+                                      class="pf-c-switch__input"
+                                      type="checkbox"
+                                      ?checked=${this.showOnlyStandalone}
+                                      @change=${this.#toggleShowOnlyStandalone}
+                                  />
+                                  <span class="pf-c-switch__toggle">
+                                      <span class="pf-c-switch__toggle-icon">
+                                          <i class="fas fa-check" aria - hidden="true"> </i>
+                                      </span>
+                                  </span>
+                                  <span class="pf-c-switch__label">
+                                      ${msg("Show only standalone tasks")}
+                                  </span>
+                              </label>`
+                            : html``}
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.showOnlyStandalone}
-                                @change=${this.#toggleShowOnlyStandalone}
+                                ?checked=${this.excludeSuccessful}
+                                @change=${this.#toggleExcludeSuccessful}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -99,7 +131,7 @@ export class TaskList extends Table<Task> {
                                 </span>
                             </span>
                             <span class="pf-c-switch__label">
-                                ${msg("Show only standalone tasks")}
+                                ${msg("Exclude successful tasks")}
                             </span>
                         </label>
                     </div>
@@ -108,14 +140,18 @@ export class TaskList extends Table<Task> {
     }
 
     taskState(task: Task): TemplateResult {
-        switch (task.state) {
-            case TasksTasksListStateEnum.Queued:
+        switch (task.aggregatedStatus) {
+            case TasksTasksListAggregatedStatusEnum.Queued:
                 return html`<ak-label color=${PFColor.Grey}>${msg("Waiting to run")}</ak-label>`;
-            case TasksTasksListStateEnum.Consumed:
+            case TasksTasksListAggregatedStatusEnum.Consumed:
                 return html`<ak-label color=${PFColor.Blue}>${msg("Running")}</ak-label>`;
-            case TasksTasksListStateEnum.Done:
+            case TasksTasksListAggregatedStatusEnum.Done:
+            case TasksTasksListAggregatedStatusEnum.Info:
                 return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
-            case TasksTasksListStateEnum.Rejected:
+            case TasksTasksListAggregatedStatusEnum.Warning:
+                return html`<ak-label color=${PFColor.Orange}>${msg("Warning")}</ak-label>`;
+            case TasksTasksListAggregatedStatusEnum.Rejected:
+            case TasksTasksListAggregatedStatusEnum.Error:
                 return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
             default:
                 return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;

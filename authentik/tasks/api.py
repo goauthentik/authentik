@@ -1,4 +1,4 @@
-from django_filters.filters import BooleanFilter
+from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from rest_framework.fields import ReadOnlyField
 from rest_framework.mixins import (
@@ -9,7 +9,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.events.logs import LogEventSerializer
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskStatus
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -38,6 +38,10 @@ class TaskSerializer(ModelSerializer):
 
 class TaskFilter(FilterSet):
     rel_obj_id__isnull = BooleanFilter("rel_obj_id", "isnull")
+    aggregated_status = MultipleChoiceFilter(
+        choices=TaskStatus.choices,
+        field_name="aggregated_status",
+    )
 
     class Meta:
         model = Task

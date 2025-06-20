@@ -13,6 +13,7 @@ export enum PFColor {
     Green = "pf-m-green",
     Orange = "pf-m-orange",
     Red = "pf-m-red",
+    Blue = "pf-m-blue",
     Grey = "",
 }
 
@@ -24,6 +25,7 @@ const chromeList: Chrome[] = [
     ["danger", PFColor.Red, "pf-m-red", "fa-times"],
     ["warning", PFColor.Orange, "pf-m-orange", "fa-exclamation-triangle"],
     ["success", PFColor.Green, "pf-m-green", "fa-check"],
+    ["running", PFColor.Blue, "pf-m-blue", "fa-clock"],
     ["info", PFColor.Grey, "pf-m-grey", "fa-info-circle"],
 ];
 
