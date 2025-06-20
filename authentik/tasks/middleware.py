@@ -72,3 +72,9 @@ class LoggingMiddleware(Middleware):
                 message=f"Task {task.actor_name} encountered an error: "
                 "{exception_to_string(exception)}",
             ).save()
+
+
+class DescriptionMiddleware(Middleware):
+    @property
+    def actor_options(self):
+        return {"description"}

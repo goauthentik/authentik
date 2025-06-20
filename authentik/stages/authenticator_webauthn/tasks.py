@@ -9,6 +9,7 @@ from django.db.transaction import atomic
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from fido2.mds3 import filter_revoked, parse_blob
+from django.utils.translation import gettext_lazy as _
 
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
@@ -29,7 +30,7 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
-@actor
+@actor(description=_("Background task to import FIDO Alliance MDS blob and AAGUIDs into database"))
 def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
     self: Task = CurrentTask.get_task()

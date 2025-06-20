@@ -9,9 +9,10 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.tasks.models import Task
+from django.utils.translation import gettext_lazy as _
 
 
-@actor
+@actor(description=_("Check the validity of a Plex source"))
 def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
     self: Task = CurrentTask.get_task()

@@ -6,6 +6,7 @@ from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
+from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
@@ -14,9 +15,12 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor
+@actor(
+    description=_(
+        "Update OAuth sources' config from well_known, and JWKS info from the configured URL"
+    )
+)
 def update_well_known_jwks():
-    """Update OAuth sources' config from well_known, and JWKS info from the configured URL"""
     self: Task = CurrentTask.get_task()
     session = get_http_session()
     for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):

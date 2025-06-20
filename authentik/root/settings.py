@@ -360,8 +360,8 @@ DRAMATIQ = {
     "task_model": "authentik.tasks.models.Task",
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
-    ).total_seconds,
-    "task_expiration": timedelta_from_string(CONFIG.get("worker.task_expiration")).total_seconds,
+    ).total_seconds(),
+    "task_expiration": timedelta_from_string(CONFIG.get("worker.task_expiration")).total_seconds(),
     "autodiscovery": {
         "enabled": True,
         "setup_module": "authentik.tasks.setup",
@@ -372,7 +372,7 @@ DRAMATIQ = {
         "threads": CONFIG.get_int("worker.threads", 1),
         "consumer_listen_timeout": timedelta_from_string(
             CONFIG.get("worker.consumer_listen_timeout")
-        ),
+        ).total_seconds(),
     },
     "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
@@ -400,6 +400,7 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
+        ("authentik.tasks.middleware.DescriptionMiddleware", {}),
     ),
     "test": TEST,
 }

@@ -1,5 +1,7 @@
 """outpost tasks"""
 
+from django.utils.translation import gettext_lazy as _
+
 from hashlib import sha256
 from os import R_OK, access
 from pathlib import Path
@@ -82,7 +84,7 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     return None
 
 
-@actor
+@actor(description=_("Update cached state of a service connection"))
 def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
@@ -107,7 +109,7 @@ def outpost_service_connection_monitor(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@actor
+@actor(description=_("Create/update/monitor/delete the deployment of an Outpost"))
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
     self: Task = CurrentTask.get_task()
@@ -140,7 +142,7 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
             self.info(log)
 
 
-@actor
+@actor(description=_("Ensure that all Outposts have valid Service Accounts and Tokens"))
 def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
@@ -153,7 +155,7 @@ def outpost_token_ensurer():
     self.info(f"Successfully checked {len(all_outposts)} Outposts.")
 
 
-@actor
+@actor(description=_("If an Outpost is saved, ensure that token is created/updated"))
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 
@@ -225,7 +227,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
 
-@actor
+@actor(description=_("Checks the local environment and create Service connections."))
 def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
     self: Task = CurrentTask.get_task()
@@ -266,9 +268,8 @@ def outpost_connection_discovery():
             )
 
 
-@actor
+@actor(description=_("Terminate session on all outposts"))
 def outpost_session_end(session_id: str):
-    """Update outpost instances connected to a single outpost"""
     layer = get_channel_layer()
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.all():

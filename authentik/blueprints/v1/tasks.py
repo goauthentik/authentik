@@ -1,5 +1,7 @@
 """v1 blueprints tasks"""
 
+from django.utils.translation import gettext_lazy as _
+
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
@@ -106,10 +108,10 @@ class BlueprintEventHandler(FileSystemEventHandler):
 
 
 @actor(
+    description=_("Find blueprints as `blueprints_find` does, but return a safe dict"),
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_find_dict():
-    """Find blueprints as `blueprints_find` does, but return a safe dict"""
     blueprints = []
     for blueprint in blueprints_find():
         blueprints.append(sanitize_dict(asdict(blueprint)))
@@ -145,9 +147,11 @@ def blueprints_find() -> list[BlueprintFile]:
     return blueprints
 
 
-@actor(throws=(DatabaseError, ProgrammingError, InternalError))
+@actor(
+    description=_("Find blueprints and check if they need to be created in the database"),
+    throws=(DatabaseError, ProgrammingError, InternalError),
+)
 def blueprints_discovery(path: str | None = None):
-    """Find blueprints and check if they need to be created in the database"""
     self: Task = CurrentTask.get_task()
     count = 0
     for blueprint in blueprints_find():
@@ -185,9 +189,8 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
 
 
-@actor
+@actor(description=_("Apply single blueprint"))
 def apply_blueprint(instance_pk: UUID):
-    """Apply single blueprint"""
     self: Task = CurrentTask.get_task()
     self.set_uid(str(instance_pk))
     instance: BlueprintInstance | None = None
@@ -237,9 +240,8 @@ def apply_blueprint(instance_pk: UUID):
             instance.save()
 
 
-@actor
+@actor(description=_("Remove blueprints which couldn't be fetched"))
 def clear_failed_blueprints():
-    """Remove blueprints which couldn't be fetched"""
     # Exclude OCI blueprints as those might be temporarily unavailable
     for blueprint in BlueprintInstance.objects.exclude(path__startswith=OCI_PREFIX):
         try:

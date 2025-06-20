@@ -1,4 +1,5 @@
 from typing import Any
+from django.utils.translation import gettext_lazy as _
 from uuid import UUID
 
 from django.http import HttpRequest
@@ -61,7 +62,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> bool:
     return engine.passing
 
 
-@actor
+@actor(description=_("Send an SSF event"))
 def _send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     self: Task = CurrentTask.get_task()
 

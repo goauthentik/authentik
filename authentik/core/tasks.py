@@ -1,5 +1,7 @@
 """authentik core tasks"""
 
+from django.utils.translation import gettext_lazy as _
+
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
@@ -18,9 +20,8 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor
+@actor(description=_("Remove expired objects"))
 def clean_expired_models():
-    """Remove expired objects"""
     self: Task = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
@@ -34,9 +35,8 @@ def clean_expired_models():
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
 
 
-@actor
+@actor(description=_("Remove temporary users created by SAML Sources"))
 def clean_temporary_users():
-    """Remove temporary users created by SAML Sources"""
     self: Task = CurrentTask.get_task()
     _now = datetime.now()
     deleted_users = 0

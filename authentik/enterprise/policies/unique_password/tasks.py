@@ -2,6 +2,7 @@ from django.db.models.aggregates import Count
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog import get_logger
+from django.utils.translation import gettext_lazy as _
 
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
@@ -12,11 +13,12 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor
+@actor(
+    description=_(
+        "Check if any UniquePasswordPolicy exists, and if not, purge the password history table."
+    )
+)
 def check_and_purge_password_history():
-    """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
-    This is run on a schedule instead of being triggered by policy binding deletion.
-    """
     self: Task = CurrentTask.get_task()
 
     if not UniquePasswordPolicy.objects.exists():
@@ -28,16 +30,16 @@ def check_and_purge_password_history():
     self.info("Not purging password histories, a unique password policy exists")
 
 
-@actor
+@actor(description=_("Remove user password history that are too old."))
 def trim_password_histories():
-    self: Task = CurrentTask.get_task()
-
     """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.
 
     The `n` is defined by the largest configured value for all bound
     UniquePasswordPolicy policies.
     """
+
+    self: Task = CurrentTask.get_task()
 
     # No policy, we'll let the cleanup above do its thing
     if not UniquePasswordPolicy.objects.exists():

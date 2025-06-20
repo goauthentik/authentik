@@ -52,9 +52,9 @@ class ScheduleSerializer(ModelSerializer):
             actor: Actor = get_broker().get_actor(instance.actor_name)
         except ActorNotFound:
             return "FIXME this shouldn't happen"
-        if not actor.fn.__doc__:
+        if "description" not in actor.options:
             return "no doc"
-        return actor.fn.__doc__.strip()
+        return actor.options["description"]
 
 
 class ScheduleFilter(FilterSet):

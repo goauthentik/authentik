@@ -2,6 +2,7 @@
 
 from uuid import UUID
 
+from django.utils.translation import gettext_lazy as _
 from django.db.models.query_utils import Q
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
@@ -22,7 +23,7 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor
+@actor(description=_("Check if policies attached to NotificationRule match event"))
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
@@ -79,7 +80,7 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
                 break
 
 
-@actor
+@actor(description=_("Send notification"))
 def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
     event = Event.objects.filter(pk=event_pk).first()
@@ -100,7 +101,7 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     transport.send(notification)
 
 
-@actor
+@actor(description=_("Cleanup events for GDPR compliance"))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)

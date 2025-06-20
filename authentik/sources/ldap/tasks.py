@@ -9,6 +9,7 @@ from dramatiq.composition import group
 from dramatiq.message import Message
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
+from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -33,7 +34,7 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
-@actor
+@actor(description=_("Check connectivity for LDAP sources"))
 def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     timeout = 60 * 60 * 2
@@ -48,8 +49,8 @@ def ldap_connectivity_check(pk: str | None = None):
     # We take the configured hours timeout time by 3.5 as we run user and
     # group in parallel and then membership, then deletions, so 3x is to cover the serial tasks,
     # and 0.5x on top of that to give some more leeway
-    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)
-    * 3.5,
+    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000) * 3.5,
+    description=_("Sync LDAP source"),
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
@@ -116,7 +117,10 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     return messages
 
 
-@actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)
+@actor(
+    time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
+    description=_("Sync page for LDAP source"),
+)
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self: Task = CurrentTask.get_task()

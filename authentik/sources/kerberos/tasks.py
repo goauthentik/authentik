@@ -5,6 +5,7 @@ from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
+from django.utils.translation import gettext_lazy as _
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
@@ -16,7 +17,7 @@ LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
 
 
-@actor
+@actor(description=_("Check connectivity for Kerberos sources"))
 def kerberos_connectivity_check(pk: str):
     """Check connectivity for Kerberos Sources"""
     # 2 hour timeout, this task should run every hour
@@ -28,9 +29,11 @@ def kerberos_connectivity_check(pk: str):
     cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
-@actor(time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5 * 1000)
+@actor(
+    time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5 * 1000,
+    description=_("Sync Kerberos source"),
+)
 def kerberos_sync(pk: str):
-    """Sync a single source"""
     self: Task = CurrentTask.get_task()
     source: KerberosSource = KerberosSource.objects.filter(enabled=True, pk=pk).first()
     if not source:

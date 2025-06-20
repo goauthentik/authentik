@@ -7,11 +7,11 @@ from dramatiq.actor import actor
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.oauth2.id_token import hash_session_key
+from django.utils.translation import gettext_lazy as _
 
 
-@actor
+@actor(description=_("Terminate session on Proxy outpost"))
 def proxy_on_logout(session_id: str):
-    """Update outpost instances connected to a single outpost"""
     layer = get_channel_layer()
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.filter(type=OutpostType.PROXY):

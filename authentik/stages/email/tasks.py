@@ -6,6 +6,7 @@ from typing import Any
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
@@ -48,7 +49,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     return email.body
 
 
-@actor
+@actor(description=_("Send email"))
 def send_mail(
     message: dict[Any, Any],
     stage_class_path: str | None = None,
