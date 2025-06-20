@@ -1,6 +1,7 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
+import { createSourceFormSubmitHandler } from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -134,7 +135,11 @@ export class LDAPSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update LDAP Source")} </span>
-                                <ak-source-ldap-form slot="form" .instancePk=${this.source.slug}>
+                                <ak-source-ldap-form
+                                    slot="form"
+                                    .instancePk=${this.source.slug}
+                                    @ak-form-successful-submit=${createSourceFormSubmitHandler()}
+                                >
                                 </ak-source-ldap-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${msg("Edit")}

@@ -1,7 +1,10 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
-import { sourceBindingTypeNotices } from "@goauthentik/admin/sources/utils";
+import {
+    createSourceFormSubmitHandler,
+    sourceBindingTypeNotices,
+} from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -89,7 +92,11 @@ export class PlexSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update Plex Source")} </span>
-                                <ak-source-plex-form slot="form" .instancePk=${this.source.slug}>
+                                <ak-source-plex-form
+                                    slot="form"
+                                    .instancePk=${this.source.slug}
+                                    @ak-form-successful-submit=${createSourceFormSubmitHandler()}
+                                >
                                 </ak-source-plex-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${msg("Edit")}

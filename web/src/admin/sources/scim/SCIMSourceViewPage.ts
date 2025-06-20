@@ -2,6 +2,7 @@ import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/scim/SCIMSourceForm";
 import "@goauthentik/admin/sources/scim/SCIMSourceGroups";
 import "@goauthentik/admin/sources/scim/SCIMSourceUsers";
+import { createSourceFormSubmitHandler } from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -110,7 +111,11 @@ export class SCIMSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update SCIM Source")} </span>
-                                <ak-source-scim-form slot="form" .instancePk=${this.source.slug}>
+                                <ak-source-scim-form
+                                    slot="form"
+                                    .instancePk=${this.source.slug}
+                                    @ak-form-successful-submit=${createSourceFormSubmitHandler()}
+                                >
                                 </ak-source-scim-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${msg("Edit")}
