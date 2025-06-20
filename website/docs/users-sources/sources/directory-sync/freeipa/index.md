@@ -44,36 +44,57 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 
 In authentik, create a new LDAP Source in **Directory > Federation & Social login**.
 
-Use these settings:
+You can read more about [LDAP sources](../../protocols/ldap/index.mdx) regarding settings that are not listed below.
+
+These settings are required for FreeIPA: 
+
+- Name: `Company FreeIPA`
+- Slug: `company-freeipa`
+- Update internal password on login: enable if you want your users to be able to login if FreeIPA is not accessible
+- Delete not found object: enable to delete users from Authentik when they are deleted in FreIPA
+
+Connection settings:
 
 - Server URI: `ldaps://ipa1.freeipa.company`
 
     You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`.
 
     When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
-
+- Enable StartTLS: enable for `ldap://` protocol, disable for `ldaps://`
+- TLS Verification Certificate: **FIXME**
 - Bind CN: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
 - Bind Password: The password you've given the user above
 - Base DN: `dc=freeipa,dc=company`
-- Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP"
+
+LDAP Attribute mapping:
+
+- User Property Mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP". Remove others that are selected by default.
 - Group property mappings: Select "authentik default OpenLDAP Mapping: cn"
 
 Additional settings:
 
-- Group: If selected, all synchronized groups will be given this group as a parent.
+- Parent Group: If selected, all synchronized groups will be given this group as a parent.
+- User Path: `company/freeipa` for instance, this settings is not crucial.
 - Addition User/Group DN: `cn=users,cn=accounts`
 - Addition Group DN: `cn=groups,cn=accounts`
 - User object filter: `(objectClass=person)`
 - Group object filter: `(objectClass=groupofnames)`
-- Group membership field: `member`
+- Group membership field: `memberOf`
+- User membership attribute: `distinguishedName`
+- Lookup using user attribute: *enabled*.
 - Object uniqueness field: `ipaUniqueID`
 
-    ![](./04_source_settings_1.png)
-    ![](./05_source_settings_2.png)
+:::caution
+In FreeIPA, groups can have other groups as members. Indirect member users are not listed in the parent group's `member` attribute.
+Because of this, the sync havs to be done by the user's attribute `memberOf`. These are present for every membership, even indirect one.
+
+In the improbable case that you want to sync only direct memberships, you can use the following settings:
+- Group membership field: `member`
+- User membership attribute: `distinguishedName`
+- Lookup using user attribute: *disabled*
+:::
 
 After you save the source, you can kick off a synchronization by navigating to the source, clicking on the "Sync" tab, and clicking the "Run sync again" button.
-
-![](./06_sync_source.png)
 
 Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under **Flows > Stages**.
 
