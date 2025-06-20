@@ -51,11 +51,17 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
-        const showHeader = this.loading || this.slots.hasSlotted("header");
-        const header = () =>
-            this.slots.hasSlotted("header")
-                ? html`<slot name="header"></slot>`
-                : html`<span>${msg("Loading")}</span>`;
+        const showHeader =
+            this.loading || this.slots.hasSlotted("header") || this.header !== undefined;
+        const renderHeader = () => {
+            if (this.slots.hasSlotted("header")) {
+                return html`<slot name="header"></slot>`;
+            } else if (this.header !== undefined) {
+                return html`<span>${this.header}</span>`;
+            } else {
+                return html`<span>${msg("Loading")}</span>`;
+            }
+        };
 
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
@@ -68,7 +74,9 @@ export class EmptyState extends AKElement implements IEmptyState {
                           "fa-question-circle"} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                ${showHeader ? html` <h1 class="pf-c-title pf-m-lg">${header()}</h1>` : nothing}
+                ${showHeader
+                    ? html` <h1 class="pf-c-title pf-m-lg">${renderHeader()}</h1>`
+                    : nothing}
                 ${this.slots.hasSlotted("body")
                     ? html` <div class="pf-c-empty-state__body">
                           <slot name="body"></slot>
@@ -85,9 +93,16 @@ export class EmptyState extends AKElement implements IEmptyState {
 }
 
 export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
+    const headerSlot = properties.header
+        ? html`<span slot="header">${properties.header}</span>`
+        : nothing;
+
     const message =
         typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
-    return html`<ak-empty-state ${spread(properties as Spread)}>${message}</ak-empty-state>`;
+
+    return html`<ak-empty-state ${spread(properties as Spread)}
+        >${headerSlot}${message}</ak-empty-state
+    >`;
 }
 
 declare global {
