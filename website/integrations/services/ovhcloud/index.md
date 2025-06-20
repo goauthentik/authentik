@@ -47,7 +47,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ## OVHcloud Configuration
 
-1. Log in to the **OVHcloud Control Panel**.
+1. Log in to the OVHcloud Control Panel.
 2. Click your name in the top right corner. In the sidebar that appears, click your name again.
 3. Select **Identity and Access Management (IAM)** from the left-hand menu.
 4. Click the **Identities** tab to access local users management and switch to the **SSO** tab.
