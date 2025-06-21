@@ -12,6 +12,7 @@ from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
@@ -178,6 +179,9 @@ class SAMLProvider(Provider):
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
+    )
+    default_name_id_policy = models.TextField(
+        choices=SAMLNameIDPolicy.choices, default=SAMLNameIDPolicy.UNSPECIFIED
     )
 
     sign_assertion = models.BooleanField(default=True)
