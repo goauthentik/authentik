@@ -122,6 +122,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
+    --mount=type=bind,target=packages,src=packages \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
@@ -157,6 +158,7 @@ RUN apt-get update && \
     chown authentik:authentik /certs /media /authentik/.ssh /ak-root
 
 COPY ./authentik/ /authentik
+COPY ./packages/ /packages
 COPY ./pyproject.toml /
 COPY ./uv.lock /
 COPY ./schemas /schemas

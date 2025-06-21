@@ -174,7 +174,7 @@ class TestConsentStage(FlowTestCase):
         )
         with freeze_time() as frozen_time:
             frozen_time.tick(timedelta(seconds=3))
-            clean_expired_models.delay().get()
+            clean_expired_models.send()
             self.assertFalse(
                 UserConsent.objects.filter(user=self.user, application=self.application).exists()
             )

@@ -1,0 +1,115 @@
+import contextvars
+from threading import Event
+from typing import Any
+
+from django.core.exceptions import ImproperlyConfigured
+from django.db import (
+    close_old_connections,
+    connections,
+)
+from django.utils.module_loading import import_string
+from dramatiq.actor import Actor
+from dramatiq.broker import Broker
+from dramatiq.logging import get_logger
+from dramatiq.message import Message
+from dramatiq.middleware.middleware import Middleware
+
+from django_dramatiq_postgres.conf import Conf
+from django_dramatiq_postgres.models import TaskBase
+from django_dramatiq_postgres.scheduler import Scheduler
+
+
+class DbConnectionMiddleware(Middleware):
+    def _close_old_connections(self, *args, **kwargs):
+        if Conf().test:
+            return
+        close_old_connections()
+
+    before_process_message = _close_old_connections
+    after_process_message = _close_old_connections
+
+    def _close_connections(self, *args, **kwargs):
+        connections.close_all()
+
+    before_consumer_thread_shutdown = _close_connections
+    before_worker_thread_shutdown = _close_connections
+    before_worker_shutdown = _close_connections
+
+
+class FullyQualifiedActorName(Middleware):
+    def before_declare_actor(self, broker: Broker, actor: Actor):
+        actor.actor_name = f"{actor.fn.__module__}.{actor.fn.__name__}"
+
+
+class CurrentTask(Middleware):
+    def __init__(self):
+        self.logger = get_logger(__name__, type(self))
+
+    # This is a list of tasks, so that in tests, when a task calls another task, this acts as a pile
+    _TASKS: contextvars.ContextVar[list[TaskBase] | None] = contextvars.ContextVar(
+        "_TASKS",
+        default=None,
+    )
+
+    @classmethod
+    def get_task(cls) -> TaskBase:
+        task = cls._TASKS.get()
+        if not task:
+            raise RuntimeError("CurrentTask.get_task() can only be called in a running task")
+        return task[-1]
+
+    def before_process_message(self, broker: Broker, message: Message):
+        tasks = self._TASKS.get()
+        if tasks is None:
+            tasks = []
+        tasks.append(message.options["task"])
+        self._TASKS.set(tasks)
+
+    def after_process_message(
+        self,
+        broker: Broker,
+        message: Message,
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ):
+        tasks: list[TaskBase] | None = self._TASKS.get()
+        if tasks is None or len(tasks) == 0:
+            self.logger.warning("Task was None, not saving. This should not happen.")
+            return
+        else:
+            task = tasks[-1]
+            fields_to_exclude = {
+                "message_id",
+                "queue_name",
+                "actor_name",
+                "message",
+                "state",
+                "mtime",
+                "result",
+                "result_expiry",
+            }
+            fields_to_update = [
+                f.name
+                for f in task._meta.get_fields()
+                if f.name not in fields_to_exclude and not f.auto_created and f.column
+            ]
+            if fields_to_update:
+                tasks[-1].save(update_fields=fields_to_update)
+        self._TASKS.set(tasks[:-1])
+
+
+class SchedulerMiddleware(Middleware):
+    def __init__(self):
+        self.logger = get_logger(__name__, type(self))
+
+        if not Conf().schedule_model:
+            raise ImproperlyConfigured(
+                "When using the scheduler, DRAMATIQ.schedule_class must be set."
+            )
+
+        self.scheduler: Scheduler = import_string(Conf().scheduler_class)()
+
+    def after_process_boot(self, broker: Broker):
+        self.scheduler.broker = broker
+        self.scheduler.start()

@@ -9,6 +9,7 @@ import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
+from django.test.testcases import apps
 from structlog.stdlib import get_logger
 
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
@@ -60,7 +61,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     def _setup_test_environment(self):
         """Configure test environment settings"""
         settings.TEST = True
-        settings.CELERY["task_always_eager"] = True
 
         # Test-specific configuration
         test_config = {
@@ -83,6 +83,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         sentry_init()
         self.logger.debug("Test environment configured")
+
+        apps.get_app_config("authentik_tasks").use_test_broker()
 
         # Send startup signals
         pre_startup.send(sender=self, mode="test")
