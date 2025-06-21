@@ -21,7 +21,6 @@ from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
@@ -129,9 +128,8 @@ class EmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                error=exception_to_string(exc),
                 template=current_stage.template,
-            ).from_http(self.request)
+            ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
