@@ -2,60 +2,125 @@
 title: Writing documentation
 ---
 
-Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
+# Creating documentation
 
-Adhering to the following guidelines will help us get your PRs merged much easier and faster, with fewer edits needed.
+This guide explains how to add and edit documentation for authentik. For environment setup instructions, see the [Docs Development Environment](../setup/website-dev-environment.md) page.
 
-- Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
+For writing style, formatting guidelines, and best practices, refer to our [Style Guide](./style-guide.mdx).
 
-- Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
+## Useful commands
 
-- Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and keeps the documentation structure and headings consistent.
+Here are the key commands for documentation development:
 
-- To test how the documentation renders you can build locally and then use the Netlify Deploy Preview, especially when using Docusaurus-specific features. You can also run the `make website-watch` command on your local build, to see the rendered pages as you make changes.
+| Command                   | Description                                        |
+| ------------------------- | -------------------------------------------------- |
+| `make website-install`    | Install dependencies                               |
+| `make website`            | Run linters and formatters (run before committing) |
+| `make website-lint-fix`   | Fix formatting issues                              |
+| `make website-watch`      | Start main documentation server                    |
+| `make integrations-watch` | Start integrations documentation server            |
 
-- Be sure to run the `make website` command on your local branch, before pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done.
+## Adding main documentation
 
-- For new entries, make sure to add any new pages to the appropriate `sidebar.js` file. Otherwise, the new page will not appear in the table of contents to the left.
+1. **Choose the appropriate section** for your new document based on its content:
 
-## Set up your local build
+    - Installation guides
+    - User guides
+    - Developer documentation
+    - Troubleshooting guides
+    - And more...
 
-Requirements:
+2. **Create your document** using Markdown (`.md`) or MDX (`.mdx`) format:
 
-- Node.js 20 (or greater, we use Node.js 24)
+    ```md
+    ---
+    title: Your Document Title
+    ---
 
-The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
+    Content goes here...
+    ```
 
-You can do local builds of the documentation to test your changes or review your new content, and to run the required `make website` command (which runs `prettier` and other linters) before pushing your PR.
+3. **Add to sidebar** by editing the sidebar file in the website directory:
+    ```javascript
+    // In sidebars/docs.mjs
+    export default {
+        docs: [
+            {
+                type: "category",
+                label: "Category Name",
+                items: ["path/to/your-file", "another-file"],
+            },
+            // other categories...
+        ],
+    };
+    ```
 
-The documentation site is situated in the `/website` folder of the repo.
+## Adding integration documentation
 
-The site is built using npm, below are some useful make commands:
+1. **Create a new file** in the appropriate services directory:
 
-- **Installation**: `make website-install`
+    - Create a directory for your service if it doesn't exist
+    - Use `index.md` for the main integration page
+    - For complex integrations with multiple pages, add additional `.md` files in the same directory
 
-    This command is required before running any of the following commands, and after upgrading any dependencies.
+2. **Use the template** from the [integrations template](/integrations/template/service.md) as a starting point.
 
-- **Formatting**: `make website`, `make website-lint-fix`, or `npm run prettier`
+3. **Add to sidebar** by editing the integrations sidebar file:
+    ```javascript
+    // In sidebars/integrations.mjs
+    export default {
+        integrations: [
+            {
+                type: "category",
+                label: "Category Name",
+                items: ["services/your-service-name/index"],
+            },
+            // other categories...
+        ],
+    };
+    ```
 
-    Run the appropriate formatting command for your set up before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
+## Document structure
 
-- **Live editing**: `make website-watch`
+### Main documentation
 
-    For real-time viewing of changes, as you make them.
+For standard documentation, include these elements:
 
-:::info
-Be sure to run a formatting command before committing changes.
-:::
+- **Frontmatter** with title and any relevant metadata.
+- **Introduction** explaining the purpose of the document.
+- **Prerequisites** if applicable.
+- **Step-by-step instructions** with clear headings.
+- **Examples** where helpful.
+- **Related documentation** links.
 
-## Documentation for Integrations
+### Integration documentation
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
+For integration documents, include:
 
-For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+1. **Overview** - Brief description of the integration.
+2. **Prerequisites** - Required components and configuration.
+3. **authentik Configuration** - Steps to configure authentik.
+4. **Service Configuration** - Steps to configure the third-party service.
+5. **Testing** - How to verify the integration works.
+6. **Troubleshooting** - Common issues and solutions.
+7. **References** - Add links to official documentation.
 
-- Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If this is not done the service will not appear in the table of contents to the left.
+## Using templates
 
-- For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
+We provide templates to help maintain consistency:
 
-- Try to order the documentation sections in an order that makes it easiest for the user to configure.
+- For main documentation: Check the templates directory under developer docs.
+- For integrations: Look for the template file in the integrations directory.
+
+## Document maintenance
+
+- Review existing docs periodically for accuracy.
+- Update content when features change.
+- Remove documentation for deprecated features.
+
+## Submitting changes
+
+1. Make your changes on a new branch.
+2. Run `make website` to ensure proper formatting.
+3. Submit a pull request with a clear description.
+4. Respond to reviewer feedback.
