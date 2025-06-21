@@ -410,18 +410,30 @@ const items = [
                 items: [
                     {
                         type: "category",
-                        label: "Flow",
-                        items: ["customize/interfaces/flow/customization"],
+                        label: "Flows",
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/flow/customization_flow",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
-                        label: "User",
-                        items: ["customize/interfaces/user/customization"],
+                        label: "User interface",
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/user/customization_user_ui",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
-                        label: "Admin",
-                        items: ["customize/interfaces/admin/customization"],
+                        label: "Admin interface",
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/admin/customization_admin_ui",
+                        },
+                        items: [],
                     },
                 ],
             },
