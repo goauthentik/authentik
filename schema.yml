@@ -34964,6 +34964,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: max_attempts
+        schema:
+          type: integer
+      - in: query
         name: name
         schema:
           type: string
@@ -42633,6 +42637,10 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - component
       - device_type_restrictions_obj
@@ -42675,6 +42683,10 @@ components:
           items:
             type: string
             format: uuid
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - name
     AuthorizationCodeAuthMethodEnum:
@@ -52625,6 +52637,10 @@ components:
           items:
             type: string
             format: uuid
+        max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
     PatchedBlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
