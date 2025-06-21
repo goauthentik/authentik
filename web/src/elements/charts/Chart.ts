@@ -201,7 +201,7 @@ export abstract class AKChart<T> extends AKElement {
                 ${this.error
                     ? html`
                           <ak-empty-state icon="fa-times"
-                              ><span slot="header">${msg("Failed to fetch data.")}</span>
+                              ><span>${msg("Failed to fetch data.")}</span>
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `

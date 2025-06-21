@@ -40,9 +40,7 @@ export class LogViewer extends Table<LogEvent> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                ><span slot="header">${msg("No log messages.")}</span>
-            </ak-empty-state>`,
+            html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 

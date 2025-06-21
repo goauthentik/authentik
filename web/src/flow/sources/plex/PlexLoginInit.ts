@@ -69,7 +69,8 @@ export class PlexLoginInit extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state loading header=${msg("Waiting for authentication...")}>
+                    <ak-empty-state loading
+                        ><span>${msg("Waiting for authentication...")}></span>
                     </ak-empty-state>
                     <hr class="pf-c-divider" />
                     <p>${msg("If no Plex popup opens, click the button below.")}</p>
