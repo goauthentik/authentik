@@ -35,5 +35,3 @@ class TestGeoIP(TestCase):
         for processor in get_context_processors():
             processor.enrich_event(event)
         event.save()
-        print(event.context)
-        raise ValueError
