@@ -143,6 +143,7 @@ const items = [
             "services/fortimanager/index",
             "services/gravity/index",
             "services/globalprotect/index",
+            "services/headscale/index",
             "services/netbird/index",
             "services/opnsense/index",
             "services/pangolin/index",
