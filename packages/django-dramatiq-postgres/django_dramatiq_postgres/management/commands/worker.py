@@ -19,17 +19,25 @@ class Command(BaseCommand):
             dest="pid_file",
             help="PID file",
         )
+        parser.add_argument(
+            "--watch",
+            action="store_true",
+            default=False,
+            dest="watch",
+            help="Watch for file changes",
+        )
 
     def handle(
         self,
         pid_file,
+        watch,
         verbosity,
         **options,
     ):
         worker = Conf().worker
         executable_name = "dramatiq-gevent" if worker["use_gevent"] else "dramatiq"
         executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", "."] if worker["watch"] else []
+        watch_args = ["--watch", "."] if watch else []
         if watch_args and worker["watch_use_polling"]:
             watch_args.append("--watch-use-polling")
 

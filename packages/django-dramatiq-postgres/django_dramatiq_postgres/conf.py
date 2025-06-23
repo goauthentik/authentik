@@ -87,7 +87,6 @@ class Conf:
     def worker(self) -> dict[str, Any]:
         return {
             "use_gevent": False,
-            "watch": settings.DEBUG,
             "watch_use_polling": False,
             "processes": None,
             "threads": None,
