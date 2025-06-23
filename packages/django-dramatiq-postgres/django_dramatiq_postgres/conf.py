@@ -67,6 +67,18 @@ class Conf:
         return self.conf.get("task_expiration", 60 * 60 * 24 * 30)
 
     @property
+    def result_backend(self) -> str:
+        return self.conf.get("result_backend", "django_dramatiq_postgres.results.PostgresBackend")
+
+    @property
+    def result_backend_args(self) -> tuple[Any]:
+        return self.conf.get("result_backend_args", ())
+
+    @property
+    def result_backend_kwargs(self) -> dict[str, Any]:
+        return self.conf.get("result_backend_kwargs", {})
+
+    @property
     def autodiscovery(self) -> dict[str, Any]:
         autodiscovery = {
             "enabled": False,

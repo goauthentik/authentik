@@ -1,10 +1,13 @@
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models import QuerySet
 from django.utils import timezone
+from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 from dramatiq.message import Message
 from dramatiq.results.backend import Missing, MResult, Result, ResultBackend
 
-from authentik.tasks.models import Task
+from django_dramatiq_postgres.conf import Conf
+from django_dramatiq_postgres.models import TaskBase
 
 
 class PostgresBackend(ResultBackend):
@@ -12,9 +15,13 @@ class PostgresBackend(ResultBackend):
         super().__init__(*args, **kwargs)
         self.db_alias = db_alias
 
+    @cached_property
+    def model(self) -> type[TaskBase]:
+        return import_string(Conf().task_model)
+
     @property
     def query_set(self) -> QuerySet:
-        return Task.objects.using(self.db_alias)
+        return self.model.objects.using(self.db_alias)
 
     def build_message_key(self, message: Message) -> str:
         return str(message.message_id)
