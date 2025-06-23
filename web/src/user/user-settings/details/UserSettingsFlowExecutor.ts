@@ -93,7 +93,7 @@ export class UserSettingsFlowExecutor
     }
 
     updated(): void {
-        if (!this.flowSlug && this.brand) {
+        if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }

@@ -81,7 +81,7 @@ If you want to control user storage and designate Nextcloud administrators, you 
     - **Create Scope Mapping**:
 
         - **Name**: `Nextcloud Profile`
-        - **Scope name**: `profile`
+        - **Scope name**: `nextcloud`
         - **Expression**:
 
             ```python
@@ -146,7 +146,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     - **Client ID**: Client ID from authentik
     - **Client secret**: Client secret from authentik
     - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-    - **Scope**: `email profile openid`
+    - **Scope**: `email nextcloud openid`
     - Under **Attribute mappings**:
 
         - **User ID mapping**: `sub` (or `user_id` for existing users)
@@ -160,6 +160,10 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
             :::
 
     - **Use unique user ID**: If this option is disabled, Nextcloud will use the mapped user ID as the Federated Cloud ID.
+
+    :::note
+    If authentik and Nextcloud are running on the same host, you will need to add `'allow_local_remote_servers' => true` to your nextcloud `config.php` file. This setting allows remote servers with local addresses.
+    :::
 
     :::tip
     To avoid a hashed Federated Cloud ID, deselect **Use unique user ID** and use `user_id` for the User ID mapping.

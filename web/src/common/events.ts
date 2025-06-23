@@ -12,6 +12,8 @@ export interface EventGeo {
     city?: string;
     country?: string;
     continent?: string;
+    lat?: number;
+    long?: number;
 }
 
 export interface EventModel {

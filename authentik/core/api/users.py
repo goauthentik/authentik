@@ -386,8 +386,23 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
     filterset_class = UsersFilter
+    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
+
+    def get_ql_fields(self):
+        from djangoql.schema import BoolField, StrField
+
+        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+
+        return [
+            StrField(User, "username"),
+            StrField(User, "name"),
+            StrField(User, "email"),
+            StrField(User, "path"),
+            BoolField(User, "is_active", nullable=True),
+            ChoiceSearchField(User, "type"),
+            JSONSearchField(User, "attributes"),
+        ]
 
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
