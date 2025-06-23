@@ -102,19 +102,3 @@ class CurrentTask(Middleware):
 
     def after_skip_message(self, broker: Broker, message: Message):
         self.after_process_message(broker, message)
-
-
-class SchedulerMiddleware(Middleware):
-    def __init__(self):
-        self.logger = get_logger(__name__, type(self))
-
-        if not Conf().schedule_model:
-            raise ImproperlyConfigured(
-                "When using the scheduler, DRAMATIQ.schedule_class must be set."
-            )
-
-        self.scheduler: Scheduler = import_string(Conf().scheduler_class)()
-
-    def after_process_boot(self, broker: Broker):
-        self.scheduler.broker = broker
-        self.scheduler.start()

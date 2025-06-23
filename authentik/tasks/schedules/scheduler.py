@@ -27,4 +27,3 @@ class Scheduler(SchedulerBase):
                         return
                     count = self._run()
                     self.logger.info(f"Sent {count} scheduled tasks")
-        sleep(Conf().scheduler_interval)

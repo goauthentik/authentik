@@ -380,7 +380,6 @@ DRAMATIQ = {
         CONFIG.get("worker.scheduler_interval")
     ).total_seconds(),
     "middlewares": (
-        # ("django_dramatiq_postgres.middleware.SchedulerMiddleware", {}),
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),

@@ -236,6 +236,13 @@ class _PostgresConsumer(Consumer):
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
 
+        self.scheduler = None
+        if Conf().schedule_model:
+            self.scheduler = import_string(Conf().scheduler_class)()
+            self.scheduler.broker = self.broker
+            self.scheduler_interval = timezone.timedelta(seconds=Conf().scheduler_interval)
+            self.scheduler_last_run = timezone.now() - self.scheduler_interval
+
     @property
     def connection(self) -> DatabaseWrapper:
         return connections[self.db_alias]
@@ -391,6 +398,7 @@ class _PostgresConsumer(Consumer):
         # No message to process
         self._purge_locks()
         self._auto_purge()
+        self._scheduler()
 
     def _purge_locks(self):
         while True:
@@ -419,3 +427,10 @@ class _PostgresConsumer(Consumer):
             result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info(f"Purged {count} messages in all queues")
+
+    def _scheduler(self):
+        if not self.scheduler:
+            return
+        if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
+            return
+        self.scheduler.run()

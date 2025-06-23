@@ -14,7 +14,7 @@ from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import ScheduleBase
 
 
-class Scheduler(Thread):
+class Scheduler:
     broker: Broker
 
     def __init__(self, *args, **kwargs):
@@ -58,4 +58,3 @@ class Scheduler(Thread):
                 return
             count = self._run()
             self.logger.info(f"Sent {count} scheduled tasks")
-        sleep(Conf().scheduler_interval)
