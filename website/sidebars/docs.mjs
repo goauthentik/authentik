@@ -241,6 +241,7 @@ const items = [
                         items: [
                             "add-secure-apps/providers/rac/how-to-rac",
                             "add-secure-apps/providers/rac/rac-public-key",
+                            "add-secure-apps/providers/rac/rac_credentials_prompt",
                         ],
                     },
                     "add-secure-apps/providers/radius/index",
