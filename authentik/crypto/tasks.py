@@ -37,7 +37,7 @@ def ensure_certificate_valid(body: str):
     return body
 
 
-@actor(description=_("Discover, import and update certificates from the filesystem"))
+@actor(description=_("Discover, import and update certificates from the filesystem."))
 def certificate_discovery():
     self: Task = CurrentTask.get_task()
     certs = {}

@@ -17,7 +17,7 @@ LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
 
 
-@actor(description=_("Check connectivity for Kerberos sources"))
+@actor(description=_("Check connectivity for Kerberos sources."))
 def kerberos_connectivity_check(pk: str):
     """Check connectivity for Kerberos Sources"""
     # 2 hour timeout, this task should run every hour
@@ -31,7 +31,7 @@ def kerberos_connectivity_check(pk: str):
 
 @actor(
     time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5 * 1000,
-    description=_("Sync Kerberos source"),
+    description=_("Sync Kerberos source."),
 )
 def kerberos_sync(pk: str):
     self: Task = CurrentTask.get_task()

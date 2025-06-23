@@ -33,7 +33,7 @@ def _set_prom_info():
     )
 
 
-@actor(description=_("Update latest version info"))
+@actor(description=_("Update latest version info."))
 def update_latest_version():
     self: Task = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):

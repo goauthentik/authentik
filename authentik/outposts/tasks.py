@@ -84,7 +84,7 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     return None
 
 
-@actor(description=_("Update cached state of a service connection"))
+@actor(description=_("Update cached state of a service connection."))
 def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
@@ -109,7 +109,7 @@ def outpost_service_connection_monitor(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@actor(description=_("Create/update/monitor/delete the deployment of an Outpost"))
+@actor(description=_("Create/update/monitor/delete the deployment of an Outpost."))
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
     self: Task = CurrentTask.get_task()
@@ -142,7 +142,7 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
             self.info(log)
 
 
-@actor(description=_("Ensure that all Outposts have valid Service Accounts and Tokens"))
+@actor(description=_("Ensure that all Outposts have valid Service Accounts and Tokens."))
 def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
@@ -155,7 +155,7 @@ def outpost_token_ensurer():
     self.info(f"Successfully checked {len(all_outposts)} Outposts.")
 
 
-@actor(description=_("If an Outpost is saved, ensure that token is created/updated"))
+@actor(description=_("If an Outpost is saved, ensure that token is created/updated."))
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 
@@ -268,7 +268,7 @@ def outpost_connection_discovery():
             )
 
 
-@actor(description=_("Terminate session on all outposts"))
+@actor(description=_("Terminate session on all outposts."))
 def outpost_session_end(session_id: str):
     layer = get_channel_layer()
     hashed_session_id = hash_session_key(session_id)

@@ -108,7 +108,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
 
 
 @actor(
-    description=_("Find blueprints as `blueprints_find` does, but return a safe dict"),
+    description=_("Find blueprints as `blueprints_find` does, but return a safe dict."),
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_find_dict():
@@ -148,7 +148,7 @@ def blueprints_find() -> list[BlueprintFile]:
 
 
 @actor(
-    description=_("Find blueprints and check if they need to be created in the database"),
+    description=_("Find blueprints and check if they need to be created in the database."),
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_discovery(path: str | None = None):
@@ -189,7 +189,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         apply_blueprint.send_with_options(args=(instance.pk,), rel_obj=instance)
 
 
-@actor(description=_("Apply single blueprint"))
+@actor(description=_("Apply single blueprint."))
 def apply_blueprint(instance_pk: UUID):
     self: Task = CurrentTask.get_task()
     self.set_uid(str(instance_pk))
@@ -240,7 +240,7 @@ def apply_blueprint(instance_pk: UUID):
             instance.save()
 
 
-@actor(description=_("Remove blueprints which couldn't be fetched"))
+@actor(description=_("Remove blueprints which couldn't be fetched."))
 def clear_failed_blueprints():
     # Exclude OCI blueprints as those might be temporarily unavailable
     for blueprint in BlueprintInstance.objects.exclude(path__startswith=OCI_PREFIX):

@@ -23,7 +23,7 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor(description=_("Check if policies attached to NotificationRule match event"))
+@actor(description=_("Check if policies attached to NotificationRule match event."))
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
@@ -80,7 +80,7 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
                 break
 
 
-@actor(description=_("Send notification"))
+@actor(description=_("Send notification."))
 def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
     event = Event.objects.filter(pk=event_pk).first()
@@ -101,7 +101,7 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     transport.send(notification)
 
 
-@actor(description=_("Cleanup events for GDPR compliance"))
+@actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
@@ -109,7 +109,7 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@actor
+@actor(description=_("Cleanup seen notifications and notifications whose event expired."))
 def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
     self: Task = CurrentTask.get_task()

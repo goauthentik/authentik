@@ -12,7 +12,7 @@ from authentik.tasks.models import Task
 from django.utils.translation import gettext_lazy as _
 
 
-@actor(description=_("Check the validity of a Plex source"))
+@actor(description=_("Check the validity of a Plex source."))
 def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
     self: Task = CurrentTask.get_task()

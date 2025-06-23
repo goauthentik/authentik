@@ -16,10 +16,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.tasks.schedules.models import Schedule
+
+
+LOGGER = get_logger()
 
 
 class ScheduleSerializer(ModelSerializer):
@@ -51,9 +55,15 @@ class ScheduleSerializer(ModelSerializer):
         try:
             actor: Actor = get_broker().get_actor(instance.actor_name)
         except ActorNotFound:
-            return "FIXME this shouldn't happen"
+            LOGGER.warning("Could not find actor for schedule", schedule=instance)
+            return None
         if "description" not in actor.options:
-            return "no doc"
+            LOGGER.warning(
+                "Could not find description for actor",
+                schedule=instance,
+                actor=actor.actor_name,
+            )
+            return None
         return actor.options["description"]
 
 

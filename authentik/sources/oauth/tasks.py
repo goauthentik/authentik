@@ -17,7 +17,7 @@ LOGGER = get_logger()
 
 @actor(
     description=_(
-        "Update OAuth sources' config from well_known, and JWKS info from the configured URL"
+        "Update OAuth sources' config from well_known, and JWKS info from the configured URL."
     )
 )
 def update_well_known_jwks():

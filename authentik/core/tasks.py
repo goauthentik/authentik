@@ -20,7 +20,7 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor(description=_("Remove expired objects"))
+@actor(description=_("Remove expired objects."))
 def clean_expired_models():
     self: Task = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
@@ -35,7 +35,7 @@ def clean_expired_models():
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
 
 
-@actor(description=_("Remove temporary users created by SAML Sources"))
+@actor(description=_("Remove temporary users created by SAML Sources."))
 def clean_temporary_users():
     self: Task = CurrentTask.get_task()
     _now = datetime.now()

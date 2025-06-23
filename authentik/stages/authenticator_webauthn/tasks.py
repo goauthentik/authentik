@@ -30,7 +30,7 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
-@actor(description=_("Background task to import FIDO Alliance MDS blob and AAGUIDs into database"))
+@actor(description=_("Background task to import FIDO Alliance MDS blob and AAGUIDs into database."))
 def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
     self: Task = CurrentTask.get_task()
