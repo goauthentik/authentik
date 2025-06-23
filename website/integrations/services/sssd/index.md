@@ -91,7 +91,7 @@ You should now be able to start sssd; however, the system may not yet be setup t
 :::note
 You can store SSH authorized keys in LDAP by adding the `sshPublicKey` attribute to any user with their public key as the value.
 
-Please note that by default, sssd will return this attribute even for disabled accounts. To prevent this, you can filter out disabled accounts by adding the following lines to the LDAP section of your `sssd.conf` file:
+Please note that by default, sssd returns all user accounts; active and disabled. This means that disabled user accounts can still authenticate via `sshPublicKey`. To prevent this, you can filter out disabled user accounts by adding the following lines to the LDAP section of your `sssd.conf` file:
 
 ```ini
 #ldap_access_order = filter
