@@ -11,11 +11,14 @@ import { EventVolume, EventsApi, EventsEventsListRequest } from "@goauthentik/ap
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {
+    @property({ attribute: "with-map", type: Boolean })
+    withMap = false;
+
     _query?: EventsEventsListRequest;
 
     @property({ attribute: false })
     set query(value: EventsEventsListRequest | undefined) {
-        if (JSON.stringify(this._query) === JSON.stringify(value)) return;
+        if (JSON.stringify(value) !== JSON.stringify(this._query)) return;
         this._query = value;
         this.refreshHandler();
     }
@@ -24,6 +27,9 @@ export class EventVolumeChart extends EventChart {
         return super.styles.concat(
             PFCard,
             css`
+                :host([with-map]) .pf-c-card {
+                    height: 24rem;
+                }
                 .pf-c-card {
                     height: 20rem;
                 }

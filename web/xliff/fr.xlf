@@ -3011,11 +3011,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Charger les serveurs</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Se ré-authentifier avec Plex</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>Autoriser les amis à s'authentifier via Plex, même si vous ne partagez aucun serveur</target>
@@ -5707,11 +5702,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Règle créée avec succès</target>
         
       </trans-unit>
-      <trans-unit id="sa55ee64c5c51df0f">
-        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-        <target>Sélectionner le groupe d'utilisateurs à qui les alertes seront envoyées. Si aucun groupe n'est sélectionné, cette règle est désactivée.</target>
-        
-      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>Transports</target>
@@ -5745,11 +5735,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>Règle(s) de notification</target>
-        
-      </trans-unit>
-      <trans-unit id="s5140d157642d7362">
-        <source>None (rule disabled)</source>
-        <target>Aucun (règle désactivée)</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -9870,6 +9855,30 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
 </trans-unit>
     </body>
   </file>
