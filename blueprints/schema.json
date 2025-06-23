@@ -13359,6 +13359,12 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Max attempts"
                 }
             },
             "required": []

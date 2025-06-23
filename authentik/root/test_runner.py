@@ -12,6 +12,8 @@ from django.test.runner import DiscoverRunner
 from django.test.testcases import apps
 from structlog.stdlib import get_logger
 
+from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
@@ -75,6 +77,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         for key, value in test_config.items():
             CONFIG.set(key, value)
+
+        ASN_CONTEXT_PROCESSOR.load()
+        GEOIP_CONTEXT_PROCESSOR.load()
 
         sentry_init()
         self.logger.debug("Test environment configured")
