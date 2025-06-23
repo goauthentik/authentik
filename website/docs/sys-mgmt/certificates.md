@@ -33,7 +33,6 @@ You can also bind mount single files into the folder, as long as they fall under
 - Files in the root directory will be imported based on their filename.
 
     `/foo.pem` Will be imported as the keypair `foo`. Based on its content, the file is either imported as a certificate or a private key:
-
     - Files containing `PRIVATE KEY` will imported as private keys.
 
     - Otherwise the file will be imported as a certificate.
