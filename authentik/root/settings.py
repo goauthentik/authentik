@@ -380,23 +380,27 @@ DRAMATIQ = {
         CONFIG.get("worker.scheduler_interval")
     ).total_seconds(),
     "middlewares": (
-        ("django_dramatiq_postgres.middleware.SchedulerMiddleware", {}),
+        # ("django_dramatiq_postgres.middleware.SchedulerMiddleware", {}),
         ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),
         ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
-            # 5 minutes task timeout by default for all tasks, in ms
             "dramatiq.middleware.time_limit.TimeLimit",
-            {"time_limit": 600_000},
+            {
+                "time_limit": timedelta_from_string(
+                    CONFIG.get("worker.task_default_time_limit")
+                ).total_seconds()
+                * 1000
+            },
         ),
         ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
         ("dramatiq.middleware.callbacks.Callbacks", {}),
         ("dramatiq.middleware.pipelines.Pipelines", {}),
         (
             "dramatiq.middleware.retries.Retries",
-            {"max_retries": 20 if not TEST else 0},
+            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
         ),
         # TODO: results
         ("django_dramatiq_postgres.middleware.CurrentTask", {}),

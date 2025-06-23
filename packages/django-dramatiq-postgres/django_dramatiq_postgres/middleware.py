@@ -1,6 +1,6 @@
 import contextvars
 from threading import Event
-from typing import Any
+from typing import Any, override
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import (
@@ -58,6 +58,9 @@ class CurrentTask(Middleware):
             raise RuntimeError("CurrentTask.get_task() can only be called in a running task")
         return task[-1]
 
+    def before_enqueue(self, broker: Broker, message: Message, delay: int):
+        self.after_process_message(broker, message)
+
     def before_process_message(self, broker: Broker, message: Message):
         tasks = self._TASKS.get()
         if tasks is None:
@@ -75,28 +78,30 @@ class CurrentTask(Middleware):
     ):
         tasks: list[TaskBase] | None = self._TASKS.get()
         if tasks is None or len(tasks) == 0:
-            self.logger.warning("Task was None, not saving. This should not happen.")
             return
-        else:
-            task = tasks[-1]
-            fields_to_exclude = {
-                "message_id",
-                "queue_name",
-                "actor_name",
-                "message",
-                "state",
-                "mtime",
-                "result",
-                "result_expiry",
-            }
-            fields_to_update = [
-                f.name
-                for f in task._meta.get_fields()
-                if f.name not in fields_to_exclude and not f.auto_created and f.column
-            ]
-            if fields_to_update:
-                tasks[-1].save(update_fields=fields_to_update)
+
+        task = tasks[-1]
+        fields_to_exclude = {
+            "message_id",
+            "queue_name",
+            "actor_name",
+            "message",
+            "state",
+            "mtime",
+            "result",
+            "result_expiry",
+        }
+        fields_to_update = [
+            f.name
+            for f in task._meta.get_fields()
+            if f.name not in fields_to_exclude and not f.auto_created and f.column
+        ]
+        if fields_to_update:
+            task.save(update_fields=fields_to_update)
         self._TASKS.set(tasks[:-1])
+
+    def after_skip_message(self, broker: Broker, message: Message):
+        self.after_process_message(broker, message)
 
 
 class SchedulerMiddleware(Middleware):

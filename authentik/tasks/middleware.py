@@ -1,5 +1,6 @@
 from typing import Any
 
+from dramatiq import get_logger
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
@@ -35,21 +36,23 @@ class RelObjMiddleware(Middleware):
 
 
 class LoggingMiddleware(Middleware):
-    def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        message.options["model_defaults"]["_messages"] = [
+    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+        task: Task = message.options["task"]
+        task_created: bool = message.options["task_created"]
+        task._messages.append(
             Task._make_message(
                 str(type(self)),
                 TaskStatus.INFO,
-                "Task is being queued",
+                "Task is being queued" if task_created else "Task is being retried",
                 delay=delay,
             )
-        ]
+        )
+        task.save(update_fields=("_messages",))
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
         task.log(str(type(self)), TaskStatus.INFO, "Task is being processed")
 
-    # TODO: also after_skip_message
     def after_process_message(
         self,
         broker: Broker,
@@ -73,6 +76,10 @@ class LoggingMiddleware(Middleware):
                 message=f"Task {task.actor_name} encountered an error: "
                 "{exception_to_string(exception)}",
             ).save()
+
+    def after_skip_message(self, broker: Broker, message: Message):
+        task: Task = message.options["task"]
+        task.log(str(type(self)), TaskStatus.INFO, "Task has been skipped")
 
 
 class DescriptionMiddleware(Middleware):

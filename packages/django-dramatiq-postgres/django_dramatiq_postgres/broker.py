@@ -14,6 +14,7 @@ from django.db import (
     InterfaceError,
     OperationalError,
     connections,
+    transaction,
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
@@ -152,23 +153,26 @@ class PostgresBroker(Broker):
         message.options["model_defaults"] = self.model_defaults(message)
         self.emit_before("enqueue", message, delay)
 
-        query = {
-            "message_id": message.message_id,
-        }
-        defaults = message.options["model_defaults"]
-        del message.options["model_defaults"]
-        create_defaults = {
-            **query,
-            **defaults,
-        }
+        with transaction.atomic(using=self.db_alias):
+            query = {
+                "message_id": message.message_id,
+            }
+            defaults = message.options["model_defaults"]
+            del message.options["model_defaults"]
+            create_defaults = {
+                **query,
+                **defaults,
+            }
 
-        self.query_set.update_or_create(
-            **query,
-            defaults=defaults,
-            create_defaults=create_defaults,
-        )
+            task, created = self.query_set.update_or_create(
+                **query,
+                defaults=defaults,
+                create_defaults=create_defaults,
+            )
+            message.options["task"] = task
+            message.options["task_created"] = created
 
-        self.emit_after("enqueue", message, delay)
+            self.emit_after("enqueue", message, delay)
         return message
 
     def get_declared_queues(self) -> set[str]:
