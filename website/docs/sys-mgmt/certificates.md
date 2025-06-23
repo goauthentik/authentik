@@ -70,12 +70,10 @@ These commands import certificates under the specified names. They are safe to r
 authentik uses the following rules to import certificates:
 
 - **Root directory files**: Files in the root directory are imported based on their filename
-
     - `/foo.pem` will be imported as the keypair `foo`
     - Files are classified as private keys if they contain `PRIVATE KEY`, otherwise as certificates
 
 - **Certbot convention**: Files named `fullchain.pem` or `privkey.pem` will use their parent folder's name
-
     - Files in paths containing `archive` are ignored (to better support certbot setups)
 
 - **Flexible organization**: Files can use any directory structure and extension
