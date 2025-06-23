@@ -2,9 +2,26 @@
 title: Transports
 ---
 
-Notifications can be sent to users via multiple mediums. By default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) will be used.
+To receive notifications about events, you will need to [create](#create-a-transport) a transport object, then create a notification rule and a policy. For details on this workflow refer to
 
-## Generic Webhook
+## Transport types
+
+Notifications can be sent to users via multiple mediums, or _transports_:
+
+- Local
+- Email
+- Webhook (generic)
+- Webhook (Slack/Discord)
+
+### Local transport
+
+This transport will manifest the notification within the authentik user interface (UI).
+
+### Email
+
+select this transport to send event notificstions to an email address. Note that by default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
+
+### Webhook (generic)
 
 This will send a POST request to the given URL with the following contents:
 
@@ -31,6 +48,10 @@ return {
 }
 ```
 
-## Slack Webhook
+### Webhook (Slack or Discord)
 
 This sends a request using the Slack-specific format. This is also compatible with Discord's webhooks by appending `/slack` to the Discord webhook URL.
+
+## Create a transport
+
+dfvfd
