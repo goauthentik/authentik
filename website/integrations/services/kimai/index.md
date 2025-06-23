@@ -28,15 +28,15 @@ To support the integration of Kimai with authentik, you need to create an applic
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>kimai.company</em>/auth/saml/acs</kbd>.
-    - Set the **Audience** to <kbd>https://<em>kimai.company</em>auth/saml</kbd>.
-    - Set the **Issuer** to <kbd>https://<em>authentik.company</em></kbd>.
+    - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
+    - Set the **Audience** to `https://kimai.companyauth/saml`.
+    - Set the **Issuer** to `https://authentik.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -48,6 +48,8 @@ To support the integration of Kimai with authentik, you need to create an applic
 Paste the following block in your `local.yaml` file, after replacing the placeholder values from above. The file is usually located in `/opt/kimai/config/packages/local.yaml`.
 
 To get the value for `x509cert`, go to _System_ > _Certificates_, and download the public Signing Certificate. To avoid further problems, concat it into "string format" using e.g.: https://www.samltool.com/format_x509cert.php
+
+<!-- prettier-ignore-start -->
 
 ```yaml
 # Optionally add this for docker debug-logging
@@ -80,11 +82,11 @@ kimai:
             idp:
                 entityId: "https://authentik.company/"
                 singleSignOnService:
-                    url: "https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
-                    url: "https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/"
+                    url: "https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                 # Signing certificate from *Advanced protocol settings*
                 x509cert: "XXXXXXXXXXXXXXXXXXXXXXXXXXX=="
@@ -126,5 +128,7 @@ kimai:
                     displayname: "Kimai"
                     url: "https://kimai.company"
 ```
+
+<!-- prettier-ignore-end -->
 
 Afterwards, either [rebuild the cache](https://www.kimai.org/documentation/cache.html) or restart the docker container.

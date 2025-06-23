@@ -119,17 +119,17 @@ class TestTrimPasswordHistory(TestCase):
             [
                 UserPasswordHistory(
                     user=self.user,
-                    old_password="hunter1",  # nosec B106
+                    old_password="hunter1",  # nosec
                     created_at=_now - timedelta(days=3),
                 ),
                 UserPasswordHistory(
                     user=self.user,
-                    old_password="hunter2",  # nosec B106
+                    old_password="hunter2",  # nosec
                     created_at=_now - timedelta(days=2),
                 ),
                 UserPasswordHistory(
                     user=self.user,
-                    old_password="hunter3",  # nosec B106
+                    old_password="hunter3",  # nosec
                     created_at=_now,
                 ),
             ]

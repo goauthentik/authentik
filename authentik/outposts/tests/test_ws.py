@@ -38,6 +38,7 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertFalse(connected)
+        await communicator.disconnect()
 
     async def test_auth_valid(self):
         """Test auth with token"""
@@ -48,6 +49,7 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
+        await communicator.disconnect()
 
     async def test_send(self):
         """Test sending of Hello"""

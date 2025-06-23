@@ -62,6 +62,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
@@ -70,22 +71,18 @@ jobs:
       - name: checkout stable
         run: |
           # Copy current, latest config to local
-          # Temporarly comment the .github backup while migrating to uv
           cp authentik/lib/default.yml local.env.yml
-          # cp -R .github ..
+          cp -R .github ..
           cp -R scripts ..
           git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
-          # rm -rf .github/ scripts/
-          # mv ../.github ../scripts .
-          rm -rf scripts/
-          mv ../scripts .
+          rm -rf .github/ scripts/
+          mv ../.github ../scripts .
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
-        continue-on-error: true
       - name: run migrations to stable
-        run: poetry run python -m lifecycle.migrate
+        run: uv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
@@ -120,6 +117,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
@@ -204,7 +202,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
@@ -212,6 +210,7 @@ jobs:
           npm ci
           make -C .. gen-client-ts
           npm run build
+          npm run build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}

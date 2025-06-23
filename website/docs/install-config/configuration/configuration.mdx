@@ -17,8 +17,8 @@ All of these variables can be set to values, but you can also use a URI-like for
 
 ## Set your environment variables
 
-import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 <Tabs groupId="platform">
   <TabItem value="docker-compose" label="Docker Compose" default>
@@ -82,7 +82,7 @@ To check if your config has been applied correctly, you can run the following co
 
 The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
 
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`:ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA` :ak-version[2024.12]
 
     The name of the schema used by default in the database. Defaults to `public`.
 
@@ -354,7 +354,11 @@ Defaults to `86400`.
 
 ### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
 
-Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
+:::info Deprecated
+This setting is removed as of version 2025.4. Sessions are now exclusively stored in the database. See our [2025.4 release notes](../../releases/2025.4#sessions-are-now-stored-in-the-database) for more information.
+:::
+
+If you are running a version earlier than 2025.4, you can configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 

@@ -73,7 +73,7 @@ export class MockSearch extends CustomListenerElement(AKElement) {
                 .selected=${this.selected}
                 managed
                 @ak-change=${this.handleSearchUpdate}
-                ?blankable=${true}
+                blankable
             >
             </ak-search-select>
         `;
@@ -107,9 +107,9 @@ describe("Search select: event driven startup", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-mock-search-group")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });

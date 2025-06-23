@@ -1,7 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal } from "@goauthentik/common/temporal";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -35,35 +34,42 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 inviteUuid: this.instance.pk || "",
                 invitationRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-                invitationRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
+            invitationRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                ?slugMode=${true}
-                label=${msg("Name")}
-                ?required=${true}
-                name="name"
-            >
+        const checkSlug = (ev: InputEvent) => {
+            if (ev && ev.target && ev.target instanceof HTMLInputElement) {
+                ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");
+            }
+        };
+
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
+                    id="admin-stages-invitation-name"
                     value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
+                    @input=${(ev: InputEvent) => checkSlug(ev)}
                     data-ak-slug="true"
                 />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Expires")} ?required=${true} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"
                     class="pf-c-form-control"
                     required
-                    value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
+                    value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")} name="flow">
@@ -80,7 +86,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
             <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
+                    value="${YAML.stringify(this.instance?.fixedData ?? {})}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
@@ -94,7 +100,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.singleUse, true)}
+                        ?checked=${this.instance?.singleUse ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal } from "@goauthentik/common/temporal";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -38,11 +37,10 @@ export class TokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderExpiry(): TemplateResult {
@@ -50,7 +48,7 @@ export class TokenForm extends ModelForm<Token, string> {
             <input
                 type="datetime-local"
                 data-type="datetime-local"
-                value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
+                value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
                 class="pf-c-form-control"
             />
         </ak-form-element-horizontal>`;
@@ -60,11 +58,11 @@ export class TokenForm extends ModelForm<Token, string> {
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 name="identifier"
-                ?required=${true}
+                required
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.identifier, "")}"
+                    value="${this.instance?.identifier ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
@@ -74,7 +72,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     ${msg("Unique identifier the token is referenced by.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
+            <ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -101,7 +99,7 @@ export class TokenForm extends ModelForm<Token, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Intent")} ?required=${true} name="intent">
+            <ak-form-element-horizontal label=${msg("Intent")} required name="intent">
                 <ak-radio
                     .options=${[
                         {
@@ -123,7 +121,7 @@ export class TokenForm extends ModelForm<Token, string> {
             <ak-form-element-horizontal label=${msg("Description")} name="description">
                 <input
                     type="text"
-                    value="${first(this.instance?.description, "")}"
+                    value="${this.instance?.description ?? ""}"
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
@@ -132,7 +130,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.expiring, true)}
+                        ?checked=${this.instance?.expiring ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showExpiry = el.checked;

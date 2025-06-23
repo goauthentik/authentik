@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -59,15 +58,14 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 instanceUuid: this.instance.pk,
                 blueprintInstanceRequest: data,
             });
-        } else {
-            return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
-                blueprintInstanceRequest: data,
-            });
         }
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
+            blueprintInstanceRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,7 +78,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -135,7 +133,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   .selected=${(item: BlueprintFile): boolean => {
                                       return this.instance?.path === item.path;
                                   }}
-                                  ?blankable=${true}
+                                  blankable
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`
@@ -184,7 +182,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}
-                            value="${YAML.stringify(first(this.instance?.context, {}))}"
+                            value="${YAML.stringify(this.instance?.context ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">

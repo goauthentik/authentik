@@ -1,18 +1,18 @@
-import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementPage";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/elements/AppIcon";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/applications/ApplicationAuthorizeChart";
+import "#admin/applications/ApplicationCheckAccessForm";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/entitlements/ApplicationEntitlementPage";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#elements/AppIcon";
+import { AKElement } from "#elements/Base";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -99,7 +99,6 @@ export class ApplicationViewPage extends AKElement {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
@@ -113,8 +112,7 @@ export class ApplicationViewPage extends AKElement {
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
@@ -284,7 +282,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
@@ -333,7 +331,10 @@ export class ApplicationViewPage extends AKElement {
                     <div class="pf-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
-                    <ak-bound-policies-list .target=${this.application.pk}>
+                    <ak-bound-policies-list
+                        .target=${this.application.pk}
+                        .policyEngineMode=${this.application.policyEngineMode}
+                    >
                     </ak-bound-policies-list>
                 </div>
             </section>

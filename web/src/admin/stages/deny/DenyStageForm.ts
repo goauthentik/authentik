@@ -23,11 +23,10 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                 stageUuid: this.instance.pk || "",
                 denyStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
-                denyStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
+            denyStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -37,7 +36,7 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                     "Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -45,7 +44,7 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Deny message")} name="denyMessage">

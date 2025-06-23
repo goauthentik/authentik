@@ -164,9 +164,7 @@ class BlueprintEntry:
         """Get the blueprint model, with yaml tags resolved if present"""
         return str(self.tag_resolver(self.model, blueprint))
 
-    def get_permissions(
-        self, blueprint: "Blueprint"
-    ) -> Generator[BlueprintEntryPermission, None, None]:
+    def get_permissions(self, blueprint: "Blueprint") -> Generator[BlueprintEntryPermission]:
         """Get permissions of this entry, with all yaml tags resolved"""
         for perm in self.permissions:
             yield BlueprintEntryPermission(
@@ -193,10 +191,17 @@ class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: list[BlueprintEntry] = field(default_factory=list)
+    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
     metadata: BlueprintMetadata | None = field(default=None)
+
+    def iter_entries(self) -> Iterable[BlueprintEntry]:
+        if isinstance(self.entries, dict):
+            for _section, entries in self.entries.items():
+                yield from entries
+        else:
+            yield from self.entries
 
 
 class YAMLTag:
@@ -228,7 +233,7 @@ class KeyOf(YAMLTag):
         self.id_from = node.value
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        for _entry in blueprint.entries:
+        for _entry in blueprint.iter_entries():
             if _entry.id == self.id_from and _entry._state.instance:
                 # Special handling for PolicyBindingModels, as they'll have a different PK
                 # which is used when creating policy bindings

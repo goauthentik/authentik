@@ -53,6 +53,14 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 	if err != nil && len(searchReq.Filter) > 0 {
 		l.WithError(err).WithField("objectClass", filterOC).Warning("invalid filter object class")
 	}
+
+	// Handle comma-separated attributes
+	normalizedAttributes := normalizeAttributes(searchReq.Attributes)
+	if len(normalizedAttributes) != len(searchReq.Attributes) {
+		// Create a copy of the search request with normalized attributes
+		searchReq.Attributes = normalizedAttributes
+	}
+
 	return &Request{
 		SearchRequest:     searchReq,
 		BindDN:            bindDN,
@@ -62,6 +70,31 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 		id:                rid,
 		ctx:               span.Context(),
 	}, span
+}
+
+// normalizeAttributes handles the case where attributes might be passed as comma-separated strings
+// rather than as individual array elements
+func normalizeAttributes(attributes []string) []string {
+	if len(attributes) == 0 {
+		return attributes
+	}
+
+	result := make([]string, 0, len(attributes))
+	for _, attr := range attributes {
+		if strings.Contains(attr, ",") {
+			// Split comma-separated attributes and add them individually
+			parts := strings.Split(attr, ",")
+			for _, part := range parts {
+				part = strings.TrimSpace(part)
+				if part != "" {
+					result = append(result, part)
+				}
+			}
+		} else {
+			result = append(result, attr)
+		}
+	}
+	return result
 }
 
 func (r *Request) Context() context.Context {

@@ -4,7 +4,7 @@ import {
     propertyMappingsSelector,
 } from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -40,15 +40,14 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                 id: this.instance.pk,
                 microsoftEntraProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
-                microsoftEntraProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
+            microsoftEntraProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -56,17 +55,13 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Client ID")}
-                        ?required=${true}
-                        name="clientId"
-                    >
+                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, "")}"
+                            value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -74,29 +69,19 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client ID for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Client Secret")}
-                        ?required=${true}
+                    <ak-hidden-text-input
                         name="clientSecret"
+                        label=${msg("Client Secret")}
+                        value="${this.instance?.clientSecret ?? ""}"
+                        input-hint="code"
+                        required
+                        .help=${msg("Client secret for the app registration.")}
                     >
+                    </ak-hidden-text-input>
+                    <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"
-                            value="${first(this.instance?.clientSecret, "")}"
-                            class="pf-c-form-control pf-m-monospace"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Client secret for the app registration.")}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Tenant ID")}
-                        ?required=${true}
-                        name="tenantId"
-                    >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.tenantId, "")}"
+                            value="${this.instance?.tenantId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -155,7 +140,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.dryRun, false)}
+                                ?checked=${this.instance?.dryRun ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -172,7 +157,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header">${msg("User filtering")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
@@ -180,7 +165,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.excludeUsersServiceAccount, true)}
+                                ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -216,7 +201,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.filterGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -225,7 +210,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

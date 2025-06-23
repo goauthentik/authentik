@@ -1,6 +1,6 @@
-import { convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
+import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css } from "lit";
@@ -29,11 +29,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 3. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
  *    it being written on-demand when the child is written? Because it's slotted... despite there
  *    being very few unique uses.
- * 4. There is some very specific use-case around the `writeOnly` boolean; this seems to be a case
- *    where the field isn't available for the user to view unless they explicitly request to be able
- *    to see the content; otherwise, a dead password field is shown. There are 10 uses of this
- *    feature.
- *
  */
 
 const isAkControl = (el: unknown): boolean =>
@@ -79,17 +74,8 @@ export class HorizontalFormElement extends AKElement {
     @property({ type: Boolean })
     required = false;
 
-    @property({ type: Boolean })
-    writeOnly = false;
-
-    @property({ type: Boolean })
-    writeOnlyActivated = false;
-
     @property({ attribute: false })
     errorMessages: string[] | string[][] = [];
-
-    @property({ type: Boolean })
-    slugMode = false;
 
     _invalid = false;
 
@@ -120,17 +106,9 @@ export class HorizontalFormElement extends AKElement {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
-        if (this.name === "slug" || this.slugMode) {
-            this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
-                input.addEventListener("keyup", () => {
-                    input.value = convertToSlug(input.value);
-                });
-            });
-        }
         this.querySelectorAll("*").forEach((input) => {
             if (isAkControl(input) && !input.getAttribute("name")) {
                 input.setAttribute("name", this.name);
-                // This is fine; writeOnly won't apply to anything built this way.
                 return;
             }
 
@@ -138,17 +116,6 @@ export class HorizontalFormElement extends AKElement {
                 input.setAttribute("name", this.name);
             } else {
                 return;
-            }
-
-            if (this.writeOnly && !this.writeOnlyActivated) {
-                const i = input as HTMLInputElement;
-                i.setAttribute("hidden", "true");
-                const handler = () => {
-                    i.removeAttribute("hidden");
-                    this.writeOnlyActivated = true;
-                    i.parentElement?.removeEventListener("click", handler);
-                };
-                i.parentElement?.addEventListener("click", handler);
             }
         });
     }
@@ -165,23 +132,8 @@ export class HorizontalFormElement extends AKElement {
                 </label>
             </div>
             <div class="pf-c-form__group-control">
-                ${this.writeOnly && !this.writeOnlyActivated
-                    ? html`<div class="pf-c-form__horizontal-group">
-                          <input
-                              class="pf-c-form-control"
-                              type="password"
-                              disabled
-                              value="**************"
-                          />
-                      </div>`
-                    : html``}
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.writeOnly
-                        ? html`<p class="pf-c-form__helper-text" aria-live="polite">
-                              ${msg("Click to change value")}
-                          </p>`
-                        : html``}
                     ${this.errorMessages.map((message) => {
                         if (message instanceof Object) {
                             return html`${Object.entries(message).map(([field, errMsg]) => {

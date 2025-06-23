@@ -1,7 +1,7 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input.js";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
@@ -76,7 +76,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -84,7 +84,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
@@ -162,7 +162,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     <ak-switch-input
                         name="caseInsensitiveMatching"
                         label=${msg("Case insensitive matching")}
-                        ?checked=${first(this.instance?.caseInsensitiveMatching, true)}
+                        ?checked=${this.instance?.caseInsensitiveMatching ?? true}
                         help=${msg(
                             "When enabled, user fields are matched regardless of their casing.",
                         )}
@@ -170,7 +170,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     <ak-switch-input
                         name="pretendUserExists"
                         label=${msg("Pretend user exists")}
-                        ?checked=${first(this.instance?.pretendUserExists, true)}
+                        ?checked=${this.instance?.pretendUserExists ?? true}
                         help=${msg(
                             "When enabled, the stage will always accept the given user identifier and continue.",
                         )}
@@ -178,7 +178,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     <ak-switch-input
                         name="showMatchedUser"
                         label=${msg("Show matched user")}
-                        ?checked=${first(this.instance?.showMatchedUser, true)}
+                        ?checked=${this.instance?.showMatchedUser ?? true}
                         help=${msg(
                             "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.",
                         )}
@@ -196,11 +196,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             <ak-form-group>
                 <span slot="header"> ${msg("Source settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Sources")}
-                        ?required=${true}
-                        name="sources"
-                    >
+                    <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
                             .selector=${sourcesSelector(this.instance?.sources)}
@@ -218,7 +214,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.showSourceLabels, false)}
+                                ?checked=${this.instance?.showSourceLabels ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

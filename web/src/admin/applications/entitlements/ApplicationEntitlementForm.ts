@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -31,9 +30,8 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
-        } else {
-            return msg("Successfully created entitlement.");
         }
+        return msg("Successfully created entitlement.");
     }
 
     static get styles(): CSSResult[] {
@@ -49,30 +47,25 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                 pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
-                applicationEntitlementRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
+            applicationEntitlementRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
-            >
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                    value="${YAML.stringify(this.instance?.attributes ?? {})}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">

@@ -99,6 +99,7 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     filterset_class = PermissionFilter
     permission_classes = [IsAuthenticated]
     search_fields = [
+        "name",
         "codename",
         "content_type__model",
         "content_type__app_label",
