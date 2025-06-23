@@ -11,13 +11,18 @@ from pydanticscim.group import GroupMember
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
+from scim2_filter_parser.attr_paths import AttrPath
 
 from authentik.core.models import Group, User
-from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA
+from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchOp, PatchOperation
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMObjectView
-from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
+from authentik.sources.scim.views.v2.exceptions import (
+    SCIMConflictError,
+    SCIMNotFoundError,
+    SCIMValidationError,
+)
 
 
 class GroupsView(SCIMObjectView):
@@ -132,6 +137,44 @@ class GroupsView(SCIMObjectView):
         if not connection:
             raise SCIMNotFoundError("Group not found.")
         connection = self.update_group(connection, request.data)
+        return Response(self.group_to_scim(connection), status=200)
+
+    @atomic
+    def patch(self, request: Request, group_id: str, **kwargs) -> Response:
+        """Patch group handler"""
+        connection = SCIMSourceGroup.objects.filter(
+            source=self.source, group__group_uuid=group_id
+        ).first()
+        if not connection:
+            raise SCIMNotFoundError("Group not found.")
+
+        data = connection.attributes.copy() if hasattr(connection, "attributes") else {}
+
+        for _op in request.data.get("Operations", []):
+            operation = PatchOperation.model_validate(_op)
+            if operation.op.lower() not in ["add", "remove", "replace"]:
+                raise SCIMValidationError()
+            filter_ = f'{operation.path} eq ""'
+            attr_path = AttrPath(filter_, {})
+            if attr_path.first_path == ("members", None, None):
+                # FIXME: this can probably be de-duplicated
+                if operation.op == PatchOp.add:
+                    if not isinstance(operation.value, list):
+                        operation.value = [operation.value]
+                    query = Q()
+                    for member in operation.value:
+                        query |= Q(uuid=member["value"])
+                    if query:
+                        connection.group.users.add(*User.objects.filter(query))
+                elif operation.op == PatchOp.remove:
+                    if not isinstance(operation.value, list):
+                        operation.value = [operation.value]
+                    query = Q()
+                    for member in operation.value:
+                        query |= Q(uuid=member["value"])
+                    if query:
+                        connection.group.users.remove(*User.objects.filter(query))
+        connection = self.update_group(connection, data)
         return Response(self.group_to_scim(connection), status=200)
 
     @atomic
