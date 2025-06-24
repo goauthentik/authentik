@@ -173,7 +173,7 @@ class TestSCIMGroups(APITestCase):
                 kwargs={"source_slug": self.source.slug, "group_id": group.pk},
             ),
             data=dumps(
-                {"displayName": generate_id(), "externalId": ext_id, "id": str(existing.group.pk)}
+                {"displayName": generate_id(), "externalId": ext_id, "id": str(existing.pk)}
             ),
             content_type=SCIM_CONTENT_TYPE,
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
@@ -220,7 +220,7 @@ class TestSCIMGroups(APITestCase):
                 {
                     "Operations": [
                         {
-                            "op": "add",
+                            "op": "Add",
                             "path": "members",
                             "value": {"value": str(user.uuid)},
                         }
