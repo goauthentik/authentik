@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import ScheduleBase
 
 from authentik.lib.models import SerializerModel
+from authentik.tasks.models import TasksModel
 from authentik.tasks.schedules.lib import ScheduleSpec
 
 
@@ -36,7 +37,7 @@ class Schedule(SerializerModel, ScheduleBase):
         return ScheduleSerializer
 
 
-class ScheduledModel(models.Model):
+class ScheduledModel(TasksModel, models.Model):
     schedules = GenericRelation(
         Schedule, content_type_field="rel_obj_content_type", object_id_field="rel_obj_id"
     )
@@ -51,7 +52,11 @@ class ScheduledModel(models.Model):
                 return True
             return any(is_scheduled_model(klass) for klass in klass.__bases__)
 
-        return [model for model in apps.get_models() if is_scheduled_model(model)]
+        return [
+            model
+            for model in apps.get_models()
+            if is_scheduled_model(model) and not model.__subclasses__()
+        ]
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:

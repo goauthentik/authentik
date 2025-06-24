@@ -3,9 +3,12 @@ import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
 import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
 import "@goauthentik/admin/outposts/ServiceConnectionWizard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
+import "@goauthentik/admin/system-tasks/ScheduleList";
+import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -40,6 +43,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     checkbox = true;
+    expandable = true;
     clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
@@ -107,6 +111,52 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 </ak-rbac-object-permission-modal>
             `,
         ];
+    }
+
+    renderExpanded(item: ServiceConnection): TemplateResult {
+        const [appLabel, modelName] = item.metaModelName.split(".");
+        return html` <td role="cell" colspan="5">
+            <div class="pf-c-table__expandable-row-content">
+                <div class="pf-c-content">
+                    <ak-tabs>
+                        <section
+                            slot="page-schedules"
+                            data-tab-title="${msg("Schedules")}"
+                            class="pf-c-page__main-section pf-m-no-padding-mobile"
+                        >
+                            <div class="pf-l-grid pf-m-gutter">
+                                <div
+                                    class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                                >
+                                    <ak-schedule-list
+                                        .relObjAppLabel=${appLabel}
+                                        .relObjModel=${modelName}
+                                        .relObjId="${item.pk}"
+                                    ></ak-schedule-list>
+                                </div>
+                            </div>
+                        </section>
+                        <section
+                            slot="page-tasks"
+                            data-tab-title="${msg("Tasks")}"
+                            class="pf-c-page__main-section pf-m-no-padding-mobile"
+                        >
+                            <div class="pf-l-grid pf-m-gutter">
+                                <div
+                                    class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                                >
+                                    <ak-task-list
+                                        .relObjAppLabel=${appLabel}
+                                        .relObjModel=${modelName}
+                                        .relObjId="${item.pk}"
+                                    ></ak-task-list>
+                                </div>
+                            </div>
+                        </section>
+                    </ak-tabs>
+                </div>
+            </div>
+        </td>`;
     }
 
     renderToolbarSelected(): TemplateResult {

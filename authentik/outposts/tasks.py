@@ -84,7 +84,7 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     return None
 
 
-@actor(description=_("Update cached state of a service connection."))
+@actor(description=_("Update cached state of service connection."))
 def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
