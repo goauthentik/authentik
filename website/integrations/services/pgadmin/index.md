@@ -33,14 +33,13 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>pgadmin.company</em>/oauth2/authorize</kbd>.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://pgadmin.company/oauth2/authorize`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -51,7 +50,6 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
 ### Using `config_local.py`
 
 1. Locate or create the `config_local.py` file in the `/pgadmin4/` directory.
-
     - If the file does not exist, create it manually.
 
 2. Add the following configuration settings to `config_local.py`:
@@ -68,7 +66,7 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
         'OAUTH2_AUTHORIZATION_URL': 'https://authentik.company/application/o/authorize/',
         'OAUTH2_API_BASE_URL': 'https://authentik.company/',
         'OAUTH2_USERINFO_ENDPOINT': 'https://authentik.company/application/o/userinfo/',
-        'OAUTH2_SERVER_METADATA_URL': 'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration',
+        'OAUTH2_SERVER_METADATA_URL': 'https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration',
         'OAUTH2_SCOPE': 'openid email profile',
         'OAUTH2_ICON': '<Fontawesome icon key (e.g., fa-key)>',
         'OAUTH2_BUTTON_COLOR': '<Hexadecimal color code for the login button>'
@@ -90,7 +88,7 @@ For deployments using Docker or Kubernetes, you can configure OAuth using the fo
 ```bash
 PGADMIN_CONFIG_AUTHENTICATION_SOURCES="['oauth2', 'internal']"
 PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER=True
-PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<App Slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
+PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':'Login with authentik','OAUTH2_CLIENT_ID':'<Client ID from authentik>','OAUTH2_CLIENT_SECRET':'<Client secret from authentik>','OAUTH2_TOKEN_URL':'https://authentik.company/application/o/token/','OAUTH2_AUTHORIZATION_URL':'https://authentik.company/application/o/authorize/','OAUTH2_API_BASE_URL':'https://authentik.company/','OAUTH2_USERINFO_ENDPOINT':'https://authentik.company/application/o/userinfo/','OAUTH2_SERVER_METADATA_URL':'https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration','OAUTH2_SCOPE':'openid email profile','OAUTH2_ICON':'<Fontawesome icon key (e.g., fa-key)>','OAUTH2_BUTTON_COLOR':'<Hexadecimal color code for the login button>'}]"
 ```
 
 ### General Notes
@@ -101,7 +99,7 @@ PGADMIN_CONFIG_OAUTH2_CONFIG="[{'OAUTH2_NAME':'authentik','OAUTH2_DISPLAY_NAME':
     AUTHENTICATION_SOURCES = ['oauth2']
     ```
 
-    Ensure that you promote at least one user to an admin before disabling the internal authentication.
+    Ensure that you promote at least one user to an administrator before disabling the internal authentication.
 
 - To **disable automatic user creation**, set:
     ```python

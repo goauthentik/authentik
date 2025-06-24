@@ -12,26 +12,25 @@ For FreeIPA, follow the [FreeIPA Integration](../../directory-sync/freeipa/index
 
 ## Configuration options for LDAP sources
 
-To create or edit a source in authentik, open the Admin interface and navigate to **Directory > Ferderation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
+To create or edit a source in authentik, open the Admin interface and navigate to **Directory > Federation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
 
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
 - **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
-- **Sync groups**: Enable/disable group synchronization. Groups are synced in the background every 5 minutes.
-- **Parent group**: Optionally set this group as the parent group for all synced groups. An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
+- **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
+- **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
 #### Connection settings
 
 - **Server URI**: URI to your LDAP server/Domain Controller. You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
-
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 
 - **TLS Verification Certificate**: Specify a keypair to validate the remote certificate.
-- **TLS Client authentication**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
+- **TLS Client authentication certificate**: Client certificate keypair to authenticate against the LDAP Server's Certificate.
 - **Bind CN**: CN of the bind user. This can also be a UPN in the format of `user@domain.tld`.
-- **Bind password**: Password used during the bind process.
+- **Bind Password**: Password used during the bind process.
 - **Base DN**: Base DN (distinguished name) used for all LDAP queries.
 
 #### LDAP Attribute mapping
@@ -44,14 +43,17 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### Additional Settings
 
-- **Group**: Parent group for all the groups imported from LDAP.
+- **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.
-- **Addition User DN**: Prepended to the base DN for user queries.
-- **Addition Group DN**: Prepended to the base DN for group queries.
+- **Additional User DN**: Prepended to the base DN for user queries.
+- **Additional Group DN**: Prepended to the base DN for group queries.
 - **User object filter**: Consider objects matching this filter to be users.
 - **Group object filter**: Consider objects matching this filter to be groups.
 - **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
+- **User membership attribute**: Attribute name on authentik user objects which is checked against the **Group membership field**. Two common cases are:
+    - If your groups have `member` attributes containing DNs, set this to `distinguishedName`. (The `distinguishedName` attribute for User objects in authentik is set automatically.)
+    - If your groups have `memberUid` attributes containing `uid`s, set this to `uid`. Make sure that you've created a property mapping that creates an attribute called `uid`.
 - **Object uniqueness field**: This field contains a unique identifier.
 
 ## LDAP source property mappings

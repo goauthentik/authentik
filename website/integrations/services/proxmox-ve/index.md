@@ -38,7 +38,7 @@ To support the integration of Proxmox with authentik, you need to create an appl
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>proxmox.company:8006</em></kbd>.
+    - Set a `Strict` redirect URI to `https://proxmox.company:8006`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -49,12 +49,10 @@ To support the integration of Proxmox with authentik, you need to create an appl
 1. Log in to the Proxmox VE web interface using an administrative account.
 
 2. Navigate to authentication source settings.
-
     - Go to **Datacenter** > **Permissions** > **Realms**.
     - Click **Add** and select **Realm** to open the Add Realm dialog.
 
 3. Fill out the OpenID Connect settings.
-
     - In the dialog that appears, fill in the following details:
         - **Issuer URL**: Enter the Issuer URL from authentik (found in your provider's overview tab), e.g., `https://authentik.company/application/o/proxmox/`.
         - **Realm**: Enter a name for this authentication source, such as `authentik`.
@@ -69,15 +67,12 @@ To support the integration of Proxmox with authentik, you need to create an appl
     ![Proxmox Add OpenID Connect Server Dialog](proxmox-source.png)
 
 4. **Save the configuration**.
-
     - Click **Add** to save the settings.
 
 5. **Assign permissions**
-
     - After setting up the authentication source, go to **Permissions** to assign roles and permissions for each user as needed.
 
 6. **Logging in**
-
     - Users can select this authentication method from the Proxmox login screen, or if set as default, it will be automatically selected.
 
     ![Proxmox login page with authentik marked as default login method](proxmox-login.png)

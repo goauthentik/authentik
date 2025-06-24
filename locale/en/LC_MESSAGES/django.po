@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 11:25+0000\n"
+"POT-Creation-Date: 2025-06-19 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -764,6 +764,12 @@ msgid ""
 msgstr ""
 
 #: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+
+#: authentik/events/models.py
 msgid "Notification Rule"
 msgstr ""
 
@@ -970,7 +976,7 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
+msgid "Syncing page {page} of {object_type}"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -2224,6 +2230,10 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -3491,10 +3501,6 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
-msgstr ""
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

@@ -5,6 +5,7 @@ import {
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -133,7 +134,7 @@ export function renderForm(
         <ak-form-element-horizontal
             name="authorizationFlow"
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -163,20 +164,19 @@ export function renderForm(
                     label=${msg("Client ID")}
                     value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
-                    inputHint="code"
+                    input-hint="code"
                 >
                 </ak-text-input>
-                <ak-text-input
+                <ak-hidden-text-input
                     name="clientSecret"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
-                    inputHint="code"
+                    input-hint="code"
                     ?hidden=${!showClientSecret}
                 >
-                </ak-text-input>
+                </ak-hidden-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
-                    required
                     name="redirectUris"
                 >
                     <ak-array-input
@@ -252,7 +252,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
-                    inputHint="code"
+                    input-hint="code"
                     required
                     value="${provider?.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -265,7 +265,7 @@ export function renderForm(
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
                     value="${provider?.accessTokenValidity ?? "minutes=5"}"
-                    inputHint="code"
+                    input-hint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
@@ -278,8 +278,8 @@ export function renderForm(
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
                     value="${provider?.refreshTokenValidity ?? "days=30"}"
-                    inputHint="code"
-                    ?required=${true}
+                    input-hint="code"
+                    required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
                         </p>

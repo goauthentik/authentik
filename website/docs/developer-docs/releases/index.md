@@ -13,7 +13,6 @@
 - Create/update the release notes
 
     #### For initial releases:
-
     - Copy `website/docs/releases/_template.md` to `website/docs/releases/v2022.12.md` and replace `xxxx.x` with the version that is being released
 
     - Fill in the section of `Breaking changes` and `New features`, or remove the headers if there's nothing applicable
@@ -35,7 +34,6 @@
     - Run `make website`
 
     #### For subsequent releases:
-
     - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
 
     - Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
@@ -48,7 +46,6 @@
 - Push the tag and commit
 - A GitHub actions workflow will start to run a last test in container images and create a draft release on GitHub
 - Edit the draft GitHub release
-
     - Make sure the title is formatted `Release 2022.12.0`
     - Add the following to the release notes
 

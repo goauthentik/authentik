@@ -16,8 +16,12 @@ import { property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+export interface AKElementProps {
+    activeTheme: ResolvedUITheme;
+}
+
 @localized()
-export class AKElement extends LitElement {
+export class AKElement extends LitElement implements AKElementProps {
     //#region Static Properties
 
     public static styles?: Array<CSSResult | CSSModule>;
@@ -123,6 +127,9 @@ export class AKElement extends LitElement {
             applyUITheme(nextStyleRoot, UiThemeEnum.Dark, this.#customCSSStyleSheet);
 
             this.activeTheme = UiThemeEnum.Dark;
+        } else if (this.preferredColorScheme === "light") {
+            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet);
+            this.activeTheme = UiThemeEnum.Light;
         } else if (this.preferredColorScheme === "auto") {
             createUIThemeEffect(
                 (nextUITheme) => {
@@ -139,6 +146,32 @@ export class AKElement extends LitElement {
 
     protected get styleRoot(): StyleRoot | undefined {
         return this.#styleRoot;
+    }
+
+    protected hasSlotted(name: string | null) {
+        const isNotNestedSlot = (start: Element) => {
+            let node = start.parentNode;
+            while (node && node !== this) {
+                if (node instanceof Element && node.hasAttribute("slot")) {
+                    return false;
+                }
+                node = node.parentNode;
+            }
+            return true;
+        };
+
+        // All child slots accessible from the component's LightDOM that match the request
+        const allChildSlotRequests =
+            typeof name === "string"
+                ? [...this.querySelectorAll(`[slot="${name}"]`)]
+                : [...this.children].filter((child) => {
+                      const slotAttr = child.getAttribute("slot");
+                      return !slotAttr || slotAttr === "";
+                  });
+
+        // All child slots accessible from the LightDom that match the request *and* are not nested
+        // within another slotted element.
+        return allChildSlotRequests.filter((node) => isNotNestedSlot(node)).length > 0;
     }
 
     //#endregion

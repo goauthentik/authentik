@@ -42,7 +42,7 @@ export class ProviderViewPage extends AKElement {
 
     renderProvider(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-empty-state loading ?fullHeight=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
         switch (this.provider?.component) {
             case "ak-provider-saml-form":

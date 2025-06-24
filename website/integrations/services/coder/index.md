@@ -45,7 +45,7 @@ To support the integration of Coder with authentik, you need to create an applic
 To support the integration of Coder with authentik, add the following environment variables to your Coder deployment:
 
 ```yaml showLineNumbers
-CODER_OIDC_ISSUER_URL=https://authentik.company/application/o/<application slug>/
+CODER_OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>/
 CODER_OIDC_EMAIL_DOMAIN=acme.company,acme-corp.company
 CODER_OIDC_CLIENT_ID=<Client ID from authentik>
 CODER_OIDC_CLIENT_SECRET=<Client secret from authentik>

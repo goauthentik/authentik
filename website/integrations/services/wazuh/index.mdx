@@ -38,7 +38,6 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
-
     - **Name**: Choose a descriptive name
     - **SAML Attribute Name**: `Roles`
     - **Friendly Name**: Leave blank
@@ -59,7 +58,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 - **Application**: provide a descriptive name (e.g., `Wazuh`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - **ACS URL**: <kbd>https://<em>wazuh-dashboard.company</em>/\_opendistro/\_security/saml/acs</kbd>
+    - **ACS URL**: `https://wazuh-dashboard.company/\_opendistro/\_security/saml/acs`
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
     - Under **Advanced protocol settings**:
@@ -192,7 +191,6 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 2. On the Wazuh dashboard click the upper-left menu icon ☰ to open the menu, go to **Server management** -> **Security** -> **Roles mapping**
 
 3. Click **Create Role mapping** and configure the following parameters:
-
     - **Role Name**: set a name for the role mapping (e.g. authentik_admins)
     - **Roles**: select a role (e.g.`administrator`)
     - **Custom rules**: Click **Add new rule** and set:

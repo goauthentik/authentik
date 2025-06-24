@@ -50,7 +50,7 @@ To support the integration of Gitea with authentik, you need to create an applic
     - **Client ID (Key)**: Enter the Client ID from authentik.
     - **Client Secret**: Enter the Client Secret from authentik.
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.png`
-    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Additional Scopes**: `email profile`
 
 ![](./gitea1.png)
@@ -91,7 +91,6 @@ You can add users to the groups at any point.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-
     - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
     - **Scope name**: `gitea`
     - **Expression**:
@@ -116,7 +115,6 @@ You can add users to the groups at any point.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the **Edit** icon of the Gitea provider.
 3. Under **Advanced protocol settings** > **Scopes** add the following scopes to **Selected Scopes**:
-
     - `authentik default OAuth Mapping: OpenID 'email'`
     - `authentik default OAuth Mapping: OpenID 'profile'`
     - `authentik default OAuth Mapping: OpenID 'openid'`
@@ -158,7 +156,7 @@ gitea:
         provider: "openidConnect"
         key: "<Client ID from authentik>"
         secret: "<Client secret from authentik>"
-        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
+        autoDiscoverUrl: "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
@@ -188,7 +186,7 @@ gitea:
         - name: "authentik"
         provider: "openidConnect"
         existingSecret: gitea-authentik-secret
-        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
+        autoDiscoverUrl: "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```

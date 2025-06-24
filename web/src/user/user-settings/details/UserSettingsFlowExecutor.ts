@@ -11,7 +11,7 @@ import { StageHost } from "#flow/stages/base";
 import "#user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -36,7 +36,7 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug?: string;
+    flowSlug = this.brand?.flowUserSettings;
 
     private _challenge?: ChallengeTypes;
 
@@ -86,12 +86,15 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("brand") && this.brand) {
+    firstUpdated() {
+        if (this.flowSlug) {
+            this.nextChallenge();
+        }
+    }
+
+    updated(): void {
+        if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
-
-            if (!this.flowSlug) return;
-
             this.nextChallenge();
         }
     }
@@ -169,7 +172,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+                return html`<ak-empty-state default-label></ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -190,7 +193,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }
