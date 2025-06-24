@@ -1,5 +1,5 @@
 ---
-Title: Event actions
+title: Event actions
 ---
 
 Whenever any of the following actions occur, an event is created. Actions are used to define [Notification Rules](notifications.md).

@@ -4,7 +4,7 @@ title: Transports
 
 To receive notifications about events, you will need to [create](#create-a-transport) a transport object, then create a notification rule and a policy. For details on this workflow refer to
 
-## Transport types
+## Transport modes
 
 Notifications can be sent to users via multiple mediums, or _transports_:
 
@@ -54,4 +54,9 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 ## Create a transport
 
-dfvfd
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Transports**.
+
+2. Click **Create** to add a new transport, or click the **Edit** icon next to an existing transport to modify it.
+
+3. Define the **Name** and **Mode** for the transport, enter required configuration settings, and then click **Create**.
+
