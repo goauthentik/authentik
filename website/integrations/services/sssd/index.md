@@ -102,7 +102,7 @@ Please note that by default, sssd returns all user accounts; active and disabled
 
 ## Additional Resources
 
-The setup of sssd may vary based on Linux distribution and version, here are some resources that can help you get this setup:
+The setup of sssd might vary based on Linux distribution and version; here are some resources that can help you get this set up:
 
 :::note
 authentik is providing a simple LDAP server, not an Active Directory domain. Be sure you're looking at the correct sections in these guides.
