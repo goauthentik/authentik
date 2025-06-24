@@ -1,6 +1,5 @@
 from typing import Any
 
-from dramatiq import get_logger
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
