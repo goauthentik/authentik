@@ -111,10 +111,9 @@ def on_password_changed(sender, user: User, password: str, request: HttpRequest 
 @receiver(post_save, sender=Event)
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
-    from authentik.events.tasks import event_trigger_handler
+    from authentik.events.tasks import event_trigger_dispatch
 
-    for trigger in NotificationRule.objects.all():
-        event_trigger_handler.send(instance.event_uuid, trigger.name)
+    event_trigger_dispatch.send(instance.event_uuid)
 
 
 @receiver(pre_delete, sender=User)

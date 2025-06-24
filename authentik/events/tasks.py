@@ -23,13 +23,27 @@ from authentik.tasks.models import Task
 LOGGER = get_logger()
 
 
-@actor(description=_("Check if policies attached to NotificationRule match event."))
+@actor(description=_("Dispatch new event notifications."))
+def event_trigger_dispatch(event_uuid: UUID):
+    for trigger in NotificationRule.objects.all():
+        event_trigger_handler.send_with_options(args=(event_uuid, trigger.name), rel_obj=trigger)
+
+
+@actor(
+    description=_(
+        "Check if policies attached to NotificationRule match event "
+        "and dispatch notification tasks."
+    )
+)
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
+    self: Task = CurrentTask.get_task()
+
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
     if not event:
-        LOGGER.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
+        self.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
         return
+
     trigger: NotificationRule | None = NotificationRule.objects.filter(name=trigger_name).first()
     if not trigger:
         return
@@ -64,9 +78,9 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
 
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
+    count = 0
     for transport in trigger.transports.all():
         for user in trigger.destination_users(event):
-            LOGGER.debug("created notification")
             notification_transport.send_with_options(
                 args=(
                     transport.pk,
@@ -76,8 +90,10 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
                 ),
                 rel_obj=transport,
             )
+            count += 1
             if transport.send_once:
                 break
+    self.info(f"Created {count} notification tasks")
 
 
 @actor(description=_("Send notification."))
@@ -95,7 +111,7 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
     notification = Notification(
         severity=trigger.severity, body=event.summary, event=event, user=user
     )
-    transport = NotificationTransport.objects.filter(pk=transport_pk).first()
+    transport: NotificationTransport = NotificationTransport.objects.filter(pk=transport_pk).first()
     if not transport:
         return
     transport.send(notification)

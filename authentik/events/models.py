@@ -535,7 +535,7 @@ class Notification(SerializerModel):
         verbose_name_plural = _("Notifications")
 
 
-class NotificationRule(SerializerModel, PolicyBindingModel):
+class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
