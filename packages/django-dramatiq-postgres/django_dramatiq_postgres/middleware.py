@@ -41,6 +41,12 @@ class FullyQualifiedActorName(Middleware):
         actor.actor_name = f"{actor.fn.__module__}.{actor.fn.__name__}"
 
 
+class CurrentTaskNotFound(Exception):
+    """
+    Not current task found. Did you call get_task outside a running task?
+    """
+
+
 class CurrentTask(Middleware):
     def __init__(self):
         self.logger = get_logger(__name__, type(self))
@@ -55,7 +61,7 @@ class CurrentTask(Middleware):
     def get_task(cls) -> TaskBase:
         task = cls._TASKS.get()
         if not task:
-            raise RuntimeError("CurrentTask.get_task() can only be called in a running task")
+            raise CurrentTaskNotFound()
         return task[-1]
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):

@@ -12,7 +12,7 @@ from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
-from django_dramatiq_postgres.middleware import CurrentTask
+from django_dramatiq_postgres.middleware import CurrentTask, CurrentTaskNotFound
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -191,7 +191,10 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 
 @actor(description=_("Apply single blueprint."))
 def apply_blueprint(instance_pk: UUID):
-    self: Task = CurrentTask.get_task()
+    try:
+        self: Task = CurrentTask.get_task()
+    except CurrentTaskNotFound:
+        self = Task()
     self.set_uid(str(instance_pk))
     instance: BlueprintInstance | None = None
     try:
