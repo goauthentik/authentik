@@ -30,7 +30,7 @@ class SCIMValidationError(ValidationError):
         if detail is None:
             detail = self.default_detail
         detail.status = self.status_code
-        self.detail = detail.model_dump(mode="json")
+        self.detail = detail.model_dump(mode="json", exclude_none=True)
 
 
 class SCIMConflictError(SCIMValidationError):
