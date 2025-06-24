@@ -54,7 +54,7 @@ def ldap_connectivity_check(pk: str | None = None):
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
-    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
+    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
     with source.sync_lock as lock_acquired:

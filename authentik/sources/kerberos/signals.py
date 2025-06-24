@@ -10,21 +10,11 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.sources.kerberos.models import (
-    KerberosSource,
     Krb5ConfContext,
     UserKerberosSourceConnection,
 )
-from authentik.sources.kerberos.tasks import kerberos_connectivity_check
 
 LOGGER = get_logger()
-
-
-@receiver(post_save, sender=KerberosSource)
-def sync_kerberos_source_on_save(sender, instance: KerberosSource, **_):
-    """Ensure that source is synced on save (if enabled)"""
-    if not instance.enabled or not instance.sync_users:
-        return
-    kerberos_connectivity_check.send(instance.pk)
 
 
 @receiver(password_changed)

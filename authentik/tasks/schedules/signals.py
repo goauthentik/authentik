@@ -5,7 +5,7 @@ from authentik.tasks.schedules.models import ScheduledModel
 
 
 @receiver(post_save)
-def post_save_schedule_mixin(sender, instance: ScheduledModel, **_):
+def post_save_scheduled_model(sender, instance, **_):
     if not isinstance(instance, ScheduledModel):
         return
     for spec in instance.schedule_specs:

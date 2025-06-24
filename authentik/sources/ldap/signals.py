@@ -2,7 +2,6 @@
 
 from typing import Any
 
-from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from ldap3.core.exceptions import LDAPOperationResult
@@ -18,16 +17,6 @@ from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.stages.prompt.signals import password_validate
 
 LOGGER = get_logger()
-
-
-@receiver(post_save, sender=LDAPSource)
-def sync_ldap_source_on_save(sender, instance: LDAPSource, created: bool, **_):
-    """Ensure that source is synced on save (if enabled)"""
-    # On creation, schedules are automatically run
-    if created or not instance.enabled:
-        return
-    for schedule in instance.schedules.all():
-        schedule.send()
 
 
 @receiver(password_validate)

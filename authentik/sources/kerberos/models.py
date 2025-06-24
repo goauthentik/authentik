@@ -148,12 +148,14 @@ class KerberosSource(ScheduledModel, Source):
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('kerberos_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
             ),
             ScheduleSpec(
                 actor=kerberos_connectivity_check,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('kerberos_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
             ),
         ]
 
