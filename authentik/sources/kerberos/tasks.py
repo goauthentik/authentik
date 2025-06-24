@@ -8,7 +8,6 @@ from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
@@ -64,5 +63,5 @@ def kerberos_sync_single(self, source_pk: str):
             syncer.sync()
             self.set_status(TaskStatus.SUCCESSFUL, *syncer.messages)
     except StopSync as exc:
-        LOGGER.warning(exception_to_string(exc))
+        LOGGER.warning("Error syncing kerberos", exc=exc, source=source)
         self.set_error(exc)

@@ -56,7 +56,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -238,8 +237,8 @@ class FlowExecutorView(APIView):
         self._logger.warning(exc)
         Event.new(
             action=EventAction.SYSTEM_EXCEPTION,
-            message=exception_to_string(exc),
-        ).from_http(self.request)
+            message="System exception during flow execution.",
+        ).with_exception(exc).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))
