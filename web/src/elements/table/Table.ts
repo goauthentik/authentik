@@ -312,7 +312,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span> >
+                            ><span>${msg("No objects found.")}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
