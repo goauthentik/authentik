@@ -37,7 +37,7 @@ class Command(BaseCommand):
         worker = Conf().worker
         executable_name = "dramatiq-gevent" if worker["use_gevent"] else "dramatiq"
         executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", "."] if watch else []
+        watch_args = ["--watch", worker["watch_folder"]] if watch else []
         if watch_args and worker["watch_use_polling"]:
             watch_args.append("--watch-use-polling")
 

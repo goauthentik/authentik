@@ -373,6 +373,7 @@ DRAMATIQ = {
         "consumer_listen_timeout": timedelta_from_string(
             CONFIG.get("worker.consumer_listen_timeout")
         ).total_seconds(),
+        "watch_folder": BASE_DIR / "authentik",
     },
     "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
     "schedule_model": "authentik.tasks.schedules.models.Schedule",
