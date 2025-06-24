@@ -11,6 +11,7 @@ from authentik.events.logs import LogEvent, LogEventSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
 from authentik.rbac.filters import ObjectFilter
+from authentik.tasks.models import Task
 
 
 class SyncStatusSerializer(PassiveSerializer):
@@ -41,26 +42,7 @@ class SyncObjectResultSerializer(PassiveSerializer):
 class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
-    sync_task: type[Actor] = None
     sync_objects_task: type[Actor] = None
-
-    @extend_schema(responses={200: SyncStatusSerializer()})
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[ObjectFilter],
-    )
-    def sync_status(self, request: Request, pk: int) -> Response:
-        """Get provider's sync status"""
-        provider: OutgoingSyncProvider = self.get_object()
-        with provider.sync_lock as lock_acquired:
-            status = {
-                # If we could not acquire the lock, it means a task is using it, and thus is running
-                "is_running": not lock_acquired,
-            }
-        return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(
         request=SyncObjectSerializer,
@@ -78,14 +60,20 @@ class OutgoingSyncProviderStatusMixin:
         provider: OutgoingSyncProvider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
-        res: list[LogEvent] = self.sync_objects_task.send(
-            params.validated_data["sync_object_model"],
-            page=1,
-            provider_pk=provider.pk,
-            pk=params.validated_data["sync_object_id"],
-            override_dry_run=params.validated_data["override_dry_run"],
-        ).get()
-        return Response(SyncObjectResultSerializer(instance={"messages": res}).data)
+        msg = self.sync_objects_task.send_with_options(
+            args=(params.validated_data["sync_object_model"],),
+            kwargs={
+                "page": 1,
+                "provider_pk": provider.pk,
+                "pk": params.validated_data["sync_object_id"],
+                "override_dry_run": params.validated_data["override_dry_run"],
+            },
+            rel_obj=provider,
+        )
+        msg.get_result(block=True)
+        task: Task = msg.options["task"]
+        task.refresh_from_db()
+        return Response(SyncObjectResultSerializer(instance={"messages": task._messages}).data)
 
 
 class OutgoingSyncConnectionCreateMixin:

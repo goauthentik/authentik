@@ -53,5 +53,4 @@ class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin
     ]
     search_fields = ["name"]
     ordering = ["name"]
-    sync_task = microsoft_entra_sync
     sync_objects_task = microsoft_entra_sync_objects

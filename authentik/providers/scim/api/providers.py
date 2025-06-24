@@ -44,5 +44,4 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
     filterset_fields = ["name", "exclude_users_service_account", "url", "filter_group"]
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
-    sync_task = scim_sync
     sync_objects_task = scim_sync_objects

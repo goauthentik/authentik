@@ -3,6 +3,8 @@ import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
 import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+import "@goauthentik/admin/system-tasks/ScheduleList";
+import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -12,7 +14,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/sync/SyncStatusCard";
 import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
 
 import { msg } from "@lit/localize";
@@ -33,6 +34,7 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    ModelEnum,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     SCIMProvider,
@@ -141,6 +143,7 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikProvidersScimScimprovider.split(".");
         return html` ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
@@ -224,21 +227,32 @@ export class SCIMProviderViewPage extends AKElement {
                         </div>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                        <ak-sync-status-card
-                            .fetch=${() => {
-                                return new ProvidersApi(
-                                    DEFAULT_CONFIG,
-                                ).providersScimSyncStatusRetrieve({
-                                    id: this.provider?.pk || 0,
-                                });
-                            }}
-                            .triggerSync=${() => {
-                                return new ProvidersApi(DEFAULT_CONFIG).providersScimPartialUpdate({
-                                    id: this.provider?.pk || 0,
-                                    patchedSCIMProviderRequest: {},
-                                });
-                            }}
-                        ></ak-sync-status-card>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__header">
+                                <div class="pf-c-card__title">${msg("Schedules")}</div>
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-schedule-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${this.provider.pk}"
+                                ></ak-schedule-list>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__header">
+                                <div class="pf-c-card__title">${msg("Tasks")}</div>
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${this.provider.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">

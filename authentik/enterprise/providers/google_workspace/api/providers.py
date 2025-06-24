@@ -55,5 +55,4 @@ class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixi
     ]
     search_fields = ["name"]
     ordering = ["name"]
-    sync_task = google_workspace_sync
     sync_objects_task = google_workspace_sync_objects

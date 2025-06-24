@@ -2,6 +2,8 @@ import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFor
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+import "@goauthentik/admin/system-tasks/ScheduleList";
+import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -10,7 +12,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -30,9 +31,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     GoogleWorkspaceProvider,
+    ModelEnum,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
-    SyncStatus,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-view")
@@ -42,9 +43,6 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
 
     @state()
     provider?: GoogleWorkspaceProvider;
-
-    @state()
-    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -87,22 +85,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersGoogleWorkspaceSyncStatusRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((state) => {
-                            this.syncState = state;
-                        })
-                        .catch(() => {
-                            this.syncState = undefined;
-                        });
-                }}
-            >
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
             <section
@@ -155,6 +138,8 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] =
+            ModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider.split(".");
         return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
@@ -211,23 +196,32 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <ak-sync-status-card
-                        .fetch=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersGoogleWorkspaceSyncStatusRetrieve({
-                                id: this.provider?.pk || 0,
-                            });
-                        }}
-                        .triggerSync=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersGoogleWorkspacePartialUpdate({
-                                id: this.provider?.pk || 0,
-                                patchedGoogleWorkspaceProviderRequest: {},
-                            });
-                        }}
-                    ></ak-sync-status-card>
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__header">
+                            <div class="pf-c-card__title">${msg("Schedules")}</div>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.provider.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </div>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__header">
+                            <div class="pf-c-card__title">${msg("Tasks")}</div>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.provider.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </div>
                 </div>
             </div>`;
     }

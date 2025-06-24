@@ -11,11 +11,10 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -31,7 +30,6 @@ import {
     ModelEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
-    SyncStatus,
 } from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
@@ -50,9 +48,6 @@ export class LDAPSourceViewPage extends AKElement {
     @property({ attribute: false })
     source!: LDAPSource;
 
-    @state()
-    syncState?: SyncStatus;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
     }
@@ -65,16 +60,6 @@ export class LDAPSourceViewPage extends AKElement {
         });
     }
 
-    load(): void {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesLdapSyncStatusRetrieve({
-                slug: this.source.slug,
-            })
-            .then((state) => {
-                this.syncState = state;
-            });
-    }
-
     render(): TemplateResult {
         if (!this.source) {
             return html``;
@@ -85,9 +70,6 @@ export class LDAPSourceViewPage extends AKElement {
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
-                @activate=${() => {
-                    this.load();
-                }}
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-4-col">

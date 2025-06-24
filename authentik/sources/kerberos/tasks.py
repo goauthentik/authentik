@@ -45,7 +45,7 @@ def kerberos_sync(pk: str):
                     "Failed to acquire lock for Kerberos sync, skipping task", source=source.slug
                 )
                 return
-            syncer = KerberosSync(source)
+            syncer = KerberosSync(source, self)
             syncer.sync()
     except StopSync as exc:
         LOGGER.warning(exception_to_string(exc))

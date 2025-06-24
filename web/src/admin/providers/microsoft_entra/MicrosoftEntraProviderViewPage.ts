@@ -2,6 +2,8 @@ import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm"
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+import "@goauthentik/admin/system-tasks/ScheduleList";
+import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -29,9 +31,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     MicrosoftEntraProvider,
+    ModelEnum,
     ProvidersApi,
     RbacPermissionsAssignedByUsersListModelEnum,
-    SyncStatus,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-view")
@@ -41,9 +43,6 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
 
     @state()
     provider?: MicrosoftEntraProvider;
-
-    @state()
-    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -86,22 +85,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersMicrosoftEntraSyncStatusRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((state) => {
-                            this.syncState = state;
-                        })
-                        .catch(() => {
-                            this.syncState = undefined;
-                        });
-                }}
-            >
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
             <section
@@ -154,6 +138,8 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] =
+            ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider.split(".");
         return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
@@ -211,23 +197,32 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                 </div>
 
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <ak-sync-status-card
-                        .fetch=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersMicrosoftEntraSyncStatusRetrieve({
-                                id: this.provider?.pk || 0,
-                            });
-                        }}
-                        .triggerSync=${() => {
-                            return new ProvidersApi(
-                                DEFAULT_CONFIG,
-                            ).providersMicrosoftEntraPartialUpdate({
-                                id: this.provider?.pk || 0,
-                                patchedMicrosoftEntraProviderRequest: {},
-                            });
-                        }}
-                    ></ak-sync-status-card>
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__header">
+                            <div class="pf-c-card__title">${msg("Schedules")}</div>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.provider.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </div>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__header">
+                            <div class="pf-c-card__title">${msg("Tasks")}</div>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-task-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.provider.pk}"
+                            ></ak-task-list>
+                        </div>
+                    </div>
                 </div>
             </div>`;
     }
