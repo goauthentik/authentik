@@ -42,6 +42,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -266,7 +267,7 @@ class TransportMode(models.TextChoices):
     EMAIL = "email", _("Email")
 
 
-class NotificationTransport(SerializerModel):
+class NotificationTransport(TasksModel, SerializerModel):
     """Action which is executed when a Rule matches"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)

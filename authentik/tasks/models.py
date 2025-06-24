@@ -137,3 +137,12 @@ class Task(SerializerModel, TaskBase):
 
     def error(self, message: str | Exception, save: bool = False, **attributes):
         self.log(self.uid, TaskStatus.ERROR, message, save=save, **attributes)
+
+
+class TasksModel(models.Model):
+    tasks = GenericRelation(
+        Task, content_type_field="rel_obj_content_type", object_id_field="rel_obj_id"
+    )
+
+    class Meta:
+        abstract = True
