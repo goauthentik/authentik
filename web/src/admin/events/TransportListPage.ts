@@ -1,5 +1,6 @@
 import "@goauthentik/admin/events/TransportForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
+import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -16,6 +17,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import {
     EventsApi,
+    ModelEnum,
     NotificationTransport,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
@@ -37,6 +39,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     checkbox = true;
     clearOnRefresh = true;
+    expandable = true;
 
     @property()
     order = "name";
@@ -111,6 +114,30 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     </pf-tooltip>
                 </ak-action-button>`,
         ];
+    }
+
+    renderExpanded(item: NotificationTransport): TemplateResult {
+        const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
+        return html`<td role="cell" colspan="5">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>`;
     }
 
     renderObjectCreate(): TemplateResult {
