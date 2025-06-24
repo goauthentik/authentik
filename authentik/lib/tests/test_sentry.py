@@ -10,8 +10,8 @@ class TestSentry(TestCase):
 
     def test_error_not_sent(self):
         """Test SentryIgnoredError not sent"""
-        self.assertIsNone(should_ignore_exception(SentryIgnoredException()))
+        self.assertTrue(should_ignore_exception(SentryIgnoredException()))
 
     def test_error_sent(self):
         """Test error sent"""
-        self.assertEqual({}, should_ignore_exception(ValueError()))
+        self.assertFalse(should_ignore_exception(ValueError()))
