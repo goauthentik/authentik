@@ -9,13 +9,14 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
 
 import django
 from channels.routing import ProtocolTypeRouter, URLRouter
-from defusedxml import defuse_stdlib
 from django.core.asgi import get_asgi_application
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 
+from authentik.root.setup import setup
+
 # DJANGO_SETTINGS_MODULE is set in gunicorn.conf.py
 
-defuse_stdlib()
+setup()
 django.setup()
 
 
