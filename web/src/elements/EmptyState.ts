@@ -100,14 +100,12 @@ export class EmptyState extends AKElement implements IEmptyState {
                     ? html`<div part="spinner" class="pf-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                       </div>`
-                    : this.icon
-                      ? html`<i
-                            part="icon"
-                            class="pf-icon fa ${this.icon ||
-                            "fa-question-circle"} pf-c-empty-state__icon"
-                            aria-hidden="true"
-                        ></i>`
-                      : nothing}
+                    : html`<i
+                          part="icon"
+                          class="pf-icon fa ${this.icon ||
+                          "fa-question-circle"} pf-c-empty-state__icon"
+                          aria-hidden="true"
+                      ></i>`}
                 ${hasHeading
                     ? html` <h1 part="heading" class="pf-c-title pf-m-lg" id="empty-state-heading">
                           <slot></slot>
