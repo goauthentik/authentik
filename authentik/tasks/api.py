@@ -18,6 +18,7 @@ class TaskSerializer(ModelSerializer):
     rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
 
     messages = LogEventSerializer(many=True, source="_messages")
+    previous_messages = LogEventSerializer(many=True, source="_previous_messages")
 
     class Meta:
         model = Task
@@ -32,6 +33,7 @@ class TaskSerializer(ModelSerializer):
             "rel_obj_id",
             "uid",
             "messages",
+            "previous_messages",
             "aggregated_status",
         ]
 

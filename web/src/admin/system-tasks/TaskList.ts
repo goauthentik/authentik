@@ -174,7 +174,10 @@ export class TaskList extends Table<Task> {
         return html` <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
+                    <p>Current execution logs</p>
                     <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
+                    <p>Previous executions logs</p>
+                    <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
                 </div>
             </div>
         </td>`;

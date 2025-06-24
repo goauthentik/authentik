@@ -38,15 +38,26 @@ class LoggingMiddleware(Middleware):
     def after_enqueue(self, broker: Broker, message: Message, delay: int):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
-        task._messages.append(
-            Task._make_message(
-                str(type(self)),
-                TaskStatus.INFO,
-                "Task is being queued" if task_created else "Task is being retried",
-                delay=delay,
+        if task_created:
+            task._messages.append(
+                Task._make_message(
+                    str(type(self)),
+                    TaskStatus.INFO,
+                    "Task has been queued",
+                    delay=delay,
+                )
             )
-        )
-        task.save(update_fields=("_messages",))
+        else:
+            task._previous_messages.extend(task._messages)
+            task._messages = [
+                Task._make_message(
+                    str(type(self)),
+                    TaskStatus.INFO,
+                    "Task will be retried",
+                    delay=delay,
+                )
+            ]
+        task.save(update_fields=("_messages", "_previous_messages"))
 
     def before_process_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]

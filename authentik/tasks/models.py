@@ -39,6 +39,7 @@ class Task(SerializerModel, TaskBase):
 
     _uid = models.TextField(blank=True, null=True)
     _messages = models.JSONField(default=list)
+    _previous_messages = models.JSONField(default=list)
 
     aggregated_status = models.TextField(choices=TaskStatus.choices)
 

@@ -60206,12 +60206,17 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+        previous_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
         aggregated_status:
           $ref: '#/components/schemas/AggregatedStatusEnum'
       required:
       - actor_name
       - aggregated_status
       - messages
+      - previous_messages
       - rel_obj_app_label
       - rel_obj_model
       - uid
