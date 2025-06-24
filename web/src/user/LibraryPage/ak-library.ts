@@ -105,7 +105,7 @@ export class LibraryPage extends AKElement {
     }
 
     loading() {
-        return html`<ak-empty-state default></ak-empty-state>`;
+        return html`<ak-empty-state default-label></ak-empty-state>`;
     }
 
     running() {

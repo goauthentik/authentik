@@ -55,7 +55,7 @@ do not need both attributes for \`default\` to work; it assumes loading.
             control: "boolean",
             description: "Show loading spinner instead of icon",
         },
-        default: {
+        defaultLabel: {
             control: "boolean",
             description: "Show loading spinner instead of icon",
         },
@@ -86,14 +86,14 @@ const Template: Story = {
     args: {
         icon: "fa-circle-radiation",
         loading: false,
-        default: false,
+        defaultLabel: false,
         fullHeight: false,
     },
     render: (args) => html`
         <ak-empty-state
             icon=${ifDefined(args.icon)}
             ?loading=${args.loading}
-            ?default=${args.default}
+            ?default=${args.defaultLabel}
             ?full-height=${args.fullHeight}
         >
             ${args.headingText ? html`<span>${args.headingText}</span>` : nothing}
@@ -156,14 +156,14 @@ export const LoadingWithCustomMessage: Story = {
 export const LoadingWithDefaultMessage: Story = {
     ...Template,
     args: {
-        default: true,
+        defaultLabel: true,
     },
 };
 
 export const LoadingDefaultWithOverride: Story = {
     ...Template,
     args: {
-        default: true,
+        defaultLabel: true,
         headingText: html`<span>Have they got a chance? Eh. It would take a miracle.</span>`,
     },
 };
@@ -171,7 +171,7 @@ export const LoadingDefaultWithOverride: Story = {
 export const LoadingDefaultWithButton: Story = {
     ...Template,
     args: {
-        default: true,
+        defaultLabel: true,
         primaryButtonText: html`<button>Cancel</button>`,
     },
 };

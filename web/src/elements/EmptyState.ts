@@ -27,7 +27,7 @@ export interface IEmptyState {
      * When true, will automatically fill the header with the "Loading" message and show the loading
      * spinner. Overrides 'loading'.
      */
-    default?: boolean;
+    defaultLabel?: boolean;
 
     /** Whether the empty state should take up the full height of its container */
     fullHeight?: boolean;
@@ -55,8 +55,8 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, reflect: true })
     public loading = false;
 
-    @property({ type: Boolean, reflect: true })
-    public default = false;
+    @property({ type: Boolean, reflect: true, attribute: "default-label" })
+    public defaultLabel = false;
 
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
@@ -76,7 +76,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     willUpdate() {
-        if (this.default && this.querySelector("span:not([slot])") === null) {
+        if (this.defaultLabel && this.querySelector("span:not([slot])") === null) {
             render(html`<span>${msg("Loading")}</span>`, this);
         }
     }
@@ -88,7 +88,7 @@ export class EmptyState extends AKElement implements IEmptyState {
 
     render() {
         const hasHeading = this.hasSlotted(null);
-        const loading = this.loading || this.default;
+        const loading = this.loading || this.defaultLabel;
         const classes = {
             "pf-c-empty-state": true,
             "pf-m-full-height": this.fullHeight,

@@ -19,7 +19,7 @@ describe("ak-empty-state", () => {
     });
 
     it("should render the default loader", async () => {
-        render(html`<ak-empty-state default></ak-empty-state>`);
+        render(html`<ak-empty-state default-label></ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
