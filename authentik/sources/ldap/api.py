@@ -23,7 +23,6 @@ from authentik.core.api.sources import (
 )
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.outgoing.api import SyncStatusSerializer
 from authentik.sources.ldap.models import (
     GroupLDAPSourceConnection,
     LDAPSource,
@@ -153,28 +152,6 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
-
-    @extend_schema(
-        responses={
-            200: SyncStatusSerializer(),
-        }
-    )
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[],
-    )
-    def sync_status(self, request: Request, slug: str) -> Response:
-        """Get source's sync status"""
-        source: LDAPSource = self.get_object()
-        with source.sync_lock as lock_acquired:
-            status = {
-                # If we could not acquire the lock, it means a task is using it, and thus is running
-                "is_running": not lock_acquired,
-            }
-        return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(
         responses={

@@ -19451,40 +19451,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/google_workspace/{id}/sync/status/:
-    get:
-      operationId: providers_google_workspace_sync_status_retrieve
-      description: Get provider's sync status
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Google Workspace Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SyncStatus'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /providers/google_workspace/{id}/used_by/:
     get:
       operationId: providers_google_workspace_used_by_list
@@ -20479,40 +20445,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SyncObjectResult'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /providers/microsoft_entra/{id}/sync/status/:
-    get:
-      operationId: providers_microsoft_entra_sync_status_retrieve
-      description: Get provider's sync status
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Microsoft Entra Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -23012,40 +22944,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SyncObjectResult'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /providers/scim/{id}/sync/status/:
-    get:
-      operationId: providers_scim_sync_status_retrieve
-      description: Get provider's sync status
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this SCIM Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -28147,40 +28045,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/kerberos/{slug}/sync/status/:
-    get:
-      operationId: sources_kerberos_sync_status_retrieve
-      description: Get source's sync status
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KerberosSyncStatus'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /sources/kerberos/{slug}/used_by/:
     get:
       operationId: sources_kerberos_used_by_list
@@ -28584,40 +28448,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LDAPDebug'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /sources/ldap/{slug}/sync/status/:
-    get:
-      operationId: sources_ldap_sync_status_retrieve
-      description: Get source's sync status
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal source name, used in URLs.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -47577,15 +47407,6 @@ components:
       - name
       - realm
       - slug
-    KerberosSyncStatus:
-      type: object
-      description: Kerberos Source sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-      required:
-      - is_running
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -60242,15 +60063,6 @@ components:
           readOnly: true
       required:
       - messages
-    SyncStatus:
-      type: object
-      description: Provider sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-      required:
-      - is_running
     SystemInfo:
       type: object
       description: Get system information.

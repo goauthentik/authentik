@@ -1,11 +1,7 @@
 """Source API Views"""
 
 from django.core.cache import cache
-from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, SerializerMethodField
-from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
@@ -50,12 +46,6 @@ class KerberosSourceSerializer(SourceSerializer):
         }
 
 
-class KerberosSyncStatusSerializer(PassiveSerializer):
-    """Kerberos Source sync status"""
-
-    is_running = BooleanField(read_only=True)
-
-
 class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     """Kerberos Source Viewset"""
 
@@ -84,20 +74,3 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
         "spnego_server_name",
     ]
     ordering = ["name"]
-
-    @extend_schema(responses={200: KerberosSyncStatusSerializer()})
-    @action(
-        methods=["GET"],
-        detail=True,
-        pagination_class=None,
-        url_path="sync/status",
-        filter_backends=[],
-    )
-    def sync_status(self, request: Request, slug: str) -> Response:
-        """Get source's sync status"""
-        source: KerberosSource = self.get_object()
-        with source.sync_lock as lock_acquired:
-            status = {
-                "is_running": not lock_acquired,
-            }
-        return Response(KerberosSyncStatusSerializer(status).data)

@@ -14,12 +14,6 @@ from authentik.rbac.filters import ObjectFilter
 from authentik.tasks.models import Task
 
 
-class SyncStatusSerializer(PassiveSerializer):
-    """Provider sync status"""
-
-    is_running = BooleanField(read_only=True)
-
-
 class SyncObjectSerializer(PassiveSerializer):
     """Sync object serializer"""
 
