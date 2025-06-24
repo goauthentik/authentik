@@ -62,31 +62,6 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             instance.save()
 
 
-@receiver(user_logged_out)
-def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User, **_):
-    """Session revoked trigger (user logged out)"""
-    if not request.session or not request.session.session_key or not user:
-        return
-    send_ssf_event(
-        EventTypes.CAEP_SESSION_REVOKED,
-        {
-            "initiating_entity": "user",
-        },
-        sub_id={
-            "format": "complex",
-            "session": {
-                "format": "opaque",
-                "id": sha256(request.session.session_key.encode("ascii")).hexdigest(),
-            },
-            "user": {
-                "format": "email",
-                "email": user.email,
-            },
-        },
-        request=request,
-    )
-
-
 @receiver(pre_delete, sender=AuthenticatedSession)
 def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
     """Session revoked trigger (users' session has been deleted)

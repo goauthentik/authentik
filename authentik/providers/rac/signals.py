@@ -17,21 +17,6 @@ from authentik.providers.rac.consumer_client import (
 from authentik.providers.rac.models import ConnectionToken, Endpoint
 
 
-@receiver(user_logged_out)
-def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
-    """Disconnect any open RAC connections"""
-    if not request.session or not request.session.session_key:
-        return
-    layer = get_channel_layer()
-    async_to_sync(layer.group_send)(
-        RAC_CLIENT_GROUP_SESSION
-        % {
-            "session": request.session.session_key,
-        },
-        {"type": "event.disconnect", "reason": "session_logout"},
-    )
-
-
 @receiver(pre_delete, sender=AuthenticatedSession)
 def user_session_deleted(sender, instance: AuthenticatedSession, **_):
     layer = get_channel_layer()

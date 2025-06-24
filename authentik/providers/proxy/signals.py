@@ -1,20 +1,10 @@
 """Proxy provider signals"""
 
-from django.contrib.auth.signals import user_logged_out
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from django.http import HttpRequest
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import AuthenticatedSession
 from authentik.providers.proxy.tasks import proxy_on_logout
-
-
-@receiver(user_logged_out)
-def logout_proxy_revoke_direct(sender: type[User], request: HttpRequest, **_):
-    """Catch logout by direct logout and forward to proxy providers"""
-    if not request.session or not request.session.session_key:
-        return
-    proxy_on_logout.send(request.session.session_key)
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
