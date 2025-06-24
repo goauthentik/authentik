@@ -46,7 +46,7 @@ class Task(SerializerModel, TaskBase):
     class Meta(TaskBase.Meta):
         default_permissions = ("view",)
         permissions = [
-            ("retrigger_task", _("Restart failed task")),
+            ("retry_task", _("Retry failed task")),
         ]
         indexes = TaskBase.Meta.indexes + (
             models.Index(fields=("rel_obj_content_type", "rel_obj_id")),

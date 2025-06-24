@@ -64,9 +64,6 @@ class CurrentTask(Middleware):
             raise CurrentTaskNotFound()
         return task[-1]
 
-    def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        self.after_process_message(broker, message)
-
     def before_process_message(self, broker: Broker, message: Message):
         tasks = self._TASKS.get()
         if tasks is None:

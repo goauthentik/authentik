@@ -1,7 +1,9 @@
+import { EVENT_REFRESH } from "#common/constants";
 import { formatElapsedTime } from "#common/temporal";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/LogViewer";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -16,7 +18,12 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Task, TasksApi, TasksTasksListAggregatedStatusEnum } from "@goauthentik/api";
+import {
+    Task,
+    TasksApi,
+    TasksTasksListAggregatedStatusEnum,
+    TasksTasksListStateEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -166,7 +173,29 @@ export class TaskList extends Table<Task> {
             html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
                 <small>${item.mtime.toLocaleString()}</small>`,
             this.taskState(item),
-            html``,
+            [TasksTasksListStateEnum.Rejected, TasksTasksListStateEnum.Done].includes(item.state)
+                ? html`<ak-action-button
+                      class="pf-m-plain"
+                      .apiRequest=${() => {
+                          return new TasksApi(DEFAULT_CONFIG)
+                              .tasksTasksRetryCreate({
+                                  messageId: item.messageId,
+                              })
+                              .then(() => {
+                                  this.dispatchEvent(
+                                      new CustomEvent(EVENT_REFRESH, {
+                                          bubbles: true,
+                                          composed: true,
+                                      }),
+                                  );
+                              });
+                      }}
+                  >
+                      <pf-tooltip position="top" content=${msg("Retry task")}>
+                          <i class="fas fa-redo" aria-hidden="true"></i>
+                      </pf-tooltip>
+                  </ak-action-button>`
+                : html``,
         ];
     }
 

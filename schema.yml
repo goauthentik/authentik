@@ -40629,6 +40629,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/tasks/{message_id}/retry/:
+    post:
+      operationId: tasks_tasks_retry_create
+      description: Retry task
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Task retried successfully
+        '400':
+          description: Task is not in a retryable state
+        '404':
+          description: Task not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tenants/domains/:
     get:
       operationId: tenants_domains_list
