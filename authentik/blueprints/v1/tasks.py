@@ -212,14 +212,14 @@ def apply_blueprint(instance_pk: UUID):
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
-            self.error(*logs)
+            self.logs(logs)
             return
         with capture_logs() as logs:
             applied = importer.apply()
             if not applied:
                 instance.status = BlueprintInstanceStatus.ERROR
                 instance.save()
-                self.error(*logs)
+                self.logs(logs)
                 return
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash

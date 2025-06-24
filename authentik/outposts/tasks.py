@@ -138,8 +138,7 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
     else:
         if from_cache:
             cache.delete(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
-        for log in logs:
-            self.info(log)
+        self.logs(logs)
 
 
 @actor(description=_("Ensure that all Outposts have valid Service Accounts and Tokens."))
@@ -155,17 +154,18 @@ def outpost_token_ensurer():
     self.info(f"Successfully checked {len(all_outposts)} Outposts.")
 
 
-@actor(description=_("If an Outpost is saved, ensure that token is created/updated."))
-def outpost_post_save(model_class: str, model_pk: Any):
+@actor(description=_("Dispatch tasks to update outposts when related objects are updated."))
+def outposts_and_related_update_dispatch(model_class: str, pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 
     If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
     we send a message down the relevant OutpostModels WS connection to trigger an update"""
+
     model: Model = path_to_class(model_class)
     try:
-        instance = model.objects.get(pk=model_pk)
+        instance = model.objects.get(pk=pk)
     except model.DoesNotExist:
-        LOGGER.warning("Model does not exist", model=model, pk=model_pk)
+        LOGGER.warning("Model does not exist", model=model, pk=pk)
         return
 
     if isinstance(instance, Outpost):
@@ -175,7 +175,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, OutpostModel | Outpost):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
-        outpost_send_update(instance)
+        outposts_and_related_send_update(instance)
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
@@ -200,28 +200,30 @@ def outpost_post_save(model_class: str, model_pk: Any):
         # Because the Outpost Model has an M2M to Provider,
         # we have to iterate over the entire QS
         for reverse in getattr(instance, field_name).all():
-            outpost_send_update(reverse)
+            outposts_and_related_send_update(reverse)
 
 
-def outpost_send_update(model_instance: Model):
-    """Send outpost update to all registered outposts, regardless to which authentik
-    instance they are connected"""
-    channel_layer = get_channel_layer()
+def outposts_and_related_send_update(model_instance: Model):
+    """Send outpost update to all related outposts"""
     if isinstance(model_instance, OutpostModel):
         for outpost in model_instance.outpost_set.all():
-            _outpost_single_update(outpost, channel_layer)
+            outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
     elif isinstance(model_instance, Outpost):
-        _outpost_single_update(model_instance, channel_layer)
+        outpost = model_instance
+        outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
 
 
-def _outpost_single_update(outpost: Outpost, layer=None):
-    """Update outpost instances connected to a single outpost"""
+@actor(description=_("Send update to outpost"))
+def outpost_send_update(pk: Any):
+    """Update outpost instance"""
+    outpost = Outpost.objects.filter(pk=pk).first()
+    if not outpost:
+        return
     # Ensure token again, because this function is called when anything related to an
     # OutpostModel is saved, so we can be sure permissions are right
     _ = outpost.token
     outpost.build_user_permissions(outpost.user)
-    if not layer:  # pragma: no cover
-        layer = get_channel_layer()
+    layer = get_channel_layer()
     group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
     LOGGER.debug("sending update", channel=group, outpost=outpost)
     async_to_sync(layer.group_send)(group, {"type": "event.update"})

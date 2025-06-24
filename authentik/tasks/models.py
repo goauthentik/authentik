@@ -107,6 +107,10 @@ class Task(SerializerModel, TaskBase):
         )
         return sanitize_item(log)
 
+    def logs(self, logs: list[LogEvent]):
+        for log in logs:
+            self._messages.append(sanitize_item(log))
+
     def log(
         self,
         logger: str,
@@ -117,13 +121,11 @@ class Task(SerializerModel, TaskBase):
     ):
         self._messages: list
         self._messages.append(
-            sanitize_item(
-                self._make_message(
-                    logger,
-                    log_level,
-                    message,
-                    **attributes,
-                )
+            self._make_message(
+                logger,
+                log_level,
+                message,
+                **attributes,
             )
         )
         if save:
