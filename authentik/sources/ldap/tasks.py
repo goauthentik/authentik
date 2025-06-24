@@ -34,7 +34,7 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
-@actor(description=_("Check connectivity for LDAP sources."))
+@actor(description=_("Check connectivity for LDAP source."))
 def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     timeout = 60 * 60 * 2
@@ -54,24 +54,26 @@ def ldap_connectivity_check(pk: str | None = None):
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
+    task: Task = CurrentTask.get_task()
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk, enabled=True).first()
     if not source:
         return
+    task.set_uid(f"{source.slug}")
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
             LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
             return
 
         user_group_tasks = group(
-            ldap_sync_paginator(source, UserLDAPSynchronizer)
-            + ldap_sync_paginator(source, GroupLDAPSynchronizer)
+            ldap_sync_paginator(task, source, UserLDAPSynchronizer)
+            + ldap_sync_paginator(task, source, GroupLDAPSynchronizer)
         )
 
-        membership_tasks = group(ldap_sync_paginator(source, MembershipLDAPSynchronizer))
+        membership_tasks = group(ldap_sync_paginator(task, source, MembershipLDAPSynchronizer))
 
         deletion_tasks = group(
-            ldap_sync_paginator(source, UserLDAPForwardDeletion)
-            + ldap_sync_paginator(source, GroupLDAPForwardDeletion),
+            ldap_sync_paginator(task, source, UserLDAPForwardDeletion)
+            + ldap_sync_paginator(task, source, GroupLDAPForwardDeletion),
         )
 
         # User and group sync can happen at once, they have no dependencies on each other
@@ -102,16 +104,18 @@ def ldap_sync(source_pk: str):
         )
 
 
-def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list[Message]:
+def ldap_sync_paginator(
+    task: Task, source: LDAPSource, sync: type[BaseLDAPSynchronizer]
+) -> list[Message]:
     """Return a list of task signatures with LDAP pagination data"""
-    sync_inst: BaseLDAPSynchronizer = sync(source)
+    sync_inst: BaseLDAPSynchronizer = sync(source, task)
     messages = []
     for page in sync_inst.get_objects():
         page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
         page_sync = ldap_sync_page.message_with_options(
             args=(source.pk, class_to_path(sync), page_cache_key),
-            rel_obj=source,
+            rel_obj=task.rel_obj,
         )
         messages.append(page_sync)
     return messages
@@ -133,7 +137,7 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     uid = page_cache_key.replace(CACHE_KEY_PREFIX, "")
     self.set_uid(f"{source.slug}:{sync.name()}:{uid}")
     try:
-        sync_inst: BaseLDAPSynchronizer = sync(source)
+        sync_inst: BaseLDAPSynchronizer = sync(source, self)
         page = cache.get(page_cache_key)
         if not page:
             error_message = (

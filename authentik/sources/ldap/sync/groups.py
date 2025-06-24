@@ -21,13 +21,15 @@ from authentik.sources.ldap.models import (
     flatten,
 )
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.tasks.models import Task
 
 
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
 
-    def __init__(self, source: LDAPSource):
-        super().__init__(source)
+    def __init__(self, source: LDAPSource, task: Task):
+        super().__init__(source, task)
+        self._source = source
         self.mapper = SourceMapper(source)
         self.manager = self.mapper.get_manager(Group, ["ldap", "dn"])
 

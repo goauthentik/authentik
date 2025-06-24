@@ -9,6 +9,7 @@ from ldap3 import SUBTREE
 from authentik.core.models import Group, User
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.tasks.models import Task
 
 
 class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -16,8 +17,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     group_cache: dict[str, Group]
 
-    def __init__(self, source: LDAPSource):
-        super().__init__(source)
+    def __init__(self, source: LDAPSource, task: Task):
+        super().__init__(source, task)
         self.group_cache: dict[str, Group] = {}
 
     @staticmethod

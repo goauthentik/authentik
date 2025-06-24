@@ -1,6 +1,7 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
+import "@goauthentik/admin/system-tasks/ScheduleList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -27,6 +28,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     LDAPSource,
+    ModelEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
     SyncStatus,
@@ -77,6 +79,7 @@ export class LDAPSourceViewPage extends AKElement {
         if (!this.source) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
         return html`<ak-tabs>
             <section
                 slot="page-overview"
@@ -87,7 +90,7 @@ export class LDAPSourceViewPage extends AKElement {
                 }}
             >
                 <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card pf-l-grid__item pf-m-4-col">
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
@@ -142,7 +145,7 @@ export class LDAPSourceViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-2-col">
+                    <div class="pf-c-card pf-l-grid__item pf-m-8-col">
                         <div class="pf-c-card__title">
                             <p>${msg("Connectivity")}</p>
                         </div>
@@ -152,22 +155,17 @@ export class LDAPSourceViewPage extends AKElement {
                             ></ak-source-ldap-connectivity>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-10-col">
-                        <ak-sync-status-card
-                            .fetch=${() => {
-                                return new SourcesApi(DEFAULT_CONFIG).sourcesLdapSyncStatusRetrieve(
-                                    {
-                                        slug: this.source?.slug,
-                                    },
-                                );
-                            }}
-                            .triggerSync=${() => {
-                                return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
-                                    slug: this.source?.slug || "",
-                                    patchedLDAPSourceRequest: {},
-                                });
-                            }}
-                        ></ak-sync-status-card>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">
+                            <p>${msg("Schedules")}</p>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.source.pk}"
+                            ></ak-schedule-list>
+                        </div>
                     </div>
                 </div>
             </section>

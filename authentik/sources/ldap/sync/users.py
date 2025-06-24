@@ -23,13 +23,14 @@ from authentik.sources.ldap.models import (
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
+from authentik.tasks.models import Task
 
 
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
 
-    def __init__(self, source: LDAPSource):
-        super().__init__(source)
+    def __init__(self, source: LDAPSource, task: Task):
+        super().__init__(source, task)
         self.mapper = SourceMapper(source)
         self.manager = self.mapper.get_manager(User, ["ldap", "dn"])
 
