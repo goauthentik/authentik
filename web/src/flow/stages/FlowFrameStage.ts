@@ -28,10 +28,10 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
             </header>
             <div class="pf-c-login__main-body">
                 ${this.challenge.loadingOverlay
-                    ? html`<ak-empty-state
-                          loading
-                          header=${this.challenge.loadingText ?? undefined}
-                      >
+                    ? html`<ak-empty-state loading
+                          >${this.challenge.loadingText
+                              ? html`<span>${this.challenge.loadingText}}</span>`
+                              : nothing}
                       </ak-empty-state>`
                     : nothing}
                 <iframe
