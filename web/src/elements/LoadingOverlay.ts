@@ -35,7 +35,7 @@ export interface ILoadingOverlay {
  *
  * ## Slots
  *
- * @slot heading - The main heading text for the loading state
+ * @slot - The main heading text for the loading state
  * @slot body - Descriptive text explaining the loading state
  *
  */

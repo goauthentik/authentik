@@ -42,7 +42,7 @@ export interface IEmptyState {
  *
  * ## Slots
  *
- * @slot heading - The main heading text for the empty state
+ * @slot - The main heading text for the empty state
  * @slot body - Descriptive text explaining the empty state or what the user can do
  * @slot primary - Primary action buttons or other interactive elements
  *
