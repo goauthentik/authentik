@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="it" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>La URL "
-        <x id="0" equiv-text="${this.url}"/>" non è stata trovata.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>La URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; non è stata trovata.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1100,7 +1100,7 @@
       </trans-unit>
       <trans-unit id="sde949d0ef44572eb">
         <source>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
-        <target>Richiede che l'utente abbia un attributo "upn" impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
+        <target>Richiede che l'utente abbia un attributo &quot;upn&quot; impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
         
       </trans-unit>
       <trans-unit id="s9f23ed1799b4d49a">
@@ -1260,7 +1260,7 @@
       </trans-unit>
       <trans-unit id="s211b75e868072162">
         <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
-        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su "domain.tld".</target>
+        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su &quot;domain.tld&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s2345170f7e272668">
@@ -1709,8 +1709,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Inserisci un URL completo, un percorso relativo oppure utilizza "fa://fa-test" per utilizzare l'icona "fa-test" di Font Awesome.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Inserisci un URL completo, un percorso relativo oppure utilizza &quot;fa://fa-test&quot; per utilizzare l'icona &quot;fa-test&quot; di Font Awesome.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3134,7 +3134,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
-        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID "Transient" e l'utente non si disconnette manualmente.</target>
+        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID &quot;Transient&quot; e l'utente non si disconnette manualmente.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3276,7 +3276,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s9f8aac89fe318acc">
         <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
-        <target>Opzionale: imposta il valore "friendlyname" dell'attributo di asserzione.</target>
+        <target>Opzionale: imposta il valore &quot;friendlyname&quot; dell'attributo di asserzione.</target>
         
       </trans-unit>
       <trans-unit id="s851c108679653d2a">
@@ -3757,10 +3757,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Sei sicuro di voler aggiornare
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4133,7 +4133,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s7520286c8419a266">
         <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
-        <target>Dati facoltativi che vengono caricati nella variabile di contesto "prompt_data" del flusso. YAML o JSON.</target>
+        <target>Dati facoltativi che vengono caricati nella variabile di contesto &quot;prompt_data&quot; del flusso. YAML o JSON.</target>
         
       </trans-unit>
       <trans-unit id="sb8795b799c70776a">
@@ -4826,8 +4826,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Un autenticatore "roaming", come un YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Un autenticatore &quot;roaming&quot;, come un YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5132,7 +5132,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5170f9ef331949c0">
         <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile "prompt_data".</target>
+        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile &quot;prompt_data&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s36cb242ac90353bc">
@@ -5185,8 +5185,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di "rimanere firmato", che estenderà la sessione entro il momento specificato qui.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di &quot;rimanere firmato&quot;, che estenderà la sessione entro il momento specificato qui.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -5207,7 +5207,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s927398c400970760">
         <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
-        <target>Scrivi qualsiasi dati dal contesto del flusso "prompt_data" all'utente attualmente in sospeso. Se nessun utente
+        <target>Scrivi qualsiasi dati dal contesto del flusso &quot;prompt_data&quot; all'utente attualmente in sospeso. Se nessun utente
  è in sospeso, viene creato un nuovo utente e vengono scritti dati.</target>
       </trans-unit>
       <trans-unit id="sb379d861cbed0b47">
@@ -7336,7 +7336,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Un suggerimento, "New Application Wizard", è attualmente nascosto</target>
+  <target>Un suggerimento, &quot;New Application Wizard&quot;, è attualmente nascosto</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7451,7 +7451,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Utente creato con successo e aggiunto al gruppo <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Questo utente sarà aggiunto al gruppo &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8598,7 +8598,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Fornisci agli utenti un pulsante "Mostra password".</target>
+  <target>Fornisci agli utenti un pulsante &quot;Mostra password&quot;.</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8733,7 +8733,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Gruppo di sincronizzazione</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, del tipo <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -8966,6 +8966,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applicazioni esterne che utilizzano <x id="0" equiv-text="${this.brandingTitle}"/> come fornitore di identità tramite protocolli come OAuth2 e SAML. Qui sono mostrate tutte le applicazioni, anche quelle a cui non è possibile accedere..</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -8980,8 +8981,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>URI di reindirizzamento validi dopo un flusso di autorizzazione riuscito. Specificare anche eventuali origini per i flussi impliciti.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su ".*". Tieni presente le possibili implicazioni per la sicurezza.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su &quot;.*&quot;. Tieni presente le possibili implicazioni per la sicurezza.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9651,7 +9652,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
-  <target>Campo che contiene i ND dei gruppi di cui l'utente è membro. Questo campo viene utilizzato per cercare i gruppi degli utenti, ad esempio "memberOf". Per cercare gruppi nidificati in un ambiente Active Directory, utilizzare "memberOf:1.2.840.113556.1.4.1941:".</target>
+  <target>Campo che contiene i ND dei gruppi di cui l'utente è membro. Questo campo viene utilizzato per cercare i gruppi degli utenti, ad esempio &quot;memberOf&quot;. Per cercare gruppi nidificati in un ambiente Active Directory, utilizzare &quot;memberOf:1.2.840.113556.1.4.1941:&quot;.</target>
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
@@ -9734,8 +9735,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Come eseguire l'autenticazione durante un flusso di richiesta del token authorization_code</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
-  <target>Abilita "Ricordami su questo dispositivo"</target>
+  <source>Enable &quot;Remember me on this device&quot;</source>
+  <target>Abilita &quot;Ricordami su questo dispositivo&quot;</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
@@ -9763,111 +9764,147 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa30ba280de276758">
   <source>When enabled, the SAML response will be signed.</source>
+  <target>Se abilitata, la risposta SAML verrà firmata.</target>
 </trans-unit>
 <trans-unit id="s2c42bb3c6f5420d2">
   <source>Client Certificates</source>
+  <target>Certificati client</target>
 </trans-unit>
 <trans-unit id="s95901716c0629274">
   <source>Available Certificates</source>
+  <target>Certificati disponibili</target>
 </trans-unit>
 <trans-unit id="sdbf6b484fa1436b0">
   <source>Selected Certificates</source>
+  <target>Certificati selezionati</target>
 </trans-unit>
 <trans-unit id="s9300147e327fd8f6">
   <source>Client-certificate/mTLS authentication/enrollment.</source>
+  <target>Autenticazione/registrazione tramite certificato client/mTLS.</target>
 </trans-unit>
 <trans-unit id="sbf990ec848470f5c">
   <source>Certificate optional</source>
+  <target>Certificato facoltativo</target>
 </trans-unit>
 <trans-unit id="s72e2876e9409b9eb">
   <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Se non è stato fornito alcun certificato, questa fase avrà esito positivo e si passerà alla fase successiva.</target>
 </trans-unit>
 <trans-unit id="se07d973901a6e6b9">
   <source>Certificate required</source>
+  <target>Certificato richiesto</target>
 </trans-unit>
 <trans-unit id="s664c47df020ee414">
   <source>If no certificate was provided, this stage will stop flow execution.</source>
+  <target>Se non è stato fornito alcun certificato, questa fase interromperà l'esecuzione del flusso.</target>
 </trans-unit>
 <trans-unit id="sbe9da6dad795aa39">
   <source>Certificate authorities</source>
+  <target>Autorità di certificazione</target>
 </trans-unit>
 <trans-unit id="se3a6aa4f0ab7568e">
   <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+  <target>Configurare l'autorità di certificazione con cui vengono convalidati i certificati client. L'autorità di certificazione può anche essere configurata per un marchio, consentendo di utilizzare autorità di certificazione diverse per domini diversi.</target>
 </trans-unit>
 <trans-unit id="sb8fdf5a09a969870">
   <source>Certificate attribute</source>
+  <target>Attributo del certificato</target>
 </trans-unit>
 <trans-unit id="s8069037a865037c9">
   <source>Configure the attribute of the certificate used to look for a user.</source>
+  <target>Configura l'attributo del certificato utilizzato per cercare un utente.</target>
 </trans-unit>
 <trans-unit id="sc185a8ad96f8eaa2">
   <source>User attribute</source>
+  <target>Attributo utente</target>
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+  <target>Configura l'attributo dell'utente utilizzato per cercare un utente.</target>
 </trans-unit>
 <trans-unit id="s42b57339ad2f3ac7">
   <source>Delete Not Found Objects</source>
+  <target>Elimina oggetti non trovati</target>
 </trans-unit>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>Elimina gli utenti e i gruppi authentik precedentemente forniti da questa fonte, ma che ora mancano.</target>
 </trans-unit>
 <trans-unit id="s0a2cb398b54a6207">
   <source>Welcome.</source>
+  <target>Benvenuto.</target>
 </trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>Campo che contiene i membri di un gruppo. Il valore di questo campo viene confrontato con l'attributo di appartenenza dell'utente.</target>
 </trans-unit>
 <trans-unit id="s6478025f3e0174fa">
   <source>User membership attribute</source>
+  <target>Attributo di appartenenza dell'utente</target>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+  <target>Attributo che corrisponde al valore del campo di appartenenza al gruppo.</target>
 </trans-unit>
 <trans-unit id="sfa6b7b105640e457">
   <source>Additional User DN</source>
+  <target>DN utente aggiuntivo</target>
 </trans-unit>
 <trans-unit id="s04bb32ec9f359507">
   <source>Additional Group DN</source>
+  <target>DN di gruppo aggiuntivo</target>
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+  <target>La modalità del motore di policy attualmente selezionata è <x id="0" equiv-text="${policyEngineMode.label}"/>:</target>
 </trans-unit>
 <trans-unit id="se1d2545eda4b1600">
   <source>Import Existing Certificate-Key Pair</source>
+  <target>Importa coppia certificato-chiave esistente</target>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+  <target>Genera nuova coppia certificato-chiave</target>
 </trans-unit>
 <trans-unit id="sf9686d31d28fcf7d">
   <source>Show field content</source>
+  <target>Mostra il contenuto del campo</target>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+  <target>Nascondi il contenuto del campo</target>
 </trans-unit>
 <trans-unit id="s4f820625804ed29b">
   <source>Re-authenticate with Plex</source>
+  <target>Riautenticare con Plex</target>
 </trans-unit>
 <trans-unit id="s0433d667ea6eec1a">
   <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+  <target>Il nome di un invito deve essere uno slug: sono consentiti solo lettere minuscole, numeri e trattini.</target>
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
+  <target>Selezionare il gruppo di utenti a cui inviare gli avvisi.</target>
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>Se non viene selezionato alcun gruppo e l'opzione &quot;Invia notifica all'utente dell'evento&quot; è disabilitata, la regola è disabilitata.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
+  <target>Invia notifica all'utente dell'evento</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento, oltre a tutti gli utenti del gruppo sopra indicato. L'utente dell'evento sarà sempre il primo a inviare una notifica solo all'utente dell'evento che ha abilitato &quot;Invia una volta&quot; nel trasporto delle notifiche.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
+  <target>Numero massimo di tentativi di registrazione</target>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>Numero massimo di tentativi di registrazione consentiti. Se impostato su 0 tentativi, i tentativi non sono limitati.</target>
 </trans-unit>
     </body>
   </file>
