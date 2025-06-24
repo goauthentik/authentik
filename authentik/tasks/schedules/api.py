@@ -48,10 +48,6 @@ class ScheduleSerializer(ModelSerializer):
         )
 
     def get_description(self, instance: Schedule) -> str | None:
-        if instance.rel_obj:
-            for spec in instance.rel_obj.schedule_specs:
-                if instance.uid == spec.get_uid():
-                    return spec.description
         try:
             actor: Actor = get_broker().get_actor(instance.actor_name)
         except ActorNotFound:

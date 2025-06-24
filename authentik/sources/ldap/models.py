@@ -172,14 +172,12 @@ class LDAPSource(ScheduledModel, Source):
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
-                description=_(f"Sync LDAP source '{self.name}'"),
             ),
             ScheduleSpec(
                 actor=ldap_connectivity_check,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",
-                description=_(f"Check connectivity for LDAP source '{self.name}'"),
             ),
         ]
 

@@ -83,6 +83,5 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 },
                 send_on_save=True,
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",
-                description=_(f"Run full sync for {self._meta.verbose_name}"),
             ),
         ]

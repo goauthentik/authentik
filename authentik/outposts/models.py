@@ -173,7 +173,6 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
                 uid=self.pk,
                 args=(self.pk,),
                 crontab="3-59/15 * * * *",
-                description=_(f"Update cached state of service connection {self.name}"),
             ),
         ]
 
@@ -326,9 +325,6 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                 args=(self.pk,),
                 kwargs={"action": "up", "from_cache": False},
                 crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
-                description=_(
-                    f"Create/update/monitor/delete the deployment for the {self.name} outpost"
-                ),
             ),
         ]
 

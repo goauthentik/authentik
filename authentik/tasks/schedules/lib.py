@@ -22,8 +22,6 @@ class ScheduleSpec:
 
     rel_obj: Any | None = None
 
-    description: Any | str | None = None
-
     send_on_save: bool = False
 
     send_on_startup: bool = False
