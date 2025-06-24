@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://sssd.io/
 
-Note that authentik supports _only_ user and group objects. As a consequence, it cannot be used to provide automount or sudo configuration nor can it provide netgroups or services to `nss`. Kerberos is also not supported.
+Note that authentik supports _only_ user and group objects. As a consequence, it cannot be used to provide automount or sudo configuration, nor can it provide netgroups or services to `nss`. Kerberos is also not supported.
 
 ## Preparation
 
@@ -40,7 +40,7 @@ Follow [official documentation](/docs/add-secure-apps/outposts/#create-and-confi
 First, install the necessary sssd packages on your host. Very likely the package is just `sssd`.
 
 :::note
-This guide well help you configure the `sssd.conf` for LDAP only. You will likely need to perform other tasks for a usable setup like setting up auto-mounted or auto-created home directories that are beyond the scope of this guide. See the "additional resources" section for some help.
+This guide will help you configure the `sssd.conf` file for LDAP only. You will likely need to perform other tasks for a usable setup like setting up auto-mounted or auto-created home directories that are beyond the scope of this guide. See the "additional resources" section for some help.
 :::
 
 Create a file at `/etc/sssd/sssd.conf` with contents similar to the following:
