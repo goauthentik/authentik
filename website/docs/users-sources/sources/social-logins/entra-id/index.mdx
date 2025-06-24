@@ -36,13 +36,18 @@ The secret value must be copied immediately after its creation. It is not possib
 9. In the sidebar, navigate to **API Permissions**.
 10. Click **Add a permission** and select **Microsoft Graph** as the API.
 11. Select **Delegated permissions** as the permission type and assign the following permissions:
-    - Under **OpenID Permissions**: select `email` and `profile`. -Does it need `openid`? Check with Jens-
+    - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
     - Under **Group Member** _(optional)_: if you need authentik to read group membership information from Entra ID, select the `GroupMember.Read.All` permission.
 12. Click **Add permissions**.
 
 ## authentik Setup
 
-### Create OAuth source property mappings
+To support the integration of Entra ID with authentik, you need to create an application/provider pair in authentik. Optionally, if you need to read group membership information from Entra ID you will also need to create a property mapping.
+
+### Create OAuth source property mappings \_(optional)
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 
 ### Create Entra ID OAuth source
 
@@ -53,13 +58,14 @@ The secret value must be copied immediately after its creation. It is not possib
     - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations.
         - Under **Protocol Settings**:
             - **Consumer key**: `Application (client) ID` from Entra ID.
-            - **Consumer secret**: secret value from Entra ID.
+            - **Consumer secret**: value of the secret created in Entra ID.
+            - **Scopes**_(optional)_: if you need to read group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
         - Under **URL Settings**:
             - Blank the OIDC if it causes issues - profile URL should be `https://graph.microsoft.com/v1.0/me` - more information explaining the issue with oauth overwriting the link and breaking property mapping
-            - **OIDC Well-known URL**: If the default `Single tenant` account type was selected in Entra ID, then you must change this URL to `https://login.microsoftonline.com/<Directory (tenant) ID>/v2.0/.well-known/openid-configuration`
+            - **OIDC Well-known URL**: if the default `Single tenant` account type was selected in Entra ID, then you must change this URL to `https://login.microsoftonline.com/<Directory_(tenant)_ID>/v2.0/.well-known/openid-configuration`
         - Under **OAuth Attribute Mapping**:
             - **User Property Mappings**: select the `Entra ID User Property Mapping` created in the previous section.
-            - **Group Property Mappings**_(optional)_: if you need authentik to read group membership information from Entra ID, select the `Entra ID Group Property Mapping` created in the previous section.
+            - **Group Property Mappings**_(optional)_: if you need to read group membership information from Entra ID, select the `Entra ID Group Property Mapping` created in the previous section.
 
 3. Click **Save**.
 
@@ -156,7 +162,7 @@ If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/clien
 When getting the JWT token from Azure AD, set the scope to the Application ID URI, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
 ```http
-POST /<azure-ad-tenant-id>/oauth2/v2.0/token/ HTTP/1.1
+POST /<entra_tenant_id>/oauth2/v2.0/token/ HTTP/1.1
 Host: login.microsoftonline.com
 Content-Type: application/x-www-form-urlencoded
 
