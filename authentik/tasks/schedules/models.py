@@ -6,7 +6,6 @@ from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import ScheduleBase
 
 from authentik.lib.models import SerializerModel
-from authentik.tasks.models import TasksModel
 from authentik.tasks.schedules.lib import ScheduleSpec
 
 
@@ -37,7 +36,7 @@ class Schedule(SerializerModel, ScheduleBase):
         return ScheduleSerializer
 
 
-class ScheduledModel(TasksModel, models.Model):
+class ScheduledModel(models.Model):
     schedules = GenericRelation(
         Schedule, content_type_field="rel_obj_content_type", object_id_field="rel_obj_id"
     )
