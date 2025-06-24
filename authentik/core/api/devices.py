@@ -1,6 +1,5 @@
 """Authenticator Devices API Views"""
 
-from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import (
@@ -23,7 +22,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
 
 class DeviceSerializer(MetaNameSerializer):
-    """Serializer for Duo authenticator devices"""
+    """Serializer for authenticator devices"""
 
     pk = CharField()
     name = CharField()
@@ -33,22 +32,27 @@ class DeviceSerializer(MetaNameSerializer):
     last_updated = DateTimeField(read_only=True)
     last_used = DateTimeField(read_only=True, allow_null=True)
     extra_description = SerializerMethodField()
+    external_id = SerializerMethodField()
 
     def get_type(self, instance: Device) -> str:
         """Get type of device"""
         return instance._meta.label
 
-    def get_extra_description(self, instance: Device) -> str:
+    def get_extra_description(self, instance: Device) -> str | None:
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
-            return (
-                instance.device_type.description
-                if instance.device_type
-                else _("Extra description not available")
-            )
+            return instance.device_type.description if instance.device_type else None
         if isinstance(instance, EndpointDevice):
             return instance.data.get("deviceSignals", {}).get("deviceModel")
-        return ""
+        return None
+
+    def get_external_id(self, instance: Device) -> str | None:
+        """Get external Device ID"""
+        if isinstance(instance, WebAuthnDevice):
+            return instance.device_type.aaguid if instance.device_type else None
+        if isinstance(instance, EndpointDevice):
+            return instance.data.get("deviceSignals", {}).get("deviceModel")
+        return None
 
 
 class DeviceViewSet(ViewSet):
