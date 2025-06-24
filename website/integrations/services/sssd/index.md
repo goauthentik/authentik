@@ -86,7 +86,7 @@ ldap_default_bind_dn = cn=${sssd.serviceAccount},ou=users,${ldap.baseDN}
 ldap_default_authtok = ${sssd.serviceAccountToken}
 ```
 
-You should now be able to start sssd; however, the system may not yet be setup to use it. Depending on your platform, you may need to use `authconfig` or `pam-auth-update` to configure your system. See the additional resources section for details.
+You should now be able to start sssd; however, the system may not yet be set up to use it. Depending on your platform, you might need to use `authconfig` or `pam-auth-update` to configure your system. See the additional resources section for details.
 
 :::note
 You can store SSH authorized keys in LDAP by adding the `sshPublicKey` attribute to any user with their public key as the value.
