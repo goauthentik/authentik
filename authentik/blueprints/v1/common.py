@@ -6,6 +6,7 @@ from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
+from json import loads, JSONDecodeError
 from operator import ixor
 from os import getenv
 from typing import Any, Literal, Union
@@ -289,6 +290,22 @@ class Context(YAMLTag):
         if isinstance(value, YAMLTag):
             return value.resolve(entry, blueprint)
         return value
+
+
+class JSON(YAMLTag):
+    """Parse JSON from context/env/etc value"""
+
+    raw: str
+
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+        super().__init__()
+        self.raw = node.value
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            return loads(self.raw)
+        except JSONDecodeError as exc:
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Format(YAMLTag):
@@ -666,6 +683,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
         self.add_constructor("!AtIndex", AtIndex)
+        self.add_constructor("!JSON", JSON)
 
 
 class EntryInvalidError(SentryIgnoredException):
