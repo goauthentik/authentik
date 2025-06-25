@@ -30,25 +30,24 @@ export function renderEventUser(
             : html`<span>${inner}</span>`}`;
     };
 
-    let body: SlottedTemplateResult = nothing;
+    const renderUsername = (evu: EventUser) => {
+        let username = evu.username;
+        if (evu.is_anonymous) {
+            username = msg("Anonymous user");
+        }
+        if (truncateUsername) {
+            return truncate(username, truncateUsername);
+        }
+        return username;
+    };
 
-    if (event.user.is_anonymous) {
-        body = html`<div>${msg("Anonymous user")}</div>`;
-    } else {
-        body = html`<div>
-            ${linkOrSpan(
-                html`${truncateUsername
-                    ? truncate(event.user?.username, truncateUsername)
-                    : event.user?.username}`,
-                event.user,
-            )}
-        </div>`;
-    }
+    let body: SlottedTemplateResult = nothing;
+    body = html`<div>${linkOrSpan(html`${renderUsername(event.user)}`, event.user)}</div>`;
 
     if (event.user.on_behalf_of) {
         return html`${body}<small>
                 ${linkOrSpan(
-                    html`${msg(str`On behalf of ${event.user.on_behalf_of.username}`)}`,
+                    html`${msg(str`On behalf of ${renderUsername(event.user.on_behalf_of)}`)}`,
                     event.user.on_behalf_of,
                 )}
             </small>`;
@@ -56,7 +55,9 @@ export function renderEventUser(
     if (event.user.authenticated_as) {
         return html`${body}<small>
                 ${linkOrSpan(
-                    html`${msg(str`Authenticated as ${event.user.authenticated_as.username}`)}`,
+                    html`${msg(
+                        str`Authenticated as ${renderUsername(event.user.authenticated_as)}`,
+                    )}`,
                     event.user.authenticated_as,
                 )}
             </small>`;
