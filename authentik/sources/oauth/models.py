@@ -232,12 +232,12 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
 
 
 class AzureADOAuthSource(CreatableType, OAuthSource):
-    """Social Login using Azure AD."""
+    """Social Login using Entra ID."""
 
     class Meta:
         abstract = True
-        verbose_name = _("Azure AD OAuth Source")
-        verbose_name_plural = _("Azure AD OAuth Sources")
+        verbose_name = _("Entra ID OAuth Source")
+        verbose_name_plural = _("Entra ID OAuth Sources")
 
 
 class OpenIDConnectOAuthSource(CreatableType, OAuthSource):

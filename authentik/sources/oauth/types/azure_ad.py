@@ -73,9 +73,7 @@ class AzureADType(SourceType):
     authorization_url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
     access_token_url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"  # nosec
     profile_url = "https://graph.microsoft.com/v1.0/me"
-    oidc_well_known_url = (
-        "https://login.microsoftonline.com/common/.well-known/openid-configuration"
-    )
+    oidc_well_known_url = ""
     oidc_jwks_url = "https://login.microsoftonline.com/common/discovery/keys"
 
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
