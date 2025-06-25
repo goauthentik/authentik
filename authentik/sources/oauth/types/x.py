@@ -52,4 +52,4 @@ class XType(SourceType):
             "username": data.get("username"),
             "email": None,
             "name": data.get("name"),
-        } 
+        }

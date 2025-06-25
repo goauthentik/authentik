@@ -14,4 +14,4 @@ class Migration(migrations.Migration):
         migrations.RunSQL(
             "UPDATE authentik_sources_oauth_oauthsource SET provider_type = 'x' WHERE provider_type = 'twitter';"
         ),
-    ] 
+    ]
