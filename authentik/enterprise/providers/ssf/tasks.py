@@ -27,7 +27,7 @@ session = get_http_session()
 LOGGER = get_logger()
 
 
-def send_ssf_event(
+def send_ssf_events(
     event_type: EventTypes,
     data: dict,
     stream_filter: dict | None = None,
@@ -35,6 +35,7 @@ def send_ssf_event(
     **extra_data,
 ):
     """Wrapper to send an SSF event to multiple streams"""
+    events_data = {}
     if not stream_filter:
         stream_filter = {}
     stream_filter["events_requested__contains"] = [event_type]
@@ -42,7 +43,17 @@ def send_ssf_event(
         extra_data.setdefault("txn", request.request_id)
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
-        _send_ssf_event.send_with_options(args=(stream.uuid, event_data), rel_obj=stream.provider)
+        events_data[stream.uuid] = event_data
+    ssf_events_dispatch.send(events_data)
+
+
+@actor(description=_("Dispatch SSF events."))
+def ssf_events_dispatch(events_data: dict[str, dict[str, Any]]):
+    for stream_uuid, event_data in events_data.items():
+        stream = Stream.objects.filter(pk=stream_uuid).first()
+        if not stream:
+            continue
+        send_ssf_event.send_with_options(args=(stream_uuid, event_data), rel_obj=stream.provider)
 
 
 def _check_app_access(stream: Stream, event_data: dict) -> bool:
@@ -63,7 +74,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> bool:
 
 
 @actor(description=_("Send an SSF event."))
-def _send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
+def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     self: Task = CurrentTask.get_task()
 
     stream = Stream.objects.filter(pk=stream_uuid).first()
@@ -96,15 +107,8 @@ def _send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
                 "content": exc.response.text,
                 "status": exc.response.status_code,
             }
-        self.error(
-            exc,
-            LogEvent(
-                "Failed to send request",
-                log_level="warning",
-                logger=self.uid,
-                attributes=attrs,
-            ),
-        )
+        self.warning(exc)
+        self.warning("Failed to send request", **attrs)
         # Re-up the expiry of the stream event
         event.expires = now() + timedelta_from_string(event.stream.provider.event_retention)
         event.status = SSFEventStatus.PENDING_FAILED
