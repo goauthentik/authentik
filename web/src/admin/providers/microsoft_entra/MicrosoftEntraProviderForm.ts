@@ -4,6 +4,7 @@ import {
     propertyMappingsSelector,
 } from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -68,21 +69,15 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client ID for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Client Secret")}
-                        required
+                    <ak-hidden-text-input
                         name="clientSecret"
+                        label=${msg("Client Secret")}
+                        value="${this.instance?.clientSecret ?? ""}"
+                        input-hint="code"
+                        required
+                        .help=${msg("Client secret for the app registration.")}
                     >
-                        <input
-                            type="text"
-                            value="${this.instance?.clientSecret ?? ""}"
-                            class="pf-c-form-control pf-m-monospace"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Client secret for the app registration.")}
-                        </p>
-                    </ak-form-element-horizontal>
+                    </ak-hidden-text-input>
                     <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"

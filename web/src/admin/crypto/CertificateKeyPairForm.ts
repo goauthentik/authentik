@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-textarea-input.js";
+import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -46,7 +46,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-private-textarea-input
+            <ak-secret-textarea-input
                 label=${msg("Certificate")}
                 name="certificateData"
                 input-hint="code"
@@ -54,8 +54,8 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 required
                 ?revealed=${this.instance === undefined}
                 help=${msg("PEM-encoded Certificate data.")}
-            ></ak-private-textarea-input>
-            <ak-private-textarea-input
+            ></ak-secret-textarea-input>
+            <ak-secret-textarea-input
                 label=${msg("Private Key")}
                 name="keyData"
                 input-hint="code"
@@ -63,7 +63,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 help=${msg(
                     "Optional Private Key. If this is set, you can use this keypair for encryption.",
                 )}
-            ></ak-private-textarea-input>`;
+            ></ak-secret-textarea-input>`;
     }
 }
 

@@ -3,19 +3,38 @@
 import os
 from argparse import ArgumentParser
 from unittest import TestCase
+from unittest.mock import patch
 
 import pytest
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
 from structlog.stdlib import get_logger
 
+from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
-from tests.e2e.utils import get_docker_tag
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "main")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
+
+
+def patched__get_ct_cached(app_label, codename):
+    """Caches `ContentType` instances like its `QuerySet` does."""
+    return ContentType.objects.get(app_label=app_label, permission__codename=codename)
 
 
 class PytestTestRunner(DiscoverRunner):  # pragma: no cover
@@ -58,6 +77,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         for key, value in test_config.items():
             CONFIG.set(key, value)
+
+        ASN_CONTEXT_PROCESSOR.load()
+        GEOIP_CONTEXT_PROCESSOR.load()
 
         sentry_init()
         self.logger.debug("Test environment configured")
@@ -149,8 +171,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                 return 1
 
         self.logger.info("Running tests", test_files=self.args)
-        try:
-            return pytest.main(self.args)
-        except Exception as e:
-            self.logger.error("Error running tests", error=str(e), test_files=self.args)
-            return 1
+        with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
+            try:
+                return pytest.main(self.args)
+            except Exception as e:
+                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                return 1
