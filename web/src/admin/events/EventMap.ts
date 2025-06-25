@@ -92,7 +92,7 @@ export class EventMap extends AKElement {
         // Re-add them
         this.events?.results
             .filter((event) => {
-                if (!Object.hasOwn(event.context, "geo")) {
+                if (!Object.hasOwn(event.context || {}, "geo")) {
                     return false;
                 }
                 const geo = (event as EventWithContext).context.geo;
