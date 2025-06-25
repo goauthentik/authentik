@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
-from authentik.events.logs import LogEvent, LogEventSerializer
+from authentik.events.logs import LogEventSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
 from authentik.rbac.filters import ObjectFilter
@@ -36,7 +36,7 @@ class SyncObjectResultSerializer(PassiveSerializer):
 class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
-    sync_objects_task: type[Actor] = None
+    sync_objects_task: Actor
 
     @extend_schema(
         request=SyncObjectSerializer,
@@ -55,12 +55,12 @@ class OutgoingSyncProviderStatusMixin:
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
         msg = self.sync_objects_task.send_with_options(
-            args=(params.validated_data["sync_object_model"],),
             kwargs={
+                "object_type": params.validated_data["sync_object_model"],
                 "page": 1,
                 "provider_pk": provider.pk,
-                "pk": params.validated_data["sync_object_id"],
                 "override_dry_run": params.validated_data["override_dry_run"],
+                "pk": params.validated_data["sync_object_id"],
             },
             rel_obj=provider,
         )

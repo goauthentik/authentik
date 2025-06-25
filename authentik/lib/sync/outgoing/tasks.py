@@ -38,7 +38,7 @@ class SyncTasks:
         self,
         current_task: Task,
         provider: OutgoingSyncProvider,
-        sync_objects: Actor,
+        sync_objects: Actor[[str, int, int, bool], None],
         paginator: Paginator,
         object_type: type[User | Group],
         **options,
@@ -58,7 +58,7 @@ class SyncTasks:
     def sync(
         self,
         provider_pk: int,
-        sync_objects: Actor,
+        sync_objects: Actor[[str, int, int, bool], None],
     ):
         task: Task = CurrentTask.get_task()
         self.logger = get_logger().bind(
@@ -101,6 +101,7 @@ class SyncTasks:
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
+                task.warning("Sync encountered a transient exception. Retrying", exc=exc)
                 raise Retry() from exc
             except StopSync as exc:
                 task.error(exc)
@@ -162,22 +163,38 @@ class SyncTasks:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 task.warning(
                     f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to error: {str(exc)}",
-                    attributes={"arguments": exc.args[1:], "obj": sanitize_item(obj)},
+                    arguments=exc.args[1:],
+                    obj=sanitize_item(obj),
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
                     f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to "
                     "transient error: {str(exc)}",
-                    attributes={"obj": sanitize_item(obj)},
+                    obj=sanitize_item(obj),
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
                 task.warning(
                     f"Stopping sync due to error: {exc.detail()}",
-                    attributes={"obj": sanitize_item(obj)},
+                    obj=sanitize_item(obj),
                 )
                 break
+
+    def sync_signal_direct_dispatch(
+        self,
+        task_sync_signal_direct: Actor[[str, str | int, int, str], None],
+        model: str,
+        pk: str | int,
+        raw_op: str,
+    ):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
+            task_sync_signal_direct.send_with_options(
+                args=(model, pk, provider.pk, raw_op),
+                rel_obj=provider,
+            )
 
     def sync_signal_direct(
         self,
@@ -226,6 +243,35 @@ class SyncTasks:
             self.logger.info("Rejected dry-run event", exc=exc)
         except StopSync as exc:
             self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
+
+    def sync_signal_m2m_dispatch(
+        self,
+        task_sync_signal_m2m: Actor[[str, int, str, list[int]], None],
+        instance_pk: str,
+        action: str,
+        pk_set: list[int],
+        reverse: bool,
+    ):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
+            task_sync_signal_m2m.send_with_options(
+                args=(instance_pk, provider.pk, action, pk_set),
+                rel_obj=provider,
+            )
+            # reverse: instance is a Group, pk_set is a list of user pks
+            # non-reverse: instance is a User, pk_set is a list of groups
+            if reverse:
+                task_sync_signal_m2m.send_with_options(
+                    args=(instance_pk, provider.pk, action, list(pk_set)),
+                    rel_obj=provider,
+                )
+            else:
+                for pk in pk_set:
+                    task_sync_signal_m2m.send_with_options(
+                        args=(pk, provider.pk, action, [instance_pk]),
+                        rel_obj=provider,
+                    )
 
     def sync_signal_m2m(
         self,

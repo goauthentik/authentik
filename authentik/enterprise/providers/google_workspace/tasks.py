@@ -25,6 +25,24 @@ def google_workspace_sync_direct(*args, **kwargs):
     return sync_tasks.sync_signal_direct(*args, **kwargs)
 
 
+@actor(
+    description=_(
+        "Dispatch syncs for a direct object (user, group) for Google Workspace providers."
+    )
+)
+def google_workspace_sync_direct_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_direct_dispatch(google_workspace_sync_direct, *args, **kwargs)
+
+
 @actor(description=_("Sync a related object (memberships) for Google Workspace provider."))
 def google_workspace_sync_m2m(*args, **kwargs):
     return sync_tasks.sync_signal_m2m(*args, **kwargs)
+
+
+@actor(
+    description=_(
+        "Dispatch syncs for a related object (memberships) for Google Workspace providers."
+    )
+)
+def google_workspace_sync_m2m_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_m2m_dispatch(google_workspace_sync_m2m, *args, **kwargs)
