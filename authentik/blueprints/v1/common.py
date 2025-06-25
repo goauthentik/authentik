@@ -6,7 +6,7 @@ from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
-from json import loads, JSONDecodeError
+from json import JSONDecodeError, loads
 from operator import ixor
 from os import getenv
 from typing import Any, Literal, Union
