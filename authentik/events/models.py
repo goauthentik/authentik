@@ -212,7 +212,10 @@ class Event(SerializerModel, ExpiringModel):
                 pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER, None)
                 # Only save `authenticated_as` if there's a different pending user in the flow
                 # than the user that is authenticated
-                if pending_user and pending_user.pk and pending_user.pk != self.user.get("pk"):
+                if pending_user and (
+                    (pending_user.pk and pending_user.pk != self.user.get("pk"))
+                    or (not pending_user.pk)
+                ):
                     orig_user = self.user.copy()
 
                     self.user = {"authenticated_as": orig_user, **get_user(pending_user)}
