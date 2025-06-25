@@ -406,6 +406,7 @@ DRAMATIQ = {
         ("django_dramatiq_postgres.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
+        ("authentik.tasks.middleware.MessagesMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
     ),

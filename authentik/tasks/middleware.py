@@ -3,6 +3,7 @@ from typing import Any
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
+from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
@@ -34,7 +35,7 @@ class RelObjMiddleware(Middleware):
         message.options["model_defaults"]["rel_obj"] = rel_obj
 
 
-class LoggingMiddleware(Middleware):
+class MessagesMiddleware(Middleware):
     def after_enqueue(self, broker: Broker, message: Message, delay: int):
         task: Task = message.options["task"]
         task_created: bool = message.options["task_created"]
@@ -90,6 +91,39 @@ class LoggingMiddleware(Middleware):
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
         task.log(str(type(self)), TaskStatus.INFO, "Task has been skipped")
+
+
+class LoggingMiddleware(Middleware):
+    def __init__(self):
+        self.logger = get_logger()
+
+    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+        self.logger.info(
+            "Task enqueued",
+            task_id=message.message_id,
+            task_name=message.actor_name,
+        )
+
+    def before_process_message(self, broker: Broker, message: Message):
+        self.logger.info("Task started", task_id=message.message_id, task_name=message.actor_name)
+
+    def after_process_message(
+        self,
+        broker: Broker,
+        message: Message,
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ):
+        self.logger.info(
+            "Task finished",
+            task_id=message.message_id,
+            task_name=message.actor_name,
+            exc=exception,
+        )
+
+    def after_skip_message(self, broker: Broker, message: Message):
+        self.logger.info("Task skipped", task_id=message.message_id, task_name=message.actor_name)
 
 
 class DescriptionMiddleware(Middleware):
