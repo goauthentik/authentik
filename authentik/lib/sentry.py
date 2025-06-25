@@ -12,6 +12,7 @@ from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
+from psycopg.errors import Error
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
@@ -39,6 +40,45 @@ _root_path = CONFIG.get("web.path", "/")
 
 class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
+
+
+ignored_classes = (
+    # Inbuilt types
+    KeyboardInterrupt,
+    ConnectionResetError,
+    OSError,
+    PermissionError,
+    # Django Errors
+    Error,
+    ImproperlyConfigured,
+    DatabaseError,
+    OperationalError,
+    InternalError,
+    ProgrammingError,
+    SuspiciousOperation,
+    ValidationError,
+    # Redis errors
+    RedisConnectionError,
+    ConnectionInterrupted,
+    RedisError,
+    ResponseError,
+    # websocket errors
+    ChannelFull,
+    WebSocketException,
+    LocalProtocolError,
+    # rest_framework error
+    APIException,
+    # custom baseclass
+    SentryIgnoredException,
+    # ldap errors
+    LDAPException,
+    # Docker errors
+    DockerException,
+    # End-user errors
+    Http404,
+    # AsyncIO
+    CancelledError,
+)
 
 
 class SentryTransport(HttpTransport):
@@ -97,57 +137,21 @@ def traces_sampler(sampling_context: dict) -> float:
     return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
+def should_ignore_exception(exc: Exception) -> bool:
+    """Check if an exception should be dropped"""
+    return isinstance(exc, ignored_classes)
+
+
 def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
-
-    from psycopg.errors import Error
-
-    ignored_classes = (
-        # Inbuilt types
-        KeyboardInterrupt,
-        ConnectionResetError,
-        OSError,
-        PermissionError,
-        # Django Errors
-        Error,
-        ImproperlyConfigured,
-        DatabaseError,
-        OperationalError,
-        InternalError,
-        ProgrammingError,
-        SuspiciousOperation,
-        ValidationError,
-        # Redis errors
-        RedisConnectionError,
-        ConnectionInterrupted,
-        RedisError,
-        ResponseError,
-        # websocket errors
-        ChannelFull,
-        WebSocketException,
-        LocalProtocolError,
-        # rest_framework error
-        APIException,
-        # custom baseclass
-        SentryIgnoredException,
-        # ldap errors
-        LDAPException,
-        # Docker errors
-        DockerException,
-        # End-user errors
-        Http404,
-        # AsyncIO
-        CancelledError,
-    )
     exc_value = None
     if "exc_info" in hint:
         _, exc_value, _ = hint["exc_info"]
-        if isinstance(exc_value, ignored_classes):
+        if should_ignore_exception(exc_value):
             LOGGER.debug("dropping exception", exc=exc_value)
             return None
     if "logger" in event:
         if event["logger"] in [
-            "kombu",
             "asyncio",
             "multiprocessing",
             "django_redis",

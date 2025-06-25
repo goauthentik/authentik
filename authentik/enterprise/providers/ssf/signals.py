@@ -1,10 +1,8 @@
 from hashlib import sha256
 
-from django.contrib.auth.signals import user_logged_out
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from django.http.request import HttpRequest
 from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (

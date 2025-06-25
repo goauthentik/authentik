@@ -172,7 +172,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+                return html`<ak-empty-state default-label></ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -193,7 +193,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }

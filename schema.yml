@@ -44010,7 +44010,7 @@ components:
       - name
     Device:
       type: object
-      description: Serializer for Duo authenticator devices
+      description: Serializer for authenticator devices
       properties:
         verbose_name:
           type: string
@@ -44049,11 +44049,18 @@ components:
           nullable: true
         extra_description:
           type: string
+          nullable: true
           description: Get extra description
+          readOnly: true
+        external_id:
+          type: string
+          nullable: true
+          description: Get external Device ID
           readOnly: true
       required:
       - confirmed
       - created
+      - external_id
       - extra_description
       - last_updated
       - last_used

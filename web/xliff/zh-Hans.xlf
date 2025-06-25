@@ -9232,10 +9232,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No app entitlements created.</source>
   <target>未创建应用程序授权。</target>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-  <target>此应用程序目前没有定义任何应用程序授权。</target>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
   <target>创建授权</target>
@@ -9898,6 +9894,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
 </trans-unit>
     </body>
   </file>
