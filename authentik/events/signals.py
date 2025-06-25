@@ -12,7 +12,7 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
-from authentik.events.models import Event, EventAction, NotificationRule
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN

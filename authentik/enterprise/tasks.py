@@ -1,7 +1,6 @@
 """Enterprise tasks"""
 
 from django.utils.translation import gettext_lazy as _
-
 from dramatiq.actor import actor
 
 from authentik.enterprise.license import LicenseKey

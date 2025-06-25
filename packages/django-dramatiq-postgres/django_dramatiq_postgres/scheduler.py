@@ -1,5 +1,3 @@
-from threading import Event, Thread
-from time import sleep
 
 import pglock
 from django.db import router, transaction

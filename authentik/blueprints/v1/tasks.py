@@ -1,7 +1,5 @@
 """v1 blueprints tasks"""
 
-from django.utils.translation import gettext_lazy as _
-
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
@@ -12,6 +10,7 @@ from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask, CurrentTaskNotFound
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware

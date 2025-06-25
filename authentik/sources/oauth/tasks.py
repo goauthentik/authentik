@@ -2,11 +2,11 @@
 
 from json import dumps
 
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
-from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource

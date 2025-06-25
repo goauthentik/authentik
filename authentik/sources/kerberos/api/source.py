@@ -1,12 +1,11 @@
 """Source API Views"""
 
 from django.core.cache import cache
-from rest_framework.fields import BooleanField, SerializerMethodField
+from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tasks import CACHE_KEY_STATUS
 

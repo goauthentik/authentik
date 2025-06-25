@@ -1,10 +1,10 @@
 """Google Provider tasks"""
 
+from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
-from django.utils.translation import gettext_lazy as _
 
 sync_tasks = SyncTasks(GoogleWorkspaceProvider)
 

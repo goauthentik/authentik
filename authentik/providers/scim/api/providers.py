@@ -6,7 +6,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 from authentik.providers.scim.models import SCIMProvider
-from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+from authentik.providers.scim.tasks import scim_sync_objects
 
 
 class SCIMProviderSerializer(ProviderSerializer):

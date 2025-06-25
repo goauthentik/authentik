@@ -1,11 +1,11 @@
 """Kerberos Sync tasks"""
 
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
-from django.utils.translation import gettext_lazy as _
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string

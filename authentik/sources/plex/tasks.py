@@ -1,5 +1,6 @@
 """Plex tasks"""
 
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests import RequestException
@@ -9,7 +10,6 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.tasks.models import Task
-from django.utils.translation import gettext_lazy as _
 
 
 @actor(description=_("Check the validity of a Plex source."))

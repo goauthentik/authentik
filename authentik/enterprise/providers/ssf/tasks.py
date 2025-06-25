@@ -1,9 +1,9 @@
 from typing import Any
-from django.utils.translation import gettext_lazy as _
 from uuid import UUID
 
 from django.http import HttpRequest
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from requests.exceptions import RequestException
@@ -17,7 +17,6 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
-from authentik.events.logs import LogEvent
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine

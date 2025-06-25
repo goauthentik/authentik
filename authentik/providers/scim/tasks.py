@@ -1,10 +1,10 @@
 """SCIM Provider tasks"""
 
+from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.providers.scim.models import SCIMProvider
-from django.utils.translation import gettext_lazy as _
 
 sync_tasks = SyncTasks(SCIMProvider)
 

@@ -1,10 +1,9 @@
 """authentik core tasks"""
 
-from django.utils.translation import gettext_lazy as _
-
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger

@@ -3,13 +3,13 @@
 from uuid import uuid4
 
 from django.core.cache import cache
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from dramatiq.composition import group
 from dramatiq.message import Message
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
-from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync

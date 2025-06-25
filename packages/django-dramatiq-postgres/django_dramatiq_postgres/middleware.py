@@ -1,13 +1,10 @@
 import contextvars
-from threading import Event
-from typing import Any, override
+from typing import Any
 
-from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     close_old_connections,
     connections,
 )
-from django.utils.module_loading import import_string
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.logging import get_logger
@@ -16,7 +13,6 @@ from dramatiq.middleware.middleware import Middleware
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
-from django_dramatiq_postgres.scheduler import Scheduler
 
 
 class DbConnectionMiddleware(Middleware):

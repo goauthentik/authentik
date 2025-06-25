@@ -22,7 +22,6 @@ from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.tasks.schedules.models import Schedule
 
-
 LOGGER = get_logger()
 
 

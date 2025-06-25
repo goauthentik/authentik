@@ -1,7 +1,5 @@
 """outpost tasks"""
 
-from django.utils.translation import gettext_lazy as _
-
 from hashlib import sha256
 from os import R_OK, access
 from pathlib import Path
@@ -14,6 +12,7 @@ from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.db.models.base import Model
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from docker.constants import DEFAULT_UNIX_SOCKET
 from dramatiq.actor import actor

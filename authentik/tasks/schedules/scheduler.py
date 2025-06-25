@@ -1,7 +1,5 @@
-from time import sleep
 
 import pglock
-from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.scheduler import Scheduler as SchedulerBase
 from structlog.stdlib import get_logger
 

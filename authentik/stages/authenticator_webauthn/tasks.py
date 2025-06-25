@@ -6,10 +6,10 @@ from pathlib import Path
 
 from django.core.cache import cache
 from django.db.transaction import atomic
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from fido2.mds3 import filter_revoked, parse_blob
-from django.utils.translation import gettext_lazy as _
 
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,

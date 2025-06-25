@@ -2,12 +2,12 @@
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.oauth2.id_token import hash_session_key
-from django.utils.translation import gettext_lazy as _
 
 
 @actor(description=_("Terminate session on Proxy outpost."))

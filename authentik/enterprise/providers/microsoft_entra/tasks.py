@@ -1,10 +1,10 @@
 """Microsoft Entra Provider tasks"""
 
+from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
 from authentik.lib.sync.outgoing.tasks import SyncTasks
-from django.utils.translation import gettext_lazy as _
 
 sync_tasks = SyncTasks(MicrosoftEntraProvider)
 

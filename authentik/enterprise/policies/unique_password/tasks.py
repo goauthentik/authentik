@@ -1,8 +1,8 @@
 from django.db.models.aggregates import Count
+from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog import get_logger
-from django.utils.translation import gettext_lazy as _
 
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,

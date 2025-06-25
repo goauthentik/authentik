@@ -7,7 +7,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
 from authentik.enterprise.providers.microsoft_entra.tasks import (
-    microsoft_entra_sync,
     microsoft_entra_sync_objects,
 )
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
