@@ -37,129 +37,52 @@ The secret value must be copied immediately after its creation. It is not possib
 10. Click **Add a permission** and select **Microsoft Graph** as the API.
 11. Select **Delegated permissions** as the permission type and assign the following permissions:
     - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
-    - Under **Group Member** _(optional)_: if you need authentik to read group membership information from Entra ID, select the `GroupMember.Read.All` permission.
+    - Under **Group Member** _(optional)_: if you need authentik to sync group membership information from Entra ID, select the `GroupMember.Read.All` permission.
 12. Click **Add permissions**.
+13. _(optional)_ If the `GroupMember.Read.All` permission has been selected, under **Configured permissions**, click **Grant admin consent for default directory**.
 
 ## authentik Setup
 
-To support the integration of Entra ID with authentik, you need to create an application/provider pair in authentik. Optionally, if you need to read group membership information from Entra ID you will also need to create a property mapping.
-
-### Create OAuth source property mappings \_(optional)
-
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+To support the integration of Entra ID with authentik, you need to create an Entra ID OAuth Source in authentik.
 
 ### Create Entra ID OAuth source
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, then click **Create**, and configure the following settings:
 
     - **Select type**: select **Entra ID OAuth Source** as the source type.
     - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations.
         - Under **Protocol Settings**:
             - **Consumer key**: `Application (client) ID` from Entra ID.
             - **Consumer secret**: value of the secret created in Entra ID.
-            - **Scopes**_(optional)_: if you need to read group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
+            - **Scopes**_(optional)_: if you need authentik to sync group membership information from Entra ID, add the `https://graph.microsoft.com/GroupMember.Read.All` scope.
         - Under **URL Settings**:
-            - Blank the OIDC if it causes issues - profile URL should be `https://graph.microsoft.com/v1.0/me` - more information explaining the issue with oauth overwriting the link and breaking property mapping
-            - **OIDC Well-known URL**: if the default `Single tenant` account type was selected in Entra ID, then you must change this URL to `https://login.microsoftonline.com/<Directory_(tenant)_ID>/v2.0/.well-known/openid-configuration`
-        - Under **OAuth Attribute Mapping**:
-            - **User Property Mappings**: select the `Entra ID User Property Mapping` created in the previous section.
-            - **Group Property Mappings**_(optional)_: if you need to read group membership information from Entra ID, select the `Entra ID Group Property Mapping` created in the previous section.
+            - For **Single tenant** Entra ID applications:
+                - **Authorization URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/authorize`
+                - **Access token URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/oauth2/v2.0/token`
+                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
+                - **OIDC JWKS URL**: `https://login.microsoftonline.com/<directory_(tenant)_id>/discovery/v2.0/keys`
+            - For **Multi tenant** Entra ID applications:
+                - **Authorization URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`
+                - **Access token URL**: `https://login.microsoftonline.com/common/oauth2/v2.0/token`
+                - **Profile URL**: `https://graph.microsoft.com/v1.0/me`
+                - **OIDC JWKS URL**: `https://login.microsoftonline.com/common/discovery/v2.0/keys`
 
 3. Click **Save**.
 
-##old
-In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
-
-Use the following settings:
-
-- Name: `Entra ID`
-- Slug: `entra-id` (this must match the slug used in the Entra ID `Redirect URI`)
-- Consumer key: `*Application (client) ID* value from above`
-- Consumer secret: `*Value* of the secret from above`
-
-If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URL below as well:
-
-- OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
-
-![](./authentik_01.png)
-
-Save, and you now have Azure AD as a source.
+:::note
+When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of.
+:::
 
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
 :::
 
-## old
-
-### Automatic user enrollment and attribute mapping
-
-Using the following process you can auto-enroll your users without interaction, and directly control the mapping Azure attribute to authentik.
-attribute.
-
-1. Create a new _Expression Policy_ (see [here](../../../../customize/policies/index.md) for details).
-2. Use _azure-ad-mapping_ as the name.
-3. Add the following code and adjust to your needs.
-
-```python
-# save existing prompt data
-current_prompt_data = context.get('prompt_data', {})
-# make sure we are used in an oauth flow
-if 'oauth_userinfo' not in context:
-  ak_logger.warning(f"Missing expected oauth_userinfo in context. Context{context}")
-  return False
-oauth_data = context['oauth_userinfo']
-# map fields directly to user left hand are the field names provided by
-# the microsoft graph api on the right the user field names as used by authentik
-required_fields_map = {
-  'name': 'username',
-  'upn': 'email',
-  'given_name': 'name'
-}
-missing_fields = set(required_fields_map.keys()) - set(oauth_data.keys())
-if missing_fields:
-  ak_logger.warning(f"Missing expected fields. Missing fields {missing_fields}.")
-  return False
-for oauth_field, user_field in required_fields_map.items():
-  current_prompt_data[user_field] = oauth_data[oauth_field]
-# Define fields that should be mapped as extra user attributes
-attributes_map = {
-  'upn': 'upn',
-  'family_name': 'sn',
-  'name': 'name'
-}
-missing_attributes = set(attributes_map.keys()) - set(oauth_data.keys())
-if missing_attributes:
-  ak_logger.warning(f"Missing attributes: {missing_attributes}.")
-  return False
-# again make sure not to overwrite existing data
-current_attributes = current_prompt_data.get('attributes', {})
-for oauth_field, user_field in attributes_map.items():
-  current_attributes[user_field] = oauth_data[oauth_field]
-current_prompt_data['attributes'] = current_attributes
-context['prompt_data'] = current_prompt_data
-return True
-```
-
-4. Create a new enrollment flow _azure-ad-enrollment_ (see [here](../../../../add-secure-apps/flows-stages/flow/index.md) for details).
-5. Add the policy _default-source-enrollment-if-sso_ to the flow. To do so open the newly created flow.
-   Click on the tab **Policy/Group/User Bindings**. Click on **Bind existing policy** and choose _default-source-enrollment-if-sso_
-   from the list.
-6. Bind the stages _default-source-enrollment-write_ (order 0) and _default-source-enrollment-login_ (order 10) to the flow.
-7. Bind the policy _azure-ad-mapping_ to the stage _default-source-enrollment-write_. To do so open the flow _azure-ad-enrollment_
-   open the tab **Stage Bindings**, open the dropdown menu for the stage _default-source-enrollment-write_ and click on **Bind existing policy**
-   Select _azure-ad-mapping_.
-8. Open the source _azure-ad_. Click on edit.
-9. Open **Flow settings** and choose _azure-ad-enrollment_ as enrollment flow.
-
-Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
-
 ### Machine-to-machine authentication:ak-version[2024.12]
 
 If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
 
-When getting the JWT token from Azure AD, set the scope to the Application ID URI, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
+When getting the JWT token from Entra ID, set the scope to the **Application ID URI**, and _not_ the Graph URL; otherwise the JWT will be in an invalid format.
 
 ```http
 POST /<entra_tenant_id>/oauth2/v2.0/token/ HTTP/1.1
@@ -172,4 +95,4 @@ scope=api://<application_client_id>/.default&
 client_secret=<application_client_secret>
 ```
 
-The JWT returned from the request above can be used with authentik to exchange it for an authentik JWT.
+The JWT returned from the request above can be used in authentik and exchanged for an authentik JWT.
