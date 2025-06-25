@@ -1,4 +1,4 @@
-"""Twitter OAuth Views"""
+"""X OAuth Views"""
 
 from typing import Any
 
@@ -12,8 +12,8 @@ from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
-class TwitterOAuthRedirect(OAuthRedirect):
-    """Twitter OAuth2 Redirect"""
+class XOAuthRedirect(OAuthRedirect):
+    """X OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
         self.request.session[SESSION_KEY_OAUTH_PKCE] = generate_id()
@@ -24,8 +24,8 @@ class TwitterOAuthRedirect(OAuthRedirect):
         }
 
 
-class TwitterOAuthCallback(OAuthCallback):
-    """Twitter OAuth2 Callback"""
+class XOAuthCallback(OAuthCallback):
+    """X OAuth2 Callback"""
 
     client_class = UserprofileHeaderAuthClient
 
@@ -34,13 +34,13 @@ class TwitterOAuthCallback(OAuthCallback):
 
 
 @registry.register()
-class TwitterType(SourceType):
-    """Twitter Type definition"""
+class XType(SourceType):
+    """X Type definition"""
 
-    callback_view = TwitterOAuthCallback
-    redirect_view = TwitterOAuthRedirect
-    verbose_name = "Twitter"
-    name = "twitter"
+    callback_view = XOAuthCallback
+    redirect_view = XOAuthRedirect
+    verbose_name = "X"
+    name = "x"
 
     authorization_url = "https://twitter.com/i/oauth2/authorize"
     access_token_url = "https://api.twitter.com/2/oauth2/token"  # nosec
@@ -52,4 +52,4 @@ class TwitterType(SourceType):
             "username": data.get("username"),
             "email": None,
             "name": data.get("name"),
-        }
+        } 
