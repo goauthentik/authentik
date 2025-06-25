@@ -14,7 +14,7 @@
         "!KeyOf scalar",
         "!Value scalar",
         "!AtIndex scalar",
-        "!JSON scalar"
+        "!ParseJSON scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

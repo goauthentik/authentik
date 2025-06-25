@@ -292,7 +292,7 @@ class Context(YAMLTag):
         return value
 
 
-class JSON(YAMLTag):
+class ParseJSON(YAMLTag):
     """Parse JSON from context/env/etc value"""
 
     raw: str
@@ -683,7 +683,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
         self.add_constructor("!AtIndex", AtIndex)
-        self.add_constructor("!JSON", JSON)
+        self.add_constructor("!ParseJSON", ParseJSON)
 
 
 class EntryInvalidError(SentryIgnoredException):
