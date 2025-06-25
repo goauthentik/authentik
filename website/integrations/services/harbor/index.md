@@ -33,7 +33,6 @@ To support the integration of Harbor with authentik, you need to create an appli
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-
     - **Protocol Settings**:
         - **Redirect URI**:
             - Strict: `https://harbor.company/c/oidc/callback/`.
@@ -52,7 +51,6 @@ To support the integration of authentik with Harbor, you need to configure OIDC 
 1. Log in to the Harbor dashboard as an admin.
 2. Navigate to **Configuration** and select the **Authentication** tab.
 3. In the **Auth Mode** dropdown, select **OIDC** and provide the following required configurations.
-
     - **OIDC Provider Name**: `authentik`
     - **OIDC Endpoint**: `https://authentik.company/application/o/harbor`
     - **OIDC Client ID**: client ID from authentik

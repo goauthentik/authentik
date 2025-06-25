@@ -85,7 +85,6 @@ To support the integration of Observium with authentik, you need to create an ap
     ```
 
     Meaning of variables:
-
     - `OIDCRedirectURI` is the same URI that is set for the authentik Provider.
     - The `OIDCCryptoPassphrase` directive should be set to a random string, for more information, see [the official documentation](https://github.com/OpenIDC/mod_auth_openidc/blob/9c0909af71eb52283f4d3797e55d1efef64966f2/auth_openidc.conf#L15).
     - `OIDCXForwardedHeaders` is necessary if your instance is behind a reverse proxy. If omitted, the module does not accept information from these headers.

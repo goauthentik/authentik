@@ -64,7 +64,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
+        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
         [msg("Check the logs"), paramURL("/events/log")],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
         [msg("Manage users"), paramURL("/identity/users")],

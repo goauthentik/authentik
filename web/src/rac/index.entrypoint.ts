@@ -356,8 +356,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
             GuacClientState.WAITING,
         ].includes(this.clientState);
         return html`
-            <ak-loading-overlay ?loading=${isLoading} icon="fa fa-times">
-                <span> ${message} </span>
+            <ak-loading-overlay ?no-spinner=${!isLoading} icon="fa fa-times">
+                <span>${message}</span>
             </ak-loading-overlay>
         `;
     }

@@ -77,7 +77,6 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
     When the compatibility mode is enabled, authentik uses a polyfill which emulates the Shadow DOM APIs without actually using the feature, and instead a traditional DOM is rendered. This increases support for password managers, especially on mobile devices.
 
 - **Denied action**: Configure what happens when access to a flow is denied by a policy. By default, authentik will redirect to a `?next` parameter if set, and otherwise show an error message.
-
     - `MESSAGE_CONTINUE`: Show a message if no `?next` parameter is set, otherwise redirect.
     - `MESSAGE`: Always show error message.
     - `CONTINUE`: Always redirect, either to `?next` if set, otherwise to the default interface.

@@ -45,12 +45,12 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state
-                        icon="fa-times"
-                        header=${this.challenge.error
-                            ? this.challenge.error
-                            : msg("Something went wrong! Please try again later.")}
-                    >
+                    <ak-empty-state icon="fa-times"
+                        ><span>
+                            ${this.challenge.error
+                                ? this.challenge.error
+                                : msg("Something went wrong! Please try again later.")}</span
+                        >
                         <div slot="body">
                             ${this.challenge?.traceback
                                 ? html`<div class="pf-c-form__group">

@@ -38,7 +38,6 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
-
     - **Name**: Choose a descriptive name
     - **SAML Attribute Name**: `Roles`
     - **Friendly Name**: Leave blank
@@ -192,7 +191,6 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 2. On the Wazuh dashboard click the upper-left menu icon ☰ to open the menu, go to **Server management** -> **Security** -> **Roles mapping**
 
 3. Click **Create Role mapping** and configure the following parameters:
-
     - **Role Name**: set a name for the role mapping (e.g. authentik_admins)
     - **Roles**: select a role (e.g.`administrator`)
     - **Custom rules**: Click **Add new rule** and set:

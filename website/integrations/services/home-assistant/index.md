@@ -34,7 +34,6 @@ This documentation lists only the settings that you need to change from their de
 ## authentik configuration
 
 1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
-
     - **Name**: Home Assistant
     - **Authentication flow**: default-authentication-flow
     - **Authorization flow**: default-provider-authorization-explicit-consent
@@ -42,7 +41,6 @@ This documentation lists only the settings that you need to change from their de
     - **Internal Host**: `http://hass.company:8123`
 
 2. Create an **Application** under **Applications** > **Applications** using the following settings:
-
     - **Name**: Home Assistant
     - **Slug**: homeassistant
     - **Provider**: Home Assistant (the provider you created in step 1)

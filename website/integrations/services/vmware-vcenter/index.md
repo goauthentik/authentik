@@ -49,7 +49,6 @@ To support the integration of vCenter with authentik, you need to create an appl
 2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
 3. In the wizard, click **Run Prechecks**, select the confirmation box, and then click **Next**
-
     - Enter the **Directory Name**. For example `authentik` or any other name.
     - Add a **Domain Name**. For example `authentik.company`.
     - Click on the Plus (+) sign to show the default domain name.
@@ -57,7 +56,6 @@ To support the integration of vCenter with authentik, you need to create an appl
 4. Click **Next**.
 
 5. On the OpenID Connect page, enter the following values:
-
     - Set **Identity Provider Name** to `authentik`.
     - Set **Client Identifier** to the client ID from authentik.
     - Set **Shared secret** to the client secret from authentik.
@@ -66,14 +64,12 @@ To support the integration of vCenter with authentik, you need to create an appl
 6. Click **Next**, and then **Finish**.
 
 7. On the **Single Sign On -> Configuration** page, in the **User Provisioning** area, take the following steps:
-
     - Copy the **Tenant URL** and save to a safe place.
     - Click on **Generate** to generate a SCIM token.
     - Click **Generate** in the newly opened modal box.
     - Copy the token and save to a safe place.
 
 8. Return to the authentik Admin interface.
-
     - Create a SCIM provider with the name `vcenter-scim`.
     - Paste the Tenant URL into **URL** field for the provider.
     - Paste the token you saved into the **Token** field.
@@ -84,7 +80,6 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Navigate to the provider and trigger a sync.
 
 9. Return to vCenter.
-
     - Navigate to **Administration -> Access Control -> Global Permissions**.
     - Click **Add**.
     - Select the Domain created above from the dropdown.

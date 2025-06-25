@@ -1,0 +1,29 @@
+services:
+  mongodb:
+    image: mongo:6.0.13
+  httpd:
+    image: ghcr.io/beryju/oidc-conformance-suite-httpd:v5.1.32
+    ports:
+      - "8443:8443"
+      - "8444:8444"
+    depends_on:
+      - server
+  server:
+    image: ghcr.io/beryju/oidc-conformance-suite-server:v5.1.32
+    ports:
+      - "9999:9999"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: >
+      java
+      -Xdebug -Xrunjdwp:transport=dt_socket,address=*:9999,server=y,suspend=n
+      -jar /server/fapi-test-suite.jar
+      -Djdk.tls.maxHandshakeMessageSize=65536
+      --fintechlabs.base_url=https://host.docker.internal:8443
+      --fintechlabs.base_mtls_url=https://host.docker.internal:8444
+      --fintechlabs.devmode=true
+      --fintechlabs.startredir=true
+    links:
+      - mongodb:mongodb
+    depends_on:
+      - mongodb

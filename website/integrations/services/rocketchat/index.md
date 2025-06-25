@@ -65,7 +65,6 @@ In Rocket.chat, follow the procedure below:
 ![](./rocketchat6.png)
 
 5. Scroll down to the new OAuth application, expand the dropdown, and enter the following settings:
-
     - Enable: Turn the radio button to the _on_ position
     - URL: https://authentik.company/application/o
     - Token Path: /token/

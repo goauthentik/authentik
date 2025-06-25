@@ -8,6 +8,7 @@ import OlMap from "@openlayers-elements/core/ol-map";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
 import Feature from "ol/Feature";
+import { isEmpty } from "ol/extent";
 import { Point } from "ol/geom";
 import { fromLonLat } from "ol/proj";
 import Icon from "ol/style/Icon";
@@ -92,7 +93,7 @@ export class EventMap extends AKElement {
         // Re-add them
         this.events?.results
             .filter((event) => {
-                if (!Object.hasOwn(event.context, "geo")) {
+                if (!Object.hasOwn(event.context || {}, "geo")) {
                     return false;
                 }
                 const geo = (event as EventWithContext).context.geo;
@@ -124,6 +125,9 @@ export class EventMap extends AKElement {
                 this.vectorLayer?.source?.addFeature(feature);
             });
         // Zoom to show points better
+        if (isEmpty(this.vectorLayer.source.getExtent())) {
+            return;
+        }
         this.map.map.getView().fit(this.vectorLayer.source.getExtent(), {
             padding: [
                 this.zoomPaddingPx,

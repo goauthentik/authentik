@@ -55,7 +55,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
@@ -234,12 +234,13 @@ class FlowExecutorView(APIView):
         """Handle exception in stage execution"""
         if settings.DEBUG or settings.TEST:
             raise exc
-        capture_exception(exc)
         self._logger.warning(exc)
-        Event.new(
-            action=EventAction.SYSTEM_EXCEPTION,
-            message=exception_to_string(exc),
-        ).from_http(self.request)
+        if not should_ignore_exception(exc):
+            capture_exception(exc)
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message=exception_to_string(exc),
+            ).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))

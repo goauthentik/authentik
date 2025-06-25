@@ -32,7 +32,6 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
-
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc realName`)
     - **SAML Attribute Name**: `realName`
     - **Expression**:
@@ -46,7 +45,6 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
-
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc groups`)
     - **SAML Attribute Name**: `groups`
     - **Expression**:
@@ -57,7 +55,6 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
-
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc session duration`)
     - **SAML Attribute Name**: `sessionDuration`
     - **Expression**:
@@ -97,7 +94,6 @@ This example will set session duration at 540 minutes. Change the value to match
 
 1. Log in to Knocknoc and navigate to **Admin** > **Settings** > **SAML**
 2. Set the following configuration:
-
     - **Metadata URL**: **SAML Metadata URL** copied from the authentik provider.
     - **Public URL**: `https://knocknoc.company`
     - **Key file**: select a key file.

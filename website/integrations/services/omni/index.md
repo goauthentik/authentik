@@ -44,7 +44,6 @@ To support the integration of Omni with authentik, you need to create a property
 - **Choose a Provider type**: select SAML Provider as the provider type.
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-
     - **ACS URL**: `https://omni.company/saml/acs`
     - **Service Provider Binding**: `Post`
     - **Audience**: `https://omni.company/saml/metadata`

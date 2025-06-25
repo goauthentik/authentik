@@ -1,15 +1,13 @@
 """authentik outpost signals"""
 
-from django.contrib.auth.signals import user_logged_out
 from django.core.cache import cache
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
-from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import AuthenticatedSession, Provider, User
+from authentik.core.models import AuthenticatedSession, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
@@ -80,14 +78,6 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     instance.user.delete()
     cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
     outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
-
-
-@receiver(user_logged_out)
-def logout_revoke_direct(sender: type[User], request: HttpRequest, **_):
-    """Catch logout by direct logout and forward to providers"""
-    if not request.session or not request.session.session_key:
-        return
-    outpost_session_end.delay(request.session.session_key)
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)

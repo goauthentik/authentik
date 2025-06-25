@@ -47,7 +47,6 @@ To support the integration of Plesk with authentik, you need to create an applic
 ## Plesk configuration
 
 1. Install the OAuth login extension:
-
     - Log in to your Plesk installation.
     - Navigate to **Extensions** in the left sidebar.
     - Select **Extensions Catalog**.
@@ -55,12 +54,10 @@ To support the integration of Plesk with authentik, you need to create an applic
     - Click **Install** next to the OAuth login extension.
 
 2. Enable and configure OAuth authentication:
-
     - After installation, select **Extensions** > **OAuth Login** in the left sidebar.
     - Enable OAuth authentication using the toggle switch in the main configuration panel.
 
 3. In the same panel, configure these OAuth settings:
-
     - **Client ID**: Enter the Client ID from your authentik provider
     - **Client Secret**: Enter the Client Secret from your authentik provider
     - **Callback Host**: Enter your Plesk FQDN (example: `https://plesk.company`)

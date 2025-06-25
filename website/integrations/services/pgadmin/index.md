@@ -33,7 +33,6 @@ To support the integration of pgAdmin with authentik, you need to create an appl
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -51,7 +50,6 @@ To configure OAuth in pgAdmin, you can either use the `config_local.py` file or 
 ### Using `config_local.py`
 
 1. Locate or create the `config_local.py` file in the `/pgadmin4/` directory.
-
     - If the file does not exist, create it manually.
 
 2. Add the following configuration settings to `config_local.py`:

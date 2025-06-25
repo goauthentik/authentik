@@ -34,7 +34,6 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 - **Select type**: select **Scope Mapping** as the property mapping type.
 - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Open Project Profile Scope`), and an optional description
-
     - **Scope name**: `profile`
     - **Expression**:
 

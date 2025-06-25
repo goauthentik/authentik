@@ -96,15 +96,15 @@ vault write auth/oidc/role/reader \
       user_claim="sub" \
       policies="reader" \
       groups_claim="groups" \
-      oidc_scopes=[ "openid profile email" ]
+      oidc_scopes="openid,profile,email"
 ```
 
 Add a group.
 
 ```
-vault write identity/group/reader \
+vault write identity/group \
     name="reader" \
-    policies=["reader"] \
+    policies="reader" \
     type="external"
 ```
 

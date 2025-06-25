@@ -39,34 +39,29 @@ You need to ensure users and groups exist before we proceed with the next steps.
 The groups are used for property mappings later to give the user the correct permission level in the application. For this documentation there is an example for each of the 3 main default permission levels and an easy way to visualise the differences between them.
 
 1. **Create test-user 0**
-
     - username: test-user0
     - Name: Test User0
     - Email: test-user0@domain.company
     - path: users
 
 2. **Create test-user 1**
-
     - username: test-user1
     - Name: Test User1
     - Email: test-user1@domain.company
     - path: users
 
 3. **Create test-user 2**
-
     - username: test-user2
     - Name: Test User2
     - Email: test-user2@domain.company
     - path: users
 
 4. **Create all required groups (under _Directory/Groups_)**
-
     - admin-permission-group
     - operator-permission-group
     - guest-permission-group
 
 5. **Assign groups to users for testing**
-
     - admin-permission-group
         - Select Directory -> Groups
         - Select `admin-permission-group`
@@ -91,7 +86,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 - Select Create -> SAML Property Mapping -> Next
 
 1. display_name
-
     - Name: phpipam-display-name
     - SAML Attribute Name: display_name
     - Expression:
@@ -101,7 +95,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 2. email
-
     - Name: phpipam-email
     - SAML Attribute Name: email
     - Expression:
@@ -111,7 +104,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 3. is_admin
-
     - Name: phpipam-is-admin
     - SAML Attribute Name: is_admin
     - Expression:
@@ -121,7 +113,6 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     ```
 
 4. groups
-
     - Name: phpipam-groups
     - SAML Attribute Name: groups
     - Expression:

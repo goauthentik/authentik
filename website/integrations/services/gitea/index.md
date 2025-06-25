@@ -91,7 +91,6 @@ You can add users to the groups at any point.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-
     - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
     - **Scope name**: `gitea`
     - **Expression**:
@@ -116,7 +115,6 @@ You can add users to the groups at any point.
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the **Edit** icon of the Gitea provider.
 3. Under **Advanced protocol settings** > **Scopes** add the following scopes to **Selected Scopes**:
-
     - `authentik default OAuth Mapping: OpenID 'email'`
     - `authentik default OAuth Mapping: OpenID 'profile'`
     - `authentik default OAuth Mapping: OpenID 'openid'`

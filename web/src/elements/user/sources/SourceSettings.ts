@@ -115,9 +115,9 @@ export class UserSourceSettingsPage extends AKElement {
             ${this.sourceSettings
                 ? html`
                       ${this.sourceSettings.length < 1
-                          ? html`<ak-empty-state
-                                header=${msg("No services available.")}
-                            ></ak-empty-state>`
+                          ? html`<ak-empty-state>
+                                <span>${msg("No services available.")}</span></ak-empty-state
+                            >`
                           : html`
                                 ${this.sourceSettings.map((source) => {
                                     return html`<li class="pf-c-data-list__item">
@@ -139,7 +139,7 @@ export class UserSourceSettingsPage extends AKElement {
                                 })}
                             `}
                   `
-                : html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`}
+                : html`<ak-empty-state default-label></ak-empty-state>`}
         </ul>`;
     }
 }

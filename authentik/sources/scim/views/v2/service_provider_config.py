@@ -33,6 +33,8 @@ class ServiceProviderConfigView(SCIMView):
             {
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
                 "authenticationSchemes": auth_schemas,
+                # We only support patch for groups currently, so don't broadly advertise it.
+                # Implementations that require Group patch will use it regardless of this flag.
                 "patch": {"supported": False},
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {
