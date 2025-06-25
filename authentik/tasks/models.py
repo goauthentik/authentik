@@ -1,5 +1,5 @@
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import pgtrigger
 from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
@@ -148,3 +148,18 @@ class TasksModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class WorkerStatus(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4)
+    hostname = models.TextField()
+    version = models.TextField()
+    last_seen = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Worker status")
+        verbose_name_plural = _("Worker statuses")
+
+    def __str__(self):
+        return f"{self.id} - {self.hostname} - {self.version} - {self.last_seen}"

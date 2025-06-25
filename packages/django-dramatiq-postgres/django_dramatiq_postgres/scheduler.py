@@ -1,4 +1,3 @@
-
 import pglock
 from django.db import router, transaction
 from django.db.models import QuerySet

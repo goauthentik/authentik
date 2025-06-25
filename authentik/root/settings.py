@@ -409,6 +409,7 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.MessagesMiddleware", {}),
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
+        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
     ),
     "test": TEST,
 }

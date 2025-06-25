@@ -1,4 +1,6 @@
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class AuthentikTasksConfig(ManagedAppConfig):
@@ -18,3 +20,14 @@ class AuthentikTasksConfig(ManagedAppConfig):
     #         actor = old_broker.get_actor(actor_name)
     #         actor.broker = broker
     #         actor.broker.declare_actor(actor)
+
+    @property
+    def global_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.tasks.tasks import clean_worker_statuses
+
+        return [
+            ScheduleSpec(
+                actor=clean_worker_statuses,
+                crontab=f"{fqdn_rand('clean_worker_statuses')} {fqdn_rand('clean_worker_statuses', 24)} * * *",  # noqa: E501
+            ),
+        ]

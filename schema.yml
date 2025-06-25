@@ -40658,6 +40658,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/workers:
+    get:
+      operationId: tasks_workers_list
+      description: Get currently connected worker count.
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Worker'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tenants/domains/:
     get:
       operationId: tenants_domains_list
@@ -61880,6 +61909,19 @@ components:
       required:
       - aaguid
       - description
+    Worker:
+      type: object
+      properties:
+        worker_id:
+          type: string
+        version:
+          type: string
+        version_matching:
+          type: boolean
+      required:
+      - version
+      - version_matching
+      - worker_id
     modelRequest:
       oneOf:
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'

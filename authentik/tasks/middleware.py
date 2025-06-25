@@ -1,13 +1,18 @@
+from socket import gethostname
+from time import sleep
 from typing import Any
 
+import pglock
+from django.utils.timezone import now
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
 
+from authentik import get_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-from authentik.tasks.models import Task, TaskStatus
+from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -130,3 +135,24 @@ class DescriptionMiddleware(Middleware):
     @property
     def actor_options(self):
         return {"description"}
+
+
+class WorkerStatusMiddleware(Middleware):
+    @property
+    def forks(self):
+        from authentik.tasks.forks import worker_status
+
+        return [worker_status]
+
+    @staticmethod
+    def worker_status():
+        status = WorkerStatus.objects.create(
+            hostname=gethostname(),
+            version=get_full_version(),
+        )
+        lock_id = f"goauthentik.io/worker/status/{status.pk}"
+        with pglock.advisory(lock_id, side_effect=pglock.Raise):
+            while True:
+                status.last_seen = now()
+                status.save(update_fields=("last_seen",))
+                sleep(30)
