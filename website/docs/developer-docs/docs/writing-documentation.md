@@ -2,13 +2,27 @@
 title: Writing documentation
 ---
 
-# Creating documentation
+# Writing documentation
 
-This guide explains how to add and edit documentation for authentik. For environment setup instructions, see the [Docs Development Environment](../setup/website-dev-environment.md) page.
+This guide explains how to add and edit documentation for authentik. Follow these steps to contribute effectively to our documentation.
 
-For writing style, formatting guidelines, and best practices, refer to our [Style Guide](./style-guide.mdx).
+## Style guide and writing templates
 
-## Useful commands
+For writing style, formatting guidelines, and best practices, refer to our [Style Guide](./style-guide.mdx). The style guide covers important aspects like:
+
+- Capitalization and terminology
+- Formatting conventions
+- Word choices and phrasing
+- Document structure
+- And more
+
+You can also find templates for different types of documentation in our [Templates section](./templates/index.md).
+
+## Step 1: Set up your environment
+
+For environment setup instructions, see the [Docs Development Environment](../setup/website-dev-environment.md) page. This will guide you through installing the necessary tools.
+
+## Step 2: Understand the documentation commands
 
 Here are the key commands for documentation development:
 
@@ -20,7 +34,9 @@ Here are the key commands for documentation development:
 | `make website-watch`      | Start main documentation server                    |
 | `make integrations-watch` | Start integrations documentation server            |
 
-## Adding main documentation
+## Step 3: Create your documentation
+
+### For main documentation
 
 1. **Choose the appropriate section** for your new document based on its content:
 
@@ -30,7 +46,7 @@ Here are the key commands for documentation development:
     - Troubleshooting guides
     - And more...
 
-2. **Create your document** using Markdown (`.md`) or MDX (`.mdx`) format:
+2. **Create your document** using one of our [templates](./templates/index.md) as a starting point. Use Markdown (`.md`) or MDX (`.mdx`) format:
 
     ```md
     ---
@@ -40,7 +56,7 @@ Here are the key commands for documentation development:
     Content goes here...
     ```
 
-3. **Add to sidebar** by editing the sidebar file in the website directory:
+3. **Add to sidebar** by editing the sidebar file in the website directory to ensure your document appears in the table of contents:
     ```javascript
     // In sidebars/docs.mjs
     export default {
@@ -55,72 +71,59 @@ Here are the key commands for documentation development:
     };
     ```
 
-## Adding integration documentation
+### For integration documentation
 
 1. **Create a new file** in the appropriate services directory:
 
     - Create a directory for your service if it doesn't exist
-    - Use `index.md` for the main integration page
-    - For complex integrations with multiple pages, add additional `.md` files in the same directory
+    - Use `index.md` for the integration page
 
 2. **Use the template** from the [integrations template](/integrations/template/service.md) as a starting point.
 
-3. **Add to sidebar** by editing the integrations sidebar file:
+3. **Add to sidebar** by adding your service to the appropriate category in the sidebar file:
     ```javascript
     // In sidebars/integrations.mjs
-    export default {
-        integrations: [
-            {
-                type: "category",
-                label: "Category Name",
-                items: ["services/your-service-name/index"],
-            },
-            // other categories...
+    {
+        type: "category",
+        label: "Category Name",
+        items: [
+            "services/existing-service/index",
+            "services/your-service-name/index",  // Add your service here
         ],
-    };
+    },
     ```
 
-## Document structure
+## Step 4: Test your documentation locally
 
-### Main documentation
+1. Run the development server to preview your changes:
 
-For standard documentation, include these elements:
+    ```bash
+    make website-watch
+    ```
 
-- **Frontmatter** with title and any relevant metadata.
-- **Introduction** explaining the purpose of the document.
-- **Prerequisites** if applicable.
-- **Step-by-step instructions** with clear headings.
-- **Examples** where helpful.
-- **Related documentation** links.
+    For integration documentation, use:
 
-### Integration documentation
+    ```bash
+    make integrations-watch
+    ```
 
-For integration documents, include:
+2. Open your browser to view the documentation:
 
-1. **Overview** - Brief description of the integration.
-2. **Prerequisites** - Required components and configuration.
-3. **authentik Configuration** - Steps to configure authentik.
-4. **Service Configuration** - Steps to configure the third-party service.
-5. **Testing** - How to verify the integration works.
-6. **Troubleshooting** - Common issues and solutions.
-7. **References** - Add links to official documentation.
+    - Main documentation: http://localhost:3000/docs
+    - Integrations: http://localhost:3001
 
-## Using templates
+3. Verify that your document appears in the navigation and renders correctly.
 
-We provide templates to help maintain consistency:
+## Step 5: Submit your changes
 
-- For main documentation: Check the templates directory under developer docs.
-- For integrations: Look for the template file in the integrations directory.
+1. Before committing, run the linter and formatter:
 
-## Document maintenance
+    ```bash
+    make website
+    ```
 
-- Review existing docs periodically for accuracy.
-- Update content when features change.
-- Remove documentation for deprecated features.
+2. Commit your changes and create a pull request with a clear description of what you've added or modified.
 
-## Submitting changes
+3. Respond to reviewer feedback if necessary.
 
-1. Make your changes on a new branch.
-2. Run `make website` to ensure proper formatting.
-3. Submit a pull request with a clear description.
-4. Respond to reviewer feedback.
+4. Once approved, your documentation will be merged and published! 🎉
