@@ -21,15 +21,15 @@ The following placeholders are used in this guide:
         - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
 
 4. Click **Register**.
-5. The overview tab of the newly created authentik app registration will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be required in authentik.
-6. In the sidebar, navigate to **Certificates & secrets**.
-7. Select the **Client secrets** tab and click **New Secret**. Provide the following required configurations:
+    - The overview tab of the newly created authentik app registration opens. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be required in authentik.
+5. In the sidebar, navigate to **Certificates & secrets**.
+6. Select the **Client secrets** tab and click **New Secret**. Provide the following required configurations:
     - **Description**: provide a description for the secret (e.g. `authentik secret`.
     - **Expires**: select an expiry duration. Currently the secret in authentik has to be rotated manually or via API, so it is recommended to choose at least 12 months.
-8. Copy the secret's value from the **Value** column.
+7. Copy the secret's value from the **Value** column.
 
 :::note
-The secret value must be copied immediately after its creation. It is not possible to view the secret value after this time.
+The secret value must be copied immediately after its creation. It is not possible to view the secret value later.
 :::
 
 9. In the sidebar, navigate to **API Permissions**.
@@ -42,14 +42,14 @@ The secret value must be copied immediately after its creation. It is not possib
 
 ## authentik Setup
 
-To support the integration of Entra ID with authentik, you need to create an Entra ID OAuth Source in authentik.
+To support the integration of Entra ID with authentik, you need to create an Entra ID OAuth source in authentik.
 
 ### Create Entra ID OAuth source
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, then click **Create**, and configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
     - **Select type**: select **Entra ID OAuth Source** as the source type.
-    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations.
+    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
         - Under **Protocol Settings**:
             - **Consumer key**: `Application (client) ID` from Entra ID.
             - **Consumer secret**: value of the secret created in Entra ID.
