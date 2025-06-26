@@ -1,14 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { ExtraRoleObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {

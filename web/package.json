@@ -148,7 +148,7 @@
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.5",
         "@goauthentik/eslint-config": "^1.0.5",
-        "@goauthentik/prettier-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
@@ -362,7 +362,7 @@
         }
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=24"
     },
     "workspaces": [
         "./packages/*"
@@ -375,6 +375,9 @@
         },
         "chromedriver": {
             "axios": "^1.8.4"
+        },
+        "format-imports": {
+            "eslint": "^9.30.1"
         },
         "rapidoc": {
             "@apitools/openapi-parser@": "0.0.37"

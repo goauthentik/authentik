@@ -1,18 +1,21 @@
+import "#elements/EmptyState";
+import "./ak-library-impl.js";
+
+import type { PageUIConfig } from "./types.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { rootInterface } from "#common/theme";
+import { me } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+
 import type { UserInterface } from "#user/index.entrypoint";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { rootInterface } from "@goauthentik/common/theme";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+
+import { Application, CoreApi } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { Application, CoreApi } from "@goauthentik/api";
-
-import "./ak-library-impl.js";
-import type { PageUIConfig } from "./types.js";
 
 /**
  * List of Applications available

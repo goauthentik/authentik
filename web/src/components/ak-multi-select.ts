@@ -1,11 +1,12 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/HorizontalFormElement";
 
-import { TemplateResult, css, html, nothing } from "lit";
+import { AkControlElement } from "#elements/AkControlElement";
+
+import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
-import { Ref, createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";

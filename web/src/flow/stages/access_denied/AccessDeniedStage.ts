@@ -1,9 +1,12 @@
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -12,8 +15,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-access-denied")
 export class AccessDeniedStage extends BaseStage<

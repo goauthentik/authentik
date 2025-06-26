@@ -1,13 +1,13 @@
+import AKBase from "#common/styles/authentik.css";
+import AKBaseDark from "#common/styles/theme-dark.css";
 /**
  * @file Theme utilities.
  */
-import { type StyleRoot, createStyleSheetUnsafe, setAdoptedStyleSheets } from "#common/stylesheets";
-
-import AKBase from "#common/styles/authentik.css";
-import AKBaseDark from "#common/styles/theme-dark.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 //#region Stylesheet Exports
 

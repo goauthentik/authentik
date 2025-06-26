@@ -1,12 +1,10 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    ModalHideEvent,
-    ModalShowEvent,
-} from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";

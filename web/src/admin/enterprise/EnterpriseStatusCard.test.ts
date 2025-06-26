@@ -1,12 +1,13 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "./EnterpriseStatusCard.js";
+
+import { render } from "#elements/tests/utils";
+
+import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
-
-import "./EnterpriseStatusCard.js";
 
 describe("ak-enterprise-status-card", () => {
     it("should not error when no data is loaded", async () => {

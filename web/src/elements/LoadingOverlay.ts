@@ -1,6 +1,8 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import "#elements/EmptyState";
+
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { css, html, nothing } from "lit";

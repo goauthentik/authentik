@@ -1,6 +1,5 @@
-import { WithAuthentikConfig } from "#elements/mixins/config";
-import { kAKConfig } from "#elements/mixins/config";
-import { LitElementConstructor, createMixin } from "#elements/types";
+import { kAKConfig, WithAuthentikConfig } from "#elements/mixins/config";
+import { createMixin } from "#elements/types";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 

@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 

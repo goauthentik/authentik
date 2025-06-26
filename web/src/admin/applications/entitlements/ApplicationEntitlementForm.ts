@@ -1,20 +1,22 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-
-import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {

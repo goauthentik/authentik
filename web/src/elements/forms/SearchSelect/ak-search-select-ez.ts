@@ -1,7 +1,7 @@
+import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
+
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;

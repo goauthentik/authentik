@@ -3,11 +3,13 @@
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
-import { cwd } from "process";
-import litCSS from "vite-plugin-lit-css";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+import { cwd } from "node:process";
 
 import { addCommands } from "../commands.mjs";
+
+import litCSS from "vite-plugin-lit-css";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;

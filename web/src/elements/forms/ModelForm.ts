@@ -1,8 +1,10 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/elements/EmptyState";
-import { Form } from "@goauthentik/elements/forms/Form";
+import "#elements/EmptyState";
 
-import { TemplateResult, html } from "lit";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { Form } from "#elements/forms/Form";
+
+import { html, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 /**

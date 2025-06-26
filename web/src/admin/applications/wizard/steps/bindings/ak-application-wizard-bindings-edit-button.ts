@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

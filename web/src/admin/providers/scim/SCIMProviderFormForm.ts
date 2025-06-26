@@ -1,14 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-hidden-text-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-hidden-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
     CompatibilityModeEnum,
@@ -19,7 +18,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
     return html`

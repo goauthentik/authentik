@@ -1,4 +1,4 @@
-import { AKElement } from "./Base";
+import { AKElement } from "./Base.js";
 
 /**
  * @class - prototype for all of our hand-made input elements

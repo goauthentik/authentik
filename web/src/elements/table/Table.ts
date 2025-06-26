@@ -1,24 +1,24 @@
+import "#elements/EmptyState";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/table/TablePagination";
+import "#elements/table/TableSearch";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { uiConfig } from "#common/ui/config";
+import { groupBy } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/table/TablePagination";
-import "@goauthentik/elements/table/TableSearch";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -31,8 +31,6 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 export interface TableLike {
     order?: string;

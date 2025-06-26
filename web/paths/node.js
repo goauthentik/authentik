@@ -1,11 +1,12 @@
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 /**
  * @file Paths used by the web package.
  *
  * @runtime node
  */
 import { DistDirectoryName } from "#paths";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 
 const relativeDirname = dirname(fileURLToPath(import.meta.url));
 

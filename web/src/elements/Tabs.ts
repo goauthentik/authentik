@@ -1,9 +1,10 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 

@@ -1,19 +1,21 @@
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
+import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
+
+import { camelToSnake } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { KeyUnknown, serializeForm } from "#elements/forms/Form";
+import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
-
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...AwadStyles];

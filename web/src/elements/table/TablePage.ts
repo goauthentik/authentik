@@ -1,10 +1,9 @@
 import "#components/ak-page-header";
-import { updateURLParams } from "#elements/router/RouteMatch";
+
 import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult, nothing } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";

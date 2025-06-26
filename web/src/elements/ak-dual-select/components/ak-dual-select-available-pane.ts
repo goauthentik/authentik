@@ -1,18 +1,18 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { DualSelectEventType, DualSelectPair } from "../types.js";
+import { availablePaneStyles, listStyles } from "./styles.js";
 
-import { PropertyValues, html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
+
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import { availablePaneStyles, listStyles } from "./styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { DualSelectEventType, DualSelectPair } from "../types.js";
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-available-pane-status"],

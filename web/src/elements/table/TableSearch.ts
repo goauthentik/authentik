@@ -1,10 +1,13 @@
+import "#components/ak-search-ql/index";
+
+import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import "@goauthentik/components/ak-search-ql";
-import { AKElement } from "@goauthentik/elements/Base";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse } from "#elements/table/Table";
+
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -13,8 +16,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-table-search")
 export class TableSearch extends WithLicenseSummary(AKElement) {
