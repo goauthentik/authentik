@@ -2,13 +2,13 @@
 title: Transports
 ---
 
-To receive notifications about events, you will need to [create](#create-a-transport) a transport object, then create a notification rule and a policy. For details on this workflow refer to
+To receive notifications about events, you will need to [create](#create-a-transport) a transport object, then create a notification rule and a policy. For details refer to [Workflow overview](./notifications.md#workflow-overview).
 
 ## Transport modes
 
 Notifications can be sent to users via multiple mediums, or _transports_:
 
-- Local
+- Local (in the authentik user interface)
 - Email
 - Webhook (generic)
 - Webhook (Slack/Discord)
@@ -19,7 +19,9 @@ This transport will manifest the notification within the authentik user interfac
 
 ### Email
 
-select this transport to send event notificstions to an email address. Note that by default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
+Select this transport to send event notifications to an email address. Note that by default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
+
+To edit an email address, follow the same instructions as above, those for configuring the email during installation.
 
 ### Webhook (generic)
 
@@ -54,9 +56,8 @@ This sends a request using the Slack-specific format. This is also compatible wi
 
 ## Create a transport
 
-1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Transports**.
+1. Log in as an administrator to the authentik Admin interface, and navigate to **Event > Notification Transports**.
 
 2. Click **Create** to add a new transport, or click the **Edit** icon next to an existing transport to modify it.
 
 3. Define the **Name** and **Mode** for the transport, enter required configuration settings, and then click **Create**.
-
