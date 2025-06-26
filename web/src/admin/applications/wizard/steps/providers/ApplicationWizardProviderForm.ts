@@ -12,7 +12,7 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css.js";
+import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
 import { type ApplicationWizardState, type OneOfProvider } from "../../types";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {

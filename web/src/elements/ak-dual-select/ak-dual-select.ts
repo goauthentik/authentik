@@ -12,7 +12,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import { globalVariables, mainStyles } from "./components/styles.css";
+import { globalVariables, mainStyles } from "./components/styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 

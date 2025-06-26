@@ -9,11 +9,11 @@ import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import styles from "./LibraryPageImpl.css";
+import styles from "./LibraryPageImpl.styles.js";
 
 import type { Application } from "@goauthentik/api";
 
-import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
+import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import "./ak-library-application-empty-list.js";
 import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";

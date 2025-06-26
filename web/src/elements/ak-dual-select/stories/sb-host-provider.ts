@@ -1,7 +1,7 @@
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { globalVariables } from "../components/styles.css";
+import { globalVariables } from "../components/styles.js";
 
 /**
  * @element sb-dual-select-host-provider

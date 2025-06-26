@@ -8,7 +8,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { SearchbarEventDetail, SearchbarEventSource } from "../types.ts";
-import { globalVariables, searchStyles } from "./search.css.js";
+import { globalVariables, searchStyles } from "./search.styles.js";
 
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
