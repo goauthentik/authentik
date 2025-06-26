@@ -1,21 +1,19 @@
+import { camelToSnake } from "#common/utils";
 import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/forms/FormGroup";
-import "#elements/forms/HorizontalFormElement";
-
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
-
-import { camelToSnake } from "#common/utils";
-
 import { AKElement } from "#elements/Base";
 import { KeyUnknown, serializeForm } from "#elements/forms/Form";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
+
+import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
+import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...AwadStyles];

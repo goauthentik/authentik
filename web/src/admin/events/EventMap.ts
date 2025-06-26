@@ -10,14 +10,14 @@ import { PaginatedResponse } from "#elements/table/Table";
 
 import { Event } from "@goauthentik/api";
 
-import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector";
-import OlMap from "@openlayers-elements/core/ol-map";
-import { isEmpty } from "ol/extent";
-import Feature from "ol/Feature";
-import { Point } from "ol/geom";
-import { fromLonLat } from "ol/proj";
-import Icon from "ol/style/Icon";
-import Style from "ol/style/Style";
+import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector.js";
+import OlMap from "@openlayers-elements/core/ol-map.js";
+import { isEmpty } from "ol/extent.js";
+import Feature from "ol/Feature.js";
+import { Point } from "ol/geom.js";
+import { fromLonLat } from "ol/proj.js";
+import Icon from "ol/style/Icon.js";
+import Style from "ol/style/Style.js";
 
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";

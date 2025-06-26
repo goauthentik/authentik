@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
-
 /**
  * @file Pseudo-localization script.
  *
@@ -9,6 +6,10 @@ import path from "node:path";
  * @import { ProgramMessage } from "@lit/localize-tools/src/messages.js"
  * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
  */
+
+import { readFileSync } from "node:fs"
+import path from "node:path";
+
 import { PackageRoot } from "#paths/node";
 
 import pseudolocale from "pseudolocale";

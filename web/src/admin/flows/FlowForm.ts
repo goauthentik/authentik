@@ -18,7 +18,7 @@ import {
     FlowLayoutEnum,
     FlowsApi,
 } from "@goauthentik/api";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
+import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
