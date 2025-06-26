@@ -4,8 +4,6 @@ import "@goauthentik/admin/outposts/OutpostForm";
 import "@goauthentik/admin/outposts/OutpostHealth";
 import "@goauthentik/admin/outposts/OutpostHealthSimple";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import "@goauthentik/admin/system-tasks/ScheduleList";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -15,6 +13,8 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/elements/tasks/ScheduleList";
+import "@goauthentik/elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";

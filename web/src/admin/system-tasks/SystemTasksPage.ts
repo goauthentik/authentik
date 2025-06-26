@@ -1,11 +1,11 @@
 import "#components/ak-page-header";
-import "@goauthentik/admin/system-tasks/ScheduleList";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/LogViewer";
+import "@goauthentik/elements/tasks/ScheduleList";
+import "@goauthentik/elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

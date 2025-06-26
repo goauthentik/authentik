@@ -1,7 +1,6 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
-import "@goauthentik/admin/system-tasks/ScheduleList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -11,6 +10,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/tasks/ScheduleList";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

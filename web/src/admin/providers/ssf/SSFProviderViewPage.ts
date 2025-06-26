@@ -1,7 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/ssf/SSFProviderFormPage";
 import "@goauthentik/admin/providers/ssf/StreamTable";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -11,6 +10,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/tasks/TaskList";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

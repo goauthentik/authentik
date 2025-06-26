@@ -1,6 +1,4 @@
 import { formatElapsedTime } from "#common/temporal";
-import "@goauthentik/admin/system-tasks/ScheduleForm";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -9,6 +7,8 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
+import "@goauthentik/elements/tasks/ScheduleForm";
+import "@goauthentik/elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

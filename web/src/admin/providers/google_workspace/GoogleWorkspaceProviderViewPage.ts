@@ -2,8 +2,6 @@ import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFor
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/system-tasks/ScheduleList";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -12,6 +10,9 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
+import "@goauthentik/elements/tasks/ScheduleList";
+import "@goauthentik/elements/tasks/TaskList";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -148,7 +149,9 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                   </div>`
                 : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-m-12-col pf-l-stack__item">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                >
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
@@ -194,6 +197,19 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                             </button>
                         </ak-forms-modal>
                     </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                >
+                    <ak-sync-status-card
+                        .fetch=${() => {
+                            return new ProvidersApi(
+                                DEFAULT_CONFIG,
+                            ).providersGoogleWorkspaceSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
+                        }}
+                    ></ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <div class="pf-c-card">

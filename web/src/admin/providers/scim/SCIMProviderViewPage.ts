@@ -3,8 +3,6 @@ import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
 import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/system-tasks/ScheduleList";
-import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/ak-status-label";
@@ -14,6 +12,9 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
+import "@goauthentik/elements/tasks/ScheduleList";
+import "@goauthentik/elements/tasks/TaskList";
 import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
 
 import { msg } from "@lit/localize";
@@ -222,6 +223,19 @@ export class SCIMProviderViewPage extends AKElement {
                             </button>
                         </ak-forms-modal>
                     </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                >
+                    <ak-sync-status-card
+                        .fetch=${() => {
+                            return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
+                                {
+                                    id: this.provider?.pk || 0,
+                                },
+                            );
+                        }}
+                    ></ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
                     <div class="pf-c-card">

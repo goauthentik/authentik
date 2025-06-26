@@ -10,6 +10,7 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
+import "@goauthentik/elements/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -147,6 +148,7 @@ export class TaskList extends Table<Task> {
     }
 
     taskState(task: Task): TemplateResult {
+        return;
         switch (task.aggregatedStatus) {
             case TasksTasksListAggregatedStatusEnum.Queued:
                 return html`<ak-label color=${PFColor.Grey}>${msg("Waiting to run")}</ak-label>`;
@@ -172,7 +174,7 @@ export class TaskList extends Table<Task> {
             html`${item.queueName}`,
             html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
                 <small>${item.mtime.toLocaleString()}</small>`,
-            this.taskState(item),
+            html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             [TasksTasksListStateEnum.Rejected, TasksTasksListStateEnum.Done].includes(item.state)
                 ? html`<ak-action-button
                       class="pf-m-plain"
