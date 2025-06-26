@@ -1,5 +1,5 @@
 import "@patternfly/patternfly/components/Login/login.css";
-import "../../../stories/flow-interface";
+import "../../../stories/flow-interface.js";
 import "./AuthenticatorTOTPStage.js";
 
 import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";

@@ -15,7 +15,7 @@ import {
     UserTypeEnum,
     UserWriteStage,
 } from "@goauthentik/api";
-import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
+import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum.js";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";

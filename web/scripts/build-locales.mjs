@@ -1,7 +1,3 @@
-import { spawnSync } from "node:child_process";
-import { readFileSync, statSync } from "node:fs";
-import path from "node:path";
-
 /**
  * @file Lit Localize build script.
  *
@@ -13,9 +9,13 @@ import path from "node:path";
  * long spew of "this string is not translated" and replacing it with a
  * summary of how many strings are missing with respect to the source locale.
  *
- * @import { ConfigFile } from "@lit/localize-tools/lib/types/config"
- * @import { Stats } from "fs";
+ * @import { ConfigFile } from "@lit/localize-tools/lib/types/config.js"
+ * @import { Stats } from "node:fs";
  */
+import { spawnSync } from "node:child_process";
+import { readFileSync, statSync } from "node:fs";
+import path from "node:path";
+
 import { PackageRoot } from "#paths/node";
 
 /**

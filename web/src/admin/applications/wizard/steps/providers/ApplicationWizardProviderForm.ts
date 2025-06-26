@@ -14,7 +14,7 @@ import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { property, query } from "lit/decorators.js";
 
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types";
+import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static get styles() {
