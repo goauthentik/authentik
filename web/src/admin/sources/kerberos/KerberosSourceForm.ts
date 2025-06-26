@@ -79,7 +79,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
             });
         }
         this.dispatchEvent(
-            new CustomEvent("ak-form-success", {
+            new CustomEvent("ak-form-successful-submit", {
                 detail: { slug: source.slug },
                 bubbles: true,
                 composed: true,

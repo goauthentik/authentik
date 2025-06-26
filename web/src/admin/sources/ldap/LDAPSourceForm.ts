@@ -46,7 +46,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             });
         }
         this.dispatchEvent(
-            new CustomEvent("ak-form-success", {
+            new CustomEvent("ak-form-successful-submit", {
                 detail: { slug: source.slug },
                 bubbles: true,
                 composed: true,
