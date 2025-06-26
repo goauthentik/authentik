@@ -193,17 +193,32 @@ class Event(SerializerModel, ExpiringModel):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
-            original_user = None
-            if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
-            self.user = get_user(request.user, original_user)
+            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
-        # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
+            from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+            # Check if we're currently impersonating, and add that user
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
                 self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
+            # Special case for events that happen during a flow, the user might not be authenticated
+            # yet but is a pending user instead
+            if SESSION_KEY_PLAN in request.session:
+                from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+
+                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+                pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER, None)
+                # Only save `authenticated_as` if there's a different pending user in the flow
+                # than the user that is authenticated
+                if pending_user and (
+                    (pending_user.pk and pending_user.pk != self.user.get("pk"))
+                    or (not pending_user.pk)
+                ):
+                    orig_user = self.user.copy()
+
+                    self.user = {"authenticated_as": orig_user, **get_user(pending_user)}
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
