@@ -17,7 +17,7 @@ export const ROUTES: Route[] = [
         return html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`;
     }),
     new Route(new RegExp("^/administration/system-tasks$"), async () => {
-        await import("@goauthentik/admin/system-tasks/SystemTasksPage");
+        await import("@goauthentik/admin/admin-overview/SystemTasksPage");
         return html`<ak-system-tasks></ak-system-tasks>`;
     }),
     new Route(new RegExp("^/core/providers$"), async () => {
