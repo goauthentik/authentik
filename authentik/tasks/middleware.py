@@ -1,5 +1,4 @@
 import os
-from os import getpid
 from pathlib import Path
 from signal import pause
 from socket import gethostname
@@ -9,6 +8,7 @@ from typing import Any
 
 import pglock
 from django.utils.timezone import now
+from django.conf import settings
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
 from dramatiq.message import Message
@@ -186,6 +186,9 @@ class MetricsMiddleware(Middleware):
         return [worker_metrics]
 
     def before_worker_boot(self, broker: Broker, worker):
+        if settings.TEST:
+            return
+
         from prometheus_client import Counter, Gauge, Histogram
 
         self.total_messages = Counter(
@@ -252,7 +255,7 @@ class MetricsMiddleware(Middleware):
         from prometheus_client import multiprocess
 
         # TODO: worker_id
-        multiprocess.mark_process_dead(getpid())
+        multiprocess.mark_process_dead(os.getpid())
 
     def _make_labels(self, message: Message) -> tuple[str, str]:
         return (message.queue_name, message.actor_name)

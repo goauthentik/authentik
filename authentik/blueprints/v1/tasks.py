@@ -7,6 +7,7 @@ from sys import platform
 from uuid import UUID
 
 from dacite.core import from_dict
+from django.conf import settings
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -68,7 +69,8 @@ class BlueprintWatcherMiddleware(Middleware):
         observer.start()
 
     def after_worker_boot(self, broker, worker):
-        self.start_blueprint_watcher()
+        if not settings.TEST:
+            self.start_blueprint_watcher()
 
 
 class BlueprintEventHandler(FileSystemEventHandler):

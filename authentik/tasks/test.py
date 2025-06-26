@@ -1,9 +1,15 @@
 from queue import PriorityQueue
 
-from dramatiq.broker import Broker, MessageProxy
+from django.utils.module_loading import import_string
+from django_dramatiq_postgres.conf import Conf
+import dramatiq
+from dramatiq.broker import Broker, MessageProxy, get_broker
+from dramatiq.middleware.retries import Retries
+from dramatiq.results.middleware import Results
 from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
 
 from authentik.tasks.broker import PostgresBroker
+from authentik.tasks.middleware import MetricsMiddleware
 
 
 class TestWorker(Worker):
@@ -46,3 +52,31 @@ class TestBroker(PostgresBroker):
         worker = TestWorker(message.queue_name, broker=self)
         worker.process_message(MessageProxy(message))
         return message
+
+
+def use_test_broker():
+    old_broker = get_broker()
+
+    broker = TestBroker()
+
+    for actor_name in old_broker.get_declared_actors():
+        actor = old_broker.get_actor(actor_name)
+        actor.broker = broker
+        actor.broker.declare_actor(actor)
+
+    for middleware_class, middleware_kwargs in Conf().middlewares:
+        middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
+            **middleware_kwargs,
+        )
+        if isinstance(middleware, MetricsMiddleware):
+            continue
+        if isinstance(middleware, Retries):
+            middleware.max_retries = 0
+        if isinstance(middleware, Results):
+            middleware.backend = import_string(Conf().result_backend)(
+                *Conf().result_backend_args,
+                **Conf().result_backend_kwargs,
+            )
+        broker.add_middleware(middleware)
+
+    dramatiq.set_broker(broker)
