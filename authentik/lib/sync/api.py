@@ -7,11 +7,6 @@ from authentik.tasks.models import TaskStatus
 class SyncStatusSerializer(PassiveSerializer):
     """Provider/source sync status"""
 
-    is_running = BooleanField(read_only=True, default=False)
-    last_successful_sync = DateTimeField(read_only=True, required=False, default=None)
-    last_sync_status = ChoiceField(
-        read_only=True,
-        required=False,
-        default=None,
-        choices=TaskStatus.choices,
-    )
+    is_running = BooleanField()
+    last_successful_sync = DateTimeField(required=False)
+    last_sync_status = ChoiceField(required=False, choices=TaskStatus.choices)

@@ -60390,20 +60390,13 @@ components:
       properties:
         is_running:
           type: boolean
-          readOnly: true
-          default: false
         last_successful_sync:
           type: string
           format: date-time
-          readOnly: true
         last_sync_status:
-          allOf:
-          - $ref: '#/components/schemas/TaskAggregatedStatusEnum'
-          readOnly: true
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
       required:
       - is_running
-      - last_successful_sync
-      - last_sync_status
     SystemInfo:
       type: object
       description: Get system information.

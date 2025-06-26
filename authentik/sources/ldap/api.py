@@ -168,15 +168,19 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         """Get provider's sync status"""
         source: LDAPSource = self.get_object()
 
+        status = {}
+
+        with source.sync_lock as lock_acquired:
+            # If we could not acquire the lock, it means a task is using it, and thus is running
+            status["is_running"] = not lock_acquired
+
         sync_schedule = None
         for schedule in source.schedules.all():
             if schedule.actor_name == ldap_sync.actor_name:
                 sync_schedule = schedule
 
         if not sync_schedule:
-            return Response(SyncStatusSerializer({}).data)
-
-        status = {}
+            return Response(SyncStatusSerializer(status).data)
 
         last_task: Task = (
             sync_schedule.tasks.exclude(
@@ -195,10 +199,6 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             status["last_sync_status"] = last_task.aggregated_status
         if last_successful_task:
             status["last_successful_sync"] = last_successful_task.mtime
-
-        with source.sync_lock as lock_acquired:
-            # If we could not acquire the lock, it means a task is using it, and thus is running
-            status["is_running"] = not lock_acquired
 
         return Response(SyncStatusSerializer(status).data)
 
