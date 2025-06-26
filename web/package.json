@@ -199,7 +199,6 @@
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.36.0",
         "vite-plugin-lit-css": "^2.0.0",
-        "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.12"
     },
     "optionalDependencies": {

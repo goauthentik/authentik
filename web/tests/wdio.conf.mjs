@@ -9,7 +9,6 @@ import { cwd } from "node:process";
 import { addCommands } from "../commands.mjs";
 
 import litCSS from "vite-plugin-lit-css";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;
@@ -80,8 +79,6 @@ const browserRunnerOptions = {
             // ---
             // @ts-ignore WDIO's Vite is out of date.
             litCSS(),
-            // @ts-ignore WDIO's Vite is out of date.
-            tsconfigPaths(),
         ],
     },
 };
