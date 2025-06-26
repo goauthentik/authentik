@@ -1,6 +1,6 @@
+import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
