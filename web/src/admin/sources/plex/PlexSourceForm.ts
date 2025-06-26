@@ -90,6 +90,13 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                 },
             });
         }
+        this.dispatchEvent(
+            new CustomEvent("ak-form-success", {
+                detail: { slug: source.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
         return source;
     }
 

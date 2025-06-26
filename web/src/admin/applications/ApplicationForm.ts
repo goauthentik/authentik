@@ -92,6 +92,13 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 },
             });
         }
+        this.dispatchEvent(
+            new CustomEvent("ak-form-success", {
+                detail: { slug: app.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
         return app;
     }
 

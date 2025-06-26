@@ -78,6 +78,13 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 },
             });
         }
+        this.dispatchEvent(
+            new CustomEvent("ak-form-success", {
+                detail: { slug: source.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
         return source;
     }
 

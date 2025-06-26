@@ -11,6 +11,7 @@ import "#components/events/ObjectChangelog";
 import { AKElement } from "#elements/Base";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
@@ -126,6 +127,21 @@ export class FlowViewPage extends AKElement {
                                                     <ak-flow-form
                                                         slot="form"
                                                         .instancePk=${this.flow.slug}
+                                                        @ak-form-successful-submit=${(
+                                                            e: CustomEvent,
+                                                        ) => {
+                                                            const flow = e.detail as Flow;
+                                                            if (!this.flowSlug) {
+                                                                console.warn(
+                                                                    "Old identifier (flowSlug) is undefined or empty. Ensure this is intentional.",
+                                                                );
+                                                            }
+                                                            ModelForm.handleIdentifierChange(
+                                                                this.flowSlug || "",
+                                                                flow.slug,
+                                                                "/flow/flows/",
+                                                            );
+                                                        }}
                                                     >
                                                     </ak-flow-form>
                                                     <button

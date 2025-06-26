@@ -95,4 +95,34 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         }
         return super.render();
     }
+
+    /**
+     * Handle identifier change after form submission
+     *
+     * Call this method from the parent component's successful submit handler
+     * to handle redirection when an object's identifier (slug, pk, etc.) changes
+     *
+     * @param oldIdentifier Original identifier before update
+     * @param newIdentifier New identifier after update
+     * @param basePath Base path for the object (e.g., "/core/applications/")
+     * @returns True if redirect was performed, false otherwise
+     */
+    static handleIdentifierChange(
+        oldIdentifier: string,
+        newIdentifier: string,
+        basePath: string,
+    ): boolean {
+        if (!oldIdentifier) {
+            console.warn("Old identifier is undefined or empty. Ensure this is intentional.");
+        }
+        if (!newIdentifier) {
+            console.warn("New identifier is undefined or empty. Navigation may fail.");
+        }
+
+        if (oldIdentifier !== newIdentifier) {
+            window.location.href = `/if/admin/#${basePath}${newIdentifier}`;
+            return true;
+        }
+        return false;
+    }
 }

@@ -9,6 +9,7 @@ import "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -31,6 +32,15 @@ export class SourceViewPage extends AKElement {
 
     @property({ attribute: false })
     source?: Source;
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addEventListener("ak-form-successful-submit", (e: Event) => {
+            const customEvent = e as CustomEvent;
+            const source = customEvent.detail as Source;
+            ModelForm.handleIdentifierChange(this.sourceSlug || "", source.slug, "/core/sources/");
+        });
+    }
 
     renderSource(): TemplateResult {
         if (!this.source) {
@@ -74,6 +84,11 @@ export class SourceViewPage extends AKElement {
             >
             </ak-page-header>
             ${this.renderSource()}`;
+    }
+
+    handleFormSubmit(e: CustomEvent) {
+        const source = e.detail as Source;
+        ModelForm.handleIdentifierChange(this.sourceSlug || "", source.slug, "/core/sources/");
     }
 }
 

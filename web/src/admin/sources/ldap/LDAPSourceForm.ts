@@ -34,16 +34,25 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     }
 
     async send(data: LDAPSource): Promise<LDAPSource> {
+        let source: LDAPSource;
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
+        } else {
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+                lDAPSourceRequest: data as unknown as LDAPSourceRequest,
+            });
         }
-
-        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-        });
+        this.dispatchEvent(
+            new CustomEvent("ak-form-success", {
+                detail: { slug: source.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
+        return source;
     }
 
     renderForm(): TemplateResult {
