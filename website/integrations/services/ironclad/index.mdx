@@ -26,61 +26,46 @@ To support the integration of Ironclad with authentik, you need to create three 
 
 ### Create property mappings
 
-Ironclad requires a first and last name for each user. By default authentik only provides a full name, as a single string value. Ironclad also requires the email attribute in a specific form. Therefore you need to create property mappings to provide email, first names, and last names to Ironclad.
+Ironclad requires both a first and last name for each user, but by default, authentik only provides a full name as a single string. Ironclad also requires the email attribute in a specific format. Therefore, property mappings must be created to provide the email, first name, and last name to Ironclad.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
+3. Configure the first mapping for the user's first name:
+    - **Name**: `firstName`
+    - **SAML Attribute Name**: `firstName`
+    - **Expression**:
 
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Configure the SAML Provider Property Mapping**:
+        ```python
+        return request.user.name.rsplit(" ", 1)[0]
+        ```
 
-        - **Name**: `firstName`
-        - **SAML Attribute Name**: `firstName`
-        - **Expression**:
+4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's last name:
+    - **Name**: `lastName`
+    - **SAML Attribute Name**: `lastName`
+    - **Expression**:
 
-            ```python
-            return request.user.name.rsplit(" ", 1)[0]
-            ```
+        ```python
+        return request.user.name.rsplit(" ", 1)[-1]
+        ```
 
-3. Click **Finish** to save the property mapping.
-4. Click **Create**.
+5. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's email address:
+    - **Name**: `email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
 
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Configure the SAML Provider Property Mapping**:
+        ```python
+        return request.user.email
+        ```
 
-        - **Name**: `lastName`
-        - **SAML Attribute Name**: `lastName`
-        - **Expression**:
-
-            ```python
-            return request.user.name.rsplit(" ", 1)[-1]
-            ```
-
-5. Click **Finish** to save the property mapping.
-6. Click **Create**.
-
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Configure the SAML Provider Property Mapping**:
-
-        - **Name**: `email`
-        - **SAML Attribute Name**: `email`
-        - **Expression**:
-
-            ```python
-            return request.user.email
-            ```
-
-7. Click **Finish** to save the property mapping.
+6. Click **Finish**.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-
         - Temporarily set the **ACS URL** to `https://temp.temp`
         - Set **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
@@ -89,7 +74,7 @@ Ironclad requires a first and last name for each user. By default authentik only
             - Toggle on **Sign responses**.
             - **Property mappings**:
                 - Click the **x** button to remove all selected property mappings.
-                - Add the `firstName`, `lastName`, and `email` property mappings that you created in the previous section to **Selected User Property Mappings**.
+                - Under **Selected User Property Mappings**, add the `firstName`, `lastName`, and `email` property mappings that were created in the previous section.
 
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -97,21 +82,21 @@ Ironclad requires a first and last name for each user. By default authentik only
 
 ## Ironclad configuration
 
-1. Login to the [Ironclad dashboard](https://ironcladapp.com/signin) as an administrator.
-2. Click on your profile icon at the top right, and then click on **Company Settings**.
-3. In the sidebar, click on **Integrations**, and then under **Other Integrations** click on **SAML**.
-4. Click **Add SAML Integration**, and then click on **Show Additional IdP Settings**.
-5. Note the **Callback** URL and **Service Provider Identifier** values because they will be needed in the next section.
-6. Leave this page open because you will need to return to it after the next section.
+1. Log in to the [Ironclad dashboard](https://ironcladapp.com/signin) as an administrator.
+2. Click your profile icon at the top-right corner, then select **Company Settings**.
+3. In the sidebar, select **Integrations**, and under **Other Integrations** click **SAML**.
+4. Click **Add SAML Integration**, then select **Show Additional IdP Settings**.
+5. Note the **Callback** URL and **Service Provider Identifier** values because you'll need them in the next section.
+6. Leave this page open, as you'll return to it after the next section.
 
 ## Reconfigure authentik provider
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
 3. Under **Protocol settings**, set the following required configurations:
-    - **ACS URL**: Set to the **Callback** URL from Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
-    - **Issuer**: Set to the **Service Provider Identifier** value from Ironclad (e.g. `na1.ironcladapp.com`).
-4. Click **Update**
+    - **ACS URL**: Set to the **Callback** URL provided by Ironclad (e.g. `https://ironcladapp.com/saml/<customer-ID>/callback`).
+    - **Issuer**: Set to the **Service Provider Identifier** provided by Ironclad (e.g. `na1.ironcladapp.com`).
+4. Click **Update**.
 
 ## Download the metadata file
 
