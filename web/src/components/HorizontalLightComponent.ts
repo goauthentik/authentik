@@ -1,7 +1,8 @@
-import { AKElement, type AKElementProps } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import "#elements/forms/HorizontalFormElement";
 
-import { TemplateResult, html, nothing } from "lit";
+import { AKElement, type AKElementProps } from "#elements/Base";
+
+import { html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 type HelpType = TemplateResult | typeof nothing;

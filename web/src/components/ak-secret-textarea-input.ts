@@ -1,7 +1,7 @@
-import { ifNotEmpty } from "@goauthentik/elements/utils/ifNotEmpty.js";
+import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
 
 import { html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 

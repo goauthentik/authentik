@@ -1,13 +1,14 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
 import { isCausedByAbortError } from "#common/errors/network";
+
 import { LicenseContext, LicenseMixin } from "#elements/mixins/license";
 import type { ReactiveElementHost } from "#elements/types";
 
+import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
+
 import { ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
-
-import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
 
 export class LicenseContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/license`);

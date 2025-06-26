@@ -1,19 +1,19 @@
 import {
-    type TestProvider,
-    type TestSequence,
     checkIsPresent,
     clickButton,
     clickToggleGroup,
     setFormGroup,
     setRadio,
     setSearchSelect,
-    setTextInput,
     setTextareaInput,
+    setTextInput,
     setToggle,
     setTypeCreate,
+    type TestProvider,
+    type TestSequence,
 } from "pageobjects/controls.js";
 
-import { ascii_letters, digits, randomString } from "../utils";
+import { ascii_letters, digits, randomString } from "../utils.js";
 import { randomId } from "../utils/index.js";
 
 const newObjectName = (prefix: string) => `${prefix} - ${randomId()}`;

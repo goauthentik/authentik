@@ -1,9 +1,11 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { P, match } from "ts-pattern";
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+
+import { match, P } from "ts-pattern";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFFAIcons from "@patternfly/patternfly/base/patternfly-fa-icons.css";

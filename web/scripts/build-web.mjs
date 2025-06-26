@@ -1,4 +1,7 @@
 /// <reference types="../types/esbuild.js" />
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 /**
  * @file ESBuild script for building the authentik web UI.
  *
@@ -7,15 +10,15 @@
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
+
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
 import { readBuildIdentifier } from "@goauthentik/core/version/node";
+
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 
 const logPrefix = "[Build]";
 

@@ -1,18 +1,15 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-slug-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
+import "#components/ak-slug-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
     DeniedActionEnum,
@@ -21,6 +18,12 @@ import {
     FlowLayoutEnum,
     FlowsApi,
 } from "@goauthentik/api";
+import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {

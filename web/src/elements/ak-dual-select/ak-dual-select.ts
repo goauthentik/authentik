@@ -1,28 +1,27 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    CustomEmitterElement,
-    CustomListenerElement,
-} from "@goauthentik/elements/utils/eventEmitter";
+import "./components/ak-dual-select-available-pane.js";
+import "./components/ak-dual-select-controls.js";
+import "./components/ak-dual-select-selected-pane.js";
+import "./components/ak-pagination.js";
+import "./components/ak-search-bar.js";
+
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement, CustomListenerElement } from "#elements/utils/eventEmitter";
+
 import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
-import { PropertyValues, html, nothing } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { createRef, ref } from "lit/directives/ref.js";
 import type { Ref } from "lit/directives/ref.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import { globalVariables, mainStyles } from "./components/styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./components/ak-dual-select-available-pane.js";
 import { AkDualSelectAvailablePane } from "./components/ak-dual-select-available-pane.js";
-import "./components/ak-dual-select-controls.js";
-import "./components/ak-dual-select-selected-pane.js";
 import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-pane.js";
-import "./components/ak-pagination.js";
-import "./components/ak-search-bar.js";
+import { globalVariables, mainStyles } from "./components/styles.js";
 import {
     BasePagination,
     DualSelectEventType,

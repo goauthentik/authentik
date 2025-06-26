@@ -3,7 +3,7 @@ import * as _enLocale from "#locales/en";
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
-import { AkLocale, LocaleRow } from "./types";
+import { AkLocale, LocaleRow } from "./types.js";
 
 export const DEFAULT_FALLBACK = "en";
 

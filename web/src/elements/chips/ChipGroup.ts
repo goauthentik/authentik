@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Chip } from "@goauthentik/elements/chips/Chip";
+import { AKElement } from "#elements/Base";
+import { Chip } from "#elements/chips/Chip";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";

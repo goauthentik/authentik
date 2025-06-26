@@ -1,6 +1,6 @@
-import { msg } from "@lit/localize";
-
 import { Flow, FlowDesignationEnum, FlowLayoutEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
 
 export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;

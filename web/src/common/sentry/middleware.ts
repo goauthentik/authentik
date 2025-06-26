@@ -1,6 +1,6 @@
-import { getCurrentScope, getTraceData } from "@sentry/core";
-
 import { FetchParams, Middleware, RequestContext } from "@goauthentik/api";
+
+import { getCurrentScope, getTraceData } from "@sentry/core";
 
 export class SentryMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
