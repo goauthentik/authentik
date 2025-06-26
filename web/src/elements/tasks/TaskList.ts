@@ -147,41 +147,22 @@ export class TaskList extends Table<Task> {
             </div>`;
     }
 
-    taskState(task: Task): TemplateResult {
-        return;
-        switch (task.aggregatedStatus) {
-            case TasksTasksListAggregatedStatusEnum.Queued:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Waiting to run")}</ak-label>`;
-            case TasksTasksListAggregatedStatusEnum.Consumed:
-                return html`<ak-label color=${PFColor.Blue}>${msg("Running")}</ak-label>`;
-            case TasksTasksListAggregatedStatusEnum.Done:
-            case TasksTasksListAggregatedStatusEnum.Info:
-                return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
-            case TasksTasksListAggregatedStatusEnum.Warning:
-                return html`<ak-label color=${PFColor.Orange}>${msg("Warning")}</ak-label>`;
-            case TasksTasksListAggregatedStatusEnum.Rejected:
-            case TasksTasksListAggregatedStatusEnum.Error:
-                return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
-            default:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;
-        }
-    }
-
     row(item: Task): TemplateResult[] {
         return [
             html`<div>${item.actorName}</div>
                 <small>${item.uid.replace(new RegExp("^authentik."), "")}</small>`,
             html`${item.queueName}`,
             html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
-                <small>${item.mtime.toLocaleString()}</small>`,
+                <small>${item.mtime?.toLocaleString()}</small>`,
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
-            [TasksTasksListStateEnum.Rejected, TasksTasksListStateEnum.Done].includes(item.state)
+            item.state === TasksTasksListStateEnum.Rejected ||
+            item.state === TasksTasksListStateEnum.Done
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
                           return new TasksApi(DEFAULT_CONFIG)
                               .tasksTasksRetryCreate({
-                                  messageId: item.messageId,
+                                  messageId: item.messageId ?? "",
                               })
                               .then(() => {
                                   this.dispatchEvent(

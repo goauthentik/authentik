@@ -83,9 +83,6 @@ export class KerberosSourceViewPage extends AKElement {
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
-                @activate=${() => {
-                    this.load();
-                }}
             >
                 <div slot="header" class="pf-c-banner pf-m-info">
                     ${msg("Kerberos Source is in preview.")}
