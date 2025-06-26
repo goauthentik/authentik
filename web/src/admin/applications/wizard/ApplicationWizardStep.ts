@@ -1,4 +1,4 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
+import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
 import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
     NavigationEventInit,
