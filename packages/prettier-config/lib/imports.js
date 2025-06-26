@@ -63,7 +63,7 @@ function normalizeImports(filepath, input) {
                 `"(?<suffix>@goauthentik\/${submodule}\/)`,
 
                 `(?<path>[^"'.]+)`,
-                `(?:\.[^"']+)?["']`,
+                `(?:.[^"']+)?["']`,
                 `\\n?\\s*\\\)?;`,
             ].join(""),
             "gm",
