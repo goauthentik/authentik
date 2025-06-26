@@ -10,12 +10,12 @@ from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
-from authentik.outposts.models import Outpost, OutpostServiceConnection
+from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
     outpost_controller,
+    outpost_send_update,
     outpost_session_end,
-    outposts_and_related_update_dispatch,
 )
 
 LOGGER = get_logger()
@@ -45,28 +45,58 @@ def outpost_pre_save(sender, instance: Outpost, **_):
 
 
 @receiver(m2m_changed, sender=Outpost.providers.through)
-def outpost_m2m_changed(sender, instance: Model, action: str, **_):
+def outpost_m2m_changed(sender, instance: Provider, action: str, **_):
     """Update outpost on m2m change, when providers are added or removed"""
     if action in ["post_add", "post_remove", "post_clear"]:
-        outposts_and_related_update_dispatch.send(class_to_path(instance.__class__), instance.pk)
+        if not isinstance(instance, OutpostModel):
+            return
+        for outpost in instance.outpost_set.all():
+            outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
 
 
-def outposts_and_related_post_save(sender, instance: Model, created: bool, **_):
-    """If an Outpost is saved, Ensure that token is created/updated
-
-    If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
-    we send a message down the relevant OutpostModels WS connection to trigger an update"""
-    if isinstance(instance, Outpost) and created:
+@receiver(post_save, sender=Outpost)
+def outpost_post_save(sender, instance: Outpost, created: bool, **_):
+    if created:
         LOGGER.info("New outpost saved, ensuring initial token and user are created")
         _ = instance.token
-    outposts_and_related_update_dispatch.send(class_to_path(instance.__class__), instance.pk)
+    outpost_send_update.send_with_options(args=(instance.pk,), rel_obj=instance)
 
 
-post_save.connect(outposts_and_related_post_save, sender=Outpost, weak=False)
-post_save.connect(outposts_and_related_post_save, sender=OutpostServiceConnection, weak=False)
-post_save.connect(outposts_and_related_post_save, sender=Provider, weak=False)
-post_save.connect(outposts_and_related_post_save, sender=CertificateKeyPair, weak=False)
-post_save.connect(outposts_and_related_post_save, sender=Brand, weak=False)
+def outpost_related_post_save(sender, instance: OutpostServiceConnection | OutpostModel, **_):
+    for outpost in instance.outpost_set.all():
+        outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
+
+
+post_save.connect(outpost_related_post_save, sender=OutpostServiceConnection, weak=False)
+post_save.connect(outpost_related_post_save, sender=OutpostModel, weak=False)
+
+
+def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Brand, **_):
+    for field in instance._meta.get_fields():
+        # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
+        # are used, and if it has a value
+        if not hasattr(field, "related_model"):
+            continue
+        if not field.related_model:
+            continue
+        if not issubclass(field.related_model, OutpostModel):
+            continue
+
+        field_name = f"{field.name}_set"
+        if not hasattr(instance, field_name):
+            continue
+
+        LOGGER.debug("triggering outpost update from field", field=field.name)
+        # Because the Outpost Model has an M2M to Provider,
+        # we have to iterate over the entire QS
+        for reverse in getattr(instance, field_name).all():
+            if isinstance(reverse, OutpostModel):
+                for outpost in reverse.outpost_set.all():
+                    outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
+
+
+post_save.connect(outpost_reverse_related_post_save, sender=Brand, weak=False)
+post_save.connect(outpost_reverse_related_post_save, sender=CertificateKeyPair, weak=False)
 
 
 @receiver(pre_delete, sender=Outpost)

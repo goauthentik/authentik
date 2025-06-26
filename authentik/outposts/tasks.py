@@ -153,65 +153,6 @@ def outpost_token_ensurer():
     self.info(f"Successfully checked {len(all_outposts)} Outposts.")
 
 
-@actor(description=_("Dispatch tasks to update outposts when related objects are updated."))
-def outposts_and_related_update_dispatch(model_class: str, pk: Any):
-    """If an Outpost is saved, Ensure that token is created/updated
-
-    If an OutpostModel, or a model that is somehow connected to an OutpostModel is saved,
-    we send a message down the relevant OutpostModels WS connection to trigger an update"""
-
-    model: Model = path_to_class(model_class)
-    try:
-        instance = model.objects.get(pk=pk)
-    except model.DoesNotExist:
-        LOGGER.warning("Model does not exist", model=model, pk=pk)
-        return
-
-    if isinstance(instance, Outpost):
-        LOGGER.debug("Trigger reconcile for outpost", instance=instance)
-        for schedule in instance.schedules.all():
-            schedule.send()
-
-    if isinstance(instance, OutpostModel | Outpost):
-        LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
-        outposts_and_related_send_update(instance)
-
-    if isinstance(instance, OutpostServiceConnection):
-        LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        for schedule in instance.schedules.all():
-            schedule.send()
-
-    for field in instance._meta.get_fields():
-        # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
-        # are used, and if it has a value
-        if not hasattr(field, "related_model"):
-            continue
-        if not field.related_model:
-            continue
-        if not issubclass(field.related_model, OutpostModel):
-            continue
-
-        field_name = f"{field.name}_set"
-        if not hasattr(instance, field_name):
-            continue
-
-        LOGGER.debug("triggering outpost update from field", field=field.name)
-        # Because the Outpost Model has an M2M to Provider,
-        # we have to iterate over the entire QS
-        for reverse in getattr(instance, field_name).all():
-            outposts_and_related_send_update(reverse)
-
-
-def outposts_and_related_send_update(model_instance: Model):
-    """Send outpost update to all related outposts"""
-    if isinstance(model_instance, OutpostModel):
-        for outpost in model_instance.outpost_set.all():
-            outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
-    elif isinstance(model_instance, Outpost):
-        outpost = model_instance
-        outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
-
-
 @actor(description=_("Send update to outpost"))
 def outpost_send_update(pk: Any):
     """Update outpost instance"""

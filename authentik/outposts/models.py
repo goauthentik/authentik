@@ -173,6 +173,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
                 uid=self.pk,
                 args=(self.pk,),
                 crontab="3-59/15 * * * *",
+                send_on_save=True,
             ),
         ]
 
@@ -325,6 +326,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                 args=(self.pk,),
                 kwargs={"action": "up", "from_cache": False},
                 crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
+                send_on_save=True,
             ),
         ]
 
