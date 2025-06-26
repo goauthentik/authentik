@@ -1,3 +1,4 @@
+import type { UserInterface } from "#user/index.entrypoint";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { rootInterface } from "@goauthentik/common/theme";
@@ -6,7 +7,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/sources/SourceSettings";
-import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
