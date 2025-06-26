@@ -1,4 +1,4 @@
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 

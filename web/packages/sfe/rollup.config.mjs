@@ -1,10 +1,12 @@
 /**
  * @file Rollup configuration for the SFE package.
  */
+
+import { resolve as resolvePath } from "node:path";
+
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
-import { resolve as resolvePath } from "node:path";
 import copy from "rollup-plugin-copy";
 
 export async function createConfig() {

@@ -1,21 +1,23 @@
-import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
+import { globalAK } from "#common/global";
+import { rootInterface } from "#common/theme";
+import { DefaultBrand } from "#common/ui/config";
+
+import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
-import { globalAK } from "@goauthentik/common/global";
-import { rootInterface } from "@goauthentik/common/theme";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { AKElement } from "@goauthentik/elements/Base";
+
+import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
+
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {

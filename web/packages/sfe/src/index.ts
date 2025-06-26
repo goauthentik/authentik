@@ -1,6 +1,4 @@
-import { fromByteArray } from "base64-js";
 import "formdata-polyfill";
-import $ from "jquery";
 import "weakmap-polyfill";
 
 import {
@@ -15,6 +13,9 @@ import {
     type PasswordChallenge,
     type RedirectChallenge,
 } from "@goauthentik/api";
+
+import { fromByteArray } from "base64-js";
+import $ from "jquery";
 
 interface GlobalAuthentik {
     brand: {

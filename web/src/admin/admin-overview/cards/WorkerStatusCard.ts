@@ -1,14 +1,12 @@
-import {
-    AdminStatus,
-    AdminStatusCard,
-} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
 import { AdminApi, Worker } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-card-workers")
 export class WorkersStatusCard extends AdminStatusCard<Worker[]> {

@@ -1,15 +1,16 @@
-import "@goauthentik/elements/messages/MessageContainer";
-import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
-
-import { LitElement, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import "#elements/messages/MessageContainer";
+import "../ak-dual-select.js";
 
 import { Pagination } from "@goauthentik/api";
 
-import "../ak-dual-select";
-import { AkDualSelect } from "../ak-dual-select";
-import { DualSelectEventType, type DualSelectPair } from "../types";
+import { Meta, StoryObj } from "@storybook/web-components";
+import { slug } from "github-slugger";
+
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import { AkDualSelect } from "../ak-dual-select.js";
+import { DualSelectEventType, type DualSelectPair } from "../types.js";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
