@@ -7,7 +7,7 @@ import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import { availablePaneStyles, listStyles } from "./styles.css";
+import { availablePaneStyles, listStyles } from "./styles.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
