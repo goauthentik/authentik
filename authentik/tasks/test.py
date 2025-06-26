@@ -1,8 +1,8 @@
 from queue import PriorityQueue
 
+import dramatiq
 from django.utils.module_loading import import_string
 from django_dramatiq_postgres.conf import Conf
-import dramatiq
 from dramatiq.broker import Broker, MessageProxy, get_broker
 from dramatiq.middleware.retries import Retries
 from dramatiq.results.middleware import Results

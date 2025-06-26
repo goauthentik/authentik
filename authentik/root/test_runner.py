@@ -9,7 +9,6 @@ import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
-from django.test.testcases import apps
 from structlog.stdlib import get_logger
 
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR

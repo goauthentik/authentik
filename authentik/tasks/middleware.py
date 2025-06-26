@@ -7,8 +7,8 @@ from time import sleep
 from typing import Any
 
 import pglock
-from django.utils.timezone import now
 from django.conf import settings
+from django.utils.timezone import now
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
 from dramatiq.message import Message
@@ -22,7 +22,6 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
-
 
 LOGGER = get_logger()
 
