@@ -61,6 +61,7 @@ def ldap_sync(source_pk: str):
     task.set_uid(f"{source.slug}")
     with source.sync_lock as lock_acquired:
         if not lock_acquired:
+            task.info("Synchronization is already running. Skipping")
             LOGGER.debug("Failed to acquire lock for LDAP sync, skipping task", source=source.slug)
             return
 

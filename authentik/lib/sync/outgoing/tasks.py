@@ -70,12 +70,14 @@ class SyncTasks:
             pk=provider_pk,
         ).first()
         if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
             return
         task.set_uid(slugify(provider.name))
         task.info("Starting full provider sync")
         self.logger.debug("Starting provider sync")
         with provider.sync_lock as lock_acquired:
             if not lock_acquired:
+                task.info("Synchronization is already running. Skipping.")
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
@@ -128,6 +130,7 @@ class SyncTasks:
             pk=provider_pk,
         ).first()
         if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
             return
         task.set_uid(slugify(provider.name))
         # Override dry run mode if requested, however don't save the provider
@@ -216,6 +219,7 @@ class SyncTasks:
             pk=provider_pk,
         ).first()
         if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
             return
         task.set_uid(slugify(provider.name))
         operation = Direction(raw_op)
@@ -292,6 +296,7 @@ class SyncTasks:
             pk=provider_pk,
         ).first()
         if not provider:
+            task.warning("No provider found. Is it assigned to an application?")
             return
         task.set_uid(slugify(provider.name))
 

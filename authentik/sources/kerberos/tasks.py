@@ -41,6 +41,7 @@ def kerberos_sync(pk: str):
     try:
         with source.sync_lock as lock_acquired:
             if not lock_acquired:
+                self.info("Synchronization is already running. Skipping")
                 LOGGER.debug(
                     "Failed to acquire lock for Kerberos sync, skipping task", source=source.slug
                 )
