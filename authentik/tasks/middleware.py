@@ -12,7 +12,7 @@ from prometheus_client import (
 )
 from socket import gethostname
 from time import sleep
-from typing import Any, override
+from typing import Any
 
 import pglock
 from django.utils.timezone import now
@@ -256,6 +256,7 @@ class MetricsMiddleware(Middleware):
         )
 
     def after_worker_shutdown(self, broker: Broker, worker):
+        # TODO: worker_id
         multiprocess.mark_process_dead(getpid())
 
     def _make_labels(self, message: Message) -> tuple[str, str]:

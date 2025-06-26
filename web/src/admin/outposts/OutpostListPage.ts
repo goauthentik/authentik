@@ -167,7 +167,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-        return html`<td role="cell" colspan="5">
+        return html`<td role="cell" colspan="7">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${msg(
