@@ -7,7 +7,6 @@
 import { cwd } from "node:process";
 
 import litCSS from "vite-plugin-lit-css";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 import { addCommands } from "../commands.mjs";
 
@@ -80,8 +79,6 @@ const browserRunnerOptions = {
             // ---
             // @ts-ignore WDIO's Vite is out of date.
             litCSS(),
-            // @ts-ignore WDIO's Vite is out of date.
-            tsconfigPaths(),
         ],
     },
 };
