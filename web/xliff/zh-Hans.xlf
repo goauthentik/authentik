@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>代表
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -9897,6 +9897,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sab4db6a3bd6abc1e">
   <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
 </trans-unit>
     </body>
   </file>
