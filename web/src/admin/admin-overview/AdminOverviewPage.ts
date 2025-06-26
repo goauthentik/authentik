@@ -7,7 +7,7 @@ import "#admin/admin-overview/cards/VersionStatusCard";
 import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
-// import "#admin/admin-overview/charts/SyncStatusChart";
+import "#admin/admin-overview/charts/SyncStatusChart";
 import { me } from "#common/users";
 import "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
@@ -109,15 +109,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
                                 <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                             </ak-aggregate-card>
                         </div>
-                        <!-- <div -->
-                        <!--     class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl" -->
-                        <!-- > -->
-                        <!--     <ak-aggregate-card icon="fa fa-sync-alt" header=${msg(
-                            "Sync status",
-                        )}> -->
-                        <!--         <ak-admin-status-chart-sync></ak-admin-status-chart-sync> -->
-                        <!--     </ak-aggregate-card> -->
-                        <!-- </div> -->
+                        <div
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
+                        >
+                            <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
+                                <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
+                            </ak-aggregate-card>
+                        </div>
                         <div class="pf-l-grid__item pf-m-12-col">
                             <hr class="pf-c-divider" />
                         </div>
