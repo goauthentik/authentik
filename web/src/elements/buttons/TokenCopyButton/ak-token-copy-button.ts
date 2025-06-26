@@ -9,7 +9,7 @@ import { CoreApi, ResponseError, TokenView } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
-import { APIMessage } from "../../messages/Message";
+import { APIMessage } from "../../messages/Message.js";
 import BaseTaskButton from "../SpinnerButton/BaseTaskButton.js";
 
 /**

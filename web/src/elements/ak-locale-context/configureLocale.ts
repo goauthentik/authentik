@@ -1,6 +1,6 @@
 import { configureLocalization } from "@lit/localize";
 
-import { sourceLocale, targetLocales } from "../../locale-codes";
+import { sourceLocale, targetLocales } from "../../locale-codes.js";
 import { getBestMatchLocale } from "./helpers.js";
 
 type LocaleGetter = ReturnType<typeof configureLocalization>["getLocale"];
