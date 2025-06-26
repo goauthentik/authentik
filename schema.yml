@@ -19451,6 +19451,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/google_workspace/{id}/sync/status/:
+    get:
+      operationId: providers_google_workspace_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Google Workspace Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/google_workspace/{id}/used_by/:
     get:
       operationId: providers_google_workspace_used_by_list
@@ -20445,6 +20479,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/microsoft_entra/{id}/sync/status/:
+    get:
+      operationId: providers_microsoft_entra_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Microsoft Entra Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -22944,6 +23012,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SyncObjectResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/sync/status/:
+    get:
+      operationId: providers_scim_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -28045,6 +28147,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/kerberos/{slug}/sync/status/:
+    get:
+      operationId: sources_kerberos_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/kerberos/{slug}/used_by/:
     get:
       operationId: sources_kerberos_used_by_list
@@ -28448,6 +28584,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LDAPDebug'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/ldap/{slug}/sync/status/:
+    get:
+      operationId: sources_ldap_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -41211,16 +41381,6 @@ components:
       required:
       - pending_user
       - pending_user_avatar
-    AggregatedStatusEnum:
-      enum:
-      - queued
-      - consumed
-      - rejected
-      - done
-      - info
-      - warning
-      - error
-      type: string
     AlgEnum:
       enum:
       - rsa
@@ -60224,6 +60384,26 @@ components:
           readOnly: true
       required:
       - messages
+    SyncStatus:
+      type: object
+      description: Provider/source sync status
+      properties:
+        is_running:
+          type: boolean
+          readOnly: true
+          default: false
+        last_successful_sync:
+          type: string
+          format: date-time
+          readOnly: true
+        last_sync_status:
+          allOf:
+          - $ref: '#/components/schemas/TaskAggregatedStatusEnum'
+          readOnly: true
+      required:
+      - is_running
+      - last_successful_sync
+      - last_sync_status
     SystemInfo:
       type: object
       description: Get system information.
@@ -60372,7 +60552,7 @@ components:
           items:
             $ref: '#/components/schemas/LogEvent'
         aggregated_status:
-          $ref: '#/components/schemas/AggregatedStatusEnum'
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
       required:
       - actor_name
       - aggregated_status
@@ -60381,6 +60561,16 @@ components:
       - rel_obj_app_label
       - rel_obj_model
       - uid
+    TaskAggregatedStatusEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
     Tenant:
       type: object
       description: Tenant Serializer
