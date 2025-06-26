@@ -1,3 +1,4 @@
+import type { UserInterface } from "#user/index.entrypoint";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { globalAK } from "@goauthentik/common/global";
 import { rootInterface } from "@goauthentik/common/theme";
@@ -7,7 +8,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
-import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";

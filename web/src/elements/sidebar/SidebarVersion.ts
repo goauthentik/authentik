@@ -1,6 +1,6 @@
+import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithVersion } from "#elements/mixins/version";
-import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint";
 import { globalAK } from "@goauthentik/common/global";
 import { rootInterface } from "@goauthentik/common/theme";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
