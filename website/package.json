@@ -69,7 +69,7 @@
         "fast-glob": "^3.3.3",
         "netlify-plugin-cache": "^1.0.3",
         "npm-run-all": "^4.1.5",
-        "prettier": "^3.6.0",
+        "prettier": "^3.6.1",
         "prettier-plugin-packagejson": "^2.5.16",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.35.0"
