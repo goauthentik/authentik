@@ -38,10 +38,10 @@ export class TaskList extends Table<Task> {
     @property()
     relObjId?: string;
 
-    @property()
+    @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
 
-    @property()
+    @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
     searchEnabled(): boolean {
@@ -118,7 +118,7 @@ export class TaskList extends Table<Task> {
                                   />
                                   <span class="pf-c-switch__toggle">
                                       <span class="pf-c-switch__toggle-icon">
-                                          <i class="fas fa-check" aria - hidden="true"> </i>
+                                          <i class="fas fa-check" aria-hidden="true"> </i>
                                       </span>
                                   </span>
                                   <span class="pf-c-switch__label">
@@ -135,7 +135,7 @@ export class TaskList extends Table<Task> {
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria - hidden="true"> </i>
+                                    <i class="fas fa-check" aria-hidden="true"> </i>
                                 </span>
                             </span>
                             <span class="pf-c-switch__label">

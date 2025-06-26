@@ -39,7 +39,7 @@ export class ScheduleList extends Table<Schedule> {
     @property()
     relObjId?: string;
 
-    @property()
+    @property({ type: Boolean })
     showOnlyStandalone: boolean = true;
 
     static get styles(): CSSResult[] {
@@ -95,7 +95,7 @@ export class ScheduleList extends Table<Schedule> {
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria - hidden="true"> </i>
+                                    <i class="fas fa-check" aria-hidden="true"> </i>
                                 </span>
                             </span>
                             <span class="pf-c-switch__label">
