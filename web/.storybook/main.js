@@ -4,7 +4,6 @@
  * @import { InlineConfig, Plugin } from "vite";
  */
 import postcssLit from "rollup-plugin-postcss-lit";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
@@ -61,7 +60,7 @@ const config = {
          */
         const overrides = {
             define: createBundleDefinitions(),
-            plugins: [inlineCSSPlugin, postcssLit(), tsconfigPaths()],
+            plugins: [inlineCSSPlugin, postcssLit()],
         };
 
         return mergeConfig(config, overrides);
