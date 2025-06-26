@@ -1,8 +1,8 @@
-import AKBase from "#common/styles/authentik.css";
-import AKBaseDark from "#common/styles/theme-dark.css";
 /**
  * @file Theme utilities.
  */
+import AKBase from "#common/styles/authentik.css";
+import AKBaseDark from "#common/styles/theme-dark.css";
 import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
 import { UiThemeEnum } from "@goauthentik/api";

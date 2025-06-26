@@ -3,9 +3,12 @@
  *
  * @runtime node
  */
-import { MonoRepoRoot } from "#paths/node";
+
 import { execSync } from "node:child_process";
 
+import { MonoRepoRoot } from "#paths/node";
+
+// ts-import-sorter: disable
 import PackageJSON from "../../../../package.json" with { type: "json" };
 
 /**
