@@ -6,7 +6,7 @@ from dramatiq.errors import ActorNotFound
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import ChoiceField, ReadOnlyField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -20,6 +20,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.decorators import permission_required
+from authentik.tasks.models import Task, TaskStatus
 from authentik.tasks.schedules.models import Schedule
 
 LOGGER = get_logger()
@@ -30,6 +31,7 @@ class ScheduleSerializer(ModelSerializer):
     rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
 
     description = SerializerMethodField()
+    last_task_status = SerializerMethodField()
 
     class Meta:
         model = Schedule
@@ -44,6 +46,7 @@ class ScheduleSerializer(ModelSerializer):
             "paused",
             "next_run",
             "description",
+            "last_task_status",
         )
 
     def get_description(self, instance: Schedule) -> str | None:
@@ -60,6 +63,12 @@ class ScheduleSerializer(ModelSerializer):
             )
             return None
         return actor.options["description"]
+
+    def get_last_task_status(self, instance: Schedule) -> TaskStatus | None:
+        last_task: Task = instance.tasks.order_by("-mtime").first()
+        if last_task:
+            return last_task.aggregated_status
+        return None
 
 
 class ScheduleFilter(FilterSet):
@@ -83,7 +92,9 @@ class ScheduleViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
-    queryset = Schedule.objects.select_related("rel_obj_content_type").all()
+    queryset = (
+        Schedule.objects.select_related("rel_obj_content_type").prefetch_related("tasks").all()
+    )
     serializer_class = ScheduleSerializer
     search_fields = (
         "id",

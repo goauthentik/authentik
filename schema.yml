@@ -48395,6 +48395,16 @@ components:
       - name
       - server_uri
       - slug
+    LastTaskStatusEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
     License:
       type: object
       description: License Serializer
@@ -59565,11 +59575,17 @@ components:
           type: string
           nullable: true
           readOnly: true
+        last_task_status:
+          allOf:
+          - $ref: '#/components/schemas/LastTaskStatusEnum'
+          nullable: true
+          readOnly: true
       required:
       - actor_name
       - crontab
       - description
       - id
+      - last_task_status
       - next_run
       - rel_obj_app_label
       - rel_obj_model

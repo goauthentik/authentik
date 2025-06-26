@@ -9,6 +9,7 @@ import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/elements/tasks/ScheduleForm";
 import "@goauthentik/elements/tasks/TaskList";
+import "@goauthentik/elements/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -72,6 +73,7 @@ export class ScheduleList extends Table<Schedule> {
             new TableColumn(msg("Schedule"), "actor_name"),
             new TableColumn(msg("Crontab"), "crontab"),
             new TableColumn(msg("Next run"), "next_run"),
+            new TableColumn(msg("Last status")),
             new TableColumn(msg("Actions")),
         ];
     }
@@ -118,6 +120,7 @@ export class ScheduleList extends Table<Schedule> {
                           <small>${item.nextRun.toLocaleString()}</small>
                       `}
             `,
+            html`<ak-task-status .status=${item.lastTaskStatus}></ak-task-status>`,
             html`<ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {

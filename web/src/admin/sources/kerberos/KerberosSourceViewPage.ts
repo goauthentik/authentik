@@ -11,6 +11,7 @@ import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncStatusCard";
 import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
 import { msg } from "@lit/localize";
@@ -93,7 +94,9 @@ export class KerberosSourceViewPage extends AKElement {
                     >
                 </div>
                 <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-4-col">
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    >
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
@@ -137,7 +140,20 @@ export class KerberosSourceViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-8-col">
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    >
+                        <ak-sync-status-card
+                            .fetch=${() => {
+                                return new SourcesApi(
+                                    DEFAULT_CONFIG,
+                                ).sourcesKerberosSyncStatusRetrieve({
+                                    slug: this.source?.slug,
+                                });
+                            }}
+                        ></ak-sync-status-card>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">
                             <p>${msg("Connectivity")}</p>
                         </div>

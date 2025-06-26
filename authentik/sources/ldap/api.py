@@ -164,7 +164,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         url_path="sync/status",
         filter_backends=[ObjectFilter],
     )
-    def sync_status(self, request: Request, pk: int) -> Response:
+    def sync_status(self, request: Request, slug: str) -> Response:
         """Get provider's sync status"""
         source: LDAPSource = self.get_object()
 
