@@ -1,7 +1,7 @@
 """Source API Views"""
 
 from django.core.cache import cache
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request

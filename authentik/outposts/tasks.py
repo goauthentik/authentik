@@ -10,7 +10,6 @@ from urllib.parse import urlparse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.db.models.base import Model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.middleware import CurrentTask
@@ -22,7 +21,6 @@ from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
@@ -31,7 +29,6 @@ from authentik.outposts.models import (
     DockerServiceConnection,
     KubernetesServiceConnection,
     Outpost,
-    OutpostModel,
     OutpostServiceConnection,
     OutpostType,
     ServiceConnectionInvalid,

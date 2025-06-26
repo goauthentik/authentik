@@ -1,7 +1,6 @@
 """authentik outpost signals"""
 
 from django.core.cache import cache
-from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -9,7 +8,6 @@ from structlog.stdlib import get_logger
 from authentik.brands.models import Brand
 from authentik.core.models import AuthenticatedSession, Provider
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostModel, OutpostServiceConnection
 from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,

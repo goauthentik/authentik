@@ -6,7 +6,7 @@ from dramatiq.errors import ActorNotFound
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ChoiceField, ReadOnlyField
+from rest_framework.fields import ReadOnlyField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,

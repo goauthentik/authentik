@@ -17,8 +17,8 @@ from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.policies.models import PolicyBindingModel
 from authentik.outposts.models import OutpostModel
+from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
 

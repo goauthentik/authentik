@@ -1,5 +1,5 @@
 from dramatiq.actor import Actor
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
 from rest_framework.request import Request

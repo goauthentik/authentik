@@ -1,22 +1,16 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import os
 from os import getpid
-from dramatiq.common import current_millis
-from prometheus_client import (
-    CONTENT_TYPE_LATEST,
-    CollectorRegistry,
-    Counter,
-    Gauge,
-    Histogram,
-    generate_latest,
-    multiprocess,
-)
+from pathlib import Path
+from signal import pause
 from socket import gethostname
+from tempfile import gettempdir
 from time import sleep
 from typing import Any
 
 import pglock
 from django.utils.timezone import now
 from dramatiq.broker import Broker
+from dramatiq.common import current_millis
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -180,6 +174,11 @@ class MetricsMiddleware(Middleware):
         self.delayed_messages = set()
         self.message_start_times = {}
 
+        _tmp = Path(gettempdir())
+        prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
+        os.makedirs(prometheus_tmp_dir, exist_ok=True)
+        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
+
     @property
     def forks(self):
         from authentik.tasks.forks import worker_metrics
@@ -187,43 +186,38 @@ class MetricsMiddleware(Middleware):
         return [worker_metrics]
 
     def before_worker_boot(self, broker: Broker, worker):
-        registry = CollectorRegistry()
+        from prometheus_client import Counter, Gauge, Histogram
+
         self.total_messages = Counter(
             "authentik_tasks_total",
             "The total number of tasks processed.",
             ["queue_name", "actor_name"],
-            registry=registry,
         )
         self.total_errored_messages = Counter(
             "authentik_tasks_errors_total",
             "The total number of errored tasks.",
             ["queue_name", "actor_name"],
-            registry=registry,
         )
         self.total_retried_messages = Counter(
             "authentik_tasks_retries_total",
             "The total number of retried tasks.",
             ["queue_name", "actor_name"],
-            registry=registry,
         )
         self.total_rejected_messages = Counter(
             "authentik_tasks_rejected_total",
             "The total number of dead-lettered tasks.",
             ["queue_name", "actor_name"],
-            registry=registry,
         )
         self.inprogress_messages = Gauge(
             "authentik_tasks_inprogress",
             "The number of tasks in progress.",
             ["queue_name", "actor_name"],
             multiprocess_mode="livesum",
-            registry=registry,
         )
         self.inprogress_delayed_messages = Gauge(
             "authentik_tasks_delayed_inprogress",
             "The number of delayed tasks in memory.",
             ["queue_name", "actor_name"],
-            registry=registry,
         )
         self.messages_durations = Histogram(
             "authentik_tasks_duration_miliseconds",
@@ -252,10 +246,11 @@ class MetricsMiddleware(Middleware):
                 3_600_000,
                 float("inf"),
             ),
-            registry=registry,
         )
 
     def after_worker_shutdown(self, broker: Broker, worker):
+        from prometheus_client import multiprocess
+
         # TODO: worker_id
         multiprocess.mark_process_dead(getpid())
 
@@ -305,29 +300,18 @@ class MetricsMiddleware(Middleware):
 
     @staticmethod
     def run():
-        address, _, port = CONFIG.get("listen.listen_metrics").rpartition(":")
-        port = 9301
+        from prometheus_client import CollectorRegistry, multiprocess, start_http_server
+
+        addr, _, port = CONFIG.get("listen.listen_metrics").rpartition(":")
+
         try:
-            httpd = HTTPServer((address, int(port)), _MetricsHandler)
+            port = int(port)
+
+            registry = CollectorRegistry()
+            multiprocess.MultiProcessCollector(registry)
+            start_http_server(port, addr, registry)
+        except ValueError:
+            LOGGER.error(f"Invalid port entered: {port}")
         except OSError:
-            LOGGER.error(f"Could not listen on {address}:{port}, not starting the metrics server")
-            return
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            httpd.shutdown()
-
-
-class _MetricsHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        registry = CollectorRegistry()
-        multiprocess.MultiProcessCollector(registry)
-        output = generate_latest(registry)
-        self.send_response(200)
-        self.send_header("Content-Type", CONTENT_TYPE_LATEST)
-        self.end_headers()
-        self.wfile.write(output)
-
-    def log_message(self, format: str, *args: Any):
-        logger = get_logger(__name__, type(self))
-        logger.debug(format, *args)
+            LOGGER.warning("Port is already in use, not starting metrics server")
+        pause()
