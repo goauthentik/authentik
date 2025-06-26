@@ -7,7 +7,7 @@
  * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
  */
 
-import { readFileSync } from "node:fs"
+import { readFileSync } from "node:fs";
 import path from "node:path";
 
 import { PackageRoot } from "#paths/node";
