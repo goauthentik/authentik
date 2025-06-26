@@ -41,6 +41,27 @@ jobs:
       - name: test
         working-directory: website/
         run: npm test
+  build:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.job }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - build
+          - build:integrations
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        run: npm ci
+      - name: build
+        working-directory: website/
+        run: npm run ${{ matrix.job }}
   build-container:
     runs-on: ubuntu-latest
     permissions:
@@ -94,6 +115,7 @@ jobs:
     needs:
       - lint
       - test
+      - build
       - build-container
     runs-on: ubuntu-latest
     steps:

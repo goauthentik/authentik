@@ -6628,11 +6628,16 @@
                     "title": "Severity",
                     "description": "Controls which severity level the created notifications will have."
                 },
-                "group": {
+                "destination_group": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Group",
+                    "title": "Destination group",
                     "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
+                },
+                "destination_event_user": {
+                    "type": "boolean",
+                    "title": "Destination event user",
+                    "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
                 }
             },
             "required": []
@@ -7340,6 +7345,7 @@
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
+                        "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source",
@@ -13304,6 +13310,12 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Max attempts"
                 }
             },
             "required": []
