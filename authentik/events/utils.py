@@ -1,5 +1,6 @@
 """event utilities"""
 
+from collections.abc import KeysView
 import re
 from copy import copy
 from dataclasses import asdict, is_dataclass
@@ -108,6 +109,8 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
         value = asdict(value)
     if isinstance(value, dict):
         return sanitize_dict(value)
+    if isinstance(value, KeysView):
+        return list(value)
     if isinstance(value, GeneratorType):
         return sanitize_item(list(value))
     if isinstance(value, list | tuple | set):
