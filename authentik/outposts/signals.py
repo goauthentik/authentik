@@ -43,11 +43,13 @@ def outpost_pre_save(sender, instance: Outpost, **_):
 
 
 @receiver(m2m_changed, sender=Outpost.providers.through)
-def outpost_m2m_changed(sender, instance: Provider, action: str, **_):
+def outpost_m2m_changed(sender, instance: Outpost | Provider, action: str, **_):
     """Update outpost on m2m change, when providers are added or removed"""
-    if action in ["post_add", "post_remove", "post_clear"]:
-        if not isinstance(instance, OutpostModel):
-            return
+    if action not in ["post_add", "post_remove", "post_clear"]:
+        return
+    if isinstance(instance, Outpost):
+        outpost_send_update.send_with_options(args=(instance.pk,), rel_obj=instance)
+    elif isinstance(instance, OutpostModel):
         for outpost in instance.outpost_set.all():
             outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
 
@@ -66,7 +68,8 @@ def outpost_related_post_save(sender, instance: OutpostServiceConnection | Outpo
 
 
 post_save.connect(outpost_related_post_save, sender=OutpostServiceConnection, weak=False)
-post_save.connect(outpost_related_post_save, sender=OutpostModel, weak=False)
+for subclass in OutpostModel.__subclasses__():
+    post_save.connect(outpost_related_post_save, sender=subclass, weak=False)
 
 
 def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Brand, **_):
