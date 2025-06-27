@@ -76,7 +76,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
         self.assertTrue(UserPasswordHistory.objects.exists())
 
         # Run the task - should purge since no policy is in use
-        check_and_purge_password_history()
+        check_and_purge_password_history.send()
 
         # Verify the table is empty
         self.assertFalse(UserPasswordHistory.objects.exists())
@@ -99,7 +99,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
         self.assertTrue(UserPasswordHistory.objects.exists())
 
         # Run the task - should NOT purge since a policy is in use
-        check_and_purge_password_history()
+        check_and_purge_password_history.send()
 
         # Verify the entries still exist
         self.assertTrue(UserPasswordHistory.objects.exists())

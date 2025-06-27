@@ -258,10 +258,6 @@ class SyncTasks:
         for provider in self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ):
-            task_sync_signal_m2m.send_with_options(
-                args=(instance_pk, provider.pk, action, pk_set),
-                rel_obj=provider,
-            )
             # reverse: instance is a Group, pk_set is a list of user pks
             # non-reverse: instance is a User, pk_set is a list of groups
             if reverse:
