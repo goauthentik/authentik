@@ -440,7 +440,7 @@ class SCIMUserTests(TestCase):
             ).order_by("-mtime")
         )[1]
         self.assertIsNotNone(task)
-        drop_msg = task._messages[2]
+        drop_msg = task._messages[3]
         self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
         self.assertIsNotNone(drop_msg["attributes"]["url"])
         self.assertIsNotNone(drop_msg["attributes"]["body"])

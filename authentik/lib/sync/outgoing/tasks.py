@@ -124,7 +124,6 @@ class SyncTasks:
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        task.info(f"Syncing page {page} of {_object_type._meta.verbose_name_plural}")
         provider: OutgoingSyncProvider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,

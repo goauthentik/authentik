@@ -71,7 +71,7 @@ class Task(SerializerModel, TaskBase):
                     END;
 
                     RETURN NEW;
-                """,
+                """,  # nosec
             ),
         )
 
