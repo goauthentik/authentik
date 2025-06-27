@@ -2,13 +2,18 @@
 
 from django.test import TestCase
 from requests_mock import Mocker
+from structlog.stdlib import get_logger
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.tasks import scim_sync
 from authentik.tenants.models import Tenant
+
+
+LOGGER = get_logger()
 
 
 class SCIMMembershipTests(TestCase):
@@ -78,8 +83,12 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            for schedule in self.provider.schedules.all():
-                schedule.send().get_result()
+            scim_sync.send(self.provider.pk)
+
+            i = 0
+            for request in mocker.request_history:
+                LOGGER.warning(f"request {i}", method=request.method, url=request.url)
+                i += 1
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -169,8 +178,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            for schedule in self.provider.schedules.all():
-                schedule.send().get_result()
+            scim_sync.send(self.provider.pk)
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -288,8 +296,7 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            for schedule in self.provider.schedules.all():
-                schedule.send().get_result()
+            scim_sync.send(self.provider.pk)
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
