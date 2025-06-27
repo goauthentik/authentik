@@ -142,7 +142,7 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         user_pwd_history_qs = UserPasswordHistory.objects.filter(user=self.user)
         self.assertEqual(len(user_pwd_history_qs), 1)
 
@@ -159,7 +159,7 @@ class TestTrimPasswordHistory(TestCase):
             enabled=False,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())
 
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
@@ -174,5 +174,5 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())

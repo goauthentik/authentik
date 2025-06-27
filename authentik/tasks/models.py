@@ -84,7 +84,7 @@ class Task(SerializerModel, TaskBase):
 
     @property
     def serializer(self):
-        from authentik.tasks.api import TaskSerializer
+        from authentik.tasks.api.tasks import TaskSerializer
 
         return TaskSerializer
 
