@@ -5,7 +5,6 @@ from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
-from smtplib import SMTPException
 from typing import Any
 from uuid import uuid4
 
@@ -447,6 +446,8 @@ class NotificationTransport(TasksModel, SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        from authentik.stages.email.tasks import send_mail
+
         if notification.user.email.strip() == "":
             LOGGER.info(
                 "Discarding notification as user has no email address",
@@ -488,13 +489,8 @@ class NotificationTransport(TasksModel, SerializerModel):
             template_name="email/event_notification.html",
             template_context=context,
         )
-        # Email is sent directly here, as the call to send() should have been from a task.
-        try:
-            from authentik.stages.email.tasks import send_mail
-
-            return send_mail(mail.__dict__)
-        except (SMTPException, ConnectionError, OSError) as exc:
-            raise NotificationTransportError(exc) from exc
+        send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
+        return []
 
     @property
     def serializer(self) -> type[Serializer]:
