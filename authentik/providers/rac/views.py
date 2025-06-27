@@ -65,7 +65,10 @@ class RACInterface(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Early sanity check to ensure token still exists
-        token = ConnectionToken.filter_not_expired(token=self.kwargs["token"]).first()
+        token = ConnectionToken.filter_not_expired(
+            token=self.kwargs["token"],
+            session__session__session_key=request.session.session_key,
+        ).first()
         if not token:
             return redirect("authentik_core:if-user")
         self.token = token
