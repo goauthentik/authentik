@@ -45,7 +45,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
             },
         )
         # Ensure that local connection have been created
-        outpost_connection_discovery()
+        outpost_connection_discovery.send()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",
