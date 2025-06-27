@@ -1,0 +1,27 @@
+name: authentik-release-manual
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_name:
+        type: choice
+        description: Image name
+        options:
+        - ghcr.io/goauthentik/server,beryju/authentik
+        - ghcr.io/goauthentik/internal-server
+
+jobs:
+  build-server:
+    uses: ./.github/workflows/_reusable-docker-build.yaml
+    secrets: inherit
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    with:
+      image_name: ${{ github.event.inputs.image_name }}
+      release: true
+      registry_dockerhub: true
+      registry_ghcr: true
