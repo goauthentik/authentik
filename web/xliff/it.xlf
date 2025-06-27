@@ -9908,6 +9908,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Autenticato come <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
     </body>
   </file>
