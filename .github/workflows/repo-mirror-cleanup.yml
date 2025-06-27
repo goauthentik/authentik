@@ -1,6 +1,7 @@
-name: "authentik-repo-mirror"
+name: "authentik-repo-mirror-cleanup"
 
-on: [push, delete]
+on:
+  workflow_dispatch:
 
 jobs:
   to_internal:
@@ -15,6 +16,6 @@ jobs:
         with:
           target_repo_url: git@github.com:goauthentik/authentik-internal.git
           ssh_private_key: ${{ secrets.GH_MIRROR_KEY }}
-          args: --tags --force
+          args: --tags --force --prune
         env:
           MIRROR_KEY: ${{ secrets.GH_MIRROR_KEY }}

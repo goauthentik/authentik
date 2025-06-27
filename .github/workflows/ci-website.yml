@@ -63,6 +63,7 @@ jobs:
         working-directory: website/
         run: npm run ${{ matrix.job }}
   build-container:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload container images to ghcr.io
