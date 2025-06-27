@@ -66,7 +66,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             if not (uniq := self.get_identifier(attributes)):
                 self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{group_dn}'",
-                    attributes=attributes.keys(),
+                    attributes=list(attributes.keys()),
                     dn=group_dn,
                 )
                 continue

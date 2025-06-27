@@ -67,7 +67,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             if not (uniq := self.get_identifier(attributes)):
                 self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{user_dn}'",
-                    attributes=attributes.keys(),
+                    attributes=list(attributes.keys()),
                     dn=user_dn,
                 )
                 continue
