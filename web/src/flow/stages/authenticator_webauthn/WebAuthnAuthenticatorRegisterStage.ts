@@ -145,13 +145,12 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <ak-empty-state
-                        ?loading="${this.registerRunning}"
-                        header=${this.registerRunning
-                            ? msg("Registering...")
-                            : this.registerMessage || msg("Failed to register")}
-                        icon="fa-times"
-                    >
+                    <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
+                        <span
+                            >${this.registerRunning
+                                ? msg("Registering...")
+                                : this.registerMessage || msg("Failed to register")}
+                        </span>
                     </ak-empty-state>
                     ${this.challenge?.responseErrors
                         ? html`<p class="pf-m-block">

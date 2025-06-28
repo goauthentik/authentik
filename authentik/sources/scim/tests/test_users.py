@@ -177,3 +177,51 @@ class TestSCIMUsers(APITestCase):
             SCIMSourceUser.objects.get(source=self.source, id=ext_id).user.attributes["phone"],
             "0123456789",
         )
+
+    def test_user_update(self):
+        """Test user update"""
+        user = create_test_user()
+        existing = SCIMSourceUser.objects.create(source=self.source, user=user, id=uuid4())
+        ext_id = generate_id()
+        response = self.client.put(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            data=dumps(
+                {
+                    "id": str(existing.pk),
+                    "userName": generate_id(),
+                    "externalId": ext_id,
+                    "emails": [
+                        {
+                            "primary": True,
+                            "value": user.email,
+                        }
+                    ],
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_user_delete(self):
+        """Test user delete"""
+        user = create_test_user()
+        SCIMSourceUser.objects.create(source=self.source, user=user, id=uuid4())
+        response = self.client.delete(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 204)

@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>W imieniu
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -9048,9 +9048,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
 </trans-unit>
@@ -9551,6 +9548,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
 </trans-unit>
     </body>
   </file>

@@ -327,9 +327,9 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         // [hasError, isInteractive]
         // prettier-ignore
         return match([Boolean(this.error), Boolean(this.challenge?.interactive)])
-            .with([true,  P.any], () => akEmptyState({ icon: "fa-times", header: this.error }))
+            .with([true,  P.any], () => akEmptyState({ icon: "fa-times" }, { heading: this.error }))
             .with([false, true],  () => html`${this.captchaFrame}`)
-            .with([false, false], () => akEmptyState({ loading: true, header: msg("Verifying...") }))
+            .with([false, false], () => akEmptyState({ loading: true }, { heading: msg("Verifying...") }))
             .exhaustive();
     }
 

@@ -133,7 +133,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            pathStartswith: getURLParam("path", ""),
+            pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });

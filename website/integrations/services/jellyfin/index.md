@@ -131,7 +131,6 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 6. Go back to the plugin tab.
 7. Click the SSO-Auth plugin.
 8. Fill out the Add / Update Provider Configuration:
-
     - Name of OID Provider: `authentik`
     - OID Endpoint: `https://authentik.company/application/o/jellyfin/.well-known/openid-configuration`
     - OpenID Client ID: ClientID from provider
@@ -140,7 +139,6 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
     - Enable Authorization by Plugin: **CHECKED**
 
 9. If you want to use the role claim then also fill out these:
-
     - Roles: roles to look for when authorizing access (should be done through authentik instead)
     - Admin Roles: roles to look for when giving administrator privilege
     - Role Claim: `groups`
