@@ -15,9 +15,9 @@ CELERY_BEAT_SCHEDULE = {
 TENANT_APPS = [
     "authentik.enterprise.audit",
     "authentik.enterprise.policies.unique_password",
+    "authentik.enterprise.providers.apple_psso",
     "authentik.enterprise.providers.google_workspace",
     "authentik.enterprise.providers.microsoft_entra",
-    "authentik.enterprise.providers.apple_psso",
     "authentik.enterprise.providers.ssf",
     "authentik.enterprise.search",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",

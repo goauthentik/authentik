@@ -555,6 +555,8 @@ class TokenView(View):
 
     provider: OAuth2Provider | None = None
     params: TokenParams | None = None
+    params_class = TokenParams
+    provider_class = OAuth2Provider
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
@@ -574,12 +576,14 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                self.provider = OAuth2Provider.objects.filter(client_id=client_id).first()
+                self.provider = self.provider_class.objects.filter(client_id=client_id).first()
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
                 CTX_AUTH_VIA.set("oauth_client_secret")
-                self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
+                self.params = self.params_class.parse(
+                    request, self.provider, client_id, client_secret
+                )
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",
