@@ -1,4 +1,3 @@
-
 from django.urls import path
 
 from authentik.enterprise.providers.apple_psso.views.site_association import AppleAppSiteAssociation

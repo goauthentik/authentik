@@ -11,7 +11,6 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
-from authentik.stages.authenticator.models import Device
 
 
 class ApplePlatformSSOProvider(OAuth2Provider):
@@ -61,6 +60,7 @@ class AppleDeviceUser(models.Model):
     encryption_key = models.TextField()
     sign_key_id = models.TextField()
     enc_key_id = models.TextField()
+
 
 class AppleNonce(ExpiringModel):
     nonce = models.TextField()

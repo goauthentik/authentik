@@ -4,12 +4,9 @@ from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from jwcrypto.common import json_encode
-from jwcrypto.jwe import JWE
-from jwcrypto.jwk import JWK
 from jwt import PyJWT, decode
 
-from authentik.enterprise.providers.apple_psso.models import AppleDevice, ApplePlatformSSOProvider
+from authentik.enterprise.providers.apple_psso.models import AppleDevice
 
 
 @method_decorator(csrf_exempt, name="dispatch")
