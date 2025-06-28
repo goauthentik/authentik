@@ -28,8 +28,7 @@ To support the integration of Omada Controller with authentik, you need to creat
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
-3. Configure the first mapping for the user's *given name* (first name):
-
+3. Configure the first mapping for the user's _given name_ (first name):
     - **Name**: `givenname`
     - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
     - **Friendly Name**: Leave blank
@@ -39,8 +38,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     return request.user.name.split(" ", 1)[0]
     ```
 
-4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's *surname*:
-
+4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _surname_:
     - **Name**: `surname`
     - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
     - **Friendly Name**: Leave blank
@@ -50,8 +48,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     return request.user.name.split(" ", 1)[-1]
     ```
 
-5. Click **Finish** to save. Then, repeat the process to create a mapping for the user's *group memberships*:
-
+5. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _group memberships_:
     - **Name**: `usergroup_name`
     - **SAML Attribute Name**: `usergroup_name`
     - **Friendly Name**: Leave blank
@@ -62,8 +59,7 @@ To support the integration of Omada Controller with authentik, you need to creat
         yield group.name
     ```
 
-6. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's *username*:
-
+6. Click **Finish** to save. Finally, repeat the process to create a mapping for the user's _username_:
     - **Name**: `username`
     - **SAML Attribute Name**: `username`
     - **Friendly Name**: Leave blank
@@ -86,8 +82,7 @@ To support the integration of Omada Controller with authentik, you need to creat
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, and then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
         - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -124,13 +119,13 @@ To support the integration of Omada Controller with authentik, you need to creat
 ## Omada Controller configuration
 
 1. Log in to the Omada Controller.
-2. Navigate to **Global View** > **Settings** > **SAML SSO**, then click **Add New SAML Connection**.
+2. Navigate to **Global View** > **Settings** > **SAML SSO**, and then click **Add New SAML Connection**.
 3. Set **Identity Provider Name** to `authentik`.
-4. Select `Metadata URL` as the **Configuration Method**, then paste the metadata URL that you copied from authentik.
-5. Click **Load Info**, then click **Send**.
+4. Select `Metadata URL` as the **Configuration Method**, and then paste the metadata URL that you copied from authentik.
+5. Click **Load Info**, and then click **Send**.
 6. In the **Actions** column, click on the **Details** button next to the newly created authentik SAML connection.
-7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, then click **OK**. These values will be required in the next section.
-8. At the top right of the page, click **Go To SAML Role**, then **Add New SAML Role**.
+7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, and then click **OK**. These values will be required in the next section.
+8. At the top right of the page, click **Go To SAML Role**, and then **Add New SAML Role**.
 9. Set the desired **SAML Role Name**, **Role**, **User Type**, and **Privileges** for the new SAML role. The **SAML Role Name** must match the name of the previously created authentik group.
 10. Click **Create**.
 
