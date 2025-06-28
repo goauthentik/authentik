@@ -6,6 +6,7 @@ from authentik.core.models import ExpiringModel, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.providers.oauth2.models import (
     ClientTypes,
+    IssuerMode,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -17,6 +18,7 @@ class ApplePlatformSSOProvider(OAuth2Provider):
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
+        self.issuer_mode = IssuerMode.PER_PROVIDER
         self.client_type = ClientTypes.PUBLIC
         self.signing_key = CertificateKeyPair.objects.get(name="authentik Self-signed Certificate")
         self.include_claims_in_id_token = True
@@ -56,10 +58,8 @@ class AppleDeviceUser(models.Model):
     device = models.ForeignKey(AppleDevice, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    signing_key = models.TextField()
-    encryption_key = models.TextField()
-    sign_key_id = models.TextField()
-    enc_key_id = models.TextField()
+    secure_enclave_key = models.TextField()
+    enclave_key_id = models.TextField()
 
 
 class AppleNonce(ExpiringModel):

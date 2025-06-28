@@ -18,7 +18,6 @@ class NonceView(View):
         nonce = AppleNonce.objects.create(
             nonce=b64encode(token_bytes(32)).decode(), expires=now() + timedelta(minutes=5)
         )
-        print(request.headers)
         return JsonResponse(
             {
                 "Nonce": nonce.nonce,

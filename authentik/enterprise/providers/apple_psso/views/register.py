@@ -64,10 +64,8 @@ class RegisterUserView(APIView):
     class UserRegistration(PassiveSerializer):
 
         device_uuid = CharField()
-        user_signing_key = CharField()
-        user_encryption_key = CharField()
-        sign_key_id = CharField()
-        enc_key_id = CharField()
+        user_secure_enclave_key = CharField()
+        enclave_key_id = CharField()
 
     permission_classes = []
     pagination_class = None
@@ -83,10 +81,8 @@ class RegisterUserView(APIView):
             device=device,
             user=request.user,
             defaults={
-                "signing_key": data.validated_data["user_signing_key"],
-                "encryption_key": data.validated_data["user_encryption_key"],
-                "sign_key_id": data.validated_data["sign_key_id"],
-                "enc_key_id": data.validated_data["enc_key_id"],
+                "secure_enclave_key": data.validated_data["user_secure_enclave_key"],
+                "enclave_key_id": data.validated_data["enclave_key_id"],
             },
         )
         return Response(
