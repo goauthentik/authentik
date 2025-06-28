@@ -146,7 +146,7 @@ You can generate the relay state value using one of the following methods:
     echo -n '<Resource_ID>_<Omada_ID>' | base64 --wrap=0
     ```
 
-### On Windows (PowerShell):
+### Windows (PowerShell):
 
     ```powershell
     [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes('<Resource_ID>_<Omada_ID>'))
