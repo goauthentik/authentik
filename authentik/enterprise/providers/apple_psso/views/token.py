@@ -18,6 +18,8 @@ from authentik.enterprise.providers.apple_psso.models import (
     AppleNonce,
     ApplePlatformSSOProvider,
 )
+from authentik.events.models import Event, EventAction
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import RefreshToken
@@ -91,13 +93,12 @@ class TokenView(View):
         )
 
     def create_auth_session(self, user: User):
+        event = Event.new(EventAction.LOGIN).from_http(self.request, user=user)
         store = SessionStore()
+        store[SESSION_LOGIN_EVENT] = event
         store.save()
         session = Session.objects.filter(session_key=store.session_key).first()
-        AuthenticatedSession.objects.create(
-            session=session,
-            user=user
-        )
+        AuthenticatedSession.objects.create(session=session, user=user)
         session = SessionMiddleware.encode_session(store.session_key, user)
         return session
 
