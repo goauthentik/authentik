@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+
 import styles from "./DevCard.module.css";
 
 export interface DevCardProps {
@@ -8,25 +9,31 @@ export interface DevCardProps {
     children?: ReactNode;
     to?: string;
     badge?: string;
-    badgeColor?: 'primary' | 'success' | 'info' | 'warning';
+    badgeColor?: "primary" | "success" | "info" | "warning";
 }
 
-export const DevCard: React.FC<DevCardProps> = ({ 
-    title, 
-    description, 
-    icon, 
-    children, 
+export const DevCard: React.FC<DevCardProps> = ({
+    title,
+    description,
+    icon,
+    children,
     to,
     badge,
-    badgeColor = 'primary'
+    badgeColor = "primary",
 }) => {
-    const badgeClass = badge ? `${styles.badge} ${styles[`badge${badgeColor.charAt(0).toUpperCase() + badgeColor.slice(1)}`]}` : '';
-    
+    const badgeClass = badge
+        ? `${styles.badge} ${styles[`badge${badgeColor.charAt(0).toUpperCase() + badgeColor.slice(1)}`]}`
+        : "";
+
     const CardContent = () => (
         <>
             <div className={styles.cardHeader}>
                 <h3>
-                    {icon && <span className={styles.cardIcon} aria-hidden="true">{icon}</span>}
+                    {icon && (
+                        <span className={styles.cardIcon} aria-hidden="true">
+                            {icon}
+                        </span>
+                    )}
                     {title}
                     {badge && <span className={badgeClass}>{badge}</span>}
                 </h3>
@@ -35,19 +42,17 @@ export const DevCard: React.FC<DevCardProps> = ({
                 {description && <p className={styles.cardDescription}>{description}</p>}
                 {children}
             </div>
-            {to && <div className={styles.cardFooter}>
-                <span className={styles.learnMore}>Learn more</span>
-            </div>}
+            {to && (
+                <div className={styles.cardFooter}>
+                    <span className={styles.learnMore}>Learn more</span>
+                </div>
+            )}
         </>
     );
 
     if (to) {
         return (
-            <a 
-                href={to} 
-                className={styles.cardLink}
-                aria-label={`Learn more about ${title}`}
-            >
+            <a href={to} className={styles.cardLink} aria-label={`Learn more about ${title}`}>
                 <div className={styles.card}>
                     <CardContent />
                 </div>
@@ -68,11 +73,7 @@ export interface DevCardGridProps {
 }
 
 export const DevCardGrid: React.FC<DevCardGridProps> = ({ children, columns = 3 }) => {
-    return (
-        <div className={`${styles.cardGrid} ${styles[`columns${columns}`]}`}>
-            {children}
-        </div>
-    );
+    return <div className={`${styles.cardGrid} ${styles[`columns${columns}`]}`}>{children}</div>;
 };
 
-export default DevCard; 
+export default DevCard;

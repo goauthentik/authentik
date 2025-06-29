@@ -1,270 +1,274 @@
 .cardGrid {
-  display: grid;
-  gap: 1.75rem;
-  margin: 2.5rem 0;
+    display: grid;
+    gap: 1.75rem;
+    margin: 2.5rem 0;
 }
 
 .columns1 {
-  grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
 }
 
 .columns2 {
-  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
 }
 
 .columns3 {
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
 .columns4 {
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
-  height: 100%;
-  background: var(--ifm-card-background-color);
-  border: 1px solid var(--ifm-color-emphasis-200);
-  position: relative;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    height: 100%;
+    background: var(--ifm-card-background-color);
+    border: 1px solid var(--ifm-color-emphasis-200);
+    position: relative;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
 .cardLink {
-  text-decoration: none !important;
-  color: inherit;
-  height: 100%;
-  display: block;
-  position: relative;
-  z-index: 1;
+    text-decoration: none !important;
+    color: inherit;
+    height: 100%;
+    display: block;
+    position: relative;
+    z-index: 1;
 }
 
 .cardLink:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .card:hover {
-  transform: translateY(-8px) translateZ(0);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px) translateZ(0);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
 }
 
 .card::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
-  top: 0;
-  left: 0;
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    top: 0;
+    left: 0;
 }
 
 .card:hover::after {
-  opacity: 1;
+    opacity: 1;
 }
 
 .cardHeader {
-  background: var(--ifm-color-primary);
-  padding: 1.1rem 1.5rem;
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-  position: relative;
-  overflow: hidden;
+    background: var(--ifm-color-primary);
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid var(--ifm-color-emphasis-200);
+    position: relative;
+    overflow: hidden;
 }
 
 .cardHeader::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-  transform: translate(40%, -60%);
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: translate(40%, -60%);
 }
 
 .cardHeader h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--ifm-color-white);
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ifm-color-white);
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .cardIcon {
-  margin-right: 0.85rem;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    margin-right: 0.85rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .badge {
-  font-size: 0.7rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: 1rem;
-  margin-left: auto;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    margin-left: auto;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .badgePrimary {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
 .badgeSuccess {
-  background-color: var(--ifm-color-success);
-  color: white;
+    background-color: var(--ifm-color-success);
+    color: white;
 }
 
 .badgeInfo {
-  background-color: var(--ifm-color-info);
-  color: white;
+    background-color: var(--ifm-color-info);
+    color: white;
 }
 
 .badgeWarning {
-  background-color: var(--ifm-color-warning);
-  color: var(--ifm-color-gray-900);
+    background-color: var(--ifm-color-warning);
+    color: var(--ifm-color-gray-900);
 }
 
 .cardBody {
-  padding: 1.5rem;
-  flex: 1;
-  background: var(--ifm-background-surface-color);
+    padding: 1.5rem;
+    flex: 1;
+    background: var(--ifm-background-surface-color);
 }
 
 .cardFooter {
-  padding: 0.75rem 1.5rem;
-  border-top: 1px solid var(--ifm-color-emphasis-200);
-  text-align: right;
-  background: var(--ifm-background-surface-color);
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    text-align: right;
+    background: var(--ifm-background-surface-color);
 }
 
 .learnMore {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ifm-color-primary);
-  position: relative;
-  display: inline-flex;
-  align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ifm-color-primary);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
 }
 
 .learnMore::after {
-  content: "→";
-  margin-left: 0.5rem;
-  transition: transform 0.2s ease;
-  font-size: 1.1rem;
-  line-height: 1;
+    content: "→";
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 a:hover .learnMore::after {
-  transform: translateX(4px);
+    transform: translateX(4px);
 }
 
 .cardDescription {
-  margin-top: 0;
-  margin-bottom: 1.25rem;
-  color: var(--ifm-color-emphasis-700);
-  font-size: 0.95rem;
-  line-height: 1.5;
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+    color: var(--ifm-color-emphasis-700);
+    font-size: 0.95rem;
+    line-height: 1.5;
 }
 
 .cardBody ul {
-  padding-left: 1.5rem;
-  margin-bottom: 0;
-  font-size: 0.95rem;
+    padding-left: 1.5rem;
+    margin-bottom: 0;
+    font-size: 0.95rem;
 }
 
 .cardBody li {
-  margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .cardBody li:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .cardBody a {
-  font-weight: 500;
-  transition: all 0.2s ease;
-  position: relative;
-  display: inline-block;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    display: inline-block;
 }
 
 .cardBody a::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 2px;
-  bottom: -2px;
-  left: 0;
-  background-color: var(--ifm-color-primary);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease-out;
+    content: "";
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--ifm-color-primary);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease-out;
 }
 
 .cardBody a:hover {
-  color: var(--ifm-color-primary-darker);
-  text-decoration: none;
+    color: var(--ifm-color-primary-darker);
+    text-decoration: none;
 }
 
 .cardBody a:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
+    transform: scaleX(1);
+    transform-origin: bottom left;
 }
 
-html[data-theme='dark'] .card {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--ifm-color-emphasis-300);
+html[data-theme="dark"] .card {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--ifm-color-emphasis-300);
 }
 
-html[data-theme='dark'] .card:hover {
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+html[data-theme="dark"] .card:hover {
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
 }
 
-html[data-theme='dark'] .cardHeader::before {
-  background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 70%);
+html[data-theme="dark"] .cardHeader::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 70%);
 }
 
-html[data-theme='dark'] .cardFooter {
-  background: var(--ifm-background-surface-color);
-  border-top-color: var(--ifm-color-emphasis-300);
+html[data-theme="dark"] .cardFooter {
+    background: var(--ifm-background-surface-color);
+    border-top-color: var(--ifm-color-emphasis-300);
 }
 
-html[data-theme='light'] .card {
-  border: 1px solid var(--ifm-color-emphasis-200);
+html[data-theme="light"] .card {
+    border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-html[data-theme='light'] .cardHeader {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+html[data-theme="light"] .cardHeader {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 996px) {
-  .columns2, .columns3, .columns4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+    .columns2,
+    .columns3,
+    .columns4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-  .columns2, .columns3, .columns4 {
-    grid-template-columns: 1fr;
-  }
-  
-  .cardGrid {
-    gap: 1.25rem;
-  }
-} 
+    .columns2,
+    .columns3,
+    .columns4 {
+        grid-template-columns: 1fr;
+    }
+
+    .cardGrid {
+        gap: 1.25rem;
+    }
+}

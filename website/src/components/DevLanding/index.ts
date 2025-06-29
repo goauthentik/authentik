@@ -1,1 +1,1 @@
-export { default as DevLanding } from './DevLanding'; 
+export { default as DevLanding } from "./DevLanding";
