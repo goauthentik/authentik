@@ -9,6 +9,8 @@ from jwt import PyJWT, decode
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.sessions import SessionStore
 from authentik.enterprise.providers.apple_psso.http import JWEResponse
 from authentik.enterprise.providers.apple_psso.models import (
     AppleDevice,
@@ -19,6 +21,7 @@ from authentik.enterprise.providers.apple_psso.models import (
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import RefreshToken
+from authentik.root.middleware import SessionMiddleware
 
 LOGGER = get_logger()
 
@@ -81,8 +84,22 @@ class TokenView(View):
         if not device_user:
             return None
         return device_user, decode(
-            assertion, device_user.signing_key, audience="apple-platform-sso", algorithms=["ES256"]
+            assertion,
+            device_user.secure_enclave_key,
+            audience="apple-platform-sso",
+            algorithms=["ES256"],
         )
+
+    def create_auth_session(self, user: User):
+        store = SessionStore()
+        store.save()
+        session = Session.objects.filter(session_key=store.session_key).first()
+        AuthenticatedSession.objects.create(
+            session=session,
+            user=user
+        )
+        session = SessionMiddleware.encode_session(store.session_key, user)
+        return session
 
     def handle_v1_0_platformsso_login_request_jwt(self, decoded: dict):
         user = None
@@ -115,6 +132,7 @@ class TokenView(View):
                 "refresh_token_expires_in": int((refresh_token.expires - now()).total_seconds()),
                 "id_token": refresh_token.id_token.to_jwt(self.provider),
                 "token_type": TOKEN_TYPE,
+                "session_key": self.create_auth_session(user.user),
             },
             device=self.device,
             apv=decoded["jwe_crypto"]["apv"],
