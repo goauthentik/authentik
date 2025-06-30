@@ -10,8 +10,13 @@ from authentik import get_full_version
 from authentik.root.monitoring import monitoring_set
 from authentik.tasks.models import WorkerStatus
 
-GAUGE_WORKERS = Gauge(
+OLD_GAUGE_WORKERS = Gauge(
     "authentik_admin_workers",
+    "Currently connected workers, their versions and if they are the same version as authentik",
+    ["version", "version_matched"],
+)
+GAUGE_WORKERS = Gauge(
+    "authentik_tasks_workers",
     "Currently connected workers, their versions and if they are the same version as authentik",
     ["version", "version_matched"],
 )
@@ -36,4 +41,5 @@ def monitoring_set_workers(sender, **kwargs):
             )
             worker_version_count[status.version]["count"] += 1
     for version, stats in worker_version_count.items():
+        OLD_GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
         GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
