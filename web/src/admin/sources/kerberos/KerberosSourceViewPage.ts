@@ -30,9 +30,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     KerberosSource,
+    ModelEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
-    SyncStatus,
 } from "@goauthentik/api";
 
 @customElement("ak-source-kerberos-view")
@@ -50,9 +50,6 @@ export class KerberosSourceViewPage extends AKElement {
 
     @property({ attribute: false })
     source!: KerberosSource;
-
-    @state()
-    syncState?: SyncStatus;
 
     static get styles(): CSSResult[] {
         return [
@@ -76,61 +73,16 @@ export class KerberosSourceViewPage extends AKElement {
         });
     }
 
-    load(): void {
-        new SourcesApi(DEFAULT_CONFIG)
-            .sourcesKerberosSyncStatusRetrieve({
-                slug: this.source.slug,
-            })
-            .then((state) => {
-                this.syncState = state;
-            });
-    }
-
-    renderSyncCards(): TemplateResult {
-        if (!this.source.syncUsers) {
-            return html``;
-        }
-        return html`
-            <div class="pf-c-card pf-l-grid__item pf-m-2-col">
-                <div class="pf-c-card__title">
-                    <p>${msg("Connectivity")}</p>
-                </div>
-                <div class="pf-c-card__body">
-                    <ak-source-kerberos-connectivity
-                        .connectivity=${this.source.connectivity}
-                    ></ak-source-kerberos-connectivity>
-                </div>
-            </div>
-            <div class="pf-l-grid__item pf-m-10-col">
-                <ak-sync-status-card
-                    .fetch=${() => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
-                            slug: this.source?.slug,
-                        });
-                    }}
-                    .triggerSync=${() => {
-                        return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({
-                            slug: this.source?.slug || "",
-                            patchedKerberosSourceRequest: {},
-                        });
-                    }}
-                ></ak-sync-status-card>
-            </div>
-        `;
-    }
-
     render(): TemplateResult {
         if (!this.source) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikSourcesKerberosKerberossource.split(".");
         return html`<ak-tabs>
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
-                @activate=${() => {
-                    this.load();
-                }}
             >
                 <div slot="header" class="pf-c-banner pf-m-info">
                     ${msg("Kerberos Source is in preview.")}
@@ -139,7 +91,9 @@ export class KerberosSourceViewPage extends AKElement {
                     >
                 </div>
                 <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    >
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
@@ -183,7 +137,41 @@ export class KerberosSourceViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    ${this.renderSyncCards()}
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                    >
+                        <ak-sync-status-card
+                            .fetch=${() => {
+                                return new SourcesApi(
+                                    DEFAULT_CONFIG,
+                                ).sourcesKerberosSyncStatusRetrieve({
+                                    slug: this.source?.slug,
+                                });
+                            }}
+                        ></ak-sync-status-card>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">
+                            <p>${msg("Connectivity")}</p>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-source-kerberos-connectivity
+                                .connectivity=${this.source.connectivity}
+                            ></ak-source-kerberos-connectivity>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">
+                            <p>${msg("Schedules")}</p>
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-schedule-list
+                                .relObjAppLabel=${appLabel}
+                                .relObjModel=${modelName}
+                                .relObjId="${this.source.pk}"
+                            ></ak-schedule-list>
+                        </div>
+                    </div>
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <ak-mdx .url=${MDSourceKerberosBrowser}></ak-mdx>

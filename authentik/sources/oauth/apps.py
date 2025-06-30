@@ -3,6 +3,8 @@
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 LOGGER = get_logger()
 
@@ -40,3 +42,14 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
             except ImportError as exc:
                 LOGGER.warning("Failed to load OAuth Source", exc=exc)
         return super().import_related()
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.oauth.tasks import update_well_known_jwks
+
+        return [
+            ScheduleSpec(
+                actor=update_well_known_jwks,
+                crontab=f"{fqdn_rand('update_well_known_jwks')} */3 * * *",
+            ),
+        ]
