@@ -61,7 +61,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
                 name="goauthentik.io/sources/ldap/default-name"
             )
         )
-        UserLDAPSynchronizer(source).sync_full()
+        UserLDAPSynchronizer(source, Task()).sync_full()
         self.assertTrue(User.objects.filter(username="bob").exists())
         self.assertTrue(User.objects.filter(username="james").exists())
         self.assertTrue(User.objects.filter(username="john").exists())
@@ -140,7 +140,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
                 name="goauthentik.io/sources/ldap/default-name"
             )
         )
-        UserLDAPSynchronizer(source).sync_full()
+        UserLDAPSynchronizer(source, Task()).sync_full()
         username = "bob"
         password = generate_id()
         result = self.samba.exec_run(
@@ -163,7 +163,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         )
         self.assertEqual(result.exit_code, 0)
         # Sync again
-        UserLDAPSynchronizer(source).sync_full()
+        UserLDAPSynchronizer(source, Task()).sync_full()
         user.refresh_from_db()
         # Since password in samba was checked, it should be invalidated here too
         self.assertFalse(user.has_usable_password())
