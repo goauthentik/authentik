@@ -57,13 +57,13 @@ Afterwards, run the upgrade commands from the latest release notes.
 
 Additionally, adjust the following [System settings](../sys-mgmt/settings.md):
 
-- **Avatars**: By default this setting uses [Gravatar](https://secure.gravatar.com/). Set it to a combination of other options, such as `initials`
+- **Avatars**: By default this setting connects to [Gravatar](https://secure.gravatar.com/). To avoid outgoing connections, set this to a combination of other options, such as `initials`.
 
 ## Required resources
 
 ### Container images
 
-For a complete air-gapped deployment, you'll need access to these container images. This can be achieved by mirroring them to an internal registry, allowing specific external connections through your firewall, or using other methods appropriate for your environment.
+authentik deployments require access to the following container images. In an air-gapped environment, this can be achieved by mirroring the containers to an internal registry, or using other methods appropriate for your environment.
 
 #### Main image
 
