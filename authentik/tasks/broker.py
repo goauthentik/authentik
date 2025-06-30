@@ -8,4 +8,8 @@ LOGGER = get_logger()
 class Broker(PostgresBroker):
     @property
     def query_set(self) -> QuerySet:
-        return self.model.objects.select_related("tenant").using(self.db_alias)
+        return (
+            self.model.objects.select_related("tenant")
+            .using(self.db_alias)
+            .filter(tenant__ready=True)
+        )

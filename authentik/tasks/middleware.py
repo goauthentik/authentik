@@ -37,6 +37,8 @@ class TenantMiddleware(Middleware):
     def after_process_message(self, *args, **kwargs):
         Tenant.deactivate()
 
+    after_skip_message = after_process_message
+
 
 class RelObjMiddleware(Middleware):
     @property
