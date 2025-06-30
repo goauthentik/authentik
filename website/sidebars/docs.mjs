@@ -606,7 +606,12 @@ const items = [
                     type: "doc",
                     id: "sys-mgmt/events/index",
                 },
-                items: ["sys-mgmt/events/notifications", "sys-mgmt/events/transports"],
+                items: [
+                    "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/transports",
+                    "sys-mgmt/events/logging-events",
+                    "sys-mgmt/events/event-actions",
+                ],
             },
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
