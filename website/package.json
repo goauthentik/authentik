@@ -37,7 +37,7 @@
         "@goauthentik/tsconfig": "^1.0.4",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
-        "docusaurus-plugin-openapi-docs": "^4.4.0",
+        "docusaurus-plugin-openapi-docs": "^4.5.1",
         "docusaurus-theme-openapi-docs": "^4.4.0",
         "postcss": "^8.5.6",
         "prism-react-renderer": "^2.4.1",
