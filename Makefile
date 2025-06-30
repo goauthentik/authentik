@@ -238,6 +238,12 @@ website-build:
 website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
 
+integrations-build:
+	cd website && npm run build:integrations
+
+integrations-watch: integrations-build
+	cd website && npm run watch:integrations
+
 #########################
 ## Docker
 #########################
