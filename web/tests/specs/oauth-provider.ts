@@ -9,7 +9,7 @@ async function reachTheProvider() {
     await ProvidersListPage.logout();
     await login();
     await ProvidersListPage.open();
-    await expect(await ProvidersListPage.pageHeader).toHaveText("Providers");
+    await expect(await ProvidersListPage.pageHeader()).toHaveText("Providers");
 
     await ProvidersListPage.startWizardButton.click();
     await ProviderWizardView.wizardTitle.waitForDisplayed();
@@ -22,16 +22,13 @@ describe("Configure Oauth2 Providers", () => {
 
         await reachTheProvider();
 
-        await ProviderWizardView.providerList.waitForDisplayed();
-        // @ts-expect-error "TSC does not understand metaprogramming."
-        await ProviderWizardView.oauth2Provider.scrollIntoView();
-        // @ts-expect-error "TSC does not understand metaprogramming."
-        await ProviderWizardView.oauth2Provider.click();
+        await $(">>>ak-wizard-page-type-create").waitForDisplayed();
+        await $('>>>div[data-ouid-component-name="oauth2provider"]').scrollIntoView();
+        await $('>>>div[data-ouid-component-name="oauth2provider"]').click();
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
 
-        // @ts-expect-error "TSC does not understand ChainablePromiseElement"
-        await ProviderWizardView.oauth.providerName.setValue(newProviderName);
+        return await $('>>>ak-form-element-horizontal[name="name"]').$(">>>input");
         await ProviderWizardView.oauth.setAuthorizationFlow(
             "default-provider-authorization-explicit-consent",
         );

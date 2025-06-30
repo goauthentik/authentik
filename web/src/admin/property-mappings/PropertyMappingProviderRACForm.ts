@@ -46,11 +46,10 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
-                rACPropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
+            rACPropertyMappingRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -63,7 +62,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("General settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -154,7 +153,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href="${docLink(
-                                    "/docs/providers/property-mappings/expression?utm_source=authentik",
+                                    "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik",
                                 )}"
                             >
                                 ${msg("See documentation for a list of all variables.")}

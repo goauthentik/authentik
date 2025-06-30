@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -20,7 +20,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
-    ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
@@ -49,19 +48,17 @@ export class PlexLoginInit extends BaseStage<
                     },
                     slug: this.challenge?.slug || "",
                 })
-                .then((r) => {
-                    window.location.assign(r.to);
+                .then((redirectChallenge) => {
+                    window.location.assign(redirectChallenge.to);
                 })
-                .catch((r: ResponseError) => {
-                    r.response.json().then((body: { detail: string }) => {
-                        showMessage({
-                            level: MessageLevel.error,
-                            message: body.detail,
+                .catch(async (error: unknown) => {
+                    return parseAPIResponseError(error)
+                        .then(showAPIErrorMessage)
+                        .then(() => {
+                            setTimeout(() => {
+                                window.location.assign("/");
+                            }, 5000);
                         });
-                        setTimeout(() => {
-                            window.location.assign("/");
-                        }, 5000);
-                    });
                 });
         });
     }
@@ -72,7 +69,8 @@ export class PlexLoginInit extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state loading header=${msg("Waiting for authentication...")}>
+                    <ak-empty-state loading
+                        ><span>${msg("Waiting for authentication...")}></span>
                     </ak-empty-state>
                     <hr class="pf-c-divider" />
                     <p>${msg("If no Plex popup opens, click the button below.")}</p>

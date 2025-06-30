@@ -39,24 +39,24 @@ export class WizardFormPage extends WizardPage {
 
     inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
-        if (!form) {
-            return;
-        }
+
+        if (!form) return;
+
         const state = form.checkValidity();
         this.host.isValid = state;
     }
 
     nextCallback = async (): Promise<boolean> => {
         const form = this.shadowRoot?.querySelector<WizardForm>("ak-wizard-form");
+
         if (!form) {
             console.warn("authentik/wizard: could not find form element");
             return false;
         }
+
         const response = await form.submit();
-        if (response === undefined) {
-            return false;
-        }
-        return response;
+
+        return Boolean(response);
     };
 
     nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (): Promise<boolean> => {

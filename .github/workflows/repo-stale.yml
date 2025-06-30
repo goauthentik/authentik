@@ -1,8 +1,8 @@
-name: 'authentik-repo-stale'
+name: "authentik-repo-stale"
 
 on:
   schedule:
-    - cron: '30 1 * * *'
+    - cron: "30 1 * * *"
   workflow_dispatch:
 
 permissions:
@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   stale:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
@@ -24,7 +25,7 @@ jobs:
           days-before-stale: 60
           days-before-close: 7
           exempt-issue-labels: pinned,security,pr_wanted,enhancement,bug/confirmed,enhancement/confirmed,question,status/reviewing
-          stale-issue-label: wontfix
+          stale-issue-label: status/stale
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had
             recent activity. It will be closed if no further activity occurs. Thank you

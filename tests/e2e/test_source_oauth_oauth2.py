@@ -3,87 +3,50 @@
 from json import loads
 from pathlib import Path
 from time import sleep
-from typing import Any
 
-from docker.models.containers import Container
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
-from yaml import safe_dump
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
-
-CONFIG_PATH = "/tmp/dex.yml"  # nosec
 
 
 class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
 
-    container: Container
-
     def setUp(self):
-        self.client_secret = generate_key()
+        self.client_secret = generate_id()
         self.slug = generate_id()
-        self.prepare_dex_config()
         super().setUp()
-
-    def prepare_dex_config(self):
-        """Since Dex does not document which environment
-        variables can be used to configure clients"""
-        config = {
-            "enablePasswordDB": True,
-            "issuer": "http://127.0.0.1:5556/dex",
-            "logger": {"level": "debug"},
-            "staticClients": [
-                {
-                    "id": "example-app",
-                    "name": "Example App",
-                    "redirectURIs": [
-                        self.url(
-                            "authentik_sources_oauth:oauth-client-callback",
-                            source_slug=self.slug,
-                        )
-                    ],
-                    "secret": self.client_secret,
-                }
-            ],
-            "staticPasswords": [
-                {
-                    "email": "admin@example.com",
-                    # hash for password
-                    "hash": "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W",
-                    "userID": "08a8684b-db88-4b73-90a9-3cd1661f5466",
-                    "username": "admin",
-                }
-            ],
-            "storage": {"config": {"file": "/tmp/dex.db"}, "type": "sqlite3"},  # nosec
-            "web": {"http": "0.0.0.0:5556"},
-        }
-        with open(CONFIG_PATH, "w+", encoding="utf8") as _file:
-            safe_dump(config, _file)
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "ghcr.io/dexidp/dex:v2.28.1",
-            "detach": True,
-            "ports": {"5556": "5556"},
-            "auto_remove": True,
-            "command": "dex serve /config.yml",
-            "healthcheck": Healthcheck(
+        self.run_container(
+            image="ghcr.io/dexidp/dex:v2.28.1",
+            ports={"5556": "5556"},
+            healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
                 interval=5 * 1_000 * 1_000_000,
                 start_period=1 * 1_000 * 1_000_000,
             ),
-            "volumes": {str(Path(CONFIG_PATH).absolute()): {"bind": "/config.yml", "mode": "ro"}},
-        }
+            environment={
+                "AK_REDIRECT_URL": self.url(
+                    "authentik_sources_oauth:oauth-client-callback",
+                    source_slug=self.slug,
+                ),
+                "AK_CLIENT_SECRET": self.client_secret,
+            },
+            volumes={
+                f"{Path(__file__).parent / "sources_oauth2_dex" / "dex.yaml"}": {
+                    "bind": "/etc/dex/config.docker.yaml",
+                }
+            },
+        )
 
     def create_objects(self):
         """Create required objects"""
@@ -229,5 +192,5 @@ class TestSourceOAuth2(SeleniumTestCase):
         results = body_json["results"]
         self.assertEqual(len(results), 1)
         connection = results[0]
-        self.assertEqual(connection["source"]["slug"], self.slug)
+        self.assertEqual(connection["source_obj"]["slug"], self.slug)
         self.assertEqual(connection["user"], self.user.pk)

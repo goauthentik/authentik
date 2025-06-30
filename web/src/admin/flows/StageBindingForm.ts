@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -39,9 +39,8 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
-        } else {
-            return msg("Successfully created binding.");
         }
+        return msg("Successfully created binding.");
     }
 
     send(data: FlowStageBinding): Promise<unknown> {
@@ -50,14 +49,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 fsbUuid: this.instance.pk,
                 patchedFlowStageBindingRequest: data,
             });
-        } else {
-            if (this.targetPk) {
-                data.target = this.targetPk;
-            }
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
-                flowStageBindingRequest: data,
-            });
         }
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
+        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
+            flowStageBindingRequest: data,
+        });
     }
 
     async getOrder(): Promise<number> {
@@ -78,11 +76,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
-        return html`<ak-form-element-horizontal
-            label=${msg("Target")}
-            ?required=${true}
-            name="target"
-        >
+        return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
@@ -93,7 +87,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
+            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
@@ -120,10 +114,10 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
-                    value="${first(this.instance?.order, this.defaultOrder)}"
+                    value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
                     required
                 />
@@ -133,7 +127,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.evaluateOnPlan, false)}
+                        ?checked=${this.instance?.evaluateOnPlan ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -151,7 +145,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.reEvaluatePolicies, true)}
+                        ?checked=${this.instance?.reEvaluatePolicies ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -161,12 +155,12 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${msg("Evaluate policies before the Stage is present to the user.")}
+                    ${msg("Evaluate policies before the Stage is presented to the user.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
-                ?required=${true}
+                required
                 name="invalidResponseAction"
             >
                 <ak-radio
@@ -203,7 +197,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Policy engine mode")}
-                ?required=${true}
+                required
                 name="policyEngineMode"
             >
                 <ak-radio

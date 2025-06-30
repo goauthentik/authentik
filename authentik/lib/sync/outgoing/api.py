@@ -33,6 +33,7 @@ class SyncObjectSerializer(PassiveSerializer):
         )
     )
     sync_object_id = CharField()
+    override_dry_run = BooleanField(default=False)
 
 
 class SyncObjectResultSerializer(PassiveSerializer):
@@ -98,6 +99,7 @@ class OutgoingSyncProviderStatusMixin:
             page=1,
             provider_pk=provider.pk,
             pk=params.validated_data["sync_object_id"],
+            override_dry_run=params.validated_data["override_dry_run"],
         ).get()
         return Response(SyncObjectResultSerializer(instance={"messages": res}).data)
 

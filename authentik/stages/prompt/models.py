@@ -38,7 +38,7 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
-    # update website/docs/flow/stages/prompt/index.md
+    # update website/docs/add-secure-apps/flows-stages/stages/prompt/index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")

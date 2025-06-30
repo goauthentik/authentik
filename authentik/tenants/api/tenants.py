@@ -8,26 +8,26 @@ from django.http import HttpResponseNotFound
 from django.http.request import urljoin
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import permissions
 from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import DateTimeField, ModelSerializer
+from rest_framework.serializers import DateTimeField
 from rest_framework.views import View
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import validate_auth
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.config import CONFIG
 from authentik.recovery.lib import create_admin_group, create_recovery_token
 from authentik.tenants.models import Tenant
 
 
-class TenantApiKeyPermission(permissions.BasePermission):
+class TenantApiKeyPermission(BasePermission):
     """Authentication based on tenants.api_key"""
 
     def has_permission(self, request: Request, view: View) -> bool:

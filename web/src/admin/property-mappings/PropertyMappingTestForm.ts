@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { Form } from "@goauthentik/elements/forms/Form";
@@ -55,7 +54,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             ${this.result?.successful
                 ? html`<ak-codemirror
                       mode=${CodeMirrorMode.JavaScript}
-                      ?readOnly=${true}
+                      readOnly
                       value="${ifDefined(this.result?.result)}"
                   >
                   </ak-codemirror>`
@@ -71,7 +70,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
 
     renderExampleButtons() {
         return this.mapping?.metaModelName ===
-            RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsourcepropertymapping
+            RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
                   ${this.renderExampleLDAP()}`
             : nothing;
@@ -181,7 +180,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value=${YAML.stringify(first(this.request?.context, {}))}
+                    value=${YAML.stringify(this.request?.context ?? {})}
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>

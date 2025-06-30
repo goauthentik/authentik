@@ -1,6 +1,6 @@
-import "@goauthentik/elements/PageHeader";
-import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { Table } from "@goauthentik/elements/table/Table";
+import "#components/ak-page-header";
+import { updateURLParams } from "#elements/router/RouteMatch";
+import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
@@ -42,7 +42,8 @@ export abstract class TablePage<T> extends Table<T> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No objects found.")}">
+                : html`<ak-empty-state icon=${this.pageIcon()}
+                      ><span>${msg("No objects found.")}</span>
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>

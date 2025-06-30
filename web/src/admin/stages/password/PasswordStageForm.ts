@@ -34,11 +34,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                passwordStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+            passwordStageRequest: data,
+        });
     }
 
     isBackendSelected(field: BackendsEnum): boolean {
@@ -55,16 +54,20 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     renderForm(): TemplateResult {
         const backends = [
             {
-                name: BackendsEnum.CoreAuthInbuiltBackend,
+                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
                 label: msg("User database + standard password"),
             },
             {
-                name: BackendsEnum.CoreAuthTokenBackend,
+                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
                 label: msg("User database + app passwords"),
             },
             {
-                name: BackendsEnum.SourcesLdapAuthLdapBackend,
+                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
+            },
+            {
+                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
+                label: msg("User database + Kerberos password"),
             },
         ];
 
@@ -79,14 +82,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Backends")}
-                        ?required=${true}
-                        name="backends"
-                    >
+                    <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${backends}
@@ -100,7 +99,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
-                        ?required=${true}
+                        required
                         name="configureFlow"
                     >
                         <ak-search-select
@@ -138,7 +137,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 }
                                 return selected;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -149,7 +148,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Failed attempts before cancel")}
-                        ?required=${true}
+                        required
                         name="failedAttemptsBeforeCancel"
                     >
                         <input

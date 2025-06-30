@@ -18,7 +18,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 
 
 class TestCrypto(APITestCase):
@@ -88,6 +88,17 @@ class TestCrypto(APITestCase):
         self.assertEqual(ext[0].value, "bar")
         self.assertIsInstance(ext[1], DNSName)
         self.assertEqual(ext[1].value, "baz")
+
+    def test_builder_api_duplicate(self):
+        """Test Builder (via API)"""
+        cert = create_test_cert()
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": cert.name, "subject_alt_name": "bar,baz", "validity_days": 3},
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content, {"common_name": ["This field must be unique."]})
 
     def test_builder_api_empty_san(self):
         """Test Builder (via API)"""
@@ -263,7 +274,7 @@ class TestCrypto(APITestCase):
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
         )
         response = self.client.get(
@@ -295,7 +306,7 @@ class TestCrypto(APITestCase):
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
         )
         response = self.client.get(

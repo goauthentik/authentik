@@ -1,17 +1,18 @@
-import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/applications/ApplicationAuthorizeChart";
+import "#admin/applications/ApplicationCheckAccessForm";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/entitlements/ApplicationEntitlementPage";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#elements/AppIcon";
+import { AKElement } from "#elements/Base";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -79,8 +80,8 @@ export class ApplicationViewPage extends AKElement {
             if (
                 app.providerObj &&
                 [
-                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider.toString(),
-                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
                 ].includes(app.providerObj.metaModelName)
             ) {
                 this.fetchIsMissingOutpost([app.provider || 0]);
@@ -98,12 +99,12 @@ export class ApplicationViewPage extends AKElement {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
+                    name=${ifDefined(this.application?.name || undefined)}
+                    icon=${ifDefined(this.application?.metaIcon || undefined)}
                     slot="icon"
-                    .app=${this.application}
                 ></ak-app-icon>
             </ak-page-header>
             ${this.renderApp()}`;
@@ -111,8 +112,7 @@ export class ApplicationViewPage extends AKElement {
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
@@ -282,7 +282,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
@@ -301,6 +301,28 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
             <section
+                slot="page-app-entitlements"
+                data-tab-title="${msg("Application entitlements")}"
+            >
+                <div slot="header" class="pf-c-banner pf-m-info">
+                    ${msg("Application entitlements are in preview.")}
+                    <a href="mailto:hello+feature/app-ent@goauthentik.io"
+                        >${msg("Send us feedback!")}</a
+                    >
+                </div>
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">
+                            ${msg(
+                                "These entitlements can be used to configure user access in this application.",
+                            )}
+                        </div>
+                        <ak-application-entitlements-list .app=${this.application.pk}>
+                        </ak-application-entitlements-list>
+                    </div>
+                </div>
+            </section>
+            <section
                 slot="page-policy-bindings"
                 data-tab-title="${msg("Policy / Group / User Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -309,14 +331,17 @@ export class ApplicationViewPage extends AKElement {
                     <div class="pf-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
-                    <ak-bound-policies-list .target=${this.application.pk}>
+                    <ak-bound-policies-list
+                        .target=${this.application.pk}
+                        .policyEngineMode=${this.application.policyEngineMode}
+                    >
                     </ak-bound-policies-list>
                 </div>
             </section>
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplication}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
                 objectPk=${this.application.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

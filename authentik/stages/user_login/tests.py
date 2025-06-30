@@ -3,12 +3,11 @@
 from time import sleep
 from unittest.mock import patch
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
+from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
 
-from authentik.core.models import AuthenticatedSession
+from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -19,7 +18,12 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_login.middleware import (
+    BoundSessionMiddleware,
+    SessionBindingBroken,
+    logout_extra,
+)
+from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
 
 
 class TestUserLoginStage(FlowTestCase):
@@ -74,12 +78,13 @@ class TestUserLoginStage(FlowTestCase):
         session.save()
 
         key = generate_id()
-        other_session = AuthenticatedSession.objects.create(
+        AuthenticatedSession.objects.create(
+            session=Session.objects.create(
+                session_key=key,
+                last_ip=ClientIPMiddleware.default_ip,
+            ),
             user=self.user,
-            session_key=key,
-            last_ip=ClientIPMiddleware.default_ip,
         )
-        cache.set(f"{KEY_PREFIX}{other_session.session_key}", "foo")
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -87,8 +92,8 @@ class TestUserLoginStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
-        self.assertFalse(AuthenticatedSession.objects.filter(session_key=key))
-        self.assertFalse(cache.has_key(f"{KEY_PREFIX}{key}"))
+        self.assertFalse(AuthenticatedSession.objects.filter(session__session_key=key))
+        self.assertFalse(Session.objects.filter(session_key=key).exists())
 
     def test_expiry(self):
         """Test with expiry"""
@@ -108,7 +113,7 @@ class TestUserLoginStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertNotEqual(list(self.client.session.keys()), [])
         session_key = self.client.session.session_key
-        session = AuthenticatedSession.objects.filter(session_key=session_key).first()
+        session = Session.objects.filter(session_key=session_key).first()
         self.assertAlmostEqual(
             session.expires.timestamp() - before_request.timestamp(),
             timedelta_from_string(self.stage.session_duration).total_seconds(),
@@ -143,7 +148,7 @@ class TestUserLoginStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertNotEqual(list(self.client.session.keys()), [])
         session_key = self.client.session.session_key
-        session = AuthenticatedSession.objects.filter(session_key=session_key).first()
+        session = Session.objects.filter(session_key=session_key).first()
         self.assertAlmostEqual(
             session.expires.timestamp() - _now,
             timedelta_from_string(self.stage.session_duration).total_seconds()
@@ -193,3 +198,52 @@ class TestUserLoginStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         response = self.client.get(reverse("authentik_api:application-list"))
         self.assertEqual(response.status_code, 403)
+
+    def test_binding_net_break_log(self):
+        """Test logout_extra with exception"""
+        # IPs from https://github.com/maxmind/MaxMind-DB/blob/main/source-data/GeoLite2-ASN-Test.json
+        for args, expect in [
+            [[NetworkBinding.BIND_ASN, "8.8.8.8", "8.8.8.8"], ["network.missing"]],
+            [[NetworkBinding.BIND_ASN, "1.0.0.1", "1.128.0.1"], ["network.asn"]],
+            [
+                [NetworkBinding.BIND_ASN_NETWORK, "12.81.96.1", "12.81.128.1"],
+                ["network.asn_network"],
+            ],
+            [[NetworkBinding.BIND_ASN_NETWORK_IP, "1.0.0.1", "1.0.0.2"], ["network.ip"]],
+        ]:
+            with self.subTest(args[0]):
+                with self.assertRaises(SessionBindingBroken) as cm:
+                    BoundSessionMiddleware.recheck_session_net(*args)
+                self.assertEqual(cm.exception.reason, expect[0])
+                # Ensure the request can be logged without throwing errors
+                self.client.force_login(self.user)
+                request = HttpRequest()
+                request.session = self.client.session
+                request.user = self.user
+                logout_extra(request, cm.exception)
+
+    def test_binding_geo_break_log(self):
+        """Test logout_extra with exception"""
+        # IPs from https://github.com/maxmind/MaxMind-DB/blob/main/source-data/GeoLite2-City-Test.json
+        for args, expect in [
+            [[GeoIPBinding.BIND_CONTINENT, "8.8.8.8", "8.8.8.8"], ["geoip.missing"]],
+            [[GeoIPBinding.BIND_CONTINENT, "2.125.160.216", "67.43.156.1"], ["geoip.continent"]],
+            [
+                [GeoIPBinding.BIND_CONTINENT_COUNTRY, "81.2.69.142", "89.160.20.112"],
+                ["geoip.country"],
+            ],
+            [
+                [GeoIPBinding.BIND_CONTINENT_COUNTRY_CITY, "2.125.160.216", "81.2.69.142"],
+                ["geoip.city"],
+            ],
+        ]:
+            with self.subTest(args[0]):
+                with self.assertRaises(SessionBindingBroken) as cm:
+                    BoundSessionMiddleware.recheck_session_geo(*args)
+                self.assertEqual(cm.exception.reason, expect[0])
+                # Ensure the request can be logged without throwing errors
+                self.client.force_login(self.user)
+                request = HttpRequest()
+                request.session = self.client.session
+                request.user = self.user
+                logout_extra(request, cm.exception)

@@ -7,6 +7,7 @@ on:
 
 jobs:
   clean-ghcr:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     name: Delete old unused container images
     runs-on: ubuntu-latest
     steps:

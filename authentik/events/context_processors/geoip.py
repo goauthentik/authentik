@@ -51,7 +51,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
         """Wrapper for Reader.city"""
         with start_span(
             op="authentik.events.geo.city",
-            description=ip_address,
+            name=ip_address,
         ):
             if not self.configured():
                 return None

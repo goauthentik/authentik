@@ -1,5 +1,6 @@
 """SAML Assertion generator"""
 
+from datetime import datetime
 from hashlib import sha256
 from types import GeneratorType
 
@@ -50,7 +51,9 @@ class AssertionProcessor:
 
     _issue_instant: str
     _assertion_id: str
+    _response_id: str
 
+    _auth_instant: str
     _valid_not_before: str
     _session_not_on_or_after: str
     _valid_not_on_or_after: str
@@ -62,7 +65,13 @@ class AssertionProcessor:
 
         self._issue_instant = get_time_string()
         self._assertion_id = get_random_id()
+        self._response_id = get_random_id()
 
+        _login_event = get_login_event(self.http_request)
+        _login_time = datetime.now()
+        if _login_event:
+            _login_time = _login_event.created
+        self._auth_instant = get_time_string(_login_time)
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
@@ -129,8 +138,10 @@ class AssertionProcessor:
     def get_assertion_auth_n_statement(self) -> Element:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
-        auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
-        auth_n_statement.attrib["SessionIndex"] = self._assertion_id
+        auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
+        auth_n_statement.attrib["SessionIndex"] = sha256(
+            self.http_request.session.session_key.encode("ascii")
+        ).hexdigest()
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
@@ -154,6 +165,28 @@ class AssertionProcessor:
                 auth_n_context_class_ref.text = (
                     "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract"
                 )
+        if self.provider.authn_context_class_ref_mapping:
+            try:
+                value = self.provider.authn_context_class_ref_mapping.evaluate(
+                    user=self.http_request.user,
+                    request=self.http_request,
+                    provider=self.provider,
+                )
+                if value is not None:
+                    auth_n_context_class_ref.text = str(value)
+                return auth_n_statement
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=(
+                        "Failed to evaluate property-mapping: "
+                        f"'{self.provider.authn_context_class_ref_mapping.name}'"
+                    ),
+                    provider=self.provider,
+                    mapping=self.provider.authn_context_class_ref_mapping,
+                ).from_http(self.http_request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+                return auth_n_statement
         return auth_n_statement
 
     def get_assertion_conditions(self) -> Element:
@@ -252,7 +285,7 @@ class AssertionProcessor:
         assertion.attrib["IssueInstant"] = self._issue_instant
         assertion.append(self.get_issuer())
 
-        if self.provider.signing_kp:
+        if self.provider.signing_kp and self.provider.sign_assertion:
             sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
                 self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
             )
@@ -285,11 +318,23 @@ class AssertionProcessor:
         response.attrib["Version"] = "2.0"
         response.attrib["IssueInstant"] = self._issue_instant
         response.attrib["Destination"] = self.provider.acs_url
-        response.attrib["ID"] = get_random_id()
+        response.attrib["ID"] = self._response_id
         if self.auth_n_request.id:
             response.attrib["InResponseTo"] = self.auth_n_request.id
 
         response.append(self.get_issuer())
+
+        if self.provider.signing_kp and self.provider.sign_response:
+            sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
+                self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
+            )
+            signature = xmlsec.template.create(
+                response,
+                xmlsec.constants.TransformExclC14N,
+                sign_algorithm_transform,
+                ns=xmlsec.constants.DSigNs,
+            )
+            response.append(signature)
 
         status = SubElement(response, f"{{{NS_SAML_PROTOCOL}}}Status")
         status_code = SubElement(status, f"{{{NS_SAML_PROTOCOL}}}StatusCode")
@@ -308,7 +353,7 @@ class AssertionProcessor:
         ref = xmlsec.template.add_reference(
             signature_node,
             digest_algorithm_transform,
-            uri="#" + self._assertion_id,
+            uri="#" + element.attrib["ID"],
         )
         xmlsec.template.add_transform(ref, xmlsec.constants.TransformEnveloped)
         xmlsec.template.add_transform(ref, xmlsec.constants.TransformExclC14N)

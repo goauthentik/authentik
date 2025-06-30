@@ -1,11 +1,8 @@
 ---
 title: Integrate with OnlyOffice
 sidebar_label: OnlyOffice
+support_level: community
 ---
-
-# OnlyOffice
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is OnlyOffice
 
@@ -19,10 +16,10 @@ This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions ma
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of authentik.
--   `onlyoffice.company` is the FQDN of the OnlyOffice instance.
+- `authentik.company` is the FQDN of authentik.
+- `onlyoffice.company` is the FQDN of the OnlyOffice instance.
 
 Open your OnlyOffice instance, navigate to the settings by clicking the cog-icon in the navbar, then click on _Control Panel_ on the sidebar.
 
@@ -31,6 +28,10 @@ In the new tab, click on _SSO_ in the sidebar.
 Click the _Enable Single Sign-on Authentication_ checkbox to enable SSO.
 
 Scroll down to _ONLYOFFICE SP Metadata_, and copy the _SP Entity ID (link to metadata XML)_ URL. Open this URL in a new tab, and download the XML file.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Setup
 
@@ -46,8 +47,8 @@ Navigate back to your OnlyOffice Control panel, and paste the URL into _Load met
 
 Under _Attribute Mapping_, set the following values
 
--   _First Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
--   _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
--   _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+- _First Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- _Last Name_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- _Email_: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 
 Click save and a new SSO button will appear on the OnlyOffice login page.

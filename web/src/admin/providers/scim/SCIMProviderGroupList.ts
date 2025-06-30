@@ -8,7 +8,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { ProvidersApi, SCIMProviderGroup, SyncObjectModelEnum } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    ProvidersScimSyncObjectCreateRequest,
+    SCIMProviderGroup,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
@@ -19,6 +24,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         return true;
     }
 
+    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -28,8 +34,10 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
-                    .sync=${new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
+                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                    }}
                     slot="form"
                 >
                 </ak-sync-object-form>
@@ -73,6 +81,13 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             </a>`,
             html`${item.id}`,
         ];
+    }
+    renderExpanded(item: SCIMProviderGroup): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }
 

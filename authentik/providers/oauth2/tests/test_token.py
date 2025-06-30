@@ -22,6 +22,8 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
     OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
     RefreshToken,
     ScopeMapping,
 )
@@ -42,7 +44,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://TestServer",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://TestServer")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -69,7 +71,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -90,7 +92,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
@@ -118,7 +120,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         # Needs to be assigned to an application for iss to be set
@@ -148,9 +150,40 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
+                "scope": "",
             },
         )
         self.validate_jwt(access, provider)
+
+    def test_auth_code_enc(self):
+        """test request param"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=self.keypair,
+            encryption_key=self.keypair,
+        )
+        # Needs to be assigned to an application for iss to be set
+        self.app.provider = provider
+        self.app.save()
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://local.invalid",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        self.assertEqual(response.status_code, 200)
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        self.validate_jwe(access, provider)
 
     @apply_blueprint("system/providers-oauth2.yaml")
     def test_refresh_token_view(self):
@@ -158,7 +191,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -210,6 +243,7 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
+                "scope": "offline_access",
             },
         )
         self.validate_jwt(access, provider)
@@ -220,7 +254,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://local.invalid",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(
@@ -269,6 +303,7 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
+                "scope": "offline_access",
             },
         )
 
@@ -278,7 +313,7 @@ class TestToken(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.keypair,
         )
         provider.property_mappings.set(

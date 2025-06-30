@@ -3,6 +3,7 @@
 
 # Production
 /build
+/out
 /help
 
 # Generated files
@@ -24,5 +25,6 @@ yarn-debug.log*
 yarn-error.log*
 
 static/docker-compose.yml
-static/schema.yaml
-developer-docs/api/reference/**
+static/schema.yml
+static/releases.gen.json
+docs/developer-docs/api/reference/**

@@ -84,3 +84,4 @@ class Invitation(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Invitation")
         verbose_name_plural = _("Invitations")
+        indexes = ExpiringModel.Meta.indexes

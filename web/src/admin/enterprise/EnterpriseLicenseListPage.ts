@@ -2,7 +2,7 @@ import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import "@goauthentik/admin/enterprise/EnterpriseStatusCard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -109,10 +109,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state
-                      icon=${this.pageIcon()}
-                      header="${msg("No licenses found.")}"
-                  >
+                : html`<ak-empty-state icon=${this.pageIcon()}
+                      ><span>${msg("No licenses found.")}</span>
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>
@@ -186,7 +184,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     >
                         ${this.summary &&
                         this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
+                            ? html`<div>${formatElapsedTime(this.summary.latestValid)}</div>
                                   <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}
                     </ak-aggregate-card>
@@ -231,7 +229,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.EnterpriseLicense}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
                 </ak-rbac-object-permission-modal> `,
@@ -254,7 +252,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
         const renderCard = (installID: string) => html`
             <div class="pf-c-card__title">${msg("Your Install ID")}</div>
-            <div class="pf-c-card__body install-id">${installID}</div>
+            <div class="pf-c-card__body install-id pf-m-monospace">${installID}</div>
             <div class="pf-c-card__body">
                 <a
                     target="_blank"

@@ -4,7 +4,7 @@
 {% load i18n %}
 
 {% block head_before %}
-<link rel="prefetch" href="/static/dist/assets/images/flow_background.jpg" />
+<link rel="prefetch" href="{{ request.brand.branding_default_flow_background_url }}" />
 <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}" media="(prefers-color-scheme: dark)">
 {% include "base/header_js.html" %}
@@ -13,7 +13,7 @@
 {% block head %}
 <style>
 :root {
-    --ak-flow-background: url("/static/dist/assets/images/flow_background.jpg");
+    --ak-flow-background: url("{{ request.brand.branding_default_flow_background_url }}");
     --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
@@ -50,7 +50,7 @@
     <div class="ak-login-container">
         <main class="pf-c-login__main">
             <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                <img src="{{ brand.branding_logo }}" alt="authentik Logo" />
+                <img src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
             </div>
             <header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">

@@ -113,7 +113,7 @@ class PolicyEngine:
         with (
             start_span(
                 op="authentik.policy.engine.build",
-                description=self.__pbm,
+                name=self.__pbm,
             ) as span,
             HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
                 obj_type=class_to_path(self.__pbm.__class__),

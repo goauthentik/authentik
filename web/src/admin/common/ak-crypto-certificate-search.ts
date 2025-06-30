@@ -5,8 +5,8 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CertificateKeyPair,
@@ -114,12 +114,13 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     render() {
         return html`
             <ak-search-select
+                name=${ifDefined(this.name ?? undefined)}
                 .fetchObjects=${this.fetchObjects}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .selected=${this.selected}
                 @ak-change=${this.handleSearchUpdate}
-                ?blankable=${true}
+                blankable
             >
             </ak-search-select>
         `;

@@ -6,6 +6,7 @@ from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
+from json import JSONDecodeError, loads
 from operator import ixor
 from os import getenv
 from typing import Any, Literal, Union
@@ -22,6 +23,10 @@ from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
+
+
+class UNSET:
+    """Used to test whether a key has not been set."""
 
 
 def get_attrs(obj: SerializerModel) -> dict[str, Any]:
@@ -160,9 +165,7 @@ class BlueprintEntry:
         """Get the blueprint model, with yaml tags resolved if present"""
         return str(self.tag_resolver(self.model, blueprint))
 
-    def get_permissions(
-        self, blueprint: "Blueprint"
-    ) -> Generator[BlueprintEntryPermission, None, None]:
+    def get_permissions(self, blueprint: "Blueprint") -> Generator[BlueprintEntryPermission]:
         """Get permissions of this entry, with all yaml tags resolved"""
         for perm in self.permissions:
             yield BlueprintEntryPermission(
@@ -189,14 +192,24 @@ class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: list[BlueprintEntry] = field(default_factory=list)
+    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
     metadata: BlueprintMetadata | None = field(default=None)
 
+    def iter_entries(self) -> Iterable[BlueprintEntry]:
+        if isinstance(self.entries, dict):
+            for _section, entries in self.entries.items():
+                yield from entries
+        else:
+            yield from self.entries
+
 
 class YAMLTag:
     """Base class for all YAML Tags"""
+
+    def __repr__(self) -> str:
+        return str(self.resolve(BlueprintEntry(""), Blueprint()))
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -221,7 +234,7 @@ class KeyOf(YAMLTag):
         self.id_from = node.value
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        for _entry in blueprint.entries:
+        for _entry in blueprint.iter_entries():
             if _entry.id == self.id_from and _entry._state.instance:
                 # Special handling for PolicyBindingModels, as they'll have a different PK
                 # which is used when creating policy bindings
@@ -277,6 +290,22 @@ class Context(YAMLTag):
         if isinstance(value, YAMLTag):
             return value.resolve(entry, blueprint)
         return value
+
+
+class ParseJSON(YAMLTag):
+    """Parse JSON from context/env/etc value"""
+
+    raw: str
+
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
+        super().__init__()
+        self.raw = node.value
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            return loads(self.raw)
+        except JSONDecodeError as exc:
+            raise EntryInvalidError.from_entry(exc, entry) from exc
 
 
 class Format(YAMLTag):
@@ -556,6 +585,53 @@ class Value(EnumeratedItem):
             raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
+class AtIndex(YAMLTag):
+    """Get value at index of a sequence or mapping"""
+
+    obj: YAMLTag | dict | list | tuple
+    attribute: int | str | YAMLTag
+    default: Any | UNSET
+
+    def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
+        super().__init__()
+        self.obj = loader.construct_object(node.value[0])
+        self.attribute = loader.construct_object(node.value[1])
+        if len(node.value) == 2:  # noqa: PLR2004
+            self.default = UNSET
+        else:
+            self.default = loader.construct_object(node.value[2])
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.obj, YAMLTag):
+            obj = self.obj.resolve(entry, blueprint)
+        else:
+            obj = self.obj
+        if isinstance(self.attribute, YAMLTag):
+            attribute = self.attribute.resolve(entry, blueprint)
+        else:
+            attribute = self.attribute
+
+        if isinstance(obj, list | tuple):
+            try:
+                return obj[attribute]
+            except TypeError as exc:
+                raise EntryInvalidError.from_entry(
+                    f"Invalid index for list: {attribute}", entry
+                ) from exc
+            except IndexError as exc:
+                if self.default is UNSET:
+                    raise EntryInvalidError.from_entry(
+                        f"Index out of range: {attribute}", entry
+                    ) from exc
+                return self.default
+        if attribute in obj:
+            return obj[attribute]
+        else:
+            if self.default is UNSET:
+                raise EntryInvalidError.from_entry(f"Key does not exist: {attribute}", entry)
+            return self.default
+
+
 class BlueprintDumper(SafeDumper):
     """Dump dataclasses to yaml"""
 
@@ -606,6 +682,8 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Enumerate", Enumerate)
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
+        self.add_constructor("!AtIndex", AtIndex)
+        self.add_constructor("!ParseJSON", ParseJSON)
 
 
 class EntryInvalidError(SentryIgnoredException):

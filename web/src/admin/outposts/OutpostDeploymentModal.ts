@@ -22,7 +22,9 @@ export class OutpostDeploymentModal extends ModalButton {
                 <p>
                     <a
                         target="_blank"
-                        href="${docLink("/docs/outposts?utm_source=authentik#deploy")}"
+                        href="${docLink(
+                            "/docs/add-secure-apps/outposts?utm_source=authentik#deploy",
+                        )}"
                         rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >
@@ -63,7 +65,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
-                    ${this.outpost?.type == OutpostTypeEnum.Proxy
+                    ${this.outpost?.type === OutpostTypeEnum.Proxy
                         ? html`
                               <h3>
                                   ${msg(

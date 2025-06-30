@@ -1,11 +1,8 @@
 ---
 title: Integrate with ArgoCD
 sidebar_label: ArgoCD
+support_level: community
 ---
-
-# ArgoCD
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ArgoCD
 
@@ -15,111 +12,38 @@ sidebar_label: ArgoCD
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `argocd.company` is the FQDN of the ArgoCD install.
--   `authentik.company` is the FQDN of the authentik install.
+- `argocd.company` is the FQDN of the ArgoCD installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-Only settings that have been modified from default have been listed.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Configuration
+## authentik configuration
 
-### Step 1 - Provider creation
+To support the integration of ArgoCD with authentik, you need to create an application/provider pair in authentik.
 
-In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
+### Create an application and provider in authentik
 
--   Name: ArgoCD
--   Client Type: `Confidential`
--   Signing Key: Select any available key
--   Redirect URIs:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Add two `Strict` redirect URI and set them to `https://argocd.company/api/dex/callback` and `https://localhost:8085/auth/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-```
-https://argocd.company/api/dex/callback
-http://localhost:8085/auth/callback
-```
+3. Click **Submit** to save the new application and provider.
 
-After creating the provider, take note of the `Client ID` and `Client Secret`, you'll need to give them to ArgoCD in the _ArgoCD Configuration_ field.
+### Create the users and administrator groups
 
-### Step 2 - Application creation
+Using the authentik Admin interface, navigate to **Directory** > **Groups** and click **Create** to create two required groups: `ArgoCD Admins` for administrator users and `ArgoCD Viewers` for read-only users.
 
-Create a new _Application_ (under _Applications/Applications_) with these settings:
-
--   Name: ArgoCD
--   Provider: ArgoCD
--   Slug: argocd
--   Launch URL: https://argocd.company/auth/login
-
-### Step 3 - ArgoCD Group creation
-
-Create a new _Group_ (under _Directory/Groups_) that'll be used as the admin group for ArgoCD (if you already have an "admin" group, you can skip this part!)
-
--   Name: ArgoCD Admins
--   Members: Add your user and/or any user that should be an ArgoCD admin
-
-You can create another group for read-only access to ArgoCD as well if desired:
-
--   Name: ArgoCD Viewers
--   Members: Any user that should have ArgoCD read-only access
-
-## Terraform provider
-
-```hcl
-data "authentik_flow" "default-provider-authorization-implicit-consent" {
-  slug = "default-provider-authorization-implicit-consent"
-}
-
-data "authentik_scope_mapping" "scope-email" {
-  name = "authentik default OAuth Mapping: OpenID 'email'"
-}
-
-data "authentik_scope_mapping" "scope-profile" {
-  name = "authentik default OAuth Mapping: OpenID 'profile'"
-}
-
-data "authentik_scope_mapping" "scope-openid" {
-  name = "authentik default OAuth Mapping: OpenID 'openid'"
-}
-
-resource "authentik_provider_oauth2" "argocd" {
-  name          = "ArgoCD"
-  #  Required. You can use the output of:
-  #     $ openssl rand -hex 16
-  client_id     = "my_client_id"
-
-  # Optional: will be generated if not provided
-  # client_secret = "my_client_secret"
-
-  authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
-
-  redirect_uris = [
-    "https://argocd.company/api/dex/callback",
-    "http://localhost:8085/auth/callback"
-  ]
-
-  property_mappings = [
-    data.authentik_scope_mapping.scope-email.id,
-    data.authentik_scope_mapping.scope-profile.id,
-    data.authentik_scope_mapping.scope-openid.id,
-  ]
-}
-
-resource "authentik_application" "argocd" {
-  name              = "ArgoCD"
-  slug              = "argocd"
-  protocol_provider = authentik_provider_oauth2.argocd.id
-}
-
-resource "authentik_group" "argocd_admins" {
-  name    = "ArgoCD Admins"
-}
-
-
-resource "authentik_group" "argocd_viewers" {
-  name    = "ArgoCD Viewers"
-}
-```
+After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
 ## ArgoCD Configuration
 
@@ -153,7 +77,7 @@ url: https://argocd.company
 dex.config: |
     connectors:
     - config:
-        issuer: https://authentik.company/application/o/<application slug defined in step 2>/
+        issuer: https://authentik.company/application/o/<application_slug>/
         clientID: <client ID from the Provider above>
         clientSecret: $dex.authentik.clientSecret
         insecureEnableGroups: true

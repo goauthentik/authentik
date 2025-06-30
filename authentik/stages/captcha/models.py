@@ -9,10 +9,12 @@ from authentik.flows.models import Stage
 
 
 class CaptchaStage(Stage):
-    """Verify the user is human using Google's reCaptcha."""
+    """Verify the user is human using Google's reCaptcha/other compatible CAPTCHA solutions."""
 
     public_key = models.TextField(help_text=_("Public key, acquired your captcha Provider."))
     private_key = models.TextField(help_text=_("Private key, acquired your captcha Provider."))
+
+    interactive = models.BooleanField(default=False)
 
     score_min_threshold = models.FloatField(default=0.5)  # Default values for reCaptcha
     score_max_threshold = models.FloatField(default=1.0)  # Default values for reCaptcha

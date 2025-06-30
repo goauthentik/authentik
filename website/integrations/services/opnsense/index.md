@@ -1,11 +1,8 @@
 ---
 title: Integrate with OPNsense
 sidebar_label: OPNsense
+support_level: community
 ---
-
-# OPNsense
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is OPNsense
 
@@ -19,11 +16,15 @@ This is based on authentik 2024.2.2 and OPNsense 24.1.3_1-amd64 installed using 
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of authentik.
--   `opnsense` is the name of the authentik Service account we'll create.
--   `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+- `authentik.company` is the FQDN of authentik.
+- `opnsense` is the name of the authentik Service account we'll create.
+- `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 
@@ -44,9 +45,9 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: LDAP
--   Search group: opnsense
--   Certificate: authentik Self-signed certificate
+- Name: LDAP
+- Search group: opnsense
+- Certificate: authentik Self-signed certificate
 
 ### Step 3
 
@@ -56,9 +57,9 @@ In authentik, create an application (under _Applications/Applications_) which us
 Only settings that have been modified from default have been listed.
 :::
 
--   Name: LDAP
--   Slug: ldap
--   Provider: LDAP
+- Name: LDAP
+- Slug: ldap
+- Provider: LDAP
 
 ### Step 4
 
@@ -68,8 +69,8 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 Only settings that have been modified from default have been listed.
 :::
 
--   Name: LDAP
--   Type: LDAP
+- Name: LDAP
+- Type: LDAP
 
 ### Step 5
 
@@ -77,15 +78,15 @@ Add your authentik LDAP server to OPNsense by going to your OPNsense Web UI and 
 
 Change the following fields
 
--   Descriptive name: authentik
--   Hostname or IP address: authentik.company
--   Transport: SSL - Encrypted
--   Bind credentials
-    -   User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
-    -   Password: whatever-you-set
-    -   Base DN: DC=ldap,DC=goauthentik,DC=io
--   Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
--   Extended Query: &(objectClass=user)
+- Descriptive name: authentik
+- Hostname or IP address: authentik.company
+- Transport: SSL - Encrypted
+- Bind credentials
+    - User DN: CN=opnsense-user,OU=users,DC=ldap,DC=goauthentik,DC=io
+    - Password: whatever-you-set
+    - Base DN: DC=ldap,DC=goauthentik,DC=io
+- Authentication containers: OU=users,DC=ldap,DC=goauthentik,DC=io;OU=groups,DC=ldap,DC=goauthentik,DC=io
+- Extended Query: &(objectClass=user)
 
 ![](./opnsense1.png)
 

@@ -8,6 +8,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import Source
 from authentik.flows.models import Flow, Stage
+from authentik.stages.captcha.models import CaptchaStage
 from authentik.stages.password.models import PasswordStage
 
 
@@ -43,6 +44,19 @@ class IdentificationStage(Stage):
         ),
     )
 
+    captcha_stage = models.ForeignKey(
+        CaptchaStage,
+        null=True,
+        default=None,
+        on_delete=models.SET_NULL,
+        help_text=_(
+            (
+                "When set, adds functionality exactly like a Captcha stage, but baked into the "
+                "Identification stage."
+            ),
+        ),
+    )
+
     case_insensitive_matching = models.BooleanField(
         default=True,
         help_text=_("When enabled, user fields are matched regardless of their casing."),
@@ -62,7 +76,13 @@ class IdentificationStage(Stage):
             "is entered."
         ),
     )
-
+    enable_remember_me = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Show the user the 'Remember me on this device' toggle, allowing repeat "
+            "users to skip straight to entering their password."
+        ),
+    )
     enrollment_flow = models.ForeignKey(
         Flow,
         on_delete=models.SET_DEFAULT,

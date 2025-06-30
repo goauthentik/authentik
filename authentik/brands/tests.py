@@ -24,6 +24,7 @@ class TestBrands(APITestCase):
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
+                "branding_custom_css": "",
                 "matched_domain": brand.domain,
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
@@ -43,6 +44,7 @@ class TestBrands(APITestCase):
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "custom",
+                "branding_custom_css": "",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
@@ -59,6 +61,7 @@ class TestBrands(APITestCase):
                 "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
                 "branding_favicon": "/static/dist/assets/icons/icon.png",
                 "branding_title": "authentik",
+                "branding_custom_css": "",
                 "matched_domain": "fallback",
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
@@ -121,3 +124,38 @@ class TestBrands(APITestCase):
                 "subject": None,
             },
         )
+
+    def test_branding_url(self):
+        """Test branding attributes return correct values"""
+        brand = create_test_brand()
+        brand.branding_default_flow_background = "https://goauthentik.io/img/icon.png"
+        brand.branding_favicon = "https://goauthentik.io/img/icon.png"
+        brand.branding_logo = "https://goauthentik.io/img/icon.png"
+        brand.save()
+        self.assertEqual(
+            brand.branding_default_flow_background_url(), "https://goauthentik.io/img/icon.png"
+        )
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
+            {
+                "branding_logo": "https://goauthentik.io/img/icon.png",
+                "branding_favicon": "https://goauthentik.io/img/icon.png",
+                "branding_title": "authentik",
+                "branding_custom_css": "",
+                "matched_domain": brand.domain,
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+            },
+        )
+
+    def test_custom_css(self):
+        """Test custom_css"""
+        brand = create_test_brand()
+        brand.branding_custom_css = """* {
+            font-family: "Foo bar";
+        }"""
+        brand.save()
+        res = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(brand.branding_custom_css, res.content.decode())

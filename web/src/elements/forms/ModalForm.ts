@@ -37,6 +37,9 @@ export class ModalForm extends ModalButton {
                 if (this.closeAfterSuccessfulSubmit) {
                     this.open = false;
                     form?.resetForm();
+
+                    // TODO: We may be fetching too frequently.
+                    // Repeat dispatching will prematurely abort refresh listeners and cause several fetches and re-renders.
                     this.dispatchEvent(
                         new CustomEvent(EVENT_REFRESH, {
                             bubbles: true,
@@ -47,16 +50,17 @@ export class ModalForm extends ModalButton {
                 this.loading = false;
                 this.locked = false;
             })
-            .catch((exc) => {
+            .catch((error: unknown) => {
                 this.loading = false;
                 this.locked = false;
-                throw exc;
+
+                throw error;
             });
     }
 
     renderModalInner(): TemplateResult {
         return html`${this.loading
-                ? html`<ak-loading-overlay ?topMost=${true}></ak-loading-overlay>`
+                ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
                 : html``}
             <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

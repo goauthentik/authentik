@@ -29,24 +29,28 @@ class ApplicationWizardView extends AdminPage {
     app = ApplicationForm;
 
     async wizardTitle() {
-        return await $("ak-wizard-frame").$(".pf-c-wizard__title");
+        return await $(">>>.pf-c-wizard__title");
     }
 
     async providerList() {
-        return await $("ak-application-wizard-authentication-method-choice");
+        return await $(">>>ak-application-wizard-provider-choice-step");
     }
 
     async nextButton() {
-        return await $("ak-wizard-frame").$("footer button.pf-m-primary");
+        return await $('>>>button[data-ouid-button-kind="wizard-next"]');
     }
 
     async getProviderType(type: string) {
         // @ts-expect-error "TSC does not understand the ChainablePromiseElement type at all."
-        return await this.providerList().$(`input[value="${type}"]`);
+        return await this.providerList().$(`>>>input[value="${type}"]`);
+    }
+
+    async submitPage() {
+        return await $(">>>ak-application-wizard-submit-step");
     }
 
     async successMessage() {
-        return await $('[data-commit-state="success"]');
+        return await $('>>>[data-ouid-component-state="submitted"]');
     }
 }
 
@@ -57,8 +61,7 @@ type Pair = [string, string];
 const providerValues: Pair[] = [
     ["oauth2provider", "oauth2Provider"],
     ["ldapprovider", "ldapProvider"],
-    ["proxyprovider-proxy", "proxyProviderProxy"],
-    ["proxyprovider-forwardsingle", "proxyProviderForwardsingle"],
+    ["proxyprovider", "proxyProvider"],
     ["radiusprovider", "radiusProvider"],
     ["samlprovider", "samlProvider"],
     ["scimprovider", "scimProvider"],
@@ -70,7 +73,7 @@ providerValues.forEach(([value, name]: Pair) => {
             get: async function () {
                 return await (
                     await this.providerList()
-                ).$(`div[data-ouid-component-name="${value}"]`);
+                ).$(`>>>div[data-ouid-component-name="${value}"]`);
             },
         },
     });

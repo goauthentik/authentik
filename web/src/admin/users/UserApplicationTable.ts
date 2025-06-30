@@ -1,13 +1,13 @@
 import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-app-icon";
+import "@goauthentik/elements/AppIcon";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
 
@@ -40,7 +40,10 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifDefined(item.metaIcon || undefined)}
+            ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}

@@ -2,7 +2,7 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-number-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
 import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -42,11 +42,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                authenticatorWebAuthnStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+            authenticatorWebAuthnStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -55,10 +54,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -70,7 +69,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -79,12 +78,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User verification")}
-                        ?required=${true}
+                        required
                         name="userVerification"
                     >
                         <ak-radio
@@ -111,7 +110,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Resident key requirement")}
-                        ?required=${true}
+                        required
                         name="residentKeyRequirement"
                     >
                         <ak-radio
@@ -142,7 +141,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Authenticator Attachment")}
-                        ?required=${true}
+                        required
                         name="authenticatorAttachment"
                     >
                         <ak-radio
@@ -167,6 +166,15 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
+                    <ak-number-input
+                        label=${msg("Maximum registration attempts")}
+                        required
+                        name="maxAttempts"
+                        value="${this.instance?.maxAttempts || 0}"
+                        help=${msg(
+                            "Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.",
+                        )}
+                    ></ak-number-input>
                     <ak-form-element-horizontal
                         label=${msg("Device type restrictions")}
                         name="deviceTypeRestrictions"
@@ -228,7 +236,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

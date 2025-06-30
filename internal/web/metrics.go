@@ -20,8 +20,9 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 }, []string{"dest"})
 
 func (ws *WebServer) runMetricsServer() {
-	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.router.metrics")
+
+	m := mux.NewRouter()
 	m.Use(sentry.SentryNoSampleMiddleware)
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
@@ -31,12 +32,12 @@ func (ws *WebServer) runMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", fmt.Sprintf("%s/-/metrics/", ws.ul.String()), nil)
+		re, err := http.NewRequest("GET", fmt.Sprintf("%s%s-/metrics/", ws.upstreamURL.String(), config.Get().Web.Path), nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.SetBasicAuth("monitor", config.Get().SecretKey)
+		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
 		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")

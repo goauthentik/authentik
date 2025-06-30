@@ -26,9 +26,12 @@ class SCIMProviderSerializer(ProviderSerializer):
             "verbose_name_plural",
             "meta_model_name",
             "url",
+            "verify_certificates",
             "token",
+            "compatibility_mode",
             "exclude_users_service_account",
             "filter_group",
+            "dry_run",
         ]
         extra_kwargs = {}
 

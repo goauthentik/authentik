@@ -26,7 +26,7 @@ type ProviderInstance struct {
 
 	appSlug                string
 	authenticationFlowSlug string
-	invalidationFlowSlug   string
+	invalidationFlowSlug   *string
 	s                      *LDAPServer
 	log                    *log.Entry
 
@@ -99,7 +99,7 @@ func (pi *ProviderInstance) GetAuthenticationFlowSlug() string {
 	return pi.authenticationFlowSlug
 }
 
-func (pi *ProviderInstance) GetInvalidationFlowSlug() string {
+func (pi *ProviderInstance) GetInvalidationFlowSlug() *string {
 	return pi.invalidationFlowSlug
 }
 

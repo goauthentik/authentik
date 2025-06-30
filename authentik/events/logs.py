@@ -57,7 +57,7 @@ class LogEventSerializer(PassiveSerializer):
 
 
 @contextmanager
-def capture_logs(log_default_output=True) -> Generator[list[LogEvent], None, None]:
+def capture_logs(log_default_output=True) -> Generator[list[LogEvent]]:
     """Capture log entries created"""
     logs = []
     cap = LogCapture()

@@ -19,7 +19,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -31,6 +30,7 @@ from authentik.outposts.models import (
 )
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
 
 

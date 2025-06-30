@@ -11,11 +11,11 @@ class UserLibraryPage extends Page {
      */
 
     public async pageHeader() {
-        return await $('h1[aria-level="1"]');
+        return await $('>>>h1[aria-level="1"]');
     }
 
     public async goToAdmin() {
-        await $('a[href="/if/admin"]').click();
+        await $('>>>a[href="/if/admin"]').click();
         return await $("ak-admin-overview").waitForDisplayed();
     }
 }

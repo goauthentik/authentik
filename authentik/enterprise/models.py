@@ -40,6 +40,10 @@ class License(SerializerModel):
     external_users = models.BigIntegerField()
 
     @property
+    def is_valid(self) -> bool:
+        return self.expiry >= now()
+
+    @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.enterprise.api import LicenseSerializer
 
@@ -93,3 +97,4 @@ class LicenseUsage(ExpiringModel):
     class Meta:
         verbose_name = _("License Usage")
         verbose_name_plural = _("License Usage Records")
+        indexes = ExpiringModel.Meta.indexes

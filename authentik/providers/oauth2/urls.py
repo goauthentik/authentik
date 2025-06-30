@@ -12,6 +12,7 @@ from authentik.providers.oauth2.api.tokens import (
 )
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.device_backchannel import DeviceView
+from authentik.providers.oauth2.views.end_session import EndSessionView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.providers.oauth2.views.provider import ProviderInfoView
@@ -44,7 +45,7 @@ urlpatterns = [
     ),
     path(
         "<slug:application_slug>/end-session/",
-        RedirectView.as_view(pattern_name="authentik_core:if-session-end", query_string=True),
+        EndSessionView.as_view(),
         name="end-session",
     ),
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),

@@ -14,10 +14,10 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import SecretKeyFilter
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.rbac.filters import SecretKeyFilter
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -49,6 +49,8 @@ class BrandSerializer(ModelSerializer):
             "branding_title",
             "branding_logo",
             "branding_favicon",
+            "branding_custom_css",
+            "branding_default_flow_background",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
@@ -57,6 +59,7 @@ class BrandSerializer(ModelSerializer):
             "flow_device_code",
             "default_application",
             "web_certificate",
+            "client_certificates",
             "attributes",
         ]
         extra_kwargs = {
@@ -84,8 +87,9 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()
-    branding_logo = CharField()
-    branding_favicon = CharField()
+    branding_logo = CharField(source="branding_logo_url")
+    branding_favicon = CharField(source="branding_favicon_url")
+    branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
@@ -117,6 +121,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "domain",
         "branding_title",
         "web_certificate__name",
+        "client_certificates__name",
     ]
     filterset_fields = [
         "brand_uuid",
@@ -125,6 +130,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "branding_title",
         "branding_logo",
         "branding_favicon",
+        "branding_default_flow_background",
         "flow_authentication",
         "flow_invalidation",
         "flow_recovery",
@@ -132,6 +138,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_user_settings",
         "flow_device_code",
         "web_certificate",
+        "client_certificates",
     ]
     ordering = ["domain"]
 

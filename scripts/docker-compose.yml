@@ -7,6 +7,8 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: authentik
+    command:
+      ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
     ports:
       - 127.0.0.1:5432:5432
     restart: always

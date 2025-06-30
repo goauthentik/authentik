@@ -1,11 +1,8 @@
 ---
 title: Integrate with ProFTPD
 sidebar_label: ProFTPD
+support_level: community
 ---
-
-# ProFTPD
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ProFTPD
 
@@ -13,13 +10,17 @@ sidebar_label: ProFTPD
 >
 > -- From http://www.proftpd.org
 
-This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
+This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 
@@ -41,17 +42,17 @@ _If you are unfamiliar with LDAP_: A bind account is used for authentication aga
 
 In authentik, create a LDAP provider (under _Applications/Providers_). This is an example for the settings:
 
--   Name : `provider-ldap` - or choose any
--   Bind DN : `DC=ldap,DC=goauthentik,DC=io`
--   Search group : `LDAPServiceUsers`
--   Certificate : `authentik Self-signed Certificate`
+- Name : `provider-ldap` - or choose any
+- Bind DN : `DC=ldap,DC=goauthentik,DC=io`
+- Search group : `LDAPServiceUsers`
+- Certificate : `authentik Self-signed Certificate`
 
 ### Step 3 - Application
 
 In authentik, create an application (under _Resources/Applications_) with these settings :
 
--   Name: `FTP` - or choose any
--   Provider: Choose the provider you created in _Step 2_
+- Name: `FTP` - or choose any
+- Provider: Choose the provider you created in _Step 2_
 
 ### Step 4 - Outpost
 
@@ -108,7 +109,7 @@ In this example, every user shares a single folder. If you want to have separate
 
 Additionally, note that each file will have Linux user and group ID `1000`. Beforehand, make sure that the respective Linux user exists (usually the first Linux user created receives ID `1000`). Check `/etc/passwd` and create a user if necessary.
 
-If you do not set `LDAPForceDefaultUID`/`LDAPForceDefaultGID`, Authentik's `uidNumber` field will be used. If you do not set `LDAPGenerateHomedir`, Authentik's `homeDirectory` field will be used (`/home/$username`). For more information about default attributes provided by Authentik, refer to the [LDAP Provider documentation](../../../docs/providers/ldap).
+If you do not set `LDAPForceDefaultUID`/`LDAPForceDefaultGID`, Authentik's `uidNumber` field will be used. If you do not set `LDAPGenerateHomedir`, Authentik's `homeDirectory` field will be used (`/home/$username`). For more information about default attributes provided by Authentik, refer to the [LDAP Provider documentation](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap).
 
 Make sure to read ProFTPD's [available LDAP options](http://www.proftpd.org/docs/contrib/mod_ldap.html).
 

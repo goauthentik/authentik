@@ -106,8 +106,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
         this.registerRunning = true;
         this.register()
-            .catch((e) => {
-                console.warn("authentik/flows/authenticator_webauthn: failed to register", e);
+            .catch((error: unknown) => {
+                console.warn("authentik/flows/authenticator_webauthn: failed to register", error);
+
                 this.registerMessage = msg("Failed to register. Please try again.");
             })
             .finally(() => {
@@ -144,17 +145,16 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <ak-empty-state
-                        ?loading="${this.registerRunning}"
-                        header=${this.registerRunning
-                            ? msg("Registering...")
-                            : this.registerMessage || msg("Failed to register")}
-                        icon="fa-times"
-                    >
+                    <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
+                        <span
+                            >${this.registerRunning
+                                ? msg("Registering...")
+                                : this.registerMessage || msg("Failed to register")}
+                        </span>
                     </ak-empty-state>
                     ${this.challenge?.responseErrors
                         ? html`<p class="pf-m-block">
-                              ${this.challenge.responseErrors["response"][0].string}
+                              ${this.challenge.responseErrors.response[0].string}
                           </p>`
                         : nothing}
                     <div class="pf-c-form__group pf-m-action">

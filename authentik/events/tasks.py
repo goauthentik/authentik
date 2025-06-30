@@ -68,14 +68,10 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     if not result.passing:
         return
 
-    if not trigger.group:
-        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
-        return
-
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
     for transport in trigger.transports.all():
-        for user in trigger.group.users.all():
+        for user in trigger.destination_users(event):
             LOGGER.debug("created notification")
             notification_transport.apply_async(
                 args=[
@@ -138,7 +134,6 @@ def notification_cleanup(self: SystemTask):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
-    for notification in notifications:
-        notification.delete()
+    notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")

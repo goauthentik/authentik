@@ -1,6 +1,5 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -32,15 +31,14 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-                dockerServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+            dockerServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -53,7 +51,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.local, false)}
+                        ?checked=${this.instance?.local ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -68,16 +66,21 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Docker URL")} ?required=${true} name="url">
+            <ak-form-element-horizontal label=${msg("Docker URL")} required name="url">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    inputmode="url"
                     required
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.",
+                        html`Can be in the format of <code>unix://</code> when connecting to a local
+                            docker daemon, using <code>ssh://</code> to connect via SSH, or
+                            <code>https://:2376</code> when connecting to a remote system.`,
                     )}
                 </p>
             </ak-form-element-horizontal>

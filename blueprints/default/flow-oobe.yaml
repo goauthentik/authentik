@@ -101,7 +101,6 @@ entries:
     - !KeyOf prompt-field-email
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
-    validation_policies: []
   id: stage-default-oobe-password
   identifiers:
     name: stage-default-oobe-password

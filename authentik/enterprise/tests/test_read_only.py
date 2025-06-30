@@ -215,3 +215,49 @@ class TestReadOnly(FlowTestCase):
             {"detail": "Request denied due to expired/invalid license.", "code": "denied_license"},
         )
         self.assertEqual(response.status_code, 400)
+
+    @patch(
+        "authentik.enterprise.license.LicenseKey.validate",
+        MagicMock(
+            return_value=LicenseKey(
+                aud="",
+                exp=expiry_valid,
+                name=generate_id(),
+                internal_users=100,
+                external_users=100,
+            )
+        ),
+    )
+    @patch(
+        "authentik.enterprise.license.LicenseKey.get_internal_user_count",
+        MagicMock(return_value=1000),
+    )
+    @patch(
+        "authentik.enterprise.license.LicenseKey.get_external_user_count",
+        MagicMock(return_value=1000),
+    )
+    @patch(
+        "authentik.enterprise.license.LicenseKey.record_usage",
+        MagicMock(),
+    )
+    def test_manage_users(self):
+        """Test that managing users is still possible"""
+        License.objects.create(key=generate_id())
+        usage = LicenseUsage.objects.create(
+            internal_user_count=100,
+            external_user_count=100,
+            status=LicenseUsageStatus.VALID,
+        )
+        usage.record_date = now() - timedelta(weeks=THRESHOLD_READ_ONLY_WEEKS + 1)
+        usage.save(update_fields=["record_date"])
+
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        # Reading is always allowed
+        response = self.client.get(reverse("authentik_api:user-list"))
+        self.assertEqual(response.status_code, 200)
+
+        # Writing should also be allowed
+        response = self.client.patch(reverse("authentik_api:user-detail", kwargs={"pk": admin.pk}))
+        self.assertEqual(response.status_code, 200)

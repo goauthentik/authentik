@@ -1,3 +1,4 @@
+import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
@@ -50,7 +51,8 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
-                              href="/if/flow/${this.host.brand.flowUnenrollment}/"
+                              href="${globalAK().api.base}if/flow/${this.host.brand
+                                  .flowUnenrollment}/"
                           >
                               ${msg("Delete account")}
                           </a>`
@@ -62,8 +64,7 @@ export class UserSettingsPromptStage extends PromptStage {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
                 <form

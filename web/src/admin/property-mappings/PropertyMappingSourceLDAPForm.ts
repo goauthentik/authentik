@@ -10,7 +10,7 @@ import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
     docLink(): string {
-        return "/docs/sources/property-mappings/expressions?utm_source=authentik";
+        return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
     loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
@@ -25,11 +25,10 @@ export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPS
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
-                lDAPSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
+            lDAPSourcePropertyMappingRequest: data,
+        });
     }
 }
 

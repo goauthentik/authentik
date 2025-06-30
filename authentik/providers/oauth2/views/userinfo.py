@@ -108,7 +108,7 @@ class UserInfoView(View):
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.token:
-            allowed_origins = self.token.provider.redirect_uris.split("\n")
+            allowed_origins = [x.url for x in self.token.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
         return response
 
