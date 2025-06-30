@@ -2,6 +2,9 @@
 title: Air-gapped environments
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## Outbound connections
 
 By default, authentik creates outbound connections to the following URLs:
@@ -10,15 +13,11 @@ By default, authentik creates outbound connections to the following URLs:
 - https://goauthentik.io: Anonymous analytics on startup
 - https://secure.gravatar.com: Avatars for users
 - https://authentik.error-reporting.a7k.io: Error reporting
+- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise :ak-version[2025.8]
 
-To disable these outbound connections, adjust the settings as follows:
+## Configuration
 
-## Configuration options
-
-To view a list of all configuration options, refer to the [Configuration](./configuration/configuration.mdx) documentation.
-
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+To disable these outbound connections, adjust the following settings:
 
 <Tabs
   defaultValue="docker-compose"
@@ -27,6 +26,7 @@ import Tabs from "@theme/Tabs";
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker-compose">
+
 Add the following block to your `.env` file:
 
 ```shell
@@ -39,6 +39,7 @@ Afterwards, run the upgrade commands from the latest release notes.
 
   </TabItem>
   <TabItem value="kubernetes">
+
 Add the following block to your `values.yml` file:
 
 ```yaml
@@ -54,15 +55,54 @@ Afterwards, run the upgrade commands from the latest release notes.
   </TabItem>
 </Tabs>
 
-## Settings
+Additionally, adjust the following [System settings](../sys-mgmt/settings.md):
 
-In addition to the configuration options above, the following [System settings](../sys-mgmt/settings.md) need to also be adjusted:
+- **Avatars**: By default this setting uses [Gravatar](https://secure.gravatar.com/). Set it to a combination of other options, such as `initials`
 
-- **Avatars**: By default this setting uses [Gravatar](https://secure.gravatar.com/). The option can be set to a combination of any of the other options, for example `initials`
+## Required resources
 
-## Container images
+### Container images
 
-Container images can be pulled from the following URLs:
+For a complete air-gapped deployment, you'll need access to these container images. This can be achieved by mirroring them to an internal registry, allowing specific external connections through your firewall, or using other methods appropriate for your environment.
 
-- ghcr.io/goauthentik/server (https://ghcr.io)
-- beryju/authentik (https://index.docker.io)
+#### Main image
+
+- `ghcr.io/goauthentik/server`
+
+#### Outpost images
+
+- `ghcr.io/goauthentik/ldap`
+- `ghcr.io/goauthentik/proxy`
+- `ghcr.io/goauthentik/rac`
+- `ghcr.io/goauthentik/radius`
+
+#### Supporting services
+
+- PostgreSQL
+- Redis
+
+### Helm repositories
+
+For Helm deployments, ensure access to:
+
+- https://charts.goauthentik.io
+
+## Network requirements
+
+### Required ports
+
+- **9000/9443**: Default authentik server ports for HTTP/HTTPS access
+- **80/443**: For reverse proxy setups (if using a load balancer or ingress controller)
+- **SMTP ports**: Connectivity to your configured SMTP server (typically 25, 465, or 587)
+- **S3/object storage**: If configured, connectivity to your S3-compatible storage
+
+### Outpost-specific ports
+
+Each outpost type requires specific ports:
+
+- **LDAP Outpost**: Port 389 (LDAP) and 636 (LDAPS)
+- **Proxy Outpost**: Port 9000/9443 (HTTP/HTTPS)
+- **RAC Outpost**: Port 9000/9443 (HTTP/HTTPS)
+- **RADIUS Outpost**: Port 1812 (RADIUS Authentication)
+
+For more detailed information about outpost configuration in air-gapped environments, see the [Outposts documentation](../add-secure-apps/outposts/index.mdx).
