@@ -1,12 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import {
     GoogleWorkspaceProviderGroup,
@@ -14,6 +12,10 @@ import {
     ProvidersGoogleWorkspaceSyncObjectCreateRequest,
     SyncObjectModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {

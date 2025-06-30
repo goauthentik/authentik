@@ -1,15 +1,12 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-hidden-text-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-hidden-text-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { ascii_letters, digits, randomString } from "#common/utils";
 
 import {
     CurrentBrand,
@@ -17,6 +14,10 @@ import {
     RadiusProvider,
     ValidationError,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 

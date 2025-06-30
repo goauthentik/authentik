@@ -1,19 +1,24 @@
 import "#admin/flows/BoundStagesList";
 import "#admin/flows/FlowDiagram";
 import "#admin/flows/FlowForm";
-import { DesignationToLabel } from "#admin/flows/utils";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionsPage";
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
-import { isResponseErrorLike } from "#common/errors/network";
 import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
-import { AKElement } from "#elements/Base";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { isResponseErrorLike } from "#common/errors/network";
+
+import { AKElement } from "#elements/Base";
+
+import { DesignationToLabel } from "#admin/flows/utils";
+
+import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -23,8 +28,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {

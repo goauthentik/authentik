@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";

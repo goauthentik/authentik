@@ -1,8 +1,8 @@
-import { createMixin } from "@goauthentik/elements/types";
-
-import { Context, consume, createContext } from "@lit/context";
+import { createMixin } from "#elements/types";
 
 import type { Config } from "@goauthentik/api";
+
+import { consume, Context, createContext } from "@lit/context";
 
 export const kAKConfig = Symbol("kAKConfig");
 

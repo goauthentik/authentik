@@ -1,8 +1,8 @@
-import { customElement } from "lit/decorators.js";
-
 import type { Flow } from "@goauthentik/api";
 
-import FlowSearch from "./FlowSearch";
+import { customElement } from "lit/decorators.js";
+
+import FlowSearch from "./FlowSearch.js";
 
 /**
  * @element ak-flow-search

@@ -1,9 +1,12 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/FormStatic";
+
+import { BaseStage } from "#flow/stages/base";
+
+import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -11,8 +14,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/api";
 
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {

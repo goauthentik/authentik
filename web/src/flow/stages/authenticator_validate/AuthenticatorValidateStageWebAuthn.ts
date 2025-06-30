@@ -1,20 +1,22 @@
+import "#elements/EmptyState";
+
 import {
     checkWebAuthnSupport,
     transformAssertionForServer,
     transformCredentialRequestOptions,
-} from "@goauthentik/common/helpers/webauthn";
-import "@goauthentik/elements/EmptyState";
-import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
+} from "#common/helpers/webauthn";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<

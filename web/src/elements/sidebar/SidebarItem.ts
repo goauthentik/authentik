@@ -1,8 +1,8 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
+import { ROUTE_SEPARATOR } from "#common/constants";
 
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";

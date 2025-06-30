@@ -2,8 +2,11 @@
  * @file Prettier configuration for authentik.
  *
  * @import { Config as PrettierConfig } from "prettier";
- * @import { PluginConfig as SortPluginConfig } from "@trivago/prettier-plugin-sort-imports";
- *
+ */
+
+import { importsPlugin } from "./imports.js";
+
+/**
  * @typedef {object} PackageJSONPluginConfig
  * @property {string[]} [packageSortOrder] Custom ordering array.
  */
@@ -11,7 +14,7 @@
 /**
  * authentik Prettier configuration.
  *
- * @type {PrettierConfig & SortPluginConfig & PackageJSONPluginConfig}
+ * @type {PrettierConfig & PackageJSONPluginConfig}
  * @internal
  */
 export const AuthentikPrettierConfig = {
@@ -34,32 +37,8 @@ export const AuthentikPrettierConfig = {
     plugins: [
         // ---
         "prettier-plugin-packagejson",
-        "@trivago/prettier-plugin-sort-imports",
+        importsPlugin(),
     ],
-    importOrder: [
-        // ---
-
-        "^(@goauthentik/|#)common.+",
-        "^(@goauthentik/|#)elements.+",
-        "^(@goauthentik/|#)components.+",
-        "^(@goauthentik/|#)user.+",
-        "^(@goauthentik/|#)admin.+",
-        "^(@goauthentik/|#)flow.+",
-
-        "^#.+",
-        "^@goauthentik.+",
-
-        "<THIRD_PARTY_MODULES>",
-
-        "^(@?)lit(.*)$",
-        "\\.css$",
-        "^@goauthentik/api$",
-        "^[./]",
-    ],
-    importOrderSideEffects: false,
-    importOrderSeparation: true,
-    importOrderSortSpecifiers: true,
-    importOrderParserPlugins: ["typescript", "jsx", "classProperties", "decorators-legacy"],
     overrides: [
         {
             files: "schemas/**/*.json",

@@ -10,9 +10,10 @@
  *   PluginBuild
  * } from "esbuild"
  */
-import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
 /**
  * @typedef {Omit<OnLoadArgs, 'pluginData'> & LoadDataFields} LoadData Data passed to `onload`.

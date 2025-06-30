@@ -1,9 +1,10 @@
-import { me } from "@goauthentik/common/users.js";
-import { isUserRoute } from "@goauthentik/elements/router/utils.js";
-import { deepmerge, deepmergeInto } from "deepmerge-ts";
+import { me } from "#common/users";
 
-import { UiThemeEnum, UserSelf } from "@goauthentik/api";
-import { CurrentBrand } from "@goauthentik/api";
+import { isUserRoute } from "#elements/router/utils";
+
+import { CurrentBrand, UiThemeEnum, UserSelf } from "@goauthentik/api";
+
+import { deepmerge } from "deepmerge-ts";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",

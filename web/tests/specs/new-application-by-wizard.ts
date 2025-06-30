@@ -26,7 +26,7 @@ import {
     simpleSAMLProviderForm,
     simpleSCIMProviderForm,
 } from "./provider-shared-sequences.js";
-import { type TestSequence } from "./shared-sequences";
+import { type TestSequence } from "./shared-sequences.js";
 
 const SUCCESS_MESSAGE = "Your application has been saved";
 

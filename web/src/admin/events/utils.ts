@@ -1,9 +1,10 @@
-import { EventUser, EventWithContext } from "@goauthentik/common/events";
-import { truncate } from "@goauthentik/common/utils";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import { EventUser, EventWithContext } from "#common/events";
+import { truncate } from "#common/utils";
+
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 
 /**
  * Given event with a geographical context, format it into a string for display.

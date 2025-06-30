@@ -1,4 +1,4 @@
-import { css, html } from "lit";
+import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";

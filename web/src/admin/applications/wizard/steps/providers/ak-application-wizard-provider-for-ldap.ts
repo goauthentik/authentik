@@ -1,13 +1,15 @@
+import "#admin/applications/wizard/ak-wizard-title";
+
 import { WithBrandConfig } from "#elements/mixins/branding";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
-import { renderForm } from "@goauthentik/admin/providers/ldap/LDAPProviderFormForm.js";
+
+import { ValidationRecord } from "#admin/applications/wizard/types";
+import { renderForm } from "#admin/providers/ldap/LDAPProviderFormForm";
+
+import type { LDAPProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import type { LDAPProvider } from "@goauthentik/api";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 

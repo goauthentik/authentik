@@ -1,19 +1,20 @@
 import "#admin/rbac/InitialPermissionsForm";
-import { DEFAULT_CONFIG } from "#common/api/config";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import { PaginatedResponse } from "#elements/table/Table";
-import { TableColumn } from "#elements/table/Table";
-import { TablePage } from "#elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 
 import { InitialPermissions, RbacApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {

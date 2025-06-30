@@ -1,4 +1,4 @@
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { bound } from "#elements/decorators/bound";
 
 import { html } from "lit";
 import { classMap } from "lit/directives/class-map.js";

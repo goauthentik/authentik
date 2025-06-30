@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
