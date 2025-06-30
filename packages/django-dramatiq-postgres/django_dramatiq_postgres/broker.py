@@ -6,12 +6,9 @@ from queue import Empty, Queue
 from random import randint
 from typing import Any
 
-import tenacity
 from django.core.exceptions import ImproperlyConfigured
 from django.db import (
     DEFAULT_DB_ALIAS,
-    DatabaseError,
-    InterfaceError,
     OperationalError,
     connections,
     transaction,
@@ -31,7 +28,6 @@ from dramatiq.middleware import (
 )
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
-from psycopg.errors import AdminShutdown
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
@@ -119,21 +115,7 @@ class PostgresBroker(Broker):
             "message": message.encode(),
         }
 
-    @tenacity.retry(
-        retry=tenacity.retry_if_exception_type(
-            (
-                AdminShutdown,
-                InterfaceError,
-                DatabaseError,
-                ConnectionError,
-                OperationalError,
-            )
-        ),
-        reraise=True,
-        wait=tenacity.wait_random_exponential(multiplier=1, max=30),
-        stop=tenacity.stop_after_attempt(10),
-        before_sleep=tenacity.before_sleep_log(logger, logging.INFO, exc_info=True),
-    )
+    @raise_connection_error
     def enqueue(self, message: Message, *, delay: int | None = None) -> Message:
         canonical_queue_name = message.queue_name
         queue_name = canonical_queue_name
