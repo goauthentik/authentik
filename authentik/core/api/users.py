@@ -407,7 +407,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             StrField(User, "path"),
             BoolField(User, "is_active", nullable=True),
             ChoiceSearchField(User, "type"),
-            JSONSearchField(User, "attributes"),
+            JSONSearchField(User, "attributes", suggest_nested=False),
         ]
 
     def get_queryset(self):
