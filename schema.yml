@@ -24864,6 +24864,7 @@ paths:
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_policies_unique_password.uniquepasswordpolicy
+          - authentik_providers_apple_psso.appleplatformssoprovider
           - authentik_providers_google_workspace.googleworkspaceprovider
           - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
@@ -25113,6 +25114,7 @@ paths:
           - authentik_policies_password.passwordpolicy
           - authentik_policies_reputation.reputationpolicy
           - authentik_policies_unique_password.uniquepasswordpolicy
+          - authentik_providers_apple_psso.appleplatformssoprovider
           - authentik_providers_google_workspace.googleworkspaceprovider
           - authentik_providers_google_workspace.googleworkspaceprovidermapping
           - authentik_providers_ldap.ldapprovider
@@ -41216,6 +41218,7 @@ components:
       - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.policies.unique_password
+      - authentik.enterprise.providers.apple_psso
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
       - authentik.enterprise.providers.ssf
@@ -41262,6 +41265,15 @@ components:
       - redirect_uri
       - scope
       - state
+    ApplePlatformSSOProviderRequest:
+      type: object
+      description: ApplePlatformSSOProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     Application:
       type: object
       description: Application Serializer
@@ -48717,6 +48729,7 @@ components:
       - authentik_core.token
       - authentik_enterprise.license
       - authentik_policies_unique_password.uniquepasswordpolicy
+      - authentik_providers_apple_psso.appleplatformssoprovider
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_microsoft_entra.microsoftentraprovider
@@ -56674,6 +56687,7 @@ components:
       type: string
     ProviderModelEnum:
       enum:
+      - authentik_providers_apple_psso.appleplatformssoprovider
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_microsoft_entra.microsoftentraprovider
@@ -61908,6 +61922,7 @@ components:
       - worker_id
     modelRequest:
       oneOf:
+      - $ref: '#/components/schemas/ApplePlatformSSOProviderRequest'
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
       - $ref: '#/components/schemas/LDAPProviderRequest'
       - $ref: '#/components/schemas/MicrosoftEntraProviderRequest'
@@ -61921,6 +61936,7 @@ components:
       discriminator:
         propertyName: provider_model
         mapping:
+          authentik_providers_apple_psso.appleplatformssoprovider: '#/components/schemas/ApplePlatformSSOProviderRequest'
           authentik_providers_google_workspace.googleworkspaceprovider: '#/components/schemas/GoogleWorkspaceProviderRequest'
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_microsoft_entra.microsoftentraprovider: '#/components/schemas/MicrosoftEntraProviderRequest'

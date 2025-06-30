@@ -43,6 +43,7 @@ from authentik.core.models import (
 )
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
+from authentik.enterprise.providers.apple_psso.models import AppleNonce
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderUser,
@@ -135,6 +136,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceConnection,
         DeviceToken,
         StreamEvent,
+        AppleNonce,
     )
 
 

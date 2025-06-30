@@ -1,6 +1,8 @@
 from uuid import uuid4
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, User
 from authentik.crypto.models import CertificateKeyPair
@@ -15,6 +17,7 @@ from authentik.providers.oauth2.models import (
 
 
 class ApplePlatformSSOProvider(OAuth2Provider):
+    """Integrate with Apple Platform SSO"""
 
     def set_oauth_defaults(self):
         """Ensure all OAuth2-related settings are correct"""
@@ -35,6 +38,22 @@ class ApplePlatformSSOProvider(OAuth2Provider):
         self.redirect_uris = [
             RedirectURI(RedirectURIMatchingMode.STRICT, "io.goauthentik.endpoint:/oauth2redirect"),
         ]
+
+    @property
+    def component(self) -> str:
+        return "ak-provider-apple-psso-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.enterprise.providers.apple_psso.api.providers import (
+            ApplePlatformSSOProviderSerializer,
+        )
+
+        return ApplePlatformSSOProviderSerializer
+
+    class Meta:
+        verbose_name = _("Apple Platform SSO Provider")
+        verbose_name_plural = _("Apple Platform SSO Providers")
 
 
 class AppleDevice(models.Model):
