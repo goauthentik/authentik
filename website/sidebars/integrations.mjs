@@ -87,6 +87,7 @@ const items = [
             "services/outline/index",
             "services/paperless-ng/index",
             "services/paperless-ngx/index",
+            "services/papra/index",
             "services/snipe-it/index",
             "services/tandoor/index",
             "services/wiki-js/index",
