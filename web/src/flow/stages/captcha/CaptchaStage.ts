@@ -109,11 +109,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     @property({ type: Boolean })
     embedded = false;
 
-    @property()
-    onTokenChange: TokenHandler = (token: string) => {
-        this.host.submit({ component: "ak-stage-captcha", token });
-    };
-
     @property({ attribute: false })
     refreshedAt = new Date();
 
@@ -122,6 +117,10 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     @state()
     error?: string;
+
+    onTokenChange: TokenHandler = (token: string) => {
+        this.host.submit({ component: "ak-stage-captcha", token });
+    };
 
     handlers: CaptchaHandler[] = [
         {
@@ -151,6 +150,22 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     _captchaDocumentContainer?: HTMLDivElement;
     _listenController = new ListenerController();
 
+    constructor() {
+        super();
+        this.renderGReCaptchaFrame = this.renderGReCaptchaFrame.bind(this);
+        this.executeGReCaptcha = this.executeGReCaptcha.bind(this);
+        this.refreshGReCaptchaFrame = this.refreshGReCaptchaFrame.bind(this);
+        this.refreshGReCaptcha = this.refreshGReCaptcha.bind(this);
+        this.renderHCaptchaFrame = this.renderHCaptchaFrame.bind(this);
+        this.executeHCaptcha = this.executeHCaptcha.bind(this);
+        this.refreshHCaptchaFrame = this.refreshHCaptchaFrame.bind(this);
+        this.refreshHCaptcha = this.refreshHCaptcha.bind(this);
+        this.renderTurnstileFrame = this.renderTurnstileFrame.bind(this);
+        this.executeTurnstile = this.executeTurnstile.bind(this);
+        this.refreshTurnstileFrame = this.refreshTurnstileFrame.bind(this);
+        this.refreshTurnstile = this.refreshTurnstile.bind(this);
+    }
+
     connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("message", this.onIframeMessage, {
@@ -160,30 +175,28 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     disconnectedCallback(): void {
         this._listenController.abort();
-        if (!this.challenge?.interactive) {
-            if (document.body.contains(this.captchaDocumentContainer)) {
-                document.body.removeChild(this.captchaDocumentContainer);
-            }
+        if (this._captchaDocumentContainer && document.body.contains(this._captchaDocumentContainer)) {
+            document.body.removeChild(this._captchaDocumentContainer);
+            this._captchaDocumentContainer = undefined;
         }
+        this._captchaFrame = undefined;
         super.disconnectedCallback();
     }
 
     get captchaDocumentContainer(): HTMLDivElement {
-        if (this._captchaDocumentContainer) {
-            return this._captchaDocumentContainer;
+        if (!this._captchaDocumentContainer) {
+            this._captchaDocumentContainer = document.createElement("div");
+            this._captchaDocumentContainer.id = `ak-captcha-${randomId()}`;
         }
-        this._captchaDocumentContainer = document.createElement("div");
-        this._captchaDocumentContainer.id = `ak-captcha-${randomId()}`;
         return this._captchaDocumentContainer;
     }
 
     get captchaFrame(): HTMLIFrameElement {
-        if (this._captchaFrame) {
-            return this._captchaFrame;
+        if (!this._captchaFrame) {
+            this._captchaFrame = document.createElement("iframe");
+            this._captchaFrame.src = "about:blank";
+            this._captchaFrame.id = `ak-captcha-${randomId()}`;
         }
-        this._captchaFrame = document.createElement("iframe");
-        this._captchaFrame.src = "about:blank";
-        this._captchaFrame.id = `ak-captcha-${randomId()}`;
         return this._captchaFrame;
     }
 
@@ -371,13 +384,29 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     firstUpdated(changedProperties: PropertyValues<this>) {
-        if (!(changedProperties.has("challenge") && this.challenge !== undefined)) {
+        if (!this.challenge) return;
+        this.loadCaptchaScript();
+    }
+
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge) {
+            this.loadCaptchaScript();
+        }
+        if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }
+        console.debug("authentik/stages/captcha: refresh triggered");
+        if (this.challenge.interactive) {
+            this.activeHandler?.refreshInteractive?.apply(this);
+        } else {
+            this.activeHandler?.refresh?.apply(this);
+        }
+    }
 
+    loadCaptchaScript() {
         const attachCaptcha = async () => {
             console.debug("authentik/stages/captcha: script loaded");
-            const handlers = this.handlers.filter(({ name }) => Object.hasOwn(window, name));
+            const handlers = this.handlers.filter(({ name }) => name in window);
             let lastError = undefined;
             let found = false;
             for (const handler of handlers) {
@@ -397,37 +426,34 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     lastError = exc;
                 }
             }
-            this.error = found ? undefined : (lastError ?? "Unspecified error").toString();
+            if (!found) {
+                let errorMsg = "No supported captcha provider found. Please check your configuration or network.";
+                if (lastError) {
+                    if (typeof lastError === "string") {
+                        errorMsg = lastError;
+                    } else if (lastError instanceof Error && lastError.message) {
+                        errorMsg = lastError.message;
+                    } else if (lastError.toString && typeof lastError.toString === "function") {
+                        errorMsg = lastError.toString();
+                    }
+                }
+                this.error = errorMsg;
+            } else {
+                this.error = undefined;
+            }
         };
-
         const scriptElement = document.createElement("script");
         scriptElement.src = this.challenge.jsUrl;
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.dataset.akCaptchaScript = "true";
         scriptElement.onload = attachCaptcha;
-
         document.head
             .querySelectorAll("[data-ak-captcha-script=true]")
             .forEach((el) => el.remove());
-
         document.head.appendChild(scriptElement);
-
         if (!this.challenge.interactive) {
             document.body.appendChild(this.captchaDocumentContainer);
-        }
-    }
-
-    updated(changedProperties: PropertyValues<this>) {
-        if (!changedProperties.has("refreshedAt") || !this.challenge) {
-            return;
-        }
-
-        console.debug("authentik/stages/captcha: refresh triggered");
-        if (this.challenge.interactive) {
-            this.activeHandler?.refreshInteractive.apply(this);
-        } else {
-            this.activeHandler?.refresh.apply(this);
         }
     }
 }
