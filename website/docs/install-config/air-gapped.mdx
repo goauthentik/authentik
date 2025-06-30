@@ -10,10 +10,10 @@ import Tabs from "@theme/Tabs";
 By default, authentik creates outbound connections to the following URLs:
 
 - https://version.goauthentik.io: Periodic update check
-- https://goauthentik.io: Anonymous analytics on startup
-- https://secure.gravatar.com: Avatars for users
-- https://authentik.error-reporting.a7k.io: Error reporting
-- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise :ak-version[2025.8]
+- https://goauthentik.io: Anonymous analytics on startup.
+- https://secure.gravatar.com: Avatars for users.
+- https://authentik.error-reporting.a7k.io: Error reporting.
+- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise :ak-version[2025.8].
 
 ## Configuration
 
@@ -91,16 +91,16 @@ For Helm deployments, ensure access to:
 
 ### Required ports
 
-- **9000/9443**: Default authentik server ports for HTTP/HTTPS access
-- **80/443**: For reverse proxy setups (if using a load balancer or ingress controller)
-- **SMTP ports**: Connectivity to your configured SMTP server (typically 25, 465, or 587)
-- **S3/object storage**: If configured, connectivity to your S3-compatible storage
+- **9000/9443**: Default authentik server ports for HTTP/HTTPS access.
+- **80/443**: For reverse proxy setups (if using a load balancer or ingress controller).
+- **SMTP ports**: Connectivity to your configured SMTP server (typically 25, 465, or 587).
+- **S3/object storage**: If configured, connectivity to your S3-compatible storage.
 
 ### Outpost-specific ports
 
 Each outpost type requires specific ports:
 
-- **LDAP Outpost**: Port 3389 (LDAP) and 6636 (LDAPS)
+- **LDAP Outpost**: Port 3389/6636 (LDAP/LDAPS)
 - **Proxy Outpost**: Port 9000/9443 (HTTP/HTTPS)
 - **RAC Outpost**: Port 9000/9443 (HTTP/HTTPS)
 - **RADIUS Outpost**: Port 1812 (RADIUS Authentication)
