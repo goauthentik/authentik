@@ -65,10 +65,14 @@ To check if your config has been applied correctly, you can run the following co
 
 ## PostgreSQL Settings
 
-- `AUTHENTIK_POSTGRESQL__HOST`: Hostname of your PostgreSQL Server
-- `AUTHENTIK_POSTGRESQL__NAME`: Database name
-- `AUTHENTIK_POSTGRESQL__USER`: Database user
-- `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
+### Basic Connection Settings
+
+- `AUTHENTIK_POSTGRESQL__HOST`: Hostname or IP address of your PostgreSQL server where authentik will store its data.
+- `AUTHENTIK_POSTGRESQL__PORT`: Port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
+- `AUTHENTIK_POSTGRESQL__USER`: Username that authentik will use to authenticate with PostgreSQL.
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
+- `AUTHENTIK_POSTGRESQL__NAME`: Name of the database that authentik will use within PostgreSQL.
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Specifies the PostgreSQL schema name to use for authentik data. If not specified, defaults to `public`. :ak-version[2024.12]
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 - `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer. Deprecated, see below
 - `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool. Deprecated, see below
@@ -88,15 +92,61 @@ The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloa
 
     It is only supported to change this value before the initial start of authentik.
 
-    When setting this value to any non-standard value, the schema must already exist in the database, and the user authentik connects with must have access to it. Additionally the `search_path` of the authentik database must be set to include this schema.
+    When setting this value to any non-standard value, the schema must already exist in the database, and the user authentik connects with must have access to it. Additionally, the `search_path` of the authentik database must be set to include this schema.
 
-### Read replicas
+The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading, which means they can be changed without restarting authentik. However, adding and removing read replicas does not support hot-reloading and requires a restart.
 
-You can configure additional read replica databases that are used only for read operations. To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add additional settings for each replica, replacing the default `0` with a unique value for each additional replica.
+### SSL Configuration
 
-If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica.
+- `AUTHENTIK_POSTGRESQL__SSLMODE`: Controls how strictly SSL certificates are verified when connecting to PostgreSQL. Defaults to `verify-ca`. Possible values include:
 
-The same PostgreSQL settings as described above are used for each read replica.
+    - `disable`: No SSL is used.
+    - `allow`: Use SSL if available, but don't verify.
+    - `prefer`: Try SSL first, but fall back to non-SSL if that fails.
+    - `require`: Use SSL without certificate verification.
+    - `verify-ca`: Verify that the server certificate is signed by a trusted certificate authority.
+    - `verify-full`: Verify both the server certificate and that the hostname matches.
+
+- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: Specifies the file path to the Certificate Authority (CA) certificate used to verify the PostgreSQL server's SSL certificate. Required when using `verify-ca` or `verify-full` modes.
+
+- `AUTHENTIK_POSTGRESQL__SSLCERT`: Specifies the file path to the client certificate that authentik will present to the PostgreSQL server for mutual TLS authentication. Only needed if your PostgreSQL server requires client certificate authentication.
+
+- `AUTHENTIK_POSTGRESQL__SSLKEY`: Specifies the file path to the private key corresponding to the client certificate specified in `AUTHENTIK_POSTGRESQL__SSLCERT`. Used to prove authentik's identity to the PostgreSQL server.
+
+See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-connection-settings) for more details on these settings.
+
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Maximum age of a database connection in seconds. Defaults to `0` (close after each request). Set to a positive value to enable connection persistence or `None` for unlimited persistence. See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for details.
+
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Enables health checks on persistent database connections before they are reused. Defaults to `false`. Helps prevent the use of stale connections that might have been closed by the server.
+
+    See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details on when to enable this feature. Particularly useful when using a connection pooler to detect and recover from stale connections.
+
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but are **not compatible** with:
+
+    - Connection poolers in transaction pooling mode (such as PgBouncer in transaction pooling mode)
+    - Cross-database queries
+    - Some types of database proxies
+
+    **Set this to `true` if you're using PgBouncer in transaction pooling mode or experiencing cursor-related errors.**
+
+    See [Django's documentation on transaction pooling and server-side cursors](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors) for more details.
+
+{/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
+{/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
+{/* - `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Allows passing extra configuration options to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. The value must be a base64-encoded JSON dictionary. Ignored when `AUTHENTIK_POSTGRESQL__USE_POOL` is set to `false`. :ak-version[2025.4] */}
+
+### Deprecated Settings
+
+- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. Deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
+- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. Deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
+
+### Read Replicas
+
+You can configure additional replica databases to distribute database load and improve performance. When replicas are configured, authentik automatically routes query operations between the primary database (for writes) and replica databases (for queries). By default, the primary database won't be used for queries when replicas are available. If you want the primary database to also handle queries, simply add it as a replica too.
+
+To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add settings for each replica by replacing the default `0` with a unique value for each additional replica.
+
+The same PostgreSQL settings as described above are used for each read replica. For example, for the first replica (index `0`):
 
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
@@ -111,21 +161,19 @@ The same PostgreSQL settings as described above are used for each read replica.
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
 
-### Using a PostgreSQL connection pooler (PgBouncer or PgPool)
+### Using a PostgreSQL Connection Pooler
 
-When your PostgreSQL database(s) are running behind a connection pooler, like PgBouncer or PgPool, two settings need to be overridden:
+When your PostgreSQL databases are running behind a connection pooler (like PgBouncer or PgPool), you need to adjust several settings to ensure compatibility:
 
-- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`:
 
-    A connection pooler running in session pool mode (PgBouncer default) can be incompatible with unlimited persistent connections enabled by setting this to `null`: If the connection from the connection pooler to the database server is dropped, the connection pooler will wait for the client to disconnect before releasing the connection; however this will **never** happen as authentik is configured to keep the connection to the connection pooler forever.
+    A connection pooler running in session pool mode (which is the default for PgBouncer) can be incompatible with unlimited persistent connections (`null` setting). When the connection from the pooler to the database is dropped, the pooler will wait for the client to disconnect before releasing the connection; however, this will **never** happen as authentik keeps the connection forever.
 
-    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or update this setting to a value lower than any timeouts that may cause the connection to the database to be dropped (up to `0`).
+    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or set this value lower than any timeouts that may cause the connection to be dropped (up to `0` for no persistent connections).
 
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`:
 
-    Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `true`.
-
-Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS` to perform health checks on persistent database connections before they are reused.
+    When using a connection pooler in transaction pool mode (e.g., PgPool, or PgBouncer in transaction or statement pool mode), you must set this option to `true`. This is required because server-side cursors maintain state across multiple queries, which is incompatible with transaction-based pooling where connections may change between queries.
 
 ## Redis Settings
 
