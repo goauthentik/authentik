@@ -4,6 +4,7 @@ import importlib
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
+from tempfile import gettempdir
 
 import orjson
 from sentry_sdk import set_tag
@@ -411,7 +412,13 @@ DRAMATIQ = {
         ("authentik.tasks.middleware.LoggingMiddleware", {}),
         ("authentik.tasks.middleware.DescriptionMiddleware", {}),
         ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
-        ("authentik.tasks.middleware.MetricsMiddleware", {}),
+        (
+            "authentik.tasks.middleware.MetricsMiddleware",
+            {
+                "multiproc_dir": str(Path(gettempdir()) / "authentik_prometheus_tmp"),
+                "prefix": "authentik",
+            },
+        ),
     ),
     "test": TEST,
 }
