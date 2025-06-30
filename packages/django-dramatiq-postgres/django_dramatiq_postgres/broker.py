@@ -1,5 +1,4 @@
 import functools
-import logging
 import time
 from collections.abc import Iterable
 from queue import Empty, Queue
