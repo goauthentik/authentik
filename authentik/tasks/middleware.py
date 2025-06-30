@@ -1,24 +1,17 @@
-import os
-from pathlib import Path
-from signal import pause
 from socket import gethostname
-from tempfile import gettempdir
 from time import sleep
 from typing import Any
 
 import pglock
-from django.conf import settings
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
 from dramatiq.broker import Broker
-from dramatiq.common import current_millis
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
-from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
 
 from authentik import get_full_version
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
