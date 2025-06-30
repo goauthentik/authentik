@@ -39777,6 +39777,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: remember_device
+        schema:
+          type: string
+      - in: query
         name: remember_me_offset
         schema:
           type: string
@@ -55578,6 +55582,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -61094,6 +61104,11 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
       - meta_model_name
@@ -61135,6 +61150,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - name
     UserLogoutStage:
