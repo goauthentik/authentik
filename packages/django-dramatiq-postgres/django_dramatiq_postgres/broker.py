@@ -130,8 +130,8 @@ class PostgresBroker(Broker):
             )
         ),
         reraise=True,
-        wait=tenacity.wait_random_exponential(multiplier=1, max=30),
-        stop=tenacity.stop_after_attempt(10),
+        wait=tenacity.wait_random_exponential(multiplier=1, max=5),
+        stop=tenacity.stop_after_attempt(3),
         before_sleep=tenacity.before_sleep_log(logger, logging.INFO, exc_info=True),
     )
     def enqueue(self, message: Message, *, delay: int | None = None) -> Message:
