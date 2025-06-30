@@ -48,9 +48,17 @@ def outpost_m2m_changed(sender, instance: Outpost | Provider, action: str, **_):
     if action not in ["post_add", "post_remove", "post_clear"]:
         return
     if isinstance(instance, Outpost):
+        outpost_controller.send_with_options(
+            args=(instance.pk,),
+            rel_obj=instance.service_connection,
+        )
         outpost_send_update.send_with_options(args=(instance.pk,), rel_obj=instance)
     elif isinstance(instance, OutpostModel):
         for outpost in instance.outpost_set.all():
+            outpost_controller.send_with_options(
+                args=(instance.pk,),
+                rel_obj=instance.service_connection,
+            )
             outpost_send_update.send_with_options(args=(outpost.pk,), rel_obj=outpost)
 
 
