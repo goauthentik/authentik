@@ -91,7 +91,7 @@ package = "netlify-plugin-debug-cache"
   to = "/docs/customize/interfaces/admin/customization_admin_ui"
   status = 302
 
-  [[redirects]]
+[[redirects]]
   from = "/docs/customize/interfaces/user/customization"
   to = "/docs/customize/interfaces/user/customization_user_ui"
   status = 302
