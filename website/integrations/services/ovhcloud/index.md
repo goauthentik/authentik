@@ -24,11 +24,9 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **SAML Provider** as the provider type.
     - **Configure the Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-
         - Set the **ACS URL** to:
             - `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region.
             - `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
