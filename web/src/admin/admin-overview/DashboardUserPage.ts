@@ -13,7 +13,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { EventActions } from "@goauthentik/api";
+import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
@@ -46,9 +46,9 @@ export class DashboardUserPage extends AKElement {
                         <ak-aggregate-card header=${msg("Users created per day in the last month")}>
                             <ak-charts-admin-model-per-day
                                 .query=${{
-                                    context__model__app: "authentik_core",
-                                    context__model__model_name: "user",
-                                }}
+                                    contextModelApp: "authentik_core",
+                                    contextModelName: "user",
+                                } as EventsEventsVolumeListRequest}
                                 label=${msg("Users created")}
                             >
                             </ak-charts-admin-model-per-day>

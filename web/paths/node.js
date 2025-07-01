@@ -1,3 +1,9 @@
+/**
+ * @file Paths used by the web package.
+ *
+ * @runtime node
+ */
+import { DistDirectoryName } from "#paths";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,18 +17,17 @@ const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * The root of the web package.
+ *
+ * @runtime node
  */
 export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relativeDirname, ".."));
-
-/**
- * The name of the distribution directory.
- */
-export const DistDirectoryName = "dist";
 
 /**
  * Path to the web package's distribution directory.
  *
  * This is where the built files are located after running the build process.
+ *
+ * @runtime node
  */
 export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectoryName}`} */ (
     resolve(PackageRoot, DistDirectoryName)
@@ -43,6 +48,8 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  * Entry points available for building.
  *
  * @satisfies {Record<string, EntryPointTarget>}
+ *
+ * @runtime node
  */
 export const EntryPoint = /** @type {const} */ ({
     Admin: {
@@ -57,7 +64,7 @@ export const EntryPoint = /** @type {const} */ ({
         in: resolve(PackageRoot, "src", "flow", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "flow", "FlowInterface"),
     },
-    Standalone: {
+    StandaloneAPI: {
         in: resolve(PackageRoot, "src", "standalone", "api-browser/index.entrypoint.ts"),
         out: resolve(DistDirectory, "standalone", "api-browser", "index"),
     },

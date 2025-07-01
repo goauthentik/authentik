@@ -11,18 +11,18 @@
 # Nicola Mersi, 2024
 # tmassimi, 2024
 # Marc Schmitt, 2024
-# albanobattistella <albanobattistella@gmail.com>, 2024
 # Matteo Piccina <altermatte@gmail.com>, 2025
 # Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025
+# albanobattistella <albanobattistella@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-23 09:00+0000\n"
+"POT-Creation-Date: 2025-06-25 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025\n"
+"Last-Translator: albanobattistella <albanobattistella@gmail.com>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -115,6 +115,10 @@ msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Certificato Web utilizzato dal server Web authentik Core."
 
 #: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "Certificati utilizzati per l'autenticazione del client."
+
+#: authentik/brands/models.py
 msgid "Brand"
 msgstr "Brand"
 
@@ -125,10 +129,6 @@ msgstr "Brands"
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "L'utente non ha accesso all'applicazione."
-
-#: authentik/core/api/devices.py
-msgid "Extra description not available"
-msgstr "Descrizione extra non disponibile"
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
@@ -290,15 +290,15 @@ msgid ""
 msgstr ""
 "Collegamento a un utente con indirizzo email identico. Può avere "
 "implicazioni sulla sicurezza quando una fonte non convalida gli indirizzi "
-"e-mail."
+"email."
 
 #: authentik/core/models.py
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
-"Usa l'indirizzo e-mail dell'utente, ma nega l'iscrizione quando l'indirizzo "
-"e-mail esiste già."
+"Usa l'indirizzo email dell'utente, ma nega l'iscrizione quando l'indirizzo "
+"email esiste già."
 
 #: authentik/core/models.py
 msgid ""
@@ -672,6 +672,36 @@ msgstr "Dispositivi di Accesso"
 msgid "Verifying your browser..."
 msgstr "Verifica del tuo browser..."
 
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"Configura le autorità di certificazione per convalidare il certificato. "
+"Questa opzione ha una priorità maggiore rispetto all'opzione "
+"`client_certificate` su `Brand`."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "Fase di TLS reciproca"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "Fasi di TLS reciproche"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr " Permessi di trasmissione dei Certificati per gli avamposti."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr " Il certificato è stato richiesto ma non è stato consegnato."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "Nessun utente trovato per il certificato."
+
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
@@ -802,6 +832,14 @@ msgid ""
 msgstr ""
 "Definisci a quale gruppo di utenti deve essere inviata e mostrata questa "
 "notifica. Se lasciato vuoto, la notifica non verrà inviata."
+
+#: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+"Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento."
+" Se destination_group è configurato, la notifica verrà inviata a entrambi."
 
 #: authentik/events/models.py
 msgid "Notification Rule"
@@ -1018,14 +1056,17 @@ msgid "Starting full provider sync"
 msgstr "Avvio della sincronizzazione completa del provider"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
-msgstr "Sincronizzando pagina {page} degli utenti"
+msgid "Syncing users"
+msgstr "Sincronizzazione degli utenti"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
+msgstr "Sincronizzazione dei gruppi"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
-msgstr "Sincronizzando pagina {page} dei gruppi"
+msgid "Syncing page {page} of {object_type}"
+msgstr "Sincronizzazione della pagina {page} di {object_type}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
@@ -2428,6 +2469,10 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "Considerare gli oggetti corrispondenti a questo filtro come Utenti."
 
 #: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "Attributo che corrisponde al valore di `group_membership_field`."
+
+#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr "Campo che contiene i membri di un gruppo."
 
@@ -2464,6 +2509,14 @@ msgstr ""
 "sistemi come FreeIPA e Active Directory."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+"Elimina gli utenti e i gruppi authentik precedentemente forniti da questa "
+"fonte, ma che ora mancano."
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Sorgente LDAP"
 
@@ -2478,6 +2531,13 @@ msgstr "Mappatura delle proprietà sorgente LDAP"
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
 msgstr "Mappature delle proprietà della sorgente LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+"ID univoco utilizzato per verificare se questo oggetto esiste ancora nella "
+"directory."
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
@@ -2872,6 +2932,11 @@ msgstr "Connessione sorgente SAML di gruppo"
 msgid "Group SAML Source Connections"
 msgstr "Connessioni sorgente SAML di gruppo"
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "Continua su {source_name}"
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "Sorgente SCIM"
@@ -2938,8 +3003,8 @@ msgstr "Fasi di configurazione dell'autenticatore email"
 #: authentik/stages/email/stage.py
 msgid "Exception occurred while rendering E-mail template"
 msgstr ""
-"Eccezione verificatasi durante la visualizzazione del modello di posta "
-"elettronica"
+"Si è verificata un'eccezione durante la visualizzazione del modello di posta"
+" elettronica"
 
 #: authentik/stages/authenticator_email/models.py
 msgid "Email Device"
@@ -2978,7 +3043,7 @@ msgid ""
 "          "
 msgstr ""
 "\n"
-"          Codice MFA via e-mail.\n"
+"          Codice MFA via email.\n"
 "          "
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
@@ -3004,7 +3069,7 @@ msgid ""
 "Email MFA code\n"
 msgstr ""
 "\n"
-"Codice e-mail MFA\n"
+"Codice email MFA\n"
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.txt
 #, python-format
@@ -3269,6 +3334,10 @@ msgstr "Consenso utente"
 msgid "User Consents"
 msgstr "Consensi utente"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr "Token di consenso non valido, viene nuovamente visualizzato il prompt"
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Fase di negazione"
@@ -3284,6 +3353,14 @@ msgstr "Fase fittizia"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "Fasi fittizie"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "Continua per confermare questo indirizzo email."
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr "Il collegamento è già stato utilizzato. Richiedine uno nuovo."
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
@@ -3303,7 +3380,7 @@ msgstr "Fase email"
 
 #: authentik/stages/email/models.py
 msgid "Email Stages"
-msgstr "Fasi Email"
+msgstr "Fasi email"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
@@ -3405,7 +3482,7 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"   Se non hai richiesto una modifica della password, ignora questa e-mail. Il link sopra è valido per %(expires)s.\n"
+"   Se non hai richiesto una modifica della password, ignora questa email. Il link sopra è valido per %(expires)s.\n"
 "    "
 
 #: authentik/stages/email/templates/email/password_reset.txt
@@ -3423,11 +3500,11 @@ msgid ""
 "If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
 "\n"
-"Se non hai richiesto una modifica della password, ignora questa e-mail. Il link sopra è valido per %(expires)s.\n"
+"Se non hai richiesto una modifica della password, ignora questa email. Il link sopra è valido per %(expires)s.\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
-msgstr "e-mail di prova di authentik"
+msgstr "email di prova di authentik"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid ""
@@ -3436,7 +3513,7 @@ msgid ""
 "                    "
 msgstr ""
 "\n"
-"                    Questa è un'e-mail di prova per informarti che hai configurato correttamente le e-mail di authentik.\n"
+"                    Questa è un'email di prova per informarti che hai configurato correttamente le email di authentik.\n"
 "                    "
 
 #: authentik/stages/email/templates/email/setup.txt
@@ -3445,7 +3522,7 @@ msgid ""
 "This is a test email to inform you, that you've successfully configured authentik emails.\n"
 msgstr ""
 "\n"
-"Questa è un'e-mail di prova per informarti che hai configurato correttamente le e-mail di authentik.\n"
+"Questa è un'email di prova per informarti che hai configurato correttamente le email di authentik.\n"
 
 #: authentik/stages/identification/api.py
 msgid "When no user fields are selected, at least one source must be selected"
@@ -3648,7 +3725,7 @@ msgstr ""
 
 #: authentik/stages/prompt/models.py
 msgid "Email: Text field with Email type."
-msgstr "E-mail: Campo di testo con il tipo di e-mail."
+msgstr "Email: Campo di testo con il tipo di email."
 
 #: authentik/stages/prompt/models.py
 msgid ""
@@ -3802,10 +3879,6 @@ msgstr "Fasi di accesso utente"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Nessun utente in attesa di accesso."
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
-msgstr "Accesso effettuato!"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"

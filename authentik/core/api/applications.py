@@ -2,11 +2,9 @@
 
 from collections.abc import Iterator
 from copy import copy
-from datetime import timedelta
 
 from django.core.cache import cache
 from django.db.models import QuerySet
-from django.db.models.functions import ExtractHour
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
@@ -20,7 +18,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
@@ -28,7 +25,6 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
-from authentik.events.models import EventAction
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -321,18 +317,3 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
         return set_file_url(request, app, "meta_icon")
-
-    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
-    @extend_schema(responses={200: CoordinateSerializer(many=True)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
-    def metrics(self, request: Request, slug: str):
-        """Metrics for application logins"""
-        app = self.get_object()
-        return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.AUTHORIZE_APPLICATION,
-                context__authorized_application__pk=app.pk.hex,
-            )
-            # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
-        )

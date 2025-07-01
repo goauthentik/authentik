@@ -1,11 +1,13 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/policies/PolicyBindingForm";
 import { PolicyBindingNotice } from "@goauthentik/admin/policies/PolicyBindingForm";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import "@goauthentik/admin/policies/PolicyWizard";
 import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
@@ -22,12 +24,19 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import {
+    PoliciesApi,
+    PolicyBinding,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
+
+    @property()
+    policyEngineMode: string = "";
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
@@ -178,18 +187,24 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
-                </ak-forms-modal>`,
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesPolicybinding}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Policies bound.")} icon="pf-icon-module">
+            html`<ak-empty-state icon="pf-icon-module"
+                ><span>${msg("No Policies bound.")}</span>
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                 <div slot="primary">
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
@@ -215,7 +230,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
-                      ?showBindingPage=${true}
+                      showBindingPage
                       bindingTarget=${ifDefined(this.target)}
                   ></ak-policy-wizard>`
                 : nothing}
@@ -233,6 +248,23 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
                 </button>
             </ak-forms-modal> `;
+    }
+
+    renderPolicyEngineMode() {
+        const policyEngineMode = policyEngineModes.find(
+            (pem) => pem.value === this.policyEngineMode,
+        );
+        if (policyEngineMode === undefined) {
+            return nothing;
+        }
+        return html`<p>
+            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
+            ${policyEngineMode.description}
+        </p>`;
+    }
+
+    renderToolbarContainer(): TemplateResult {
+        return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }
 

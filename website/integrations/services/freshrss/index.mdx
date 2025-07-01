@@ -27,14 +27,14 @@ To support the integration of FreshRss with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Add two `Strict` redirect URI and set them to <kbd>https://<em>freshrss.company</em>/i/oidc/</kbd> and <kbd>https://<em>freshrss.company:443</em>/i/oidc/</kbd>. If FreshRSS is exposed on a port other than `443`, update the second redirect URI accordingly.
+    - Add two `Strict` redirect URI and set them to `https://freshrss.company/i/oidc/` and `https://freshrss.company:443/i/oidc/`. If FreshRSS is exposed on a port other than `443`, update the second redirect URI accordingly.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -54,7 +54,7 @@ To enable OIDC login with FreshRSS, update your `.env` file to include the follo
 
     ```yaml showLineNumbers
     OIDC_ENABLED=1
-    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<your-application-slug>/.well-known/openid-configuration
+    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
     OIDC_CLIENT_ID=<Your Client ID from authentik<>
     OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
     OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
@@ -63,11 +63,11 @@ To enable OIDC login with FreshRSS, update your `.env` file to include the follo
 
 Once your container or pod is restarted, attempt to login as a user that exists in both FreshRSS and authentik. Go to **Settings** -> **Authentication** and set the authentication method to **HTTP**.
 
+## Configuration verification
+
+To verify that authentik is correctly set up with FreshRSS, log out of FreshRSS and try logging back in using authentik. You should see a new button on the login page for OIDC authentication.
+
 ## Resources
 
 - [FreshRSS documentation for OpenID Connect](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect.html).
 - [FreshRSS documentation for OIDC with authentik](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect-Authentik.html)
-
-## Configuration verification
-
-To verify that authentik is correctly set up with FreshRSS, log out of FreshRSS and try logging back in using authentik. You should see a new button on the login page for OIDC authentication.

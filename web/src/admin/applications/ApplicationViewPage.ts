@@ -99,7 +99,6 @@ export class ApplicationViewPage extends AKElement {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
@@ -113,7 +112,7 @@ export class ApplicationViewPage extends AKElement {
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
@@ -283,7 +282,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
@@ -332,7 +331,10 @@ export class ApplicationViewPage extends AKElement {
                     <div class="pf-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
-                    <ak-bound-policies-list .target=${this.application.pk}>
+                    <ak-bound-policies-list
+                        .target=${this.application.pk}
+                        .policyEngineMode=${this.application.policyEngineMode}
+                    >
                     </ak-bound-policies-list>
                 </div>
             </section>

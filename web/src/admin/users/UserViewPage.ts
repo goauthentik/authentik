@@ -22,11 +22,11 @@ import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
 import { AKElement } from "#elements/Base";
 import "#elements/CodeMirror";
-import { WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "#elements/oauth/UserAccessTokenList";
 import "#elements/oauth/UserRefreshTokenList";
 import "#elements/user/SessionList";
@@ -260,7 +260,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderTabCredentialsToken(user: User): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="userCredentialsTokens" ?vertical=${true}>
+            <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
                 <section
                     slot="page-sessions"
                     data-tab-title="${msg("Sessions")}"
@@ -389,7 +389,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             ${msg("Actions over the last week (per 8 hours)")}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
+                            <ak-charts-user username=${this.user.username}> </ak-charts-user>
                         </div>
                     </div>
                     <div

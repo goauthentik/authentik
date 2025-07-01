@@ -27,16 +27,15 @@ To support the integration of Harbor with authentik, you need to create an appli
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: <kbd>https://<em>harbor.company</em>/c/oidc/callback/</kbd>.
+            - Strict: `https://harbor.company/c/oidc/callback/`.
         - **Signing Key**: select any available signing key.
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
@@ -49,14 +48,13 @@ To support the integration of Harbor with authentik, you need to create an appli
 
 To support the integration of authentik with Harbor, you need to configure OIDC authentication.
 
-1. Login to the Harbor dashboard as an admin.
+1. Log in to the Harbor dashboard as an admin.
 2. Navigate to **Configuration** and select the **Authentication** tab.
 3. In the **Auth Mode** dropdown, select **OIDC** and provide the following required configurations.
-
     - **OIDC Provider Name**: `authentik`
-    - **OIDC Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>harbor</em></kbd>
-    - **OIDC Client ID**: <em>client ID from authentik</em>
-    - **OIDC Client Secret**: <em>client secret from authentik</em>
+    - **OIDC Endpoint**: `https://authentik.company/application/o/harbor`
+    - **OIDC Client ID**: client ID from authentik
+    - **OIDC Client Secret**: client secret from authentik
     - **OIDC Scope**: `openid,profile,email,offline_access`
     - **Username Claim**: `preferred_username`
 

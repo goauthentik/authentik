@@ -1,8 +1,8 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/EmptyState.js";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
@@ -83,7 +83,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                           }}
                       ></ak-wizard-page-type-create>
                   </form>`
-            : html`<ak-empty-state loading header=${msg("Loading")}></ak-empty-state>`;
+            : html`<ak-empty-state default-label></ak-empty-state>`;
     }
 }
 

@@ -11,10 +11,10 @@ import "#admin/admin-overview/charts/SyncStatusChart";
 import { me } from "#common/users";
 import "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
 import "#elements/cards/AggregatePromiseCard";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import "#elements/cards/QuickActionsCard";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { paramURL } from "#elements/router/RouterOutlet";
 import { createReleaseNotesURL } from "@goauthentik/core/version";
 
@@ -64,7 +64,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
+        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
         [msg("Check the logs"), paramURL("/events/log")],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
         [msg("Manage users"), paramURL("/identity/users")],
@@ -85,10 +85,9 @@ export class AdminOverviewPage extends AdminOverviewBase {
     render(): TemplateResult {
         const username = this.user?.user.name || this.user?.user.username;
 
-        return html` <ak-page-header
-                header=${msg(str`Welcome, ${username || ""}.`)}
+        return html`<ak-page-header
+                header=${this.user ? msg(str`Welcome, ${username || ""}.`) : msg("Welcome.")}
                 description=${msg("General system status")}
-                ?hasIcon=${false}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section">

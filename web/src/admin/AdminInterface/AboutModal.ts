@@ -1,9 +1,8 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { globalAK } from "@goauthentik/common/global";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/EmptyState";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 
 import { msg } from "@lit/localize";
@@ -57,7 +56,8 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
     }
 
     renderModal() {
-        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+        let product = this.brandingTitle;
+
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
@@ -73,7 +73,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                     <div class="pf-c-about-modal-box__brand">
                         <img
                             class="pf-c-about-modal-box__brand-image"
-                            src=${this.brand?.brandingFavicon ?? DefaultBrand.brandingFavicon}
+                            src=${this.brandingFavicon}
                             alt="${msg("authentik Logo")}"
                         />
                     </div>

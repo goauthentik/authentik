@@ -42,13 +42,12 @@ To support the integration of Active Directory with authentik, you need to creat
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation & Social login**.
 3. Click **Create** and select **LDAP Source** as the type.
 4. Provide a name, slug, and the following required configurations:
 
     Under **Connection Settings**:
-
     - **Server URI**: `ldap://ad.company`
 
     :::note
@@ -56,18 +55,15 @@ To support the integration of authentik with Active Directory, you will need to 
 
     Multiple servers can be specified by separating URIs with a comma (e.g. `ldap://dc1.ad.company,ldap://dc2.ad.company`). If a DNS entry with multiple records is used, authentik will select a random entry when first connecting.
     :::
-
     - **Bind CN**: `<service account>@ad.company`
     - **Bind Password**: the password of the service account created in the previous section.
     - **Base DN**: the base DN which you want authentik to sync.
 
     Under **LDAP Attribute Mapping**:
-
     - **User Property Mappings**: select all Mappings which start with "authentik default LDAP" and "authentik default Active Directory"
     - **Group Property Mappings**: select "authentik default LDAP Mapping: Name"
 
     Under **Additional Settings** _(optional)_ configurations that may need to be adjusted based on the setup of your domain:
-
     - **Group**: if enabled, all synchronized groups will be given this group as a parent.
     - **Addition User/Group DN**: additional DN which is _prepended_ to your Base DN configured above, to limit the scope of synchronization for Users and Groups.
     - **User object filter**: which objects should be considered users (e.g. `(objectClass=user)`). For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.

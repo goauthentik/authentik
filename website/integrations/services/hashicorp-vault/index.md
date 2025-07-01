@@ -31,14 +31,14 @@ To support the integration of Hashicorp Vault with authentik, you need to create
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Add three `Strict` redirect URIs and set them to <kbd>https://<em>vault.company</em>/ui/vault/auth/oidc/oidc/callback</kbd>, <kbd>https://<em>vault.company</em>/oidc/callback</kbd>, and <kbd>http://localhost:8250/oidc/callback</kbd>.
+    - Add three `Strict` redirect URIs and set them to `https://vault.company/ui/vault/auth/oidc/oidc/callback`, `https://vault.company/oidc/callback`, and `http://localhost:8250/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -53,7 +53,7 @@ Configure the oidc auth method, oidc discovery url is the OpenID Configuration I
 
 ```
 vault write auth/oidc/config \
-         oidc_discovery_url="https://authentik.company/application/o/vault-slug/" \
+         oidc_discovery_url="https://authentik.company/application/o/<application_slug>/" \
          oidc_client_id="Client ID" \
          oidc_client_secret="Client Secret" \
          default_role="reader"
@@ -96,15 +96,15 @@ vault write auth/oidc/role/reader \
       user_claim="sub" \
       policies="reader" \
       groups_claim="groups" \
-      oidc_scopes=[ "openid profile email" ]
+      oidc_scopes="openid,profile,email"
 ```
 
 Add a group.
 
 ```
-vault write identity/group/reader \
+vault write identity/group \
     name="reader" \
-    policies=["reader"] \
+    policies="reader" \
     type="external"
 ```
 

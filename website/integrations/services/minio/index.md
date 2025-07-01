@@ -17,6 +17,10 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::warning
+MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
+:::
+
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -27,7 +31,7 @@ To support the integration of MinIO with authentik, you need to create an applic
 
 ### Create property mappings
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
 
 - **Name**: Set an appropriate name
@@ -60,14 +64,14 @@ You can assign multiple policies to a user by returning a list, and returning `N
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>minio.company</em>/oauth_callback</kbd>.
+    - Set a `Strict` redirect URI to `https://minio.company/oauth_callback`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the **Scope** you just created to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -83,7 +87,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
 
 - Name: MinIO
-- Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
+- Config URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 - Client ID: Your client ID from the previous step
 - Client Secret: Your client secret from the previous step
 - Scopes: `openid, email, profile, minio`
@@ -99,7 +103,7 @@ After that is done, run the following command to configure the OpenID provider:
 
 ```
 ~ mc admin config set myminio identity_openid \
-  config_url="https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration" \
+  config_url="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration" \
   client_id="<client id>" \
   client_secret="<client secret>" \
   scopes="openid,profile,email,minio"

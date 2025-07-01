@@ -62,6 +62,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
@@ -116,6 +117,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
@@ -200,7 +202,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
@@ -245,11 +247,13 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
+      # Needed for checkout
+      contents: read
     needs: ci-core-mark
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
     with:
-      image_name: ghcr.io/goauthentik/dev-server
+      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
       release: false
   pr-comment:
     needs:

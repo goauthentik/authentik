@@ -27,7 +27,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -42,7 +42,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ## Gitea configuration
 
-1. Log in to Gitea as an admin, then click on your profile icon at the top right and select **Site Administration**.
+1. Log in to Gitea as an administrator, then click on your profile icon at the top right and select **Site Administration**.
 2. Select the **Authentication Sources** tab and then click on **Add Authentication Source**.
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the **Redirect URI** in the previous section)
@@ -50,7 +50,7 @@ To support the integration of Gitea with authentik, you need to create an applic
     - **Client ID (Key)**: Enter the Client ID from authentik.
     - **Client Secret**: Enter the Client Secret from authentik.
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.png`
-    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Additional Scopes**: `email profile`
 
 ![](./gitea1.png)
@@ -89,9 +89,8 @@ You can add users to the groups at any point.
 
 #### Create custom property mapping
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-
     - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
     - **Scope name**: `gitea`
     - **Expression**:
@@ -113,10 +112,9 @@ You can add users to the groups at any point.
 
 #### Add the custom property mapping to the Gitea provider
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the **Edit** icon of the Gitea provider.
 3. Under **Advanced protocol settings** > **Scopes** add the following scopes to **Selected Scopes**:
-
     - `authentik default OAuth Mapping: OpenID 'email'`
     - `authentik default OAuth Mapping: OpenID 'profile'`
     - `authentik default OAuth Mapping: OpenID 'openid'`
@@ -158,7 +156,7 @@ gitea:
         provider: "openidConnect"
         key: "<Client ID from authentik>"
         secret: "<Client secret from authentik>"
-        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
+        autoDiscoverUrl: "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
@@ -188,15 +186,15 @@ gitea:
         - name: "authentik"
         provider: "openidConnect"
         existingSecret: gitea-authentik-secret
-        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
+        autoDiscoverUrl: "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
 
-## Resources
-
-- [Official Gitea Documentation](https://docs.gitea.com/)
-
 ## Configuration verification
 
 To verify that authentik is correctly set up with Gitea, log out and then log back in using the **Sign in with authentik** button.
+
+## Resources
+
+- [Official Gitea Documentation](https://docs.gitea.com/)

@@ -6,7 +6,7 @@
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
-import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "#paths/node";
+import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
 import { readBuildIdentifier } from "@goauthentik/core/version/node";
@@ -26,9 +26,8 @@ const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
  */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
-    chunkNames: "[dir]/chunks/[name]-[hash]",
+    chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
-    publicPath: path.join("/static", DistDirectoryName),
     outdir: DistDirectory,
     bundle: true,
     write: true,
