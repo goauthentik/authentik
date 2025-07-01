@@ -10,32 +10,19 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 authentik does not support downgrading. Make sure to back up your database in case you need to revert an upgrade.
 :::
 
-### Preview the release notes
+**Preview the release notes**: Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
 
-Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+**Database backup**: Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method ([Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md)).
 
-### Database backup
+**Upgrade sequence**: Upgrades must follow the sequence of major releases; **do not skip** directly from an older major version to the most recent version.
 
-Before upgrading, make a backup of your PostgreSQL database. You can create a backup by dumping your existing database. For detailed instructions, refer to the relevant guide for your deployment method:
-
-- [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md)
-- [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md)
-
-### Upgrade sequence
-
-Upgrades must follow the sequence of major releases; **do not skip** directly from an older major version to the most recent version.
-
-Always upgrade to the latest minor version (`.x`) within each `major.minor` version before upgrading to the next major version.
-
-For example, if you're currently running `2025.2.1`, upgrade in the following order:
+Always upgrade to the latest minor version (`.x`) within each `major.minor` version before upgrading to the next major version. For example, if you're currently running `2025.2.1`, upgrade in the following order:
 
 1. Upgrade to the latest `2025.2.x`.
 2. Then to the latest `2025.4.x`.
 3. Finally to the latest `2025.6.x`.
 
-### Outposts
-
-The version of the authentik server and all authentik outposts must match. Ensure that all [outposts are upgraded](../add-secure-apps/outposts/upgrading.md) at the same time as the core authentik instance.
+**Outposts**: The version of the authentik server and all authentik outposts must match. Ensure that all [outposts are upgraded](../add-secure-apps/outposts/upgrading.md) at the same time as the core authentik instance.
 
 ## Upgrade authentik
 
