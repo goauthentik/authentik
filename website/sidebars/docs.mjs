@@ -408,9 +408,9 @@ const items = [
                 type: "category",
                 label: "Interfaces",
                 items: [
-                    "customize/interfaces/flow/customization_flow",
-                    "customize/interfaces/user/customization_user_ui",
-                    "customize/interfaces/admin/customization_admin_ui",
+                    "customize/interfaces/flow/index",
+                    "customize/interfaces/user/index",
+                    "customize/interfaces/admin/index",
                 ],
             },
             {

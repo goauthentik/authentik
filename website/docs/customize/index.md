@@ -6,8 +6,8 @@ You can customize the behaviour, look, and available resources for your authenti
 
 - [Policies](./policies/working_with_policies.md)
 - Interfaces:
-    - [Flows](./interfaces/flow/customization_flow.mdx)
-    - [User interface](./interfaces/user/customization_user_ui.mdx)
-    - [Admin interface](./interfaces/admin/customization_admin_ui.mdx)
+    - [Flows](./interfaces/flow)
+    - [User interface](./interfaces/user)
+    - [Admin interface](./interfaces/admin)
 - [Blueprints](./blueprints/index.mdx)
 - [Branding](./branding.md)

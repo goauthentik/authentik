@@ -88,17 +88,17 @@ package = "netlify-plugin-debug-cache"
 
 [[redirects]]
   from = "/docs/customize/interfaces/admin/customization"
-  to = "/docs/customize/interfaces/admin/customization_admin_ui"
+  to = "/docs/customize/interfaces/admin"
   status = 302
 
 [[redirects]]
   from = "/docs/customize/interfaces/user/customization"
-  to = "/docs/customize/interfaces/user/customization_user_ui"
+  to = "/docs/customize/interfaces/user"
   status = 302
 
 [[redirects]]
   from = "/docs/customize/interfaces/flow/customization"
-  to = "/docs/customize/interfaces/flow/customization_flow"
+  to = "/docs/customize/interfaces/flow"
   status = 302
 
 
