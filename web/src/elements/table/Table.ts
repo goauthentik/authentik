@@ -465,8 +465,10 @@ export abstract class Table<T> extends AKElement implements TableLike {
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
+            this.page = 1;
             updateURLParams({
                 search: value,
+                tablePage: 1,
             });
             this.fetch();
         };
