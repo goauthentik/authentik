@@ -6,7 +6,7 @@ You can customize the behaviour, look, and available resources for your authenti
 
 - [Policies](./policies/working_with_policies.md)
 - Interfaces:
-    - [Flows](./interfaces/flow)
+    - [Flow interface](./interfaces/flow)
     - [User interface](./interfaces/user)
     - [Admin interface](./interfaces/admin)
 - [Blueprints](./blueprints/index.mdx)

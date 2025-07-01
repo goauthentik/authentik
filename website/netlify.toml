@@ -101,7 +101,6 @@ package = "netlify-plugin-debug-cache"
   to = "/docs/customize/interfaces/flow"
   status = 302
 
-
 # Migration to new structure with script Sept 2025
 [[redirects]]
   from = "/docs/advanced/tenancy"
