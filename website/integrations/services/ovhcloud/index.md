@@ -22,12 +22,13 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
 
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **SAML Provider** as the provider type.
     - **Configure the Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
+
         - Set the **ACS URL** to:
             - `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region.
             - `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
@@ -41,14 +42,14 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Download metadata file
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your **SAML Metadata** file and it will be required in the next section.
 
 ## OVHcloud Configuration
 
 1. Log in to the OVHcloud Control Panel.
-2. Click your name in the top right corner. In the sidebar that appears, click your name again.
+2. Click your name in the top right corner, and in the sidebar that appears, click your name again.
 3. Select **Identity and Access Management (IAM)** from the left-hand menu.
 4. Click the **Identities** tab to access local users management and switch to the **SSO** tab.
 5. Click on the **SSO Connection** button.
@@ -58,7 +59,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ## Configuration verification
 
-To verify that authentik is properly integrated with OVHcloud, start by logging out of your account. On the OVHcloud login page, enter your [OVH Customer ID/NIC handle](https://help.ovhcloud.com/csm/en-account-create-ovhcloud-account?id=kb_article_view&sysparm_article=KB0043022#what-is-my-nic-handle) followed by `/idp` (e.g., `xx1111-ovh/idp`)—leave the password field blank—and click **Login**.
+To verify that authentik is properly integrated with OVHcloud, first log out of your account. On the OVHcloud login page, enter your [OVH Customer ID/NIC handle](https://help.ovhcloud.com/csm/en-account-create-ovhcloud-account?id=kb_article_view&sysparm_article=KB0043022#what-is-my-nic-handle) followed by `/idp` (e.g., `xx1111-ovh/idp`), leave the password field blank, and click **Login**.
 
 You’ll be redirected to your authentik instance to complete authentication. Once successful, you’ll be logged in to OVHcloud.
 
