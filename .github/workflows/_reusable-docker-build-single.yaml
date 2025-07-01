@@ -38,6 +38,8 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
+      # Needed for checkout
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3.6.0

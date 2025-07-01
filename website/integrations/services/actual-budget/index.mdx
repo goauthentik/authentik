@@ -32,7 +32,6 @@ To support the integration of Actual Budget with authentik, you need to create a
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -82,7 +81,7 @@ You can configure Actual Budget to authenticate users with OpenID Connect by mod
 
 Alternatively, it is possible to configure OpenID Connect via the UI.
 
-      1. Sign in to Actual Budget and select your budget by clicing its name.
+      1. Sign in to Actual Budget and select your budget by clicking its name.
       2. In the top-left corner, click your budget name to open the dropdown and choose **Settings**.
       3. Scroll down and select **Show advanced settings**, then enable **I understand the risks, show experimental features**.
       4. Enable **OpenID authentication method**.
@@ -108,4 +107,4 @@ To confirm that authentik is properly configured with Actual Budget, visit your 
 
 ## Resources
 
-- [Official Actual Budget documentation on OpenID Connect integration](https://actualbudget.org/docs/experimental/oauth-auth/)
+- [Actual Budget docs - Authenticating With an OpenID Provider](https://actualbudget.org/docs/config/oauth-auth/)

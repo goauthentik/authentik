@@ -18,7 +18,7 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTEQuerySet, With
+from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -136,7 +136,7 @@ class AttributesMixin(models.Model):
         return instance, False
 
 
-class GroupQuerySet(CTEQuerySet):
+class GroupQuerySet(QuerySet):
     def with_children_recursive(self):
         """Recursively get all groups that have the current queryset as parents
         or are indirectly related."""
@@ -165,9 +165,9 @@ class GroupQuerySet(CTEQuerySet):
             )
 
         # Build the recursive query, see above
-        cte = With.recursive(make_cte)
+        cte = CTE.recursive(make_cte)
         # Return the result, as a usable queryset for Group.
-        return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
+        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
 
 
 class Group(SerializerModel, AttributesMixin):
@@ -1081,6 +1081,12 @@ class AuthenticatedSession(SerializerModel):
     uuid = models.UUIDField(default=uuid4, unique=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
+
+        return AuthenticatedSessionSerializer
 
     class Meta:
         verbose_name = _("Authenticated Session")

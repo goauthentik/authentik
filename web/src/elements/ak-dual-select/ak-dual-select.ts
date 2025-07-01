@@ -32,8 +32,8 @@ import {
 } from "./types.js";
 
 function localeComparator(a: DualSelectPair, b: DualSelectPair) {
-    const aSortBy = a[2] || a[0];
-    const bSortBy = b[2] || a[0];
+    const aSortBy = String(a[2] || a[0]);
+    const bSortBy = String(b[2] || b[0]);
 
     return aSortBy.localeCompare(bSortBy);
 }

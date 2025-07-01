@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>代表
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -3010,11 +3010,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s91f389c796720a81">
         <source>Load servers</source>
         <target>加载服务器</target>
-        
-      </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>使用 Plex 重新验证身份</target>
         
       </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
@@ -5708,11 +5703,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>已成功创建规则。</target>
         
       </trans-unit>
-      <trans-unit id="sa55ee64c5c51df0f">
-        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-        <target>选择一组用于发送警告的用户。如果未选择组，则此规则被禁用。</target>
-        
-      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>传输</target>
@@ -5746,11 +5736,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>通知规则</target>
-        
-      </trans-unit>
-      <trans-unit id="s5140d157642d7362">
-        <source>None (rule disabled)</source>
-        <target>无（规则已禁用）</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -9247,10 +9232,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No app entitlements created.</source>
   <target>未创建应用程序授权。</target>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-  <target>此应用程序目前没有定义任何应用程序授权。</target>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
   <target>创建授权</target>
@@ -9880,6 +9861,54 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
   <target>生成新的证书密钥对</target>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+  <target>显示字段内容</target>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+  <target>隐藏字段内容</target>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+  <target>使用 Plex 重新验证身份</target>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+  <target>邀请名称必须是一个 Slug：仅允许小写字母、数字和连字符。</target>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+  <target>选择一组用于发送警告的用户。</target>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>如果未选择组，并且“发送通知给事件用户”被禁用，则此规则被禁用。</target>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+  <target>发送通知给事件用户</target>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>启用时，通知不仅会发送给触发事件的用户，还会发送到组中的任何用户。事件用户将总是第一个用户，要只向事件用户发送通知，则需要在通知传输中启用“发送一次”。</target>
+</trans-unit>
+<trans-unit id="sbd65aeeb8a3b9bbc">
+  <source>Maximum registration attempts</source>
+  <target>最大注册尝试次数</target>
+</trans-unit>
+<trans-unit id="s8495753cb15e8d8e">
+  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>允许的最大注册尝试次数。设置为 0 则不限制次数。</target>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+  <target>此应用程序目前没有定义任何应用程序授权。</target>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>以 <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/> 身份通过验证</target>
 </trans-unit>
     </body>
   </file>

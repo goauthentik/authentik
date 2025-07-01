@@ -38,11 +38,9 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
 2. For the **App name** enter `Fleet` and click **Next**.
 
 3. For the **Provider Type** select **SAML**, click **Next**, and use the following values.
-
     - **Name**: `Fleet`
     - **Authorization flow**: Select a flow that suits your organization's requirements.
     - **Protocol settings**:
-
         - **Assertion Consumer Service URL**: `https://fleet.company/api/v1/fleet/sso/callback`
 
             :::info Requiring an End User License Agreement
@@ -63,7 +61,6 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
         - **Audience**: `https://fleet.company`
         - **Advanced protocol settings**:
           (Any fields that can be left as their default values are omitted from the list below).
-
             - **Signing Certificate**: Select a certificate enable **Sign assertions** and **Sign responses**.
             - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
 
@@ -90,7 +87,6 @@ With these prerequisites in place, authentik is now configured to act as a singl
 2. In the **Organization settings** tab, click **Single sign-on options**.
 
 3. Check the box next to **Enable single sign-on** and use the following values:
-
     - **Identity provider name**: `authentik`
     - **Entity ID**: `authentik`
 
@@ -98,7 +94,6 @@ With these prerequisites in place, authentik is now configured to act as a singl
 
         Fleet's SSO configuration form will include two fields: **Metadata URL** and **Metadata**.
         Only one of these fields is required, but you must provide at least one of them.
-
         - If you copied the **Metadata URL** from authentik, paste the URL you copied earlier into the **Metadata URL** field.
 
         - If you downloaded the metadata file from authentik, paste the contents of the XML file into the **Metadata** field.
@@ -115,7 +110,6 @@ To verify that authentik and Fleet are correctly configured, you can test the SS
 
 1. From the authentik Admin interface, navigate to **Directory -> Users** and click **Create**.
 2. Enter the following details for the test user. All other fields can be left as their default values.
-
     - **Name**: `Jessie Lorem`
     - **Email**: `jessie@authentik.company`
 
@@ -124,7 +118,6 @@ To verify that authentik and Fleet are correctly configured, you can test the SS
 4. From the Fleet Admin interface, navigate to **Settings -> Users** and click **Add user**.
 
 5. Enter the following details for the test user. All other fields can be left as their default values.
-
     - **Full Name**: `Jessie Lorem`
     - **Email**: `jessie@authentik.company`
     - **Authentication**: `Single sign-on`

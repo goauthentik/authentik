@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `mautic.company` is the FQDN of the Mautic installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `mautic-provider` is the [SAML provider](../../../docs/add-secure-apps/providers/saml) whose settings will be imported into Mautic.
+- `mautic-provider` is the [SAML provider](/docs/add-secure-apps/providers/saml) whose settings will be imported into Mautic.
 
 :::info
 This documentation lists only the settings that you need to change from their default values.
@@ -39,7 +39,7 @@ To support the integration of Mautic with authentik, you need to create property
 
 ### Create property mappings
 
-Because Mautic requires a first name and last name attribute, create two [SAML provider property mappings](../../../docs/users-sources/sources/property-mappings):
+Because Mautic requires a first name and last name attribute, create two [SAML provider property mappings](/docs/users-sources/sources/property-mappings):
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**:
@@ -172,7 +172,6 @@ grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
 
     This will prompt you to enter values for the certificate which you can choose freely.
     For some, you can use authentik's generated values:
-
     - **Organization Name**: `authentik`
     - **Organizational Unit Name**: `Self-signed`
     - **Common Name**: `Mautic Self-signed Certificate`

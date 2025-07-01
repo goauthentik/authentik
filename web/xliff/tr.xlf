@@ -447,7 +447,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target><x id="0" equiv-text="${event.user.on_behalf_of.username}"/> adına</target>
         
       </trans-unit>
@@ -2989,11 +2989,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
       <trans-unit id="s91f389c796720a81">
         <source>Load servers</source>
         <target>Sunucuları yükle</target>
-        
-      </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Plex ile yeniden kimlik doğrulama</target>
         
       </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
@@ -5675,11 +5670,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Kural başarıyla oluşturuldu.</target>
         
       </trans-unit>
-      <trans-unit id="sa55ee64c5c51df0f">
-        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-        <target>Uyarıların gönderileceği kullanıcı grubunu seçin. Hiçbir grup seçilmezse kural devre dışı bırakılır.</target>
-        
-      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>Aktarıcılar</target>
@@ -5713,11 +5703,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>Bildirim kuralları</target>
-        
-      </trans-unit>
-      <trans-unit id="s5140d157642d7362">
-        <source>None (rule disabled)</source>
-        <target>Hiçbiri (kural devre dışı)</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -9127,9 +9112,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
 </trans-unit>
@@ -9600,6 +9582,42 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="sbd65aeeb8a3b9bbc">
+  <source>Maximum registration attempts</source>
+</trans-unit>
+<trans-unit id="s8495753cb15e8d8e">
+  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
 </trans-unit>
     </body>
   </file>
