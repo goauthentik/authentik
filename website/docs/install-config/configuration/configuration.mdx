@@ -116,10 +116,6 @@ See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable
 
     See [Django's documentation on transaction pooling and server-side cursors](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors) for more details.
 
-{/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
-{/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
-{/* - `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Allows passing extra configuration options to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. The value must be a base64-encoded JSON dictionary. Ignored when `AUTHENTIK_POSTGRESQL__USE_POOL` is set to `false`. :ak-version[2025.4] */}
-
 ### Deprecated Settings
 
 - `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. Deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
