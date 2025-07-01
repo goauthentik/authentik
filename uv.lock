@@ -191,6 +191,7 @@ dependencies = [
     { name = "djangorestframework" },
     { name = "djangorestframework-guardian" },
     { name = "docker" },
+    { name = "drf-nested-routers" },
     { name = "drf-orjson-renderer" },
     { name = "drf-spectacular" },
     { name = "dumb-init" },
@@ -290,6 +291,7 @@ requires-dist = [
     { name = "djangorestframework", git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian", specifier = "==0.4.0" },
     { name = "docker", specifier = "==7.1.0" },
+    { name = "drf-nested-routers", specifier = "==0.94.2" },
     { name = "drf-orjson-renderer", specifier = "==1.7.3" },
     { name = "drf-spectacular", specifier = "==0.28.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
@@ -1188,6 +1190,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c6/07/bb376e2af6f600351fd5f70e93939fcb09869c520a0a79dc415c652d3d58/drf_jsonschema_serializer-3.0.0.tar.gz", hash = "sha256:8a42c6079225f789cd55321897073b576d15db3406d008e92f44febb017a232a", size = 14859, upload-time = "2024-06-26T13:10:02.677Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2f/71/1f500097efe09e04c3be862ab26c997314237a8b0a16dc3e3047fee23f4c/drf_jsonschema_serializer-3.0.0-py3-none-any.whl", hash = "sha256:d0e5cce095a5638b0bb7867aa060ed59ab9eed2f54ba5058dd9b483c9c887ed5", size = 8994, upload-time = "2024-06-26T13:09:59.929Z" },
+]
+
+[[package]]
+name = "drf-nested-routers"
+version = "0.94.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f6/98/2d29f3ecd337255bc2775b9addef347b6fd30ff7b3757649d0e50602ba08/drf_nested_routers-0.94.2.tar.gz", hash = "sha256:aa70923b716dc47cd93b8129b06be6c15706b405cf5f718f59cb8eed01de59cc", size = 22845, upload-time = "2025-05-14T17:03:50.896Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/dc/6bdb857a631fe6558db18a009c93ae16c3ad94fef0b7be7a3aa35c3264fa/drf_nested_routers-0.94.2-py2.py3-none-any.whl", hash = "sha256:74dbdceeae2a32f8668ba0df8e3eeabeb9b1c64d2621d914901ae653e4e3bcff", size = 36367, upload-time = "2025-05-14T17:03:49.257Z" },
 ]
 
 [[package]]

@@ -6,17 +6,14 @@ from django.urls import path
 from django.urls.resolvers import URLPattern
 from django.views.decorators.cache import cache_page
 from drf_spectacular.views import SpectacularAPIView
-from rest_framework import routers
 from structlog.stdlib import get_logger
 
 from authentik.api.v3.config import ConfigView
+from authentik.api.v3.routers import root_router
 from authentik.api.views import APIBrowserView
 from authentik.lib.utils.reflection import get_apps
 
 LOGGER = get_logger()
-
-router = routers.DefaultRouter()
-router.include_format_suffixes = False
 
 _other_urls = []
 for _authentik_app in get_apps():
@@ -38,7 +35,7 @@ for _authentik_app in get_apps():
         if isinstance(url, URLPattern):
             _other_urls.append(url)
         else:
-            router.register(*url)
+            root_router.register(*url)
     LOGGER.debug(
         "Mounted API URLs",
         app_name=_authentik_app.name,
@@ -49,7 +46,7 @@ urlpatterns = (
     [
         path("", APIBrowserView.as_view(), name="schema-browser"),
     ]
-    + router.urls
+    + root_router.urls
     + _other_urls
     + [
         path("root/config/", ConfigView.as_view(), name="config"),
