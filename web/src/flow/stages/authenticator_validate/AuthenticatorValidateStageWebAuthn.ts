@@ -106,13 +106,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         return html`<div class="pf-c-login__main-body">
             <form class="pf-c-form">
                 ${this.renderUserInfo()}
-                <ak-empty-state
-                    ?loading="${this.authenticating}"
-                    header=${this.authenticating
-                        ? msg("Authenticating...")
-                        : this.errorMessage || msg("Loading")}
-                    icon="fa-times"
-                >
+                <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">
+                    <span
+                        >${this.authenticating
+                            ? msg("Authenticating...")
+                            : this.errorMessage || msg("Loading")}</span
+                    >
                 </ak-empty-state>
                 <div class="pf-c-form__group pf-m-action">
                     ${!this.authenticating

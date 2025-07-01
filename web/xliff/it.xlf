@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>Per conto di
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -8966,6 +8966,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applicazioni esterne che utilizzano <x id="0" equiv-text="${this.brandingTitle}"/> come fornitore di identità tramite protocolli come OAuth2 e SAML. Qui sono mostrate tutte le applicazioni, anche quelle a cui non è possibile accedere..</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9230,10 +9231,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
   <target>Non sono stati creati entitlements per l'app.</target>
-</trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-  <target>Al momento, per questa applicazione non è definito alcun entitlement applicativo.</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
@@ -9763,111 +9760,155 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa30ba280de276758">
   <source>When enabled, the SAML response will be signed.</source>
+  <target>Se abilitata, la risposta SAML verrà firmata.</target>
 </trans-unit>
 <trans-unit id="s2c42bb3c6f5420d2">
   <source>Client Certificates</source>
+  <target>Certificati client</target>
 </trans-unit>
 <trans-unit id="s95901716c0629274">
   <source>Available Certificates</source>
+  <target>Certificati disponibili</target>
 </trans-unit>
 <trans-unit id="sdbf6b484fa1436b0">
   <source>Selected Certificates</source>
+  <target>Certificati selezionati</target>
 </trans-unit>
 <trans-unit id="s9300147e327fd8f6">
   <source>Client-certificate/mTLS authentication/enrollment.</source>
+  <target>Autenticazione/registrazione tramite certificato client/mTLS.</target>
 </trans-unit>
 <trans-unit id="sbf990ec848470f5c">
   <source>Certificate optional</source>
+  <target>Certificato facoltativo</target>
 </trans-unit>
 <trans-unit id="s72e2876e9409b9eb">
   <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Se non è stato fornito alcun certificato, questa fase avrà esito positivo e si passerà alla fase successiva.</target>
 </trans-unit>
 <trans-unit id="se07d973901a6e6b9">
   <source>Certificate required</source>
+  <target>Certificato richiesto</target>
 </trans-unit>
 <trans-unit id="s664c47df020ee414">
   <source>If no certificate was provided, this stage will stop flow execution.</source>
+  <target>Se non è stato fornito alcun certificato, questa fase interromperà l'esecuzione del flusso.</target>
 </trans-unit>
 <trans-unit id="sbe9da6dad795aa39">
   <source>Certificate authorities</source>
+  <target>Autorità di certificazione</target>
 </trans-unit>
 <trans-unit id="se3a6aa4f0ab7568e">
   <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+  <target>Configurare l'autorità di certificazione con cui vengono convalidati i certificati client. L'autorità di certificazione può anche essere configurata per un marchio, consentendo di utilizzare autorità di certificazione diverse per domini diversi.</target>
 </trans-unit>
 <trans-unit id="sb8fdf5a09a969870">
   <source>Certificate attribute</source>
+  <target>Attributo del certificato</target>
 </trans-unit>
 <trans-unit id="s8069037a865037c9">
   <source>Configure the attribute of the certificate used to look for a user.</source>
+  <target>Configura l'attributo del certificato utilizzato per cercare un utente.</target>
 </trans-unit>
 <trans-unit id="sc185a8ad96f8eaa2">
   <source>User attribute</source>
+  <target>Attributo utente</target>
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+  <target>Configura l'attributo dell'utente utilizzato per cercare un utente.</target>
 </trans-unit>
 <trans-unit id="s42b57339ad2f3ac7">
   <source>Delete Not Found Objects</source>
+  <target>Elimina oggetti non trovati</target>
 </trans-unit>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>Elimina gli utenti e i gruppi authentik precedentemente forniti da questa fonte, ma che ora mancano.</target>
 </trans-unit>
 <trans-unit id="s0a2cb398b54a6207">
   <source>Welcome.</source>
+  <target>Benvenuto.</target>
 </trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>Campo che contiene i membri di un gruppo. Il valore di questo campo viene confrontato con l'attributo di appartenenza dell'utente.</target>
 </trans-unit>
 <trans-unit id="s6478025f3e0174fa">
   <source>User membership attribute</source>
+  <target>Attributo di appartenenza dell'utente</target>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+  <target>Attributo che corrisponde al valore del campo di appartenenza al gruppo.</target>
 </trans-unit>
 <trans-unit id="sfa6b7b105640e457">
   <source>Additional User DN</source>
+  <target>DN utente aggiuntivo</target>
 </trans-unit>
 <trans-unit id="s04bb32ec9f359507">
   <source>Additional Group DN</source>
+  <target>DN di gruppo aggiuntivo</target>
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+  <target>La modalità del motore di policy attualmente selezionata è <x id="0" equiv-text="${policyEngineMode.label}"/>:</target>
 </trans-unit>
 <trans-unit id="se1d2545eda4b1600">
   <source>Import Existing Certificate-Key Pair</source>
+  <target>Importa coppia certificato-chiave esistente</target>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+  <target>Genera nuova coppia certificato-chiave</target>
 </trans-unit>
 <trans-unit id="sf9686d31d28fcf7d">
   <source>Show field content</source>
+  <target>Mostra il contenuto del campo</target>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+  <target>Nascondi il contenuto del campo</target>
 </trans-unit>
 <trans-unit id="s4f820625804ed29b">
   <source>Re-authenticate with Plex</source>
+  <target>Riautenticare con Plex</target>
 </trans-unit>
 <trans-unit id="s0433d667ea6eec1a">
   <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+  <target>Il nome di un invito deve essere uno slug: sono consentiti solo lettere minuscole, numeri e trattini.</target>
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
+  <target>Selezionare il gruppo di utenti a cui inviare gli avvisi.</target>
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>Se non viene selezionato alcun gruppo e l'opzione "Invia notifica all'utente dell'evento" è disabilitata, la regola è disabilitata.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
+  <target>Invia notifica all'utente dell'evento</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Se abilitata, la notifica verrà inviata all'utente che ha attivato l'evento, oltre a tutti gli utenti del gruppo sopra indicato. L'utente dell'evento sarà sempre il primo a inviare una notifica solo all'utente dell'evento che ha abilitato "Invia una volta" nel trasporto delle notifiche.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
+  <target>Numero massimo di tentativi di registrazione</target>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>Numero massimo di tentativi di registrazione consentiti. Se impostato su 0 tentativi, i tentativi non sono limitati.</target>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+  <target>Questa applicazione al momento non ha eventuali diritti applicativi definiti.</target>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Autenticato come <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
     </body>
   </file>

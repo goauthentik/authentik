@@ -119,7 +119,7 @@ def run_migrations():
         check_args = ["", "check"]
         for label in django_db_config(CONFIG).keys():
             check_args.append(f"--database={label}")
-        if not CONFIG.get_bool("DEBUG"):
+        if not CONFIG.get_bool("debug"):
             check_args.append("--deploy")
         execute_from_command_line(check_args)
     finally:
