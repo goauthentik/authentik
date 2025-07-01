@@ -408,33 +408,9 @@ const items = [
                 type: "category",
                 label: "Interfaces",
                 items: [
-                    {
-                        type: "category",
-                        label: "Flows",
-                        link: {
-                            type: "doc",
-                            id: "customize/interfaces/flow/customization_flow",
-                        },
-                        items: [],
-                    },
-                    {
-                        type: "category",
-                        label: "User interface",
-                        link: {
-                            type: "doc",
-                            id: "customize/interfaces/user/customization_user_ui",
-                        },
-                        items: [],
-                    },
-                    {
-                        type: "category",
-                        label: "Admin interface",
-                        link: {
-                            type: "doc",
-                            id: "customize/interfaces/admin/customization_admin_ui",
-                        },
-                        items: [],
-                    },
+                    "customize/interfaces/flow/customization_flow",
+                    "customize/interfaces/user/customization_user_ui",
+                    "customize/interfaces/admin/customization_admin_ui",
                 ],
             },
             {
