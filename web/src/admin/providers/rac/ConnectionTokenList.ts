@@ -15,6 +15,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
+import { ConnectionToken, ProvidersApi, RACProvider } from "@goauthentik/api";
+
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
     checkbox = true;
@@ -36,9 +38,9 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
-        return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacConnectionTokensList({
             ...(await this.defaultEndpointConfig()),
-            provider: this.provider?.pk,
+            providerPk: this.provider!.pk,
             sessionUser: this.userId,
         });
     }
@@ -55,12 +57,14 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
                 ];
             }}
             .usedBy=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
+                return new ProvidersApi(DEFAULT_CONFIG).providersRacConnectionTokensUsedByList({
+                    providerPk: this.provider!.pk,
                     connectionTokenUuid: item.pk || "",
                 });
             }}
             .delete=${(item: ConnectionToken) => {
-                return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
+                return new ProvidersApi(DEFAULT_CONFIG).providersRacConnectionTokensDestroy({
+                    providerPk: this.provider!.pk,
                     connectionTokenUuid: item.pk || "",
                 });
             }}

@@ -65,11 +65,14 @@ class EndpointSerializer(ModelSerializer):
 class EndpointViewSet(UsedByMixin, ModelViewSet):
     """Endpoint Viewset"""
 
-    queryset = Endpoint.objects.all()
+    queryset = Endpoint.objects.none()
     serializer_class = EndpointSerializer
-    filterset_fields = ["name", "provider"]
+    filterset_fields = ["name"]
     search_fields = ["name", "protocol"]
     ordering = ["name", "protocol"]
+
+    def get_queryset(self):
+        return Endpoint.objects.filter(provider=self.kwargs["provider_pk"])
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""

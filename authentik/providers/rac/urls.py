@@ -2,6 +2,7 @@
 
 from django.urls import path
 
+from authentik.api.v3.routers import NestedRouter
 from authentik.outposts.channels import TokenOutpostMiddleware
 from authentik.providers.rac.api.connection_tokens import ConnectionTokenViewSet
 from authentik.providers.rac.api.endpoints import EndpointViewSet
@@ -38,8 +39,10 @@ websocket_urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("providers/rac", RACProviderViewSet),
+    *NestedRouter()
+    .register("providers/rac", RACProviderViewSet)
+    .nested("provider", "endpoints", EndpointViewSet)
+    .nested("provider", "connection_tokens", ConnectionTokenViewSet)
+    .urls,
     ("propertymappings/provider/rac", RACPropertyMappingViewSet),
-    ("rac/endpoints", EndpointViewSet),
-    ("rac/connection_tokens", ConnectionTokenViewSet),
 ]

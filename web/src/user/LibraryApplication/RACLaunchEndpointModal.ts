@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
 
-import { Application, Endpoint, RacApi } from "@goauthentik/api";
+import { Application, Endpoint, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -31,9 +31,9 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     app?: Application;
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
-        const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
+        const endpoints = await new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsList({
             ...(await this.defaultEndpointConfig()),
-            provider: this.app?.provider || 0,
+            providerPk: this.app?.provider || 0,
         });
         if (this.open && endpoints.pagination.count === 1) {
             this.clickHandler(endpoints.results[0]);

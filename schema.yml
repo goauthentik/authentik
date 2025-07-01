@@ -22137,6 +22137,581 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/rac/{provider_pk}/connection_tokens/:
+    get:
+      operationId: providers_rac_connection_tokens_list
+      description: ConnectionToken Viewset
+      parameters:
+      - in: query
+        name: endpoint
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: session__user
+        schema:
+          type: integer
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedConnectionTokenList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{provider_pk}/connection_tokens/{connection_token_uuid}/:
+    get:
+      operationId: providers_rac_connection_tokens_retrieve
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Connection token.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_rac_connection_tokens_update
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Connection token.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectionTokenRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_rac_connection_tokens_partial_update
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Connection token.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConnectionTokenRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionToken'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_rac_connection_tokens_destroy
+      description: ConnectionToken Viewset
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Connection token.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{provider_pk}/connection_tokens/{connection_token_uuid}/used_by/:
+    get:
+      operationId: providers_rac_connection_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: connection_token_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Connection token.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{provider_pk}/endpoints/:
+    get:
+      operationId: providers_rac_endpoints_list
+      description: List accessible endpoints
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: search
+        schema:
+          type: string
+      - in: query
+        name: superuser_full_list
+        schema:
+          type: boolean
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEndpointList'
+          description: ''
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_rac_endpoints_create
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{provider_pk}/endpoints/{pbm_uuid}/:
+    get:
+      operationId: providers_rac_endpoints_retrieve
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_rac_endpoints_update
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_rac_endpoints_partial_update
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEndpointRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Endpoint'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_rac_endpoints_destroy
+      description: Endpoint Viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/rac/{provider_pk}/endpoints/{pbm_uuid}/used_by/:
+    get:
+      operationId: providers_rac_endpoints_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this RAC Endpoint.
+        required: true
+      - in: path
+        name: provider_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/radius/:
     get:
       operationId: providers_radius_list
@@ -23916,523 +24491,6 @@ paths:
         required: true
       tags:
       - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/connection_tokens/:
-    get:
-      operationId: rac_connection_tokens_list
-      description: ConnectionToken Viewset
-      parameters:
-      - in: query
-        name: endpoint
-        schema:
-          type: string
-          format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: provider
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: session__user
-        schema:
-          type: integer
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedConnectionTokenList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/connection_tokens/{connection_token_uuid}/:
-    get:
-      operationId: rac_connection_tokens_retrieve
-      description: ConnectionToken Viewset
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionToken'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: rac_connection_tokens_update
-      description: ConnectionToken Viewset
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ConnectionTokenRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionToken'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: rac_connection_tokens_partial_update
-      description: ConnectionToken Viewset
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedConnectionTokenRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ConnectionToken'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: rac_connection_tokens_destroy
-      description: ConnectionToken Viewset
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/connection_tokens/{connection_token_uuid}/used_by/:
-    get:
-      operationId: rac_connection_tokens_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: connection_token_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Connection token.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/endpoints/:
-    get:
-      operationId: rac_endpoints_list
-      description: List accessible endpoints
-      parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: provider
-        schema:
-          type: integer
-      - in: query
-        name: search
-        schema:
-          type: string
-      - in: query
-        name: superuser_full_list
-        schema:
-          type: boolean
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEndpointList'
-          description: ''
-        '400':
-          description: Bad request
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: rac_endpoints_create
-      description: Endpoint Viewset
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/endpoints/{pbm_uuid}/:
-    get:
-      operationId: rac_endpoints_retrieve
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: rac_endpoints_update
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EndpointRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: rac_endpoints_partial_update
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEndpointRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Endpoint'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: rac_endpoints_destroy
-      description: Endpoint Viewset
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /rac/endpoints/{pbm_uuid}/used_by/:
-    get:
-      operationId: rac_endpoints_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this RAC Endpoint.
-        required: true
-      tags:
-      - rac
       security:
       - authentik: []
       responses:
