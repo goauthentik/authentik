@@ -86,7 +86,6 @@ The PostgreSQL settings `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__POR
 ### SSL Configuration
 
 - `AUTHENTIK_POSTGRESQL__SSLMODE`: Controls how strictly SSL certificates are verified when connecting to PostgreSQL. Defaults to `verify-ca`. Possible values include:
-
     - `disable`: No SSL is used.
     - `allow`: Use SSL if available, but don't verify.
     - `prefer`: Try SSL first, but fall back to non-SSL if that fails.
@@ -109,7 +108,6 @@ See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable
     See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details on when to enable this feature. Particularly useful when using a connection pooler to detect and recover from stale connections.
 
 - `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but are **not compatible** with:
-
     - Connection poolers in transaction pooling mode (such as PgBouncer in transaction pooling mode)
     - Cross-database queries
     - Some types of database proxies
@@ -346,7 +344,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
 - `AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE`
 
     Placeholders:
-
     - `%(type)s`: Outpost type; proxy, ldap, etc
     - `%(version)s`: Current version; 2021.4.1
     - `%(build_hash)s`: Build hash if you're running a beta version
@@ -358,7 +355,6 @@ Disable the inbuilt update-checker. Defaults to `false`.
     Configure the automatic discovery of integrations. Defaults to `true`.
 
     By default, the following is discovered:
-
     - Kubernetes in-cluster config
     - Kubeconfig
     - Existence of a docker socket
