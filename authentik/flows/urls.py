@@ -2,6 +2,7 @@
 
 from django.urls import path
 
+from authentik.api.v3.routers import NestedRouter
 from authentik.flows.api.bindings import FlowStageBindingViewSet
 from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
@@ -34,8 +35,10 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("flows/instances", FlowViewSet),
-    ("flows/bindings", FlowStageBindingViewSet),
+    *NestedRouter()
+    .register("flows/instances", FlowViewSet)
+    .nested("target_", "bindings", FlowStageBindingViewSet)
+    .urls,
     ("stages/all", StageViewSet),
     path(
         "flows/executor/<slug:flow_slug>/",

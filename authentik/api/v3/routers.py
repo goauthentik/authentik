@@ -7,6 +7,9 @@ class DefaultRouter(UpstreamDefaultRouter):
     include_format_suffixes = False
 
 
+class NestedDefaultRouter(NestedMixin, DefaultRouter): ...
+
+
 class NestedRouter(DefaultRouter):
 
     def __init__(self, *args, **kwargs):
@@ -42,26 +45,6 @@ class NestedRouter(DefaultRouter):
                 continue
             urls.extend(nested.inner.urls)
         return urls
-
-
-class NestedDefaultRouter(NestedMixin, DefaultRouter):
-    ...
-    # def __init__(self, *args, **kwargs):
-    #     self.args = args
-    #     self.kwargs = kwargs
-    #     self.routes = []
-
-    # def register(self, *args, **kwargs):
-    #     self.routes.append((args, kwargs))
-
-    # @property
-    # def urls(self):
-    #     class r(NestedMixin, DefaultRouter):
-    #         ...
-    #     router = r(*self.args, **self.kwargs)
-    #     for route_args, route_kwrags in self.routes:
-    #         router.register(*route_args, **route_kwrags)
-    #     return router
 
 
 root_router = DefaultRouter()

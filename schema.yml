@@ -8529,330 +8529,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /flows/bindings/:
-    get:
-      operationId: flows_bindings_list
-      description: FlowStageBinding Viewset
-      parameters:
-      - in: query
-        name: evaluate_on_plan
-        schema:
-          type: boolean
-      - in: query
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: invalid_response_action
-        schema:
-          type: string
-          enum:
-          - restart
-          - restart_with_context
-          - retry
-        description: |+
-          Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-
-      - in: query
-        name: order
-        schema:
-          type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: policies
-        schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-        explode: true
-        style: form
-      - in: query
-        name: policy_engine_mode
-        schema:
-          type: string
-          enum:
-          - all
-          - any
-      - in: query
-        name: re_evaluate_policies
-        schema:
-          type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: stage
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: target
-        schema:
-          type: string
-          format: uuid
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedFlowStageBindingList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: flows_bindings_create
-      description: FlowStageBinding Viewset
-      tags:
-      - flows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowStageBinding'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /flows/bindings/{fsb_uuid}/:
-    get:
-      operationId: flows_bindings_retrieve
-      description: FlowStageBinding Viewset
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowStageBinding'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: flows_bindings_update
-      description: FlowStageBinding Viewset
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FlowStageBindingRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowStageBinding'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: flows_bindings_partial_update
-      description: FlowStageBinding Viewset
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlowStageBinding'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: flows_bindings_destroy
-      description: FlowStageBinding Viewset
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /flows/bindings/{fsb_uuid}/used_by/:
-    get:
-      operationId: flows_bindings_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: fsb_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Flow Stage Binding.
-        required: true
-      tags:
-      - flows
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /flows/executor/{flow_slug}/:
     get:
       operationId: flows_executor_get
@@ -9400,6 +9076,373 @@ paths:
       parameters:
       - in: path
         name: slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /flows/instances/{target__slug}/bindings/:
+    get:
+      operationId: flows_instances_bindings_list
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: query
+        name: evaluate_on_plan
+        schema:
+          type: boolean
+      - in: query
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: invalid_response_action
+        schema:
+          type: string
+          enum:
+          - restart
+          - restart_with_context
+          - retry
+        description: |+
+          Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+
+      - in: query
+        name: order
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: policies
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: policy_engine_mode
+        schema:
+          type: string
+          enum:
+          - all
+          - any
+      - in: query
+        name: re_evaluate_policies
+        schema:
+          type: boolean
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: stage
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedFlowStageBindingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: flows_instances_bindings_create
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowStageBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowStageBinding'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /flows/instances/{target__slug}/bindings/{fsb_uuid}/:
+    get:
+      operationId: flows_instances_bindings_retrieve
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowStageBinding'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: flows_instances_bindings_update
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowStageBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowStageBinding'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: flows_instances_bindings_partial_update
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFlowStageBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowStageBinding'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: flows_instances_bindings_destroy
+      description: FlowStageBinding Viewset
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      - in: path
+        name: target__slug
+        schema:
+          type: string
+          description: Visible in the URL.
+        required: true
+      tags:
+      - flows
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /flows/instances/{target__slug}/bindings/{fsb_uuid}/used_by/:
+    get:
+      operationId: flows_instances_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: fsb_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Flow Stage Binding.
+        required: true
+      - in: path
+        name: target__slug
         schema:
           type: string
           description: Visible in the URL.
