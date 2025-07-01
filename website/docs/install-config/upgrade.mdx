@@ -23,15 +23,15 @@ Before upgrading, make a backup of your PostgreSQL database. You can create a ba
 
 ### Upgrade sequence
 
-Upgrades must follow the sequence of major releases and utilise the most recent minor release; **do not skip** directly from an older major version to the most recent version.
+Upgrades must follow the sequence of major releases; **do not skip** directly from an older major version to the most recent version.
+
+Always upgrade to the latest minor version (`.x`) within each `major.minor` version before upgrading to the next major version.
 
 For example, if you're currently running `2025.2.1`, upgrade in the following order:
 
 1. Upgrade to the latest `2025.2.x`.
 2. Then to the latest `2025.4.x`.
 3. Finally to the latest `2025.6.x`.
-
-Always use the latest patch version (`.x`) within each `major.minor` version before proceeding to the next major version.
 
 ### Outposts
 
