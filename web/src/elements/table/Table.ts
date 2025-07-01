@@ -478,8 +478,10 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
+            this.page = 1;
             updateURLParams({
                 search: value,
+                tablePage: 1,
             });
             this.fetch();
         };

@@ -144,6 +144,7 @@ const items = [
             "services/gravity/index",
             "services/globalprotect/index",
             "services/netbird/index",
+            "services/omada-controller/index",
             "services/opnsense/index",
             "services/pangolin/index",
             "services/pfsense/index",

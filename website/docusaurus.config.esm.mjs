@@ -131,6 +131,10 @@ const config = createDocusaurusConfig({
                         ],
                     ],
                 },
+                gtag: {
+                    trackingID: ["G-9MVR9WZFZH"],
+                    anonymizeIP: true,
+                },
                 theme: {
                     customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
                 },
