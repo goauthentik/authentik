@@ -1,6 +1,6 @@
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -31,10 +31,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     }
 
     renderPhoneNumber(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -76,16 +73,11 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+                </ak-flow-card>`;
     }
 
     renderCode(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -129,15 +121,10 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();
         }

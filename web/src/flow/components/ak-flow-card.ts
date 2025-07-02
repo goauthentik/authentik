@@ -67,7 +67,9 @@ export class FlowCard extends AKElement {
                 <slot></slot>
             </div>
             <footer class="pf-c-login__main-footer">
-                <slot name="footer"></slot>
+                <slot name="footer">
+                    <ul class="pf-c-login__main-footer-links"></ul>
+                </slot>
                 <slot name="footer-band"></slot>
             </footer>`;
     }

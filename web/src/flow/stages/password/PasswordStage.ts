@@ -1,6 +1,6 @@
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
@@ -32,13 +32,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -73,11 +67,13 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         prefill=${PasswordManagerPrefill.password ?? ""}
                     ></ak-flow-input-password>
 
-                    ${this.challenge.recoveryUrl
-                        ? html`<a href="${this.challenge.recoveryUrl}">
-                              ${msg("Forgot password?")}</a
-                          >`
-                        : ""}
+                    ${
+                        this.challenge.recoveryUrl
+                            ? html`<a href="${this.challenge.recoveryUrl}">
+                                  ${msg("Forgot password?")}</a
+                              >`
+                            : ""
+                    }
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
@@ -86,9 +82,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 }
 

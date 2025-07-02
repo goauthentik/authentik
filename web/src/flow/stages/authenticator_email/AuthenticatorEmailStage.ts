@@ -1,6 +1,6 @@
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -31,10 +31,7 @@ export class AuthenticatorEmailStage extends BaseStage<
     }
 
     renderEmailInput(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -76,16 +73,11 @@ export class AuthenticatorEmailStage extends BaseStage<
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 
     renderEmailOTPInput(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"
@@ -131,37 +123,13 @@ export class AuthenticatorEmailStage extends BaseStage<
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 
     render(): TemplateResult {
-        console.debug(
-            "authentik/stages/authenticator_email:",
-            this.challenge ? this.challenge.emailRequired : undefined,
-        );
-
-        if (!this.challenge) {
-            console.debug(
-                "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without challenge",
-            );
-
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
         if (this.challenge.emailRequired) {
-            console.debug(
-                "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called with challenge",
-                this.challenge,
-            );
-
             return this.renderEmailInput();
         }
-        console.debug(
-            "authentik/stages/authenticator_email: AuthenticatorEmailStage.render() called without emailRequired challenge",
-            this.challenge,
-        );
-
         return this.renderEmailOTPInput();
     }
 }

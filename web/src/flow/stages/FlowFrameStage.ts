@@ -1,5 +1,5 @@
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -20,30 +20,24 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html` <header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                ${this.challenge.loadingOverlay
-                    ? html`<ak-empty-state loading
-                          >${this.challenge.loadingText
-                              ? html`<span>${this.challenge.loadingText}}</span>`
-                              : nothing}
-                      </ak-empty-state>`
-                    : nothing}
+        return html` <ak-flow-card .challenge=${this.challenge}>
+                ${
+                    this.challenge.loadingOverlay
+                        ? html`<ak-empty-state loading
+                              >${this.challenge.loadingText
+                                  ? html`<span>${this.challenge.loadingText}}</span>`
+                                  : nothing}
+                          </ak-empty-state>`
+                        : nothing
+                }
                 <iframe
-                    style=${this.challenge.loadingOverlay
-                        ? "width:0;height:0;position:absolute;"
-                        : ""}
+                    style=${
+                        this.challenge.loadingOverlay ? "width:0;height:0;position:absolute;" : ""
+                    }
                     src=${this.challenge.url}
                 ></iframe>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 }
 
