@@ -47,6 +47,22 @@ services:
             AUTHENTIK_TOKEN: token-generated-by-authentik
 ```
 
+### RAC outpost
+
+```yaml
+services:
+    rac_outpost:
+        image: ghcr.io/goauthentik/rac
+        # Optionally specify which networks the container should be
+        # might be needed to reach the core authentik server
+        # networks:
+        #   - foo
+        environment:
+            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_INSECURE: "false"
+            AUTHENTIK_TOKEN: token-generated-by-authentik
+```
+
 ### RADIUS outpost
 
 ```yaml
