@@ -9,7 +9,7 @@ dependencies = [
     "celery==5.5.3",
     "channels==4.2.2",
     "channels-redis==4.2.1",
-    "cryptography==45.0.4",
+    "cryptography==45.0.5",
     "dacite==1.9.2",
     "deepmerge==2.0",
     "defusedxml==0.7.1",
