@@ -2,7 +2,7 @@
 title: Transports
 ---
 
-To receive notifications about events, you will need to [create](#create-a-transport) a transport object, then create a notification rule and a policy. For details refer to [Workflow overview](./notifications.md#workflow-overview).
+To receive notifications about events, you must first [create a transport](#create-a-transport), then define a notification rule and a policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
 
 ## Transport modes
 
@@ -21,7 +21,7 @@ This transport will manifest the notification within the authentik user interfac
 
 Select this transport to send event notifications to an email address. Note that by default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
 
-To edit an email address, follow the same instructions as above, those for configuring the email during installation.
+To edit an email address, follow the same instructions as above for configuring the global email during the installation process.
 
 ### Webhook (generic)
 
@@ -42,7 +42,7 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
-Starting in 2021.9, you can also select a Notification mapping. This allows you to freely configure the request's payload. For example:
+You can also select a Notification mapping. This allows you to freely configure the request's payload. For example:
 
 ```python
 return {

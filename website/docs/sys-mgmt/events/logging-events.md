@@ -2,30 +2,32 @@
 title: Logging events
 ---
 
-Logs are an important tool for system diagnoses, event auditing, user management, reports, and so much more. Detailed information about events are captured, including the IP address of the client that triggered the event, the user, the date and timestamp, and the exact action made.
+Logs are a vital tool for system diagnostics, event auditing, user management, reporting, and more. They capture detailed information about each event, including the client's IP address, the user involved, the date and time, and the specific action taken.
 
-Event logging in authentik is highly configurable; you can define the [retention period](./index.md#event-retention-and-forwarding) for storing and displaying events, configure which exact events should trigger a [notification](./notifications.md), and view low-level details about when and where the event happened.
+Event logging in authentik is highly configurable. You can set the [retention period](./index.md#event-retention-and-forwarding) for storing and displaying events, specify which events should trigger a [notification](./notifications.md), and access low-level details about when and where each event occurred.
 
 ### Troubleshooting with event logs
 
-For details about troubleshooting using logs, including setting the log level (info, warning, etc.), enabling `trace` mode, viewing past logs, and streaming logs in real-time, refer to [Capturing logs in authentik](../../troubleshooting/logs.mdx).
+For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing logs in authentik](../../troubleshooting/logs.mdx).
 
 ## Enhanced audit logging (Enterprise)
 
-In the enterprise version, each Event details page in the UI, details about each event are abstracted and displayed in an easy-to-access table, and for any event that involves an object being created or modified, the code `diffs` are displayed as well. This allows you to quickly see the previous and new configuration settings.
+In the enterprise version, two enhancements make reading the logs even easier:
 
-For example, say an authentik administraotr updates a user's email address; the old email address and the new one are shown when you drill down in that event's details.
+- the Event details page in the user interface presents abstracted and easily accessible information about each event in an easy-to-access table.
+
+- for any event that involves the creation or modification of an object, the corresponding code differences are displayed, allowing for comparison of the previous and new configuration settings or values. For example, if an authentik administrator updates a user's email address, both the old and new email addresses are displayed in the event's detailed view. (In the open source version, event details only show that a change was made and which application and model was involved.)
 
 ![](./events-diffs.png)
 
-Areas of the authentik UI where you can view these audits details are:
+You can view audit details in the following areas of the authentik Admin interface:
 
-- **Admin interface > Dashboards > Overview**: In the **Recent events** section, click the name of an event to view details.
+- **Admin interface > Dashboards > Overview**: In the **Recent events** section, click an event name to view its details.
 
-- **Admin interface > Events > Logs**: In the list of events, click the arrow toggle beside the name of the even that you want to view details for.
+- **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
 ## Viewing events in maps and charts (Enterprise)
 
-With the enterprise version, you can view recent events on both a world map view with pinpoints of where events occurred and also as a color-coded chart displaying type of event and volume of each type.
+With the enterprise version, you can view recent events on both a world map view with pinpoints indicating where each event occurred and also a color-coded chart that highlights event types and volume.
 
 ![](./event-map-chart.png)
