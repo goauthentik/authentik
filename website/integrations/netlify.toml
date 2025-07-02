@@ -1,0 +1,30 @@
+[[plugins]]
+  package = "netlify-plugin-cache"
+
+[plugins.inputs]
+  paths = [".docusaurus", ".cache", 'node_modules/.cache']
+
+[[plugins]]
+  package = "netlify-plugin-debug-cache"
+
+[build]
+  base    = "docs"
+  package = "integrations"
+  command = "npm run build -w integrations"
+  publish = "integrations/build"
+
+[dev]
+  command    = "npm start"
+  targetPort = 3000
+  publish    = "integrations/build"
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.dev.environment]
+  NODE_ENV = "development"
+
+[[headers]]
+  for = "/*"
+[headers.values]
+  X-Frame-Options = "DENY"

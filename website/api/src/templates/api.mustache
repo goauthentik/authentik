@@ -1,0 +1,25 @@
+---
+id: {{{id}}}
+title: "{{{title}}}"
+description: "{{{frontMatter.description}}}"
+{{^api}}
+sidebar_label: Introduction
+sidebar_position: 0
+{{/api}}
+hide_title: true
+{{#api}}
+hide_table_of_contents: true
+{{/api}}
+{{#json}}
+api: true
+{{/json}}
+{{#api.method}}
+sidebar_class_name: "{{{api.method}}} api-method"
+{{/api.method}}
+{{#infoPath}}
+info_path: {{{infoPath}}}
+{{/infoPath}}
+hide_send_button: true
+---
+
+{{{markdown}}}

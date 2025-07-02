@@ -1,8 +1,8 @@
-import { useMDXModule } from "@goauthentik/elements/ak-mdx/MDXModuleContext";
+import { useMDXModule } from "#elements/ak-mdx/MDXModuleContext";
 import { resolve } from "node:path";
-import React, { memo } from "react";
+import React from "react";
 
-const DOCS_DOMAIN = "https://goauthentik.io";
+const DOCS_DOMAIN = "https://docs.goauthentik.io";
 
 /**
  * A custom anchor element that applies special behavior for MDX content.

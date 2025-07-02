@@ -1,17 +1,11 @@
-import { DefaultIgnorePatterns, createESLintPackageConfig } from "@goauthentik/eslint-config";
+import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
 
-// @ts-check
-
-/**
- * ESLint configuration for authentik's monorepo.
- */
-const ESLintConfig = createESLintPackageConfig({
+export default createESLintPackageConfig({
     ignorePatterns: [
         // ---
         ...DefaultIgnorePatterns,
-        ".docusaurus/",
-        "./build",
+        "**/.docusaurus/",
+        "**/build",
+        "**/reference",
     ],
 });
-
-export default ESLintConfig;

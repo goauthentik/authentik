@@ -2,6 +2,8 @@
 /node_modules
 
 # Production
+/api/build
+/integrations/build
 /build
 /out
 /help
@@ -24,7 +26,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-static/docker-compose.yml
-static/schema.yml
-static/releases.gen.json
-docs/developer-docs/api/reference/**
+**/static/docker-compose.yml
+**/static/schema.yml
+**/static/releases.gen.json
+api/reference
+!integrations/**/media
