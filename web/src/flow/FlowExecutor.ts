@@ -304,7 +304,10 @@ export class FlowExecutor
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state loading default-label> </ak-empty-state>`;
+            return html`<ak-empty-state loading default-label></ak-empty-state>
+                <footer class="pf-c-login__main-footer">
+                    <ul class="pf-c-login__main-footer-links"></ul>
+                </footer>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
