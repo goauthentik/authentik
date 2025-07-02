@@ -305,7 +305,7 @@ export class FlowExecutor
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-flow-card></ak-flow-card>`;
+            return html`<ak-flow-card loading></ak-flow-card>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":

@@ -70,15 +70,13 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (!url.protocol.startsWith("http")) {
-            return html`<ak-flow-card .challenge=${this.challenge}
-                ><ak-empty-state icon="fas fa-check"
+            return html`<ak-flow-card .challenge=${this.challenge}>
+                <ak-empty-state icon="fas fa-check"
                     ><span>${msg("You may close this page now.")}</span>
-                </ak-empty-state></ak-flow-card
-            >`;
+                </ak-empty-state>
+            </ak-flow-card>`;
         }
-        return html`<ak-flow-card .challenge=${this.challenge}
-            ><ak-empty-state default-label></ak-empty-state
-        ></ak-flow-card>`;
+        return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
     render(): TemplateResult {
@@ -86,6 +84,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             return this.renderLoading();
         }
         return html`<ak-flow-card .challenge=${this.challenge}>
+            <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
                     <p>${msg("You're about to be redirect to the following URL.")}</p>

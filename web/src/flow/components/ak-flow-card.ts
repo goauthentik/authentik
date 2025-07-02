@@ -1,7 +1,7 @@
 import { AKElement } from "#elements/Base";
 import "@goauthentik/elements/EmptyState";
 
-import { CSSResult, css, html } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -23,6 +23,9 @@ import { ChallengeTypes } from "@goauthentik/api";
 export class FlowCard extends AKElement {
     @property({ type: Object })
     challenge?: ChallengeTypes;
+
+    @property({type: Boolean})
+    loading = false;
 
     static get styles(): CSSResult[] {
         return [
@@ -49,20 +52,22 @@ export class FlowCard extends AKElement {
     }
 
     render() {
-        if (!this.challenge) {
+        if (!this.challenge || this.loading) {
             return html`<ak-empty-state loading default-label></ak-empty-state>
                 <footer class="pf-c-login__main-footer">
                     <ul class="pf-c-login__main-footer-links"></ul>
                 </footer>`;
         }
-        const hasHeading = this.hasSlotted("title");
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    ${hasHeading
-                        ? html`<slot name="title"></slot>`
-                        : this.challenge.flowInfo?.title}
-                </h1>
-            </header>
+        // No title if the challenge doesn't provide a title and no custom title is set
+        let title = undefined;
+        if (this.hasSlotted("title")) {
+            title = html`<h1 class="pf-c-title pf-m-3xl"><slot name="title"></slot></h1>`;
+        } else if (this.challenge.flowInfo?.title) {
+            title = html`<h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo.title}</h1>`;
+        }
+        return html`${title
+                ? html`<header class="pf-c-login__main-header">${title}</header>`
+                : nothing}
             <div class="pf-c-login__main-body">
                 <slot></slot>
             </div>
