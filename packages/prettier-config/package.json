@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
@@ -9,7 +9,12 @@
         "prettier-check": "prettier --check ."
     },
     "type": "module",
-    "exports": "./index.js",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./index.js",
+        "./imports-plugin": "./lib/imports.js",
+        "./formatter": "./lib/formatter.js"
+    },
     "dependencies": {
         "format-imports": "^4.0.7"
     },
@@ -34,6 +39,11 @@
         "out/**/*"
     ],
     "prettier": "./index.js",
+    "overrides": {
+        "format-imports": {
+            "eslint": "^9.30.1"
+        }
+    },
     "publishConfig": {
         "access": "public"
     }
