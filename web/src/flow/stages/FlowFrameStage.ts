@@ -1,3 +1,4 @@
+import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
@@ -20,7 +21,7 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
     }
 
     render(): TemplateResult {
-        return html` <ak-flow-card .challenge=${this.challenge}>
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 ${
                     this.challenge.loadingOverlay
                         ? html`<ak-empty-state loading
@@ -37,7 +38,7 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
                     src=${this.challenge.url}
                 ></iframe>
             </div>
-            </ak-flow-card>`;
+        </ak-flow-card>`;
     }
 }
 
