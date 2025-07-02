@@ -205,6 +205,7 @@ const items = [
             "services/pocketbase/index",
             "services/stripe/index",
             "services/wordpress/index",
+            "services/zoho/index",
         ],
     },
     {
