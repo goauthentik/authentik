@@ -23,21 +23,20 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
-                    </div>
-                </form>
-            </div>
-            </ak-flow-card>`;
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>
+                <div class="pf-c-form__group pf-m-action">
+                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                        ${msg("Continue")}
+                    </button>
+                </div>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

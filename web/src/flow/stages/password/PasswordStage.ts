@@ -33,56 +33,51 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <input
-                        name="username"
-                        autocomplete="username"
-                        type="hidden"
-                        value="${this.challenge.pendingUser}"
-                    />
-                    <ak-flow-input-password
-                        label=${msg("Password")}
-                        required
-                        grab-focus
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {}).password}
-                        ?allow-show-password=${this.challenge.allowShowPassword}
-                        invalid=${this.hasError("password").toString()}
-                        prefill=${PasswordManagerPrefill.password ?? ""}
-                    ></ak-flow-input-password>
-
-                    ${
-                        this.challenge.recoveryUrl
-                            ? html`<a href="${this.challenge.recoveryUrl}">
-                                  ${msg("Forgot password?")}</a
-                              >`
-                            : ""
-                    }
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
                     </div>
-                </form>
-            </div>
-            </ak-flow-card>`;
+                </ak-form-static>
+                <input
+                    name="username"
+                    autocomplete="username"
+                    type="hidden"
+                    value="${this.challenge.pendingUser}"
+                />
+                <ak-flow-input-password
+                    label=${msg("Password")}
+                    required
+                    grab-focus
+                    class="pf-c-form__group"
+                    .errors=${(this.challenge?.responseErrors || {}).password}
+                    ?allow-show-password=${this.challenge.allowShowPassword}
+                    invalid=${this.hasError("password").toString()}
+                    prefill=${PasswordManagerPrefill.password ?? ""}
+                ></ak-flow-input-password>
+
+                ${this.challenge.recoveryUrl
+                    ? html`<a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>`
+                    : ""}
+
+                <div class="pf-c-form__group pf-m-action">
+                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                        ${msg("Continue")}
+                    </button>
+                </div>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

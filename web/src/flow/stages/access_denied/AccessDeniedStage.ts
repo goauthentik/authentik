@@ -26,33 +26,30 @@ export class AccessDeniedStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <ak-empty-state icon="fa-times"
-                        ><span>${msg("Request has been denied.")}</span>
-                        ${
-                            this.challenge.errorMessage
-                                ? html`
-                                      <div slot="body">
-                                          <p>${this.challenge.errorMessage}</p>
-                                      </div>
-                                  `
-                                : nothing
-                        }
-                    </ak-empty-state>
-                </form>
-            </div>
-            </ak-flow-card>`;
+            <form class="pf-c-form">
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
+                >
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
+                    </div>
+                </ak-form-static>
+                <ak-empty-state icon="fa-times"
+                    ><span>${msg("Request has been denied.")}</span>
+                    ${this.challenge.errorMessage
+                        ? html`
+                              <div slot="body">
+                                  <p>${this.challenge.errorMessage}</p>
+                              </div>
+                          `
+                        : nothing}
+                </ak-empty-state>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

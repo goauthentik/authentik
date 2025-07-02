@@ -78,50 +78,49 @@ export class AuthenticatorSMSStage extends BaseStage<
 
     renderCode(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <ak-form-element
-                        label="${msg("Code")}"
-                        required
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {}).code}
-                    >
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter the code you received via SMS")}"
-                            autofocus=""
-                            autocomplete="one-time-code"
-                            class="pf-c-form-control"
-                            required
-                        />
-                    </ak-form-element>
-                    ${this.renderNonFieldErrors()}
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
                     </div>
-                </form>
-            </div>
-            </ak-flow-card>`;
+                </ak-form-static>
+                <ak-form-element
+                    label="${msg("Code")}"
+                    required
+                    class="pf-c-form__group"
+                    .errors=${(this.challenge?.responseErrors || {}).code}
+                >
+                    <input
+                        type="text"
+                        name="code"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="${msg("Please enter the code you received via SMS")}"
+                        autofocus=""
+                        autocomplete="one-time-code"
+                        class="pf-c-form-control"
+                        required
+                    />
+                </ak-form-element>
+                ${this.renderNonFieldErrors()}
+                <div class="pf-c-form__group pf-m-action">
+                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                        ${msg("Continue")}
+                    </button>
+                </div>
+            </form>
+        </ak-flow-card>`;
     }
 
     render(): TemplateResult {

@@ -65,48 +65,44 @@ export class AuthenticatorDuoStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <img
-                        src=${this.challenge.activationBarcode}
-                        alt=${msg("Duo activation QR code")}
-                    />
-                    <p>
-                        ${msg(
-                            "Alternatively, if your current device has Duo installed, click on this link:",
-                        )}
-                    </p>
-                    <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button
-                            type="button"
-                            class="pf-c-button pf-m-primary pf-m-block"
-                            @click=${() => {
-                                this.checkEnrollStatus();
-                            }}
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
                         >
-                            ${msg("Check status")}
-                        </button>
                     </div>
-                </form>
-            </div>
-            </ak-flow-card>`;
+                </ak-form-static>
+                <img src=${this.challenge.activationBarcode} alt=${msg("Duo activation QR code")} />
+                <p>
+                    ${msg(
+                        "Alternatively, if your current device has Duo installed, click on this link:",
+                    )}
+                </p>
+                <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
+
+                <div class="pf-c-form__group pf-m-action">
+                    <button
+                        type="button"
+                        class="pf-c-button pf-m-primary pf-m-block"
+                        @click=${() => {
+                            this.checkEnrollStatus();
+                        }}
+                    >
+                        ${msg("Check status")}
+                    </button>
+                </div>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

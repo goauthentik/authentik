@@ -277,23 +277,19 @@ ${prompt.initialValue}</textarea
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.fields.map((prompt) => {
-                        return this.renderField(prompt);
-                    })}
-                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
-                </form>
-            </div>
-            </ak-flow-card>`;
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                ${this.challenge.fields.map((prompt) => {
+                    return this.renderField(prompt);
+                })}
+                ${this.renderNonFieldErrors()} ${this.renderContinue()}
+            </form>
+        </ak-flow-card>`;
     }
 }
 

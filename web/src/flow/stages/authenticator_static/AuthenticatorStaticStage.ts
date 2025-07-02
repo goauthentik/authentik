@@ -53,40 +53,39 @@ export class AuthenticatorStaticStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <ak-form-element label="" class="pf-c-form__group">
-                        <ul>
-                            ${this.challenge.codes.map((token) => {
-                                return html`<li class="pf-m-monospace">${token}</li>`;
-                            })}
-                        </ul>
-                    </ak-form-element>
-                    <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
-
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
                     </div>
-                </form>
-            </div>
-            </ak-flow-card>`;
+                </ak-form-static>
+                <ak-form-element label="" class="pf-c-form__group">
+                    <ul>
+                        ${this.challenge.codes.map((token) => {
+                            return html`<li class="pf-m-monospace">${token}</li>`;
+                        })}
+                    </ul>
+                </ak-form-element>
+                <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
+
+                <div class="pf-c-form__group pf-m-action">
+                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                        ${msg("Continue")}
+                    </button>
+                </div>
+            </form>
+        </ak-flow-card>`;
     }
 }
 
