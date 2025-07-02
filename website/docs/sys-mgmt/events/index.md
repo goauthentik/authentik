@@ -8,7 +8,7 @@ Certain information is stripped from events, to ensure that no passwords or othe
 
 ## About notifications
 
-Events can be used to define [notification rules](notifications.md), with specified [transport options](transports.md) of either local (in the authentik UI), email, or webhook.
+Events can be used to define [notification rules](notifications.md), with specified [transport options](transports.md) of either local (shown in the authentik UI), email, or webhook.
 
 ## About logging
 
