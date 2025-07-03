@@ -33,7 +33,8 @@ def set_file(request: Request, obj: Model, field_name: str):
     if clear:
         # .delete() saves the model by default
         field.delete()
-        return Response({})
+        value = getattr(obj, f"get_{field_name}")
+        return Response({field_name: value})
     if file:
         setattr(obj, field_name, file)
         try:
@@ -41,16 +42,18 @@ def set_file(request: Request, obj: Model, field_name: str):
         except PermissionError as exc:
             LOGGER.warning("Failed to save file", exc=exc)
             return HttpResponseBadRequest()
-        return Response({})
+        value = getattr(obj, f"get_{field_name}")
+        return Response({field_name: value})
     return HttpResponseBadRequest()
 
 
-def set_file_url(request: Request, obj: Model, field: str):
+def set_file_url(request: Request, obj: Model, field_name: str):
     """Set file field to URL"""
-    field = getattr(obj, field)
+    file_field = getattr(obj, field_name)
     url = request.data.get("url", None)
     if url is None:
         return HttpResponseBadRequest()
-    field.name = url
+    file_field.name = url
     obj.save()
-    return Response({})
+    value = getattr(obj, f"get_{field_name}")
+    return Response({field_name: value})

@@ -101,8 +101,9 @@ class S3Storage(BaseS3Storage):
         # Get the client and configure endpoint URL if custom_domain is set
         client = self.bucket.meta.client
 
-        # Save original endpoint URL if we need to restore it
-        original_endpoint_url = getattr(client.meta, "endpoint_url", None)
+        # Save the original endpoint URL so we can restore it
+        endpoint = client._endpoint
+        original_endpoint_url = endpoint.host
 
         custom_domain = self.custom_domain
         if custom_domain:
@@ -113,10 +114,8 @@ class S3Storage(BaseS3Storage):
             # If custom domain is set, configure the endpoint URL
             if custom_domain:
                 scheme = "https" if self.secure_urls else "http"
-                custom_endpoint = f"{scheme}://{custom_domain}"
-
-                # Set the endpoint URL temporarily for this request
-                client.meta.endpoint_url = custom_endpoint
+                # Temporarily override the full endpoint URL (scheme+host)
+                endpoint.host = f"{scheme}://{custom_domain}"
 
             # Generate the presigned URL using the correctly configured client
             url = client.generate_presigned_url(
@@ -126,27 +125,14 @@ class S3Storage(BaseS3Storage):
                 HttpMethod=http_method,
             )
 
-            # If using custom domain, we need to handle the path correctly
-            if custom_domain and self.bucket.name in url:
-                # Parse the generated URL
+            # If using custom domain, replace host and scheme but preserve full path
+            if custom_domain:
                 split_url = urlsplit(url)
-
-                # Get the path from the S3 URL
-                s3_path = split_url.path
-
-                # Remove the leading bucket name from the path if it's present
-                bucket_prefix = f"/{self.bucket.name}"
-                if s3_path.startswith(bucket_prefix):
-                    final_path = s3_path[len(bucket_prefix) :]
-                else:
-                    final_path = s3_path
-
-                # Create the custom domain URL with the corrected path and query parameters
                 url = urlunsplit(
                     (
                         scheme,
                         custom_domain,
-                        final_path,
+                        split_url.path,
                         split_url.query,
                         split_url.fragment,
                     )
@@ -155,7 +141,7 @@ class S3Storage(BaseS3Storage):
         finally:
             # Restore the original endpoint URL if we changed it
             if custom_domain:
-                client.meta.endpoint_url = original_endpoint_url
+                endpoint.host = original_endpoint_url
 
         if self.querystring_auth:
             return url
