@@ -28,6 +28,7 @@ dependencies = [
     "djangorestframework-guardian==0.4.0",
     "djangorestframework==3.16.0",
     "docker==7.1.0",
+    "drf-nested-routers==0.94.2",
     "drf-orjson-renderer==1.7.3",
     "drf-spectacular==0.28.0",
     "dumb-init==1.2.5.post1",

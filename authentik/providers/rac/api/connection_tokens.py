@@ -40,9 +40,16 @@ class ConnectionTokenViewSet(
 ):
     """ConnectionToken Viewset"""
 
-    queryset = ConnectionToken.objects.all().select_related("session", "endpoint")
+    queryset = ConnectionToken.objects.none()
     serializer_class = ConnectionTokenSerializer
-    filterset_fields = ["endpoint", "session__user", "provider"]
-    search_fields = ["endpoint__name", "provider__name"]
-    ordering = ["endpoint__name", "provider__name"]
+    filterset_fields = ["endpoint", "session__user"]
+    search_fields = ["endpoint__name", "session__user__username"]
+    ordering = ["endpoint__name", "session__user__username"]
     owner_field = "session__user"
+
+    def get_queryset(self):
+        return (
+            ConnectionToken.objects.all()
+            .select_related("session", "endpoint")
+            .filter(provider=self.kwargs["provider_pk"])
+        )

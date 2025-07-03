@@ -6,7 +6,7 @@ from djangoql.ast import Name
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema
-from rest_framework.filters import BaseFilterBackend, SearchFilter
+from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
@@ -39,7 +39,8 @@ class BaseSchema(DjangoQLSchema):
         return super().resolve_name(name)
 
 
-class QLSearch(BaseFilterBackend):
+# Inherits from SearchFilter to keep the schema correctly
+class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 
     def __init__(self):

@@ -12,7 +12,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
+import { AuthModeEnum, Endpoint, ProtocolEnum, ProvidersApi } from "@goauthentik/api";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
@@ -22,7 +22,8 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     providerID?: number;
 
     loadInstance(pk: string): Promise<Endpoint> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsRetrieve({
+            providerPk: this.providerID!,
             pbmUuid: pk,
         });
     }
@@ -41,12 +42,14 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             data.provider = this.instance.provider;
         }
         if (this.instance) {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsPartialUpdate({
+                providerPk: this.providerID!,
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
         }
-        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsCreate({
+            providerPk: this.providerID!,
             endpointRequest: data,
         });
     }
