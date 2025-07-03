@@ -14,6 +14,7 @@ const items = [
         items: [
             "services/espocrm/index",
             "services/hedgedoc/index",
+            "services/kanboard/index",
             "services/kimai/index",
             "services/mailcow/index",
             "services/mastodon/index",
@@ -144,6 +145,7 @@ const items = [
             "services/gravity/index",
             "services/globalprotect/index",
             "services/netbird/index",
+            "services/omada-controller/index",
             "services/opnsense/index",
             "services/pangolin/index",
             "services/pfsense/index",
