@@ -109,6 +109,9 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
 
     private isLoading = false;
 
+    #pageParam = `${this.tagName.toLowerCase()}-page`;
+    #searchParam = `${this.tagName.toLowerCase()}-search`;
+
     @property({ type: Boolean })
     supportsQL: boolean = false;
 
@@ -128,7 +131,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam(`${this.tagName.toLowerCase()}-page`, 1);
+    page = getURLParam(this.#pageParam, 1);
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -220,7 +223,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             await this.fetch();
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam(`${this.tagName.toLowerCase()}-search`, "");
+            this.search = getURLParam(this.#searchParam, "");
         }
     }
 
@@ -478,12 +481,12 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     protected willUpdate(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("page")) {
             updateURLParams({
-                [`${this.tagName.toLowerCase()}-page`]: changedProperties.get("page"),
+                [this.#pageParam]: changedProperties.get("page"),
             });
         }
         if (changedProperties.has("search")) {
             updateURLParams({
-                [`${this.tagName.toLowerCase()}-search`]: changedProperties.get("search"),
+                [this.#searchParam]: changedProperties.get("search"),
             });
         }
     }
