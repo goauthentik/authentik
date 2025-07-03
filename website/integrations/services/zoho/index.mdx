@@ -26,31 +26,7 @@ IdP inititiated login does not work with Zoho due to their non-standard use of S
 
 ## authentik configuration
 
-To support the integration of Zoho with authentik, you need to create a property mapping and an application/provider pair in authentik.
-
-### Create a property mapping
-
-Bitwarden requires a first and last name for every user. However, authentik, by default, only supplies a full name as a single string. As a result, a property mapping must be created to separate and provide first and last names to Bitwarden.
-
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-    - **Select type**: select **Scope Mapping**.
-    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Bitwarden Profile Scope`), and an optional description.
-        - **Scope name**: `profile`
-        - **Expression**:
-
-        ```python showLineNumbers
-        return {
-            "name": request.user.name,
-            "preferred_username": request.user.username,
-            "nickname": request.user.username,
-            "groups": [group.name for group in request.user.ak_groups.all()],
-            "surname": request.user.name.rsplit(" ", 1)[-1],
-            "givenname": request.user.name.rsplit(" ", 1)[0],
-        }
-        ```
-
-3. Click **Finish** to save the property mapping.
+To support the integration of Zoho with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -154,6 +130,4 @@ Enter the email address of a Bitwarden account and click **Use single sign-on**.
 
 ## Resources
 
-- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
-- [Bitwarden Help - SAML 2.0 Configuration](https://bitwarden.com/help/configure-sso-saml/)
-- [Bitwarden Help - Claimed Domains](https://bitwarden.com/help/claimed-domains/)
+- [Zoho Help - Configure SAML in Zoho Accounts](https://help.zoho.com/portal/en/kb/accounts/manage-your-organization/saml/articles/configure-saml-in-zoho-accounts#Configure_SAML_in_your_IdP_using_Zohos_Metadata)
