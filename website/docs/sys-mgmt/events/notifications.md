@@ -19,7 +19,7 @@ To receive notifications about events, follow this workflow:
 
 ## 1. Create a notification transport
 
-A notification transport determines the method used to deliver notifications to users. Supported delivery methods are: local notifications displayed in the authentik UI, email, and webhook. Follow these [instructions](./transports.md#create-a-transport) to create a notification transport.
+A notification transport determines the method used to deliver notifications to users. Supported delivery methods are: local notifications displayed in the authentik UI, email, and webhook. Follow these [instructions](./transports.md#create-a-notification-transport) to create a notification transport.
 
 ## 2. Create a policy
 
