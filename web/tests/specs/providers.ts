@@ -1,6 +1,6 @@
 import { expect } from "@wdio/globals";
 
-import { type TestProvider, type TestSequence } from "../pageobjects/controls";
+import { type TestProvider, type TestSequence } from "../pageobjects/controls.js";
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
 import { login } from "../utils/login.js";

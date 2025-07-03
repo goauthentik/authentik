@@ -3,6 +3,7 @@
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+
 import { browser } from "@wdio/globals";
 
 import { addCommands } from "./commands.mjs";

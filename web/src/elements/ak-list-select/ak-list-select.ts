@@ -1,15 +1,11 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import type {
-    GroupedOptions,
-    SelectGroup,
-    SelectOption,
-    SelectOptions,
-} from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
+
 import { match } from "ts-pattern";
 
-import { PropertyValueMap, css, html, nothing } from "lit";
+import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";

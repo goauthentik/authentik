@@ -1,5 +1,5 @@
-import { Form } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form } from "#elements/forms/Form";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";

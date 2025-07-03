@@ -1,5 +1,6 @@
-import { type LitElement, type ReactiveControllerHost, type TemplateResult, nothing } from "lit";
 import "lit";
+
+import { type LitElement, nothing, type ReactiveControllerHost, type TemplateResult } from "lit";
 
 /**
  * Type utility to make readonly properties mutable.

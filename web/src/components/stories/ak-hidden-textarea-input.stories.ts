@@ -1,9 +1,10 @@
+import "../ak-hidden-textarea-input.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import "../ak-hidden-textarea-input";
 import {
     type AkHiddenTextAreaInput,
     type AkHiddenTextAreaInputProps,

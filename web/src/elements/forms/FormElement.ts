@@ -1,14 +1,13 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
+import { ErrorDetail } from "@goauthentik/api";
+
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ErrorDetail } from "@goauthentik/api";
 
 /**
  * This is used in two places outside of Flow, and in both cases is used primarily to

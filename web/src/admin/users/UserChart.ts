@@ -1,11 +1,13 @@
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { EventChart } from "#elements/charts/EventChart";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { EventActions, EventsApi, EventVolume } from "@goauthentik/api";
+
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
-
-import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-charts-user")
 export class UserChart extends EventChart {

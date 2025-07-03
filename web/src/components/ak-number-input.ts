@@ -2,7 +2,7 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 @customElement("ak-number-input")
 export class AkNumberInput extends HorizontalLightComponent<number> {

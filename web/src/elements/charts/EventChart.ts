@@ -1,8 +1,10 @@
 import { actionToLabel } from "#common/labels";
+
 import { AKChart } from "#elements/charts/Chart";
-import { ChartData, ChartDataset } from "chart.js";
 
 import { EventActions, EventVolume } from "@goauthentik/api";
+
+import { ChartData, ChartDataset } from "chart.js";
 
 export function actionToColor(action: EventActions): string {
     switch (action) {
