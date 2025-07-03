@@ -317,3 +317,20 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
         return set_file_url(request, app, "meta_icon")
+
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        responses={200: OpenApiResponse(description="Success")},
+    )
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+    )
+    def remove_icon(self, request: Request, slug: str) -> Response:
+        """Remove application icon"""
+        app: Application = self.get_object()
+        field = getattr(app, "meta_icon")
+        field.delete()
+        return Response({"meta_icon": app.get_meta_icon})
