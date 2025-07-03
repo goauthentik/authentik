@@ -1,11 +1,13 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import { isActiveElement } from "@goauthentik/elements/utils/focus";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { Ref, createRef, ref } from "lit/directives/ref.js";
 
 import {
     AuthenticatorValidationChallenge,
@@ -18,6 +20,60 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
+    //#region Refs
+
+    inputRef: Ref<HTMLInputElement> = createRef();
+
+    //#endregion
+
+    //#region Lifecycle
+
+    /**
+     * Interval ID for the focus observer.
+     *
+     * @see {@linkcode observeInputFocus}
+     */
+    inputFocusIntervalID?: ReturnType<typeof setInterval>;
+
+    /**
+     * Periodically attempt to focus the input field until it is focused.
+     *
+     * This is some-what of a crude way to get autofocus, but in most cases
+     * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
+     */
+    observeInputFocus(): void {
+        this.inputFocusIntervalID = setInterval(() => {
+            const input = this.inputRef.value;
+
+            if (!input) return;
+
+            if (isActiveElement(input, document.activeElement)) {
+                console.debug("authentik/stages/authenticator_validate: cleared focus observer");
+                clearInterval(this.inputFocusIntervalID);
+            }
+
+            input.focus();
+        }, 10);
+
+        console.debug("authentik/stages/authenticator_validate: started focus observer");
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+
+        this.observeInputFocus();
+    }
+
+    disconnectedCallback() {
+        if (this.inputFocusIntervalID) {
+            clearInterval(this.inputFocusIntervalID);
+        }
+
+        super.disconnectedCallback();
+    }
+
+    //#endregion
+
     static get styles(): CSSResult[] {
         return super.styles.concat(css`
             .icon-description {
@@ -107,6 +163,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                             class="pf-c-form-control"
                             value="${PasswordManagerPrefill.totp || ""}"
                             required
+                            ${ref(this.inputRef)}
                         />
                     </ak-form-element>
 
