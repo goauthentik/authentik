@@ -72,6 +72,15 @@ class S3Storage(BaseS3Storage):
     def security_token(self, value: str):
         pass
 
+    @property
+    def secure_urls(self) -> bool:
+        """Get secure_urls"""
+        return CONFIG.get_bool("storage.media.s3.secure_urls", True)
+
+    @secure_urls.setter
+    def secure_urls(self, value: bool):
+        pass
+
     def _normalize_name(self, name):
         try:
             return safe_join(self.location, connection.schema_name, name)
@@ -95,11 +104,16 @@ class S3Storage(BaseS3Storage):
         # Save original endpoint URL if we need to restore it
         original_endpoint_url = getattr(client._endpoint, "host", None)
 
+        custom_domain = self.custom_domain
+        if custom_domain:
+            # If the custom domain is an IDN, it needs to be punycode encoded.
+            custom_domain = custom_domain.encode("punycode").decode("ascii")
+
         try:
             # If custom domain is set, configure the endpoint URL
-            if self.custom_domain:
+            if custom_domain:
                 scheme = "https" if self.secure_urls else "http"
-                custom_endpoint = f"{scheme}://{self.custom_domain}"
+                custom_endpoint = f"{scheme}://{custom_domain}"
 
                 # Set the endpoint URL temporarily for this request
                 client._endpoint.host = custom_endpoint
@@ -113,7 +127,7 @@ class S3Storage(BaseS3Storage):
             )
 
             # If using custom domain, we need to handle the path correctly
-            if self.custom_domain and self.bucket.name in url:
+            if custom_domain and self.bucket.name in url:
                 # Parse the generated URL
                 split_url = urlsplit(url)
 
@@ -131,7 +145,7 @@ class S3Storage(BaseS3Storage):
                 url = urlunsplit(
                     (
                         split_url.scheme,
-                        self.custom_domain,
+                        custom_domain,
                         final_path,
                         split_url.query,
                         split_url.fragment,
@@ -140,7 +154,7 @@ class S3Storage(BaseS3Storage):
 
         finally:
             # Restore the original endpoint URL if we changed it
-            if self.custom_domain and original_endpoint_url:
+            if custom_domain and original_endpoint_url:
                 client._endpoint.host = original_endpoint_url
 
         if self.querystring_auth:
