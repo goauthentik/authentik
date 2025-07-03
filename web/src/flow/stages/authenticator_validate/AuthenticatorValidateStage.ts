@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
@@ -276,28 +277,20 @@ export class AuthenticatorValidateStage
     }
 
     render(): TemplateResult {
-        return this.challenge
-            ? html`<header class="pf-c-login__main-header">
-                      <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-                  </header>
-                  ${this.selectedDeviceChallenge
-                      ? this.renderDeviceChallenge()
-                      : html`<div class="pf-c-login__main-body">
-                                <form class="pf-c-form">
-                                    ${this.renderUserInfo()}
-                                    ${this.selectedDeviceChallenge
-                                        ? ""
-                                        : html`<p>${msg("Select an authentication method.")}</p>`}
-                                    ${this.challenge.configurationStages.length > 0
-                                        ? this.renderStagePicker()
-                                        : html``}
-                                </form>
-                                ${this.renderDevicePicker()}
-                            </div>
-                            <footer class="pf-c-login__main-footer">
-                                <ul class="pf-c-login__main-footer-links"></ul>
-                            </footer>`}`
-            : html`<ak-empty-state loading> </ak-empty-state>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            ${this.selectedDeviceChallenge
+                ? this.renderDeviceChallenge()
+                : html`<form class="pf-c-form">
+                          ${this.renderUserInfo()}
+                          ${this.selectedDeviceChallenge
+                              ? ""
+                              : html`<p>${msg("Select an authentication method.")}</p>`}
+                          ${this.challenge.configurationStages.length > 0
+                              ? this.renderStagePicker()
+                              : html``}
+                      </form>
+                      ${this.renderDevicePicker()}`}
+        </ak-flow-card>`;
     }
 }
 
