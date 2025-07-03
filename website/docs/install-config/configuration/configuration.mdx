@@ -103,13 +103,13 @@ The PostgreSQL settings `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__POR
 
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Maximum age of a database connection in seconds. Defaults to `0` (close after each request). Set to a positive value to enable connection persistence or `None` for unlimited persistence.
 
-    See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for details.
+    See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for more details.
 
 - `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Enables health checks on persistent database connections before they are reused. Defaults to `false`. Helps prevent the use of stale connections that might have been closed by the server.
 
     See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details on when to enable this feature. Particularly useful when using a connection pooler to detect and recover from stale connections.
 
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but are **not compatible** with:
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Defaults to `false`. Disables server-side cursors when set to `true`. Server-side cursors can improve performance for large result sets, but are **not compatible** with:
     - Connection poolers in transaction pooling mode (such as PgBouncer in transaction pooling mode)
     - Cross-database queries
     - Some types of database proxies
@@ -120,16 +120,16 @@ The PostgreSQL settings `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__POR
 
 ### Deprecated Settings
 
-- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. Deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
-- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. Deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
+- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjusts the database configuration to support connections to a PgBouncer connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
+- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjusts the database configuration to support connections to a Pgpool connection pooler. This setting is deprecated and will be removed in a future version. Instead, use the configuration described in the [Using a PostgreSQL Connection Pooler](#using-a-postgresql-connection-pooler) section.
 
 ### Read Replicas
 
-You can configure additional replica databases to distribute database load and improve performance. When replicas are configured, authentik automatically routes query operations between the primary database (for writes) and replica databases (for queries). By default, the primary database won't be used for queries when replicas are available. If you want the primary database to also handle queries, simply add it as a replica too.
+You can configure additional read replica databases to distribute database load and improve performance. When read replicas are configured, authentik automatically routes query operations between the primary database (for writes) and read replica databases (for queries). By default, the primary database won't be used for queries when read replicas are available. If you want the primary database to also handle queries, add it as a read replica.
 
-To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add settings for each replica by replacing the default `0` with a unique value for each additional replica.
+To configure authentik to use read replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple read replicas, add settings for each by replacing the default `0` with a unique value for each additional read replica.
 
-The same PostgreSQL settings as described above are used for each read replica. For example, for the first replica (index `0`):
+The same PostgreSQL settings as described above are used for each read replica. For example, for the first read replica (index `0`):
 
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
@@ -150,9 +150,9 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`:
 
-    A connection pooler running in session pool mode (which is the default for PgBouncer) can be incompatible with unlimited persistent connections (`null` setting). When the connection from the pooler to the database is dropped, the pooler will wait for the client to disconnect before releasing the connection; however, this will **never** happen as authentik keeps the connection forever.
+    A connection pooler running in session pool mode (which is the default for PgBouncer) can be incompatible with unlimited persistent connections (`null` setting). When the connection from the pooler to the database is dropped, the pooler will wait for the client to disconnect before releasing the connection. However, this will **never** happen as authentik keeps the connection indefinitely.
 
-    To address this incompatibility, either configure the connection pooler to run in transaction pool mode, or set this value lower than any timeouts that may cause the connection to be dropped (up to `0` for no persistent connections).
+    To address this incompatibility, either configure the connection pooler to run in transaction pool mode or set this value lower than any timeout that might cause the connection to be dropped (down to `0` to disable persistent connections).
 
 - `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`:
 
