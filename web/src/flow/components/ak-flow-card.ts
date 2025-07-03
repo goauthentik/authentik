@@ -24,7 +24,7 @@ export class FlowCard extends AKElement {
     @property({ type: Object })
     challenge?: ChallengeTypes;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     loading = false;
 
     static get styles(): CSSResult[] {
