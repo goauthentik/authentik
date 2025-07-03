@@ -102,12 +102,12 @@ class S3Storage(BaseS3Storage):
         client = self.bucket.meta.client
 
         # Save original endpoint URL if we need to restore it
-        original_endpoint_url = getattr(client._endpoint, "host", None)
+        original_endpoint_url = getattr(client.meta, "endpoint_url", None)
 
         custom_domain = self.custom_domain
         if custom_domain:
             # If the custom domain is an IDN, it needs to be punycode encoded.
-            custom_domain = custom_domain.encode("punycode").decode("ascii")
+            custom_domain = custom_domain.encode("idna").decode("ascii")
 
         try:
             # If custom domain is set, configure the endpoint URL
@@ -116,7 +116,7 @@ class S3Storage(BaseS3Storage):
                 custom_endpoint = f"{scheme}://{custom_domain}"
 
                 # Set the endpoint URL temporarily for this request
-                client._endpoint.host = custom_endpoint
+                client.meta.endpoint_url = custom_endpoint
 
             # Generate the presigned URL using the correctly configured client
             url = client.generate_presigned_url(
@@ -144,7 +144,7 @@ class S3Storage(BaseS3Storage):
                 # Create the custom domain URL with the corrected path and query parameters
                 url = urlunsplit(
                     (
-                        split_url.scheme,
+                        scheme,
                         custom_domain,
                         final_path,
                         split_url.query,
@@ -154,8 +154,8 @@ class S3Storage(BaseS3Storage):
 
         finally:
             # Restore the original endpoint URL if we changed it
-            if custom_domain and original_endpoint_url:
-                client._endpoint.host = original_endpoint_url
+            if custom_domain:
+                client.meta.endpoint_url = original_endpoint_url
 
         if self.querystring_auth:
             return url
