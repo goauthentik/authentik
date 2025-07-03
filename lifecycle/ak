@@ -78,7 +78,7 @@ if [[ "$1" == "server" ]]; then
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
     shift
-    check_if_root "python -m manage worker $@"
+    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
