@@ -25,6 +25,7 @@ const items = [
             "services/onlyoffice/index",
             "services/openproject/index",
             "services/owncloud/index",
+            "services/planka/index",
             "services/rocketchat/index",
             "services/roundcube/index",
             "services/sharepoint-se/index",
