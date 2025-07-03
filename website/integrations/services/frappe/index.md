@@ -49,29 +49,23 @@ To support the integration of Frappe with authentik, you need to create an appli
 ## Frappe configuration
 
 1. **Navigate to Integrations**
-
     - From the Frappe main menu, go to **Integrations** and then select **Social Login Key**.
 
 2. **Add a New Social Login Key**
-
     - Click the black **+ New** button in the top-right corner.
       ![](./frappe1.png)
 
 3. **Enter the Required Settings**
-
     - **Client Credentials**
-
         - **Enable Social Login**: Turn the toggle to the **on** position.
         - **Client ID**: Enter the Client ID from the authentik wizard.
         - **Client Secret**: Enter the Client Secret from the authentik wizard.
 
     - **Configuration**
-
         - **Sign-ups**: Set to **Allow**.
           ![](./frappe2.png)
 
     - **Identity Details**
-
         - **Base URL**: `https://authentik.company/`
         - **Client URLs**:
             - **Authorize URL**: `/application/o/authorize/`

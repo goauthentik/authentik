@@ -1,4 +1,4 @@
-import { EventGeo, EventUser } from "#admin/events/utils";
+import { EventGeo, renderEventUser } from "#admin/events/utils";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
@@ -92,7 +92,7 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${EventUser(this.event)}
+                                            ${renderEventUser(this.event)}
                                         </div>
                                     </dd>
                                 </div>

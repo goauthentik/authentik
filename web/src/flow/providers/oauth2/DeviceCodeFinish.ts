@@ -17,10 +17,8 @@ export class DeviceCodeFinish extends BaseStage<
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
-        return html`<ak-empty-state
-            icon="fas fa-check"
-            header=${msg("You may close this page now.")}
-        >
+        return html`<ak-empty-state icon="fas fa-check">
+            <span>${msg("You may close this page now.")}</span>
             <span slot="body"> ${msg("You've successfully authenticated your device.")} </span>
         </ak-empty-state>`;
     }

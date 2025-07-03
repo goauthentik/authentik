@@ -44,7 +44,8 @@ export class AccessDeniedStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <ak-empty-state icon="fa-times" header=${msg("Request has been denied.")}>
+                    <ak-empty-state icon="fa-times"
+                        ><span>${msg("Request has been denied.")}</span>
                         ${this.challenge.errorMessage
                             ? html`
                                   <div slot="body">

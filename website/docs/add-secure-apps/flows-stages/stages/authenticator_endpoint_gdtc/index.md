@@ -65,11 +65,9 @@ For detailed instructions, refer to Google documentation.
 2. In the Admin interface, navigate to **Flows -> Stages**.
 
 3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
-
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 
     - **Google Verified Access API**
-
         - **Credentials**: paste the contents of the JSON file (the key) that you downloaded earlier.
 
 4. Click **Finish**.
