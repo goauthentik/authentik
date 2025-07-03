@@ -299,9 +299,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state loading
-                        ><span slot="header">${msg("Loading")}</span></ak-empty-state
-                    >
+                    <ak-empty-state default-label></ak-empty-state>
                 </div>
             </td>
         </tr>`;
@@ -314,7 +312,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span slot="header">${msg("No objects found.")}</span> >
+                            ><span>${msg("No objects found.")}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -331,7 +329,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
-            ><span slot="header">${msg("Failed to fetch objects.")}</span>
+            ><span>${msg("Failed to fetch objects.")}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }
@@ -480,8 +478,10 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
+            this.page = 1;
             updateURLParams({
                 search: value,
+                tablePage: 1,
             });
             this.fetch();
         };

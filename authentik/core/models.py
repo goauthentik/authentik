@@ -1082,6 +1082,12 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
+
+        return AuthenticatedSessionSerializer
+
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")

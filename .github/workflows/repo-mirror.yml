@@ -11,11 +11,10 @@ jobs:
         with:
           fetch-depth: 0
       - if: ${{ env.MIRROR_KEY != '' }}
-        uses: pixta-dev/repository-mirroring-action@v1
+        uses: BeryJu/repository-mirroring-action@5cf300935bc2e068f73ea69bcc411a8a997208eb
         with:
-          target_repo_url:
-            git@github.com:goauthentik/authentik-internal.git
-          ssh_private_key:
-            ${{ secrets.GH_MIRROR_KEY }}
+          target_repo_url: git@github.com:goauthentik/authentik-internal.git
+          ssh_private_key: ${{ secrets.GH_MIRROR_KEY }}
+          args: --tags --force
         env:
           MIRROR_KEY: ${{ secrets.GH_MIRROR_KEY }}

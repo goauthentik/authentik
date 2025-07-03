@@ -11,11 +11,11 @@
     },
     "dependencies": {
         "@goauthentik/api": "^2024.6.0-1719577139",
+        "base64-js": "^1.5.1",
         "bootstrap": "^4.6.1",
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
-        "weakmap-polyfill": "^2.0.4",
-        "webauthn-polyfills": "^0.1.7"
+        "weakmap-polyfill": "^2.0.4"
     },
     "devDependencies": {
         "@goauthentik/core": "^1.0.0",

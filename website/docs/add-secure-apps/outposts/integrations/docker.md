@@ -17,11 +17,9 @@ The following outpost settings are used:
 The container is created with the following hardcoded properties:
 
 - Labels
-
     - `io.goauthentik.outpost-uuid`: Used by authentik to identify the container, and to allow for name changes.
 
     Additionally, the proxy outposts have the following extra labels to add themselves into Traefik automatically.
-
     - `traefik.enable`: "true"
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.rule`: `Host(...)`
     - `traefik.http.routers.ak-outpost-<outpost-name>-router.service`: `ak-outpost-<outpost-name>-service`
