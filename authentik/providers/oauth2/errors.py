@@ -15,6 +15,7 @@ class OAuth2Error(SentryIgnoredException):
 
     error: str
     description: str
+    cause: str | None = None
 
     def create_dict(self):
         """Return error as dict for JSON Rendering"""
@@ -33,6 +34,10 @@ class OAuth2Error(SentryIgnoredException):
             message=message or self.description,
             **kwargs,
         )
+
+    def with_cause(self, cause: str):
+        self.cause = cause
+        return self
 
 
 class RedirectUriError(OAuth2Error):

@@ -190,7 +190,7 @@ class OAuthAuthorizationParams:
         allowed_redirect_urls = self.provider.redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError("", allowed_redirect_urls)
+            raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
 
         if len(allowed_redirect_urls) < 1:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
@@ -219,10 +219,14 @@ class OAuthAuthorizationParams:
                         provider=self.provider,
                     )
         if not match_found:
-            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls).with_cause(
+                "redirect_uri_no_match"
+            )
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls).with_cause(
+                "redirect_uri_forbidden_scheme"
+            )
 
     def check_scope(self, github_compat=False):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
@@ -251,7 +255,9 @@ class OAuthAuthorizationParams:
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_scope", self.grant_type, self.state
+            ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             # Don't explicitly request consent with offline_access, as the spec allows for
@@ -286,7 +292,9 @@ class OAuthAuthorizationParams:
             return
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_request", self.grant_type, self.state
+            ).with_cause("none_missing")
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
@@ -345,10 +353,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.request, github_compat=self.github_compat
             )
         except AuthorizeError as error:
-            LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
+            LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
             raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
-            LOGGER.warning(error.description)
+            LOGGER.warning(error.description, cause=error.cause)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
             ) from None
