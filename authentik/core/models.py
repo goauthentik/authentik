@@ -953,7 +953,10 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
-        permissions = [("view_token_key", _("View token's key"))]
+        permissions = [
+            ("view_token_key", _("View token's key")),
+            ("set_token_key", _("Set a token's key")),
+        ]
 
     def __str__(self):
         description = f"{self.identifier}"
