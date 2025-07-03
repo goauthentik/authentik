@@ -83,6 +83,9 @@ export class FlowExecutor
 
     ws: WebsocketClient;
 
+    @property()
+    xid?: string;
+
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             :host {
@@ -214,6 +217,7 @@ export class FlowExecutor
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
+                xid: this.xid || "",
                 flowChallengeResponseRequest: payload,
             });
             if (this.inspectorOpen) {
@@ -246,6 +250,7 @@ export class FlowExecutor
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
+                xid: this.xid,
             });
             if (this.inspectorOpen) {
                 window.dispatchEvent(
@@ -256,6 +261,7 @@ export class FlowExecutor
                 );
             }
             this.challenge = challenge;
+            this.xid = challenge.xid ?? undefined;
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
@@ -280,6 +286,7 @@ export class FlowExecutor
             component: "ak-stage-flow-error",
             error: body,
             requestId: "",
+            xid: "",
         };
         this.challenge = challenge as ChallengeTypes;
     }
