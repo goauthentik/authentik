@@ -54,6 +54,8 @@ sonarr_user: username
 sonarr_password: password
 ```
 
+Additional note:  Make sure the type of authentication is set to "Basic (Browser Popup)" in Sonarr, otherwise the credentials don't ge passed.
+
 Add all Sonarr users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
 Enable the `Use Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `sonarr_user` and `sonarr_password` respectively. These values can be chosen freely, `sonarr_` is just used as a prefix for clarity.
