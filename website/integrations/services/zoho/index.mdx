@@ -20,49 +20,27 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::note
-IdP inititiated login does not work with Zoho due to their non-standard use of SAML.
+:::warning
+IdP inititiated login does not work with Zoho. This is due to Zoho's non-standard requirement to set the format of the SAML `NameID` response which is currently not possible with authentik.
 :::
+
+## Download Zoho metadata file
+
+1. Login to Zoho Accounts as an administrator via one of the following links:
+    - United States: https://accounts.zoho.com
+    - Australia: https://accounts.zoho.com.au
+    - European Union: https://accounts.zoho.eu
+    - India: https://accounts.zoho.in
+    - China: https://accounts.zoho.com.cn
+    - Japan: https://accounts.zoho.jp
+    - Canada: https://accounts.zohocloud.ca
+
+2. Navigate to **Organization** > **SAML Authentication**.
+3. Click **Download Metadata**. You will require this Zoho metadata file in the next section.
 
 ## authentik configuration
 
 To support the integration of Zoho with authentik, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
-
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to:
-            - `https://sso.bitwarden.com/oidc-signin` for Non-EU based SaaS Bitwarden.
-            - `https://sso.bitwarden.eu/oidc-signin` for EU based SaaS Bitwarden.
-            - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
-        - Select any available signing key.
-        - Under **Advanced protocol settings**, **Selected Scopes**:
-            - Remove `authentik default OAuth Mapping: OpenID 'profile'` and add the property mapping that you created.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
-
-3. Click **Submit** to save the new application and provider.
-
-## Download Zoho metadata file
-
-1. Login to Zoho Accounts as an administrator
-
-    US: https://accounts.zoho.com
-    AU: https://accounts.zoho.com.au
-    EU: https://accounts.zoho.eu
-    IN: https://accounts.zoho.in
-    CN: https://accounts.zoho.com.cn
-    JP: https://accounts.zoho.jp
-    CA(Canada): https://accounts.zohocloud.ca
-
-2. Navigate to **Organization** > **SAML Authentication**.
-3. Click **Download Metadata**. You will require this file in the next section.
-
-## authentik configuration
 
 ### Create provider
 
@@ -70,63 +48,57 @@ To support the integration of Zoho with authentik, you need to create an applica
 2. Navigate to **Applications** > **Provider** and click **Create**.
     - **Choose a Provider type**: select **SAML Provider from Metadata** as the provider type.
     - **Configure the Provider**:
-        - Provide a descriptive name
-        - Select the authorization and invalidation flows to use for this provider
-        - For **Metadata**, select the Zoho metadata file
+        - Provide a descriptive name.
+        - Select the authorization and invalidation flows to use for this provider.
+        - For **Metadata**, select the Zoho metadata file that was downloaded in the previous section.
 
 3. Click **Finish** to save the new provider.
 4. Select the **Edit** icon of the newly created Zoho provider, and configure the following settings:
     - Under **Advanced protocol settings**:
         - Select an available signing certificate.
-        - Set **NameID Property Mapping** to `authentik default SAML MApping: Email`.
+        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
 
 5. Click update to save the changes.
 
 ### Create application
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Application** and click **Create**. - **Configure the Appliction**: - Provide a descriptive name and slug. - Select the authorization and invalidation flows to use for this provider - For **Metadata**, select the Zoho metadata file
-   Set launch url to https://www.zoho.com/login.html
+2. Navigate to **Applications** > **Application** and click **Create**.
+    - **Configure the Appliction**:
+        - Provide a descriptive name and slug.
+        - For **Provider**, select the Zoho provider created in the previous section.
+        - Under **UI Settings**, set **Launch URL** to `https://www.zoho.com/login.html`.
+3. Click **Finish** to save the new application.
 
 ### Download authentik metadata file
 
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created for Zoho.
+3. Under **Related objects** > **Metadata**, click on **Download**. You will require this authentik metadata file in the next section.
+
 ## Zoho configuration
 
-1. Login to Zoho Accounts as an administrator.
-
-    United States: https://accounts.zoho.com
-    Australia: https://accounts.zoho.com.au
-    European Union: https://accounts.zoho.eu
-    India: https://accounts.zoho.in
-    China: https://accounts.zoho.com.cn
-    Japan: https://accounts.zoho.jp
-    Canada: https://accounts.zohocloud.ca
+1. Login to Zoho Accounts as an administrator via one of the following links:.
+    - United States: https://accounts.zoho.com
+    - Australia: https://accounts.zoho.com.au
+    - European Union: https://accounts.zoho.eu
+    - India: https://accounts.zoho.in
+    - China: https://accounts.zoho.com.cn
+    - Japan: https://accounts.zoho.jp
+    - Canada: https://accounts.zohocloud.ca
 
 2. Navigate to **Organization** > **SAML Authentication**, and under **SAML Authentcation** select **Set up Now**.
 3. Click **Upload Metadata** and upload your authentik metadata file.
 4. Set **Name Identifier** to `Email Address`.
-5. Click **Submit**
+5. Click **Submit**.
 
-6. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (choose `Accessing: bitwarden.eu` for Bitwarden accounts based in the EU). If you are using a self-hosted Bitwarden, go to `https://bitwarden.company/#/login`.
-7. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
-    - **Allow SSO authentication**: Select this option.
-    - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if using self-hosted Bitwarden, or if you have claimed a domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
-    - **Type**: `OIDC`
-    - Under **OpenID connect configuration**:
-        - **Authority**: `https://authentik.company/application/o/<application_slug>/`
-        - **Client ID**: Client ID from authentik.
-        - **Client secret**: Client secret from authentik.
-        - **Metadata address**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-        - **OIDC redirect behavior**: `Redirect GET`
-        - **Get claims from user info endpoint**: Select this option.
-
-8. Click **Save**.
+:::note
+Accounts must be manually provisioned in Zoho before logging in via authentik SSO.
+:::
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Bitwarden, log out and go to the [Bitwarden login page](https://vault.bitwarden.com/#/login) (select `Accessing: bitwarden.eu` for EU based Bitwarden accounts or use `https://bitwarden.company/#/login` for self-hosted Bitwarden).
-
-Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to login, once successful you should be redirected to the Bitwarden dashboard.
+To confirm that authentik is properly configured with Zoho, log out and go to the [Zoho login page](https://www.zoho.com/login.html), and click **SIGN IN**. Enter the email address of an account that is provisioned in both Zoho and authentik and click **Next**, and then select **Sign in using SAML - SAML**. You should be redirected to authentik, where you'll be prompted to authenticate. Once authenticated, you should then be redirected to the Zoho dashboard.
 
 ## Resources
 
