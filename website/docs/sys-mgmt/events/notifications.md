@@ -1,5 +1,6 @@
 ---
-title: Notifications
+title: Notification rules
+sidebar_label: Notification rules
 ---
 
 :::note
@@ -18,13 +19,13 @@ To receive notifications about events, follow this workflow:
 
 ## 1. Create a notification transport
 
-A notification transport determines the method used to deliver notifications to users. Supported delivery methods are; local notifications displayed in the authentik UI, email and webhook. Follow these [instructions](./transports.md#create-a-transport) to create a notification transport.
+A notification transport determines the method used to deliver notifications to users. Supported delivery methods are: local notifications displayed in the authentik UI, email, and webhook. Follow these [instructions](./transports.md#create-a-transport) to create a notification transport.
 
 ## 2. Create a policy
 
 You will need to create a policy (either the **Event Matcher** policy or a custom Expression policy) that defines which events will trigger a notification.
 
-### **Event Matcher** policy
+### Event Matcher policy
 
 For simple event matching you can [create and configure](../../customize/policies/working_with_policies.md) a **Event Matcher** policy to define which events (known as _Actions_ in the policy) will trigger a notification. For example, whenever a user deletes a model object, or whenever any user fails to successfully log in.
 
@@ -47,18 +48,18 @@ After you've created the policies to match the events you want, create a notific
 
 1. Log in as an administrator, open the authentik Admin interface, and navigate to **Event > Notification Rules**.
 
-2. Click **Create** to add a new notification rule, or click the **Edit** icon next to an existing rule to modify it.
+2. Click **Create** to add a new notification rule or click the **Edit** icon next to an existing rule to modify it.
 
-3. Define the policy configurations, and click **Create** or **Update** to save the settings.
+3. Define the policy configurations, and then click **Create** or **Update** to save the settings.
 
 - Note that policies are executed regardless of whether a group is selected. However, notifications are only triggered when a group is selected.
 - You also have to select which [notification transport](./transports.md) should be used to send the notification. Two notification transports are created by default:
     - `default-email-transport`: Delivers notifications via email using the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended).
     - `default-local-transport`: Delivers notifications within the authentik UI.
 
-4. In the list of Notification rules, click the arrow in the row of the Notification rule to expand the details of the rule.
+4. In the list of notification rules, click the arrow in the row of the notification rule to expand the details of the rule.
 
-5. Click **Bind existing Policy/Group/User**, and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create** to finalize the binding.
+5. Click **Bind existing Policy/Group/User** and in the **Create Binding** modal, select the policy that you created for this notification rule and then click **Create** to finalize the binding.
 
 :::info
 Be aware that policies are executed even when no group is selected.
