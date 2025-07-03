@@ -87,7 +87,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
-            externalUrlRegex: /(:\/\/goauthentik\.io|docs\.goauthentik\.io)/.toString(),
+            externalUrlRegex: /.*/.source,
         },
     },
     presets: [
@@ -127,6 +127,10 @@ const config = createDocusaurusConfig({
                             },
                         ],
                     ],
+                },
+                gtag: {
+                    trackingID: ["G-9MVR9WZFZH"],
+                    anonymizeIP: true,
                 },
                 theme: {
                     customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
