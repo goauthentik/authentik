@@ -176,6 +176,7 @@ const items = [
             "services/adventurelog/index",
             "services/filerise/index",
             "services/home-assistant/index",
+            "services/ironclad/index",
             "services/open-webui/index",
             "services/zipline/index",
         ],
