@@ -83,20 +83,34 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
     JP: https://accounts.zoho.jp
     CA(Canada): https://accounts.zohocloud.ca
 
-Navigate to **Organization** > **SAML Authentication**
-
-Click **Download Metadata**
+2. Navigate to **Organization** > **SAML Authentication**.
+3. Click **Download Metadata**. You will require this file in the next section.
 
 ## authentik configuration
 
 ### Create provider
 
-Set name ID to email
-Set signing certificate
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Provider** and click **Create**.
+    - **Choose a Provider type**: select **SAML Provider from Metadata** as the provider type.
+    - **Configure the Provider**:
+        - Provide a descriptive name
+        - Select the authorization and invalidation flows to use for this provider
+        - For **Metadata**, select the Zoho metadata file
+
+3. Click **Finish** to save the new provider.
+4. Select the **Edit** icon of the newly created Zoho provider, and configure the following settings:
+    - Under **Advanced protocol settings**:
+        - Select an available signing certificate.
+        - Set **NameID Property Mapping** to `authentik default SAML MApping: Email`.
+
+5. Click update to save the changes.
 
 ### Create application
 
-Set launch url to https://www.zoho.com/login.html
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Application** and click **Create**. - **Configure the Appliction**: - Provide a descriptive name and slug. - Select the authorization and invalidation flows to use for this provider - For **Metadata**, select the Zoho metadata file
+   Set launch url to https://www.zoho.com/login.html
 
 ### Download authentik metadata file
 
@@ -104,23 +118,21 @@ Set launch url to https://www.zoho.com/login.html
 
 1. Login to Zoho Accounts as an administrator.
 
-    US: https://accounts.zoho.com
-    AU: https://accounts.zoho.com.au
-    EU: https://accounts.zoho.eu
-    IN: https://accounts.zoho.in
-    CN: https://accounts.zoho.com.cn
-    JP: https://accounts.zoho.jp
-    CA(Canada): https://accounts.zohocloud.ca
+    United States: https://accounts.zoho.com
+    Australia: https://accounts.zoho.com.au
+    European Union: https://accounts.zoho.eu
+    India: https://accounts.zoho.in
+    China: https://accounts.zoho.com.cn
+    Japan: https://accounts.zoho.jp
+    Canada: https://accounts.zohocloud.ca
 
-Navigate to **Organization** > **SAML Authentication**.
+2. Navigate to **Organization** > **SAML Authentication**, and under **SAML Authentcation** select **Set up Now**.
+3. Click **Upload Metadata** and upload your authentik metadata file.
+4. Set **Name Identifier** to `Email Address`.
+5. Click **Submit**
 
-Under **SAML Authentcation**, select **Set up Now**.
-Click **Upload Metadata** and upload your authentik metadata file.
-Set **Zoho service** to whatever service you want (e.g., Zoho One).
-Click **Submit**
-
-1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (choose `Accessing: bitwarden.eu` for Bitwarden accounts based in the EU). If you are using a self-hosted Bitwarden, go to `https://bitwarden.company/#/login`.
-2. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
+6. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator (choose `Accessing: bitwarden.eu` for Bitwarden accounts based in the EU). If you are using a self-hosted Bitwarden, go to `https://bitwarden.company/#/login`.
+7. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
     - **Allow SSO authentication**: Select this option.
     - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if using self-hosted Bitwarden, or if you have claimed a domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
     - **Type**: `OIDC`
@@ -132,7 +144,7 @@ Click **Submit**
         - **OIDC redirect behavior**: `Redirect GET`
         - **Get claims from user info endpoint**: Select this option.
 
-3. Click **Save**.
+8. Click **Save**.
 
 ## Configuration verification
 
