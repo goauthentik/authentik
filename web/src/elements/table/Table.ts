@@ -18,7 +18,7 @@ import "@goauthentik/elements/table/TableSearch";
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -128,7 +128,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam("tablePage", 1);
+    page = getURLParam(`${this.tagName.toLowerCase()}-page`, 1);
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -220,7 +220,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             await this.fetch();
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam("search", "");
+            this.search = getURLParam(`${this.tagName.toLowerCase()}-search`, "");
         }
     }
 
@@ -475,14 +475,23 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return nothing;
     }
 
+    protected willUpdate(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("page")) {
+            updateURLParams({
+                [`${this.tagName.toLowerCase()}-page`]: changedProperties.get("page"),
+            });
+        }
+        if (changedProperties.has("search")) {
+            updateURLParams({
+                [`${this.tagName.toLowerCase()}-search`]: changedProperties.get("search"),
+            });
+        }
+    }
+
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
             this.page = 1;
-            updateURLParams({
-                search: value,
-                tablePage: 1,
-            });
             this.fetch();
         };
         const isQL =
@@ -566,7 +575,6 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     /* A simple pagination display, shown at both the top and bottom of the page. */
     renderTablePagination(): TemplateResult {
         const handler = (page: number) => {
-            updateURLParams({ tablePage: page });
             this.page = page;
             this.fetch();
         };
