@@ -70,13 +70,13 @@ authentik requires a PostgreSQL database to store its configuration and data. Be
 ### Connection Settings
 
 - `AUTHENTIK_POSTGRESQL__HOST`: Hostname or IP address of your PostgreSQL server.
-- `AUTHENTIK_POSTGRESQL__PORT`: Port on which PostgreSQL is listening. Defaults to `5432`.
-- `AUTHENTIK_POSTGRESQL__USER`: Username for PostgreSQL authentication.
+- `AUTHENTIK_POSTGRESQL__PORT`: Port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
+- `AUTHENTIK_POSTGRESQL__USER`: Username that authentik will use to authenticate with PostgreSQL.
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Password for PostgreSQL authentication. If not set, it defaults to the value of the `POSTGRES_PASSWORD` environment variable (this fallback is specific to the default Docker Compose setup).
 - `AUTHENTIK_POSTGRESQL__NAME`: The name of the database for authentik to use.
 
 :::info Hot-reloading
-The `HOST`, `PORT`, `USER`, and `PASSWORD` settings support hot-reloading and can be changed without restarting authentik. However, adding or removing read replicas requires a restart.
+The `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__PORT`, `AUTHENTIK_POSTGRESQL__USER`, and `AUTHENTIK_POSTGRESQL__PASSWORD` settings support hot-reloading and can be changed without restarting authentik. However, adding or removing read replicas requires a restart.
 :::
 
 ### SSL/TLS Settings
