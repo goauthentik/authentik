@@ -1,4 +1,5 @@
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -31,9 +32,6 @@ export class AutosubmitStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
         let title = this.challenge.flowInfo?.title;
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;
@@ -41,16 +39,18 @@ export class AutosubmitStage extends BaseStage<
         if (!title) {
             title = msg("Loading");
         }
-        return html`<form class="pf-c-form" action="${this.challenge.url}" method="POST">
-            ${Object.entries(this.challenge.attrs).map(([key, value]) => {
-                return html`<input
-                    type="hidden"
-                    name="${key as string}"
-                    value="${value as string}"
-                />`;
-            })}
-            <ak-empty-state loading title=${title}> </ak-empty-state>
-        </form>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" action="${this.challenge.url}" method="POST">
+                ${Object.entries(this.challenge.attrs).map(([key, value]) => {
+                    return html`<input
+                        type="hidden"
+                        name="${key as string}"
+                        value="${value as string}"
+                    />`;
+                })}
+                <ak-empty-state loading title=${title}> </ak-empty-state>
+            </form>
+        </ak-flow-card>`;
     }
 }
 

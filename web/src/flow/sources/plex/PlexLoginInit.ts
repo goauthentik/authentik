@@ -1,7 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
+import "@goauthentik/elements/EmptyState";
 import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -64,30 +66,25 @@ export class PlexLoginInit extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Plex...")}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <ak-empty-state loading
-                        ><span>${msg("Waiting for authentication...")}></span>
-                    </ak-empty-state>
-                    <hr class="pf-c-divider" />
-                    <p>${msg("If no Plex popup opens, click the button below.")}</p>
-                    <button
-                        class="pf-c-button pf-m-block pf-m-primary"
-                        type="button"
-                        @click=${() => {
-                            window.open(this.authUrl, "_blank");
-                        }}
-                    >
-                        ${msg("Open login")}
-                    </button>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <span slot="title">${msg("Authenticating with Plex...")}</span>
+            <form class="pf-c-form">
+                <ak-empty-state loading
+                    ><span>${msg("Waiting for authentication...")}></span>
+                </ak-empty-state>
+                <hr class="pf-c-divider" />
+                <p>${msg("If no Plex popup opens, click the button below.")}</p>
+                <button
+                    class="pf-c-button pf-m-block pf-m-primary"
+                    type="button"
+                    @click=${() => {
+                        window.open(this.authUrl, "_blank");
+                    }}
+                >
+                    ${msg("Open login")}
+                </button>
+            </form>
+        </ak-flow-card>`;
     }
 }
 
