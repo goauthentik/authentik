@@ -71,6 +71,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
+                delete this.challenge.flowInfo;
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -106,6 +107,7 @@ export class UserSettingsFlowExecutor
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             });
+            delete challenge.flowInfo;
             this.challenge = challenge;
         } catch (e: unknown) {
             // Catch JSON or Update errors
