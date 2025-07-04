@@ -1,10 +1,11 @@
 ---
-title: Transports
+title: Transport rules
+sidebar_label: Transport rules
 ---
 
-To receive notifications about events, you must first [create a transport](#create-a-transport), then define a notification rule and a policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
+To receive notifications about events you must first [create a notification transport](#create-a-notification-transport), and then define a notification rule with a bound policy. For more information, see the [Workflow overview](./notifications.md#workflow-overview).
 
-## Transport modes
+## Notification transport modes
 
 Notifications can be sent to users via multiple mediums, or _transports_:
 
@@ -13,13 +14,13 @@ Notifications can be sent to users via multiple mediums, or _transports_:
 - Webhook (generic)
 - Webhook (Slack/Discord)
 
-### Local transport
+### Local
 
-This transport will manifest the notification within the authentik user interface (UI).
+This notification transport will manifest the notification within the authentik user interface (UI).
 
 ### Email
 
-Select this transport to send event notifications to an email address. Note that by default, the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
+Select this transport to send event notifications to an email address. Note that by default the [global email configuration](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) is used.
 
 To edit an email address, follow the same instructions as above for configuring the global email during the installation process.
 
@@ -54,10 +55,10 @@ return {
 
 This sends a request using the Slack-specific format. This is also compatible with Discord's webhooks by appending `/slack` to the Discord webhook URL.
 
-## Create a transport
+## Create a notification transport
 
-1. Log in as an administrator to the authentik Admin interface, and navigate to **Event > Notification Transports**.
+1. Log in as an administrator to the authentik Admin interface, and then navigate to **Event > Notification Transports**.
 
-2. Click **Create** to add a new transport, or click the **Edit** icon next to an existing transport to modify it.
+2. Click **Create** to add a new transport or click the **Edit** icon next to an existing notification transport to modify it.
 
-3. Define the **Name** and **Mode** for the transport, enter required configuration settings, and then click **Create**.
+3. Define the **Name** and **Mode** for the notification transport, enter required configuration settings, and then click **Create**.

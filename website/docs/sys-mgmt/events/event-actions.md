@@ -265,11 +265,11 @@ A user authorizes an application.
 
 ### `source_linked`
 
-A user links a source to their account
+A user links a source to their account.
 
 ### `impersonation_started` / `impersonation_ended`
 
-A user starts/ends impersonation, including the user that was impersonated
+A user starts/ends impersonation, including the user that was impersonated.
 
 ### `policy_execution`
 
@@ -277,7 +277,7 @@ A policy is executed (when a policy has "Execution Logging" enabled).
 
 ### `policy_exception` / `property_mapping_exception`
 
-A policy or property mapping causes an exception
+A policy or property mapping causes an exception.
 
 ### `system_task_exception`
 
@@ -289,7 +289,7 @@ A general exception in authentik occurred.
 
 ### `configuration_error`
 
-A configuration error occurs, for example during the authorization of an application
+A configuration error occurs, for example during the authorization of an application.
 
 ### `model_created` / `model_updated` / `model_deleted`
 
@@ -305,4 +305,4 @@ An email has been sent. Included is the email that was sent.
 
 ### `update_available`
 
-An update is available
+An update is available.

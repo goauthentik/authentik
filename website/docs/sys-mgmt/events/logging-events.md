@@ -2,7 +2,7 @@
 title: Logging events
 ---
 
-Logs are a vital tool for system diagnostics, event auditing, user management, reporting, and more. They capture detailed information about each event, including the client's IP address, the user involved, the date and time, and the specific action taken.
+Logs are a vital tool for system diagnostics, event auditing, user management, reporting, and more. They capture detailed information about each event including the client's IP address, the user involved, the date and time, and the specific action taken.
 
 Event logging in authentik is highly configurable. You can set the [retention period](./index.md#event-retention-and-forwarding) for storing and displaying events, specify which events should trigger a [notification](./notifications.md), and access low-level details about when and where each event occurred.
 
