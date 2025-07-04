@@ -68,7 +68,7 @@ def set_file_url(request: Request, obj: Model, field_name: str):
     field.name = url
     obj.save()
     if hasattr(obj, f"get_{field_name}"):
-        value = getattr(obj, f"get_{field_name}")
+        value = getattr(obj, f"get_{field_name}")()
     else:
         try:
             value = field.url

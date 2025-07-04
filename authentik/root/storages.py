@@ -145,7 +145,8 @@ class S3Storage(BaseS3Storage):
 
         if self.querystring_auth:
             return url
-        return self._strip_signing_parameters(url)
+        else:
+            return self._strip_signing_parameters(url)
 
     def _strip_signing_parameters(self, url):
         # Boto3 does not currently support generating URLs that are unsigned. Instead
