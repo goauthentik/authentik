@@ -44,20 +44,15 @@ def send_backchannel_logout_request(
         return False
 
     # Get the back-channel logout URI from the provider's dedicated backchannel_logout_uris field
-    # If no specific back-channel logout URIs are configured, fall back to searching redirect_uris
+    # Backchannel logout requires explicit configuration - no fallback to redirect URIs
 
     backchannel_logout_uri = None
 
-    # First check dedicated backchannel_logout_uris
+    # Check if provider has dedicated backchannel logout URIs configured
     if provider.backchannel_logout_uris:
+        # Use the first configured backchannel logout URI
+        # In the future, we could implement logic to select based on criteria
         backchannel_logout_uri = provider.backchannel_logout_uris[0].url
-
-    # Fall back to searching redirect_uris if no dedicated URIs are found
-    if not backchannel_logout_uri:
-        for redirect_uri in provider.redirect_uris:
-            if "backchannel_logout" in redirect_uri.url.lower():
-                backchannel_logout_uri = redirect_uri.url
-                break
 
     if not backchannel_logout_uri:
         LOGGER.warning(

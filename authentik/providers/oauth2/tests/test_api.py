@@ -122,14 +122,18 @@ class TestAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         provider_data = loads(response.content.decode())
-        
+
         # Verify the backchannel logout URIs were saved correctly
         self.assertEqual(len(provider_data["backchannel_logout_uris"]), 2)
-        self.assertEqual(provider_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout")
+        self.assertEqual(
+            provider_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout"
+        )
         self.assertEqual(provider_data["backchannel_logout_uris"][0]["matching_mode"], "strict")
-        self.assertEqual(provider_data["backchannel_logout_uris"][1]["url"], r"http://.*\.example\.com/logout")
+        self.assertEqual(
+            provider_data["backchannel_logout_uris"][1]["url"], r"http://.*\.example\.com/logout"
+        )
         self.assertEqual(provider_data["backchannel_logout_uris"][1]["matching_mode"], "regex")
-        
+
         # Test retrieving the provider
         response = self.client.get(
             reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider_data["pk"]})
@@ -137,4 +141,6 @@ class TestAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         retrieved_data = loads(response.content.decode())
         self.assertEqual(len(retrieved_data["backchannel_logout_uris"]), 2)
-        self.assertEqual(retrieved_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout")
+        self.assertEqual(
+            retrieved_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout"
+        )
