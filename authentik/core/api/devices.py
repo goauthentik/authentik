@@ -44,7 +44,11 @@ class DeviceSerializer(MetaNameSerializer):
             return instance.device_type.description if instance.device_type else None
         if isinstance(instance, EndpointDevice):
             return instance.data.get("deviceSignals", {}).get("deviceModel")
-        return None
+        return (
+            instance.device_type.description
+            if instance.device_type
+            else _("Extra description not available")
+        )
 
     def get_external_id(self, instance: Device) -> str | None:
         """Get external Device ID"""

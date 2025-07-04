@@ -5,6 +5,7 @@ from django.utils.functional import cached_property
 
 from authentik.core.models import User
 from authentik.endpoints.common_data import CommonDeviceData
+from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 
 
@@ -20,17 +21,17 @@ class Device(SerializerModel):
         pass
 
 
-class DeviceUser(models.Model):
+class DeviceUser(SerializerModel):
     device_user_uuid = models.UUIDField(default=uuid4)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_primary = models.BooleanField()
 
 
-class DeviceConnection(models.Model):
+class DeviceConnection(SerializerModel):
     device_connection_uuid = models.UUIDField(default=uuid4)
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
-    connection = models.ForeignKey("Connector", on_delete=models.CASCADE)
+    connector = models.ForeignKey("Connector", on_delete=models.CASCADE)
     data = models.JSONField(default=dict)
 
 
@@ -38,3 +39,7 @@ class Connector(SerializerModel):
     connector_uuid = models.UUIDField(default=uuid4)
 
     name = models.TextField()
+
+
+class EndpointStage(Stage):
+    pass
