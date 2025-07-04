@@ -105,7 +105,7 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: The maximum age of a database connection in seconds.
     - `0` (default): Connections are closed after each request.
-    - `> 0`: Enables persistent connections, with the value defining the maximum lifetime.
+    - greater than `0`: Enables persistent connections, with the value defining the maximum lifetime.
     - `None`: Unlimited persistence. Use with caution, especially with connection poolers.
       See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for more details.
 
