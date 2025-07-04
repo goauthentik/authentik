@@ -43,6 +43,7 @@ export class FlowCard extends AKElement {
                 slot[name="footer-band"] {
                     text-align: center;
                     background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
+                    padding: 0;
                 }
             `,
         ];
@@ -72,7 +73,7 @@ export class FlowCard extends AKElement {
                 ${this.hasSlotted("footer")
                     ? html`<slot name="footer"></slot>`
                     : html`<ul class="pf-c-login__main-footer-links"></ul>`}
-                <slot name="footer-band"></slot>
+                <slot name="footer-band" class="pf-c-login__main-footer-band"></slot>
             </footer>`;
     }
 }
