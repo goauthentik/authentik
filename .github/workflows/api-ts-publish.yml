@@ -27,7 +27,7 @@ jobs:
       - name: Publish package
         working-directory: gen-ts-api/
         run: |
-          npm ci
+          npm i
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
