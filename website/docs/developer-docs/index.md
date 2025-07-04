@@ -8,7 +8,7 @@ The following is a set of guidelines for contributing to authentik and its compo
 
 We appreciate contributions of code, documentation, enhancements, and bug fixes. Read more [below](#how-can-i-contribute) about the many ways to contribute.
 
-## Code of Conduct
+## Code of conduct
 
 We expect all contributors to act professionally and respectfully in all interactions. If there's something you dislike or think can be done better, tell us! We'd love to hear any suggestions for improvement.
 
@@ -94,9 +94,9 @@ This Django project is running in gunicorn, which spawns multiple workers and th
 
 There are also several background tasks which run in Celery, the root celery application is defined in `authentik.root.celery`.
 
-## How Can I Contribute?
+## How can I contribute?
 
-### Reporting Bugs
+### Reporting bugs
 
 This section guides you through submitting a bug report for authentik. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
@@ -104,13 +104,13 @@ Whenever authentik encounters an error, it will be logged as an Event with the t
 
 This form will have the full stack trace of the error that occurred and shouldn't contain any sensitive data.
 
-### Suggesting Enhancements
+### Suggesting enhancements
 
 This section guides you through submitting an enhancement suggestion for authentik, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
 When you are creating an enhancement suggestion, please fill in [the template](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=), including the steps that you imagine you would take if the feature you're requesting existed.
 
-### Your First Code Contribution
+### Your first code contribution
 
 #### Local development
 
@@ -118,13 +118,13 @@ authentik can be run locally, although depending on which part you want to work 
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
-### Help with the Docs
+### Help with the docs
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
 Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
-### Pull Requests
+### Pull requests
 
 The process described here has several goals:
 
@@ -151,7 +151,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
       `providers/saml2: fix parsing of requests`
       `website/docs: add config info for GWS`
 
-### Git Commit Messages
+### Git commit messages
 
 - Use the format of `<package>: <verb> <description>`
     - See [here](#authentiks-structure) for `package`
@@ -159,7 +159,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 - Reference issues and pull requests liberally after the first line
 - Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Style Guide
+### Python style guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
@@ -170,7 +170,7 @@ authentik runs on Python 3.13 at the time of writing this.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Style Guide
+### Documentation style guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
