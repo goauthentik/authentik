@@ -125,7 +125,7 @@ These settings control connection persistence and behavior, which is particularl
 
 You can configure additional read replica databases to distribute database load and improve performance. When read replicas are configured, authentik automatically routes query operations between the primary database (for writes) and read replica databases (for queries). By default, the primary database won't be used for queries when read replicas are available. If you want the primary database to also handle queries, add it as a read replica.
 
-To configure authentik to use read replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple read replicas, add settings for each by replacing the default `0` with a unique value for each additional read replica.
+To configure authentik to use read replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple read replicas, add settings for each one by using a unique index starting from `0` (e.g., `0`, `1`, `2`, etc.).
 
 The same PostgreSQL settings as described above are used for each read replica. For example, for the first read replica (index `0`):
 
