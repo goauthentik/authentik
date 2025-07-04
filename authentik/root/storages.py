@@ -83,6 +83,8 @@ class S3Storage(BaseS3Storage):
 
     def _normalize_name(self, name):
         try:
+            if self.location == connection.schema_name:
+                return safe_join(self.location, name)
             return safe_join(self.location, connection.schema_name, name)
         except ValueError:
             raise SuspiciousOperation(f"Attempted access to '{name}' denied.") from None
@@ -96,7 +98,12 @@ class S3Storage(BaseS3Storage):
             expire = self.querystring_expire
 
         params["Bucket"] = self.bucket.name
-        params["Key"] = name
+        
+        # fixme
+        if name.startswith(f"{self.bucket.name}/"):
+            params["Key"] = name[len(self.bucket.name) + 1:]
+        else:
+            params["Key"] = name
 
         # Get the client and configure endpoint URL if custom_domain is set
         client = self.bucket.meta.client
@@ -110,13 +117,12 @@ class S3Storage(BaseS3Storage):
             # If the custom domain is an IDN, it needs to be punycode encoded.
             custom_domain = custom_domain.encode("idna").decode("ascii")
 
-        try:
-            # If custom domain is set, configure the endpoint URL
-            if custom_domain:
-                scheme = "https" if self.secure_urls else "http"
-                # Temporarily override the full endpoint URL (scheme+host)
-                endpoint.host = f"{scheme}://{custom_domain}"
+            domain_part = custom_domain.split('/')[0]
+            
+            scheme = "https" if self.secure_urls else "http"
+            endpoint.host = f"{scheme}://{domain_part}"
 
+        try:
             # Generate the presigned URL using the correctly configured client
             url = client.generate_presigned_url(
                 "get_object",
@@ -125,18 +131,39 @@ class S3Storage(BaseS3Storage):
                 HttpMethod=http_method,
             )
 
-            # If using custom domain, replace host and scheme but preserve full path
+            # If using custom domain, replace host and scheme
             if custom_domain:
                 split_url = urlsplit(url)
-                url = urlunsplit(
-                    (
-                        scheme,
-                        custom_domain,
-                        split_url.path,
-                        split_url.query,
-                        split_url.fragment,
+                
+                # If custom_domain includes a path component (like bucket name), use it
+                if '/' in custom_domain:
+                    domain_part = custom_domain.split('/')[0]
+                    path_parts = custom_domain.split('/')[1:]
+                    
+                    # fixme
+                    path = split_url.path
+                    if path.startswith(f"/{self.bucket.name}/"):
+                        path = path[len(f"/{self.bucket.name}"):]
+                    
+                    url = urlunsplit(
+                        (
+                            scheme,
+                            domain_part,
+                            f"/{'/'.join(path_parts)}{path}",
+                            split_url.query,
+                            split_url.fragment,
+                        )
                     )
-                )
+                else:
+                    url = urlunsplit(
+                        (
+                            scheme,
+                            custom_domain,
+                            split_url.path,
+                            split_url.query,
+                            split_url.fragment,
+                        )
+                    )
 
         finally:
             # Restore the original endpoint URL if we changed it
