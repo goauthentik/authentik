@@ -239,7 +239,7 @@ class TestBackChannelLogout(OAuthTestCase):
             user=self.user,
             session=session,
             token="test-refresh-token",
-            _id_token="{}",
+            _id_token=json.dumps({}),
             auth_time=timezone.now(),
         )
 
@@ -391,7 +391,7 @@ class TestBackChannelLogout(OAuthTestCase):
             user=self.user,
             session=session,
             token=generate_id(),
-            _id_token="{}",
+            _id_token=json.dumps({}),
             auth_time=auth_time,
         )
         RefreshToken.objects.create(
@@ -399,7 +399,7 @@ class TestBackChannelLogout(OAuthTestCase):
             user=self.user,
             session=session,
             token=generate_id(),
-            _id_token="{}",
+            _id_token=json.dumps({}),
             auth_time=auth_time,
         )
 
