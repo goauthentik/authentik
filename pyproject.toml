@@ -45,7 +45,7 @@ dependencies = [
     "ldap3==2.9.1",
     "lxml==6.0.0",
     "msgraph-sdk==1.36.0",
-    "opencontainers==0.0.14",
+    "opencontainers==0.0.15",
     "packaging==25.0",
     "paramiko==3.5.1",
     "psycopg[c,pool]==3.2.9",
