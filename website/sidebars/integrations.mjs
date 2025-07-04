@@ -50,6 +50,7 @@ const items = [
             "services/google/index",
             "services/hashicorp-cloud/index",
             "services/oracle-cloud/index",
+            "services/ovhcloud/index",
         ],
     },
     {
@@ -176,6 +177,7 @@ const items = [
             "services/adventurelog/index",
             "services/filerise/index",
             "services/home-assistant/index",
+            "services/ironclad/index",
             "services/open-webui/index",
             "services/zipline/index",
         ],
