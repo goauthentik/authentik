@@ -13,6 +13,7 @@ import { AKElement } from "#elements/Base";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -114,6 +115,7 @@ export class ApplicationViewPage extends AKElement {
         if (!this.application) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }
+        const currentSlug = this.application.slug;
         return html`<ak-tabs>
             ${this.missingOutpost
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -201,7 +203,16 @@ export class ApplicationViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <ak-forms-modal>
+                                            <ak-forms-modal
+                                                @ak-form-successful-submit=${(e: CustomEvent) => {
+                                                    const app = e.detail as Application;
+                                                    ModelForm.handleIdentifierChange(
+                                                        this.applicationSlug || "",
+                                                        app.slug,
+                                                        "/core/applications/",
+                                                    );
+                                                }}
+                                            >
                                                 <span slot="submit"> ${msg("Update")} </span>
                                                 <span slot="header">
                                                     ${msg("Update Application")}

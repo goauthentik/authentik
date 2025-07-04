@@ -103,6 +103,13 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 },
             });
         }
+        this.dispatchEvent(
+            new CustomEvent("ak-form-successful-submit", {
+                detail: { slug: source.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
         return source;
     }
 
