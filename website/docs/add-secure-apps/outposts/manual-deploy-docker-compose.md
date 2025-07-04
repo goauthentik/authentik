@@ -22,7 +22,7 @@ services:
             AUTHENTIK_HOST: https://your-authentik.tld
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
-            # Optional, when `authentik_host` for internal communication doesn't match the public URL
+            # Optional setting to be used when `authentik_host` for internal communication doesn't match the public URL.
             # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
 ```
 
