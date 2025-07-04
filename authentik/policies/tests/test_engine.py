@@ -170,3 +170,18 @@ class TestPolicyEngine(TestCase):
                     engine.build()
                 self.assertLess(ctx.final_queries, 1000)
                 self.assertEqual(engine.result.passing, case["passing"])
+
+    def test_engine_group_complex(self):
+        """Test more complex group setups"""
+        group_a = Group.objects.create(name=generate_id())
+        group_b = Group.objects.create(name=generate_id(), parent=group_a)
+        user = create_test_user()
+        group_b.users.add(user)
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(target=pbm, order=0, group=group_a)
+        engine = PolicyEngine(pbm, user)
+        engine.use_cache = False
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            engine.build()
+        self.assertLess(ctx.final_queries, 1000)
+        self.assertTrue(engine.result.passing)
