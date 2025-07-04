@@ -15,7 +15,7 @@ To receive notifications about events, follow this workflow:
 
 1. Create a notification transport (or use a default notification transport).
 2. Create a policy.
-3. Create a notification rule, and bind the policy to the rule.
+3. Create a notification rule and bind the policy to the rule.
 
 ## 1. Create a notification transport
 
