@@ -22,7 +22,7 @@ In the enterprise version, two enhancements make reading the logs even easier:
 
 You can view audit details in the following areas of the authentik Admin interface:
 
-- **Admin interface > Dashboards > Overview**: In the **Recent events** section, click an event name to view its details.
+- **Admin interface > Dashboards > Overview**: In the **Recent events** section click an event name to view its details.
 
 - **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
