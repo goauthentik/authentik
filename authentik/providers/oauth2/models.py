@@ -6,7 +6,7 @@ import json
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -44,8 +44,11 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.id_token import IDToken, SubModes
+from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+if TYPE_CHECKING:
+    from authentik.providers.oauth2.id_token import IDToken
 
 LOGGER = get_logger()
 
@@ -167,8 +170,10 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
+
 class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
+
 
     client_type = models.CharField(
         max_length=30,
@@ -195,6 +200,10 @@ class OAuth2Provider(WebfingerProvider, Provider):
     _redirect_uris = models.JSONField(
         default=dict,
         verbose_name=_("Redirect URIs"),
+    )
+    _backchannel_logout_uris = models.JSONField(
+        default=dict,
+        verbose_name=_("Back-Channel Logout URIs"),
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -320,6 +329,28 @@ class OAuth2Provider(WebfingerProvider, Provider):
         for entry in value:
             cleansed.append(asdict(entry))
         self._redirect_uris = cleansed
+
+    @property
+    def backchannel_logout_uris(self) -> list[RedirectURI]:
+        """Get back-channel logout URIs"""
+        uris = []
+        for entry in self._backchannel_logout_uris:
+            uris.append(
+                from_dict(
+                    RedirectURI,
+                    entry,
+                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                )
+            )
+        return uris
+
+    @backchannel_logout_uris.setter
+    def backchannel_logout_uris(self, value: list[RedirectURI]):
+        """Set back-channel logout URIs"""
+        cleansed = []
+        for entry in value:
+            cleansed.append(asdict(entry))
+        self._backchannel_logout_uris = cleansed
 
     @property
     def launch_url(self) -> str | None:
@@ -480,13 +511,14 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
+    def id_token(self, value: "IDToken"):
         self.token = value.to_access_token(self.provider)
         self._id_token = json.dumps(asdict(value))
 
@@ -531,13 +563,14 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
+    def id_token(self, value: "IDToken"):
         self._id_token = json.dumps(asdict(value))
 
     @property
