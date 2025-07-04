@@ -7,16 +7,18 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.relations import SlugRelatedField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
+from django_filters.rest_framework import DjangoFilterBackend
 
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -333,4 +335,20 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         app: Application = self.get_object()
         field = app.meta_icon
         field.delete()
-        return Response({"meta_icon": app.get_meta_icon})
+        return Response({"meta_icon": app.get_meta_icon()})
+
+    @extend_schema(
+        responses={
+            200: inline_serializer(
+                "ApplicationIcon",
+                fields={
+                    "meta_icon": CharField(read_only=True),
+                },
+            )
+        }
+    )
+    @action(methods=["GET"], detail=True, url_path="icon", url_name="icon_get")
+    def icon_get(self, request: Request, pk: str) -> Response:
+        """Get application icon"""
+        app: Application = self.get_object()
+        return Response({"meta_icon": app.get_meta_icon()})
