@@ -1,6 +1,10 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import {
+    IBackchannelLogoutURIInput,
+    akOAuthBackchannelLogoutURIInput,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderBackchannelLogoutURI";
+import {
     IRedirectURIInput,
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
@@ -115,6 +119,19 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
 
+const backchannelLogoutUriHelpMessages = [
+    msg(
+        "URIs to send backchannel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
+    ),
+    msg(
+        "These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.",
+    ),
+];
+
+export const backchannelLogoutUriHelp = html`${backchannelLogoutUriHelpMessages.map(
+    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+)}`;
+
 type ShowClientSecret = (show: boolean) => void;
 const defaultShowClientSecret: ShowClientSecret = (_show) => undefined;
 
@@ -191,6 +208,23 @@ export function renderForm(
                     >
                     </ak-array-input>
                     ${redirectUriHelp}
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("Backchannel Logout URIs")}
+                    name="backchannelLogoutUris"
+                >
+                    <ak-array-input
+                        .items=${provider?.backchannelLogoutUris ?? []}
+                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
+                        .row=${(f?: RedirectURI) =>
+                            akOAuthBackchannelLogoutURIInput({
+                                ".backchannelLogoutURI": f,
+                                "style": "width: 100%",
+                                "name": "oauth2-backchannel-logout-uri",
+                            } as unknown as IBackchannelLogoutURIInput)}
+                    >
+                    </ak-array-input>
+                    ${backchannelLogoutUriHelp}
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
