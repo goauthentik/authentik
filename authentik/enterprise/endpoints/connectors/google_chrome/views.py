@@ -9,11 +9,9 @@ from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from googleapiclient.discovery import build
 
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
-    AuthenticatorEndpointGDTCStage,
-    EndpointDevice,
-    EndpointDeviceConnection,
-)
+from authentik.endpoints.models import Device, DeviceConnection, DeviceUser
+from authentik.endpoints.stage import PLAN_CONTEXT_ENDPOINT_CONNECTOR
+from authentik.enterprise.endpoints.connectors.google_chrome.models import GoogleChromeConnector
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -41,12 +39,14 @@ class GoogleChromeDeviceTrustConnector(View):
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         super().setup(request, *args, **kwargs)
-        stage: AuthenticatorEndpointGDTCStage = self.get_flow_plan().bindings[0].stage
+        self.connector: GoogleChromeConnector = self.get_flow_plan().context.get(
+            PLAN_CONTEXT_ENDPOINT_CONNECTOR
+        )
         self.google_client = build(
             "verifiedaccess",
             "v2",
             cache_discovery=False,
-            **stage.google_credentials(),
+            **self.connector.google_credentials(),
         )
 
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -56,7 +56,7 @@ class GoogleChromeDeviceTrustConnector(View):
             challenge = self.google_client.challenge().generate().execute()
             res = HttpResponseRedirect(
                 self.request.build_absolute_uri(
-                    reverse("authentik_stages_authenticator_endpoint_gdtc:chrome")
+                    reverse("authentik_endpoints_connectors_google_chrome:chrome")
                 )
             )
             res[HEADER_ACCESS_CHALLENGE] = dumps(challenge)
@@ -70,17 +70,20 @@ class GoogleChromeDeviceTrustConnector(View):
             # Remove deprecated string representation of deviceSignals
             response.pop("deviceSignal", None)
             flow_plan: FlowPlan = self.get_flow_plan()
-            device, _ = EndpointDevice.objects.update_or_create(
-                host_identifier=response["deviceSignals"]["serialNumber"],
-                user=flow_plan.context.get(PLAN_CONTEXT_PENDING_USER),
-                defaults={"name": response["deviceSignals"]["hostname"], "data": response},
+            device, _ = Device.objects.update_or_create(
+                identifier=response["deviceSignals"]["serialNumber"]
             )
-            EndpointDeviceConnection.objects.update_or_create(
+            DeviceConnection.objects.update_or_create(
                 device=device,
-                stage=flow_plan.bindings[0].stage,
+                connector=self.connector,
                 defaults={
-                    "attributes": response,
+                    "data": response,
                 },
+            )
+            DeviceUser.objects.update_or_create(
+                device=device,
+                user=flow_plan.context.get(PLAN_CONTEXT_PENDING_USER),
+                create_defaults={"is_primary": True},
             )
             flow_plan.context.setdefault(PLAN_CONTEXT_METHOD, "trusted_endpoint")
             flow_plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
