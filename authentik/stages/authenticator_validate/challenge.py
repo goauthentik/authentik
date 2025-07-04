@@ -18,7 +18,7 @@ from webauthn.authentication.verify_authentication_response import verify_authen
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
-from webauthn.helpers.structs import UserVerificationRequirement
+from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
@@ -157,6 +157,12 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
     stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
+        # Workaround for Android sign-in, when signing into Google Workspace on android while
+        # adding the account to the system (not in Chrome), for some reason `type` is not set
+        # so in that case we fall back to `public-key`
+        # since that's the only option we support anyways
+        data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
     try:
         credential = parse_authentication_credential_json(data)
     except InvalidJSONStructure as exc:
