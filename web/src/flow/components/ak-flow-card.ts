@@ -33,19 +33,16 @@ export class FlowCard extends AKElement {
             PFLogin,
             PFTitle,
             css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
+                slot[name="footer"],
+                slot[name="footer-band"] {
                     display: flex;
-                    align-items: stretch;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    flex-basis: 100%;
                 }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+                slot[name="footer-band"] {
+                    text-align: center;
+                    background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
                 }
             `,
         ];
@@ -72,9 +69,9 @@ export class FlowCard extends AKElement {
                 <slot></slot>
             </div>
             <footer class="pf-c-login__main-footer">
-                <slot name="footer">
-                    <ul class="pf-c-login__main-footer-links"></ul>
-                </slot>
+                ${this.hasSlotted("footer")
+                    ? html`<slot name="footer"></slot>`
+                    : html`<ul class="pf-c-login__main-footer-links"></ul>`}
                 <slot name="footer-band"></slot>
             </footer>`;
     }

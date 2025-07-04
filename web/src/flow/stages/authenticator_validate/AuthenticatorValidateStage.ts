@@ -283,11 +283,11 @@ export class AuthenticatorValidateStage
                 : html`<form class="pf-c-form">
                           ${this.renderUserInfo()}
                           ${this.selectedDeviceChallenge
-                              ? ""
+                              ? nothing
                               : html`<p>${msg("Select an authentication method.")}</p>`}
                           ${this.challenge.configurationStages.length > 0
                               ? this.renderStagePicker()
-                              : html``}
+                              : nothing}
                       </form>
                       ${this.renderDevicePicker()}`}
         </ak-flow-card>`;
