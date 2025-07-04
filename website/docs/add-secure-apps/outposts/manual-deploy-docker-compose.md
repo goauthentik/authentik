@@ -12,8 +12,7 @@ You can also run the outpost in a separate docker-compose project, you just have
 services:
     authentik_proxy:
         image: ghcr.io/goauthentik/proxy
-        # Optionally specify which networks the container should be
-        # might be needed to reach the core authentik server
+        # Optionally specify the container's network, which must be able to reach the core authentik server.
         # networks:
         #   - foo
         ports:
@@ -23,8 +22,7 @@ services:
             AUTHENTIK_HOST: https://your-authentik.tld
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
-            # Starting with 2021.9, you can optionally set this too
-            # when authentik_host for internal communication doesn't match the public URL
+            # Optional, when `authentik_host` for internal communication doesn't match the public URL
             # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
 ```
 
@@ -34,8 +32,7 @@ services:
 services:
     authentik_ldap:
         image: ghcr.io/goauthentik/ldap
-        # Optionally specify which networks the container should be
-        # might be needed to reach the core authentik server
+        # Optionally specify the container's network, which must be able to reach the core authentik server.
         # networks:
         #   - foo
         ports:
@@ -53,8 +50,7 @@ services:
 services:
     rac_outpost:
         image: ghcr.io/goauthentik/rac
-        # Optionally specify which networks the container should be
-        # might be needed to reach the core authentik server
+        # Optionally specify the container's network, which must be able to reach the core authentik server.
         # networks:
         #   - foo
         environment:
@@ -69,8 +65,7 @@ services:
 services:
     radius_outpost:
         image: ghcr.io/goauthentik/radius
-        # Optionally specify which networks the container should be
-        # might be needed to reach the core authentik server
+        # Optionally specify the container's network, which must be able to reach the core authentik server.
         # networks:
         #   - foo
         ports:
