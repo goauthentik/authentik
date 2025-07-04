@@ -7,18 +7,16 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
-from rest_framework.relations import SlugRelatedField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
-from django_filters.rest_framework import DjangoFilterBackend
 
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -319,20 +317,3 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
         return set_file_url(request, app, "meta_icon")
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        responses={200: OpenApiResponse(description="Success")},
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def clear_icon(self, request: Request, slug: str):
-        """Clear application icon"""
-        app: Application = self.get_object()
-        app.meta_icon = None
-        app.save()
-        return Response()
