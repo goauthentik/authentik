@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -69,7 +69,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
                 ${this.challenge.recoveryUrl
                     ? html`<a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>`
-                    : ""}
+                    : nothing}
 
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

@@ -31,11 +31,11 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderPermissions(perms: ConsentPermission[]): TemplateResult {
         return html`${perms.map((permission) => {
             if (permission.name === "") {
-                return html``;
+                return nothing;
             }
             // Special case for openid Scope
             if (permission.id === "openid") {
-                return html``;
+                return nothing;
             }
             return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
         })}`;
