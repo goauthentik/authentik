@@ -11,7 +11,7 @@ support_level: community
 > -- https://www.home-assistant.io/
 
 :::note
-For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant.
+To integrate Home Assistant with authentik, a custom integration needs to be installed in Home Assistant.
 :::
 
 ## Preparation
@@ -120,36 +120,38 @@ To support the integration of `Home Assistant` using `hass-auth-headers` with au
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
 2. If you don't already have it set up, https://github.com/BeryJu/hass-auth-header, using the installation guide.
 3. There are two ways to configure the custom component:
-    1. To match on the user's authentik username, use the following configuration:
 
-        ```yaml
-        auth_header:
-            username_header: X-authentik-username
-        ```
+### Match on user's authentik username
 
-    2. Alternatively, you can associate an existing Home Assistant username to an authentik username.
-        1. Within authentik, navigate to **Directory** > **Users**.
-        2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
+To match on the user's authentik username, use the following configuration:
 
-            :::note
-            This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that.
-            :::
+    ```yaml
+    auth_header:
+        username_header: X-authentik-username
+    ```
 
-            ```yaml
-            additionalHeaders:
-                X-ak-hass-user: hassusername
-            ```
+### Associate existing Home Assistant username
 
-        3. Then configure the Home Assistant custom component to use this header:
+Alternatively, you can associate an existing Home Assistant username to an authentik username.
 
-            ```yaml
-            auth_header:
-                username_header: X-ak-hass-user
-            ```
+1. Within authentik, navigate to **Directory** > **Users**.
+2. Select **Edit** for the user then add the following configuration to the **Attributes** section. Be sure to replace `hassusername` with the Home Assistant username.
 
-## Configuration verification
+:::note
+This configuration will add an additional header for the authentik user which will contain the Home Assistant username and allow Home Assistant to authenticate based on that.
+:::
 
-To verify the integration with Home Assistant...
+    ```yaml
+    additionalHeaders:
+        X-ak-hass-user: hassusername
+    ```
+
+3. Then configure the Home Assistant custom component to use this header:
+
+    ```yaml
+    auth_header:
+        username_header: X-ak-hass-user
+    ```
 
   </TabItem>
 </Tabs>
