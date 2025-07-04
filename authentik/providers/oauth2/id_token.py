@@ -29,7 +29,6 @@ def hash_session_key(session_key: str) -> str:
     return sha256(session_key.encode("ascii")).hexdigest()
 
 
-
 @dataclass(slots=True)
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be

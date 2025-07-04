@@ -170,10 +170,8 @@ class ScopeMapping(PropertyMapping):
         verbose_name_plural = _("Scope Mappings")
 
 
-
 class OAuth2Provider(WebfingerProvider, Provider):
     """OAuth2 Provider for generic OAuth and OpenID Connect Applications."""
-
 
     client_type = models.CharField(
         max_length=30,
@@ -514,6 +512,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     def id_token(self) -> "IDToken":
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
@@ -566,6 +565,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     def id_token(self) -> "IDToken":
         """Load ID Token from json"""
         from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 

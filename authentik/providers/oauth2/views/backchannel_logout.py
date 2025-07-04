@@ -50,10 +50,7 @@ class BackChannelLogoutView(View):
             result = self.process_logout_token(request, logout_token)
             if not result["success"]:
                 return JsonResponse(
-                    {
-                        "error": "invalid_request",
-                        "error_description": result["error_description"]
-                    },
+                    {"error": "invalid_request", "error_description": result["error_description"]},
                     status=400,
                 )
 
@@ -113,8 +110,7 @@ class BackChannelLogoutView(View):
                         # End the session
                         session.delete()
                         LOGGER.info(
-                            "Terminated session via back-channel logout",
-                            session_id=session_id
+                            "Terminated session via back-channel logout", session_id=session_id
                         )
                 except Exception as exc:
                     LOGGER.warning("Failed to terminate session", session_id=session_id, exc=exc)

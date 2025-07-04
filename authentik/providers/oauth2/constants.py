@@ -74,4 +74,3 @@ class SubModes(models.TextChoices):
             "Use this method only if you have different UPN and Mail domains."
         ),
     )
-
