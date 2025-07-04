@@ -1,6 +1,5 @@
 import "#elements/Tabs";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { updateURLParams } from "#elements/router/RouteMatch";
 import "@goauthentik/admin/events/EventMap";
 import "@goauthentik/admin/events/EventVolumeChart";
 import { EventGeo, renderEventUser } from "@goauthentik/admin/events/utils";
@@ -90,10 +89,6 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                     @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
                         this.search = `event_uuid = "${ev.detail.eventId}"`;
                         this.page = 1;
-                        updateURLParams({
-                            search: this.search,
-                            tablePage: this.page,
-                        });
                         this.fetch();
                     }}
                 ></ak-events-map>
