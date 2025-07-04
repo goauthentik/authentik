@@ -8417,6 +8417,32 @@
                     },
                     "title": "Redirect uris"
                 },
+                "backchannel_logout_uris": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "matching_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "strict",
+                                    "regex"
+                                ],
+                                "title": "Matching mode"
+                            },
+                            "url": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Url"
+                            }
+                        },
+                        "required": [
+                            "matching_mode",
+                            "url"
+                        ]
+                    },
+                    "title": "Backchannel logout uris"
+                },
                 "sub_mode": {
                     "type": "string",
                     "enum": [

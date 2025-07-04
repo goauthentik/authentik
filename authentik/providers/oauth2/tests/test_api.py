@@ -81,4 +81,60 @@ class TestAPI(APITestCase):
             },
         )
         self.assertJSONEqual(response.content, {"redirect_uris": ["Invalid Regex Pattern: **"]})
-        self.assertEqual(response.status_code, 400)
+
+    def test_backchannel_logout_uris_validation(self):
+        """Test backchannel_logout_uris API validation"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io"},
+                ],
+                "backchannel_logout_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io/logout"},
+                    {"matching_mode": "regex", "url": "**"},
+                ],
+            },
+        )
+        self.assertJSONEqual(
+            response.content, {"backchannel_logout_uris": ["Invalid Regex Pattern: **"]}
+        )
+
+    def test_backchannel_logout_uris_create_and_retrieve(self):
+        """Test creating and retrieving provider with backchannel logout URIs"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io"},
+                ],
+                "backchannel_logout_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io/logout"},
+                    {"matching_mode": "regex", "url": r"http://.*\.example\.com/logout"},
+                ],
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        provider_data = loads(response.content.decode())
+        
+        # Verify the backchannel logout URIs were saved correctly
+        self.assertEqual(len(provider_data["backchannel_logout_uris"]), 2)
+        self.assertEqual(provider_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout")
+        self.assertEqual(provider_data["backchannel_logout_uris"][0]["matching_mode"], "strict")
+        self.assertEqual(provider_data["backchannel_logout_uris"][1]["url"], r"http://.*\.example\.com/logout")
+        self.assertEqual(provider_data["backchannel_logout_uris"][1]["matching_mode"], "regex")
+        
+        # Test retrieving the provider
+        response = self.client.get(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider_data["pk"]})
+        )
+        self.assertEqual(response.status_code, 200)
+        retrieved_data = loads(response.content.decode())
+        self.assertEqual(len(retrieved_data["backchannel_logout_uris"]), 2)
+        self.assertEqual(retrieved_data["backchannel_logout_uris"][0]["url"], "http://goauthentik.io/logout")

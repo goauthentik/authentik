@@ -196,11 +196,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=generate_client_secret,
     )
     _redirect_uris = models.JSONField(
-        default=dict,
+        default=list,
         verbose_name=_("Redirect URIs"),
     )
     _backchannel_logout_uris = models.JSONField(
-        default=dict,
+        default=list,
         verbose_name=_("Back-Channel Logout URIs"),
     )
 
