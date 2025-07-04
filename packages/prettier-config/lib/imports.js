@@ -1,12 +1,13 @@
-import { createRequire } from "node:module";
-
-import { formatSourceFromFile } from "format-imports";
-import { parsers as babelParsers } from "prettier/plugins/babel";
 /**
  * @file Prettier import plugin.
  *
  * @import { Plugin, ParserOptions } from "prettier";
  */
+
+import { createRequire } from "node:module";
+
+import { formatSourceFromFile } from "format-imports";
+import { parsers as babelParsers } from "prettier/plugins/babel";
 import { parsers as typescriptParsers } from "prettier/plugins/typescript";
 
 const require = createRequire(process.cwd() + "/");
@@ -116,57 +117,64 @@ function normalizeImports(filepath, input) {
     return output;
 }
 
+const useLegacyCleanup = process.env.AK_FIX_LEGACY_IMPORTS === "true";
+
 /**
- * @returns {Plugin}
+ * @param {string} input
+ * @param {ParserOptions} options
  */
-export function importsPlugin({
-    useLegacyCleanup = process.env.AK_FIX_LEGACY_IMPORTS === "true",
-} = {}) {
-    /**
-     * @param {string} input
-     * @param {ParserOptions} options
-     */
-    const preprocess = (input, { filepath, printWidth }) => {
-        let output = input;
+const preprocess = (input, { filepath, printWidth }) => {
+    let output = input;
 
-        if (useLegacyCleanup) {
-            output = normalizeExtensions(input);
-            output = normalizeImports(filepath, output);
-        }
+    console.log("Looking for JSDoc...");
+    if (output.startsWith("/**\n")) {
+        console.log("JSDoc detected. Adding double newline if not present");
 
-        const value = formatSourceFromFile.sync(output, filepath, {
-            nodeProtocol: "always",
-            maxLineLength: printWidth,
-            wrappingStyle: "prettier",
-            groupRules: [
-                "^node:",
-                ...webSubmodules.map((submodule) => `^(@goauthentik/|#)${submodule}.+`),
+        output = output.replace(/(^\s\*\/\n)(import)/m, "$1\n$2");
+    }
 
-                "^#.+",
-                "^@goauthentik.+",
+    if (useLegacyCleanup) {
+        output = normalizeExtensions(input);
+        output = normalizeImports(filepath, output);
+    }
 
-                {}, // Other imports.
+    const value = formatSourceFromFile.sync(output, filepath, {
+        nodeProtocol: "always",
+        maxLineLength: printWidth,
+        wrappingStyle: "prettier",
+        groupRules: [
+            "^node:",
+            ...webSubmodules.map((submodule) => `^(@goauthentik/|#)${submodule}.+`),
 
-                "^(@?)lit(.*)$",
-                "\\.css$",
-                "^@goauthentik/api$",
-                "^[./]",
-            ],
-        });
+            "^#.+",
+            "^@goauthentik.+",
 
-        return value || input;
-    };
+            {}, // Other imports.
 
-    return {
-        parsers: {
-            typescript: {
-                ...typescriptParsers.typescript,
-                preprocess,
-            },
-            babel: {
-                ...babelParsers.babel,
-                preprocess,
-            },
+            "^(@?)lit(.*)$",
+            "\\.css$",
+            "^@goauthentik/api$",
+            "^[./]",
+        ],
+    });
+
+    return value || input;
+};
+
+/**
+ * @type {Plugin}
+ */
+const importsPlugin = {
+    parsers: {
+        typescript: {
+            ...typescriptParsers.typescript,
+            preprocess,
         },
-    };
-}
+        babel: {
+            ...babelParsers.babel,
+            preprocess,
+        },
+    },
+};
+
+export default importsPlugin;

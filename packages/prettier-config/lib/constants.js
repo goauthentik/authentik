@@ -4,7 +4,7 @@
  * @import { Config as PrettierConfig } from "prettier";
  */
 
-import { importsPlugin } from "./imports.js";
+import { fileURLToPath } from "node:url";
 
 /**
  * @typedef {object} PackageJSONPluginConfig
@@ -37,8 +37,9 @@ export const AuthentikPrettierConfig = {
     plugins: [
         // ---
         "prettier-plugin-packagejson",
-        importsPlugin(),
+        fileURLToPath(import.meta.resolve("@goauthentik/prettier-config/imports-plugin")),
     ],
+
     overrides: [
         {
             files: "schemas/**/*.json",

@@ -1,8 +1,8 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
 import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
 import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -277,28 +277,19 @@ ${prompt.initialValue}</textarea
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.fields.map((prompt) => {
-                        return this.renderField(prompt);
-                    })}
-                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                ${this.challenge.fields.map((prompt) => {
+                    return this.renderField(prompt);
+                })}
+                ${this.renderNonFieldErrors()} ${this.renderContinue()}
+            </form>
+        </ak-flow-card>`;
     }
 }
 
