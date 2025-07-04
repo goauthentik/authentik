@@ -172,7 +172,6 @@ grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
 
     This will prompt you to enter values for the certificate which you can choose freely.
     For some, you can use authentik's generated values:
-
     - **Organization Name**: `authentik`
     - **Organizational Unit Name**: `Self-signed`
     - **Common Name**: `Mautic Self-signed Certificate`

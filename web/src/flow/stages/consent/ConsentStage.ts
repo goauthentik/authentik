@@ -1,5 +1,5 @@
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -31,11 +31,11 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderPermissions(perms: ConsentPermission[]): TemplateResult {
         return html`${perms.map((permission) => {
             if (permission.name === "") {
-                return html``;
+                return nothing;
             }
             // Special case for openid Scope
             if (permission.id === "openid") {
-                return html``;
+                return nothing;
             }
             return html`<li data-permission-code="${permission.id}">${permission.name}</li>`;
         })}`;
@@ -94,13 +94,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
                     @submit=${(e: Event) => {
@@ -120,9 +114,11 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                             >
                         </div>
                     </ak-form-static>
-                    ${this.challenge.additionalPermissions.length > 0
-                        ? this.renderAdditional()
-                        : this.renderNoPrevious()}
+                    ${
+                        this.challenge.additionalPermissions.length > 0
+                            ? this.renderAdditional()
+                            : this.renderNoPrevious()
+                    }
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
@@ -131,9 +127,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+                </ak-flow-card>`;
     }
 }
 

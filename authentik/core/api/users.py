@@ -90,6 +90,12 @@ from authentik.stages.email.utils import TemplateEmailMessage
 LOGGER = get_logger()
 
 
+class ParamUserSerializer(PassiveSerializer):
+    """Partial serializer for query parameters to select a user"""
+
+    user = PrimaryKeyRelatedField(queryset=User.objects.all().exclude_anonymous(), required=False)
+
+
 class UserGroupSerializer(ModelSerializer):
     """Simplified Group Serializer for user's groups"""
 
@@ -401,7 +407,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             StrField(User, "path"),
             BoolField(User, "is_active", nullable=True),
             ChoiceSearchField(User, "type"),
-            JSONSearchField(User, "attributes"),
+            JSONSearchField(User, "attributes", suggest_nested=False),
         ]
 
     def get_queryset(self):

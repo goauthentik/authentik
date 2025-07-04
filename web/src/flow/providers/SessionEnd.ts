@@ -1,5 +1,6 @@
 import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
@@ -23,13 +24,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form class="pf-c-form">
                     <ak-form-static
                         class="pf-c-form__group"
@@ -50,31 +45,32 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
                     <a href="${globalAK().api.base}" class="pf-c-button pf-m-primary">
                         ${msg("Go back to overview")}
                     </a>
-                    ${this.challenge.invalidationFlowUrl
-                        ? html`
-                              <a
-                                  href="${this.challenge.invalidationFlowUrl}"
-                                  class="pf-c-button pf-m-secondary"
-                                  id="logout"
-                              >
-                                  ${msg(str`Log out of ${this.challenge.brandName}`)}
-                              </a>
-                          `
-                        : nothing}
-                    ${this.challenge.applicationLaunchUrl && this.challenge.applicationName
-                        ? html`
-                              <a
-                                  href="${this.challenge.applicationLaunchUrl}"
-                                  class="pf-c-button pf-m-secondary"
-                              >
-                                  ${msg(str`Log back into ${this.challenge.applicationName}`)}
-                              </a>
-                          `
-                        : nothing}
+                    ${
+                        this.challenge.invalidationFlowUrl
+                            ? html`
+                                  <a
+                                      href="${this.challenge.invalidationFlowUrl}"
+                                      class="pf-c-button pf-m-secondary"
+                                      id="logout"
+                                  >
+                                      ${msg(str`Log out of ${this.challenge.brandName}`)}
+                                  </a>
+                              `
+                            : nothing
+                    }
+                    ${
+                        this.challenge.applicationLaunchUrl && this.challenge.applicationName
+                            ? html`
+                                  <a
+                                      href="${this.challenge.applicationLaunchUrl}"
+                                      class="pf-c-button pf-m-secondary"
+                                  >
+                                      ${msg(str`Log back into ${this.challenge.applicationName}`)}
+                                  </a>
+                              `
+                            : nothing
+                    }
                 </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </div></ak-flow-card>`;
     }
 }

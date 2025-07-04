@@ -103,33 +103,30 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-login__main-body">
-            <form class="pf-c-form">
-                ${this.renderUserInfo()}
-                <ak-empty-state
-                    ?loading="${this.authenticating}"
-                    header=${this.authenticating
+        return html` <form class="pf-c-form">
+            ${this.renderUserInfo()}
+            <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">
+                <span
+                    >${this.authenticating
                         ? msg("Authenticating...")
-                        : this.errorMessage || msg("Loading")}
-                    icon="fa-times"
+                        : this.errorMessage || msg("Loading")}</span
                 >
-                </ak-empty-state>
-                <div class="pf-c-form__group pf-m-action">
-                    ${!this.authenticating
-                        ? html` <button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  this.authenticateWrapper();
-                              }}
-                              type="button"
-                          >
-                              ${msg("Retry authentication")}
-                          </button>`
-                        : nothing}
-                    ${this.renderReturnToDevicePicker()}
-                </div>
-            </form>
-        </div>`;
+            </ak-empty-state>
+            <div class="pf-c-form__group pf-m-action">
+                ${!this.authenticating
+                    ? html` <button
+                          class="pf-c-button pf-m-primary pf-m-block"
+                          @click=${() => {
+                              this.authenticateWrapper();
+                          }}
+                          type="button"
+                      >
+                          ${msg("Retry authentication")}
+                      </button>`
+                    : nothing}
+                ${this.renderReturnToDevicePicker()}
+            </div>
+        </form>`;
     }
 }
 
