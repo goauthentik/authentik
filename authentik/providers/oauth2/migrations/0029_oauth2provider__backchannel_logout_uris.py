@@ -13,6 +13,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="oauth2provider",
             name="_backchannel_logout_uris",
-            field=models.JSONField(default=dict, verbose_name="Back-Channel Logout URIs"),
+            field=models.JSONField(default=list, verbose_name="Back-Channel Logout URIs"),
+        ),
+        migrations.AlterField(
+            model_name="oauth2provider",
+            name="_redirect_uris",
+            field=models.JSONField(default=list, verbose_name="Redirect URIs"),
         ),
     ]
