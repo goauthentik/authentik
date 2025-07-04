@@ -1,0 +1,20 @@
+{
+    "name": "@goauthentik/integration-docs",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:types build:docusaurus",
+        "build:docusaurus": "docusaurus build",
+        "build:types": "tsc -b .",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve",
+        "start": "docusaurus start"
+    },
+    "dependencies": {
+        "@goauthentik/docusaurus-theme": "*"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

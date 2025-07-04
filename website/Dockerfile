@@ -1,21 +1,21 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim AS docs-builder
 
 ENV NODE_ENV=production
 
-WORKDIR /work/website
+WORKDIR /work/docs
 
-RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+COPY ./website/package.json ./website/package-lock.json /work/docs/
 
-COPY ./website /work/website/
+RUN npm ci
+
+COPY ./website /work/docs/
 COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
+COPY ./docker-compose.yml /work/
 COPY ./SECURITY.md /work/
 
-RUN npm run build-bundled
+RUN npm run build
 
-FROM docker.io/library/nginx:1.27.5
+FROM docker.io/library/nginx:1.29.0
 
-COPY --from=website-builder /work/website/build /usr/share/nginx/html
+COPY --from=docs-builder /work/docs/build /usr/share/nginx/html

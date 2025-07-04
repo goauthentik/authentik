@@ -7,7 +7,6 @@ import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
 import { remarkAdmonition } from "#elements/ak-mdx/remark/remark-admonition";
 import { remarkHeadings } from "#elements/ak-mdx/remark/remark-headings";
 import { remarkLists } from "#elements/ak-mdx/remark/remark-lists";
-import { WithAuthentikConfig } from "#elements/mixins/config";
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
 import { compile as compileMDX, run as runMDX } from "@mdx-js/mdx";
 import apacheGrammar from "highlight.js/lib/languages/apache";

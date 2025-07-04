@@ -5,8 +5,11 @@
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
  */
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import { createRequire } from "node:module";
+
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -88,7 +91,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
-            externalUrlRegex: /.*/.source,
+            externalUrlRegex: /(:\/\/goauthentik\.io|integrations\.goauthentik\.io)/.toString(),
         },
     },
     presets: [
