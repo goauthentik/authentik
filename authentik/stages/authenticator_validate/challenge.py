@@ -157,10 +157,12 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     request = stage_view.request
     challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
     stage: AuthenticatorValidateStage = stage_view.executor.current_stage
-    # Workaround for Android sign-in, when signing into Google Workspace on android while
-    # adding the account to the system (not in Chrome), for some reason `type` is not set
-    # so in that case we fall back to `public-key` since that's the only option we support anyways
-    data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
+    if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
+        # Workaround for Android sign-in, when signing into Google Workspace on android while
+        # adding the account to the system (not in Chrome), for some reason `type` is not set
+        # so in that case we fall back to `public-key`
+        # since that's the only option we support anyways
+        data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
     try:
         credential = parse_authentication_credential_json(data)
     except InvalidJSONStructure as exc:
