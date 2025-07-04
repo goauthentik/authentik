@@ -305,17 +305,24 @@ class SessionEndStage(ChallengeStageView):
 
         # Trigger back-channel logout notifications if the user is authenticated
         if self.request.user.is_authenticated:
+            try:
+                # Get the current session
+                session = AuthenticatedSession.objects.filter(
+                    session_id=self.request.session.session_key
+                ).first()
 
-            # Get the current session
-            session = AuthenticatedSession.objects.filter(
-                session_id=self.request.session.session_key
-            ).first()
-
-            # Send back-channel logout notifications
-            if session:
-                send_backchannel_logout_notification(session=session, user=self.request.user)
-            else:
-                send_backchannel_logout_notification(user=self.request.user)
+                # Send back-channel logout notifications
+                if session:
+                    send_backchannel_logout_notification(session=session)
+                else:
+                    send_backchannel_logout_notification(user=self.request.user)
+            except Exception as exc:
+                # Log the error but don't fail the logout process
+                self.logger.warning(
+                    "Failed to send backchannel logout notifications",
+                    user=self.request.user.username,
+                    error=str(exc),
+                )
 
         return SessionEndChallenge(data=data)
 

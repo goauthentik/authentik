@@ -238,7 +238,7 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             session=session,
-            token="test-refresh-token",
+            token="test-refresh-token",  # nosec
             _id_token=json.dumps({}),
             auth_time=timezone.now(),
         )
