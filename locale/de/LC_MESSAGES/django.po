@@ -40,7 +40,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-25 00:10+0000\n"
+"POT-Creation-Date: 2025-07-04 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Fabian, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
@@ -396,6 +396,10 @@ msgstr "Tokens"
 #: authentik/core/models.py
 msgid "View token's key"
 msgstr "Schlüssel des Tokens anzeigen"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Property Mapping"
