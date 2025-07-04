@@ -330,25 +330,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["POST"],
     )
-    def remove_icon(self, request: Request, slug: str) -> Response:
-        """Remove application icon"""
+    def clear_icon(self, request: Request, slug: str):
+        """Clear application icon"""
         app: Application = self.get_object()
-        field = app.meta_icon
-        field.delete()
-        return Response({"meta_icon": app.get_meta_icon()})
-
-    @extend_schema(
-        responses={
-            200: inline_serializer(
-                "ApplicationIcon",
-                fields={
-                    "meta_icon": CharField(read_only=True),
-                },
-            )
-        }
-    )
-    @action(methods=["GET"], detail=True, url_path="icon", url_name="icon_get")
-    def icon_get(self, request: Request, pk: str) -> Response:
-        """Get application icon"""
-        app: Application = self.get_object()
-        return Response({"meta_icon": app.get_meta_icon()})
+        app.meta_icon = None
+        app.save()
+        return Response()

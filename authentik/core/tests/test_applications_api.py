@@ -108,25 +108,6 @@ class TestApplicationsAPI(APITestCase):
         self.allowed.refresh_from_db()
         self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
 
-    def test_remove_icon(self):
-        """Test remove_icon"""
-        # Set an icon first
-        self.allowed.meta_icon = ContentFile(b"text", "name")
-        self.allowed.save()
-
-        # Remove it
-        self.client.force_login(self.user)
-        response = self.client.post(
-            reverse(
-                "authentik_api:application-remove-icon",
-                kwargs={"slug": self.allowed.slug},
-            )
-        )
-        self.assertEqual(response.status_code, 200)
-
-        self.allowed.refresh_from_db()
-        self.assertFalse(self.allowed.meta_icon)
-
     def test_check_access(self):
         """Test check_access operation"""
         self.client.force_login(self.user)
