@@ -331,6 +331,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def remove_icon(self, request: Request, slug: str) -> Response:
         """Remove application icon"""
         app: Application = self.get_object()
-        field = getattr(app, "meta_icon")
+        field = app.meta_icon
         field.delete()
         return Response({"meta_icon": app.get_meta_icon})

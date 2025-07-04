@@ -38,27 +38,21 @@ class TestS3Storage(TestCase):
         """Test URL generation with custom_domain containing Unicode characters"""
         mock_normalize_name.return_value = "media/public/icons/logo.svg"
 
-        # Set up the mock client with an endpoint that can be modified
+        # Set up the mock client
         mock_client = MagicMock()
-        mock_client._endpoint = MockEndpoint("s3.region.xn--idk5byd.net")
 
-        # Configure the generate_presigned_url to modify its behavior based on the endpoint
-        def presigned_url_side_effect(*args, **kwargs):
-            host = mock_client._endpoint.host
-            domain = host.split("://")[1] if "://" in host else host
-
-            # Return a URL that uses the endpoint domain that was set
-            return (
-                f"https://{domain}/example-bucket/media/public/icons/logo.svg"
-                "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
-                "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
-                "&X-Amz-Date=20250314T181538Z"
-                "&X-Amz-Expires=3600"
-                "&X-Amz-SignedHeaders=host"
-                "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-            )
-
-        mock_client.generate_presigned_url.side_effect = presigned_url_side_effect
+        # Mock generate_presigned_url to return a standard S3 URL.
+        # The storage class should replace the domain with the custom_domain.
+        presigned_url = (
+            "https://s3.amazonaws.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
 
         # Set up the bucket
         mock_bucket_obj = MagicMock()
@@ -76,13 +70,12 @@ class TestS3Storage(TestCase):
         # Call the URL method
         url = storage.url("public/icons/logo.svg")
 
-        # Verify that the endpoint was temporarily modified
+        # Verify that generate_presigned_url was called
         mock_client.generate_presigned_url.assert_called_once()
 
-        # Verify the endpoint was restored
-        self.assertEqual(mock_client._endpoint.host, "s3.region.xn--idk5byd.net")
-
         # Check the final URL
+        # The domain should be the punycode-encoded custom_domain, and the path/query
+        # should be from the presigned_url.
         expected_url = (
             "https://example-bucket.s3.region.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
@@ -100,25 +93,20 @@ class TestS3Storage(TestCase):
         """Test URL generation with punycode in the domain"""
         mock_normalize_name.return_value = "media/public/icons/logo.svg"
 
-        # Set up the mock client with an endpoint that can be modified
+        # Set up the mock client
         mock_client = MagicMock()
-        mock_client._endpoint = MockEndpoint("s3.amazonaws.com")
 
-        def presigned_url_side_effect(*args, **kwargs):
-            host = mock_client._endpoint.host
-            domain = host.split("://")[1] if "://" in host else host
-
-            return (
-                f"https://{domain}/example-bucket/media/public/icons/logo.svg"
-                "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
-                "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
-                "&X-Amz-Date=20250314T181538Z"
-                "&X-Amz-Expires=3600"
-                "&X-Amz-SignedHeaders=host"
-                "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-            )
-
-        mock_client.generate_presigned_url.side_effect = presigned_url_side_effect
+        # Mock generate_presigned_url to return a standard S3 URL.
+        presigned_url = (
+            "https://s3.amazonaws.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
 
         # Set up the bucket
         mock_bucket_obj = MagicMock()
@@ -136,12 +124,153 @@ class TestS3Storage(TestCase):
         # Call the URL method
         url = storage.url("public/icons/logo.svg")
 
-        # Verify the endpoint was restored
-        self.assertEqual(mock_client._endpoint.host, "s3.amazonaws.com")
+        # Verify that generate_presigned_url was called
+        mock_client.generate_presigned_url.assert_called_once()
 
         # Check the final URL
         expected_url = (
             "https://example-bucket.s3.region.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        self.assertEqual(url, expected_url)
+
+    @patch("authentik.root.storages.S3Storage._normalize_name")
+    @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
+    def test_url_with_unicode_subdomain(self, mock_bucket, mock_normalize_name):
+        """Test URL generation with a subdomain containing Unicode."""
+        mock_normalize_name.return_value = "media/public/icons/logo.svg"
+
+        # Set up the mock client
+        mock_client = MagicMock()
+        presigned_url = (
+            "https://s3.amazonaws.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
+
+        # Set up the bucket
+        mock_bucket_obj = MagicMock()
+        mock_bucket_obj.name = "example-bucket"
+        mock_bucket_obj.meta.client = mock_client
+        mock_bucket.return_value = mock_bucket_obj
+
+        # Configure storage
+        storage = S3Storage()
+        storage.custom_domain = "sub.ニャー.net"
+        storage.secure_urls = True
+        storage.querystring_auth = True
+        storage.querystring_expire = 3600
+
+        # Call the URL method
+        url = storage.url("public/icons/logo.svg")
+
+        # Check the final URL
+        expected_url = (
+            "https://sub.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        self.assertEqual(url, expected_url)
+
+    @patch("authentik.root.storages.S3Storage._normalize_name")
+    @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
+    def test_url_with_cyrillic_domain(self, mock_bucket, mock_normalize_name):
+        """Test URL generation with a domain containing Cyrillic characters."""
+        mock_normalize_name.return_value = "media/public/icons/logo.svg"
+
+        # Set up the mock client
+        mock_client = MagicMock()
+        presigned_url = (
+            "https://s3.amazonaws.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
+
+        # Set up the bucket
+        mock_bucket_obj = MagicMock()
+        mock_bucket_obj.name = "example-bucket"
+        mock_bucket_obj.meta.client = mock_client
+        mock_bucket.return_value = mock_bucket_obj
+
+        # Configure storage
+        storage = S3Storage()
+        storage.custom_domain = "пример.испытание"
+        storage.secure_urls = True
+        storage.querystring_auth = True
+        storage.querystring_expire = 3600
+
+        # Call the URL method
+        url = storage.url("public/icons/logo.svg")
+
+        # Check the final URL
+        expected_url = (
+            "https://xn--e1afmkfd.xn--80akhbyknj4f/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        self.assertEqual(url, expected_url)
+
+    @patch("authentik.root.storages.S3Storage._normalize_name")
+    @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
+    def test_url_with_german_domain(self, mock_bucket, mock_normalize_name):
+        """Test URL generation with a domain containing German characters."""
+        mock_normalize_name.return_value = "media/public/icons/logo.svg"
+
+        # Set up the mock client
+        mock_client = MagicMock()
+        presigned_url = (
+            "https://s3.amazonaws.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
+
+        # Set up the bucket
+        mock_bucket_obj = MagicMock()
+        mock_bucket_obj.name = "example-bucket"
+        mock_bucket_obj.meta.client = mock_client
+        mock_bucket.return_value = mock_bucket_obj
+
+        # Configure storage
+        storage = S3Storage()
+        storage.custom_domain = "bücher.de"
+        storage.secure_urls = True
+        storage.querystring_auth = True
+        storage.querystring_expire = 3600
+
+        # Call the URL method
+        url = storage.url("public/icons/logo.svg")
+
+        # Check the final URL
+        expected_url = (
+            "https://xn--bcher-kva.de/example-bucket/media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"

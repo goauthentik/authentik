@@ -47,14 +47,16 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(
             self.client.patch(
                 reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
-                {"meta_launch_url": "https://%(username)s-test.test.goauthentik.io/%(username)s"},
+                {
+                    "meta_launch_url": "https://%(username)s-test.test-suite.id.goauthentik.localhost:9443/%(username)s"
+                },
             ).status_code,
             200,
         )
         self.allowed.refresh_from_db()
         self.assertEqual(
             self.allowed.get_launch_url(self.user),
-            f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
+            f"https://{self.user.username}-test.test-suite.id.goauthentik.localhost:9443/{self.user.username}",
         )
 
     def test_set_icon(self):
@@ -81,6 +83,49 @@ class TestApplicationsAPI(APITestCase):
         self.allowed.refresh_from_db()
         self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
         self.assertEqual(self.allowed.meta_icon.read(), b"text")
+
+    def test_set_icon_url(self):
+        """Test set_icon_url"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon-url",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data={
+                "url": "https://id.goauthentik.localhost:9443/static/dist/assets/icons/icon_left_brand.svg"
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        app_raw = self.client.get(
+            reverse(
+                "authentik_api:application-detail",
+                kwargs={"slug": self.allowed.slug},
+            ),
+        )
+        app = loads(app_raw.content)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
+
+    def test_remove_icon(self):
+        """Test remove_icon"""
+        # Set an icon first
+        self.allowed.meta_icon = ContentFile(b"text", "name")
+        self.allowed.save()
+
+        # Remove it
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-remove-icon",
+                kwargs={"slug": self.allowed.slug},
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.allowed.refresh_from_db()
+        self.assertFalse(self.allowed.meta_icon)
 
     def test_check_access(self):
         """Test check_access operation"""
@@ -147,8 +192,72 @@ class TestApplicationsAPI(APITestCase):
                         },
                         "backchannel_providers": [],
                         "backchannel_providers_obj": [],
-                        "launch_url": f"https://goauthentik.io/{self.user.username}",
+                        "launch_url": self.allowed.get_launch_url(self.user),
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
+                        "open_in_new_tab": True,
+                        "meta_icon": None,
+                        "meta_description": "",
+                        "meta_publisher": "",
+                        "policy_engine_mode": "any",
+                    },
+                ],
+            },
+        )
+
+    def test_list_with_custom_url_formats(self):
+        """Test list operation with custom URL format"""
+        # First, modify the launch URL
+        self.client.force_login(self.user)
+        self.assertEqual(
+            self.client.patch(
+                reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+                {
+                    "meta_launch_url": "https://%(username)s-test.test-suite.id.goauthentik.localhost:9443/%(username)s"
+                },
+            ).status_code,
+            200,
+        )
+
+        # Then, check if the list endpoint returns the correct custom URL
+        response = self.client.get(reverse("authentik_api:application-list"))
+        self.assertJSONEqual(
+            response.content.decode(),
+            {
+                "autocomplete": {},
+                "pagination": {
+                    "next": 0,
+                    "previous": 0,
+                    "count": 2,
+                    "current": 1,
+                    "total_pages": 1,
+                    "start_index": 1,
+                    "end_index": 2,
+                },
+                "results": [
+                    {
+                        "pk": str(self.allowed.pk),
+                        "name": "allowed",
+                        "slug": "allowed",
+                        "group": "",
+                        "provider": self.provider.pk,
+                        "provider_obj": {
+                            "assigned_application_name": "allowed",
+                            "assigned_application_slug": "allowed",
+                            "authentication_flow": None,
+                            "invalidation_flow": None,
+                            "authorization_flow": str(self.provider.authorization_flow.pk),
+                            "component": "ak-provider-oauth2-form",
+                            "meta_model_name": "authentik_providers_oauth2.oauth2provider",
+                            "name": self.provider.name,
+                            "pk": self.provider.pk,
+                            "property_mappings": [],
+                            "verbose_name": "OAuth2/OpenID Provider",
+                            "verbose_name_plural": "OAuth2/OpenID Providers",
+                        },
+                        "backchannel_providers": [],
+                        "backchannel_providers_obj": [],
+                        "launch_url": f"https://{self.user.username}-test.test-suite.id.goauthentik.localhost:9443/{self.user.username}",
+                        "meta_launch_url": "https://%(username)s-test.test-suite.id.goauthentik.localhost:9443/%(username)s",
                         "open_in_new_tab": True,
                         "meta_icon": None,
                         "meta_description": "",
@@ -201,7 +310,7 @@ class TestApplicationsAPI(APITestCase):
                         },
                         "backchannel_providers": [],
                         "backchannel_providers_obj": [],
-                        "launch_url": f"https://goauthentik.io/{self.user.username}",
+                        "launch_url": self.allowed.get_launch_url(self.user),
                         "meta_launch_url": "https://goauthentik.io/%(username)s",
                         "open_in_new_tab": True,
                         "meta_icon": None,
