@@ -151,10 +151,10 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         return applications
 
     def _filter_applications_with_launch_url(
-        self, pagined_apps: Iterator[Application]
+        self, paginated_apps: Iterator[Application]
     ) -> list[Application]:
         applications = []
-        for app in pagined_apps:
+        for app in paginated_apps:
             if app.get_launch_url():
                 applications.append(app)
         return applications
