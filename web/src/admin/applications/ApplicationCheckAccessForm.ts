@@ -43,8 +43,8 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return (this.result = result);
     }
 
-    resetForm(): void {
-        super.resetForm();
+    reset(): void {
+        super.reset();
         this.result = undefined;
     }
 

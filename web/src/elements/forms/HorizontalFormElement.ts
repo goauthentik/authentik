@@ -1,6 +1,6 @@
+import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css } from "lit";
@@ -30,12 +30,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *    it being written on-demand when the child is written? Because it's slotted... despite there
  *    being very few unique uses.
  */
-
-const isAkControl = (el: unknown): boolean =>
-    el instanceof HTMLElement &&
-    "dataset" in el &&
-    el.dataset instanceof DOMStringMap &&
-    "akControl" in el.dataset;
 
 const nameables = new Set([
     "input",
@@ -107,7 +101,7 @@ export class HorizontalFormElement extends AKElement {
             input.focus();
         });
         this.querySelectorAll("*").forEach((input) => {
-            if (isAkControl(input) && !input.getAttribute("name")) {
+            if (isControlElement(input) && !input.getAttribute("name")) {
                 input.setAttribute("name", this.name);
                 return;
             }

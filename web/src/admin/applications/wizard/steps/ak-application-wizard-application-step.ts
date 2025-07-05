@@ -7,7 +7,6 @@ import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { isSlug } from "@goauthentik/elements/router/utils.js";
@@ -23,7 +22,7 @@ import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
-const trimMany = (o: KeyUnknown, vs: string[]) =>
+const trimMany = (o: Record<string, unknown>, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

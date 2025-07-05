@@ -70,7 +70,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
         if (!prompt) {
-            prompt = this.serializeForm();
+            prompt = this.serialize();
             if (!prompt) {
                 return;
             }

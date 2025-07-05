@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -60,7 +59,7 @@ export class BaseStage<
 
     async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
         e.preventDefault();
-        const object: KeyUnknown = defaults || {};
+        const object: Record<string, unknown> = defaults || {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
 
         for await (const [key, value] of form.entries()) {

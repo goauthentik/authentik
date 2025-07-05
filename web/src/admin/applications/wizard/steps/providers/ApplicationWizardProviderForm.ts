@@ -4,7 +4,7 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import { AKElement } from "@goauthentik/elements/Base.js";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
+import { serializeForm } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
@@ -30,14 +30,11 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     @query("form#providerform")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues() {
+        return serializeForm([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     get valid() {

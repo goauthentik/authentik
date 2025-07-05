@@ -74,8 +74,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="privateKey"
                         label=${msg("Private Key")}
                         input-hint="code"
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${typeof this.instance === "undefined"}
+                        ?revealed=${typeof this.instance === "undefined"}
                         help=${msg(
                             "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
                         )}

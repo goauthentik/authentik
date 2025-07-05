@@ -49,8 +49,8 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    resetForm(): void {
-        super.resetForm();
+    reset(): void {
+        super.reset();
         this.result = undefined;
     }
 
