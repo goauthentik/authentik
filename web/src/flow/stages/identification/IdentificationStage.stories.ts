@@ -13,12 +13,6 @@ export default {
     title: "Flow / Stages / <ak-stage-identification>",
 };
 
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface-flow theme=${UiThemeEnum.Dark}>
-        <ak-stage-identification></ak-stage-identification>
-    </ak-storybook-interface-flow>`;
-};
-
 function identificationFactory(challenge: IdentificationChallenge): StoryObj {
     return {
         render: ({ theme, challenge }) => {

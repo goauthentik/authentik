@@ -13,12 +13,6 @@ export default {
     title: "Flow / Stages / <ak-stage-authenticator-totp>",
 };
 
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface-flow theme=${UiThemeEnum.Dark}>
-        <ak-stage-authenticator-totp></ak-stage-authenticator-totp>
-    </ak-storybook-interface-flow>`;
-};
-
 export const Challenge: StoryObj = {
     render: ({ theme, challenge }) => {
         return html`<ak-storybook-interface-flow theme=${theme}>

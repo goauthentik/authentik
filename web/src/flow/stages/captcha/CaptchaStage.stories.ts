@@ -13,12 +13,6 @@ export default {
     title: "Flow / Stages / <ak-stage-captcha>",
 };
 
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface-flow theme=${UiThemeEnum.Dark}>
-        <ak-stage-captcha></ak-stage-captcha>
-    </ak-storybook-interface-flow>`;
-};
-
 function captchaFactory(challenge: CaptchaChallenge): StoryObj {
     return {
         render: ({ theme, challenge }) => {
