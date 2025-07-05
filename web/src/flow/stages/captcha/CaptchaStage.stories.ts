@@ -47,7 +47,7 @@ export const ChallengeHCaptcha = captchaFactory({
     jsUrl: "https://js.hcaptcha.com/1/api.js",
     siteKey: "10000000-ffff-ffff-ffff-000000000001",
     interactive: true,
-} as CaptchaChallenge);
+});
 
 // https://developers.cloudflare.com/turnstile/troubleshooting/testing/
 export const ChallengeTurnstileVisible = captchaFactory({
@@ -56,18 +56,18 @@ export const ChallengeTurnstileVisible = captchaFactory({
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "1x00000000000000000000AA",
     interactive: true,
-} as CaptchaChallenge);
+});
 export const ChallengeTurnstileInvisible = captchaFactory({
     pendingUser: "foo",
     pendingUserAvatar: "https://picsum.photos/64",
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "1x00000000000000000000BB",
     interactive: true,
-} as CaptchaChallenge);
+});
 export const ChallengeTurnstileForce = captchaFactory({
     pendingUser: "foo",
     pendingUserAvatar: "https://picsum.photos/64",
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "3x00000000000000000000FF",
     interactive: true,
-} as CaptchaChallenge);
+});
