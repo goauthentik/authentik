@@ -26,7 +26,17 @@ import {
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFList, PFForm, PFSpacing, PFFormControl, PFTitle, PFButton, PFText];
+        return [
+            PFBase,
+            PFLogin,
+            PFList,
+            PFForm,
+            PFSpacing,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            PFText,
+        ];
     }
 
     renderPermissions(perms: ConsentPermission[]): TemplateResult {
