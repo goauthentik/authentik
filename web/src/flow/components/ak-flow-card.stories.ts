@@ -4,11 +4,7 @@ import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
 
-import {
-    ContextualFlowInfoLayoutEnum,
-    DummyChallenge,
-    UiThemeEnum,
-} from "@goauthentik/api";
+import { ContextualFlowInfoLayoutEnum, DummyChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import "../../stories/flow-interface";
 import "./ak-flow-card";

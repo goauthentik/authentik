@@ -1,24 +1,14 @@
 import { AKElement } from "#elements/Base";
 import "@goauthentik/elements/EmptyState";
 
-
-
 import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-
-
 import { ChallengeTypes } from "@goauthentik/api";
-
-
-
-
 
 /**
  * @element ak-flow-card
