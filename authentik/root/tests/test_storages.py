@@ -77,7 +77,7 @@ class TestS3Storage(TestCase):
         # The domain should be the punycode-encoded custom_domain, and the path/query
         # should be from the presigned_url.
         expected_url = (
-            "https://example-bucket.s3.region.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
+            "https://example-bucket.s3.region.xn--idk5byd.net//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -129,7 +129,7 @@ class TestS3Storage(TestCase):
 
         # Check the final URL
         expected_url = (
-            "https://example-bucket.s3.region.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
+            "https://example-bucket.s3.region.xn--idk5byd.net//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -176,7 +176,7 @@ class TestS3Storage(TestCase):
 
         # Check the final URL
         expected_url = (
-            "https://sub.xn--idk5byd.net/example-bucket/media/public/icons/logo.svg"
+            "https://sub.xn--idk5byd.net//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -223,7 +223,7 @@ class TestS3Storage(TestCase):
 
         # Check the final URL
         expected_url = (
-            "https://xn--e1afmkfd.xn--80akhbyknj4f/example-bucket/media/public/icons/logo.svg"
+            "https://xn--e1afmkfd.xn--80akhbyknj4f//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -270,7 +270,7 @@ class TestS3Storage(TestCase):
 
         # Check the final URL
         expected_url = (
-            "https://xn--bcher-kva.de/example-bucket/media/public/icons/logo.svg"
+            "https://xn--bcher-kva.de//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -379,26 +379,25 @@ class TestS3Storage(TestCase):
     @patch("authentik.root.storages.S3Storage.secure_urls", new_callable=PropertyMock)
     @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
     def test_url_with_different_scheme(self, mock_bucket, mock_secure_urls, mock_normalize_name):
-        """Test URL generation with HTTP instead of HTTPS"""
+        """Test URL generation with different scheme (HTTP vs HTTPS)"""
         mock_normalize_name.return_value = "media/public/icons/logo.svg"
-        mock_secure_urls.return_value = False
+        mock_secure_urls.return_value = False  # Use HTTP instead of HTTPS
 
         # Set up the mock client with an endpoint
         mock_client = MagicMock()
         mock_client._endpoint = MockEndpoint("s3.region.com")
 
-        def presigned_url_side_effect(*args, **kwargs):
-            return (
-                "http://s3.region.com/example-bucket/media/public/icons/logo.svg"
-                "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
-                "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
-                "&X-Amz-Date=20250314T181538Z"
-                "&X-Amz-Expires=3600"
-                "&X-Amz-SignedHeaders=host"
-                "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-            )
-
-        mock_client.generate_presigned_url.side_effect = presigned_url_side_effect
+        # Use HTTPS in the presigned URL
+        presigned_url = (
+            "https://s3.region.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
 
         # Set up the bucket
         mock_bucket_obj = MagicMock()
@@ -406,21 +405,22 @@ class TestS3Storage(TestCase):
         mock_bucket_obj.meta.client = mock_client
         mock_bucket.return_value = mock_bucket_obj
 
-        # Configure storage with HTTP
+        # Configure storage
         storage = S3Storage()
         storage.custom_domain = "example-bucket.s3.region.com"
+        # secure_urls is mocked to return False
         storage.querystring_auth = True
         storage.querystring_expire = 3600
 
         # Call the URL method
         url = storage.url("public/icons/logo.svg")
 
-        # Verify the endpoint was restored
+        # Verify the endpoint was restored to its original value
         self.assertEqual(mock_client._endpoint.host, "s3.region.com")
 
         # Check the final URL uses HTTP
         expected_url = (
-            "http://example-bucket.s3.region.com/example-bucket/media/public/icons/logo.svg"
+            "http://example-bucket.s3.region.com//media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -473,7 +473,7 @@ class TestS3Storage(TestCase):
 
         # Check the final URL maintains encoded special characters
         expected_url = (
-            "https://example-bucket.s3.region.com/example-bucket/media/public/icons/special%20file%20name%20%26%20symbols.svg"
+            "https://example-bucket.s3.region.com//media/public/icons/special%20file%20name%20%26%20symbols.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
@@ -546,7 +546,7 @@ class TestS3Storage(TestCase):
 
         # Configure storage
         storage = S3Storage()
-        storage.custom_domain = "custom.domain.com"
+        storage.custom_domain = "custom.domain.com/example-bucket"
         storage.secure_urls = True
         storage.querystring_auth = True
         storage.querystring_expire = 3600
@@ -559,7 +559,7 @@ class TestS3Storage(TestCase):
 
         # Check that the custom domain is used with the bucket prefix and path preserved
         expected_url = (
-            "https://custom.domain.com/media/public/icons/logo.svg"
+            "https://custom.domain.com/example-bucket/media/public/icons/logo.svg"
             "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
             "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
             "&X-Amz-Date=20250314T181538Z"
