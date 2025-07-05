@@ -109,18 +109,18 @@ class S3Storage(BaseS3Storage):
 
         custom_domain = self.custom_domain
         scheme = "https" if self.secure_urls else "http"
-        
+
         try:
             if custom_domain:
                 # If the custom domain is an IDN, it needs to be punycode encoded
                 custom_domain = custom_domain.encode("idna").decode("ascii")
-                
+
                 # Extract domain part (before the first slash)
-                domain_part = custom_domain.split('/')[0]
-                
+                domain_part = custom_domain.split("/")[0]
+
                 # Configure the client to use the domain part for the request
                 endpoint.host = f"{scheme}://{domain_part}"
-            
+
             # Generate the presigned URL using the configured client
             url = client.generate_presigned_url(
                 "get_object",
@@ -132,24 +132,24 @@ class S3Storage(BaseS3Storage):
             # If using custom domain, replace the URL components
             if custom_domain:
                 split_url = urlsplit(url)
-                
+
                 # Extract domain and path parts (bucket name)
-                domain_part = custom_domain.split('/')[0]
-                path_prefix = '/'.join(custom_domain.split('/')[1:])
-                
+                domain_part = custom_domain.split("/")[0]
+                path_prefix = "/".join(custom_domain.split("/")[1:])
+
                 # Extract the path after the bucket name in the original URL
                 original_path = split_url.path
                 bucket_prefix = f"/{self.bucket.name}/"
-                
+
                 if original_path.startswith(bucket_prefix):
                     # Remove the bucket name from the path
-                    path_suffix = original_path[len(bucket_prefix) - 1:]
+                    path_suffix = original_path[len(bucket_prefix) - 1 :]
                 else:
                     path_suffix = original_path
-                
+
                 # Construct the new path with the path prefix from custom_domain
                 new_path = f"/{path_prefix}{path_suffix}"
-                
+
                 # Build the final URL
                 url = urlunsplit(
                     (
