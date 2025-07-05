@@ -56725,7 +56725,7 @@ components:
       - patreon
       - reddit
       - twitch
-      - twitter
+      - x
       type: string
     ProxyMode:
       enum:
