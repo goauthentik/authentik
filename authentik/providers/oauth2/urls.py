@@ -11,6 +11,7 @@ from authentik.providers.oauth2.api.tokens import (
     RefreshTokenViewSet,
 )
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
+from authentik.providers.oauth2.views.backchannel_logout import BackChannelLogoutView
 from authentik.providers.oauth2.views.device_backchannel import DeviceView
 from authentik.providers.oauth2.views.end_session import EndSessionView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
@@ -47,6 +48,11 @@ urlpatterns = [
         "<slug:application_slug>/end-session/",
         EndSessionView.as_view(),
         name="end-session",
+    ),
+    path(
+        "<slug:application_slug>/backchannel_logout/",
+        BackChannelLogoutView.as_view(),
+        name="backchannel-logout",
     ),
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
     path(

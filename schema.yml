@@ -49176,6 +49176,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
+        backchannel_logout_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURI'
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -49280,6 +49284,10 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uris:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
@@ -54169,6 +54177,10 @@ components:
           description: Key used to encrypt the tokens. When set, tokens will be encrypted
             and returned as JWEs.
         redirect_uris:
+          type: array
+          items:
+            $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uris:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
