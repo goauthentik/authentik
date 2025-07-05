@@ -41,6 +41,11 @@ export const ChallengeDefault = identificationFactory({
     flowDesignation: FlowDesignationEnum.Authentication,
     primaryAction: "Login",
     showSourceLabels: false,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
     // jsUrl: "https://js.hcaptcha.com/1/api.js",
     // siteKey: "10000000-ffff-ffff-ffff-000000000001",
     // interactive: true,

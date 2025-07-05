@@ -1,14 +1,24 @@
 import { AKElement } from "#elements/Base";
 import "@goauthentik/elements/EmptyState";
 
+
+
 import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+
+
 import { ChallengeTypes } from "@goauthentik/api";
+
+
+
+
 
 /**
  * @element ak-flow-card
@@ -45,36 +55,40 @@ export class FlowCard extends AKElement {
                     background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
                     padding: 0;
                 }
+                .pf-c-login__main-body {
+                    padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
+                }
             `,
         ];
     }
 
     render() {
+        let inner = html`<slot></slot>`;
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state loading default-label></ak-empty-state>
-                <footer class="pf-c-login__main-footer">
-                    <ul class="pf-c-login__main-footer-links"></ul>
-                </footer>`;
+            inner = html`<ak-empty-state loading default-label></ak-empty-state>`;
         }
         // No title if the challenge doesn't provide a title and no custom title is set
         let title = undefined;
         if (this.hasSlotted("title")) {
             title = html`<h1 class="pf-c-title pf-m-3xl"><slot name="title"></slot></h1>`;
-        } else if (this.challenge.flowInfo?.title) {
+        } else if (this.challenge?.flowInfo?.title) {
             title = html`<h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo.title}</h1>`;
         }
         return html`${title
                 ? html`<header class="pf-c-login__main-header">${title}</header>`
                 : nothing}
-            <div class="pf-c-login__main-body">
-                <slot></slot>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                ${this.hasSlotted("footer")
-                    ? html`<slot name="footer"></slot>`
-                    : html`<ul class="pf-c-login__main-footer-links"></ul>`}
-                <slot name="footer-band" class="pf-c-login__main-footer-band"></slot>
-            </footer>`;
+            <div class="pf-c-login__main-body">${inner}</div>
+            ${this.hasSlotted("footer") || this.hasSlotted("footer-band")
+                ? html`<footer class="pf-c-login__main-footer">
+                      ${this.hasSlotted("footer") ? html`<slot name="footer"></slot>` : nothing}
+                      ${this.hasSlotted("footer-band")
+                          ? html`<slot
+                                name="footer-band"
+                                class="pf-c-login__main-footer-band"
+                            ></slot>`
+                          : nothing}
+                  </footer>`
+                : nothing}`;
     }
 }
 
