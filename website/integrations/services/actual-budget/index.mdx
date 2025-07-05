@@ -99,6 +99,8 @@ Alternatively, it is possible to configure OpenID Connect via the UI.
 The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. You should also note that users are not created automatically in Actual Budget. The owner must manually add users.
 
 To do so, navigate to **Server online** > **User Directory**, and create users matching exiting authentik usernames. Then, grant access to the budget via the **User Access** tab.
+
+Additional notes:  If you get a password error when trying to sign on via OpenID, you may need to log in via password and create the admin that matches an admin in Authentik and manually transfer ownership via User Access Management.  Make sure that the admin is set as "admin" in role.  After the transfer of ownership, you may have to reset the role if it doesn't appear in the User Directory (it may be blank).
 :::
 
 ## Configuration verification
