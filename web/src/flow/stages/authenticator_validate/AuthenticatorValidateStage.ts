@@ -30,7 +30,7 @@ const customCSS = css`
     ul {
         padding-top: 1rem;
     }
-    ul > li:not(:last-child) {
+    ul > li {
         padding-bottom: 1rem;
     }
     .authenticator-button {
