@@ -187,7 +187,7 @@ export class AuthenticatorValidateStage
                         <small>${msg("Tokens sent via SMS.")}</small>
                     </div>`;
             case DeviceClassesEnum.Email:
-                return html`<i class="fas fa-envelope-o"></i>
+                return html`<i class="fas fa-envelope"></i>
                     <div class="right">
                         <p>${msg("Email")}</p>
                         <small>${msg("Tokens sent via email.")}</small>

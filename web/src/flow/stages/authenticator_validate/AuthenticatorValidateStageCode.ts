@@ -53,7 +53,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     deviceIcon(): string {
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email:
-                return "fa-envelope-o";
+                return "fa-envelope";
             case DeviceClassesEnum.Sms:
                 return "fa-mobile-alt";
             case DeviceClassesEnum.Totp:
