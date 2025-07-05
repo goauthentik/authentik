@@ -10,32 +10,21 @@ import "../../../stories/flow-interface";
 import "./CaptchaStage";
 
 export default {
-    title: "Flow / Stages / Captcha",
+    title: "Flow / Stages / <ak-stage-captcha>",
 };
 
 export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface theme=${UiThemeEnum.Dark}>
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">
-                    <ak-stage-captcha></ak-stage-captcha>
-                </div>
-            </div>
-        </div>
-    </ak-storybook-interface>`;
+    return html`<ak-storybook-interface-flow theme=${UiThemeEnum.Dark}>
+        <ak-stage-captcha></ak-stage-captcha>
+    </ak-storybook-interface-flow>`;
 };
 
 function captchaFactory(challenge: CaptchaChallenge): StoryObj {
     return {
         render: ({ theme, challenge }) => {
-            return html`<ak-storybook-interface theme=${theme}>
-                <div class="pf-c-login">
-                    <div class="pf-c-login__container">
-                        <div class="pf-c-login__main">
-                            <ak-stage-captcha .challenge=${challenge}></ak-stage-captcha>
-                        </div>
-                    </div></div
-            ></ak-storybook-interface>`;
+            return html`<ak-storybook-interface-flow theme=${theme}>
+                <ak-stage-captcha .challenge=${challenge}></ak-stage-captcha>
+            </ak-storybook-interface-flow>`;
         },
         args: {
             theme: "automatic",

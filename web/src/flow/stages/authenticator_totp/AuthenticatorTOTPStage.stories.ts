@@ -6,37 +6,24 @@ import "@patternfly/patternfly/components/Login/login.css";
 
 import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";
 
-import "../../../stories/flow-interface";
+import "../../../stories/flow-interface.js";
 import "./AuthenticatorTOTPStage";
 
 export default {
-    title: "Flow / Stages / AuthenticatorTOTPStage",
+    title: "Flow / Stages / <ak-stage-authenticator-totp>",
 };
 
 export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface theme=${UiThemeEnum.Dark}>
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">
-                    <ak-stage-authenticator-totp></ak-stage-authenticator-totp>
-                </div>
-            </div>
-        </div>
-    </ak-storybook-interface>`;
+    return html`<ak-storybook-interface-flow theme=${UiThemeEnum.Dark}>
+        <ak-stage-authenticator-totp></ak-stage-authenticator-totp>
+    </ak-storybook-interface-flow>`;
 };
 
 export const Challenge: StoryObj = {
     render: ({ theme, challenge }) => {
-        return html`<ak-storybook-interface theme=${theme}>
-            <div class="pf-c-login">
-                <div class="pf-c-login__container">
-                    <div class="pf-c-login__main">
-                        <ak-stage-authenticator-totp
-                            .challenge=${challenge}
-                        ></ak-stage-authenticator-totp>
-                    </div>
-                </div></div
-        ></ak-storybook-interface>`;
+        return html`<ak-storybook-interface-flow theme=${theme}>
+            <ak-stage-authenticator-totp .challenge=${challenge}></ak-stage-authenticator-totp>
+        </ak-storybook-interface-flow>`;
     },
     args: {
         theme: "automatic",
@@ -44,6 +31,9 @@ export const Challenge: StoryObj = {
             pendingUser: "foo",
             pendingUserAvatar: "https://picsum.photos/64",
             configUrl: "",
+            flowInfo: {
+                title: "Flow title",
+            },
         } as AuthenticatorTOTPChallenge,
     },
     argTypes: {
