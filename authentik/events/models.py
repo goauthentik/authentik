@@ -38,6 +38,7 @@ from authentik.events.utils import (
 )
 from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
@@ -162,6 +163,12 @@ class Event(SerializerModel, ExpiringModel):
         cleaned_kwargs = cleanse_dict(sanitize_dict(kwargs))
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
+
+    def with_exception(self, exc: Exception) -> "Event":
+        """Add data from 'exc' to the event in a database-saveable format"""
+        self.context.setdefault("message", str(exc))
+        self.context["exception"] = exception_to_dict(exc)
+        return self
 
     def set_user(self, user: User) -> "Event":
         """Set `.user` based on user, ensuring the correct attributes are copied.
