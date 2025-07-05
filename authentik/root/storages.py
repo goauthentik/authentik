@@ -98,12 +98,7 @@ class S3Storage(BaseS3Storage):
             expire = self.querystring_expire
 
         params["Bucket"] = self.bucket.name
-        
-        # fixme
-        if name.startswith(f"{self.bucket.name}/"):
-            params["Key"] = name[len(self.bucket.name) + 1:]
-        else:
-            params["Key"] = name
+        params["Key"] = name
 
         # Get the client and configure endpoint URL if custom_domain is set
         client = self.bucket.meta.client
@@ -113,17 +108,20 @@ class S3Storage(BaseS3Storage):
         original_endpoint_url = endpoint.host
 
         custom_domain = self.custom_domain
-        if custom_domain:
-            # If the custom domain is an IDN, it needs to be punycode encoded.
-            custom_domain = custom_domain.encode("idna").decode("ascii")
-
-            domain_part = custom_domain.split('/')[0]
-            
-            scheme = "https" if self.secure_urls else "http"
-            endpoint.host = f"{scheme}://{domain_part}"
-
+        scheme = "https" if self.secure_urls else "http"
+        
         try:
-            # Generate the presigned URL using the correctly configured client
+            if custom_domain:
+                # If the custom domain is an IDN, it needs to be punycode encoded
+                custom_domain = custom_domain.encode("idna").decode("ascii")
+                
+                # Extract domain part (before the first slash)
+                domain_part = custom_domain.split('/')[0]
+                
+                # Configure the client to use the domain part for the request
+                endpoint.host = f"{scheme}://{domain_part}"
+            
+            # Generate the presigned URL using the configured client
             url = client.generate_presigned_url(
                 "get_object",
                 Params=params,
@@ -131,42 +129,40 @@ class S3Storage(BaseS3Storage):
                 HttpMethod=http_method,
             )
 
-            # If using custom domain, replace host and scheme
+            # If using custom domain, replace the URL components
             if custom_domain:
                 split_url = urlsplit(url)
                 
-                # If custom_domain includes a path component (like bucket name), use it
-                if '/' in custom_domain:
-                    domain_part = custom_domain.split('/')[0]
-                    path_parts = custom_domain.split('/')[1:]
-                    
-                    # fixme
-                    path = split_url.path
-                    if path.startswith(f"/{self.bucket.name}/"):
-                        path = path[len(f"/{self.bucket.name}"):]
-                    
-                    url = urlunsplit(
-                        (
-                            scheme,
-                            domain_part,
-                            f"/{'/'.join(path_parts)}{path}",
-                            split_url.query,
-                            split_url.fragment,
-                        )
-                    )
+                # Extract domain and path parts (bucket name)
+                domain_part = custom_domain.split('/')[0]
+                path_prefix = '/'.join(custom_domain.split('/')[1:])
+                
+                # Extract the path after the bucket name in the original URL
+                original_path = split_url.path
+                bucket_prefix = f"/{self.bucket.name}/"
+                
+                if original_path.startswith(bucket_prefix):
+                    # Remove the bucket name from the path
+                    path_suffix = original_path[len(bucket_prefix) - 1:]
                 else:
-                    url = urlunsplit(
-                        (
-                            scheme,
-                            custom_domain,
-                            split_url.path,
-                            split_url.query,
-                            split_url.fragment,
-                        )
+                    path_suffix = original_path
+                
+                # Construct the new path with the path prefix from custom_domain
+                new_path = f"/{path_prefix}{path_suffix}"
+                
+                # Build the final URL
+                url = urlunsplit(
+                    (
+                        scheme,
+                        domain_part,
+                        new_path,
+                        split_url.query,
+                        split_url.fragment,
                     )
+                )
 
         finally:
-            # Restore the original endpoint URL if we changed it
+            # Restore the original endpoint URL
             if custom_domain:
                 endpoint.host = original_endpoint_url
 
