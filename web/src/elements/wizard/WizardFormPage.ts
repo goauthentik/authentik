@@ -26,7 +26,7 @@ export abstract class WizardForm extends Form {
 
         if (!data) return;
 
-        const files = this.getFormFiles();
+        const files = this.files();
 
         return this.nextDataCallback({
             ...data,
