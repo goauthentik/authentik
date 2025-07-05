@@ -8,9 +8,9 @@
 # make gen-dev-config
 # ```
 #
-# You may edit the generated file to override the configuration below.  
+# You may edit the generated file to override the configuration below.
 #
-# When making modifying the default configuration file, 
+# When making modifying the default configuration file,
 # ensure that the corresponding documentation is updated to match.
 #
 # @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
@@ -157,7 +157,14 @@ web:
   path: /
 
 worker:
-  concurrency: 2
+  processes: 2
+  threads: 1
+  consumer_listen_timeout: "seconds=30"
+  task_max_retries: 20
+  task_default_time_limit: "minutes=10"
+  task_purge_interval: "days=1"
+  task_expiration: "days=30"
+  scheduler_interval: "seconds=60"
 
 storage:
   media:

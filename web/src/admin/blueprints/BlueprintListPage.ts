@@ -11,6 +11,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -23,6 +24,7 @@ import {
     BlueprintInstance,
     BlueprintInstanceStatusEnum,
     ManagedApi,
+    ModelEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
@@ -109,7 +111,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     renderExpanded(item: BlueprintInstance): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
+        return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
@@ -119,6 +122,22 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
                                 <pre>${item.path}</pre>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
                             </div>
                         </dd>
                     </div>
