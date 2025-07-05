@@ -52,8 +52,10 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 </ak-form-static>
                 <input
                     name="username"
+                    type="text"
                     autocomplete="username"
-                    type="hidden"
+                    hidden
+                    readonly
                     value="${this.challenge.pendingUser}"
                 />
                 <ak-flow-input-password

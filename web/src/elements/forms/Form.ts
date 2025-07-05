@@ -162,6 +162,8 @@ export abstract class Form<T> extends AKElement {
     @property()
     successMessage = "";
 
+    @property({ type: String })
+    autocomplete?: AutoFill;
     @state()
     nonFieldErrors?: string[];
 
@@ -329,6 +331,7 @@ export abstract class Form<T> extends AKElement {
         if (inline) {
             return html`<form
                 class="pf-c-form pf-m-horizontal"
+                autocomplete=${ifDefined(this.autocomplete)}
                 @submit=${(ev: Event) => {
                     ev.preventDefault();
                 }}

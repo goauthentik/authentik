@@ -32,6 +32,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -341,8 +342,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                         id="update-password-request"
                                     >
                                         <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">${msg("Update password")}</span>
+                                        <span slot="header">
+                                            ${msg(
+                                                str`Update ${item.name || item.username}'s password`,
+                                            )}
+                                        </span>
                                         <ak-user-password-form
+                                            username=${item.username}
+                                            email=${ifDefined(item.email)}
                                             slot="form"
                                             .instancePk=${item.pk}
                                         ></ak-user-password-form>
