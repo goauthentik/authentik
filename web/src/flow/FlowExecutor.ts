@@ -200,6 +200,16 @@ export class FlowExecutor
         });
     }
 
+    private _loadingDisableInputs() {
+        const challengeElement = this.shadowRoot?.querySelector(this.challenge!.component);
+        if (!challengeElement) return;
+        challengeElement.shadowRoot?.querySelectorAll("ak-form-element").forEach((wrapper) => {
+            wrapper.querySelectorAll("input").forEach((input) => {
+                input.disabled = true;
+            });
+        });
+    }
+
     async submit(
         payload?: FlowChallengeResponseRequest,
         options?: SubmitOptions,
@@ -210,6 +220,7 @@ export class FlowExecutor
         payload.component = this.challenge.component;
         if (!options?.invisible) {
             this.loading = true;
+            this._loadingDisableInputs();
         }
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
