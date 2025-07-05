@@ -55,7 +55,7 @@ export class FlowCard extends AKElement {
                     background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
                     padding: 0;
                 }
-                .pf-c-login__main-body {
+                .pf-c-login__main-body:last-child {
                     padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
                 }
             `,
