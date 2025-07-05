@@ -214,7 +214,7 @@
         "build": {
             "#comment": [
                 "`npm run build` and `npm run watch` are the most common ",
-                "commands you should be using when working on the front-end ",
+                "commands you should be using when working on the frontend ",
                 "The files and output spec here expect you to use `npm run build --watch` ",
                 "instead of `npm run watch`. The former is more comprehensive, but ",
                 "the latter is faster."
