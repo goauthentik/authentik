@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.6.2 Blueprint schema",
+    "title": "authentik 2025.6.3 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -4754,6 +4754,7 @@
                             "add_token",
                             "change_token",
                             "delete_token",
+                            "set_token_key",
                             "view_token",
                             "view_token_key"
                         ]
@@ -4890,6 +4891,7 @@
                             "authentik_core.preview_user",
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
+                            "authentik_core.set_token_key",
                             "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
@@ -9536,6 +9538,7 @@
                             "authentik_core.preview_user",
                             "authentik_core.remove_user_from_group",
                             "authentik_core.reset_user_password",
+                            "authentik_core.set_token_key",
                             "authentik_core.unassign_user_permissions",
                             "authentik_core.view_application",
                             "authentik_core.view_applicationentitlement",
@@ -13310,6 +13313,12 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
+                },
+                "max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Max attempts"
                 }
             },
             "required": []
@@ -15540,6 +15549,12 @@
                     ],
                     "title": "Geoip binding",
                     "description": "Bind sessions created by this stage to the configured GeoIP location"
+                },
+                "remember_device": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Remember device",
+                    "description": "When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)"
                 }
             },
             "required": []

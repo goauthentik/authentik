@@ -10,6 +10,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { themeImage } from "#elements/utils/images";
 import "#flow/components/ak-brand-footer";
+import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/stages/FlowErrorStage";
@@ -304,7 +305,7 @@ export class FlowExecutor
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
+            return html`<ak-flow-card loading></ak-flow-card>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":

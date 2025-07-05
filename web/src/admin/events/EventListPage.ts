@@ -1,9 +1,8 @@
 import "#elements/Tabs";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { updateURLParams } from "#elements/router/RouteMatch";
 import "@goauthentik/admin/events/EventMap";
 import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventGeo, renderEventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -90,10 +89,6 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                     @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
                         this.search = `event_uuid = "${ev.detail.eventId}"`;
                         this.page = 1;
-                        updateURLParams({
-                            search: this.search,
-                            tablePage: this.page,
-                        });
                         this.fetch();
                     }}
                 ></ak-events-map>
@@ -113,7 +108,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
-            EventUser(item),
+            renderEventUser(item),
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>

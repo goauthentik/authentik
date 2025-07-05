@@ -96,6 +96,26 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Remember device")}
+                        required
+                        name="rememberDevice"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.rememberDevice ?? "days=30"}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Network binding")}
                         required
                         name="networkBinding"
