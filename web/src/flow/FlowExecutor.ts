@@ -63,7 +63,11 @@ export class FlowExecutor
         } else {
             document.title = this.brandingTitle;
         }
-        this.requestUpdate();
+        if (value?.flowInfo) {
+            this.flowInfo = value.flowInfo;
+        } else {
+            this.requestUpdate();
+        }
     }
 
     get challenge(): ChallengeTypes | undefined {
@@ -226,9 +230,6 @@ export class FlowExecutor
                 );
             }
             this.challenge = challenge;
-            if (this.challenge.flowInfo) {
-                this.flowInfo = this.challenge.flowInfo;
-            }
             return !this.challenge.responseErrors;
         } catch (exc: unknown) {
             this.errorMessage(exc as Error | ResponseError | FetchError);
@@ -257,9 +258,6 @@ export class FlowExecutor
                 );
             }
             this.challenge = challenge;
-            if (this.challenge.flowInfo) {
-                this.flowInfo = this.challenge.flowInfo;
-            }
         } catch (exc: unknown) {
             // Catch JSON or Update errors
             this.errorMessage(exc as Error | ResponseError | FetchError);

@@ -481,12 +481,12 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     protected willUpdate(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("page")) {
             updateURLParams({
-                [this.#pageParam]: changedProperties.get("page"),
+                [this.#pageParam]: this.page,
             });
         }
         if (changedProperties.has("search")) {
             updateURLParams({
-                [this.#searchParam]: changedProperties.get("search"),
+                [this.#searchParam]: this.search,
             });
         }
     }
