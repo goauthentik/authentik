@@ -1,7 +1,7 @@
 """authentik storage backends"""
 
 import os
-from urllib.parse import parse_qsl, urlsplit
+from urllib.parse import parse_qsl, urlsplit, urlunsplit
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
@@ -72,9 +72,19 @@ class S3Storage(BaseS3Storage):
     def security_token(self, value: str):
         pass
 
+    @property
+    def secure_urls(self) -> bool:
+        """Get secure_urls"""
+        return CONFIG.get_bool("storage.media.s3.secure_urls", True)
+
+    @secure_urls.setter
+    def secure_urls(self, value: bool):
+        pass
+
     def _normalize_name(self, name):
         try:
-
+            if self.location == connection.schema_name:
+                return safe_join(self.location, name)
             return safe_join(self.location, connection.schema_name, name)
         except ValueError:
             raise SuspiciousOperation(f"Attempted access to '{name}' denied.") from None
@@ -88,29 +98,82 @@ class S3Storage(BaseS3Storage):
             expire = self.querystring_expire
 
         params["Bucket"] = self.bucket.name
-        params["Key"] = name
-        url = self.bucket.meta.client.generate_presigned_url(
-            "get_object",
-            Params=params,
-            ExpiresIn=expire,
-            HttpMethod=http_method,
-        )
+        
+        # fixme
+        if name.startswith(f"{self.bucket.name}/"):
+            params["Key"] = name[len(self.bucket.name) + 1:]
+        else:
+            params["Key"] = name
 
-        if self.custom_domain:
-            # Key parameter can't be empty. Use "/" and remove it later.
-            params["Key"] = "/"
-            root_url_signed = self.bucket.meta.client.generate_presigned_url(
-                "get_object", Params=params, ExpiresIn=expire
+        # Get the client and configure endpoint URL if custom_domain is set
+        client = self.bucket.meta.client
+
+        # Save the original endpoint URL so we can restore it
+        endpoint = client._endpoint
+        original_endpoint_url = endpoint.host
+
+        custom_domain = self.custom_domain
+        if custom_domain:
+            # If the custom domain is an IDN, it needs to be punycode encoded.
+            custom_domain = custom_domain.encode("idna").decode("ascii")
+
+            domain_part = custom_domain.split('/')[0]
+            
+            scheme = "https" if self.secure_urls else "http"
+            endpoint.host = f"{scheme}://{domain_part}"
+
+        try:
+            # Generate the presigned URL using the correctly configured client
+            url = client.generate_presigned_url(
+                "get_object",
+                Params=params,
+                ExpiresIn=expire,
+                HttpMethod=http_method,
             )
-            # Remove signing parameter and previously added key "/".
-            root_url = self._strip_signing_parameters(root_url_signed)[:-1]
-            # Replace bucket domain with custom domain.
-            custom_url = f"{self.url_protocol}//{self.custom_domain}/"
-            url = url.replace(root_url, custom_url)
+
+            # If using custom domain, replace host and scheme
+            if custom_domain:
+                split_url = urlsplit(url)
+                
+                # If custom_domain includes a path component (like bucket name), use it
+                if '/' in custom_domain:
+                    domain_part = custom_domain.split('/')[0]
+                    path_parts = custom_domain.split('/')[1:]
+                    
+                    # fixme
+                    path = split_url.path
+                    if path.startswith(f"/{self.bucket.name}/"):
+                        path = path[len(f"/{self.bucket.name}"):]
+                    
+                    url = urlunsplit(
+                        (
+                            scheme,
+                            domain_part,
+                            f"/{'/'.join(path_parts)}{path}",
+                            split_url.query,
+                            split_url.fragment,
+                        )
+                    )
+                else:
+                    url = urlunsplit(
+                        (
+                            scheme,
+                            custom_domain,
+                            split_url.path,
+                            split_url.query,
+                            split_url.fragment,
+                        )
+                    )
+
+        finally:
+            # Restore the original endpoint URL if we changed it
+            if custom_domain:
+                endpoint.host = original_endpoint_url
 
         if self.querystring_auth:
             return url
-        return self._strip_signing_parameters(url)
+        else:
+            return self._strip_signing_parameters(url)
 
     def _strip_signing_parameters(self, url):
         # Boto3 does not currently support generating URLs that are unsigned. Instead

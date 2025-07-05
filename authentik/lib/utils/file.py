@@ -33,7 +33,14 @@ def set_file(request: Request, obj: Model, field_name: str):
     if clear:
         # .delete() saves the model by default
         field.delete()
-        return Response({})
+        if hasattr(obj, f"get_{field_name}"):
+            value = getattr(obj, f"get_{field_name}")
+        else:
+            try:
+                value = field.url
+            except Exception:
+                value = field.name or None
+        return Response({field_name: value})
     if file:
         setattr(obj, field_name, file)
         try:
@@ -41,16 +48,30 @@ def set_file(request: Request, obj: Model, field_name: str):
         except PermissionError as exc:
             LOGGER.warning("Failed to save file", exc=exc)
             return HttpResponseBadRequest()
-        return Response({})
+        if hasattr(obj, f"get_{field_name}"):
+            value = getattr(obj, f"get_{field_name}")
+        else:
+            try:
+                value = field.url
+            except Exception:
+                value = field.name or None
+        return Response({field_name: value})
     return HttpResponseBadRequest()
 
 
-def set_file_url(request: Request, obj: Model, field: str):
+def set_file_url(request: Request, obj: Model, field_name: str):
     """Set file field to URL"""
-    field = getattr(obj, field)
+    field = getattr(obj, field_name)
     url = request.data.get("url", None)
     if url is None:
         return HttpResponseBadRequest()
     field.name = url
     obj.save()
-    return Response({})
+    if hasattr(obj, f"get_{field_name}"):
+        value = getattr(obj, f"get_{field_name}")()
+    else:
+        try:
+            value = field.url
+        except Exception:
+            value = field.name or None
+    return Response({field_name: value})
