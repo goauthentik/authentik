@@ -44040,7 +44040,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
         challenge:
@@ -44060,8 +44060,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
-          minLength: 1
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
           minLength: 1

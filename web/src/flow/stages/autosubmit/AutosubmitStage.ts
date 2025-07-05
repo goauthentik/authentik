@@ -28,16 +28,15 @@ export class AutosubmitStage extends BaseStage<
     }
 
     updated(): void {
-        this.form?.submit();
+        if (this.challenge.url !== undefined) {
+            this.form?.submit();
+        }
     }
 
     render(): TemplateResult {
-        let title = this.challenge.flowInfo?.title;
+        let title = msg("Loading");
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;
-        }
-        if (!title) {
-            title = msg("Loading");
         }
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" action="${this.challenge.url}" method="POST">
@@ -48,7 +47,9 @@ export class AutosubmitStage extends BaseStage<
                         value="${value as string}"
                     />`;
                 })}
-                <ak-empty-state loading title=${title}> </ak-empty-state>
+                <ak-empty-state loading>
+                    <span>${title}</span>
+                </ak-empty-state>
             </form>
         </ak-flow-card>`;
     }

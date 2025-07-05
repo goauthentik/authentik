@@ -26,7 +26,7 @@ export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResp
                     this.challenge.loadingOverlay
                         ? html`<ak-empty-state loading
                               >${this.challenge.loadingText
-                                  ? html`<span>${this.challenge.loadingText}}</span>`
+                                  ? html`<span>${this.challenge.loadingText}</span>`
                                   : nothing}
                           </ak-empty-state>`
                         : nothing

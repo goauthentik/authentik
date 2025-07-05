@@ -29,8 +29,8 @@ export class AccessDeniedStage extends BaseStage<
             <form class="pf-c-form">
                 <ak-form-static
                     class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
+                    userAvatar="${this.challenge?.pendingUserAvatar}"
+                    user=${this.challenge?.pendingUser}
                 >
                     <div slot="link">
                         <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"

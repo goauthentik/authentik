@@ -66,17 +66,19 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     invalid=${this.hasError("password").toString()}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
-
-                ${this.challenge.recoveryUrl
-                    ? html`<a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>`
-                    : nothing}
-
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
                 </div>
             </form>
+            ${this.challenge.recoveryUrl
+                ? html`<div slot="footer-band" class="pf-c-login__main-footer-band">
+                      <p class="pf-c-login__main-footer-band-item">
+                          <a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>
+                      </p>
+                  </div>`
+                : nothing}
         </ak-flow-card>`;
     }
 }

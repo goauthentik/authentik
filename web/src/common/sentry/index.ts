@@ -24,7 +24,7 @@ export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 export function configureSentry(canDoPpi = false) {
     const cfg = globalAK().config;
     const debug = cfg.capabilities.includes(CapabilitiesEnum.CanDebug);
-    if (!cfg.errorReporting.enabled && !debug) {
+    if (!cfg.errorReporting?.enabled && !debug) {
         return cfg;
     }
     init({
