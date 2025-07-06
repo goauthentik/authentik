@@ -35,6 +35,8 @@ def set_file(request: Request, obj: Model, field_name: str):
         field.delete()
         if hasattr(obj, f"get_{field_name}"):
             value = getattr(obj, f"get_{field_name}")
+            if callable(value):
+                value = value()
         else:
             try:
                 value = field.url
@@ -50,6 +52,8 @@ def set_file(request: Request, obj: Model, field_name: str):
             return HttpResponseBadRequest()
         if hasattr(obj, f"get_{field_name}"):
             value = getattr(obj, f"get_{field_name}")
+            if callable(value):
+                value = value()
         else:
             try:
                 value = field.url
@@ -68,7 +72,9 @@ def set_file_url(request: Request, obj: Model, field_name: str):
     field.name = url
     obj.save()
     if hasattr(obj, f"get_{field_name}"):
-        value = getattr(obj, f"get_{field_name}")()
+        value = getattr(obj, f"get_{field_name}")
+        if callable(value):
+            value = value()
     else:
         try:
             value = field.url
