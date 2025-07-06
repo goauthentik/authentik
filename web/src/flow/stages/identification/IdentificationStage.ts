@@ -47,51 +47,44 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    form?: HTMLFormElement;
+    #form?: HTMLFormElement;
 
-    rememberMe: AkRememberMeController;
+    rememberMe = new AkRememberMeController(this);
 
     @state()
     captchaToken = "";
     @state()
     captchaRefreshedAt = new Date();
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlert,
-            PFInputGroup,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AkRememberMeController.styles,
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFInputGroup,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        AkRememberMeController.styles,
+        css`
+            /* login page's icons */
+            .pf-c-login__main-footer-links-item button {
+                background-color: transparent;
+                border: 0;
+                display: flex;
+                align-items: stretch;
+            }
+            .pf-c-login__main-footer-links-item img {
+                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                width: 100px;
+                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                height: 100%;
+                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+            }
+        `,
+    ];
 
-    constructor() {
-        super();
-        this.rememberMe = new AkRememberMeController(this);
-    }
-
-    updated(changedProperties: PropertyValues<this>) {
+    public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.autoRedirect();
             this.createHelperForm();
@@ -114,8 +107,8 @@ export class IdentificationStage extends BaseStage<
 
     createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
-        this.form = document.createElement("form");
-        document.documentElement.appendChild(this.form);
+        this.#form = document.createElement("form");
+        document.documentElement.appendChild(this.#form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
         if (!compatMode) {
@@ -136,7 +129,7 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(username);
+            this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
         if (!compatMode && !this.challenge.passwordFields) {
@@ -144,11 +137,13 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
-            password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key === "Enter") {
-                    this.submitForm(ev);
+            password.onkeyup = (event: KeyboardEvent) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    this.submitForm();
                 }
-                const el = ev.target as HTMLInputElement;
+
+                const el = event.target as HTMLInputElement;
                 // Because the password field is not actually on this page,
                 // and we want to 'prefill' the password for the user,
                 // save it globally
@@ -163,17 +158,22 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(password);
+
+            this.#form.appendChild(password);
         }
+
         const totp = document.createElement("input");
+
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
-        totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key === "Enter") {
-                this.submitForm(ev);
+        totp.onkeyup = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                this.submitForm();
             }
-            const el = ev.target as HTMLInputElement;
+
+            const el = event.target as HTMLInputElement;
             // Because the totp field is not actually on this page,
             // and we want to 'prefill' the totp for the user,
             // save it globally
@@ -188,13 +188,12 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        this.form.appendChild(totp);
+
+        this.#form.appendChild(totp);
     }
 
     onSubmitSuccess(): void {
-        if (this.form) {
-            this.form.remove();
-        }
+        this.#form?.remove();
     }
 
     onSubmitFailure(): void {
@@ -322,12 +321,7 @@ export class IdentificationStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}

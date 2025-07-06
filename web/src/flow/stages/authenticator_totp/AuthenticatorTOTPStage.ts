@@ -48,12 +48,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"

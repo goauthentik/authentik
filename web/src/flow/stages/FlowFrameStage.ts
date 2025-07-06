@@ -16,28 +16,21 @@ import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api"
 
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                ${
-                    this.challenge.loadingOverlay
-                        ? html`<ak-empty-state loading
-                              >${this.challenge.loadingText
-                                  ? html`<span>${this.challenge.loadingText}</span>`
-                                  : nothing}
-                          </ak-empty-state>`
-                        : nothing
-                }
-                <iframe
-                    style=${
-                        this.challenge.loadingOverlay ? "width:0;height:0;position:absolute;" : ""
-                    }
-                    src=${this.challenge.url}
-                ></iframe>
-            </div>
+            ${this.challenge.loadingOverlay
+                ? html`<ak-empty-state loading
+                      >${this.challenge.loadingText
+                          ? html`<span>${this.challenge.loadingText}</span>`
+                          : nothing}
+                  </ak-empty-state>`
+                : nothing}
+            <iframe
+                style=${this.challenge.loadingOverlay ? "width:0;height:0;position:absolute;" : ""}
+                src=${this.challenge.url}
+            ></iframe>
         </ak-flow-card>`;
     }
 }

@@ -278,15 +278,8 @@ ${prompt.initialValue}</textarea
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                ${this.challenge.fields.map((prompt) => {
-                    return this.renderField(prompt);
-                })}
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${this.challenge.fields.map((prompt) => this.renderField(prompt))}
                 ${this.renderNonFieldErrors()} ${this.renderContinue()}
             </form>
         </ak-flow-card>`;

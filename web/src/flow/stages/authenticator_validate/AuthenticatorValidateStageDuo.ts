@@ -51,12 +51,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
-        return html` <form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
+        return html` <form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fas fa-times"
                 ><span

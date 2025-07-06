@@ -48,17 +48,18 @@ export interface ResponseErrorsChallenge {
     };
 }
 
-export class BaseStage<
+export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
 > extends AKElement {
     host!: StageHost;
 
     @property({ attribute: false })
-    challenge!: Tin;
+    public challenge!: Tin;
 
-    async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
-        e.preventDefault();
+    public submitForm = async (event?: SubmitEvent, defaults?: Tout): Promise<boolean> => {
+        event?.preventDefault();
+
         const object: Record<string, unknown> = defaults || {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
 
@@ -77,7 +78,7 @@ export class BaseStage<
             }
             return successful;
         });
-    }
+    };
 
     renderNonFieldErrors() {
         const errors = this.challenge?.responseErrors || {};

@@ -32,12 +32,7 @@ export class AuthenticatorEmailStage extends BaseStage<
 
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"
@@ -90,12 +85,7 @@ export class AuthenticatorEmailStage extends BaseStage<
             </ak-form-static>
             A verification token has been sent to your configured email address
             ${ifDefined(this.challenge.email)}
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-element
                     label="${msg("Code")}"
                     required

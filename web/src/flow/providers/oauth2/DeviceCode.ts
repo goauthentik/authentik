@@ -30,40 +30,34 @@ export class OAuth2DeviceCode extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                <p>${msg("Enter the code shown on your device.")}</p>
+                <ak-form-element
+                    label="${msg("Code")}"
+                    required
+                    class="pf-c-form__group"
+                    .errors=${(this.challenge?.responseErrors || {}).code}
                 >
-                    <p>${msg("Enter the code shown on your device.")}</p>
-                    <ak-form-element
-                        label="${msg("Code")}"
+                    <input
+                        type="text"
+                        name="code"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        placeholder="${msg("Please enter your Code")}"
+                        autofocus=""
+                        autocomplete="off"
+                        class="pf-c-form-control"
+                        value=""
                         required
-                        class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {}).code}
-                    >
-                        <input
-                            type="text"
-                            name="code"
-                            inputmode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="${msg("Please enter your Code")}"
-                            autofocus=""
-                            autocomplete="off"
-                            class="pf-c-form-control"
-                            value=""
-                            required
-                        />
-                    </ak-form-element>
+                    />
+                </ak-form-element>
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${msg("Continue")}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="pf-c-form__group pf-m-action">
+                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                        ${msg("Continue")}
+                    </button>
+                </div>
+            </form>
         </ak-flow-card>`;
     }
 }

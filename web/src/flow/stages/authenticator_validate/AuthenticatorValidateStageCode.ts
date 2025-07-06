@@ -66,33 +66,27 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        return html`<form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
+        const deviceClass = this.deviceChallenge?.deviceClass;
+
+        return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">
                 <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
                 <p>${this.deviceMessage()}</p>
             </div>
             <ak-form-element
-                label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                label="${deviceClass === DeviceClassesEnum.Static
                     ? msg("Static token")
                     : msg("Authentication code")}"
                 required
                 class="pf-c-form__group"
                 .errors=${(this.challenge?.responseErrors || {}).code}
             >
-                <!-- @ts-ignore -->
                 <input
                     type="text"
                     name="code"
-                    inputmode="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                        ? "text"
-                        : "numeric"}"
-                    pattern="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                    inputmode="${deviceClass === DeviceClassesEnum.Static ? "text" : "numeric"}"
+                    pattern="${deviceClass === DeviceClassesEnum.Static
                         ? "[0-9a-zA-Z]*"
                         : "[0-9]*"}"
                     placeholder="${msg("Please enter your code")}"

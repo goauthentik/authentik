@@ -4,7 +4,7 @@ import "@goauthentik/flow/components/ak-flow-card.js";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
@@ -26,6 +26,7 @@ export class UserSettingsPromptStage extends PromptStage {
 
     renderField(prompt: StagePrompt): TemplateResult {
         const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
+
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
@@ -57,7 +58,7 @@ export class UserSettingsPromptStage extends PromptStage {
                           >
                               ${msg("Delete account")}
                           </a>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
         </div>`;
@@ -65,19 +66,11 @@ export class UserSettingsPromptStage extends PromptStage {
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.fields.map((prompt) => {
-                        return this.renderField(prompt);
-                    })}
-                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
-                </form>
-            </div>
-            </ak-flow-card>`;
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${this.challenge.fields.map((prompt) => this.renderField(prompt))}
+                ${this.renderNonFieldErrors()} ${this.renderContinue()}
+            </form>
+        </ak-flow-card>`;
     }
 }
 

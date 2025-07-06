@@ -108,8 +108,8 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form
                 class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e, {
+                @submit=${(event: SubmitEvent) => {
+                    this.submitForm(event, {
                         token: this.challenge.token,
                     });
                 }}
