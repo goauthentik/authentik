@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-25 00:10+0000\n"
+"POT-Creation-Date: 2025-07-05 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -336,6 +336,10 @@ msgstr "令牌"
 #: authentik/core/models.py
 msgid "View token's key"
 msgstr "查看令牌密钥"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "设置令牌密钥"
 
 #: authentik/core/models.py
 msgid "Property Mapping"
@@ -3552,6 +3556,15 @@ msgid ""
 msgstr ""
 "当用户选择“记住我”选项时，会话将会延长的时间。默认值 0 "
 "表示不显示“记住我”选项。（格式：hours=-1;minutes=-2;seconds=-3）"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"当设置为非零值时，authentik 将会以更长的过期时间保存 "
+"Cookie，来更久地记住用户的登录设备。（格式：hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
