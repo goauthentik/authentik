@@ -3564,7 +3564,7 @@ msgid ""
 "hours=-1;minutes=-2;seconds=-3)"
 msgstr ""
 "当设置为非零值时，authentik 将会以更长的过期时间保存 "
-"Cookie，来更久地记住用户的登录设备。（格式：hours=-1;minutes=-2;seconds=-3）"
+"Cookie，以记住用户的登录设备。（格式：hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
