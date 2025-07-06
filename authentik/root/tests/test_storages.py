@@ -568,3 +568,113 @@ class TestS3Storage(TestCase):
             "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
         )
         self.assertEqual(url, expected_url)
+
+    @patch("authentik.root.storages.S3Storage._normalize_name")
+    @patch("authentik.root.storages.S3Storage.secure_urls", new_callable=PropertyMock)
+    @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
+    def test_url_with_secure_urls_true(self, mock_bucket, mock_secure_urls, mock_normalize_name):
+        """Test URL generation with secure_urls=True (HTTPS)"""
+        mock_normalize_name.return_value = "media/public/icons/logo.svg"
+        mock_secure_urls.return_value = True  # Use HTTPS
+
+        # Set up the mock client with an endpoint
+        mock_client = MagicMock()
+        mock_client._endpoint = MockEndpoint("s3.region.com")
+
+        # Use HTTP in the presigned URL to verify it gets changed to HTTPS
+        presigned_url = (
+            "http://s3.region.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
+
+        # Set up the bucket
+        mock_bucket_obj = MagicMock()
+        mock_bucket_obj.name = "example-bucket"
+        mock_bucket_obj.meta.client = mock_client
+        mock_bucket.return_value = mock_bucket_obj
+
+        # Configure storage
+        storage = S3Storage()
+        storage.custom_domain = "example-bucket.s3.region.com"
+        # secure_urls is mocked to return True
+        storage.querystring_auth = True
+        storage.querystring_expire = 3600
+
+        # Call the URL method
+        url = storage.url("public/icons/logo.svg")
+
+        # Verify the endpoint was restored to its original value
+        self.assertEqual(mock_client._endpoint.host, "s3.region.com")
+
+        # Check the final URL uses HTTPS
+        expected_url = (
+            "https://example-bucket.s3.region.com//media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        self.assertEqual(url, expected_url)
+
+    @patch("authentik.root.storages.S3Storage._normalize_name")
+    @patch("authentik.root.storages.S3Storage.secure_urls", new_callable=PropertyMock)
+    @patch("authentik.root.storages.S3Storage.bucket", new_callable=PropertyMock)
+    def test_url_with_secure_urls_false(self, mock_bucket, mock_secure_urls, mock_normalize_name):
+        """Test URL generation with secure_urls=False (HTTP)"""
+        mock_normalize_name.return_value = "media/public/icons/logo.svg"
+        mock_secure_urls.return_value = False  # Use HTTP
+
+        # Set up the mock client with an endpoint
+        mock_client = MagicMock()
+        mock_client._endpoint = MockEndpoint("s3.region.com")
+
+        # Use HTTPS in the presigned URL to verify it gets changed to HTTP
+        presigned_url = (
+            "https://s3.region.com/example-bucket/media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        mock_client.generate_presigned_url.return_value = presigned_url
+
+        # Set up the bucket
+        mock_bucket_obj = MagicMock()
+        mock_bucket_obj.name = "example-bucket"
+        mock_bucket_obj.meta.client = mock_client
+        mock_bucket.return_value = mock_bucket_obj
+
+        # Configure storage
+        storage = S3Storage()
+        storage.custom_domain = "example-bucket.s3.region.com"
+        # secure_urls is mocked to return False
+        storage.querystring_auth = True
+        storage.querystring_expire = 3600
+
+        # Call the URL method
+        url = storage.url("public/icons/logo.svg")
+
+        # Verify the endpoint was restored to its original value
+        self.assertEqual(mock_client._endpoint.host, "s3.region.com")
+
+        # Check the final URL uses HTTP
+        expected_url = (
+            "http://example-bucket.s3.region.com//media/public/icons/logo.svg"
+            "?X-Amz-Algorithm=AWS4-HMAC-SHA256"
+            "&X-Amz-Credential=EXAMPLECRED%2F20250314%2Fdefault%2Fs3%2Faws4_request"
+            "&X-Amz-Date=20250314T181538Z"
+            "&X-Amz-Expires=3600"
+            "&X-Amz-SignedHeaders=host"
+            "&X-Amz-Signature=abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        )
+        self.assertEqual(url, expected_url)
