@@ -1,3 +1,4 @@
+import { pluckErrorDetail } from "#common/errors/network";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -44,7 +45,7 @@ export interface PendingUserChallenge {
 
 export interface ResponseErrorsChallenge {
     responseErrors?: {
-        [key: string]: Array<ErrorDetail>;
+        [key: string]: ErrorDetail[];
     };
 }
 
@@ -60,42 +61,47 @@ export abstract class BaseStage<
     public submitForm = async (event?: SubmitEvent, defaults?: Tout): Promise<boolean> => {
         event?.preventDefault();
 
-        const object: Record<string, unknown> = defaults || {};
-        const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
+        const payload: Record<string, unknown> = defaults || {};
 
-        for await (const [key, value] of form.entries()) {
-            if (value instanceof Blob) {
-                object[key] = await readFileAsync(value);
-            } else {
-                object[key] = value;
+        const form = this.shadowRoot?.querySelector("form");
+
+        if (form) {
+            const data = new FormData(form);
+
+            for await (const [key, value] of data.entries()) {
+                if (value instanceof Blob) {
+                    payload[key] = await readFileAsync(value);
+                } else {
+                    payload[key] = value;
+                }
             }
         }
-        return this.host?.submit(object as unknown as Tout).then((successful) => {
+
+        return this.host?.submit(payload as unknown as Tout).then((successful) => {
             if (successful) {
                 this.onSubmitSuccess();
             } else {
                 this.onSubmitFailure();
             }
+
             return successful;
         });
     };
 
     renderNonFieldErrors() {
-        const errors = this.challenge?.responseErrors || {};
-        if (!("non_field_errors" in errors)) {
-            return nothing;
-        }
-        const nonFieldErrors = errors.non_field_errors;
+        const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
+
         if (!nonFieldErrors) {
             return nothing;
         }
+
         return html`<div class="pf-c-form__alert">
             ${nonFieldErrors.map((err) => {
                 return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
                     <div class="pf-c-alert__icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${err.string}</h4>
+                    <h4 class="pf-c-alert__title">${pluckErrorDetail(err)}</h4>
                 </div>`;
             })}
         </div>`;

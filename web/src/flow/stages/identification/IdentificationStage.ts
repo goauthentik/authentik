@@ -30,12 +30,9 @@ import {
 } from "@goauthentik/api";
 
 export const PasswordManagerPrefill: {
-    password: string | undefined;
-    totp: string | undefined;
-} = {
-    password: undefined,
-    totp: undefined,
-};
+    password?: string;
+    totp?: string;
+} = {};
 
 export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
     style: "short",
@@ -47,15 +44,6 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    #form?: HTMLFormElement;
-
-    rememberMe = new AkRememberMeController(this);
-
-    @state()
-    captchaToken = "";
-    @state()
-    captchaRefreshedAt = new Date();
-
     static styles: CSSResult[] = [
         PFBase,
         PFAlert,
@@ -84,28 +72,50 @@ export class IdentificationStage extends BaseStage<
         `,
     ];
 
+    #form?: HTMLFormElement;
+
+    #rememberMe = new AkRememberMeController(this);
+
+    //#region State
+
+    @state()
+    captchaToken = "";
+    @state()
+    captchaRefreshedAt = new Date();
+
+    //#endregion
+
+    //#region Lifecycle
+
     public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
-            this.autoRedirect();
-            this.createHelperForm();
+            this.#autoRedirect();
+            this.#createHelperForm();
         }
     }
 
-    autoRedirect(): void {
+    //#endregion
+
+    #autoRedirect(): void {
         if (!this.challenge) return;
-        // we only want to auto-redirect to a source if there's only one source
+        // We only want to auto-redirect to a source if there's only one source.
         if (this.challenge.sources?.length !== 1) return;
-        // and we also only do an auto-redirect if no user fields are select
+
+        // And we also only do an auto-redirect if no user fields are select
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
-        // we also don't want to auto-redirect if there's a passwordless URL configured
+
+        // We also don't want to auto-redirect if there's a passwordless URL configured
         if (this.challenge.passwordlessUrl) return;
+
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
     }
 
-    createHelperForm(): void {
+    //#region Helper Form
+
+    #createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
         this.#form = document.createElement("form");
         document.documentElement.appendChild(this.#form);
@@ -192,6 +202,8 @@ export class IdentificationStage extends BaseStage<
         this.#form.appendChild(totp);
     }
 
+    //#endregion
+
     onSubmitSuccess(): void {
         this.#form?.remove();
     }
@@ -199,6 +211,8 @@ export class IdentificationStage extends BaseStage<
     onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
+
+    //#region Render
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
@@ -277,10 +291,10 @@ export class IdentificationStage extends BaseStage<
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
-                    value=${this.rememberMe?.username ?? ""}
+                    value=${this.#rememberMe?.username ?? ""}
                     required
                 />
-                ${this.rememberMe.render()}
+                ${this.#rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
@@ -351,6 +365,8 @@ export class IdentificationStage extends BaseStage<
             ${this.renderFooter()}
         </ak-flow-card>`;
     }
+
+    //#endregion
 }
 
 declare global {
