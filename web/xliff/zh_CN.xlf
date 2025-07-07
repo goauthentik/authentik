@@ -9910,6 +9910,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
   <target>以 <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/> 身份通过验证</target>
 </trans-unit>
+<trans-unit id="sa3ff409b84679db8">
+  <source>Remember device</source>
+  <target>记住设备</target>
+</trans-unit>
+<trans-unit id="s3b123cba0bf03f29">
+  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+  <target>如果设置大于 0 的时长，则会以该时长存储一条 Cookie，使 authentik 知道用户是否从新设备登录。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>

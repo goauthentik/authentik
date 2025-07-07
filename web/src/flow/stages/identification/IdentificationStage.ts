@@ -347,11 +347,13 @@ export class IdentificationStage extends BaseStage<
                       `
                     : nothing}
             </form>
-            <ul slot="footer" class="pf-c-login__main-footer-links">
-                ${(this.challenge.sources || []).map((source) => {
-                    return this.renderSource(source);
-                })}
-            </ul>
+            ${(this.challenge.sources || []).length > 0
+                ? html`<ul slot="footer" class="pf-c-login__main-footer-links">
+                      ${(this.challenge.sources || []).map((source) => {
+                          return this.renderSource(source);
+                      })}
+                  </ul> `
+                : nothing}
             ${this.renderFooter()}
         </ak-flow-card>`;
     }
