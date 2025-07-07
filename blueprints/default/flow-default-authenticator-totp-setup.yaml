@@ -5,7 +5,7 @@ entries:
 - attrs:
     designation: stage_configuration
     name: default-authenticator-totp-setup
-    title: Setup Two-Factor authentication
+    title: Set up Two-Factor authentication
     authentication: require_authenticated
   identifiers:
     slug: default-authenticator-totp-setup

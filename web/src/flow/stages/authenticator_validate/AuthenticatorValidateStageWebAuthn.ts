@@ -90,8 +90,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
         this.authenticating = true;
         this.authenticate()
-            .catch((e: Error) => {
-                console.warn("authentik/flows/authenticator_validate/webauthn: failed to auth", e);
+            .catch((error: unknown) => {
+                console.warn(
+                    "authentik/flows/authenticator_validate/webauthn: failed to auth",
+                    error,
+                );
                 this.errorMessage = msg("Authentication failed. Please try again.");
             })
             .finally(() => {
@@ -100,32 +103,37 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-login__main-body">
-            <form class="pf-c-form">
-                ${this.renderUserInfo()}
-                <ak-empty-state
-                    ?loading="${this.authenticating}"
-                    header=${this.authenticating
+        return html` <form class="pf-c-form">
+            ${this.renderUserInfo()}
+            <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">
+                <span
+                    >${this.authenticating
                         ? msg("Authenticating...")
-                        : this.errorMessage || msg("Failed to authenticate")}
-                    icon="fa-times"
+                        : this.errorMessage || msg("Loading")}</span
                 >
-                </ak-empty-state>
-                <div class="pf-c-form__group pf-m-action">
-                    ${!this.authenticating
-                        ? html` <button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  this.authenticateWrapper();
-                              }}
-                              type="button"
-                          >
-                              ${msg("Retry authentication")}
-                          </button>`
-                        : nothing}
-                    ${this.renderReturnToDevicePicker()}
-                </div>
-            </form>
-        </div>`;
+            </ak-empty-state>
+            ${!this.authenticating || this.showBackButton
+                ? html`<div class="pf-c-form__group pf-m-action">
+                      ${!this.authenticating
+                          ? html` <button
+                                class="pf-c-button pf-m-primary pf-m-block"
+                                @click=${() => {
+                                    this.authenticateWrapper();
+                                }}
+                                type="button"
+                            >
+                                ${msg("Retry authentication")}
+                            </button>`
+                          : nothing}
+                      ${this.renderReturnToDevicePicker()}
+                  </div>`
+                : nothing}
+        </form>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-webauthn": AuthenticatorValidateStageWebAuthn;
     }
 }

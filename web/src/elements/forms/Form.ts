@@ -1,14 +1,16 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
+import { dateToUTC } from "@goauthentik/common/temporal";
+import { camelToSnake } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -19,13 +21,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauthentik/api";
-
-export class APIError extends Error {
-    constructor(public response: ValidationError) {
-        super();
-    }
-}
+import { instanceOfValidationError } from "@goauthentik/api";
 
 export interface KeyUnknown {
     [key: string]: unknown;
@@ -34,7 +30,9 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-type AkControlElement = HTMLInputElement & { json: () => string | string[] };
+export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
+
+const doNotProcess = <T extends HTMLElement>(element: T) => element.dataset.formIgnore === "true";
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
@@ -49,7 +47,9 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
     for (let index = 0; index < nameElements.length - 1; index++) {
         const nameEl = nameElements[index];
         // Ensure all nested structures exist
-        if (!(nameEl in parent)) parent[nameEl] = {};
+        if (!(nameEl in parent)) {
+            parent[nameEl] = {};
+        }
         parent = parent[nameEl] as { [key: string]: unknown };
     }
     parent[nameElements[nameElements.length - 1]] = value;
@@ -74,8 +74,8 @@ export function serializeForm<T extends KeyUnknown>(
             return;
         }
 
-        const inputElement = element.querySelector<HTMLInputElement>("[name]");
-        if (element.hidden || !inputElement) {
+        const inputElement = element.querySelector<AkControlElement>("[name]");
+        if (element.hidden || !inputElement || doNotProcess(inputElement)) {
             return;
         }
 
@@ -84,10 +84,6 @@ export function serializeForm<T extends KeyUnknown>(
             return;
         }
 
-        // Skip elements that are writeOnly where the user hasn't clicked on the value
-        if (element.writeOnly && !element.writeOnlyActivated) {
-            return;
-        }
         if (
             inputElement.tagName.toLowerCase() === "select" &&
             "multiple" in inputElement.attributes
@@ -108,7 +104,7 @@ export function serializeForm<T extends KeyUnknown>(
         } else if (
             inputElement.tagName.toLowerCase() === "input" &&
             "type" in inputElement.dataset &&
-            inputElement.dataset["type"] === "datetime-local"
+            inputElement.dataset.type === "datetime-local"
         ) {
             // Workaround for Firefox <93, since 92 and older don't support
             // datetime-local fields
@@ -120,17 +116,6 @@ export function serializeForm<T extends KeyUnknown>(
             assignValue(inputElement, inputElement.checked, json);
         } else if ("selectedFlow" in inputElement) {
             assignValue(inputElement, inputElement.value, json);
-        } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
-            const select = inputElement as unknown as SearchSelect<unknown>;
-            try {
-                const value = select.toForm();
-                assignValue(inputElement, value, json);
-            } catch (exc) {
-                if (exc instanceof PreventFormSubmit) {
-                    throw new PreventFormSubmit(exc.message, element);
-                }
-                throw exc;
-            }
         } else {
             assignValue(inputElement, inputElement.value, json);
         }
@@ -169,7 +154,6 @@ export function serializeForm<T extends KeyUnknown>(
  *
  */
 
-@customElement("ak-form")
 export abstract class Form<T> extends AKElement {
     abstract send(data: T): Promise<unknown>;
 
@@ -205,44 +189,11 @@ export abstract class Form<T> extends AKElement {
      */
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
-        return !(rect.x + rect.y + rect.width + rect.height === 0);
+        return rect.x + rect.y + rect.width + rect.height !== 0;
     }
 
     getSuccessMessage(): string {
         return this.successMessage;
-    }
-
-    /**
-     * After rendering the form, if there is both a `name` and `slug` element within the form,
-     * events the `name` element so that the slug will always have a slugified version of the
-     * `name.`. This duplicates functionality within ak-form-element-horizontal.
-     */
-    updated(): void {
-        this.shadowRoot
-            ?.querySelectorAll("ak-form-element-horizontal[name=name]")
-            .forEach((nameInput) => {
-                const input = nameInput.firstElementChild as HTMLInputElement;
-                const form = nameInput.closest("form");
-                if (form === null) {
-                    return;
-                }
-                const slugFieldWrapper = form.querySelector(
-                    "ak-form-element-horizontal[name=slug]",
-                );
-                if (!slugFieldWrapper) {
-                    return;
-                }
-                const slugField = slugFieldWrapper.firstElementChild as HTMLInputElement;
-                // Only attach handler if the slug is already equal to the name
-                // if not, they are probably completely different and shouldn't update
-                // each other
-                if (convertToSlug(input.value) !== slugField.value) {
-                    return;
-                }
-                nameInput.addEventListener("input", () => {
-                    slugField.value = convertToSlug(input.value);
-                });
-            });
     }
 
     resetForm(): void {
@@ -292,80 +243,88 @@ export abstract class Form<T> extends AKElement {
         }
         return serializeForm(elements) as T;
     }
-
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
      */
-    async submit(ev: Event): Promise<unknown | undefined> {
-        ev.preventDefault();
-        try {
-            const data = this.serializeForm();
-            if (!data) {
-                return;
-            }
-            const response = await this.send(data);
-            showMessage({
-                level: MessageLevel.success,
-                message: this.getSuccessMessage(),
-            });
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            return response;
-        } catch (ex) {
-            if (ex instanceof ResponseError) {
-                let msg = ex.response.statusText;
-                if (ex.response.status > 399 && ex.response.status < 500) {
-                    const errorMessage = ValidationErrorFromJSON(await ex.response.json());
-                    if (!errorMessage) return errorMessage;
-                    if (errorMessage instanceof Error) {
-                        throw errorMessage;
-                    }
+    async submit(event: Event): Promise<unknown | undefined> {
+        event.preventDefault();
+
+        const data = this.serializeForm();
+        if (!data) return;
+
+        return this.send(data)
+            .then((response) => {
+                showMessage({
+                    level: MessageLevel.success,
+                    message: this.getSuccessMessage(),
+                });
+
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+
+                return response;
+            })
+            .catch(async (error: unknown) => {
+                if (error instanceof PreventFormSubmit && error.element) {
+                    error.element.errorMessages = [error.message];
+                    error.element.invalid = true;
+                }
+
+                const parsedError = await parseAPIResponseError(error);
+                let errorMessage = pluckErrorDetail(error);
+
+                if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
                     const elements =
                         this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
                             "ak-form-element-horizontal",
                         ) || [];
+
                     elements.forEach((element) => {
                         element.requestUpdate();
+
                         const elementName = element.name;
                         if (!elementName) return;
-                        if (camelToSnake(elementName) in errorMessage) {
-                            element.errorMessages = errorMessage[camelToSnake(elementName)];
+
+                        const snakeProperty = camelToSnake(elementName);
+
+                        if (snakeProperty in parsedError) {
+                            element.errorMessages = parsedError[snakeProperty];
                             element.invalid = true;
                         } else {
                             element.errorMessages = [];
                             element.invalid = false;
                         }
                     });
-                    if (errorMessage.nonFieldErrors) {
-                        this.nonFieldErrors = errorMessage.nonFieldErrors;
+
+                    if (parsedError.nonFieldErrors) {
+                        this.nonFieldErrors = parsedError.nonFieldErrors;
                     }
+
+                    errorMessage = msg("Invalid update request.");
+
                     // Only change the message when we have `detail`.
                     // Everything else is handled in the form.
-                    if ("detail" in errorMessage) {
-                        msg = errorMessage.detail;
+                    if ("detail" in parsedError) {
+                        errorMessage = parsedError.detail;
                     }
                 }
-                // error is local or not from rest_framework
+
                 showMessage({
-                    message: msg,
+                    message: errorMessage,
                     level: MessageLevel.error,
                 });
-            }
-            if (ex instanceof PreventFormSubmit && ex.element) {
-                ex.element.errorMessages = [ex.message];
-                ex.element.invalid = true;
-            }
-            // rethrow the error so the form doesn't close
-            throw ex;
-        }
+
+                // Rethrow the error so the form doesn't close.
+                throw error;
+            });
     }
 
     renderFormWrapper(): TemplateResult {

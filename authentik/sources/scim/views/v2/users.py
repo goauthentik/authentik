@@ -2,8 +2,9 @@
 
 from uuid import uuid4
 
+from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import Http404, QueryDict
+from django.http import QueryDict
 from django.urls import reverse
 from pydanticscim.user import Email, EmailKind, Name
 from rest_framework.exceptions import ValidationError
@@ -14,22 +15,14 @@ from authentik.core.models import User
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
-from authentik.sources.scim.views.v2.base import SCIMView
+from authentik.sources.scim.views.v2.base import SCIMObjectView
+from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
 
 
-class UsersView(SCIMView):
+class UsersView(SCIMObjectView):
     """SCIM User view"""
 
     model = User
-
-    def get_email(self, data: list[dict]) -> str:
-        """Wrapper to get primary email or first email"""
-        for email in data:
-            if email.get("primary", False):
-                return email.get("value")
-        if len(data) < 1:
-            return ""
-        return data[0].get("value")
 
     def user_to_scim(self, scim_user: SCIMSourceUser) -> dict:
         """Convert User to SCIM data"""
@@ -77,7 +70,7 @@ class UsersView(SCIMView):
                 .first()
             )
             if not connection:
-                raise Http404
+                raise SCIMNotFoundError("User not found.")
             return Response(self.user_to_scim(connection))
         connections = (
             SCIMSourceUser.objects.filter(source=self.source).select_related("user").order_by("pk")
@@ -97,21 +90,16 @@ class UsersView(SCIMView):
     @atomic
     def update_user(self, connection: SCIMSourceUser | None, data: QueryDict):
         """Partial update a user"""
-        user = connection.user if connection else User()
-        if _user := User.objects.filter(username=data.get("userName")).first():
-            user = _user
-        user.path = self.source.get_user_path()
-        if "userName" in data:
-            user.username = data.get("userName")
-        if "name" in data:
-            user.name = data.get("name", {}).get("formatted", data.get("displayName"))
-        if "emails" in data:
-            user.email = self.get_email(data.get("emails"))
-        if "active" in data:
-            user.is_active = data.get("active")
-        if user.username == "":
+        properties = self.build_object_properties(data)
+
+        if not properties.get("username"):
             raise ValidationError("Invalid user")
-        user.save()
+
+        user = connection.user if connection else User()
+        if _user := User.objects.filter(username=properties.get("username")).first():
+            user = _user
+        user.update_attributes(properties)
+
         if not connection:
             connection, _ = SCIMSourceUser.objects.get_or_create(
                 source=self.source,
@@ -127,12 +115,15 @@ class UsersView(SCIMView):
     def post(self, request: Request, **kwargs) -> Response:
         """Create user handler"""
         connection = SCIMSourceUser.objects.filter(
+            Q(
+                Q(user__uuid=request.data.get("id"))
+                | Q(user__username=request.data.get("userName"))
+            ),
             source=self.source,
-            user__uuid=request.data.get("id"),
         ).first()
         if connection:
             self.logger.debug("Found existing user")
-            return Response(status=409)
+            raise SCIMConflictError("Group with ID exists already.")
         connection = self.update_user(None, request.data)
         return Response(self.user_to_scim(connection), status=201)
 
@@ -140,7 +131,7 @@ class UsersView(SCIMView):
         """Update user handler"""
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("User not found.")
         self.update_user(connection, request.data)
         return Response(self.user_to_scim(connection), status=200)
 
@@ -149,7 +140,7 @@ class UsersView(SCIMView):
         """Delete user handler"""
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("User not found.")
         connection.user.delete()
         connection.delete()
         return Response(status=204)

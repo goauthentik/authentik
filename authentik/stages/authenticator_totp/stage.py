@@ -11,7 +11,6 @@ from rest_framework.serializers import ValidationError
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -55,7 +54,6 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
         device: TOTPDevice = self.request.session[SESSION_TOTP_DEVICE]
         return AuthenticatorTOTPChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "config_url": device.config_url.replace(
                     OTP_TOTP_ISSUER, quote(self.request.brand.branding_title)
                 ),

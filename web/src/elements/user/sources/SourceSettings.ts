@@ -70,7 +70,7 @@ export class UserSourceSettingsPage extends AKElement {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
-                (con) => con.source.slug === source.objectUid,
+                (con) => con.sourceObj.slug === source.objectUid,
             );
             if (connections.length > 0) {
                 connectionPk = connections[0].pk;
@@ -115,9 +115,9 @@ export class UserSourceSettingsPage extends AKElement {
             ${this.sourceSettings
                 ? html`
                       ${this.sourceSettings.length < 1
-                          ? html`<ak-empty-state
-                                header=${msg("No services available.")}
-                            ></ak-empty-state>`
+                          ? html`<ak-empty-state>
+                                <span>${msg("No services available.")}</span></ak-empty-state
+                            >`
                           : html`
                                 ${this.sourceSettings.map((source) => {
                                     return html`<li class="pf-c-data-list__item">
@@ -139,8 +139,13 @@ export class UserSourceSettingsPage extends AKElement {
                                 })}
                             `}
                   `
-                : html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-                  </ak-empty-state>`}
+                : html`<ak-empty-state default-label></ak-empty-state>`}
         </ul>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-source": UserSourceSettingsPage;
     }
 }

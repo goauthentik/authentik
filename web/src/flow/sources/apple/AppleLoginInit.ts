@@ -1,8 +1,8 @@
-import "@goauthentik/elements/EmptyState";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -40,11 +40,11 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
             this.isModalShown = true;
         };
         document.head.append(appleAuth);
-        //Listen for authorization success
+        // Listen for authorization success
         document.addEventListener("AppleIDSignInOnSuccess", () => {
             //handle successful response
         });
-        //Listen for authorization failures
+        // Listen for authorization failures
         document.addEventListener("AppleIDSignInOnFailure", (error) => {
             console.warn(error);
             this.isModalShown = false;
@@ -52,26 +52,27 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Apple...")}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <ak-empty-state ?loading="${true}"> </ak-empty-state>
-                    ${!this.isModalShown
-                        ? html`<button
-                              class="pf-c-button pf-m-primary pf-m-block"
-                              @click=${() => {
-                                  AppleID.auth.signIn();
-                              }}
-                          >
-                              ${msg("Retry")}
-                          </button>`
-                        : html``}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <span slot="title">${msg("Authenticating with Apple...")}</span>
+            <form class="pf-c-form">
+                <ak-empty-state loading></ak-empty-state>
+                ${!this.isModalShown
+                    ? html`<button
+                          class="pf-c-button pf-m-primary pf-m-block"
+                          @click=${() => {
+                              AppleID.auth.signIn();
+                          }}
+                      >
+                          ${msg("Retry")}
+                      </button>`
+                    : nothing}
+            </form>
+        </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-source-oauth-apple": AppleLoginInit;
     }
 }

@@ -38,7 +38,9 @@ class TestSourceFlowManager(TestCase):
     def test_unauthenticated_enroll(self):
         """Test un-authenticated user enrolling"""
         request = get_request("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, self.identifier, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)
         response = flow_manager.get_flow()
@@ -52,7 +54,9 @@ class TestSourceFlowManager(TestCase):
             user=get_anonymous_user(), source=self.source, identifier=self.identifier
         )
         request = get_request("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, self.identifier, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.AUTH)
         response = flow_manager.get_flow()
@@ -64,7 +68,9 @@ class TestSourceFlowManager(TestCase):
         """Test authenticated user linking"""
         user = User.objects.create(username="foo", email="foo@bar.baz")
         request = get_request("/", user=user)
-        flow_manager = OAuthSourceFlowManager(self.source, request, self.identifier, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
         action, connection = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
@@ -75,9 +81,27 @@ class TestSourceFlowManager(TestCase):
             reverse("authentik_core:if-user") + "#/settings;page-sources",
         )
 
+    def test_authenticated_auth(self):
+        """Test authenticated user linking"""
+        user = User.objects.create(username="foo", email="foo@bar.baz")
+        UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = get_request("/", user=user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        action, connection = flow_manager.get_action()
+        self.assertEqual(action, Action.AUTH)
+        self.assertIsNotNone(connection.pk)
+        response = flow_manager.get_flow()
+        self.assertEqual(response.status_code, 302)
+
     def test_unauthenticated_link(self):
         """Test un-authenticated user linking"""
-        flow_manager = OAuthSourceFlowManager(self.source, get_request("/"), self.identifier, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, get_request("/"), self.identifier, {"info": {}}, {}
+        )
         action, connection = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
@@ -90,7 +114,7 @@ class TestSourceFlowManager(TestCase):
 
         # Without email, deny
         flow_manager = OAuthSourceFlowManager(
-            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {"info": {}}, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
@@ -100,7 +124,12 @@ class TestSourceFlowManager(TestCase):
             self.source,
             get_request("/", user=AnonymousUser()),
             self.identifier,
-            {"email": "foo@bar.baz"},
+            {
+                "info": {
+                    "email": "foo@bar.baz",
+                },
+            },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
@@ -113,7 +142,7 @@ class TestSourceFlowManager(TestCase):
 
         # Without username, deny
         flow_manager = OAuthSourceFlowManager(
-            self.source, get_request("/", user=AnonymousUser()), self.identifier, {}
+            self.source, get_request("/", user=AnonymousUser()), self.identifier, {"info": {}}, {}
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
@@ -123,7 +152,10 @@ class TestSourceFlowManager(TestCase):
             self.source,
             get_request("/", user=AnonymousUser()),
             self.identifier,
-            {"username": "foo"},
+            {
+                "info": {"username": "foo"},
+            },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
@@ -140,8 +172,11 @@ class TestSourceFlowManager(TestCase):
             get_request("/", user=AnonymousUser()),
             self.identifier,
             {
-                "username": "bar",
+                "info": {
+                    "username": "bar",
+                },
             },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)
@@ -151,7 +186,10 @@ class TestSourceFlowManager(TestCase):
             self.source,
             get_request("/", user=AnonymousUser()),
             self.identifier,
-            {"username": "foo"},
+            {
+                "info": {"username": "foo"},
+            },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
@@ -165,7 +203,10 @@ class TestSourceFlowManager(TestCase):
             self.source,
             get_request("/", user=AnonymousUser()),
             self.identifier,
-            {"username": "foo"},
+            {
+                "info": {"username": "foo"},
+            },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)
@@ -191,7 +232,10 @@ class TestSourceFlowManager(TestCase):
             self.source,
             get_request("/", user=AnonymousUser()),
             self.identifier,
-            {"username": "foo"},
+            {
+                "info": {"username": "foo"},
+            },
+            {},
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.ENROLL)

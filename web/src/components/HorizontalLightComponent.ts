@@ -1,11 +1,25 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, type AKElementProps } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 type HelpType = TemplateResult | typeof nothing;
 
-export class HorizontalLightComponent extends AKElement {
+export interface HorizontalLightComponentProps<T> extends AKElementProps {
+    name: string;
+    label?: string;
+    required?: boolean;
+    help?: string;
+    bighelp?: TemplateResult | TemplateResult[];
+    hidden?: boolean;
+    invalid?: boolean;
+    errorMessages?: string[];
+    value?: T;
+    inputHint?: string;
+}
+
+export class HorizontalLightComponent<T> extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -17,31 +31,81 @@ export class HorizontalLightComponent extends AKElement {
         return this;
     }
 
-    @property({ type: String })
+    /**
+     * The name attribute for the form element
+     * @property
+     * @attribute
+     */
+    @property({ type: String, reflect: true })
     name!: string;
 
-    @property({ type: String })
+    /**
+     * The label for the input control
+     * @property
+     * @attribute
+     */
+    @property({ type: String, reflect: true })
     label = "";
 
-    @property({ type: Boolean })
+    /**
+     * @property
+     * @attribute
+     */
+    @property({ type: Boolean, reflect: true })
     required = false;
 
-    @property({ type: String })
+    /**
+     * Help text to display below the form element. Optional
+     * @property
+     * @attribute
+     */
+    @property({ type: String, reflect: true })
     help = "";
 
+    /**
+     * Extended help content. Optional. Expects to be a TemplateResult
+     * @property
+     */
     @property({ type: Object })
     bighelp?: TemplateResult | TemplateResult[];
 
-    @property({ type: Boolean })
+    /**
+     * @property
+     * @attribute
+     */
+    @property({ type: Boolean, reflect: true })
     hidden = false;
 
-    @property({ type: Boolean })
+    /**
+     * @property
+     * @attribute
+     */
+    @property({ type: Boolean, reflect: true })
     invalid = false;
 
+    /**
+     * @property
+     */
     @property({ attribute: false })
     errorMessages: string[] = [];
 
-    renderControl() {
+    /**
+     * @attribute
+     * @property
+     */
+    @property({ attribute: false })
+    value?: T;
+
+    /**
+     * Input hint.
+     *   - `code`: uses a monospace font and disables spellcheck & autocomplete
+     * @property
+     * @attribute
+     */
+    @property({ type: String, attribute: "input-hint" })
+    inputHint = "";
+
+    protected renderControl() {
         throw new Error("Must be implemented in a subclass");
     }
 
@@ -65,7 +129,7 @@ export class HorizontalLightComponent extends AKElement {
             .errorMessages=${this.errorMessages}
             ?invalid=${this.invalid}
             >
-              ${this.renderControl()} 
+              ${this.renderControl()}
               ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }

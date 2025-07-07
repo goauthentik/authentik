@@ -1,5 +1,11 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "@goauthentik/common/errors/network";
+import { uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -9,9 +15,10 @@ import "@goauthentik/elements/chips/ChipGroup";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -25,11 +32,18 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Pagination, ResponseError } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 export interface TableLike {
     order?: string;
     fetch: () => void;
+}
+
+export interface PaginatedResponse<T> {
+    pagination: Pagination;
+    autocomplete?: { [key: string]: string };
+
+    results: Array<T>;
 }
 
 export class TableColumn {
@@ -88,41 +102,42 @@ export class TableColumn {
     }
 }
 
-export interface PaginatedResponse<T> {
-    pagination: Pagination;
-
-    results: Array<T>;
-}
-
-export abstract class Table<T> extends AKElement implements TableLike {
-    abstract apiEndpoint(page: number): Promise<PaginatedResponse<T>>;
+export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
+    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
-    abstract row(item: T): TemplateResult[];
+    abstract row(item: T): SlottedTemplateResult[];
 
     private isLoading = false;
+
+    #pageParam = `${this.tagName.toLowerCase()}-page`;
+    #searchParam = `${this.tagName.toLowerCase()}-search`;
+
+    @property({ type: Boolean })
+    supportsQL: boolean = false;
 
     searchEnabled(): boolean {
         return false;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    renderExpanded(item: T): TemplateResult {
+    renderExpanded(_item: T): SlottedTemplateResult {
         if (this.expandable) {
             throw new Error("Expandable is enabled but renderExpanded is not overridden!");
         }
-        return html``;
+
+        return nothing;
     }
 
     @property({ attribute: false })
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam("tablePage", 1);
+    page = getURLParam(this.#pageParam, 1);
 
-    /** @prop
+    /**
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
+     * so that stale data is cleared out when the API returns a new list minus the deleted entries.
      *
-     * Set if your `selectedElements` use of the selection box is to enable bulk-delete, so that
-     * stale data is cleared out when the API returns a new list minus the deleted entries.
+     * @prop
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
     clearOnRefresh = false;
@@ -161,7 +176,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     expandedElements: T[] = [];
 
     @state()
-    error?: APIErrorTypes;
+    error?: APIError;
 
     static get styles(): CSSResult[] {
         return [
@@ -174,6 +189,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFDropdown,
             PFPagination,
             css`
+                .pf-c-toolbar__group.pf-m-search-filter.ql {
+                    flex-grow: 1;
+                }
+                ak-table-search.ql {
+                    width: 100% !important;
+                }
                 .pf-c-table thead .pf-c-table__check {
                     min-width: 3rem;
                 }
@@ -186,6 +207,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 .pf-c-toolbar__item .pf-c-input-group {
                     padding: 0 var(--pf-global--spacer--sm);
                 }
+
+                .pf-c-table {
+                    --pf-c-table--m-striped__tr--BackgroundColor: var(
+                        --pf-global--BackgroundColor--dark-300
+                    );
+                }
             `,
         ];
     }
@@ -194,80 +221,102 @@ export abstract class Table<T> extends AKElement implements TableLike {
         super();
         this.addEventListener(EVENT_REFRESH, async () => {
             await this.fetch();
-            if (this.clearOnRefresh) {
-                this.selectedElements = [];
-            }
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam("search", "");
+            this.search = getURLParam(this.#searchParam, "");
         }
     }
 
-    public groupBy(items: T[]): [string, T[]][] {
+    async defaultEndpointConfig() {
+        return {
+            ordering: this.order,
+            page: this.page,
+            pageSize: (await uiConfig()).pagination.perPage,
+            search: this.searchEnabled() ? this.search || "" : undefined,
+        };
+    }
+
+    public groupBy(items: T[]): [SlottedTemplateResult, T[]][] {
         return groupBy(items, () => {
             return "";
         });
     }
 
     public async fetch(): Promise<void> {
-        if (this.isLoading) {
-            return;
-        }
+        if (this.isLoading) return;
+
         this.isLoading = true;
-        try {
-            this.data = await this.apiEndpoint(this.page);
-            this.error = undefined;
-            this.page = this.data.pagination.current;
-            const newExpanded: T[] = [];
-            this.data.results.forEach((res) => {
-                const jsonRes = JSON.stringify(res);
-                // So because we're dealing with complex objects here, we can't use indexOf
-                // since it checks strict equality, and we also can't easily check in findIndex()
-                // Instead we default to comparing the JSON of both objects, which is quite slow
-                // Hence we check if the objects have `pk` attributes set (as most models do)
-                // and compare that instead, which will be much faster.
-                let comp = (item: T) => {
-                    return JSON.stringify(item) === jsonRes;
-                };
-                if (Object.hasOwn(res as object, "pk")) {
-                    comp = (item: T) => {
-                        return (
-                            (item as unknown as { pk: string | number }).pk ===
-                            (res as unknown as { pk: string | number }).pk
-                        );
+
+        return this.apiEndpoint()
+            .then((data) => {
+                this.data = data;
+                this.error = undefined;
+
+                this.page = this.data.pagination.current;
+                const newExpanded: T[] = [];
+
+                this.data.results.forEach((res) => {
+                    const jsonRes = JSON.stringify(res);
+                    // So because we're dealing with complex objects here, we can't use indexOf
+                    // since it checks strict equality, and we also can't easily check in findIndex()
+                    // Instead we default to comparing the JSON of both objects, which is quite slow
+                    // Hence we check if the objects have `pk` attributes set (as most models do)
+                    // and compare that instead, which will be much faster.
+                    let comp = (item: T) => {
+                        return JSON.stringify(item) === jsonRes;
                     };
+
+                    if (Object.hasOwn(res as object, "pk")) {
+                        comp = (item: T) => {
+                            return (
+                                (item as unknown as { pk: string | number }).pk ===
+                                (res as unknown as { pk: string | number }).pk
+                            );
+                        };
+                    }
+
+                    const expandedIndex = this.expandedElements.findIndex(comp);
+
+                    if (expandedIndex > -1) {
+                        newExpanded.push(res);
+                    }
+                });
+
+                this.expandedElements = newExpanded;
+
+                // Clear selections after fetch if clearOnRefresh is true
+                if (this.clearOnRefresh) {
+                    this.selectedElements = [];
                 }
-                const expandedIndex = this.expandedElements.findIndex(comp);
-                if (expandedIndex > -1) {
-                    newExpanded.push(res);
-                }
+            })
+            .catch(async (error: unknown) => {
+                this.error = await parseAPIResponseError(error);
+            })
+            .finally(() => {
+                this.isLoading = false;
+                this.requestUpdate();
             });
-            this.isLoading = false;
-            this.expandedElements = newExpanded;
-        } catch (ex) {
-            this.isLoading = false;
-            this.error = await parseAPIError(ex as Error);
-        }
     }
 
     private renderLoading(): TemplateResult {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>
+                    <ak-empty-state default-label></ak-empty-state>
                 </div>
             </td>
         </tr>`;
     }
 
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
                         ${inner ??
-                        html`<ak-empty-state header="${msg("No objects found.")}"
-                            ><div slot="primary">${this.renderObjectCreate()}</div>
+                        html`<ak-empty-state
+                            ><span>${msg("No objects found.")}</span>
+                            <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
                 </td>
@@ -275,18 +324,17 @@ export abstract class Table<T> extends AKElement implements TableLike {
         </tbody>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html``;
+    renderObjectCreate(): SlottedTemplateResult {
+        return nothing;
     }
 
-    renderError(): TemplateResult {
-        return this.error
-            ? html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-times">
-                  ${this.error instanceof ResponseError
-                      ? html` <div slot="body">${this.error.message}</div> `
-                      : html`<div slot="body">${this.error.detail}</div>`}
-              </ak-empty-state>`
-            : html``;
+    renderError(): SlottedTemplateResult {
+        if (!this.error) return nothing;
+
+        return html`<ak-empty-state icon="fa-ban"
+            ><span>${msg("Failed to fetch objects.")}</span>
+            <div slot="body">${pluckErrorDetail(this.error)}</div>
+        </ak-empty-state>`;
     }
 
     private renderRows(): TemplateResult[] | undefined {
@@ -394,15 +442,17 @@ export abstract class Table<T> extends AKElement implements TableLike {
                           }
                         : itemSelectHandler}
                 >
-                    ${this.checkbox ? renderCheckbox() : html``}
-                    ${this.expandable ? renderExpansion() : html``}
-                    ${this.row(item).map((col) => {
-                        return html`<td role="cell">${col}</td>`;
+                    ${this.checkbox ? renderCheckbox() : nothing}
+                    ${this.expandable ? renderExpansion() : nothing}
+                    ${this.row(item).map((column, columnIndex) => {
+                        return html`<td data-column-index="${columnIndex}" role="cell">
+                            ${column}
+                        </td>`;
                     })}
                 </tr>
                 <tr class="pf-c-table__expandable-row ${classMap(expandedClass)}" role="row">
                     <td></td>
-                    ${this.expandedElements.includes(item) ? this.renderExpanded(item) : html``}
+                    ${this.expandedElements.includes(item) ? this.renderExpanded(item) : nothing}
                 </tr>
             </tbody>`;
         });
@@ -420,30 +470,44 @@ export abstract class Table<T> extends AKElement implements TableLike {
             >`;
     }
 
-    renderToolbarSelected(): TemplateResult {
-        return html``;
+    renderToolbarSelected(): SlottedTemplateResult {
+        return nothing;
     }
 
-    renderToolbarAfter(): TemplateResult {
-        return html``;
+    renderToolbarAfter(): SlottedTemplateResult {
+        return nothing;
+    }
+
+    protected willUpdate(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("page")) {
+            updateURLParams({
+                [this.#pageParam]: this.page,
+            });
+        }
+        if (changedProperties.has("search")) {
+            updateURLParams({
+                [this.#searchParam]: this.search,
+            });
+        }
     }
 
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
-            updateURLParams({
-                search: value,
-            });
+            this.page = 1;
             this.fetch();
         };
-
+        const isQL =
+            this.supportsQL && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         return !this.searchEnabled()
             ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
                   <ak-table-search
-                      class="pf-c-toolbar__item pf-m-search-filter"
+                      ?supportsQL=${this.supportsQL}
+                      class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}
+                      .apiResponse=${this.data}
                   >
                   </ak-table-search>
               </div>`;
@@ -494,9 +558,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
      * chip-based subtable at the top that shows the list of selected entries. Long text result in
      * ellipsized chips, which is sub-optimal.
      */
-    renderSelectedChip(_item: T): TemplateResult {
+    renderSelectedChip(_item: T): SlottedTemplateResult {
         // Override this for chip-based displays
-        return html``;
+        return nothing;
     }
 
     get needChipGroup() {
@@ -514,7 +578,6 @@ export abstract class Table<T> extends AKElement implements TableLike {
     /* A simple pagination display, shown at both the top and bottom of the page. */
     renderTablePagination(): TemplateResult {
         const handler = (page: number) => {
-            updateURLParams({ tablePage: page });
             this.page = page;
             this.fetch();
         };
@@ -533,11 +596,11 @@ export abstract class Table<T> extends AKElement implements TableLike {
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 
-        return html` ${this.needChipGroup ? this.renderChipGroup() : html``}
+        return html`${this.needChipGroup ? this.renderChipGroup() : html``}
             ${this.renderToolbarContainer()}
             <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>
-                    <tr role="row">
+                    <tr role="row" class="pf-c-table__header-row">
                         ${this.checkbox ? this.renderAllOnThisPageCheckbox() : html``}
                         ${this.expandable ? html`<td role="cell"></td>` : html``}
                         ${this.columns().map((col) => col.render(this))}

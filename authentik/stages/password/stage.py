@@ -9,8 +9,8 @@ from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
-from sentry_sdk.hub import Hub
+from rest_framework.fields import BooleanField, CharField
+from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -18,11 +18,10 @@ from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import Flow, FlowDesignation, Stage
+from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
@@ -48,9 +47,9 @@ def authenticate(
             LOGGER.warning("Failed to import backend", path=backend_path)
             continue
         LOGGER.debug("Attempting authentication...", backend=backend_path)
-        with Hub.current.start_span(
+        with start_span(
             op="authentik.stages.password.authenticate",
-            description=backend_path,
+            name=backend_path,
         ):
             user = backend.authenticate(request, **credentials)
         if user is None:
@@ -77,6 +76,8 @@ class PasswordChallenge(WithUserInfoChallenge):
 
     component = CharField(default="ak-stage-password")
 
+    allow_show_password = BooleanField(default=False)
+
 
 class PasswordChallengeResponse(ChallengeResponse):
     """Password challenge response"""
@@ -98,9 +99,9 @@ class PasswordChallengeResponse(ChallengeResponse):
             "username": pending_user.username,
         }
         try:
-            with Hub.current.start_span(
+            with start_span(
                 op="authentik.stages.password.authenticate",
-                description="User authenticate call",
+                name="User authenticate call",
             ):
                 user = authenticate(
                     self.stage.request,
@@ -137,14 +138,14 @@ class PasswordStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         challenge = PasswordChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
+                "allow_show_password": self.executor.current_stage.allow_show_password,
             }
         )
-        recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
-        if recovery_flow.exists():
+        recovery_flow: Flow | None = self.request.brand.flow_recovery
+        if recovery_flow:
             recover_url = reverse(
                 "authentik_core:if-flow",
-                kwargs={"flow_slug": recovery_flow.first().slug},
+                kwargs={"flow_slug": recovery_flow.slug},
             )
             challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
         return challenge
@@ -160,7 +161,7 @@ class PasswordStageView(ChallengeStageView):
         ):
             self.logger.debug("User has exceeded maximum tries")
             del self.request.session[SESSION_KEY_INVALID_TRIES]
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: PasswordChallengeResponse) -> HttpResponse:

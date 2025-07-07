@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
@@ -27,12 +26,10 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
+    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: "expires",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -96,14 +93,20 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 bad-label=${msg("Yes")}
             ></ak-status-label>`,
             html`${item.expires
-                ? html`<div>${getRelativeTime(item.expires)}</div>
+                ? html`<div>${formatElapsedTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
             html`<ak-chip-group>
-                ${item.scope.map((scope) => {
-                    return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
+                ${item.scope.sort().map((scope) => {
+                    return html`<ak-chip>${scope}</ak-chip>`;
                 })}
             </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-refresh-token-list": UserOAuthRefreshTokenList;
     }
 }

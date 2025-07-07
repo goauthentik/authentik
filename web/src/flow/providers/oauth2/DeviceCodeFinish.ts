@@ -1,5 +1,6 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -14,15 +15,17 @@ export class DeviceCodeFinish extends BaseStage<
     OAuthDeviceCodeFinishChallenge
 > {
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
-        }
-        return html`<ak-empty-state
-            icon="fas fa-check"
-            header=${msg("You may close this page now.")}
-        >
-            <span slot="body"> ${msg("You've successfully authenticated your device.")} </span>
-        </ak-empty-state>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <ak-empty-state icon="fas fa-check">
+                <span>${msg("You may close this page now.")}</span>
+                <span slot="body"> ${msg("You've successfully authenticated your device.")} </span>
+            </ak-empty-state>
+        </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-provider-oauth2-code-finish": DeviceCodeFinish;
     }
 }

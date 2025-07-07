@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
@@ -29,11 +29,53 @@ class TestSAMLProviderAPI(APITestCase):
             name=generate_id(),
             authorization_flow=create_test_flow(),
         )
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
+        )
+        self.assertEqual(200, response.status_code)
         Application.objects.create(name=generate_id(), provider=provider, slug=generate_id())
         response = self.client.get(
             reverse("authentik_api:samlprovider-detail", kwargs={"pk": provider.pk}),
         )
         self.assertEqual(200, response.status_code)
+
+    def test_create_validate_signing_kp(self):
+        """Test create"""
+        cert = create_test_cert()
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "signing_kp": cert.pk,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {
+                "non_field_errors": [
+                    (
+                        "With a signing keypair selected, at least one "
+                        "of 'Sign assertion' and 'Sign Response' must be selected."
+                    )
+                ]
+            },
+        )
+        response = self.client.post(
+            reverse("authentik_api:samlprovider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "acs_url": "http://localhost",
+                "signing_kp": cert.pk,
+                "sign_assertion": True,
+            },
+        )
+        self.assertEqual(response.status_code, 201)
 
     def test_metadata(self):
         """Test metadata export (normal)"""
@@ -62,6 +104,22 @@ class TestSAMLProviderAPI(APITestCase):
         )
         self.assertEqual(200, response.status_code)
         self.assertIn("Content-Disposition", response)
+        # Test download with Accept: application/xml
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk})
+            + "?download",
+            HTTP_ACCEPT="application/xml",
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertIn("Content-Disposition", response)
+
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk})
+            + "?download",
+            HTTP_ACCEPT="application/xml;charset=UTF-8",
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertIn("Content-Disposition", response)
 
     def test_metadata_invalid(self):
         """Test metadata export (invalid)"""
@@ -79,6 +137,11 @@ class TestSAMLProviderAPI(APITestCase):
             reverse("authentik_api:samlprovider-metadata", kwargs={"pk": "abc"}),
         )
         self.assertEqual(404, response.status_code)
+        response = self.client.get(
+            reverse("authentik_api:samlprovider-metadata", kwargs={"pk": provider.pk}),
+            HTTP_ACCEPT="application/invalid-mime-type",
+        )
+        self.assertEqual(406, response.status_code)
 
     def test_import_success(self):
         """Test metadata import (success case)"""
@@ -91,6 +154,7 @@ class TestSAMLProviderAPI(APITestCase):
                     "file": metadata,
                     "name": generate_id(),
                     "authorization_flow": create_test_flow(FlowDesignation.AUTHORIZATION).pk,
+                    "invalidation_flow": create_test_flow(FlowDesignation.INVALIDATION).pk,
                 },
                 format="multipart",
             )

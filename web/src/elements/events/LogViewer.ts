@@ -1,4 +1,4 @@
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -23,7 +23,7 @@ export class LogViewer extends Table<LogEvent> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(_page: number): Promise<PaginatedResponse<LogEvent>> {
+    async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
             pagination: {
                 next: 0,
@@ -40,7 +40,7 @@ export class LogViewer extends Table<LogEvent> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No log messages.")}> </ak-empty-state>`,
+            html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
@@ -102,7 +102,7 @@ export class LogViewer extends Table<LogEvent> {
 
     row(item: LogEvent): TemplateResult[] {
         return [
-            html`${getRelativeTime(item.timestamp)}`,
+            html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}
@@ -110,5 +110,11 @@ export class LogViewer extends Table<LogEvent> {
             html`${item.event}`,
             html`${item.logger}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-log-viewer": LogViewer;
     }
 }

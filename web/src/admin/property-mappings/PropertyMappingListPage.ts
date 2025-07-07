@@ -1,19 +1,24 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingGoogleWorkspaceForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingMicrosoftEntraForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingRACForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRACForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -51,12 +56,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @state()
     hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<PropertyMapping>> {
+    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
     }
@@ -161,5 +163,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-list": PropertyMappingListPage;
     }
 }

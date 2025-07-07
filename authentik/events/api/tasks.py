@@ -16,10 +16,10 @@ from rest_framework.fields import (
 )
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.core.api.utils import ModelSerializer
 from authentik.events.logs import LogEventSerializer
 from authentik.events.models import SystemTask, TaskStatus
 from authentik.rbac.decorators import permission_required

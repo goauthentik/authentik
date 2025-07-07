@@ -1,16 +1,19 @@
 """Serializer for tenants models"""
 
 from django_tenants.utils import get_public_schema_name
+from rest_framework.fields import JSONField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
-from rest_framework.serializers import ModelSerializer
 
+from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.models import Tenant
 
 
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
+
+    footer_links = JSONField(required=False)
 
     class Meta:
         model = Tenant
@@ -20,9 +23,12 @@ class SettingsSerializer(ModelSerializer):
             "default_user_change_email",
             "default_user_change_username",
             "event_retention",
+            "reputation_lower_limit",
+            "reputation_upper_limit",
             "footer_links",
             "gdpr_compliance",
             "impersonation",
+            "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
         ]

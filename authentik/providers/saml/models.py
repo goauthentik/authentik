@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -40,7 +41,9 @@ class SAMLBindings(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    acs_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -69,6 +72,20 @@ class SAMLProvider(Provider):
         help_text=_(
             "Configure how the NameID value will be created. When left empty, "
             "the NameIDPolicy of the incoming request will be considered"
+        ),
+    )
+    authn_context_class_ref_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("AuthnContextClassRef Property Mapping"),
+        related_name="+",
+        help_text=_(
+            "Configure how the AuthnContextClassRef value will be created. When left empty, "
+            "the AuthnContextClassRef will be set based on which authentication methods the user "
+            "used to authenticate."
         ),
     )
 
@@ -144,16 +161,32 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
 
+    sign_assertion = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=False)
+
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},
@@ -191,7 +224,7 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-form"
+        return "ak-property-mapping-provider-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -204,8 +237,8 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-        verbose_name = _("SAML Property Mapping")
-        verbose_name_plural = _("SAML Property Mappings")
+        verbose_name = _("SAML Provider Property Mapping")
+        verbose_name_plural = _("SAML Provider Property Mappings")
 
 
 class SAMLProviderImportModel(CreatableType, Provider):

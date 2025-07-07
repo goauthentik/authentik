@@ -19,10 +19,11 @@ type ProviderInstance struct {
 	SharedSecret   []byte
 	MFASupport     bool
 
-	appSlug  string
-	flowSlug string
-	s        *RadiusServer
-	log      *log.Entry
+	appSlug    string
+	flowSlug   string
+	providerId int32
+	s          *RadiusServer
+	log        *log.Entry
 }
 
 type RadiusServer struct {
@@ -33,7 +34,7 @@ type RadiusServer struct {
 	providers []*ProviderInstance
 }
 
-func NewServer(ac *ak.APIController) *RadiusServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
 		log:       log.WithField("logger", "authentik.outpost.radius"),
 		ac:        ac,

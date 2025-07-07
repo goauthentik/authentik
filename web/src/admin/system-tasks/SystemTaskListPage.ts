@@ -1,7 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -44,13 +43,10 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SystemTask>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {
@@ -104,7 +100,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                                                       item.expires || new Date()
                                                   ).toLocaleString()}
                                               >
-                                                  ${getRelativeTime(item.expires || new Date())}
+                                                  ${formatElapsedTime(item.expires || new Date())}
                                               </pf-tooltip>
                                           `
                                         : msg("-")}
@@ -132,7 +128,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         return [
             html`<pre>${item.name}${item.uid ? `:${item.uid}` : ""}</pre>`,
             html`${item.description}`,
-            html`<div>${getRelativeTime(item.finishTimestamp)}</div>
+            html`<div>${formatElapsedTime(item.finishTimestamp)}</div>
                 <small>${item.finishTimestamp.toLocaleString()}</small>`,
             this.taskStatus(item),
             html`<ak-action-button
@@ -157,5 +153,11 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                 </pf-tooltip>
             </ak-action-button>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-system-task-list": SystemTaskListPage;
     }
 }

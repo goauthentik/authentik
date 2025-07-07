@@ -7,17 +7,16 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from cryptography.exceptions import InternalError
-from cryptography.hazmat.backends.openssl.backend import backend
-from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
+from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
@@ -28,12 +27,7 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
-defuse_stdlib()
-
-try:
-    backend._enable_fips()
-except InternalError:
-    pass
+setup()
 
 wait_for_db()
 
@@ -149,9 +143,5 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
         except Exception:  # nosec
             pass
 
-if CONFIG.get_bool("remote_debug"):
-    import debugpy
-
-    debugpy.listen(("0.0.0.0", 6800))  # nosec
-
+start_debug_server()
 run_migrations()

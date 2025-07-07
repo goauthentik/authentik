@@ -30,3 +30,9 @@ export class SpinnerButton extends BaseTaskButton {
 }
 
 export default SpinnerButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner-button": SpinnerButton;
+    }
+}

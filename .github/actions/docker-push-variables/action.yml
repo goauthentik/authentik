@@ -9,11 +9,14 @@ inputs:
   image-arch:
     required: false
     description: "Docker image arch"
+  release:
+    required: true
+    description: "True if this is a release build, false if this is a dev/PR build"
 
 outputs:
-  shouldBuild:
-    description: "Whether to build image or not"
-    value: ${{ steps.ev.outputs.shouldBuild }}
+  shouldPush:
+    description: "Whether to push the image or not"
+    value: ${{ steps.ev.outputs.shouldPush }}
 
   sha:
     description: "sha"
@@ -29,9 +32,24 @@ outputs:
   imageTags:
     description: "Docker image tags"
     value: ${{ steps.ev.outputs.imageTags }}
+  imageTagsJSON:
+    description: "Docker image tags, as a JSON array"
+    value: ${{ steps.ev.outputs.imageTagsJSON }}
+  attestImageNames:
+    description: "Docker image names used for attestation"
+    value: ${{ steps.ev.outputs.attestImageNames }}
+  cacheTo:
+    description: "cache-to value for the docker build step"
+    value: ${{ steps.ev.outputs.cacheTo }}
   imageMainTag:
     description: "Docker image main tag"
     value: ${{ steps.ev.outputs.imageMainTag }}
+  imageMainName:
+    description: "Docker image main name"
+    value: ${{ steps.ev.outputs.imageMainName }}
+  imageBuildArgs:
+    description: "Docker image build args"
+    value: ${{ steps.ev.outputs.imageBuildArgs }}
 
 runs:
   using: "composite"
@@ -42,6 +60,8 @@ runs:
       env:
         IMAGE_NAME: ${{ inputs.image-name }}
         IMAGE_ARCH: ${{ inputs.image-arch }}
+        RELEASE: ${{ inputs.release }}
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        REF: ${{ github.ref }}
       run: |
         python3 ${{ github.action_path }}/push_vars.py

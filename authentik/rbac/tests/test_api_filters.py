@@ -38,6 +38,7 @@ class TestAPIPerms(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -73,6 +74,7 @@ class TestAPIPerms(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -146,4 +148,12 @@ class TestAPIPerms(APITestCase):
                 "name": generate_id(),
             },
         )
+        self.assertEqual(res.status_code, 403)
+
+    def test_anonymous_user_denied(self):
+        """Test anonymous user denied"""
+        res = self.client.get(reverse("authentik_api:invitation-list"))
+        self.assertEqual(res.status_code, 403)
+
+        res = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}))
         self.assertEqual(res.status_code, 403)

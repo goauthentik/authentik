@@ -74,3 +74,9 @@ export class ServiceConnectionWizard extends AKElement {
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-service-connection-wizard": ServiceConnectionWizard;
+    }
+}

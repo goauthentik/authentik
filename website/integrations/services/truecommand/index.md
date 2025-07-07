@@ -1,8 +1,8 @@
 ---
-title: TrueNAS TrueCommand
+title: Integrate with TrueNAS TrueCommand
+sidebar_label: TrueNAS TrueCommand
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is TrueNAS TrueCommand
 
@@ -16,98 +16,75 @@ This setup assumes you will be using HTTPS as TrueCommand generates ACS and Redi
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `truecommand.company` is the FQDN of the snipe-it install.
--   `authentik.company` is the FQDN of the authentik install.
+- `truecommand.company` is the FQDN of the snipe-it installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-Create an application in authentik and use the slug for later as `truenas-truecommand`.
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-Create a SAML provider with the following parameters:
+## authentik configuration
 
--   ACS URL: `https://truecommand.company/saml/acs`
--   Issuer: `truecommand-saml`
--   Binding: `Post`
+To support the integration of TrueCommand with authentik, you need to create an application/provider pair in authentik.
 
-Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
-Under _Advanced protocol settings_, set NameID Property to _authentik default SAML Mapping: Email_.
+### Create property mappings
 
-## SAML Property Mappings
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create create three or five **SAML Provider Property Mapping**s, depending on your setup, with the following settings:
+    - **Username Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `unique_name`
+        - **Friendly Name**: Leave blank
+        - **Expression**: `return request.user.username`
+    - **Email Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `email`
+        - **Friendly Name**: Leave blank
+        - **Expression**: `return request.user.email`
+    - **Name Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `given_name` or display_name
+        - **Friendly Name**: Leave blank
+        - **Expression**: `return request.user.name`
+    - **Title Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `title`
+        - **Friendly Name**: Leave blank
+        - **Expression**: `return [custom_attribute]`
+    - **Telephone Number Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `telephone_number`
+        - **Friendly Name**: Leave blank
+        - **Expression**: `return [custom_attribute]`
 
-The following custom property mappings are required.
+### Create an application and provider in authentik
 
-Under _Customization_, select _Property Mappings_, then _Create_. Select _SAML Property Mapping_.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-### Username
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to `https://truecommand.company/saml/acs`.
+    - Set the **Issuer** to `truecommand-saml`.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, add the three or five **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to be based on the user's email. Finally, select an available signing certificate.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
--   Name: `Truecommand - Username`
--   SAML Attribute Name: `unique_name`
--   Expression
+3. Click **Submit** to save the new application and provider.
 
-```python
-return request.user.username
-```
+4. Navigate to **Applications** > **Providers** > **_Provider_**, then click **Copy download URL** to save the **metadata URL** to your clipboard.
 
-### Email
+## TrueCommand configuration
 
--   Name: `Truecommand - Email`
--   SAML Attribute Name: `email`
--   Expression
-
-```python
-return request.user.email
-```
-
-### Fullname
-
--   Name: `Truecommand - Fullname`
--   SAML Attribute Name: `given_name` OR `display_name`
--   Expression
-
-```python
-return request.user.name
-```
-
-### Other Attributes
-
-If you have custom attributes, or attributes imported from Active Directory, TrueCommand supports the following additional mappings:
-
-#### Role
-
--   Name: `Truecommand - Role`
--   SAML Attribute Name: `title`
--   Expression
-
-```python
-return [custom_attribute]
-```
-
-#### Phone Number
-
--   Name: `Truecommand - Phone Number`
--   SAML Attribute Name: `telephone_number`
--   Expression
-
-```python
-return [custom_attribute]
-```
-
-Return to _Providers_ under _Applications_, and edit the Provider created above.
-
-Under _Advanced protocol settings_, select the additional property mappings created above.
-
-### SAML Metadata
-
-Click the _Copy download URL_ to save the Metadata URL into your clipboard.
-
-## TrueCommand Config
-
--   Click on the gear icon in the upper right corner.
--   Select Administration
--   Click on CONFIGURE
--   SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
--   Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
+- Click on the gear icon in the upper right corner.
+- Select Administration
+- Click on CONFIGURE
+- SAML Identity Provider URL: `Paste the Metadata URL from your clipboard.`
+- Click _Save_, then click _Configure_ again then select _Start the SAML service_, then click _Save_ to start the service.
 
 ## Additional Resources
 
--   https://www.truenas.com/docs/truecommand/administration/settings/samlad/
+- https://www.truenas.com/docs/truecommand/administration/settings/samlad/

@@ -1,7 +1,6 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -28,11 +27,10 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                 policyUuid: this.instance.pk || "",
                 expressionPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
-                expressionPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
+            expressionPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -41,7 +39,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -54,7 +52,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -69,12 +67,12 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
-                        ?required=${true}
+                        required
                         name="expression"
                     >
                         <ak-codemirror
@@ -85,8 +83,11 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                         <p class="pf-c-form__helper-text">
                             ${msg("Expression using Python.")}
                             <a
+                                rel="noopener noreferrer"
                                 target="_blank"
-                                href="${docLink("/docs/policies/expression?utm_source=authentik")}"
+                                href="${docLink(
+                                    "/docs/customize/policies/expression?utm_source=authentik",
+                                )}"
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>
@@ -94,5 +95,11 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-expression-form": ExpressionPolicyForm;
     }
 }

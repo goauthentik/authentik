@@ -9,9 +9,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
-    SkipObjectException,
 )
 from authentik.events.models import Event, EventAction
+from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.lib.utils.errors import exception_to_string
@@ -23,19 +23,29 @@ if TYPE_CHECKING:
 
 
 class Direction(StrEnum):
-
     add = "add"
     remove = "remove"
 
 
+SAFE_METHODS = [
+    "GET",
+    "HEAD",
+    "OPTIONS",
+    "TRACE",
+]
+
+
 class BaseOutgoingSyncClient[
-    TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
+    TModel: "Model",
+    TConnection: "Model",
+    TSchema: dict,
+    TProvider: "OutgoingSyncProvider",
 ]:
     """Basic Outgoing sync client Client"""
 
     provider: TProvider
     connection_type: type[TConnection]
-    connection_type_query: str
+    connection_attr: str
     mapper: PropertyMappingManager
 
     can_discover = False
@@ -55,9 +65,7 @@ class BaseOutgoingSyncClient[
     def write(self, obj: TModel) -> tuple[TConnection, bool]:
         """Write object to destination. Uses self.create and self.update, but
         can be overwritten for further logic"""
-        connection = self.connection_type.objects.filter(
-            provider=self.provider, **{self.connection_type_query: obj}
-        ).first()
+        connection = getattr(obj, self.connection_attr).filter(provider=self.provider).first()
         try:
             if not connection:
                 connection = self.create(obj)
@@ -91,10 +99,9 @@ class BaseOutgoingSyncClient[
             }
             eval_kwargs.setdefault("user", None)
             for value in self.mapper.iter_eval(**eval_kwargs):
-                try:
-                    always_merger.merge(raw_final_object, value)
-                except SkipObjectException as exc:
-                    raise exc from exc
+                always_merger.merge(raw_final_object, value)
+        except ControlFlowException as exc:
+            raise exc from exc
         except PropertyMappingExpressionException as exc:
             # Value error can be raised when assigning invalid data to an attribute
             Event.new(
@@ -104,7 +111,7 @@ class BaseOutgoingSyncClient[
             ).save()
             raise StopSync(exc, obj, exc.mapping) from exc
         if not raw_final_object:
-            raise StopSync(ValueError("No user mappings configured"), obj)
+            raise StopSync(ValueError("No mappings configured"), obj)
         for key, value in defaults.items():
             raw_final_object.setdefault(key, value)
         return raw_final_object
@@ -115,3 +122,8 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
+        raise NotImplementedError

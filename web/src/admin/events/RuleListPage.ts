@@ -1,13 +1,12 @@
 import "@goauthentik/admin/events/RuleForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { severityToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
-import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -47,17 +46,13 @@ export class RuleListPage extends TablePage<NotificationRule> {
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<NotificationRule>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsRulesList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
         return [
+            new TableColumn(msg("Enabled")),
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Severity"), "severity"),
             new TableColumn(msg("Sent to group"), "group"),
@@ -88,12 +83,16 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     row(item: NotificationRule): TemplateResult[] {
+        const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
+            html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
-            html`${item.groupObj
-                ? html`<a href="#/identity/groups/${item.groupObj.pk}">${item.groupObj.name}</a>`
-                : msg("None (rule disabled)")}`,
+            html`${item.destinationGroupObj
+                ? html`<a href="#/identity/groups/${item.destinationGroupObj.pk}"
+                      >${item.destinationGroupObj.name}</a
+                  >`
+                : msg("-")}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Notification Rule")} </span>
@@ -106,7 +105,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationrule}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -136,5 +135,11 @@ Bindings to groups/users are checked against the user of the event.`,
                 <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
             </div>
         </td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-rule-list": RuleListPage;
     }
 }

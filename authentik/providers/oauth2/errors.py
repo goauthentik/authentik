@@ -7,7 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.views import bad_request_message
-from authentik.providers.oauth2.models import GrantTypes
+from authentik.providers.oauth2.models import GrantTypes, RedirectURI
 
 
 class OAuth2Error(SentryIgnoredException):
@@ -46,9 +46,9 @@ class RedirectUriError(OAuth2Error):
     )
 
     provided_uri: str
-    allowed_uris: list[str]
+    allowed_uris: list[RedirectURI]
 
-    def __init__(self, provided_uri: str, allowed_uris: list[str]) -> None:
+    def __init__(self, provided_uri: str, allowed_uris: list[RedirectURI]) -> None:
         super().__init__()
         self.provided_uri = provided_uri
         self.allowed_uris = allowed_uris

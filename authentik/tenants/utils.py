@@ -8,9 +8,11 @@ from authentik.root.install_id import get_install_id
 from authentik.tenants.models import Tenant
 
 
-def get_current_tenant() -> Tenant:
+def get_current_tenant(only: list[str] | None = None) -> Tenant:
     """Get tenant for current request"""
-    return Tenant.objects.get(schema_name=connection.schema_name)
+    if only is None:
+        only = []
+    return Tenant.objects.only(*only).get(schema_name=connection.schema_name)
 
 
 def get_unique_identifier() -> str:

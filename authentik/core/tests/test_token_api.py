@@ -13,9 +13,8 @@ from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
     Token,
     TokenIntents,
-    User,
 )
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 
 
@@ -24,7 +23,7 @@ class TestTokenAPI(APITestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.create(username="testuser")
+        self.user = create_test_user()
         self.admin = create_test_admin_user()
         self.client.force_login(self.user)
 
@@ -153,6 +152,24 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(token.intent, TokenIntents.INTENT_API)
         self.assertEqual(token.expiring, True)
         self.assertNotEqual(token.expires.timestamp(), expires.timestamp())
+
+    def test_token_change_user(self):
+        """Test creating a token and then changing the user"""
+        ident = generate_id()
+        response = self.client.post(reverse("authentik_api:token-list"), {"identifier": ident})
+        self.assertEqual(response.status_code, 201)
+        token = Token.objects.get(identifier=ident)
+        self.assertEqual(token.user, self.user)
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
+        self.assertEqual(token.expiring, True)
+        self.assertTrue(self.user.has_perm("authentik_core.view_token_key", token))
+        response = self.client.put(
+            reverse("authentik_api:token-detail", kwargs={"identifier": ident}),
+            data={"identifier": "user_token_poc_v3", "intent": "api", "user": self.admin.pk},
+        )
+        self.assertEqual(response.status_code, 400)
+        token.refresh_from_db()
+        self.assertEqual(token.user, self.user)
 
     def test_list(self):
         """Test Token List (Test normal authentication)"""

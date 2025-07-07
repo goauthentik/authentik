@@ -1,6 +1,5 @@
 import "@goauthentik/admin/users/GroupSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -19,6 +18,9 @@ import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
     group?: Group;
+
+    @property()
+    defaultPath: string = "users";
 
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
@@ -44,12 +46,11 @@ export class UserForm extends ModelForm<User, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
-        } else {
-            if (this.group) {
-                return msg(str`Successfully created user and added to group ${this.group.name}`);
-            }
-            return msg("Successfully created user.");
         }
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
+        return msg("Successfully created user.");
     }
 
     async send(data: User): Promise<User> {
@@ -80,15 +81,13 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                ?required=${true}
-                name="username"
-            >
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -103,11 +102,11 @@ export class UserForm extends ModelForm<User, number> {
                 />
                 <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("User type")} required name="type">
                 <ak-radio
                     .options=${[
                         {
-                            label: "Internal",
+                            label: msg("Internal"),
                             value: UserTypeEnum.Internal,
                             default: true,
                             description: html`${msg(
@@ -115,21 +114,21 @@ export class UserForm extends ModelForm<User, number> {
                             )}`,
                         },
                         {
-                            label: "External",
+                            label: msg("External"),
                             value: UserTypeEnum.External,
                             description: html`${msg(
                                 "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
                             )}`,
                         },
                         {
-                            label: "Service account",
+                            label: msg("Service account"),
                             value: UserTypeEnum.ServiceAccount,
                             description: html`${msg(
                                 "Service accounts should be used for machine-to-machine authentication or other automations.",
                             )}`,
                         },
                         {
-                            label: "Internal Service account",
+                            label: msg("Internal Service account"),
                             value: UserTypeEnum.InternalServiceAccount,
                             disabled: true,
                             description: html`${msg(
@@ -154,7 +153,7 @@ export class UserForm extends ModelForm<User, number> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.isActive, true)}
+                        ?checked=${this.instance?.isActive ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -169,10 +168,10 @@ export class UserForm extends ModelForm<User, number> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
+            <ak-form-element-horizontal label=${msg("Path")} required name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, "users")}"
+                    value="${this.instance?.path ?? this.defaultPath}"
                     class="pf-c-form-control"
                     required
                 />
@@ -185,7 +184,7 @@ export class UserForm extends ModelForm<User, number> {
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
+                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"
                 >
                 </ak-codemirror>
@@ -193,5 +192,11 @@ export class UserForm extends ModelForm<User, number> {
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-form": UserForm;
     }
 }

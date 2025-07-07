@@ -25,7 +25,7 @@ class GoogleWorkspaceGroupClient(
     """Google client for groups"""
 
     connection_type = GoogleWorkspaceProviderGroup
-    connection_type_query = "group"
+    connection_attr = "googleworkspaceprovidergroup_set"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
@@ -92,12 +92,14 @@ class GoogleWorkspaceGroupClient(
         google_group = self.to_schema(group, connection)
         self.check_email_valid(google_group["email"])
         try:
-            return self._request(
+            response = self._request(
                 self.directory_service.groups().update(
                     groupKey=connection.google_id,
                     body=google_group,
                 )
             )
+            connection.attributes = response
+            connection.save()
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
@@ -212,3 +214,7 @@ class GoogleWorkspaceGroupClient(
             google_id=google_id,
             attributes=group,
         )
+
+    def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):
+        group = self.directory_service.groups().get(connection.google_id)
+        connection.attributes = group

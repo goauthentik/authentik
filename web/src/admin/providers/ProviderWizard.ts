@@ -43,8 +43,11 @@ export class ProviderWizard extends AKElement {
     @query("ak-wizard")
     wizard?: Wizard;
 
-    async firstUpdated(): Promise<void> {
-        this.providerTypes = await new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList();
+    connectedCallback() {
+        super.connectedCallback();
+        new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
+            this.providerTypes = providerTypes;
+        });
     }
 
     render(): TemplateResult {
@@ -58,6 +61,7 @@ export class ProviderWizard extends AKElement {
                 }}
             >
                 <ak-wizard-page-type-create
+                    name="selectProviderType"
                     slot="initial"
                     layout=${TypeCreateWizardPageLayouts.grid}
                     .types=${this.providerTypes}
@@ -81,5 +85,11 @@ export class ProviderWizard extends AKElement {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-wizard": ProviderWizard;
     }
 }

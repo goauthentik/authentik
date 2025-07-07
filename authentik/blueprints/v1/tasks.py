@@ -159,7 +159,7 @@ def blueprints_discovery(self: SystemTask, path: str | None = None):
         check_blueprint_v1_file(blueprint)
         count += 1
     self.set_status(
-        TaskStatus.SUCCESSFUL, _("Successfully imported %(count)d files." % {"count": count})
+        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=count))
     )
 
 

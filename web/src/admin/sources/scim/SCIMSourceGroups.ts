@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -18,12 +17,9 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         return true;
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<SCIMSourceGroup>> {
+    async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimGroupsList({
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            ordering: this.order,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             sourceSlug: this.sourceSlug,
         });
     }
@@ -47,5 +43,11 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
             </a>`,
             html`${item.id}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-scim-groups-list": SCIMSourceGroupList;
     }
 }

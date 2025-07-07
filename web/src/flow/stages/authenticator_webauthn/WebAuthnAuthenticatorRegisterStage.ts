@@ -5,6 +5,7 @@ import {
     transformNewAssertionForServer,
 } from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg, str } from "@lit/localize";
@@ -106,8 +107,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
         this.registerRunning = true;
         this.register()
-            .catch((e) => {
-                console.warn("authentik/flows/authenticator_webauthn: failed to register", e);
+            .catch((error: unknown) => {
+                console.warn("authentik/flows/authenticator_webauthn: failed to register", error);
+
                 this.registerMessage = msg("Failed to register. Please try again.");
             })
             .finally(() => {
@@ -128,49 +130,51 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge?.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
-                    <ak-empty-state
-                        ?loading="${this.registerRunning}"
-                        header=${this.registerRunning
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form">
+                <ak-form-static
+                    class="pf-c-form__group"
+                    userAvatar="${this.challenge.pendingUserAvatar}"
+                    user=${this.challenge.pendingUser}
+                >
+                    <div slot="link">
+                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                            >${msg("Not you?")}</a
+                        >
+                    </div>
+                </ak-form-static>
+                <ak-empty-state ?loading="${this.registerRunning}" icon="fa-times">
+                    <span
+                        >${this.registerRunning
                             ? msg("Registering...")
                             : this.registerMessage || msg("Failed to register")}
-                        icon="fa-times"
-                    >
-                    </ak-empty-state>
-                    ${this.challenge?.responseErrors
-                        ? html`<p class="pf-m-block">
-                              ${this.challenge.responseErrors["response"][0].string}
-                          </p>`
-                        : html``}
-                    <div class="pf-c-form__group pf-m-action">
-                        ${!this.registerRunning
-                            ? html` <button
-                                  class="pf-c-button pf-m-primary pf-m-block"
-                                  @click=${() => {
-                                      this.registerWrapper();
-                                  }}
-                                  type="button"
-                              >
-                                  ${msg("Retry registration")}
-                              </button>`
-                            : nothing}
-                    </div>
-                </form>
-            </div>`;
+                    </span>
+                </ak-empty-state>
+                ${this.challenge?.responseErrors
+                    ? html`<p class="pf-m-block">
+                          ${this.challenge.responseErrors.response[0].string}
+                      </p>`
+                    : nothing}
+                <div class="pf-c-form__group pf-m-action">
+                    ${!this.registerRunning
+                        ? html` <button
+                              class="pf-c-button pf-m-primary pf-m-block"
+                              @click=${() => {
+                                  this.registerWrapper();
+                              }}
+                              type="button"
+                          >
+                              ${msg("Retry registration")}
+                          </button>`
+                        : nothing}
+                </div>
+            </form>
+        </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-webauthn": WebAuthnAuthenticatorRegisterStage;
     }
 }

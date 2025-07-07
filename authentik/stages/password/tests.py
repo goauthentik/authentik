@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -57,6 +57,9 @@ class TestPasswordStage(FlowTestCase):
     def test_recovery_flow_link(self):
         """Test link to the default recovery flow"""
         flow = create_test_flow(designation=FlowDesignation.RECOVERY)
+        brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         session = self.client.session
@@ -133,7 +136,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
-        self.assertStageResponse(response, flow=self.flow, error_message="Unknown error")
+        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

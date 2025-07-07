@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -42,9 +42,9 @@ export class FormStatic extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         if (!this.user) {
-            return html``;
+            return nothing;
         }
         return html`
             <div class="form-control-static">
@@ -59,5 +59,11 @@ export class FormStatic extends AKElement {
                 <slot name="link"></slot>
             </div>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-static": FormStatic;
     }
 }

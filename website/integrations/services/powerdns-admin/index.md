@@ -1,8 +1,8 @@
 ---
-title: PowerDNS-Admin
+title: Integrate with PowerDNS-Admin
+sidebar_label: PowerDNS-Admin
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is PowerDNS-Admin
 
@@ -12,19 +12,23 @@ title: PowerDNS-Admin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
--   `authentik.company` is the FQDN of the authentik install.
+- `pdns-admin.company` is the FQDN of the PowerDNS-Admin installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://pdns-admin.company/saml/authorized`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Audience: `pdns-admin`
--   Signing Keypair: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://pdns-admin.company/saml/authorized`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Audience: `pdns-admin`
+- Signing Keypair: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 You can of course use a custom signing certificate, and adjust durations.
 
@@ -37,9 +41,9 @@ Set the following values:
 ```env
 SAML_ENABLED=True
 SAML_PATH=os.path.join(os.path.dirname(file), 'saml')
-SAML_METADATA_URL=https://authentik.company/application/saml/<application-slug>/metadata/
+SAML_METADATA_URL=https://authentik.company/application/saml/<application_slug>/metadata/
 SAML_METADATA_CACHE_LIFETIME=1
-SAML_LOGOUT_URL=https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/
+SAML_LOGOUT_URL=https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/
 SAML_SP_ENTITY_ID=pdns-admin
 SAML_SP_CONTACT_NAME=me
 SAML_SP_CONTACT_MAIL=me

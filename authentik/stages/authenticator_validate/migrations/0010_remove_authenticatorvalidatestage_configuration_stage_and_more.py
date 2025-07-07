@@ -13,7 +13,7 @@ def migrate_configuration_stage(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
 
     for stage in AuthenticatorValidateStage.objects.using(db_alias).all():
         if stage.configuration_stage:
-            stage.configuration_stages.set([stage.configuration_stage])
+            stage.configuration_stages.using(db_alias).set([stage.configuration_stage])
             stage.save()
 
 

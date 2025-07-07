@@ -1,7 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/elements/EmptyState";
+import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -20,7 +22,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
-    ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
@@ -49,49 +50,46 @@ export class PlexLoginInit extends BaseStage<
                     },
                     slug: this.challenge?.slug || "",
                 })
-                .then((r) => {
-                    window.location.assign(r.to);
+                .then((redirectChallenge) => {
+                    window.location.assign(redirectChallenge.to);
                 })
-                .catch((r: ResponseError) => {
-                    r.response.json().then((body: { detail: string }) => {
-                        showMessage({
-                            level: MessageLevel.error,
-                            message: body.detail,
+                .catch(async (error: unknown) => {
+                    return parseAPIResponseError(error)
+                        .then(showAPIErrorMessage)
+                        .then(() => {
+                            setTimeout(() => {
+                                window.location.assign("/");
+                            }, 5000);
                         });
-                        setTimeout(() => {
-                            window.location.assign("/");
-                        }, 5000);
-                    });
                 });
         });
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Plex...")}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <ak-empty-state
-                        ?loading="${true}"
-                        header=${msg("Waiting for authentication...")}
-                    >
-                    </ak-empty-state>
-                    <hr class="pf-c-divider" />
-                    <p>${msg("If no Plex popup opens, click the button below.")}</p>
-                    <button
-                        class="pf-c-button pf-m-block pf-m-primary"
-                        type="button"
-                        @click=${() => {
-                            window.open(this.authUrl, "_blank");
-                        }}
-                    >
-                        ${msg("Open login")}
-                    </button>
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <span slot="title">${msg("Authenticating with Plex...")}</span>
+            <form class="pf-c-form">
+                <ak-empty-state loading
+                    ><span>${msg("Waiting for authentication...")}></span>
+                </ak-empty-state>
+                <hr class="pf-c-divider" />
+                <p>${msg("If no Plex popup opens, click the button below.")}</p>
+                <button
+                    class="pf-c-button pf-m-block pf-m-primary"
+                    type="button"
+                    @click=${() => {
+                        window.open(this.authUrl, "_blank");
+                    }}
+                >
+                    ${msg("Open login")}
+                </button>
+            </form>
+        </ak-flow-card>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-source-plex": PlexLoginInit;
     }
 }

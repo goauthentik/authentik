@@ -21,12 +21,10 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId || 0,
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -38,8 +36,8 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
             new TableColumn(""),
         ];
     }
@@ -89,5 +87,11 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
             html`${item.name}`,
             html`<i class="fas fa-check pf-m-success"></i>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-assigned-global-permissions-table": UserAssignedGlobalPermissionsTable;
     }
 }

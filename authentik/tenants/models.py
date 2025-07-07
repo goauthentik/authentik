@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.utils import IntegrityError
 from django.dispatch import receiver
@@ -25,6 +25,8 @@ VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
 DEFAULT_TOKEN_DURATION = "days=1"  # nosec
 DEFAULT_TOKEN_LENGTH = 60
+DEFAULT_REPUTATION_LOWER_LIMIT = -5
+DEFAULT_REPUTATION_UPPER_LIMIT = 5
 
 
 def _validate_schema_name(name):
@@ -70,6 +72,16 @@ class Tenant(TenantMixin, SerializerModel):
             "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
         ),
     )
+    reputation_lower_limit = models.IntegerField(
+        help_text=_("Reputation cannot decrease lower than this value. Zero or negative."),
+        default=DEFAULT_REPUTATION_LOWER_LIMIT,
+        validators=[MaxValueValidator(0)],
+    )
+    reputation_upper_limit = models.IntegerField(
+        help_text=_("Reputation cannot increase higher than this value. Zero or positive."),
+        default=DEFAULT_REPUTATION_UPPER_LIMIT,
+        validators=[MinValueValidator(0)],
+    )
     footer_links = models.JSONField(
         help_text=_("The option configures the footer links on the flow executor pages."),
         default=list,
@@ -84,6 +96,10 @@ class Tenant(TenantMixin, SerializerModel):
     )
     impersonation = models.BooleanField(
         help_text=_("Globally enable/disable impersonation."), default=True
+    )
+    impersonation_require_reason = models.BooleanField(
+        help_text=_("Require administrators to provide a reason for impersonating a user."),
+        default=True,
     )
     default_token_duration = models.TextField(
         help_text=_("Default token duration"),

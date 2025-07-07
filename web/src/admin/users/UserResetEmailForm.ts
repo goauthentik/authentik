@@ -34,7 +34,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
     renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Email stage")}
-            ?required=${true}
+            required
             name="emailStage"
         >
             <ak-search-select
@@ -60,5 +60,11 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
             >
             </ak-search-select>
         </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-reset-email-form": UserResetEmailForm;
     }
 }

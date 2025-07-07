@@ -167,13 +167,13 @@ export class DeleteBulkForm<T> extends ModalButton {
                 }),
             );
             this.onSuccess();
-            this.open = false;
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+            this.open = false;
         } catch (e) {
             this.onError(e as Error);
             throw e;
@@ -242,5 +242,12 @@ export class DeleteBulkForm<T> extends ModalButton {
                     ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-delete-objects-table": DeleteObjectsTable<unknown>;
+        "ak-forms-delete-bulk": DeleteBulkForm<unknown>;
     }
 }

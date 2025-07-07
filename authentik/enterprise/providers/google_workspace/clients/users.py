@@ -20,7 +20,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     """Sync authentik users into google workspace"""
 
     connection_type = GoogleWorkspaceProviderUser
-    connection_type_query = "user"
+    connection_attr = "googleworkspaceprovideruser_set"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
@@ -88,9 +88,11 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
         self.check_email_valid(
             google_user["primaryEmail"], *[x["address"] for x in google_user.get("emails", [])]
         )
-        self._request(
+        response = self._request(
             self.directory_service.users().update(userKey=connection.google_id, body=google_user)
         )
+        connection.attributes = response
+        connection.save()
 
     def discover(self):
         """Iterate through all users and connect them with authentik users if possible"""
@@ -117,3 +119,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
             google_id=email,
             attributes=user,
         )
+
+    def update_single_attribute(self, connection: GoogleWorkspaceProviderUser):
+        user = self.directory_service.users().get(connection.google_id)
+        connection.attributes = user

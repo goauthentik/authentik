@@ -32,15 +32,14 @@ export class RoleForm extends ModelForm<Role, string> {
                 uuid: this.instance.pk,
                 patchedRoleRequest: data,
             });
-        } else {
-            return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
-                roleRequest: data,
-            });
         }
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
+            roleRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
             <input
                 type="text"
                 value="${ifDefined(this.instance?.name)}"
@@ -48,5 +47,11 @@ export class RoleForm extends ModelForm<Role, string> {
                 required
             />
         </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-form": RoleForm;
     }
 }

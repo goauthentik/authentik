@@ -22,3 +22,9 @@ export class AkHintBody extends AKElement {
 }
 
 export default AkHintBody;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-hint-body": AkHintBody;
+    }
+}

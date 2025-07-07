@@ -2,17 +2,23 @@
 
 from json import dumps
 
+from django_filters.filters import AllValuesMultipleFilter, BooleanFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+)
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.fields import BooleanField, CharField
+from rest_framework.fields import BooleanField, CharField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.blueprints.api import ManagedSerializer
@@ -20,11 +26,14 @@ from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
+    ModelSerializer,
     PassiveSerializer,
 )
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.events.utils import sanitize_item
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestSerializer
 from authentik.rbac.decorators import permission_required
 
@@ -67,6 +76,18 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
         ]
 
 
+class PropertyMappingFilterSet(FilterSet):
+    """Filter for PropertyMapping"""
+
+    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
+
+    managed__isnull = BooleanFilter(field_name="managed", lookup_expr="isnull")
+
+    class Meta:
+        model = PropertyMapping
+        fields = ["name", "managed"]
+
+
 class PropertyMappingViewSet(
     TypesMixin,
     mixins.RetrieveModelMixin,
@@ -80,16 +101,16 @@ class PropertyMappingViewSet(
     class PropertyMappingTestSerializer(PolicyTestSerializer):
         """Test property mapping execution for a user/group with context"""
 
-        user = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False)
-        group = PrimaryKeyRelatedField(queryset=Group.objects.all(), required=False)
+        user = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+        group = PrimaryKeyRelatedField(
+            queryset=Group.objects.all(), required=False, allow_null=True
+        )
 
     queryset = PropertyMapping.objects.select_subclasses()
     serializer_class = PropertyMappingSerializer
-    search_fields = [
-        "name",
-    ]
-    filterset_fields = {"managed": ["isnull"]}
+    filterset_class = PropertyMappingFilterSet
     ordering = ["name"]
+    search_fields = ["name"]
 
     @permission_required("authentik_core.view_propertymapping")
     @extend_schema(
@@ -143,12 +164,15 @@ class PropertyMappingViewSet(
 
         response_data = {"successful": True, "result": ""}
         try:
-            result = mapping.evaluate(**context)
+            result = mapping.evaluate(dry_run=True, **context)
             response_data["result"] = dumps(
                 sanitize_item(result), indent=(4 if format_result else None)
             )
+        except PropertyMappingExpressionException as exc:
+            response_data["result"] = exception_to_string(exc.exc)
+            response_data["successful"] = False
         except Exception as exc:
-            response_data["result"] = str(exc)
+            response_data["result"] = exception_to_string(exc)
             response_data["successful"] = False
         response = PropertyMappingTestResultSerializer(response_data)
         return Response(response.data)

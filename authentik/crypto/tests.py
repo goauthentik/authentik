@@ -18,7 +18,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 
 
 class TestCrypto(APITestCase):
@@ -88,6 +88,17 @@ class TestCrypto(APITestCase):
         self.assertEqual(ext[0].value, "bar")
         self.assertIsInstance(ext[1], DNSName)
         self.assertEqual(ext[1].value, "baz")
+
+    def test_builder_api_duplicate(self):
+        """Test Builder (via API)"""
+        cert = create_test_cert()
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:certificatekeypair-generate"),
+            data={"common_name": cert.name, "subject_alt_name": "bar,baz", "validity_days": 3},
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content, {"common_name": ["This field must be unique."]})
 
     def test_builder_api_empty_san(self):
         """Test Builder (via API)"""
@@ -214,6 +225,46 @@ class TestCrypto(APITestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("Content-Disposition", response)
 
+    def test_certificate_download_denied(self):
+        """Test certificate export (download)"""
+        self.client.logout()
+        keypair = create_test_cert()
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(403, response.status_code)
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-certificate",
+                kwargs={"pk": keypair.pk},
+            ),
+            data={"download": True},
+        )
+        self.assertEqual(403, response.status_code)
+
+    def test_private_key_download_denied(self):
+        """Test private_key export (download)"""
+        self.client.logout()
+        keypair = create_test_cert()
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-private-key",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(403, response.status_code)
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-view-private-key",
+                kwargs={"pk": keypair.pk},
+            ),
+            data={"download": True},
+        )
+        self.assertEqual(403, response.status_code)
+
     def test_used_by(self):
         """Test used_by endpoint"""
         self.client.force_login(create_test_admin_user())
@@ -223,7 +274,7 @@ class TestCrypto(APITestCase):
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
-            redirect_uris="http://localhost",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
             signing_key=keypair,
         )
         response = self.client.get(
@@ -241,10 +292,30 @@ class TestCrypto(APITestCase):
                     "model_name": "oauth2provider",
                     "pk": str(provider.pk),
                     "name": str(provider),
-                    "action": DeleteAction.SET_NULL.name,
+                    "action": DeleteAction.SET_NULL.value,
                 }
             ],
         )
+
+    def test_used_by_denied(self):
+        """Test used_by endpoint"""
+        self.client.logout()
+        keypair = create_test_cert()
+        OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            client_secret=generate_key(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost")],
+            signing_key=keypair,
+        )
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-used-by",
+                kwargs={"pk": keypair.pk},
+            )
+        )
+        self.assertEqual(403, response.status_code)
 
     def test_discovery(self):
         """Test certificate discovery"""

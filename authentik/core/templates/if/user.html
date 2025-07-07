@@ -1,9 +1,9 @@
 {% extends "base/skeleton.html" %}
 
-{% load static %}
+{% load authentik_core %}
 
 {% block head %}
-<script src="{% static 'dist/user/UserInterface.js' %}?version={{ version }}" type="module"></script>
+<script src="{% versioned_script 'dist/user/UserInterface-%v.js' %}" type="module"></script>
 <meta name="theme-color" content="#1c1e21" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1c1e21" media="(prefers-color-scheme: dark)">
 {% include "base/header_js.html" %}

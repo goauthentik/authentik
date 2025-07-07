@@ -1,9 +1,8 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventGeo, renderEventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -11,6 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, TemplateResult, html } from "lit";
@@ -34,7 +34,7 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     targetModelName = "";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
         if (this.targetModelName.indexOf(".") !== -1) {
@@ -46,10 +46,8 @@ export class ObjectChangelog extends Table<Event> {
             return Promise.reject();
         }
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+            ...(await this.defaultEndpointConfig()),
             action: "model_",
-            page: page,
-            ordering: this.order,
-            pageSize: (await uiConfig()).pagination.perPage,
             contextModelApp: appName,
             contextModelName: modelName,
             contextModelPk: this.targetModelPk.toString(),
@@ -71,14 +69,13 @@ export class ObjectChangelog extends Table<Event> {
         }
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            renderEventUser(item),
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-
                 <small>${EventGeo(item)}</small>`,
         ];
     }
@@ -96,9 +93,16 @@ export class ObjectChangelog extends Table<Event> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Events found.")}>
+            html`<ak-empty-state
+                ><span>${msg("No Events found.")}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-object-changelog": ObjectChangelog;
     }
 }

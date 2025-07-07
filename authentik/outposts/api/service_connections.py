@@ -12,13 +12,13 @@ from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     MetaNameSerializer,
+    ModelSerializer,
     PassiveSerializer,
 )
 from authentik.outposts.models import (
@@ -26,6 +26,7 @@ from authentik.outposts.models import (
     KubernetesServiceConnection,
     OutpostServiceConnection,
 )
+from authentik.rbac.filters import ObjectFilter
 
 
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
@@ -75,7 +76,7 @@ class ServiceConnectionViewSet(
     filterset_fields = ["name"]
 
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
         connection = self.get_object()

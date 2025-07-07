@@ -28,7 +28,8 @@ class ProxyDockerController(DockerController):
         labels = super()._get_labels()
         labels["traefik.enable"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.rule"] = (
-            f"Host({','.join(hosts)}) && PathPrefix(`/outpost.goauthentik.io`)"
+            f"({' || '.join([f'Host({host})' for host in hosts])})"
+            f" && PathPrefix(`/outpost.goauthentik.io`)"
         )
         labels[f"traefik.http.routers.{traefik_name}-router.tls"] = "true"
         labels[f"traefik.http.routers.{traefik_name}-router.service"] = f"{traefik_name}-service"

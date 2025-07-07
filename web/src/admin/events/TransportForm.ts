@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -47,11 +47,10 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                notificationTransportRequest: data,
-            });
         }
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+            notificationTransportRequest: data,
+        });
     }
 
     onModeChange(mode: string | undefined): void {
@@ -66,7 +65,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -74,7 +73,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
@@ -102,22 +101,19 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                ?hidden=${!this.showWebhook}
-                label=${msg("Webhook URL")}
+            <ak-hidden-text-input
                 name="webhookUrl"
-                ?required=${true}
+                label=${msg("Webhook URL")}
+                value="${this.instance?.webhookUrl || ""}"
+                input-hint="code"
+                ?hidden=${!this.showWebhook}
+                required
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.webhookUrl)}"
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>
+            </ak-hidden-text-input>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Mapping")}
-                name="webhookMapping"
+                label=${msg("Webhook Body Mapping")}
+                name="webhookMappingBody"
             >
                 <ak-search-select
                     .fetchObjects=${async (
@@ -141,9 +137,42 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         return item?.pk;
                     }}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMapping === item.pk;
+                        return this.instance?.webhookMappingBody === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Header Mapping")}
+                name="webhookMappingHeaders"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new PropertymappingsApi(
+                            DEFAULT_CONFIG,
+                        ).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.webhookMappingHeaders === item.pk;
+                    }}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
@@ -152,7 +181,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.sendOnce, false)}
+                        ?checked=${this.instance?.sendOnce ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -167,5 +196,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-transport-form": TransportForm;
     }
 }

@@ -3,8 +3,10 @@ import "@goauthentik/admin/policies/dummy/DummyPolicyForm";
 import "@goauthentik/admin/policies/event_matcher/EventMatcherPolicyForm";
 import "@goauthentik/admin/policies/expiry/ExpiryPolicyForm";
 import "@goauthentik/admin/policies/expression/ExpressionPolicyForm";
+import "@goauthentik/admin/policies/geoip/GeoIPPolicyForm";
 import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
+import "@goauthentik/admin/policies/unique_password/UniquePasswordPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -51,6 +53,21 @@ export class PolicyWizard extends AKElement {
         });
     }
 
+    selectListener = ({ detail }: CustomEvent<TypeCreate>) => {
+        if (!this.wizard) return;
+
+        const { component, modelName } = detail;
+        const idx = this.wizard.steps.indexOf("initial") + 1;
+
+        // Exclude all current steps starting with type-,
+        // this happens when the user selects a type and then goes back
+        this.wizard.steps = this.wizard.steps.filter((step) => !step.startsWith("type-"));
+
+        this.wizard.steps.splice(idx, 0, `type-${component}-${modelName}`);
+
+        this.wizard.isValid = true;
+    };
+
     render(): TemplateResult {
         return html`
             <ak-wizard
@@ -61,23 +78,10 @@ export class PolicyWizard extends AKElement {
                 <ak-wizard-page-type-create
                     slot="initial"
                     .types=${this.policyTypes}
-                    @select=${(ev: CustomEvent<TypeCreate>) => {
-                        if (!this.wizard) return;
-                        const idx = this.wizard.steps.indexOf("initial") + 1;
-                        // Exclude all current steps starting with type-,
-                        // this happens when the user selects a type and then goes back
-                        this.wizard.steps = this.wizard.steps.filter(
-                            (step) => !step.startsWith("type-"),
-                        );
-                        this.wizard.steps.splice(
-                            idx,
-                            0,
-                            `type-${ev.detail.component}-${ev.detail.modelName}`,
-                        );
-                        this.wizard.isValid = true;
-                    }}
+                    @select=${this.selectListener}
                 >
                 </ak-wizard-page-type-create>
+
                 ${this.policyTypes.map((type) => {
                     return html`
                         <ak-wizard-page-form
@@ -112,5 +116,11 @@ export class PolicyWizard extends AKElement {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-wizard": PolicyWizard;
     }
 }

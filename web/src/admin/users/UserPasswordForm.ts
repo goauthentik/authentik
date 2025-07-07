@@ -26,12 +26,14 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-            label=${msg("Password")}
-            ?required=${true}
-            name="password"
-        >
+        return html`<ak-form-element-horizontal label=${msg("Password")} required name="password">
             <input type="password" value="" class="pf-c-form-control" required />
         </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-password-form": UserPasswordForm;
     }
 }

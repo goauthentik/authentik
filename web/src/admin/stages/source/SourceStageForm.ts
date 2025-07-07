@@ -31,11 +31,10 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 stageUuid: this.instance.pk || "",
                 sourceStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
-                sourceStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
+            sourceStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -45,7 +44,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     "Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).",
                 )}</span
             >
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -53,7 +52,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Source")} ?required=${true} name="source">
+            <ak-form-element-horizontal label=${msg("Source")} required name="source">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Source[]> => {
                         const args: SourcesAllListRequest = {
@@ -82,7 +81,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Resume timeout")}
-                ?required=${true}
+                required
                 name="resumeTimeout"
             >
                 <input
@@ -99,5 +98,11 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-source-form": SourceStageForm;
     }
 }

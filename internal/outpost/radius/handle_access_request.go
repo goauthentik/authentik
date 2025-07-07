@@ -1,6 +1,8 @@
 package radius
 
 import (
+	"encoding/base64"
+
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
@@ -43,7 +45,9 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}
-	access, err := fe.CheckApplicationAccess(r.pi.appSlug)
+	access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusAccessCheck(
+		r.Context(), r.pi.providerId,
+	).AppSlug(r.pi.appSlug).Execute()
 	if err != nil {
 		r.Log().WithField("username", username).WithError(err).Warning("failed to check access")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
@@ -54,7 +58,7 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		}).Inc()
 		return
 	}
-	if !access {
+	if !access.Access.Passing {
 		r.Log().WithField("username", username).Info("Access denied for user")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		metrics.RequestsRejected.With(prometheus.Labels{
@@ -64,5 +68,22 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 		}).Inc()
 		return
 	}
-	_ = w.Write(r.Response(radius.CodeAccessAccept))
+	res := r.Response(radius.CodeAccessAccept)
+	defer func() { _ = w.Write(res) }()
+	if !access.HasAttributes() {
+		r.Log().Debug("No attributes")
+		return
+	}
+	rawData, err := base64.StdEncoding.DecodeString(access.GetAttributes())
+	if err != nil {
+		r.Log().WithError(err).Warning("failed to decode attributes from core")
+		return
+	}
+	p, err := radius.Parse(rawData, r.pi.SharedSecret)
+	if err != nil {
+		r.Log().WithError(err).Warning("failed to parse attributes from core")
+	}
+	for _, attr := range p.Attributes {
+		res.Add(attr.Type, attr.Attribute)
+	}
 }

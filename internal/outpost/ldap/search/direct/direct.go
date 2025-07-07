@@ -12,13 +12,13 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
-	"goauthentik.io/internal/outpost/ldap/utils/paginator"
 )
 
 type DirectSearcher struct {
@@ -120,9 +120,14 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					return nil
 				}
 
-				u := paginator.FetchUsers(searchReq)
+				u, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+					PageSize: 100,
+					Logger:   ds.log,
+				})
 				uapisp.Finish()
-
+				if err != nil {
+					return err
+				}
 				users = &u
 			} else {
 				if flags.UserInfo == nil {
@@ -161,8 +166,14 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				searchReq = searchReq.MembersByPk([]int32{flags.UserPk})
 			}
 
-			g := paginator.FetchGroups(searchReq)
+			g, err := ak.Paginator(searchReq, ak.PaginatorOptions{
+				PageSize: 100,
+				Logger:   ds.log,
+			})
 			gapisp.Finish()
+			if err != nil {
+				return err
+			}
 			req.Log().WithField("count", len(g)).Trace("Got results from API")
 
 			if !flags.CanSearch {
@@ -177,7 +188,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					}
 				}
 			}
-
 			groups = &g
 			return nil
 		})

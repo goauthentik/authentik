@@ -1,8 +1,8 @@
 """SLO Views"""
 
-from django.http import HttpRequest
+from django.http import Http404, HttpRequest
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +10,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.flows.models import Flow, in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
+from authentik.flows.stage import SessionEndStage
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
@@ -28,11 +31,16 @@ class SAMLSLOView(PolicyAccessView):
     """ "SAML SLO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
+    flow: Flow
+
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
+        self.flow = self.provider.invalidation_flow or self.request.brand.flow_invalidation
+        if not self.flow:
+            raise Http404
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
@@ -45,10 +53,16 @@ class SAMLSLOView(PolicyAccessView):
         method_response = self.check_saml_request()
         if method_response:
             return method_response
-        return redirect(
-            "authentik_core:if-session-end",
-            application_slug=self.kwargs["application_slug"],
+        planner = FlowPlanner(self.flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(
+            request,
+            {
+                PLAN_CONTEXT_APPLICATION: self.application,
+            },
         )
+        plan.append_stage(in_memory_stage(SessionEndStage))
+        return plan.to_redirect(self.request, self.flow)
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """GET and POST use the same handler, but we can't
