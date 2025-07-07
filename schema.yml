@@ -59552,10 +59552,14 @@ components:
           type: string
           format: uuid
           readOnly: true
+        identifier:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Unique schedule identifier
         uid:
           type: string
           readOnly: true
-          description: Unique schedule identifier
         actor_name:
           type: string
           readOnly: true
@@ -59594,6 +59598,7 @@ components:
       - crontab
       - description
       - id
+      - identifier
       - last_task_status
       - next_run
       - rel_obj_app_label
@@ -60571,9 +60576,14 @@ components:
             $ref: '#/components/schemas/LogEvent'
         aggregated_status:
           $ref: '#/components/schemas/TaskAggregatedStatusEnum'
+        description:
+          type: string
+          nullable: true
+          readOnly: true
       required:
       - actor_name
       - aggregated_status
+      - description
       - messages
       - previous_messages
       - rel_obj_app_label

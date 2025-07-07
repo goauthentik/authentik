@@ -11,7 +11,10 @@ from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class Schedule(TasksModel, SerializerModel, ScheduleBase):
-    uid = models.TextField(unique=True, editable=False, help_text=_("Unique schedule identifier"))
+    identifier = models.TextField(
+        unique=True, editable=False, null=True, help_text=_("Unique schedule identifier")
+    )
+    _uid = models.TextField(blank=True, null=True, help_text=_("User schedule identifier"))
 
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     rel_obj_id = models.TextField(null=True)
@@ -29,6 +32,13 @@ class Schedule(TasksModel, SerializerModel, ScheduleBase):
 
     def __str__(self):
         return f"Schedule {self.actor_name}:{self.uid}"
+
+    @property
+    def uid(self) -> str:
+        uid = str(self.actor_name)
+        if self._uid:
+            uid += f":{self._uid}"
+        return uid
 
     @property
     def serializer(self):

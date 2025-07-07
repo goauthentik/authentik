@@ -149,7 +149,7 @@ export class TaskList extends Table<Task> {
 
     row(item: Task): TemplateResult[] {
         return [
-            html`<div>${item.actorName}</div>
+            html`<div>${item.description}</div>
                 <small>${item.uid.replace(new RegExp("^authentik."), "")}</small>`,
             html`${item.queueName}`,
             html`<div>${formatElapsedTime(item.mtime || new Date())}</div>

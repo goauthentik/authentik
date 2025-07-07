@@ -170,7 +170,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
         return [
             ScheduleSpec(
                 actor=outpost_service_connection_monitor,
-                uid=self.pk,
+                uid=self.name,
                 args=(self.pk,),
                 crontab="3-59/15 * * * *",
                 send_on_save=True,
@@ -322,7 +322,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         return [
             ScheduleSpec(
                 actor=outpost_controller,
-                uid=self.pk,
+                uid=self.name,
                 args=(self.pk,),
                 kwargs={"action": "up", "from_cache": False},
                 crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",

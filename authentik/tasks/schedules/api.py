@@ -37,6 +37,7 @@ class ScheduleSerializer(ModelSerializer):
         model = Schedule
         fields = (
             "id",
+            "identifier",
             "uid",
             "actor_name",
             "rel_obj_app_label",
@@ -98,7 +99,8 @@ class ScheduleViewSet(
     serializer_class = ScheduleSerializer
     search_fields = (
         "id",
-        "uid",
+        "identifier",
+        "_uid",
         "actor_name",
         "rel_obj_content_type__app_label",
         "rel_obj_content_type__model",
@@ -108,7 +110,8 @@ class ScheduleViewSet(
     filterset_class = ScheduleFilter
     ordering = (
         "next_run",
-        "uid",
+        "actor_name",
+        "identifier",
     )
 
     @permission_required("authentik_tasks_schedules.send_schedule")

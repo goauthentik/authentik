@@ -1,12 +1,14 @@
 from django_dramatiq_postgres.models import TaskState
 from django_filters.filters import BooleanFilter, MultipleChoiceFilter
 from django_filters.filterset import FilterSet
+from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
+from dramatiq.errors import ActorNotFound
 from dramatiq.message import Message
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -14,12 +16,15 @@ from rest_framework.mixins import (
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from structlog.stdlib import get_logger
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.events.logs import LogEventSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.tasks.models import Task, TaskStatus
 from authentik.tenants.utils import get_current_tenant
+
+LOGGER = get_logger()
 
 
 class TaskSerializer(ModelSerializer):
@@ -28,6 +33,7 @@ class TaskSerializer(ModelSerializer):
 
     messages = LogEventSerializer(many=True, source="_messages")
     previous_messages = LogEventSerializer(many=True, source="_previous_messages")
+    description = SerializerMethodField()
 
     class Meta:
         model = Task
@@ -44,7 +50,23 @@ class TaskSerializer(ModelSerializer):
             "messages",
             "previous_messages",
             "aggregated_status",
+            "description",
         ]
+
+    def get_description(self, instance: Task) -> str | None:
+        try:
+            actor: Actor = get_broker().get_actor(instance.actor_name)
+        except ActorNotFound:
+            LOGGER.warning("Could not find actor for schedule", schedule=instance)
+            return None
+        if "description" not in actor.options:
+            LOGGER.warning(
+                "Could not find description for actor",
+                task=instance,
+                actor=actor.actor_name,
+            )
+            return None
+        return actor.options["description"]
 
 
 class TaskFilter(FilterSet):

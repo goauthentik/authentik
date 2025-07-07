@@ -18,6 +18,7 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
             for obj in Model.objects.all():
                 for spec in obj.schedule_specs:
                     spec.rel_obj = obj
+                    spec.identifier = obj.pk
                     schedules.append(spec)
         return schedules
 

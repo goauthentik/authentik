@@ -76,7 +76,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         return [
             ScheduleSpec(
                 actor=self.sync_actor,
-                uid=self.pk,
+                uid=self.name,
                 args=(self.pk,),
                 options={
                     "time_limit": self.get_sync_time_limit_ms(),

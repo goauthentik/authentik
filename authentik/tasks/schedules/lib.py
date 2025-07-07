@@ -14,6 +14,7 @@ class ScheduleSpec:
     actor: Actor
     crontab: str
     paused: bool = False
+    identifier: str | None = None
     uid: str | None = None
 
     args: Iterable[Any] = field(default_factory=tuple)
@@ -25,11 +26,6 @@ class ScheduleSpec:
     send_on_save: bool = False
 
     send_on_startup: bool = False
-
-    def get_uid(self) -> str:
-        if self.uid is not None:
-            return f"{self.actor.actor_name}:{self.uid}"
-        return self.actor.actor_name
 
     def get_args(self) -> bytes:
         return pickle.dumps(self.args)
@@ -44,11 +40,12 @@ class ScheduleSpec:
         from authentik.tasks.schedules.models import Schedule
 
         query = {
-            "uid": self.get_uid(),
+            "actor_name": self.actor.actor_name,
+            "identifier": self.identifier,
         }
         defaults = {
             **query,
-            "actor_name": self.actor.actor_name,
+            "_uid": self.uid,
             "paused": self.paused,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),

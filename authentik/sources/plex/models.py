@@ -82,7 +82,7 @@ class PlexSource(ScheduledModel, Source):
         return [
             ScheduleSpec(
                 actor=check_plex_token,
-                uid=self.pk,
+                uid=self.slug,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand(self.pk)} */3 * * *",
             ),
