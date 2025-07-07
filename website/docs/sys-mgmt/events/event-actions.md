@@ -48,7 +48,7 @@ A user logs in (including the source, if available).
 
 ### `login_failed`
 
-A failed login attempt
+A failed login attempt.
 
 <details>
 <summary>Example</summary>
