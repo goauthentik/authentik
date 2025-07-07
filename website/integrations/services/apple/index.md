@@ -251,7 +251,7 @@ The authentik user you will use to test the stream connection to Apple Business 
 
 Before proceeding to Apple Business Manager, let's go over the values that you have copied from authentik.
 
--   Verify that you have all the necessary values in your text editor:
+- Verify that you have all the necessary values in your text editor:
     - From the `Apple Business Manager` provider:
         - [x] `Client ID`
         - [x] `Client Secret`
