@@ -57,10 +57,6 @@ redis:
   tls_reqs: "none"
   tls_ca_cert: null
 
-# broker:
-#   url: ""
-#   transport_options: ""
-
 http_timeout: 30
 
 cache:
@@ -71,10 +67,6 @@ cache:
 
 # channel:
 #   url: ""
-
-# result_backend:
-#   url: ""
-#   transport_options: ""
 
 debug: false
 debugger: false
