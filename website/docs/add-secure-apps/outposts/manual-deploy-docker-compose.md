@@ -19,7 +19,7 @@ services:
             - 9000:9000
             - 9443:9443
         environment:
-            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_HOST: https://authentik.company
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
             # Optional setting to be used when `authentik_host` for internal communication doesn't match the public URL.
@@ -39,7 +39,7 @@ services:
             - 389:3389
             - 636:6636
         environment:
-            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_HOST: https://authentik.company
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
 ```
@@ -54,7 +54,7 @@ services:
         # networks:
         #   - foo
         environment:
-            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_HOST: https://authentik.company
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
 ```
@@ -71,7 +71,7 @@ services:
         ports:
             - 1812:1812/udp
         environment:
-            AUTHENTIK_HOST: https://your-authentik.tld
+            AUTHENTIK_HOST: https://authentik.company
             AUTHENTIK_INSECURE: "false"
             AUTHENTIK_TOKEN: token-generated-by-authentik
 ```
