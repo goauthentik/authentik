@@ -268,8 +268,6 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @state()
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    ws: WebsocketClient;
-
     @state()
     notificationsCount = 0;
 
@@ -282,7 +280,9 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     constructor() {
         configureSentry(true);
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.fetchConfigurationDetails();
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);

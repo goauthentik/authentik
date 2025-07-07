@@ -94,8 +94,6 @@ export class FlowExecutor
     @state()
     flowInfo?: ContextualFlowInfo;
 
-    ws: WebsocketClient;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             :host {
@@ -185,27 +183,31 @@ export class FlowExecutor
 
     constructor() {
         configureSentry();
+
+        WebsocketClient.connect();
+
         super();
-        this.ws = new WebsocketClient();
-        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
-        if (inspector === "" || inspector === "open") {
-            this.inspectorOpen = true;
-            this.inspectorAvailable = true;
-        } else if (inspector === "available") {
-            this.inspectorAvailable = true;
-        }
+
+        const inspector = new URLSearchParams(window.location.search).get("inspector");
+
+        this.inspectorAvailable = !!inspector;
+        this.inspectorOpen = inspector === "" || inspector === "open";
+
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
         });
+
         window.addEventListener("message", (event) => {
             const msg: {
                 source?: string;
                 context?: string;
                 message: string;
             } = event.data;
+
             if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
                 return;
             }
+
             if (msg.message === "submit") {
                 this.submit({} as FlowChallengeResponseRequest);
             }
