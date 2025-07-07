@@ -26,7 +26,14 @@ import Tabs from "@theme/Tabs";
 
 ## Services Setup
 
-For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`.To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
+For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts` folder to run pre-configured database instances.
+
+```shell
+cd scripts
+docker compose up -d
+cd ..
+```
+
 You can also use a native install, if you prefer.
 
 :::info
@@ -53,9 +60,9 @@ values={[
   <TabItem value="mac">
     To install the native dependencies on macOS, run:
 
-    ```sh
-    $ brew install libxmlsec1 libpq krb5 pkg-config  # Required development libraries,
-    $ brew install uv postgresql redis node@24 golangci-lint   # Required CLI tools
+    ```shell
+    brew install libxmlsec1 libpq krb5 pkg-config  # Required development libraries,
+    brew install uv postgresql redis node@24 golangci-lint   # Required CLI tools
     ```
 
 </TabItem>
@@ -63,10 +70,10 @@ values={[
 <TabItem value="linux">
 To install native dependencies on Debian or Ubuntu, run:
 
-```sh
-$ pip install uv
-$ sudo apt-get install libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
-$ sudo apt-get install postresql redis
+```shell
+pip install uv
+sudo apt-get install libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
+sudo apt-get install postresql redis
 ```
 
 Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
@@ -105,9 +112,9 @@ By default, no compiled bundle of the frontend is included so this step is requi
 
 The UI requires the authentik API files for Typescript be built and installed:
 
-```
-$ make migrate   # On a fresh install, ensures the API schema file is available
-$ make gen       # Generates the API based on the schema file
+```shell
+make migrate   # On a fresh install, ensures the API schema file is available
+make gen       # Generates the API based on the schema file
 ```
 
 If you make changes to the authentik API, you must re-run `make gen` so that the corresponding
