@@ -246,6 +246,7 @@ const integrationsSidebar = {
                 type: "doc",
                 id: "services/index",
             },
+            // @ts-ignore - We know our items are category objects with labels
             items: items.sort((a, b) => a.label.localeCompare(b.label)),
         },
     ],
