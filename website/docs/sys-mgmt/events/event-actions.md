@@ -6,7 +6,7 @@ Whenever any of the following actions occur, an event is created. Actions are us
 
 ### `login`
 
-A user logs in (including the source, if available)
+A user logs in (including the source, if available).
 
 <details>
 <summary>Example</summary>
