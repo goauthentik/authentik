@@ -170,7 +170,7 @@ authentik runs on Python 3.13 at the time of writing this.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation style guide
+### Documentation Style Guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
