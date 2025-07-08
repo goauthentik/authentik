@@ -113,7 +113,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 >
             </ak-empty-state>
             ${!this.authenticating || this.showBackButton
-                ? html`<div class="pf-c-form__group pf-m-action">
+                ? html`<div class="pf-c-form__group">
                       ${!this.authenticating
                           ? html` <button
                                 class="pf-c-button pf-m-primary pf-m-block"

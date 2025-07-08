@@ -111,6 +111,8 @@ export const ChallengeEverything = identificationFactory({
     flowDesignation: FlowDesignationEnum.Authentication,
     primaryAction: "Login",
     showSourceLabels: false,
+    allowShowPassword: true,
+    passwordlessUrl: "qwer",
     flowInfo: {
         layout: "stacked",
         cancelUrl: "",
