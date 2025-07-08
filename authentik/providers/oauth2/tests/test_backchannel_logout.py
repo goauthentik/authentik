@@ -13,6 +13,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
+    AccessToken,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -382,10 +383,30 @@ class TestBackChannelLogout(OAuthTestCase):
             signing_key=self.keypair,
         )
 
-        # Create refresh tokens for both providers so they get notified
+        # Create access tokens and refresh tokens for both providers so they get notified
         from django.utils import timezone
 
         auth_time = timezone.now()
+
+        # Create access tokens (covers all OAuth2 flows)
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            _id_token=json.dumps({}),
+            auth_time=auth_time,
+        )
+        AccessToken.objects.create(
+            provider=provider2,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            _id_token=json.dumps({}),
+            auth_time=auth_time,
+        )
+
+        # Also create refresh tokens for completeness
         RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -406,6 +427,60 @@ class TestBackChannelLogout(OAuthTestCase):
         send_backchannel_logout_notification(session=session)
 
         # Should call the task for each OAuth2 provider
+        self.assertEqual(mock_task.call_count, 2)
+
+    @patch("authentik.providers.oauth2.tasks.send_backchannel_logout_request.delay")
+    def test_send_backchannel_logout_notification_access_tokens_only(self, mock_task):
+        """Test back-channel logout notification with access tokens only (no refresh tokens)"""
+        session = AuthenticatedSession.objects.create(
+            session=Session.objects.create(
+                session_key="test-session-456",
+                last_ip="127.0.0.1",
+            ),
+            user=self.user,
+        )
+
+        # Create another OAuth2 provider
+        provider2 = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver2/callback"),
+            ],
+            signing_key=self.keypair,
+        )
+
+        # Create ONLY access tokens (no refresh tokens) to simulate:
+        # - Authorization code flow without offline_access scope
+        # - Implicit flow clients
+        from django.utils import timezone
+
+        auth_time = timezone.now()
+
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            _id_token=json.dumps({}),
+            auth_time=auth_time,
+        )
+        AccessToken.objects.create(
+            provider=provider2,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            _id_token=json.dumps({}),
+            auth_time=auth_time,
+        )
+
+        # Explicitly verify no refresh tokens exist
+        self.assertEqual(RefreshToken.objects.filter(session=session).count(), 0)
+
+        send_backchannel_logout_notification(session=session)
+
+        # Should still call the task for each OAuth2 provider even without refresh tokens
+        # This demonstrates specification compliance
         self.assertEqual(mock_task.call_count, 2)
 
     def test_send_backchannel_logout_notification_with_user(self):

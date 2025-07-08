@@ -125,18 +125,34 @@ def send_backchannel_logout_notification(
         return
 
     # Get all OAuth2 providers that have issued tokens for this user
-    from authentik.providers.oauth2.models import RefreshToken
+    # Per OpenID Connect Back-Channel Logout 1.0 spec section 2.3:
+    # "OPs supporting back-channel logout need to keep track of the set of logged-in RPs"
+    # This includes ALL flows: authorization code, implicit, hybrid - not just refresh tokens
+    from authentik.providers.oauth2.models import AccessToken, RefreshToken
 
-    # Get all refresh tokens for this user or session
-    if session:
-        refresh_tokens = RefreshToken.objects.filter(session=session)
-    else:
-        refresh_tokens = RefreshToken.objects.filter(user=user)
-
-    # Get unique providers
+    # Get all access tokens (including expired) and refresh tokens for this user or session
     provider_pks = set()
-    for token in refresh_tokens:
-        provider_pks.add(token.provider.pk)
+
+    if session:
+        # Get providers from access tokens (covers all OAuth2 flows)
+        access_tokens = AccessToken.objects.filter(session=session)
+        for token in access_tokens:
+            provider_pks.add(token.provider.pk)
+
+        # Also include refresh tokens for completeness
+        refresh_tokens = RefreshToken.objects.filter(session=session)
+        for token in refresh_tokens:
+            provider_pks.add(token.provider.pk)
+    else:
+        # Get providers from access tokens (covers all OAuth2 flows)
+        access_tokens = AccessToken.objects.filter(user=user)
+        for token in access_tokens:
+            provider_pks.add(token.provider.pk)
+
+        # Also include refresh tokens for completeness
+        refresh_tokens = RefreshToken.objects.filter(user=user)
+        for token in refresh_tokens:
+            provider_pks.add(token.provider.pk)
 
     # Send back-channel logout notifications to all providers
     for provider_pk in provider_pks:
