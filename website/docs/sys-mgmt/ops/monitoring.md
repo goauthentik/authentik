@@ -22,7 +22,7 @@ Both Docker Compose and Kubernetes deployments use these methods by default to d
 
 ## Metrics
 
-Both the core authentik server and any outposts expose Prometheus metrics on a separate port (9300), which can be scraped to gather further insight into authentik's state. The metrics require no authentication, as they are hosted on a separate, non-exposed port by default.
+Both the core authentik server, worker and any outposts expose Prometheus metrics on a separate port (9300), which can be scraped to gather further insight into authentik's state. The metrics require no authentication, as they are hosted on a separate, non-exposed port by default.
 
 You can find an example dashboard here: [grafana.com](https://grafana.com/grafana/dashboards/14837-authentik/)
 
