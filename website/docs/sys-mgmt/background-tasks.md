@@ -5,33 +5,36 @@ slug: /background-tasks
 
 intro
 
+managed by authentik, monitored by users
+
+backrgound tasks are run on the worker -> link to page
+
 ## What are background tasks used for?
 
 - emails
-- providers
-- sources
+- providers sync
+- sources sync
+- housekeeping
 - schedules
 
-## Where to find tasks?
+## Manage background tasks
+
+### View system tasks
+
+- standalone vs not standalone
 
 system tasks page, directly attached to objects
 
-## About the worker
+### schedule configuration
 
-separate container
+change interval
+pause
 
-### How it runs
+### what to do about failed tasks
 
-uses postgres, describe process
+how to find them
+look at errors
 
-### Tuning
+#### restarting tasks
 
-explain settings
-
-### Sizing
-
-example scenario with syncing Nk users
-
-### Monitoring
-
-metrics, healthcheck
+click the arrow

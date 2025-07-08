@@ -582,6 +582,7 @@ const items = [
                 collapsed: true,
                 items: [
                     "sys-mgmt/ops/monitoring",
+                    "sys-mgmt/ops/worker",
                     "sys-mgmt/ops/storage-s3",
                     "sys-mgmt/ops/geoip",
                     "sys-mgmt/ops/backup-restore",

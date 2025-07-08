@@ -194,49 +194,49 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 
 ## Worker settings
 
-### `AUTHENTIK_WORKER__PROCESSES`
+#### `AUTHENTIK_WORKER__PROCESSES`
 
 Configure how many Dramatiq worker processes should be started.
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
-### `AUTHENTIK_WORKER__THREADS`
+#### `AUTHENTIK_WORKER__THREADS`
 
 Configure how many Dramatiq threads are started per worker.
 
 Defaults to 1.
 
-### `AUTHENTIK_WORKER__CONSUMER_LISTEN_TIMEOUT`
+#### `AUTHENTIK_WORKER__CONSUMER_LISTEN_TIMEOUT`
 
 Configure how long a worker waits for a PostgreSQL `LISTEN` notification.
 
 Defaults to `seconds=30`.
 
-### `AUTHENTIK_WORKER__TASK_MAX_RETRIES`
+#### `AUTHENTIK_WORKER__TASK_MAX_RETRIES`
 
 Configure how many times a failing task will be retried before abandoning.
 
 Defaults to 20.
 
-### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
+#### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
 
 Configure the default duration a task can run for before it is aborted. Some tasks will override this setting based on other settings, such as LDAP source synchronization tasks.
 
 Defaults to `minutes=10`.
 
-### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
+#### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
 
 Configure the interval at which old tasks are cleaned up.
 
 Defaults to `days=1`.
 
-### `AUTHENTIK_WORKER__TASK_EXPIRATION`
+#### `AUTHENTIK_WORKER__TASK_EXPIRATION`
 
 Configure how long tasks are kept in the database before they are deleted.
 
 Defaults to `days=30`.
 
-### `AUTHENTIK_WORKER__SCHEDULER_INTERVAL`
+#### `AUTHENTIK_WORKER__SCHEDULER_INTERVAL`
 
 Configure how often the task scheduler runs.
 
