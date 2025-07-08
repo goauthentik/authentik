@@ -54,7 +54,7 @@ http_hash_password = 0
 http_hashed_password = 1
 http_password = `<enter your password>`
 
-Save the changes and then restart Tautulli
+Redeploy Tautulli after updating your `config.ini` file.
 
 Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](../sonarr/)
 Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
