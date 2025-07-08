@@ -55,7 +55,7 @@ http_basic_auth = 1
 http_hash_password = 0
 http_hashed_password = 1
 http_password = `<your_password>`
-```yaml
+```
 
 Redeploy Tautulli after updating your `config.ini` file.
 
