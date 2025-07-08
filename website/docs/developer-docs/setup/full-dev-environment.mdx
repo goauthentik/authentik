@@ -26,15 +26,13 @@ import Tabs from "@theme/Tabs";
 
 ## Services Setup
 
-For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts` folder to run pre-configured database instances.
+authentik uses [Redis](https://redis.io/), [PostgreSQL](https://www.postgresql.org/), [S3](https://www.zenko.io/cloudserver/), and [Sentry Spotlight](https://spotlightjs.com/). You can run these services using the docker-compose.yml file in the scripts/ directory with the following command:
 
 ```shell
-cd scripts
-docker compose up -d
-cd ..
+docker compose -f scripts/docker-compose.yml up -d
 ```
 
-You can also use a native install, if you prefer.
+Alternatively, you can install and run these services directly on your system if you prefer.
 
 :::info
 If you use locally installed databases, the PostgreSQL credentials given to authentik should have permissions for `CREATE DATABASE` and `DROP DATABASE`, because authentik creates a temporary database for tests.
@@ -93,7 +91,7 @@ Install golangci-lint locally [from the site instructions](https://golangci-lint
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-make install               # Installs all required dependencies for Python and Javascript, including development dependencies
+make install   # Installs all required dependencies for Python and Javascript, including development dependencies
 ```
 
 2. Configure authentik to use the local databases using a local config file. To generate this file, run the following command in the same directory as your local authentik git repository:
@@ -113,8 +111,8 @@ By default, no compiled bundle of the frontend is included so this step is requi
 The UI requires the authentik API files for Typescript be built and installed:
 
 ```shell
-make migrate   # On a fresh install, ensures the API schema file is available
-make gen       # Generates the API based on the schema file
+make migrate   # Runs database migrations
+make gen       # Generates schema files (schema.yml, blueprints/schema.json) and the TypeScript client.
 ```
 
 If you make changes to the authentik API, you must re-run `make gen` so that the corresponding
