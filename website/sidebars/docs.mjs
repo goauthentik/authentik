@@ -574,6 +574,7 @@ const items = [
         label: "System Management",
         collapsed: true,
         items: [
+            "sys-mgmt/background-tasks",
             "sys-mgmt/brands",
             {
                 type: "category",
