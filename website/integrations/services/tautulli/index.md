@@ -48,11 +48,14 @@ Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username`
 
 ## Tautulli Setup
 
-Update: Basic authentication settings have been removed from the UI and are now available in config.ini.  For basic auth to work, shut down Tautulli, then you'll need to set/change the following in the config file:
+To configure basic authentication, set the following variables in the `config.ini` file of you Tautulli deployment:
+
+```yaml
 http_basic_auth = 1
 http_hash_password = 0
 http_hashed_password = 1
-http_password = `<enter your password>`
+http_password = `<your_password>`
+```yaml
 
 Redeploy Tautulli after updating your `config.ini` file.
 
