@@ -48,10 +48,13 @@ Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username`
 
 ## Tautulli Setup
 
-In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigate to "Web Interface" on the sidebar, and ensure the Option `Use Basic Authentication` is checked.
+Update: Basic authentication settings have been removed from the UI and are now available in config.ini.  For basic auth to work, shut down Tautulli, then you'll need to set/change the following in the config file:
+http_basic_auth = 1
+http_hash_password = 0
+http_hashed_password = 1
+http_password = `<enter your password>`
 
-![](./tautulli.png)
-
-Save the settings, and restart Tautulli if prompted.
+Save the changes and then restart Tautulli
 
 Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](../sonarr/)
+Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
