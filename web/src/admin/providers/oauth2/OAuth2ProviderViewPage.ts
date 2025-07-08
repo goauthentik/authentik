@@ -244,6 +244,24 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Backchannel Logout URIs")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ul>
+                                            ${this.provider.backchannelLogoutUris.map((ru) => {
+                                                return html`<li class="pf-m-monospace">
+                                                    ${ru.matchingMode}: ${ru.url}
+                                                </li>`;
+                                            })}
+                                        </ul>
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                     <div class="pf-c-card__footer">
