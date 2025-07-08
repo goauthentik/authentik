@@ -1,13 +1,17 @@
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from socket import gethostname
 from time import sleep
 from typing import Any
 
 import pglock
+from django.db import OperationalError, connections
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
+from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
+from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
 from authentik import get_full_version
@@ -142,6 +146,43 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
+class _healthcheck_handler(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        try:
+            for db_conn in connections.all():
+                # Force connection reload
+                db_conn.connect()
+                _ = db_conn.cursor()
+            redis_conn = get_redis_connection()
+            redis_conn.ping()
+            self.send_response(200)
+        except (OperationalError, RedisError):  # pragma: no cover
+            self.send_response(503)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    do_GET = do_HEAD
+
+
+class WorkerHealthcheckMiddleware(Middleware):
+    @property
+    def forks(self):
+        from authentik.tasks.forks import worker_healthcheck
+
+        return [worker_healthcheck]
+
+    @staticmethod
+    def run(addr: str, port: int):
+        try:
+            httpd = HTTPServer((addr, port), _healthcheck_handler)
+            httpd.serve_forever()
+        except OSError:
+            get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
+                "Port is already in use, not starting healthcheck server"
+            )
+
+
 class WorkerStatusMiddleware(Middleware):
     @property
     def forks(self):
@@ -150,7 +191,7 @@ class WorkerStatusMiddleware(Middleware):
         return [worker_status]
 
     @staticmethod
-    def worker_status():
+    def run():
         status = WorkerStatus.objects.create(
             hostname=gethostname(),
             version=get_full_version(),

@@ -7,11 +7,25 @@ from authentik.lib.config import CONFIG
 LOGGER = get_logger()
 
 
+def worker_healthcheck():
+    import authentik.tasks.setup  # noqa
+    from authentik.tasks.middleware import WorkerHealthcheckMiddleware
+
+    host, _, port = CONFIG.get("listen.listen_http").rpartition(":")
+
+    try:
+        port = int(port)
+        WorkerHealthcheckMiddleware.run(host, port)
+    except ValueError:
+        LOGGER.error(f"Invalid port entered: {port}")
+        pause()
+
+
 def worker_status():
     import authentik.tasks.setup  # noqa
     from authentik.tasks.middleware import WorkerStatusMiddleware
 
-    WorkerStatusMiddleware.worker_status()
+    WorkerStatusMiddleware.run()
 
 
 def worker_metrics():
