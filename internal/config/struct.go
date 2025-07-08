@@ -2,11 +2,13 @@ package config
 
 type Config struct {
 	// Core specific config
-	Storage        StorageConfig        `yaml:"storage"`
-	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
-	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
-	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
-	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Storage        StorageConfig           `yaml:"storage"`
+	LogLevel       string                  `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
+	ErrorReporting ErrorReportingConfig    `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
+	SQLite         SQLiteConfig            `yaml:"sqlite" env:", prefix=AUTHENTIK_SQLITE__"`
+	PostgreSQL     StoragePostgreSQLConfig `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
+	Outposts       OutpostConfig           `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Retries        RetriesConfig           `yaml:"retries" env:", prefix=AUTHENTIK_RETRIES__"`
 
 	// Config for core and embedded outpost
 	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
@@ -25,15 +27,13 @@ type Config struct {
 	AuthentikInsecure    bool   `env:"AUTHENTIK_INSECURE"`
 }
 
-type RedisConfig struct {
-	Host      string `yaml:"host" env:"HOST, overwrite"`
-	Port      int    `yaml:"port" env:"PORT, overwrite"`
-	DB        int    `yaml:"db" env:"DB, overwrite"`
-	Username  string `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+type SQLiteConfig struct {
+	Path            string `yaml:"path" env:"PATH, overwrite"`
+	CleanupInterval int    `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL, overwrite"`
+}
+
+type RetriesConfig struct {
+	Attempts uint `yaml:"attempts" env:"ATTEMPTS, overwrite"`
 }
 
 type ListenConfig struct {
@@ -58,6 +58,18 @@ type StorageMediaConfig struct {
 
 type StorageFileConfig struct {
 	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
+}
+
+type StoragePostgreSQLConfig struct {
+	Host        string `yaml:"host" env:"HOST, overwrite"`
+	Port        int    `yaml:"port" env:"PORT, overwrite"`
+	Name        string `yaml:"name" env:"NAME, overwrite"`
+	User        string `yaml:"user" env:"USER, overwrite"`
+	Password    string `yaml:"password" env:"PASSWORD, overwrite"`
+	SSLMode     string `yaml:"sslmode" env:"SSLMODE, overwrite"` // none of these are in lib/default.yml, need to confirm if exact
+	SSLRootCert string `yaml:"sslrootcert" env:"SSLROOTCERT, overwrite"`
+	SSLCert     string `yaml:"sslcert" env:"SSLCERT, overwrite"`
+	SSLKey      string `yaml:"sslkey" env:"SSLKEY, overwrite"`
 }
 
 type ErrorReportingConfig struct {

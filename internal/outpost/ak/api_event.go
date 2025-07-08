@@ -117,7 +117,7 @@ func (ac *APIController) recentEvents() {
 		retry.Delay(1*time.Second),
 		retry.MaxDelay(5*time.Minute),
 		retry.DelayType(retry.BackOffDelay),
-		retry.Attempts(0),
+		retry.Attempts(config.Get().Retries.Attempts),
 		retry.OnRetry(func(attempt uint, err error) {
 			ac.logger.Infof("waiting %d seconds to reconnect", attempt)
 		}),

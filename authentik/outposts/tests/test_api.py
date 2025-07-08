@@ -9,9 +9,11 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
-from authentik.outposts.models import Outpost, OutpostType, default_outpost_config
+from authentik.outposts.models import Outpost, OutpostType, default_outpost_config, ProxySession
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
+from django.utils import timezone
+from datetime import timedelta
 
 
 class TestOutpostServiceConnectionsAPI(APITestCase):
@@ -110,3 +112,36 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
             }
         )
         self.assertTrue(valid.is_valid())
+
+
+class TestProxySessionAPI(APITestCase):
+    """Test ProxySession API"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.user = create_test_admin_user()
+        self.client.force_login(self.user)
+
+    def test_expiry_cleanup(self):
+        """Test that expired sessions are cleaned up"""
+        # Create a ProxySession that is already expired
+        expired = ProxySession.objects.create(
+            session_key="expired-key",
+            provider_id="test",
+            data=b"test",
+            expires=timezone.now() - timedelta(days=1),
+        )
+        # Create a ProxySession that is not expired
+        valid = ProxySession.objects.create(
+            session_key="valid-key",
+            provider_id="test",
+            data=b"test",
+            expires=timezone.now() + timedelta(days=1),
+        )
+        # ExpiringModel's default manager should filter out expired
+        sessions = ProxySession.objects.all()
+        self.assertIn(valid, sessions)
+        self.assertNotIn(expired, sessions)
+        # Expired session should be deleted by cleanup
+        ProxySession.objects.cleanup_expired()
+        self.assertFalse(ProxySession.objects.filter(pk=expired.pk).exists())

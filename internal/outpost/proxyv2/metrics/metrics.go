@@ -22,6 +22,22 @@ var (
 		Name: "authentik_outpost_proxy_upstream_response_duration_seconds",
 		Help: "Proxy upstream response latencies in seconds",
 	}, []string{"outpost_name", "method", "scheme", "host", "upstream_host"})
+
+	// Session store metrics
+	SessionOperations = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "authentik_outpost_proxy_session_operations_total",
+		Help: "Total number of session store operations",
+	}, []string{"outpost_name", "operation", "backend"})
+
+	SessionDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_proxy_session_operation_duration_seconds",
+		Help: "Session store operation latencies in seconds",
+	}, []string{"outpost_name", "operation", "backend"})
+
+	SessionCleanupTotal = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "authentik_outpost_proxy_session_cleanup_total",
+		Help: "Total number of sessions cleaned up",
+	}, []string{"outpost_name", "backend"})
 )
 
 func RunServer() {

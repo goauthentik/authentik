@@ -150,6 +150,11 @@ class OutpostConsumer(JsonWebsocketConsumer):
 
     def event_session_end(self, event):
         """Event handler which is called when a session is ended"""
+        self.logger.info(
+            "Sending session end event to outpost",
+            session_id=event.get("session_id"),
+            outpost=self.outpost.name if self.outpost else "unknown",
+        )
         self.send_json(
             asdict(
                 WebsocketMessage(instruction=WebsocketMessageInstruction.SESSION_END, args=event)

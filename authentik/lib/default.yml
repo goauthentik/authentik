@@ -57,6 +57,10 @@ redis:
   tls_reqs: "none"
   tls_ca_cert: null
 
+sqlite:
+  path: ""
+  cleanup_interval: 3600
+
 # broker:
 #   url: ""
 #   transport_options: ""
@@ -75,6 +79,9 @@ cache:
 # result_backend:
 #   url: ""
 #   transport_options: ""
+
+retries:
+  attempts: 3
 
 debug: false
 debugger: false
