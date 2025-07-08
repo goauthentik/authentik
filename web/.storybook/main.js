@@ -37,6 +37,10 @@ const inlineCSSPlugin = {
  */
 const config = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
+    staticDirs: [
+        { from: "../icons", to: "/static/dist/assets/icons" },
+        { from: "../authentik", to: "/static/authentik" },
+    ],
     addons: [
         "@storybook/addon-controls",
         "@storybook/addon-links",

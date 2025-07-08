@@ -9132,6 +9132,12 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
 </trans-unit>
+<trans-unit id="sa3ff409b84679db8">
+  <source>Remember device</source>
+</trans-unit>
+<trans-unit id="s3b123cba0bf03f29">
+  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

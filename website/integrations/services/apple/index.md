@@ -249,9 +249,9 @@ The authentik user you will use to test the stream connection to Apple Business 
 
 ### 7. Confirm and modify copied authentik values
 
-Before proceeding to Apple Business Manager, let's go over the values you've copied from authentik.
+Before proceeding to Apple Business Manager, let's go over the values that you have copied from authentik.
 
-1. Verify that you have all the necessary values in your text editor:
+- Verify that you have all the necessary values in your text editor:
     - From the `Apple Business Manager` provider:
         - [x] `Client ID`
         - [x] `Client Secret`
@@ -259,21 +259,6 @@ Before proceeding to Apple Business Manager, let's go over the values you've cop
 
     - From the `Apple Business Manager SSF` provider:
         - [x] `SSF Config URL`
-
-2. Modify URLs to include the default HTTPS port. Apple requires the port number to be included when providing the URLs in the configuration.
-    - Add port 443 to the SSF Config URL that you copied from the `Apple Business Manager SSF` provider:
-
-        ```diff
-        -https://authentik.company/.well-known/ssf-configuration/abm
-        +https://authentik.company:443/.well-known/ssf-configuration/abm
-        ```
-
-    - Add port 443 to the OpenID Config URL that you copied from the `Apple Business Manager` provider:
-
-        ```diff
-        -https://authentik.company/application/o/abm/.well-known/openid-configuration
-        +https://authentik.company:443/application/o/abm/.well-known/openid-configuration
-        ```
 
 ## Apple Business Manager configuration
 

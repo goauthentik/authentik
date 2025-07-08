@@ -408,21 +408,9 @@ const items = [
                 type: "category",
                 label: "Interfaces",
                 items: [
-                    {
-                        type: "category",
-                        label: "Flow",
-                        items: ["customize/interfaces/flow/customization"],
-                    },
-                    {
-                        type: "category",
-                        label: "User",
-                        items: ["customize/interfaces/user/customization"],
-                    },
-                    {
-                        type: "category",
-                        label: "Admin",
-                        items: ["customize/interfaces/admin/customization"],
-                    },
+                    "customize/interfaces/flow/index",
+                    "customize/interfaces/user/index",
+                    "customize/interfaces/admin/index",
                 ],
             },
             {
@@ -606,7 +594,12 @@ const items = [
                     type: "doc",
                     id: "sys-mgmt/events/index",
                 },
-                items: ["sys-mgmt/events/notifications", "sys-mgmt/events/transports"],
+                items: [
+                    "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/transports",
+                    "sys-mgmt/events/logging-events",
+                    "sys-mgmt/events/event-actions",
+                ],
             },
             "sys-mgmt/certificates",
             "sys-mgmt/settings",

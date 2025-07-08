@@ -11,7 +11,7 @@ support_level: community
 > -- https://en.wikipedia.org/wiki/WordPress
 
 :::note
-There are many different plugins for WordPress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic" version 3.8.5 by daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the WordPress Plugin gallery.
+There are many different plugins for WordPress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic Client" version 3.8.5 by Jonathan Daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the WordPress Plugin gallery.
 :::
 
 ## Preparation
@@ -40,7 +40,7 @@ To support the integration of WordPress with authentik, you need to create an ap
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`.
     - Select any available signing key.
-    - Under **Advanced Protocol Settings**, add `offline_access` to the list of available scopes.
+    - Under **Advanced Protocol Settings**, add `offline_access` to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -48,7 +48,7 @@ To support the integration of WordPress with authentik, you need to create an ap
 ## WordPress configuration
 
 :::note
-Assumption is being made that you have successfully downloaded and activated the required plugin "OpenID Connect Generic" by daggerhart
+Assumption is being made that you have successfully downloaded and activated the required plugin "OpenID Connect Generic Client" by Jonathan Daggerhart
 :::
 
 In WordPress, under _Settings_, Select _OpenID Connect Client_

@@ -62,10 +62,6 @@ export abstract class TablePage<T> extends Table<T> {
                 this.requestUpdate();
                 this.fetch();
                 this.page = 1;
-                updateURLParams({
-                    search: "",
-                    tablePage: 1,
-                });
             }}
             class="pf-c-button pf-m-link"
         >

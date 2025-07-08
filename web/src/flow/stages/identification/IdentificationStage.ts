@@ -2,6 +2,7 @@ import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+import "@goauthentik/flow/components/ak-flow-card";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import "@goauthentik/flow/stages/captcha/CaptchaStage";
@@ -221,7 +222,7 @@ export class IdentificationStage extends BaseStage<
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return nothing;
         }
-        return html`<div class="pf-c-login__main-footer-band">
+        return html`<div slot="footer-band" class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
@@ -320,47 +321,41 @@ export class IdentificationStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.applicationPre
-                        ? html`<p>
-                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
-                          </p>`
-                        : nothing}
-                    ${this.renderInput()}
-                    ${this.challenge.passwordlessUrl
-                        ? html`
-                              <div>
-                                  <a
-                                      href=${this.challenge.passwordlessUrl}
-                                      class="pf-c-button pf-m-secondary pf-m-block"
-                                  >
-                                      ${msg("Use a security key")}
-                                  </a>
-                              </div>
-                          `
-                        : nothing}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${(this.challenge.sources || []).map((source) => {
-                        return this.renderSource(source);
-                    })}
-                </ul>
-                ${this.renderFooter()}
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                ${this.challenge.applicationPre
+                    ? html`<p>
+                          ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
+                      </p>`
+                    : nothing}
+                ${this.renderInput()}
+                ${this.challenge.passwordlessUrl
+                    ? html`
+                          <div>
+                              <a
+                                  href=${this.challenge.passwordlessUrl}
+                                  class="pf-c-button pf-m-secondary pf-m-block"
+                              >
+                                  ${msg("Use a security key")}
+                              </a>
+                          </div>
+                      `
+                    : nothing}
+            </form>
+            ${(this.challenge.sources || []).length > 0
+                ? html`<ul slot="footer" class="pf-c-login__main-footer-links">
+                      ${(this.challenge.sources || []).map((source) => {
+                          return this.renderSource(source);
+                      })}
+                  </ul> `
+                : nothing}
+            ${this.renderFooter()}
+        </ak-flow-card>`;
     }
 }
 

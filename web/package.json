@@ -93,7 +93,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.7.11",
         "@fortawesome/fontawesome-free": "^6.7.2",
-        "@goauthentik/api": "^2025.6.2-1750856752",
+        "@goauthentik/api": "^2025.6.3-1751754396",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
@@ -105,7 +105,7 @@
         "@openlayers-elements/maps": "^0.4.0",
         "@patternfly/elements": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^9.32.0",
+        "@sentry/browser": "^9.35.0",
         "@spotlightjs/spotlight": "^3.0.1",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
@@ -182,7 +182,7 @@
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
-        "eslint": "^9.29.0",
+        "eslint": "^9.30.1",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "github-slugger": "^2.0.0",
@@ -197,7 +197,7 @@
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.35.0",
+        "typescript-eslint": "^8.36.0",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.12"
@@ -214,7 +214,7 @@
         "build": {
             "#comment": [
                 "`npm run build` and `npm run watch` are the most common ",
-                "commands you should be using when working on the front-end ",
+                "commands you should be using when working on the front end",
                 "The files and output spec here expect you to use `npm run build --watch` ",
                 "instead of `npm run watch`. The former is more comprehensive, but ",
                 "the latter is faster."
