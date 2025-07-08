@@ -3,7 +3,6 @@ import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { severityToLabel } from "@goauthentik/common/labels";
-import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -52,7 +51,6 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(msg("Enabled")),
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Severity"), "severity"),
             new TableColumn(msg("Sent to group"), "group"),
@@ -83,16 +81,12 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     row(item: NotificationRule): TemplateResult[] {
-        const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
-            html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
-            html`${item.destinationGroupObj
-                ? html`<a href="#/identity/groups/${item.destinationGroupObj.pk}"
-                      >${item.destinationGroupObj.name}</a
-                  >`
-                : msg("-")}`,
+            html`${item.groupObj
+                ? html`<a href="#/identity/groups/${item.groupObj.pk}">${item.groupObj.name}</a>`
+                : msg("None (rule disabled)")}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Notification Rule")} </span>

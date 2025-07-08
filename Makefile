@@ -98,7 +98,7 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak make_blueprint_schema --file blueprints/schema.json
+		uv run ak make_blueprint_schema > blueprints/schema.json
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
@@ -150,9 +150,9 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-
-	cd ${PWD}/${GEN_API_TS} && npm link
-	cd ${PWD}/web && npm link @goauthentik/api
+	mkdir -p web/node_modules/@goauthentik/api
+	cd ${PWD}/${GEN_API_TS} && npm i
+	\cp -rf ${PWD}/${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \

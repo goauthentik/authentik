@@ -150,12 +150,12 @@ class OAuthAuthorizationParams:
         self.check_redirect_uri()
         self.check_grant()
         self.check_scope(github_compat)
+        self.check_nonce()
+        self.check_code_challenge()
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
-        self.check_nonce()
-        self.check_code_challenge()
 
     def check_grant(self):
         """Check grant"""
@@ -630,6 +630,7 @@ class OAuthFulfillmentStage(StageView):
         if self.params.response_type in [
             ResponseTypes.ID_TOKEN_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
+            ResponseTypes.ID_TOKEN,
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token

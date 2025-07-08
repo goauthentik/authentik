@@ -1,5 +1,4 @@
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import { kebabCase } from "change-case";
+import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -7,83 +6,59 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
-const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
-
-/**
- * @element ak-slug-input
- * @class AkSlugInput
- *
- * A wrapper around `ak-form-element-horizontal` and a text input control that listens for input on
- * a peer text input control and automatically mirrors that control's value, transforming the value
- * into a slug and displaying it separately.
- *
- * If the user manually changes the slug, mirroring and transformation stop. If, after that, both
- * fields are cleared manually, mirroring and transformation resume.
- *
- * ## Limitations:
- *
- * Both the source text field and the slug field must be rendered in the same render pass (i.e.,
- * part of the same singular call to a `render` function) so that the slug field can find its
- * source.
- *
- * For the same reason, both the source text field and the slug field must share the same immediate
- * parent DOM object.
- *
- * Since we expect the source text field and the slug to be part of the same form and rendered not
- * just in the same form but in the same form group, these are not considered burdensome
- * restrictions.
- */
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {
-    /**
-     * A selector indicating the source text input control. Must be unique within the whole DOM
-     * context of the slug and source controls. The most common use in authentik is the default:
-     * slugifying the "name" of something.
-     */
-    @property({ type: String })
-    public source = "[name='name']";
-
     @property({ type: String, reflect: true })
-    public value = "";
+    value = "";
+
+    @property({ type: String })
+    source = "";
+
+    origin?: HTMLInputElement | null;
 
     @query("input")
-    private input!: HTMLInputElement;
+    input!: HTMLInputElement;
 
-    #origin?: HTMLInputElement | null;
+    touched: boolean = false;
 
-    #touched: boolean = false;
+    constructor() {
+        super();
+        this.slugify = this.slugify.bind(this);
+        this.handleTouch = this.handleTouch.bind(this);
+    }
+
+    firstUpdated() {
+        this.input.addEventListener("input", this.handleTouch);
+    }
 
     // Do not stop propagation of this event; it must be sent up the tree so that a parent
     // component, such as a custom forms manager, may receive it.
-    protected handleTouch(ev: Event) {
-        this.value = this.input.value = slugify(this.input.value);
+    handleTouch(ev: Event) {
+        this.input.value = formatSlug(this.input.value);
+        this.value = this.input.value;
 
-        // Reset 'touched' status if the slug & target have been reset
-        if (this.#origin && this.#origin.value === "" && this.input.value === "") {
-            this.#touched = false;
+        if (this.origin && this.origin.value === "" && this.input.value === "") {
+            this.touched = false;
             return;
         }
 
         if (ev && ev.target && ev.target instanceof HTMLInputElement) {
-            this.#touched = true;
+            this.touched = true;
         }
     }
 
-    @bound
-    protected slugify(ev: Event) {
+    slugify(ev: Event) {
         if (!(ev && ev.target && ev.target instanceof HTMLInputElement)) {
             return;
         }
 
         // Reset 'touched' status if the slug & target have been reset
         if (ev.target.value === "" && this.input.value === "") {
-            this.#touched = false;
+            this.touched = false;
         }
 
-        // Don't proceed if the user has hand-modified the slug. (Note the order of statements: if
-        // the user hand modified the slug to be empty as part of resetting the slug/source
-        // relationship, that's a "not-touched" condition and falls through.)
-        if (this.#touched) {
+        // Don't proceed if the user has hand-modified the slug
+        if (this.touched) {
             return;
         }
 
@@ -92,7 +67,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // "any event which adds or removes a character but leaves the rest of the slug looking like
         // the previous iteration, set it to the current iteration."
 
-        const newSlug = slugify(ev.target.value);
+        const newSlug = formatSlug(ev.target.value);
         const oldSlug = this.input.value;
         const [shorter, longer] =
             newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
@@ -106,6 +81,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // to listeners, both the name and value of the host must match those of the target
         // input. The name is already handled since it's both required and automatically
         // forwarded to our templated input, but the value must also be set.
+
         this.value = this.input.value = newSlug;
         this.dispatchEvent(
             new Event("input", {
@@ -115,35 +91,37 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         );
     }
 
-    public override disconnectedCallback() {
-        if (this.#origin) {
-            this.#origin.removeEventListener("input", this.slugify);
+    connectedCallback() {
+        super.connectedCallback();
+
+        // Set up listener on source element, so we can slugify the content.
+        setTimeout(() => {
+            if (this.source) {
+                const rootNode = this.getRootNode();
+                if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
+                    this.origin = rootNode.querySelector(this.source);
+                }
+                if (this.origin) {
+                    this.origin.addEventListener("input", this.slugify);
+                }
+            }
+        }, 0);
+    }
+
+    disconnectedCallback() {
+        if (this.origin) {
+            this.origin.removeEventListener("input", this.slugify);
         }
         super.disconnectedCallback();
     }
 
-    public override renderControl() {
+    renderControl() {
         return html`<input
-            @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
             value=${ifDefined(this.value)}
             class="pf-c-form-control"
             ?required=${this.required}
         />`;
-    }
-
-    public override firstUpdated() {
-        if (!this.source) {
-            return;
-        }
-
-        const rootNode = this.getRootNode();
-        if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
-            this.#origin = rootNode.querySelector(this.source);
-        }
-        if (this.#origin) {
-            this.#origin.addEventListener("input", this.slugify);
-        }
     }
 }
 

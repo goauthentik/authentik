@@ -10,10 +10,6 @@ However, any flow can be executed via an API from anywhere, in fact that is what
 Because the flow executor stores its state in the HTTP Session, so you need to ensure that cookies between flow executor requests are persisted.
 :::
 
-:::info
-Note that the HTTP session must be obtained as a cookie before `GET /api/v3/flows/executor/:slug` can be called. If you are using a JWT for authentication, you first have to obtain a session cookie via `GET /api/v3/flows/instances/:slug/execute/` before requesting `GET /api/v3/flows/executor/:slug`.
-:::
-
 The main endpoint for flow execution is `/api/v3/flows/executor/:slug`.
 
 This endpoint accepts a query parameter called `query`, in which the flow executor sends the full query-string.

@@ -49,7 +49,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -61,7 +61,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
-                required
+                ?required=${true}
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -74,7 +74,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Connection expiry")}
-                required
+                ?required=${true}
                 name="connectionExpiry"
             >
                 <input
@@ -115,7 +115,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

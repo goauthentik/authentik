@@ -260,7 +260,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
     renderTabCredentialsToken(user: User): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
+            <ak-tabs pageIdentifier="userCredentialsTokens" ?vertical=${true}>
                 <section
                     slot="page-sessions"
                     data-tab-title="${msg("Sessions")}"
@@ -389,7 +389,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             ${msg("Actions over the last week (per 8 hours)")}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-charts-user username=${this.user.username}> </ak-charts-user>
+                            <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
                         </div>
                     </div>
                     <div

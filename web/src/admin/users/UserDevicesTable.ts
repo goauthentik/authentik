@@ -7,7 +7,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
@@ -104,11 +104,8 @@ export class UserDeviceTable extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`<div>
-                    ${deviceTypeName(item)}
-                    ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
-                </div>
-                ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
             html`${item.created.getTime() > 0
                 ? html`<div>${formatElapsedTime(item.created)}</div>

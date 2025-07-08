@@ -55,36 +55,26 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         if kwargs.get("no_capture", False):
             self.args.append("--capture=no")
 
-        self._setup_test_environment()
-
-    def _setup_test_environment(self):
-        """Configure test environment settings"""
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
-
-        # Test-specific configuration
-        test_config = {
-            "events.context_processors.geoip": "tests/GeoLite2-City-Test.mmdb",
-            "events.context_processors.asn": "tests/GeoLite2-ASN-Test.mmdb",
-            "blueprints_dir": "./blueprints",
-            "outposts.container_image_base": f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
-            "tenants.enabled": False,
-            "outposts.disable_embedded_outpost": False,
-            "error_reporting.sample_rate": 0,
-            "error_reporting.environment": "testing",
-            "error_reporting.send_pii": True,
-        }
-
-        for key, value in test_config.items():
-            CONFIG.set(key, value)
+        CONFIG.set("events.context_processors.geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.set("events.context_processors.asn", "tests/GeoLite2-ASN-Test.mmdb")
+        CONFIG.set("blueprints_dir", "./blueprints")
+        CONFIG.set(
+            "outposts.container_image_base",
+            f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
+        )
+        CONFIG.set("tenants.enabled", False)
+        CONFIG.set("outposts.disable_embedded_outpost", False)
+        CONFIG.set("error_reporting.sample_rate", 0)
+        CONFIG.set("error_reporting.environment", "testing")
+        CONFIG.set("error_reporting.send_pii", True)
 
         ASN_CONTEXT_PROCESSOR.load()
         GEOIP_CONTEXT_PROCESSOR.load()
 
         sentry_init()
-        self.logger.debug("Test environment configured")
 
-        # Send startup signals
         pre_startup.send(sender=self, mode="test")
         startup.send(sender=self, mode="test")
         post_startup.send(sender=self, mode="test")
@@ -107,21 +97,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             help="Disable any capturing of stdout/stderr during tests.",
         )
 
-    def _validate_test_label(self, label: str) -> bool:
-        """Validate test label format"""
-        if not label:
-            return False
-
-        # Check for invalid characters, but allow forward slashes and colons
-        # for paths and pytest markers
-        invalid_chars = set('\\*?"<>|')
-        if any(c in label for c in invalid_chars):
-            self.logger.error("Invalid characters in test label", label=label)
-            return False
-
-        return True
-
-    def run_tests(self, test_labels: list[str], extra_tests=None, **kwargs):
+    def run_tests(self, test_labels, extra_tests=None, **kwargs):
         """Run pytest and return the exitcode.
 
         It translates some of Django's test command option to pytest's.
@@ -131,17 +107,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         The extra_tests argument has been deprecated since Django 5.x
         It is kept for compatibility with PyCharm's Django test runner.
         """
-        if not test_labels:
-            self.logger.error("No test files specified")
-            return 1
 
         for label in test_labels:
-            if not self._validate_test_label(label):
-                return 1
-
             valid_label_found = False
             label_as_path = os.path.abspath(label)
-
             # File path has been specified
             if os.path.exists(label_as_path):
                 self.args.append(label_as_path)
@@ -149,26 +118,25 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             elif "::" in label:
                 self.args.append(label)
                 valid_label_found = True
+            # Convert dotted module path to file_path::class::method
             else:
-                # Check if the label is a dotted module path
                 path_pieces = label.split(".")
+                # Check whether only class or class and method are specified
                 for i in range(-1, -3, -1):
-                    try:
-                        path = os.path.join(*path_pieces[:i]) + ".py"
-                        if os.path.exists(path):
-                            if i < -1:
-                                path_method = path + "::" + "::".join(path_pieces[i:])
-                                self.args.append(path_method)
-                            else:
-                                self.args.append(path)
-                            valid_label_found = True
-                            break
-                    except (TypeError, IndexError):
-                        continue
+                    path = os.path.join(*path_pieces[:i]) + ".py"
+                    label_as_path = os.path.abspath(path)
+                    if os.path.exists(label_as_path):
+                        path_method = label_as_path + "::" + "::".join(path_pieces[i:])
+                        self.args.append(path_method)
+                        valid_label_found = True
+                        break
 
             if not valid_label_found:
-                self.logger.error("Test file not found", label=label)
-                return 1
+                raise RuntimeError(
+                    f"One of the test labels: {label!r}, "
+                    f"is not supported. Use a dotted module name or "
+                    f"path instead."
+                )
 
         self.logger.info("Running tests", test_files=self.args)
         with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):

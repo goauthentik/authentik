@@ -1,7 +1,5 @@
 """Custom SCIM schemas"""
 
-from enum import Enum
-
 from pydantic import Field
 from pydanticscim.group import Group as BaseGroup
 from pydanticscim.responses import PatchOperation as BasePatchOperation
@@ -67,21 +65,6 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
         )
 
 
-class PatchOp(str, Enum):
-
-    replace = "replace"
-    remove = "remove"
-    add = "add"
-
-    @classmethod
-    def _missing_(cls, value):
-        value = value.lower()
-        for member in cls:
-            if member.lower() == value:
-                return member
-        return None
-
-
 class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
@@ -91,7 +74,6 @@ class PatchRequest(BasePatchRequest):
 class PatchOperation(BasePatchOperation):
     """PatchOperation with optional path"""
 
-    op: PatchOp
     path: str | None
 
 

@@ -6,15 +6,13 @@
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
-        "!Env sequence",
         "!Find sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
         "!Value scalar",
-        "!AtIndex scalar",
-        "!ParseJSON scalar"
+        "!AtIndex scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

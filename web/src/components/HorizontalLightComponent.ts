@@ -1,23 +1,10 @@
-import { AKElement, type AKElementProps } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 type HelpType = TemplateResult | typeof nothing;
-
-export interface HorizontalLightComponentProps<T> extends AKElementProps {
-    name: string;
-    label?: string;
-    required?: boolean;
-    help?: string;
-    bighelp?: TemplateResult | TemplateResult[];
-    hidden?: boolean;
-    invalid?: boolean;
-    errorMessages?: string[];
-    value?: T;
-    inputHint?: string;
-}
 
 export class HorizontalLightComponent<T> extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
@@ -31,81 +18,37 @@ export class HorizontalLightComponent<T> extends AKElement {
         return this;
     }
 
-    /**
-     * The name attribute for the form element
-     * @property
-     * @attribute
-     */
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     name!: string;
 
-    /**
-     * The label for the input control
-     * @property
-     * @attribute
-     */
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     label = "";
 
-    /**
-     * @property
-     * @attribute
-     */
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean })
     required = false;
 
-    /**
-     * Help text to display below the form element. Optional
-     * @property
-     * @attribute
-     */
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     help = "";
 
-    /**
-     * Extended help content. Optional. Expects to be a TemplateResult
-     * @property
-     */
     @property({ type: Object })
     bighelp?: TemplateResult | TemplateResult[];
 
-    /**
-     * @property
-     * @attribute
-     */
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean })
     hidden = false;
 
-    /**
-     * @property
-     * @attribute
-     */
-    @property({ type: Boolean, reflect: true })
+    @property({ type: Boolean })
     invalid = false;
 
-    /**
-     * @property
-     */
     @property({ attribute: false })
     errorMessages: string[] = [];
 
-    /**
-     * @attribute
-     * @property
-     */
     @property({ attribute: false })
     value?: T;
 
-    /**
-     * Input hint.
-     *   - `code`: uses a monospace font and disables spellcheck & autocomplete
-     * @property
-     * @attribute
-     */
-    @property({ type: String, attribute: "input-hint" })
+    @property({ type: String })
     inputHint = "";
 
-    protected renderControl() {
+    renderControl() {
         throw new Error("Must be implemented in a subclass");
     }
 

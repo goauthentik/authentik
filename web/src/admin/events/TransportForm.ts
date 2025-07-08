@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -101,15 +100,18 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-hidden-text-input
-                name="webhookUrl"
-                label=${msg("Webhook URL")}
-                value="${this.instance?.webhookUrl || ""}"
-                input-hint="code"
+            <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
+                label=${msg("Webhook URL")}
+                name="webhookUrl"
                 required
             >
-            </ak-hidden-text-input>
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.webhookUrl)}"
+                    class="pf-c-form-control"
+                />
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Body Mapping")}

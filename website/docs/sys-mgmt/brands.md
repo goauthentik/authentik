@@ -3,7 +3,7 @@ title: Brands
 slug: /brands
 ---
 
-As an authentik administrator, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard, or can be set as default, in which case the brand will be applied when no other brand matches the domain.
+As an authentik admin, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard or can be set as default, in which case the brand will be used when no other brand matches the domain.
 
 For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
 
@@ -71,4 +71,4 @@ When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/in
 
 #### Attributes
 
-Attributes such as locale, theme settings (light/dark mode), and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../users-sources/user/user_ref.mdx#object-properties).
+Attributes such as locale, theme settings and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../users-sources/user/user_ref.mdx#object-properties).

@@ -10,7 +10,7 @@ from typing import Any
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG, django_db_config
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -115,13 +115,9 @@ def run_migrations():
         execute_from_command_line(["", "migrate_schemas"])
         if CONFIG.get_bool("tenants.enabled", False):
             execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
-        # Run django system checks for all databases
-        check_args = ["", "check"]
-        for label in django_db_config(CONFIG).keys():
-            check_args.append(f"--database={label}")
-        if not CONFIG.get_bool("debug"):
-            check_args.append("--deploy")
-        execute_from_command_line(check_args)
+        execute_from_command_line(
+            ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
+        )
     finally:
         release_lock(curr)
         curr.close()

@@ -6,7 +6,6 @@ import {
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Expand";
 
 import { msg } from "@lit/localize";

@@ -32,6 +32,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
+
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc realName`)
     - **SAML Attribute Name**: `realName`
     - **Expression**:
@@ -45,6 +46,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
+
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc groups`)
     - **SAML Attribute Name**: `groups`
     - **Expression**:
@@ -55,6 +57,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 - **Create SAML Provider Property Mapping**:
+
     - **Name**: provide a descriptive name (e.g. `SAML to Knocknoc session duration`)
     - **SAML Attribute Name**: `sessionDuration`
     - **Expression**:
@@ -76,10 +79,10 @@ This example will set session duration at 540 minutes. Change the value to match
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
   **Protocol Settings**:
-    - **ACS URL**: `https://knocknoc.company/api/saml/acs`
-    - **Issuer**: `https://authentik.company`
+    - **ACS URL**: <kbd>https://<em>knocknoc.company</em>/api/saml/acs</kbd>
+    - **Issuer**: <kbd>https://<em>authentik.company</em></kbd>
     - **Service Provider Binding**: `Post`
-    - **Audience**: `https://kocknoc.company/api/saml/metadata`
+    - **Audience**: <kbd>https://<em>kocknoc.company</em>/api/saml/metadata</kbd>
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -94,8 +97,9 @@ This example will set session duration at 540 minutes. Change the value to match
 
 1. Log in to Knocknoc and navigate to **Admin** > **Settings** > **SAML**
 2. Set the following configuration:
+
     - **Metadata URL**: **SAML Metadata URL** copied from the authentik provider.
-    - **Public URL**: `https://knocknoc.company`
+    - **Public URL**: <kbd>https://<em>knocknoc.company</em></kbd>
     - **Key file**: select a key file.
     - **Cert file**: select a certificate file.
 

@@ -24,6 +24,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 #### Connection settings
 
 - **Server URI**: URI to your LDAP server/Domain Controller. You can specify multiple servers by separating URIs with a comma, like `ldap://ldap1.company,ldap://ldap2.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+
     - **Enable StartTLS**: Enables StartTLS functionality. To use LDAPS instead, use port `636`.
     - **Use Server URI for SNI verification**: this setting is required for servers using TLS 1.3+
 

@@ -3,26 +3,16 @@
  *
  * @import { UserThemeConfig as UserThemeConfigCommon } from "@docusaurus/theme-common";
  * @import { UserThemeConfig as UserThemeConfigAlgolia } from "@docusaurus/theme-search-algolia";
- * @import { NavbarItemOverrides } from "./navbar.js"
  */
 import { deepmerge } from "deepmerge-ts";
 import { themes as prismThemes } from "prism-react-renderer";
 
-import { createNavbarItems } from "./navbar.js";
-
 //#region Types
 
 /**
- * @typedef {Object} UserThemeConfigExtra
- * @property {Partial<NavbarItemOverrides>} [navbarReplacements] The replacements for the navbar.
- *
- */
-
-/**
- * Combined theme configuration for Docusaurus, Algolia, and our own configuration.
+ * Combined theme configuration for Docusaurus and Algolia.
  *
  * @typedef {UserThemeConfigCommon & UserThemeConfigAlgolia} UserThemeConfig
- *
  */
 
 //#endregion
@@ -67,10 +57,10 @@ export function createPrismConfig(overrides = {}) {
 /**
  * Creates a theme configuration for Docusaurus.
  *
- * @param {Partial<UserThemeConfig & UserThemeConfigExtra>} overrides - Overrides for the default theme configuration.
+ * @param {Partial<UserThemeConfig>} overrides - Overrides for the default theme configuration.
  * @returns {UserThemeConfig}
  */
-export function createThemeConfig({ prism, navbarReplacements, ...overrides } = {}) {
+export function createThemeConfig({ prism, ...overrides } = {}) {
     /**
      * @type {UserThemeConfig}
      */
@@ -86,17 +76,6 @@ export function createThemeConfig({ prism, navbarReplacements, ...overrides } = 
         algolia: {
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
-        },
-        footer: {
-            copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
-        },
-        navbar: {
-            logo: {
-                alt: "authentik logo",
-                src: "img/icon_left_brand.svg",
-            },
-
-            items: createNavbarItems(navbarReplacements),
         },
         prism: createPrismConfig(prism),
     };

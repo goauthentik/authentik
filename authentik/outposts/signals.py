@@ -7,16 +7,11 @@ from django.dispatch import receiver
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import AuthenticatedSession, Provider
+from authentik.core.models import Provider
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
-from authentik.outposts.tasks import (
-    CACHE_KEY_OUTPOST_DOWN,
-    outpost_controller,
-    outpost_post_save,
-    outpost_session_end,
-)
+from authentik.outposts.tasks import CACHE_KEY_OUTPOST_DOWN, outpost_controller, outpost_post_save
 
 LOGGER = get_logger()
 UPDATE_TRIGGERING_MODELS = (
@@ -78,9 +73,3 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     instance.user.delete()
     cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
     outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
-
-
-@receiver(pre_delete, sender=AuthenticatedSession)
-def logout_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
-    """Catch logout by expiring sessions being deleted"""
-    outpost_session_end.delay(instance.session.session_key)

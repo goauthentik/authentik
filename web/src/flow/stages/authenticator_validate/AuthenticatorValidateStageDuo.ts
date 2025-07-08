@@ -51,22 +51,25 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
-        return html` <form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
-            ${this.renderUserInfo()}
-            <ak-empty-state ?loading="${this.authenticating}" icon="fas fa-times"
-                ><span
-                    >${this.authenticating
+        return html`<div class="pf-c-login__main-body">
+            <form
+                class="pf-c-form"
+                @submit=${(e: Event) => {
+                    this.submitForm(e);
+                }}
+            >
+                ${this.renderUserInfo()}
+                <ak-empty-state
+                    ?loading="${this.authenticating}"
+                    header=${this.authenticating
                         ? msg("Sending Duo push notification...")
-                        : errorMessage.join(", ") || msg("Failed to authenticate")}</span
+                        : errorMessage.join(", ") || msg("Failed to authenticate")}
+                    icon="fas fa-times"
                 >
-            </ak-empty-state>
-            <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
-        </form>`;
+                </ak-empty-state>
+                <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
+            </form>
+        </div>`;
     }
 }
 

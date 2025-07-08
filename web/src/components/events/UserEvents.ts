@@ -1,4 +1,4 @@
-import { renderEventUser } from "@goauthentik/admin/events/utils";
+import { EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -46,7 +46,7 @@ export class UserEvents extends Table<Event> {
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            renderEventUser(item),
+            EventUser(item),
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<span>${item.clientIp || msg("-")}</span>`,
@@ -66,8 +66,7 @@ export class UserEvents extends Table<Event> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                ><span>${msg("No Events found.")}</span>
+            html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

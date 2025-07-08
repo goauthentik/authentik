@@ -247,13 +247,11 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
-      # Needed for checkout
-      contents: read
     needs: ci-core-mark
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
     with:
-      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
+      image_name: ghcr.io/goauthentik/dev-server
       release: false
   pr-comment:
     needs:

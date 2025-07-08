@@ -97,6 +97,7 @@ Apple Business Manager requires that we create three scope mappings for our OIDC
 1. From the authentik Admin interface, navigate to **Customization -> Property Mappings** and click **Create**.
 
 2. Select **Scope Mapping** and use the following values:
+
     - **Name**: `Apple Business Manager profile`
     - **Scope Name**: `profile`
     - **Description**: _[optional]_ Set to inform user
@@ -121,6 +122,7 @@ Apple Business Manager requires that we create three scope mappings for our OIDC
 1. On the **Property Mappings** list, click **Create**.
 
 2. Select **Scope Mapping** and use the following values:
+
     - **Name**: `Apple Business Manager ssf.read`
     - **Scope Name**: `ssf.read`
     - **Description**: _[optional]_ Set to inform user
@@ -133,6 +135,7 @@ Apple Business Manager requires that we create three scope mappings for our OIDC
 1. On the **Property Mappings** list, click **Create**.
 
 2. Select **Scope Mapping** and use the following values:
+
     - **Name**: `Apple Business Manager ssf.manage`
     - **Scope Name**: `ssf.manage`
     - **Description**: _[optional]_ Set to inform user
@@ -151,6 +154,7 @@ You can either generate a new key or import an existing one.
 
 1. From the Admin interface, navigate to **System -> Certificates**
 2. Click **Generate**, select **Signing Key**, and use the following values:
+
     - **Common Name**: `apple-business-manager`
 
 3. Click **Generate** and confirm that the new key is listed in the **Certificates** overview.
@@ -161,6 +165,7 @@ Alternatively, you can use an existing key if you have one available.
 
 1. From the Admin interface, navigate to **System -> Certificates**.
 2. Click **Create** and use the following values:
+
     - **Name**: `apple-business-manager`
     - **Certificate**: Paste in your certificate
     - **Private Key**: _[optional]_ Pastein your private key
@@ -179,6 +184,7 @@ You can always find your provider's generated values by navigating to **Provider
 
 1. From the authentik Admin interface, navigate to **Applications -> Providers** and click **Create**.
 2. For the **Provider Type** select **OAuth2/OpenID Provider**, click **Next**, and use the following values.
+
     - **Name**: `Apple Business Manager`
     - **Authorization flow**: Select a flow that suits your organization's requirements.
     - **Protocol settings**:
@@ -208,6 +214,7 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 1. From the authentik Admin interface, navigate to **Applications -> Providers** and click **Create**.
 2. Select **Shared Signals Framework Provider** and use the following values.
    Any fields that can be left as their default values are omitted from the list.
+
     - **Name** `Apple Business Manager SSF`
     - **Signing Key**: `[Your Signing Key]`
     - **Event Retention**: `days=30`
@@ -237,6 +244,7 @@ The authentik user you will use to test the stream connection to Apple Business 
 ### 6. Create application
 
 1. From the authentik Admin interface, navigate to **Applications -> Applications**, click **Create**, and use the following values:
+
     - **Name**: Apple Business Manager
     - **Slug**: `abm`
     - **Provider**: `Apple Business Manager`
@@ -249,16 +257,34 @@ The authentik user you will use to test the stream connection to Apple Business 
 
 ### 7. Confirm and modify copied authentik values
 
-Before proceeding to Apple Business Manager, let's go over the values that you have copied from authentik.
+Before proceeding to Apple Business Manager, let's go over the values you've copied from authentik.
 
-- Verify that you have all the necessary values in your text editor:
+1. Verify that you have all the necessary values in your text editor:
+
     - From the `Apple Business Manager` provider:
+
         - [x] `Client ID`
         - [x] `Client Secret`
         - [x] `OpenID Configuration URL`
 
     - From the `Apple Business Manager SSF` provider:
         - [x] `SSF Config URL`
+
+2. Modify URLs to include the default HTTPS port. Apple requires the port number to be included when providing the URLs in the configuration.
+
+    - Add port 443 to the SSF Config URL that you copied from the `Apple Business Manager SSF` provider:
+
+        ```diff
+        -https://authentik.company/.well-known/ssf-configuration/abm
+        +https://authentik.company:443/.well-known/ssf-configuration/abm
+        ```
+
+    - Add port 443 to the OpenID Config URL that you copied from the `Apple Business Manager` provider:
+
+        ```diff
+        -https://authentik.company/application/o/abm/.well-known/openid-configuration
+        +https://authentik.company:443/application/o/abm/.well-known/openid-configuration
+        ```
 
 ## Apple Business Manager configuration
 
@@ -323,6 +349,7 @@ You're now ready to configure federated authentication with authentik.
 3. To define how you want users to sign in, choose **Custom Identity Provider** and click **Continue**.
 
 4. On the **Set up your Custom Identity Provider** page, use the following values:
+
     - **Name**: `authentik`
     - **Client ID**: _`Your Client ID`_
     - **Client Secret**: _`Your Client Secret`_
@@ -360,6 +387,7 @@ When creating test users, ensure that their role is set to Standard (or Student)
 
 1. From the [Apple Business Manager dashboard](https://business.apple.com/), click **Users** on the sidebar, then click **Add**.
 2. In the **Add New User** dialog, use the following values:
+
     - **First Name**: `Jessie`
     - **Last Name**: `Lorem`
     - **Email**: `jessie@authentik.company`

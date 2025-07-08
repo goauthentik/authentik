@@ -8,7 +8,7 @@ The following is a set of guidelines for contributing to authentik and its compo
 
 We appreciate contributions of code, documentation, enhancements, and bug fixes. Read more [below](#how-can-i-contribute) about the many ways to contribute.
 
-## Code of conduct
+## Code of Conduct
 
 We expect all contributors to act professionally and respectfully in all interactions. If there's something you dislike or think can be done better, tell us! We'd love to hear any suggestions for improvement.
 
@@ -94,9 +94,9 @@ This Django project is running in gunicorn, which spawns multiple workers and th
 
 There are also several background tasks which run in Celery, the root celery application is defined in `authentik.root.celery`.
 
-## How can I contribute?
+## How Can I Contribute?
 
-### Reporting bugs
+### Reporting Bugs
 
 This section guides you through submitting a bug report for authentik. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
@@ -104,13 +104,13 @@ Whenever authentik encounters an error, it will be logged as an Event with the t
 
 This form will have the full stack trace of the error that occurred and shouldn't contain any sensitive data.
 
-### Suggesting enhancements
+### Suggesting Enhancements
 
 This section guides you through submitting an enhancement suggestion for authentik, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
 When you are creating an enhancement suggestion, please fill in [the template](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=), including the steps that you imagine you would take if the feature you're requesting existed.
 
-### Your first code contribution
+### Your First Code Contribution
 
 #### Local development
 
@@ -118,13 +118,13 @@ authentik can be run locally, although depending on which part you want to work 
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
-### Help with the docs
+### Help with the Docs
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
 Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
-### Pull requests
+### Pull Requests
 
 The process described here has several goals:
 
@@ -151,7 +151,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
       `providers/saml2: fix parsing of requests`
       `website/docs: add config info for GWS`
 
-### Git commit messages
+### Git Commit Messages
 
 - Use the format of `<package>: <verb> <description>`
     - See [here](#authentiks-structure) for `package`

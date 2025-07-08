@@ -7,7 +7,7 @@ on:
       - packages/eslint-config/**
       - packages/prettier-config/**
       - packages/tsconfig/**
-      - packages/esbuild-plugin-live-reload/**
+      - web/packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
 jobs:
   publish:
@@ -21,7 +21,7 @@ jobs:
           - packages/eslint-config
           - packages/prettier-config
           - packages/tsconfig
-          - packages/esbuild-plugin-live-reload
+          - web/packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@v4
         with:

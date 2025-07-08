@@ -71,7 +71,6 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
-                delete this.challenge.flowInfo;
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -107,7 +106,6 @@ export class UserSettingsFlowExecutor
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             });
-            delete challenge.flowInfo;
             this.challenge = challenge;
         } catch (e: unknown) {
             // Catch JSON or Update errors
@@ -174,7 +172,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state default-label></ak-empty-state>`;
+                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -195,7 +193,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state default-label></ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }
