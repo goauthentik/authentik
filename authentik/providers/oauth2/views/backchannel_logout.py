@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from jwt.exceptions import InvalidTokenError
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application, AuthenticatedSession
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
+from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 
 LOGGER = get_logger()
 
@@ -122,8 +122,14 @@ class BackChannelLogoutView(View):
                 try:
                     # Find the user based on the sub claim
                     # This depends on sub_mode configuration
-                    LOGGER.info("Received logout request for user", sub=sub)
-                    # TODO: Implement user session termination logic here based on sub_mode
+                    user = self._find_user_by_sub(sub)
+                    if user:
+                        LOGGER.info("Received logout request for user", sub=sub, user=user.username)
+                        # Terminate all sessions for this user with this provider
+                        self._terminate_user_sessions(user)
+                    else:
+                        LOGGER.warning("User not found for sub claim", sub=sub)
+                        return {"success": False, "error_description": "User not found"}
                 except Exception as exc:
                     LOGGER.warning("Failed to process user logout", sub=sub, exc=exc)
                     return {"success": False, "error_description": "Failed to process user logout"}
@@ -132,3 +138,83 @@ class BackChannelLogoutView(View):
         except Exception as exc:
             LOGGER.warning("Error processing logout token", exc=exc)
             return {"success": False, "error_description": "Error processing logout token"}
+
+    def _find_user_by_sub(self, sub: str) -> User | None:
+        """Find user based on sub claim according to provider's sub_mode configuration"""
+        from authentik.providers.oauth2.constants import SubModes
+
+        try:
+            if self.provider.sub_mode == SubModes.HASHED_USER_ID:
+                # sub is the user's uid (hashed user ID)
+                # Since uid is a computed property, we need to find the user by iterating
+                # This is not efficient but necessary for the hashed mode
+                for user in User.objects.all():
+                    if user.uid == sub:
+                        return user
+                return None
+            elif self.provider.sub_mode == SubModes.USER_ID:
+                # sub is the user's primary key
+                return User.objects.filter(pk=int(sub)).first()
+            elif self.provider.sub_mode == SubModes.USER_UUID:
+                # sub is the user's UUID
+                return User.objects.filter(uuid=sub).first()
+            elif self.provider.sub_mode == SubModes.USER_EMAIL:
+                # sub is the user's email
+                return User.objects.filter(email=sub).first()
+            elif self.provider.sub_mode == SubModes.USER_USERNAME:
+                # sub is the user's username
+                return User.objects.filter(username=sub).first()
+            elif self.provider.sub_mode == SubModes.USER_UPN:
+                # sub is the user's UPN attribute or fallback to uid
+                user = User.objects.filter(attributes__upn=sub).first()
+                if not user:
+                    # Fallback to uid if UPN not found (uid is a computed property)
+                    for candidate_user in User.objects.all():
+                        if candidate_user.uid == sub:
+                            return candidate_user
+                return user
+            else:
+                LOGGER.warning(
+                    "Invalid sub_mode configuration",
+                    provider=self.provider.name,
+                    sub_mode=self.provider.sub_mode,
+                )
+                return None
+        except (ValueError, TypeError) as exc:
+            LOGGER.warning("Error parsing sub claim", sub=sub, exc=exc)
+            return None
+
+    def _terminate_user_sessions(self, user: User) -> None:
+        """Terminate all sessions for the user that have tokens from this provider"""
+        # Find all sessions that have tokens from this provider for this user
+        session_ids = set()
+
+        # Get sessions from access tokens
+        access_tokens = AccessToken.objects.filter(user=user, provider=self.provider)
+        for token in access_tokens:
+            if token.session:
+                session_ids.add(token.session.pk)
+
+        # Get sessions from refresh tokens
+        refresh_tokens = RefreshToken.objects.filter(user=user, provider=self.provider)
+        for token in refresh_tokens:
+            if token.session:
+                session_ids.add(token.session.pk)
+
+        # Revoke all tokens for this user and provider
+        AccessToken.objects.filter(user=user, provider=self.provider).update(revoked=True)
+        RefreshToken.objects.filter(user=user, provider=self.provider).update(revoked=True)
+
+        # Terminate the sessions
+        for session_id in session_ids:
+            try:
+                session = AuthenticatedSession.objects.get(pk=session_id)
+                session.delete()
+                LOGGER.info(
+                    "Terminated session via back-channel logout",
+                    session_id=session.session.session_key,
+                    user=user.username,
+                    provider=self.provider.name,
+                )
+            except AuthenticatedSession.DoesNotExist:
+                LOGGER.debug("Session already terminated", session_id=session_id)

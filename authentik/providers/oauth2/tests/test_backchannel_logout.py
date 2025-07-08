@@ -553,3 +553,39 @@ class TestBackChannelLogout(OAuthTestCase):
             data = json.loads(response.content)
             self.assertEqual(data["error"], "server_error")
             self.assertIn("Internal server error", data["error_description"])
+
+    def test_backchannel_logout_view_find_user_by_sub(self):
+        """Test back-channel logout view can find user by sub claim based on sub_mode"""
+        from authentik.providers.oauth2.constants import SubModes
+
+        view = BackChannelLogoutView()
+        view.provider = self.provider
+
+        # Test HASHED_USER_ID mode (default)
+        self.provider.sub_mode = SubModes.HASHED_USER_ID
+        found_user = view._find_user_by_sub(self.user.uid)
+        self.assertEqual(found_user, self.user)
+
+        # Test USER_ID mode
+        self.provider.sub_mode = SubModes.USER_ID
+        found_user = view._find_user_by_sub(str(self.user.pk))
+        self.assertEqual(found_user, self.user)
+
+        # Test USER_UUID mode
+        self.provider.sub_mode = SubModes.USER_UUID
+        found_user = view._find_user_by_sub(str(self.user.uuid))
+        self.assertEqual(found_user, self.user)
+
+        # Test USER_EMAIL mode
+        self.provider.sub_mode = SubModes.USER_EMAIL
+        found_user = view._find_user_by_sub(self.user.email)
+        self.assertEqual(found_user, self.user)
+
+        # Test USER_USERNAME mode
+        self.provider.sub_mode = SubModes.USER_USERNAME
+        found_user = view._find_user_by_sub(self.user.username)
+        self.assertEqual(found_user, self.user)
+
+        # Test non-existent user
+        found_user = view._find_user_by_sub("non-existent")
+        self.assertIsNone(found_user)
