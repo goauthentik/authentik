@@ -10,7 +10,7 @@ Configure your monitoring software to send requests to `/-/health/live/`, which 
 
 ## Worker monitoring
 
-The worker container can be monitored by running `ak healthcheck` in the worker container. This will ping the worker and ensure it can communicate with redis as required.
+The worker container can be monitored by running `ak healthcheck` in the worker container. This will check that the worker is running and ensure it can communicate with the database and redis as required.
 
 ## Outpost monitoring
 
