@@ -4,7 +4,7 @@ title: Events
 
 Events are authentik's built-in logging system. Every event is logged, whether it is initiated by a user or by authentik.
 
-Certain information is stripped from events, to ensure that no passwords or other credentials are saved in the log.
+Certain information is stripped from events to ensure that no passwords or other credentials are saved in the log.
 
 ## About notifications
 
@@ -12,9 +12,9 @@ Events can be used to define [notification rules](notifications.md), with specif
 
 ## About logging
 
-Logging of events in authentik provides several layers of transparency about user and system actions, from a quick view on the Overview dashboard, to a full, searchable list of all events, with a volume graph to highlight any spikes, in the Admin interface under **Events > Logs**.
+Event logging in authentik provides several layers of transparency about user and system actions, from a quick view on the Overview dashboard, to a full, searchable list of all events, with a volume graph to highlight any spikes, in the Admin interface under **Events > Logs**.
 
-For more information refer to our [Logging documentation](./logging-events.md).
+Refer to our [Logging documentation](./logging-events.md) for more information.
 
 ## Event retention and forwarding
 
