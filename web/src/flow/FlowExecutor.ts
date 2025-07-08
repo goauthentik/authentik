@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { WebsocketClient } from "#common/ws";
@@ -17,6 +18,7 @@ import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
 import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import {
@@ -49,6 +51,7 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
+    IdentificationChallenge,
     ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
@@ -58,44 +61,17 @@ export class FlowExecutor
     extends WithCapabilitiesConfig(WithBrandConfig(Interface))
     implements StageHost
 {
-    @property()
-    flowSlug: string = window.location.pathname.split("/")[3];
+    //#region Styles
 
-    private _challenge?: ChallengeTypes;
-
-    @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
-        } else {
-            document.title = this.brandingTitle;
-        }
-        if (value?.flowInfo) {
-            this.flowInfo = value.flowInfo;
-        } else {
-            this.requestUpdate();
-        }
-    }
-
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
-    }
-
-    @property({ type: Boolean })
-    loading = false;
-
-    @state()
-    inspectorOpen = false;
-
-    @state()
-    inspectorAvailable = false;
-
-    @state()
-    flowInfo?: ContextualFlowInfo;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFDrawer,
+        PFButton,
+        PFTitle,
+        PFList,
+        PFBackgroundImage,
+        css`
             :host {
                 --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
             }
@@ -178,20 +154,69 @@ export class FlowExecutor
                 right: 1rem;
                 z-index: 100;
             }
-        `);
+        `,
+    ];
+
+    //#endregion
+
+    //#region Properties
+
+    @property()
+    public flowSlug: string = window.location.pathname.split("/")[3];
+
+    #challenge?: ChallengeTypes;
+
+    @property({ attribute: false })
+    public set challenge(value: ChallengeTypes | undefined) {
+        this.#challenge = value;
+        if (value?.flowInfo?.title) {
+            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
+        } else {
+            document.title = this.brandingTitle;
+        }
+        this.requestUpdate();
     }
+
+    public get challenge(): ChallengeTypes | undefined {
+        return this.#challenge;
+    }
+
+    @property({ type: Boolean })
+    public loading = false;
+
+    //#endregion
+
+    //#region State
+
+    @state()
+    protected inspectorOpen?: boolean;
+
+    @state()
+    protected inspectorAvailable?: boolean;
+
+    @state()
+    public flowInfo?: ContextualFlowInfo;
+
+    #ws: WebsocketClient | null = null;
+
+    //#endregion
+
+    //#region Lifecycle
 
     constructor() {
         configureSentry();
 
-        WebsocketClient.connect();
-
         super();
+        this.#ws = WebsocketClient.connect();
 
-        const inspector = new URLSearchParams(window.location.search).get("inspector");
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
 
-        this.inspectorAvailable = !!inspector;
-        this.inspectorOpen = inspector === "" || inspector === "open";
+        if (inspector === "" || inspector === "open") {
+            this.inspectorOpen = true;
+            this.inspectorAvailable = true;
+        } else if (inspector === "available") {
+            this.inspectorAvailable = true;
+        }
 
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
@@ -207,96 +232,125 @@ export class FlowExecutor
             if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
                 return;
             }
-
             if (msg.message === "submit") {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
     }
 
-    async submit(
-        payload?: FlowChallengeResponseRequest,
-        options?: SubmitOptions,
-    ): Promise<boolean> {
-        if (!payload) return Promise.reject();
-        if (!this.challenge) return Promise.reject();
-        // @ts-expect-error
-        payload.component = this.challenge.component;
-        if (!options?.invisible) {
-            this.loading = true;
-        }
-        try {
-            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
-                flowSlug: this.flowSlug,
-                query: window.location.search.substring(1),
-                flowChallengeResponseRequest: payload,
-            });
-            if (this.inspectorOpen) {
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_FLOW_ADVANCE, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-            }
-            this.challenge = challenge;
-            return !this.challenge.responseErrors;
-        } catch (exc: unknown) {
-            this.errorMessage(exc as Error | ResponseError | FetchError);
-            return false;
-        } finally {
-            this.loading = false;
-        }
-    }
-
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
+
         this.loading = true;
-        try {
-            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
+
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorGet({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
+            })
+            .then((challenge: ChallengeTypes) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
+
+                this.challenge = challenge;
+
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
+                }
+            })
+            .catch((error) => {
+                const challenge: FlowErrorChallenge = {
+                    component: "ak-stage-flow-error",
+                    error: pluckErrorDetail(error),
+                    requestId: "",
+                };
+
+                this.challenge = challenge as ChallengeTypes;
+            })
+            .finally(() => {
+                this.loading = false;
             });
-            if (this.inspectorOpen) {
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_FLOW_ADVANCE, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-            }
-            this.challenge = challenge;
-        } catch (exc: unknown) {
-            // Catch JSON or Update errors
-            this.errorMessage(exc as Error | ResponseError | FetchError);
-        } finally {
-            this.loading = false;
+    }
+
+    // DOM post-processing has to happen after the render.
+    public updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowInfo") && this.flowInfo) {
+            this.#setShadowStyles(this.flowInfo);
         }
     }
 
-    async errorMessage(error: Error | ResponseError | FetchError): Promise<void> {
-        let body = "";
-        if (error instanceof FetchError) {
-            body = msg("Request failed. Please try again later.");
-        } else if (error instanceof ResponseError) {
-            body = await error.response.text();
-        } else if (error instanceof Error) {
-            body = error.message;
-        }
-        const challenge: FlowErrorChallenge = {
-            component: "ak-stage-flow-error",
-            error: body,
-            requestId: "",
-        };
-        this.challenge = challenge as ChallengeTypes;
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#ws?.close();
     }
 
-    setShadowStyles(value: ContextualFlowInfo) {
-        if (!value) {
-            return;
+    //#endregion
+
+    //#region Public Methods
+
+    public submit = async (
+        payload?: FlowChallengeResponseRequest,
+        options?: SubmitOptions,
+    ): Promise<boolean> => {
+        if (!payload) throw new Error("No payload provided");
+        if (!this.challenge) throw new Error("No challenge provided");
+
+        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+
+        if (!options?.invisible) {
+            this.loading = true;
         }
+
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorSolve({
+                flowSlug: this.flowSlug,
+                query: window.location.search.substring(1),
+                flowChallengeResponseRequest: payload,
+            })
+            .then((challenge) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
+
+                this.challenge = challenge;
+
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
+                }
+
+                return !this.challenge.responseErrors;
+            })
+            .catch((error: unknown) => {
+                const challenge: FlowErrorChallenge = {
+                    component: "ak-stage-flow-error",
+                    error: pluckErrorDetail(error),
+                    requestId: "",
+                };
+
+                this.challenge = challenge as ChallengeTypes;
+                return false;
+            })
+            .finally(() => {
+                this.loading = false;
+            });
+    };
+
+    #setShadowStyles(value: ContextualFlowInfo) {
+        if (!value) return;
+
         this.shadowRoot
             ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
             .forEach((bg) => {
@@ -304,10 +358,27 @@ export class FlowExecutor
             });
     }
 
-    // DOM post-processing has to happen after the render.
-    updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("flowInfo") && this.flowInfo !== undefined) {
-            this.setShadowStyles(this.flowInfo);
+    //#region Render
+
+    getLayout(): string {
+        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+        if (this.challenge) {
+            return this.challenge?.flowInfo?.layout || prefilledFlow;
+        }
+        return prefilledFlow;
+    }
+
+    getLayoutClass(): string {
+        const layout = this.getLayout();
+
+        switch (layout) {
+            case FlowLayoutEnum.ContentLeft:
+                return "pf-c-login__container";
+            case FlowLayoutEnum.ContentRight:
+                return "pf-c-login__container content-right";
+            case FlowLayoutEnum.Stacked:
+            default:
+                return "ak-login-container";
         }
     }
 
@@ -367,7 +438,6 @@ export class FlowExecutor
 
     async renderChallenge(): Promise<MaybeCompiledTemplateResult | HTMLElement> {
         const { challenge } = this;
-
         if (!challenge) {
             return html`<ak-flow-card loading></ak-flow-card>`;
         }
@@ -413,32 +483,14 @@ export class FlowExecutor
         if (!this.inspectorOpen) {
             return nothing;
         }
-        await import("@goauthentik/flow/FlowInspector");
-        return html`<ak-flow-inspector
-            class="pf-c-drawer__panel pf-m-width-33"
-            .flowSlug=${this.flowSlug}
-        ></ak-flow-inspector>`;
-    }
 
-    getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
-        if (this.challenge) {
-            return this.challenge?.flowInfo?.layout || prefilledFlow;
-        }
-        return prefilledFlow;
-    }
-
-    getLayoutClass(): string {
-        const layout = this.getLayout();
-        switch (layout) {
-            case FlowLayoutEnum.ContentLeft:
-                return "pf-c-login__container";
-            case FlowLayoutEnum.ContentRight:
-                return "pf-c-login__container content-right";
-            case FlowLayoutEnum.Stacked:
-            default:
-                return "ak-login-container";
-        }
+        return import("#flow/FlowInspector").then(
+            () =>
+                html`<ak-flow-inspector
+                    class="pf-c-drawer__panel pf-m-width-33"
+                    .flowSlug=${this.flowSlug}
+                ></ak-flow-inspector>`,
+        );
     }
 
     render(): TemplateResult {

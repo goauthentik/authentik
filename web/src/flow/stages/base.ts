@@ -77,7 +77,7 @@ export abstract class BaseStage<
             }
         }
 
-        return this.host?.submit(payload as unknown as Tout).then((successful) => {
+        return this.host?.submit(payload).then((successful) => {
             if (successful) {
                 this.onSubmitSuccess();
             } else {

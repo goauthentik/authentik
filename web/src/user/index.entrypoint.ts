@@ -277,11 +277,13 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @state()
     uiConfig: UIConfig | null = null;
 
+    #ws: WebsocketClient | null = null;
+
     constructor() {
         configureSentry(true);
         super();
 
-        WebsocketClient.connect();
+        this.#ws = WebsocketClient.connect();
 
         this.fetchConfigurationDetails();
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
@@ -303,6 +305,8 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
 
         super.disconnectedCallback();
+
+        this.#ws?.close();
     }
 
     toggleNotificationDrawer() {

@@ -1,10 +1,12 @@
+import { createDocumentTemplate } from "#elements/utils/iframe";
+
 import { TemplateResult, html } from "lit";
 
 export interface CaptchaHandler {
-    interactive(): Promise<unknown>;
-    execute(): Promise<unknown>;
-    refreshInteractive(): Promise<unknown>;
-    refresh(): Promise<unknown>;
+    interactive(): TemplateResult;
+    execute(): Promise<void>;
+    refreshInteractive(): Promise<void>;
+    refresh(): Promise<void>;
 }
 
 /**
@@ -15,33 +17,38 @@ export interface CaptchaHandler {
  * margin, adding 2rem of height to our container adds padding and prevents scrollbars
  * or hidden rendering.
  */
-export function iframeTemplate(children: TemplateResult, challengeURL: string): TemplateResult {
-    return html` ${children}
-        <script>
-            new ResizeObserver((entries) => {
-                const height =
-                    document.body.offsetHeight +
-                    parseFloat(getComputedStyle(document.body).fontSize) * 2;
+export function iframeTemplate(children: TemplateResult, challengeURL: string): string {
+    return createDocumentTemplate({
+        head: html`<meta charset="UTF-8" />
 
-                self.parent.postMessage({
-                    message: "resize",
-                    source: "goauthentik.io",
-                    context: "flow-executor",
-                    size: { height },
-                });
-            }).observe(document.querySelector(".ak-captcha-container"));
-        </script>
+            <script>
+                "use strict";
 
-        <script src=${challengeURL}></script>
+                function callback(token) {
+                    self.parent.postMessage({
+                        message: "captcha",
+                        source: "goauthentik.io",
+                        context: "flow-executor",
+                        token,
+                    });
+                }
 
-        <script>
-            function callback(token) {
-                self.parent.postMessage({
-                    message: "captcha",
-                    source: "goauthentik.io",
-                    context: "flow-executor",
-                    token,
-                });
-            }
-        </script>`;
+                function loadListener() {
+                    self.parent.postMessage({
+                        message: "load",
+                        source: "goauthentik.io",
+                        context: "flow-executor",
+                    });
+                }
+            </script>
+
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
+            </style>`,
+        body: html`${children}
+            <script onload="loadListener()" src="${challengeURL}"></script> `,
+    });
 }

@@ -73,6 +73,8 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         this.sidebarOpen = event.matches;
     };
 
+    #ws: WebsocketClient | null = null;
+
     //#endregion
 
     //#region Styles
@@ -128,7 +130,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         configureSentry(true);
         super();
 
-        WebsocketClient.connect();
+        this.#ws = WebsocketClient.connect();
 
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
@@ -159,6 +161,8 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     public disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+
+        this.#ws?.close();
     }
 
     async firstUpdated(): Promise<void> {
