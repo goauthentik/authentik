@@ -6,6 +6,7 @@ type Config struct {
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
 	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
+	SQLite         SQLiteConfig         `yaml:"sqlite" env:", prefix=AUTHENTIK_SQLITE__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
 
 	// Config for core and embedded outpost
@@ -34,6 +35,11 @@ type RedisConfig struct {
 	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
 	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
 	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+}
+
+type SQLiteConfig struct {
+	Path            string `yaml:"path" env:"PATH, overwrite"`
+	CleanupInterval int    `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL, overwrite"`
 }
 
 type ListenConfig struct {
