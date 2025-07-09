@@ -1,11 +1,19 @@
 /**
  * @file Docusaurus config.
  *
- * @import * as Preset from "@docusaurus/preset-classic";
  * @import { BuildUrlValues } from "remark-github";
+ * @import { Options as DocsPluginOptions } from "@docusaurus/plugin-content-docs";
+ * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
+
  */
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import { createRequire } from "node:module";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
+import { GlobExcludeDefault } from "@docusaurus/utils";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -14,8 +22,10 @@ import remarkLinkRewrite from "../remark/link-rewrite-directive.mjs";
 import remarkPreviewDirective from "../remark/preview-directive.mjs";
 import remarkSupportDirective from "../remark/support-directive.mjs";
 import remarkVersionDirective from "../remark/version-directive.mjs";
+import { legacyRedirects } from "./legacy-redirects.mjs";
 
 const require = createRequire(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * Documentation site configuration for Docusaurus.
@@ -43,7 +53,7 @@ const config = createDocusaurusConfig({
                     target: "_self",
                 },
                 {
-                    to: "integrations/",
+                    to: "https://integrations.goauthentik.io",
                     label: "Integrations",
                     position: "left",
                 },
@@ -90,51 +100,81 @@ const config = createDocusaurusConfig({
             externalUrlRegex: /.*/.source,
         },
     },
-    presets: [
-        [
-            "@docusaurus/preset-classic",
-            /** @type {Preset.Options} */ ({
-                docs: {
-                    id: "docsIntegrations",
-                    path: "integrations",
-                    routeBasePath: "integrations",
-                    sidebarPath: "./sidebars/integrations.mjs",
-                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
-                    showLastUpdateTime: false,
 
-                    beforeDefaultRemarkPlugins: [
-                        remarkDirective,
-                        remarkLinkRewrite(new Map([["/docs", "https://docs.goauthentik.io"]])),
-                        remarkVersionDirective,
-                        remarkEnterpriseDirective,
-                        remarkPreviewDirective,
-                        remarkSupportDirective,
-                    ],
-                    remarkPlugins: [
-                        [
-                            remarkGithub,
-                            {
-                                repository: "goauthentik/authentik",
-                                /**
-                                 * @param {BuildUrlValues} values
-                                 */
-                                buildUrl: (values) => {
-                                    // Only replace issues and PR links
-                                    return values.type === "issue" || values.type === "mention"
-                                        ? defaultBuildUrl(values)
-                                        : false;
-                                },
+    plugins: [
+        [
+            "@docusaurus/plugin-google-gtag",
+            {
+                trackingID: ["G-9MVR9WZFZH"],
+                anonymizeIP: true,
+            },
+        ],
+
+        [
+            "@docusaurus/theme-classic",
+            {
+                customCss: [
+                    require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+                    path.join(__dirname, "custom.css"),
+                ],
+            },
+        ],
+
+        [
+            "@docusaurus/plugin-content-docs",
+            /** @type {DocsPluginOptions} */ ({
+                id: "docsIntegrations",
+                exclude: [...GlobExcludeDefault],
+                include: ["**/*.mdx", "**/*.md"],
+
+                path: "integrations",
+                routeBasePath: "/",
+                sidebarPath: "./integrations/sidebar.mjs",
+                editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
+                showLastUpdateTime: false,
+
+                beforeDefaultRemarkPlugins: [
+                    remarkDirective,
+                    remarkLinkRewrite(new Map([["/docs", "https://docs.goauthentik.io"]])),
+                    remarkVersionDirective,
+                    remarkEnterpriseDirective,
+                    remarkPreviewDirective,
+                    remarkSupportDirective,
+                ],
+                remarkPlugins: [
+                    [
+                        remarkGithub,
+                        {
+                            repository: "goauthentik/authentik",
+                            /**
+                             * @param {BuildUrlValues} values
+                             */
+                            buildUrl: (values) => {
+                                // Only replace issues and PR links
+                                return values.type === "issue" || values.type === "mention"
+                                    ? defaultBuildUrl(values)
+                                    : false;
                             },
-                        ],
+                        },
                     ],
-                },
-                gtag: {
-                    trackingID: ["G-9MVR9WZFZH"],
-                    anonymizeIP: true,
-                },
-                theme: {
-                    customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
-                },
+                ],
+            }),
+        ],
+        [
+            "@docusaurus/plugin-client-redirects",
+            /** @type {RedirectsPluginOptions} */ ({
+                redirects: [
+                    {
+                        from: "/integrations",
+                        to: "/",
+                    },
+                    ...Array.from(legacyRedirects, ([from, to]) => {
+                        return {
+                            from: [from, `/integrations${from}`],
+                            to,
+                        };
+                    }),
+                ],
             }),
         ],
     ],

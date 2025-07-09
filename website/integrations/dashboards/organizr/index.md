@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://github.com/causefx/Organizr
 
-This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](https://docs.goauthentik.io/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
+This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup) for setting up the LDAP provider.
 
 ## Preparation
 

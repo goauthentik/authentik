@@ -6,27 +6,5 @@
 //
 // @see https://docusaurus.io/docs/typescript-support
 {
-    "extends": "@goauthentik/tsconfig",
-    "compilerOptions": {
-        "noEmit": true,
-        "checkJs": true,
-        "allowJs": true,
-        "composite": false,
-        "esModuleInterop": true,
-        "moduleResolution": "bundler",
-        "module": "esnext",
-        "jsx": "preserve",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "baseUrl": ".",
-        "paths": {
-            "@site/*": ["./*"]
-        }
-    },
-    "exclude": [
-        // ---
-        "./out/**/*",
-        "./dist/**/*",
-        ".docusaurus",
-        "build"
-    ]
+    "extends": "./tsconfig.base.json"
 }
