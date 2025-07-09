@@ -214,7 +214,7 @@ class TestSCIMGroups(APITestCase):
             source=self.source,
             group=group,
             id=uuid4(),
-            attributes={"displayName": group.name, "members": []},
+            attributes={"displayName": group.name, "members": [{"value": "foo"}]},
         )
         response = self.client.patch(
             reverse(
@@ -227,7 +227,7 @@ class TestSCIMGroups(APITestCase):
                         {
                             "op": "Add",
                             "path": "members",
-                            "value": {"value": str(user.uuid)},
+                            "value": [{"value": str(user.uuid)}],
                         }
                     ]
                 }
@@ -242,7 +242,7 @@ class TestSCIMGroups(APITestCase):
             connection.attributes,
             {
                 "displayName": group.name,
-                "members": {"value": "41f7f0b3-7993-4ed5-aece-05a533a62b98"},
+                "members": [{"value": "foo"}, {"value": str(user.uuid)}],
             },
         )
 
@@ -264,7 +264,7 @@ class TestSCIMGroups(APITestCase):
                         {
                             "op": "remove",
                             "path": "members",
-                            "value": {"value": str(user.uuid)},
+                            "value": [{"value": str(user.uuid)}],
                         }
                     ]
                 }
