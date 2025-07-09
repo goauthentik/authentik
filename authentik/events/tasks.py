@@ -62,6 +62,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     policy_engine.mode = PolicyEngineMode.MODE_ANY
     policy_engine.empty_result = False
     policy_engine.use_cache = False
+    policy_engine.request.obj = event
     policy_engine.request.context["event"] = event
     policy_engine.build()
     result = policy_engine.result
