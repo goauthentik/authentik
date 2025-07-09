@@ -3,8 +3,8 @@
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs-types"
  */
-import apiReference from "../docs/developer-docs/api/reference/sidebar";
 import { generateVersionDropdown } from "../src/utils.js";
+import apiReference from "./developer-docs/api/reference/sidebar.ts";
 
 /**
  * @type {SidebarItemConfig[]}
