@@ -59,8 +59,8 @@ values={[
     To install the native dependencies on macOS, run:
 
     ```shell
-    brew install libxmlsec1 libpq krb5 pkg-config  # Required development libraries,
-    brew install uv postgresql redis node@24 golangci-lint   # Required CLI tools
+    brew install libxmlsec1 libpq krb5 pkg-config \
+ uv postgresql redis node@24 golangci-lint
     ```
 
 </TabItem>
@@ -69,9 +69,9 @@ values={[
 To install native dependencies on Debian or Ubuntu, run:
 
 ```shell
-pip install uv
-sudo apt-get install libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
-sudo apt-get install postresql redis
+pip install uv && \
+sudo apt-get install -y libgss-dev krb5-config libkrb5-dev \
+ postgresql-server-dev-all postgresql redis
 ```
 
 Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
@@ -88,16 +88,20 @@ Install golangci-lint locally [from the site instructions](https://golangci-lint
 
 :::
 
-1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
+:::info
+All `make` commands need to be run in the root of your local authentik git repository.
+:::
+
+Install all required JavaScript and Python dependencies and create an isolated Python environment:
 
 ```shell
-make install   # Installs all required dependencies for Python and Javascript, including development dependencies
+make install
 ```
 
-2. Configure authentik to use the local databases using a local config file. To generate this file, run the following command in the same directory as your local authentik git repository:
+Then generate a local config file to use the local databases for development:
 
 ```shell
-make gen-dev-config   # Generates a local config file
+make gen-dev-config
 ```
 
 Generally speaking, authentik is a Django application, ran by gunicorn, proxied by a Go application. The Go application serves static files.
@@ -107,41 +111,49 @@ Most functions and classes have type-hints and docstrings, so it is recommended 
 ## Frontend Setup
 
 By default, no compiled bundle of the frontend is included so this step is required even if you're not developing for the UI.
+The UI requires the authentik API files for Typescript be built and installed.
 
-The UI requires the authentik API files for Typescript be built and installed:
+You first need to run database migrations:
 
 ```shell
-make migrate   # Runs database migrations
-make gen       # Generates schema files (schema.yml, blueprints/schema.json) and the TypeScript client.
+make migrate
 ```
 
+And then you need to generate the schema files (schema.yml, blueprints/schema.json) and the TypeScript client:
+
+```shell
+make gen
+```
+
+:::info
 If you make changes to the authentik API, you must re-run `make gen` so that the corresponding
 changes are made to the API library that is used by the UI.
+:::
 
-To build the UI once, run the following command in the same directory as your local authentik git repository:
+You can do a one time build of the UI:
 
 ```shell
-make web-build   # Builds the UI once
+make web-build
 ```
 
-If you want to live-edit the UI, you can run the following command in the same directory as your local authentik git repository instead, which will immediately update the UI with any changes you make so you can see the results in real time without needing to rebuild:
+Or you can live-edit the UI, allowing you to see updates you make in real time without needing to rebuild:
 
 ```shell
-make web-watch   # Updates the UI with any changes you make
+make web-watch
 ```
 
-To format the frontend code, run the following command in the same directory as your authentik git repository:
+And you can format the front-end code after you've made changes:
 
 ```shell
-make web   # Formats the frontend code
+make web
 ```
 
 ## Running authentik
 
-Now that the backend and frontend have been setup and built, you can start authentik by running the following command in the same directory as your local authentik git repository:
+Now that the backend and frontend have been setup and built, you can start authentik:
 
 ```shell
-make run   # Starts authentik server
+make run
 ```
 
 And now, authentik should now be accessible at `http://localhost:9000`.
@@ -154,10 +166,28 @@ In case of issues in this process, feel free to use `make dev-reset` which drops
 
 ## Submitting Pull Requests
 
-Before submitting a pull request, run the following commands in the same directory as your local authentik git repository:
+Before submitting a pull request, you'll need to make sure that:
+
+The code is properly linted:
 
 ```shell
-make lint   # Ensures your code is well-formatted
-make gen    # Generates an updated OpenAPI Docs for any changes you make
-make web    # Formats the front-end code
+make lint
+```
+
+We've generated an updated OpenAPI Doc for our changes:
+
+```shell
+make gen
+```
+
+And we've formatted our front-end code:
+
+```shell
+make web
+```
+
+You can do all of these at once with the following:
+
+```shell
+make lint gen web
 ```
