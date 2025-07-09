@@ -2,6 +2,7 @@
  * @file Remark plugin to transform `ak-version` directives into version badges.
  *
  * @import { Root } from "mdast";
+ * @import {} from "mdast-util-directive";
  */
 
 import { h } from "hastscript";
@@ -23,7 +24,7 @@ import { SKIP, visit } from "unist-util-visit";
  * # Feature Foobar <span class="badge badge--version">authentik: v1.2.3+</span>
  * ```
  */
-function remarkVersionDirective() {
+export function remarkVersionDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */

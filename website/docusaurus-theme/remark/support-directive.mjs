@@ -2,6 +2,7 @@
  * @file Remark plugin to transform `ak-support` directives into support level badges.
  *
  * @import { Root } from "mdast";
+ * @import {} from "mdast-util-directive";
  */
 
 import { h } from "hastscript";
@@ -37,7 +38,7 @@ export function isSupportLevel(input) {
 /**
  * MDAST plugin to transform `ak-support` directives into preview badges.
  */
-function remarkSupportDirective() {
+export function remarkSupportDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */
