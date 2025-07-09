@@ -29,7 +29,6 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
-	"goauthentik.io/internal/outpost/proxyv2/sqlitestore"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
@@ -95,7 +94,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 
 	isEmbedded := false
 	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
+		managedValue := *m
+		isEmbedded = managedValue == "goauthentik.io/outposts/embedded"
+		muxLogger.WithFields(log.Fields{
+			"managed_value": managedValue,
+			"is_embedded":   isEmbedded,
+		}).Debug("Determining if outpost is embedded")
+	} else {
+		muxLogger.Debug("No managed value found, treating as standalone outpost")
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
@@ -153,10 +159,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
 	} else {
-		err := a.setupSessions()
+		store, err := a.getStore(p, externalHost)
 		if err != nil {
 			return nil, fmt.Errorf("failed to setup sessions: %w", err)
 		}
+		a.sessions = store
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
@@ -322,54 +329,4 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
-}
-
-// setupSessions initializes the session store
-func (a *Application) setupSessions() error {
-	a.log.Debug("Setting up sessions")
-
-	// Default to SQLite session store
-	sessionStoreType := "sqlite"
-
-	a.log.WithField("session_store_type", sessionStoreType).Debug("Using session store type")
-
-	var store sessions.Store
-
-	switch sessionStoreType {
-	case "postgresql":
-		a.log.Debug("Using PostgreSQL session store")
-
-		// This is just a placeholder, we're using SQLite by default
-		a.log.Warning("PostgreSQL session store not configured, falling back to memory store")
-		store = sessions.NewCookieStore([]byte("secret"))
-
-	case "sqlite":
-		a.log.Debug("Using SQLite session store")
-
-		dbPath := "/dev/shm/authentik-sessions"
-
-		a.log.WithField("db_path", dbPath).Debug("Using SQLite database path")
-
-		sqliteStore, err := sqlitestore.NewSQLiteStore(
-			dbPath,
-			fmt.Sprintf("%d", a.proxyConfig.Pk), // provider ID as string
-			nil,                                 // Use default session options
-		)
-		if err != nil {
-			a.log.WithError(err).Warning("Failed to create SQLite session store, falling back to memory store")
-			store = sessions.NewCookieStore([]byte("secret"))
-		} else {
-			a.log.Debug("SQLite session store created successfully")
-			store = sqliteStore
-		}
-
-	default:
-		a.log.WithField("session_store_type", sessionStoreType).Warning("Unknown session store type, falling back to memory store")
-		store = sessions.NewCookieStore([]byte("secret"))
-		a.log.Debug("Memory session store created successfully")
-	}
-
-	a.sessions = store
-	a.log.Debug("Session store setup completed")
-	return nil
 }
