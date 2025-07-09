@@ -82,7 +82,7 @@ class GroupsView(SCIMObjectView):
         )
 
     @atomic
-    def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
+    def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict, apply_members=True):
         """Partial update a group"""
         properties = self.build_object_properties(data)
 
@@ -95,7 +95,7 @@ class GroupsView(SCIMObjectView):
 
         group.update_attributes(properties)
 
-        if "members" in data:
+        if "members" in data and apply_members:
             query = Q()
             for _member in data.get("members", []):
                 try:
@@ -149,9 +149,9 @@ class GroupsView(SCIMObjectView):
         if not connection:
             raise SCIMNotFoundError("Group not found.")
         patcher = SCIMPatcher(connection, request.data.get("Operations", []))
-        patched_data = patcher.apply("members")
+        patched_data = patcher.apply()
         if patched_data != connection.attributes:
-            self.update_group(connection, patched_data)
+            self.update_group(connection, patched_data, apply_members=False)
 
         for _op in request.data.get("Operations", []):
             operation = PatchOperation.model_validate(_op)

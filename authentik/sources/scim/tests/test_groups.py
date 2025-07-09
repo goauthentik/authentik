@@ -210,7 +210,12 @@ class TestSCIMGroups(APITestCase):
         user = create_test_user()
 
         group = Group.objects.create(name=generate_id())
-        SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            id=uuid4(),
+            attributes={"displayName": group.name, "members": []},
+        )
         response = self.client.patch(
             reverse(
                 "authentik_sources_scim:v2-groups",
@@ -230,8 +235,16 @@ class TestSCIMGroups(APITestCase):
             content_type=SCIM_CONTENT_TYPE,
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
-        self.assertEqual(response.status_code, second=200)
+        self.assertEqual(response.status_code, 200, response.content)
         self.assertTrue(group.users.filter(pk=user.pk).exists())
+        connection.refresh_from_db()
+        self.assertEqual(
+            connection.attributes,
+            {
+                "displayName": group.name,
+                "members": {"value": "41f7f0b3-7993-4ed5-aece-05a533a62b98"},
+            },
+        )
 
     def test_group_patch_remove(self):
         """Test group patch"""
