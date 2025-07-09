@@ -1,11 +1,22 @@
-import "lit";
+import { OwnPropertyRecord, Writeable } from "#common/types";
 
-import { type LitElement, nothing, type ReactiveControllerHost, type TemplateResult } from "lit";
+import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
 
 /**
- * Type utility to make readonly properties mutable.
+ * Utility type to extract a record of tag names which correspond to a given type.
+ *
+ * This is useful when selecting a subset of elements that share a common base class.
  */
-export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+export type HTMLElementTagNameMapOf<T> = {
+    [K in keyof HTMLElementTagNameMap as HTMLElementTagNameMap[K] extends T
+        ? K
+        : never]: HTMLElementTagNameMap[K];
+};
+
+export type TemplatedProperties<
+    T extends HTMLElement,
+    Base extends Element = HTMLElement,
+> = Partial<OwnPropertyRecord<T, Base>>;
 
 /**
  * A custom element which may be used as a host for a ReactiveController.

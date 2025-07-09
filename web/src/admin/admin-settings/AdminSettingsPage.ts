@@ -47,40 +47,32 @@ export class AdminSettingsPage extends AKElement {
     ];
 
     @query("ak-admin-settings-form#form")
-    form?: AdminSettingsForm;
+    protected form?: AdminSettingsForm;
 
     @state()
-    settings?: Settings;
+    protected settings?: Settings;
 
     constructor() {
         super();
-        AdminSettingsPage.fetchSettings().then((settings) => {
+
+        this.#refresh();
+
+        this.addEventListener("ak-admin-setting-changed", this.#refresh);
+    }
+
+    #refresh = () => {
+        return new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
             this.settings = settings;
         });
-        this.save = this.save.bind(this);
-        this.reset = this.reset.bind(this);
-        this.addEventListener("ak-admin-setting-changed", this.handleUpdate.bind(this));
-    }
+    };
 
-    static async fetchSettings() {
-        return await new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve();
-    }
+    #save = () => {
+        return this.form?.submit(new SubmitEvent("submit")).then(this.#refresh);
+    };
 
-    async handleUpdate() {
-        this.settings = await AdminSettingsPage.fetchSettings();
-    }
-
-    async save() {
-        if (!this.form) {
-            return;
-        }
-        await this.form.submit(new Event("submit"));
-        this.settings = await AdminSettingsPage.fetchSettings();
-    }
-
-    async reset() {
-        this.form?.resetForm();
-    }
+    #reset = () => {
+        return this.form?.reset();
+    };
 
     render() {
         if (!this.settings) return nothing;
@@ -94,10 +86,10 @@ export class AdminSettingsPage extends AKElement {
                         </ak-admin-settings-form>
                     </div>
                     <div class="pf-c-card__footer">
-                        <ak-spinner-button .callAction=${this.save} class="pf-m-primary"
+                        <ak-spinner-button .callAction=${this.#save} class="pf-m-primary"
                             >${msg("Save")}</ak-spinner-button
                         >
-                        <ak-spinner-button .callAction=${this.reset} class="pf-m-secondary"
+                        <ak-spinner-button .callAction=${this.#reset} class="pf-m-secondary"
                             >${msg("Cancel")}</ak-spinner-button
                         >
                     </div>

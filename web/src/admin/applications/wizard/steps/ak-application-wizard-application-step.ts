@@ -10,7 +10,6 @@ import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
 
 import { camelToSnake } from "#common/utils";
 
-import { type KeyUnknown } from "#elements/forms/Form";
 import { isSlug } from "#elements/router/utils";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
@@ -27,7 +26,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
-const trimMany = (o: KeyUnknown, vs: string[]) =>
+const trimMany = (o: Record<string, unknown>, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
