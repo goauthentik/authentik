@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
@@ -65,7 +65,9 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
                         : errorMessage.join(", ") || msg("Failed to authenticate")}</span
                 >
             </ak-empty-state>
-            <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
+            ${this.showBackButton
+                ? html`<div class="pf-c-form__group">${this.renderReturnToDevicePicker()}</div>`
+                : nothing}
         </form>`;
     }
 }

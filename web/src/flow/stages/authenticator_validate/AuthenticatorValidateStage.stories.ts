@@ -117,3 +117,22 @@ export const WebAuthnDeviceChallenge = authenticatorValidateFactory({
     ],
     configurationStages: [],
 });
+
+export const DuoDeviceChallenge = authenticatorValidateFactory({
+    pendingUser: "foo",
+    pendingUserAvatar: "https://picsum.photos/64",
+    flowInfo: {
+        title: "<ak-stage-authenticator-validate>",
+        layout: ContextualFlowInfoLayoutEnum.Stacked,
+        cancelUrl: "",
+    },
+    deviceChallenges: [
+        {
+            deviceClass: DeviceClassesEnum.Duo,
+            deviceUid: "1",
+            challenge: {},
+            lastUsed: null,
+        },
+    ],
+    configurationStages: [],
+});
