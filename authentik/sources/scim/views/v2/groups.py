@@ -23,6 +23,7 @@ from authentik.sources.scim.views.v2.exceptions import (
     SCIMNotFoundError,
     SCIMValidationError,
 )
+from authentik.sources.scim.views.v2.patch import SCIMPatcher
 
 
 class GroupsView(SCIMObjectView):
@@ -147,6 +148,10 @@ class GroupsView(SCIMObjectView):
         ).first()
         if not connection:
             raise SCIMNotFoundError("Group not found.")
+        patcher = SCIMPatcher(connection, request.data.get("Operations", []))
+        patched_data = patcher.apply("members")
+        if patched_data != connection.attributes:
+            self.update_group(connection, patched_data)
 
         for _op in request.data.get("Operations", []):
             operation = PatchOperation.model_validate(_op)

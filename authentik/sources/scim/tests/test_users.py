@@ -209,6 +209,51 @@ class TestSCIMUsers(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_user_update_patch(self):
+        """Test user update (patch)"""
+        user = create_test_user()
+        existing = SCIMSourceUser.objects.create(
+            source=self.source,
+            user=user,
+            id=uuid4(),
+            attributes={
+                "userName": generate_id(),
+            },
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            data=dumps(
+                {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                    "Operations": [
+                        {
+                            "op": "Add",
+                            "path": (
+                                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager"
+                            ),
+                            "value": "86b2ed3e-30cd-4881-bb58-c4e910821339",
+                        }
+                    ],
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        existing.refresh_from_db()
+        self.assertEqual(
+            existing.attributes["manager"][
+                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
+            ],
+            "86b2ed3e-30cd-4881-bb58-c4e910821339",
+        )
+
     def test_user_delete(self):
         """Test user delete"""
         user = create_test_user()

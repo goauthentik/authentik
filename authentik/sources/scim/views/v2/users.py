@@ -17,6 +17,7 @@ from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
+from authentik.sources.scim.views.v2.patch import SCIMPatcher
 
 
 class UsersView(SCIMObjectView):
@@ -126,6 +127,16 @@ class UsersView(SCIMObjectView):
             raise SCIMConflictError("Group with ID exists already.")
         connection = self.update_user(None, request.data)
         return Response(self.user_to_scim(connection), status=201)
+
+    def patch(self, request: Request, user_id: str, **kwargs):
+        connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
+        if not connection:
+            raise SCIMNotFoundError("User not found.")
+        patcher = SCIMPatcher(connection, request.data.get("Operations", []))
+        patched_data = patcher.apply()
+        if patched_data != connection.attributes:
+            self.update_user(connection, patched_data)
+        return Response(self.user_to_scim(connection), status=200)
 
     def put(self, request: Request, user_id: str, **kwargs) -> Response:
         """Update user handler"""
