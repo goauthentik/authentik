@@ -231,9 +231,8 @@ export abstract class Form<T> extends AKElement {
 
     /**
      * Convert the elements of the form to JSON.[4]
-     *
      */
-    serializeForm(): T | undefined {
+    serialize(): T | undefined {
         const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
             "ak-form-element-horizontal",
         );
@@ -251,7 +250,7 @@ export abstract class Form<T> extends AKElement {
     async submit(event: Event): Promise<unknown | undefined> {
         event.preventDefault();
 
-        const data = this.serializeForm();
+        const data = this.serialize();
         if (!data) return;
 
         return this.send(data)
