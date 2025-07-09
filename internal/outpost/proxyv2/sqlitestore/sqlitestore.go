@@ -1,149 +1,226 @@
 package sqlitestore
 
 import (
-	"bytes"
 	"context"
-	"crypto/rand"
 	"database/sql"
-	"encoding/base32"
-	"encoding/gob"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/outpost/proxyv2/sessionstore"
 )
 
 // SQLiteStore stores gorilla sessions in SQLite
 type SQLiteStore struct {
+	*sessionstore.BaseStore
 	// database connection
 	db *sql.DB
-	// default options to use when a new session is created
-	options sessions.Options
-	// key prefix with which the session will be stored
-	keyPrefix string
-	// key generator
-	keyGen KeyGenFunc
-	// session serializer
-	serializer SessionSerializer
 	// path to the SQLite database file
 	dbPath string
-	// provider UUID to associate with sessions
-	providerID string
+	// mutex to protect database operations
+	mu sync.RWMutex
+	// flag to indicate if the store is closed
+	closed bool
 }
 
-// KeyGenFunc defines a function used by store to generate a key
-type KeyGenFunc func() (string, error)
+// NewSQLiteStore creates a new SQLite-based session store
+func NewSQLiteStore(dbPath string, providerID string, sessionOptions *sessions.Options) (*SQLiteStore, error) {
+	logger := log.WithFields(log.Fields{
+		"component":   "SQLiteStore",
+		"method":      "NewSQLiteStore",
+		"db_path":     dbPath,
+		"provider_id": providerID,
+	})
 
-// NewSQLiteStore returns a new SQLiteStore with default configuration
-func NewSQLiteStore(dbPath string, providerID string) (*SQLiteStore, error) {
-	// Ensure the directory exists
+	logger.Debug("Creating new SQLite store")
+
+	// Ensure directory exists
 	dir := filepath.Dir(dbPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
-		return nil, fmt.Errorf("failed to create directory for SQLite database: %w", err)
+		logger.WithError(err).Error("Failed to create directory for SQLite database")
+		return nil, err
 	}
 
-	// Create a new SQLite database
-	db, err := sql.Open("sqlite3", dbPath)
+	// Open SQLite database
+	db, err := sql.Open("sqlite3", dbPath+"?_journal=WAL&_timeout=5000")
 	if err != nil {
-		return nil, fmt.Errorf("failed to open SQLite database: %w", err)
+		logger.WithError(err).Error("Failed to open SQLite database")
+		return nil, err
 	}
 
-	// Create sessions table with schema matching Django model in authentik/outposts/models.py:496
-	_, err = db.Exec(`
+	// Set connection parameters
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(time.Hour)
+
+	// Test connection
+	if err := db.Ping(); err != nil {
+		logger.WithError(err).Error("Failed to ping SQLite database")
+		db.Close()
+		return nil, err
+	}
+
+	// Create the store
+	store := &SQLiteStore{
+		BaseStore: sessionstore.NewBaseStore(providerID, "sqlite"),
+		db:        db,
+		dbPath:    dbPath,
+		closed:    false,
+	}
+
+	// Configure session options if provided
+	if sessionOptions != nil {
+		store.BaseStore.Options(*sessionOptions)
+	}
+
+	// Set key prefix for SQLite sessions
+	store.BaseStore.KeyPrefix("authentik_proxy_session_")
+
+	// Create tables and indexes
+	if err := store.createTables(); err != nil {
+		logger.WithError(err).Error("Failed to create tables")
+		db.Close()
+		return nil, err
+	}
+
+	// Start cleanup goroutine
+	go store.periodicCleanup()
+
+	logger.Debug("SQLite store created successfully")
+	return store, nil
+}
+
+// createTables creates the necessary tables and indexes
+func (s *SQLiteStore) createTables() error {
+	logger := log.WithField("component", "SQLiteStore").WithField("method", "createTables")
+
+	// Create the sessions table
+	_, err := s.db.Exec(`
 		CREATE TABLE IF NOT EXISTS authentik_outposts_proxysession (
 			uuid TEXT PRIMARY KEY,
-			session_key TEXT UNIQUE,
-			data BLOB,
-			expires DATETIME,
-			expiring BOOLEAN DEFAULT 1,
-			provider_id TEXT,
-			claims TEXT DEFAULT '{}',
-			redirect TEXT DEFAULT ''
+			session_key TEXT NOT NULL,
+			data BLOB NOT NULL,
+			expires TIMESTAMP,
+			expiring BOOLEAN NOT NULL DEFAULT 0,
+			provider_id TEXT NOT NULL,
+			claims TEXT,
+			redirect TEXT,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE(session_key, provider_id)
 		)
 	`)
 	if err != nil {
-		db.Close()
-		return nil, fmt.Errorf("failed to create sessions table: %w", err)
+		logger.WithError(err).Error("Failed to create sessions table")
+		return err
 	}
 
-	// Create index on expires for efficient queries
-	_, err = db.Exec(`
-		CREATE INDEX IF NOT EXISTS idx_proxysession_expires ON authentik_outposts_proxysession(expires)
+	// Create indexes
+	indexes := []string{
+		`CREATE INDEX IF NOT EXISTS idx_authentik_outposts_proxysession_key_provider 
+		ON authentik_outposts_proxysession(session_key, provider_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_authentik_outposts_proxysession_expires 
+		ON authentik_outposts_proxysession(expires)`,
+	}
+
+	for _, index := range indexes {
+		if _, err := s.db.Exec(index); err != nil {
+			logger.WithError(err).Error("Failed to create index")
+			return err
+		}
+	}
+
+	return nil
+}
+
+// periodicCleanup runs cleanup at regular intervals
+func (s *SQLiteStore) periodicCleanup() {
+	logger := log.WithFields(log.Fields{
+		"component": "SQLiteStore",
+		"method":    "periodicCleanup",
+	})
+
+	logger.Debug("Starting periodic cleanup")
+	ticker := time.NewTicker(15 * time.Minute)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		logger.Debug("Running scheduled cleanup")
+		if err := s.Cleanup(); err != nil {
+			logger.WithError(err).Error("Error during scheduled cleanup")
+		}
+	}
+}
+
+// Cleanup removes expired sessions from the database
+func (s *SQLiteStore) Cleanup() error {
+	logger := log.WithField("component", "SQLiteStore").WithField("method", "Cleanup")
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	if s.closed {
+		return errors.New("database connection is closed")
+	}
+
+	result, err := s.db.Exec(`
+		DELETE FROM authentik_outposts_proxysession 
+		WHERE expires IS NOT NULL AND expires < datetime('now')
 	`)
 	if err != nil {
-		db.Close()
-		return nil, fmt.Errorf("failed to create expiry index: %w", err)
+		logger.WithError(err).Error("Error deleting expired sessions")
+		return err
 	}
 
-	// Create index on session_key for efficient lookups
-	_, err = db.Exec(`
-		CREATE INDEX IF NOT EXISTS idx_proxysession_session_key ON authentik_outposts_proxysession(session_key)
-	`)
-	if err != nil {
-		db.Close()
-		return nil, fmt.Errorf("failed to create session_key index: %w", err)
+	if rowsAffected, err := result.RowsAffected(); err == nil {
+		logger.WithField("deleted_sessions", rowsAffected).Info("Deleted expired sessions")
 	}
 
-	store := &SQLiteStore{
-		db: db,
-		options: sessions.Options{
-			Path:   "/",
-			MaxAge: 86400 * 30,
-		},
-		keyPrefix:  "session:",
-		keyGen:     generateRandomKey,
-		serializer: GobSerializer{},
-		dbPath:     dbPath,
-		providerID: providerID,
-	}
-
-	return store, nil
+	return nil
 }
 
 // Close closes the SQLite store
 func (s *SQLiteStore) Close() error {
-	err := s.db.Close()
+	logger := log.WithField("component", "SQLiteStore").WithField("db_path", s.dbPath)
+	logger.Debug("Closing SQLite store")
 
-	// Attempt to remove the database file if it's in a temp directory
-	if strings.Contains(s.dbPath, os.TempDir()) {
-		if rmErr := os.Remove(s.dbPath); rmErr != nil {
-			log.WithError(rmErr).Warning("failed to remove temporary SQLite database")
-		} else {
-			log.WithField("path", s.dbPath).Info("Removed temporary SQLite database")
-		}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.closed {
+		return nil
 	}
 
-	return err
+	// Keep database connection open for session persistence
+	logger.Info("Keeping SQLite database connection open for session persistence")
+	s.closed = true
+	return nil
 }
 
-// Get returns a session for the given name after adding it to the registry.
+// Get returns a session for the given name after adding it to the registry
 func (s *SQLiteStore) Get(r *http.Request, name string) (*sessions.Session, error) {
 	return sessions.GetRegistry(r).Get(s, name)
 }
 
-// New returns a session for the given name without adding it to the registry.
+// New returns a session for the given name without adding it to the registry
 func (s *SQLiteStore) New(r *http.Request, name string) (*sessions.Session, error) {
-	session := sessions.NewSession(s, name)
-	opts := s.options
-	session.Options = &opts
-	session.IsNew = true
-
-	c, err := r.Cookie(name)
+	session, err := s.CreateNewSession(s, r, name)
 	if err != nil {
+		return session, err
+	}
+
+	if session.ID == "" {
 		return session, nil
 	}
-	session.ID = c.Value
 
+	// Load session data from store
 	err = s.load(r.Context(), session)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -151,102 +228,53 @@ func (s *SQLiteStore) New(r *http.Request, name string) (*sessions.Session, erro
 		}
 		return session, err
 	}
+
 	session.IsNew = false
 	return session, nil
 }
 
-// Save adds a single session to the response.
-//
-// If the Options.MaxAge of the session is <= 0 then the session will be
-// deleted from the store. with this process it enforces the properly
-// session cookie handling so no need to trust in the cookie management in the
-// web browser.
+// Save adds a single session to the response
 func (s *SQLiteStore) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
-	// Delete if max-age is <= 0
+	// Handle common save logic (cookie management, ID generation)
 	if session.Options.MaxAge <= 0 {
 		if err := s.delete(r.Context(), session); err != nil {
 			return err
 		}
-		http.SetCookie(w, sessions.NewCookie(session.Name(), "", session.Options))
-		return nil
+		return s.HandleSessionSave(w, session)
 	}
 
-	if session.ID == "" {
-		id, err := s.keyGen()
-		if err != nil {
-			return errors.New("sqlitestore: failed to generate session id")
-		}
-		session.ID = id
-	}
-	if err := s.save(r.Context(), session); err != nil {
+	if err := s.HandleSessionSave(w, session); err != nil {
 		return err
 	}
 
-	http.SetCookie(w, sessions.NewCookie(session.Name(), session.ID, session.Options))
-	return nil
+	// Save to database
+	return s.save(r.Context(), session)
 }
 
-// Options set options to use when a new session is created
-func (s *SQLiteStore) Options(opts sessions.Options) {
-	s.options = opts
-}
-
-// KeyPrefix sets the key prefix to store session in SQLite
-func (s *SQLiteStore) KeyPrefix(keyPrefix string) {
-	s.keyPrefix = keyPrefix
-}
-
-// KeyGen sets the key generator function
-func (s *SQLiteStore) KeyGen(f KeyGenFunc) {
-	s.keyGen = f
-}
-
-// Serializer sets the session serializer to store session
-func (s *SQLiteStore) Serializer(ss SessionSerializer) {
-	s.serializer = ss
-}
-
-// save writes session in SQLite
+// save writes session to SQLite database
 func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error {
 	start := time.Now()
 	defer func() {
-		duration := time.Since(start).Seconds()
-		metrics.SessionDuration.With(prometheus.Labels{
-			"outpost_name": "proxy", // TODO: Get actual outpost name
-			"operation":    "save",
-			"backend":      "sqlite",
-		}).Observe(duration)
-		metrics.SessionOperations.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "save",
-			"backend":      "sqlite",
-		}).Inc()
+		s.TrackOperation("save", time.Since(start))
 	}()
 
-	b, err := s.serializer.Serialize(session)
+	// Serialize session data
+	data, err := s.GetSerializer().Serialize(session)
 	if err != nil {
 		return err
 	}
 
-	// Calculate expiry time based on MaxAge of the cookie
-	var expiry time.Time
-	if session.Options.MaxAge > 0 {
-		expiry = time.Now().Add(time.Duration(session.Options.MaxAge) * time.Second)
-	} else {
-		// If the MaxAge is 0 or negative then set expiry to now which will
-		// ensure it gets cleaned up
-		expiry = time.Now()
-	}
+	// Calculate expiry
+	expiry := s.CalculateExpiry(session)
+	sessionKey := s.GetSessionKey(session.ID)
 
-	// Generate a UUID for the session if it doesn't exist
-	uuid, err := generateRandomKey()
+	// Generate UUID for the session
+	uuid, err := sessionstore.GenerateRandomKey()
 	if err != nil {
 		return err
 	}
 
-	sessionKey := s.keyPrefix + session.ID
-
-	// Extract claims and redirect from session if they exist
+	// Extract claims and redirect from session
 	claims := "{}"
 	if c, ok := session.Values["claims"]; ok && c != nil {
 		claims = fmt.Sprintf("%v", c)
@@ -257,82 +285,142 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 		redirect = fmt.Sprintf("%v", r)
 	}
 
-	_, err = s.db.ExecContext(ctx, `
-		INSERT INTO authentik_outposts_proxysession (
-			uuid, session_key, data, expires, expiring, provider_id, claims, redirect
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(session_key) DO UPDATE SET 
-			data = excluded.data, 
-			expires = excluded.expires, 
-			claims = excluded.claims,
-			redirect = excluded.redirect
-	`, uuid, sessionKey, b, expiry, true, s.providerID, claims, redirect)
-
-	return err
+	// Database operation with retry
+	return s.executeWithRetry(ctx, func() error {
+		_, err := s.db.ExecContext(ctx, `
+			INSERT INTO authentik_outposts_proxysession (
+				uuid, session_key, data, expires, expiring, provider_id, claims, redirect
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON CONFLICT(session_key, provider_id) DO UPDATE SET 
+				data = excluded.data, 
+				expires = excluded.expires, 
+				claims = excluded.claims,
+				redirect = excluded.redirect
+		`, uuid, sessionKey, data, expiry, true, s.ProviderID(), claims, redirect)
+		return err
+	})
 }
 
-// load reads session from SQLite
+// load reads session from SQLite database
 func (s *SQLiteStore) load(ctx context.Context, session *sessions.Session) error {
 	start := time.Now()
 	defer func() {
-		duration := time.Since(start).Seconds()
-		metrics.SessionDuration.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "load",
-			"backend":      "sqlite",
-		}).Observe(duration)
-		metrics.SessionOperations.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "load",
-			"backend":      "sqlite",
-		}).Inc()
+		s.TrackOperation("load", time.Since(start))
 	}()
 
+	sessionKey := s.GetSessionKey(session.ID)
 	var data []byte
-	err := s.db.QueryRowContext(ctx, `
-		SELECT data FROM authentik_outposts_proxysession 
-		WHERE session_key = ? AND (expires IS NULL OR expires > datetime('now'))
-	`, s.keyPrefix+session.ID).Scan(&data)
+
+	err := s.executeWithRetry(ctx, func() error {
+		return s.db.QueryRowContext(ctx, `
+			SELECT data FROM authentik_outposts_proxysession 
+			WHERE session_key = ? AND provider_id = ? AND (expires IS NULL OR expires > datetime('now'))
+		`, sessionKey, s.ProviderID()).Scan(&data)
+	})
 
 	if err != nil {
 		return err
 	}
 
-	return s.serializer.Deserialize(data, session)
+	return s.GetSerializer().Deserialize(data, session)
 }
 
-// delete deletes session from SQLite
+// delete removes session from SQLite database
 func (s *SQLiteStore) delete(ctx context.Context, session *sessions.Session) error {
 	start := time.Now()
 	defer func() {
-		duration := time.Since(start).Seconds()
-		metrics.SessionDuration.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "delete",
-			"backend":      "sqlite",
-		}).Observe(duration)
-		metrics.SessionOperations.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "delete",
-			"backend":      "sqlite",
-		}).Inc()
+		s.TrackOperation("delete", time.Since(start))
 	}()
 
-	_, err := s.db.ExecContext(ctx, `DELETE FROM authentik_outposts_proxysession WHERE session_key = ?`, s.keyPrefix+session.ID)
-	return err
+	sessionKey := s.GetSessionKey(session.ID)
+
+	return s.executeWithRetry(ctx, func() error {
+		_, err := s.db.ExecContext(ctx, `
+			DELETE FROM authentik_outposts_proxysession 
+			WHERE session_key = ? AND provider_id = ?
+		`, sessionKey, s.ProviderID())
+		return err
+	})
 }
 
-// Delete deletes a session from SQLite (public version of delete)
+// executeWithRetry executes a database operation with retry logic
+func (s *SQLiteStore) executeWithRetry(_ context.Context, operation func() error) error {
+	maxRetries := 3
+
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		s.mu.RLock()
+		if s.closed {
+			s.mu.RUnlock()
+			// Try to reconnect if database is closed
+			if err := s.reconnect(); err != nil {
+				return err
+			}
+			s.mu.RLock()
+		}
+
+		err := operation()
+		s.mu.RUnlock()
+
+		if err == nil {
+			return nil
+		}
+
+		// Handle database closed error
+		if strings.Contains(err.Error(), "database is closed") {
+			log.WithError(err).Warning("Database is closed, attempting to reconnect")
+			if reconnectErr := s.reconnect(); reconnectErr != nil {
+				log.WithError(reconnectErr).Error("Failed to reconnect to database")
+				return reconnectErr
+			}
+			continue
+		}
+
+		// For other errors, return immediately
+		return err
+	}
+
+	return errors.New("failed to execute database operation after multiple retries")
+}
+
+// reconnect reopens the database connection
+func (s *SQLiteStore) reconnect() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	newDb, err := sql.Open("sqlite3", s.dbPath+"?_journal=WAL&_timeout=5000")
+	if err != nil {
+		return err
+	}
+
+	// Set connection parameters
+	newDb.SetMaxOpenConns(25)
+	newDb.SetMaxIdleConns(5)
+	newDb.SetConnMaxLifetime(time.Hour)
+
+	s.db = newDb
+	s.closed = false
+	return nil
+}
+
+// Delete deletes a session from SQLite (public version)
 func (s *SQLiteStore) Delete(ctx context.Context, session *sessions.Session) error {
 	return s.delete(ctx, session)
 }
 
-// GetAllSessions returns all sessions in the database
+// GetAllSessions returns all sessions in the database for this provider
 func (s *SQLiteStore) GetAllSessions(ctx context.Context) ([]*sessions.Session, error) {
+	logger := log.WithFields(log.Fields{
+		"component": "SQLiteStore",
+		"method":    "GetAllSessions",
+	})
+
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
 	rows, err := s.db.QueryContext(ctx, `
 		SELECT session_key, data FROM authentik_outposts_proxysession 
-		WHERE (expires IS NULL OR expires > datetime('now'))
-	`)
+		WHERE provider_id = ? AND (expires IS NULL OR expires > datetime('now'))
+	`, s.BaseStore.ProviderID())
 	if err != nil {
 		return nil, err
 	}
@@ -340,82 +428,69 @@ func (s *SQLiteStore) GetAllSessions(ctx context.Context) ([]*sessions.Session, 
 
 	var result []*sessions.Session
 	for rows.Next() {
-		var id string
+		var sessionKey string
 		var data []byte
-		if err := rows.Scan(&id, &data); err != nil {
+		if err := rows.Scan(&sessionKey, &data); err != nil {
 			return nil, err
 		}
 
-		// Remove prefix from ID
-		id = strings.TrimPrefix(id, s.keyPrefix)
-
+		// Remove prefix from session key
+		sessionID := strings.TrimPrefix(sessionKey, s.GetKeyPrefix())
 		session := sessions.NewSession(s, "")
-		session.ID = id
-		if err := s.serializer.Deserialize(data, session); err != nil {
-			log.WithError(err).Warning("failed to deserialize session")
+		session.ID = sessionID
+
+		if err := s.GetSerializer().Deserialize(data, session); err != nil {
+			logger.WithError(err).WithField("session_id", sessionID).Warning("Failed to deserialize session")
 			continue
 		}
 		result = append(result, session)
 	}
 
-	return result, nil
+	return result, rows.Err()
 }
 
-// SessionSerializer provides an interface for serialize/deserialize a session
-type SessionSerializer interface {
-	Serialize(s *sessions.Session) ([]byte, error)
-	Deserialize(b []byte, s *sessions.Session) error
-}
-
-// Gob serializer
-type GobSerializer struct{}
-
-func (gs GobSerializer) Serialize(s *sessions.Session) ([]byte, error) {
-	buf := new(bytes.Buffer)
-	enc := gob.NewEncoder(buf)
-	err := enc.Encode(s.Values)
-	if err == nil {
-		return buf.Bytes(), nil
+// StartPeriodicCleanup starts a background goroutine for periodic cleanup
+func (s *SQLiteStore) StartPeriodicCleanup(ctx context.Context, cleanupInterval int) {
+	if cleanupInterval <= 0 {
+		cleanupInterval = 3600 // Default to hourly cleanup
 	}
-	return nil, err
+
+	logger := log.WithFields(log.Fields{
+		"component":        "SQLiteStore",
+		"method":           "StartPeriodicCleanup",
+		"interval_seconds": cleanupInterval,
+	})
+
+	logger.Info("Starting periodic cleanup of expired sessions")
+
+	ticker := time.NewTicker(time.Duration(cleanupInterval) * time.Second)
+	go func() {
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				if _, err := s.CleanupExpired(ctx); err != nil {
+					logger.WithError(err).Warning("Failed to clean up expired sessions")
+				}
+			case <-ctx.Done():
+				logger.Info("Stopping periodic cleanup of expired sessions")
+				return
+			}
+		}
+	}()
 }
 
-func (gs GobSerializer) Deserialize(d []byte, s *sessions.Session) error {
-	dec := gob.NewDecoder(bytes.NewBuffer(d))
-	return dec.Decode(&s.Values)
-}
-
-// generateRandomKey returns a new random key
-func generateRandomKey() (string, error) {
-	k := make([]byte, 64)
-	if _, err := io.ReadFull(rand.Reader, k); err != nil {
-		return "", err
-	}
-	return strings.TrimRight(base32.StdEncoding.EncodeToString(k), "="), nil
-}
-
-func (s *SQLiteStore) DB() *sql.DB {
-	return s.db
-}
-
-// CleanupExpired deletes all expired sessions from the database
+// CleanupExpired deletes expired sessions and returns the count
 func (s *SQLiteStore) CleanupExpired(ctx context.Context) (int64, error) {
-	start := time.Now()
-	defer func(start time.Time) {
-		duration := time.Since(start).Seconds()
-		metrics.SessionDuration.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "cleanup",
-			"backend":      "sqlite",
-		}).Observe(duration)
-		metrics.SessionOperations.With(prometheus.Labels{
-			"outpost_name": "proxy",
-			"operation":    "cleanup",
-			"backend":      "sqlite",
-		}).Inc()
-	}(start)
+	logger := log.WithField("component", "SQLiteStore").WithField("method", "CleanupExpired")
 
-	result, err := s.db.ExecContext(ctx, `DELETE FROM authentik_outposts_proxysession WHERE expires IS NOT NULL AND expires < datetime('now')`)
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	result, err := s.db.ExecContext(ctx, `
+		DELETE FROM authentik_outposts_proxysession 
+		WHERE expires <= datetime('now')
+	`)
 	if err != nil {
 		return 0, err
 	}
@@ -425,10 +500,18 @@ func (s *SQLiteStore) CleanupExpired(ctx context.Context) (int64, error) {
 		return 0, err
 	}
 
-	metrics.SessionCleanupTotal.With(prometheus.Labels{
-		"outpost_name": "proxy",
-		"backend":      "sqlite",
-	}).Add(float64(rowsAffected))
+	if rowsAffected > 0 {
+		logger.WithField("rows_affected", rowsAffected).Info("Expired sessions cleanup completed")
+	}
 
 	return rowsAffected, nil
+}
+
+// Additional methods to satisfy the interface
+func (s *SQLiteStore) ProviderID() string {
+	return s.BaseStore.ProviderID()
+}
+
+func (s *SQLiteStore) KeyPrefix() string {
+	return s.GetKeyPrefix()
 }

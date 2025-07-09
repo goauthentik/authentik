@@ -58,7 +58,7 @@ redis:
   tls_ca_cert: null
 
 sqlite:
-  path: /data/authentik.sqlite
+  path: ""
   cleanup_interval: 3600
 
 # broker:

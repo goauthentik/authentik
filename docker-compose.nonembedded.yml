@@ -1,0 +1,18 @@
+services:
+    proxy-test:
+      build:
+        context: .
+        dockerfile: proxy.Dockerfile
+      restart: unless-stopped
+      environment:
+        - AUTHENTIK_HOST=http://192.168.2.50:9000
+        - AUTHENTIK_TOKEN=1T7PLASNQu2O1JKuk7kYN2SAlA8UPo5SFaGoVtE4RQESFHbfsqnWqmwCFo5m
+        - AUTHENTIK_INSECURE=true
+
+    proxy-01:
+      image: nginx:latest
+      restart: unless-stopped
+      volumes:
+        - ./nginx.conf:/etc/nginx/nginx.conf
+      ports:
+        - "80:80"

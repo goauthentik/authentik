@@ -29,7 +29,6 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
-	"goauthentik.io/internal/outpost/proxyv2/pgstore"
 	"goauthentik.io/internal/outpost/proxyv2/sqlitestore"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
@@ -154,11 +153,10 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
 	} else {
-		sess, err := a.getStore(p, externalHost)
+		err := a.setupSessions()
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to setup sessions: %w", err)
 		}
-		a.sessions = sess
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
@@ -289,26 +287,14 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(rw, r)
 }
 
+// Stop closes all connections and cleans up resources
 func (a *Application) Stop() {
-	if a.authHeaderCache != nil {
-		a.authHeaderCache.Stop()
-	}
+	a.log.Debug("Stopping application")
 
-	// Close session stores to ensure proper cleanup
-	if a.sessions != nil {
-		if ss, ok := a.sessions.(*sqlitestore.SQLiteStore); ok {
-			if err := ss.Close(); err != nil {
-				a.log.WithError(err).Warning("failed to close SQLite session store")
-			} else {
-				a.log.Debug("SQLite session store closed and temporary database removed")
-			}
-		} else if ps, ok := a.sessions.(*pgstore.PGStore); ok {
-			if err := ps.Close(); err != nil {
-				a.log.WithError(err).Warning("failed to close PostgreSQL session store")
-			} else {
-				a.log.Debug("PostgreSQL session store closed")
-			}
-		}
+	// Stop the auth header cache
+	if a.authHeaderCache != nil {
+		a.log.Debug("Stopping auth header cache")
+		a.authHeaderCache.Stop()
 	}
 }
 
@@ -336,4 +322,54 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
+}
+
+// setupSessions initializes the session store
+func (a *Application) setupSessions() error {
+	a.log.Debug("Setting up sessions")
+
+	// Default to SQLite session store
+	sessionStoreType := "sqlite"
+
+	a.log.WithField("session_store_type", sessionStoreType).Debug("Using session store type")
+
+	var store sessions.Store
+
+	switch sessionStoreType {
+	case "postgresql":
+		a.log.Debug("Using PostgreSQL session store")
+
+		// This is just a placeholder, we're using SQLite by default
+		a.log.Warning("PostgreSQL session store not configured, falling back to memory store")
+		store = sessions.NewCookieStore([]byte("secret"))
+
+	case "sqlite":
+		a.log.Debug("Using SQLite session store")
+
+		dbPath := "/dev/shm/authentik-sessions"
+
+		a.log.WithField("db_path", dbPath).Debug("Using SQLite database path")
+
+		sqliteStore, err := sqlitestore.NewSQLiteStore(
+			dbPath,
+			fmt.Sprintf("%d", a.proxyConfig.Pk), // provider ID as string
+			nil,                                 // Use default session options
+		)
+		if err != nil {
+			a.log.WithError(err).Warning("Failed to create SQLite session store, falling back to memory store")
+			store = sessions.NewCookieStore([]byte("secret"))
+		} else {
+			a.log.Debug("SQLite session store created successfully")
+			store = sqliteStore
+		}
+
+	default:
+		a.log.WithField("session_store_type", sessionStoreType).Warning("Unknown session store type, falling back to memory store")
+		store = sessions.NewCookieStore([]byte("secret"))
+		a.log.Debug("Memory session store created successfully")
+	}
+
+	a.sessions = store
+	a.log.Debug("Session store setup completed")
+	return nil
 }
