@@ -56,7 +56,7 @@ func NewSQLiteStore(dbPath string, providerID string) (*SQLiteStore, error) {
 		return nil, fmt.Errorf("failed to open SQLite database: %w", err)
 	}
 
-	// Create sessions table with schema matching Django model
+	// Create sessions table with schema matching Django model in authentik/outposts/models.py:496
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS authentik_outposts_proxysession (
 			uuid TEXT PRIMARY KEY,
