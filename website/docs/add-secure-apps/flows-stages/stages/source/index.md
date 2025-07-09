@@ -4,7 +4,7 @@ authentik_version: "2024.4"
 authentik_enterprise: true
 ---
 
-The source stage injects an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
+The source stage embeds an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
 
 ### Example use case
 
