@@ -70,7 +70,13 @@ To install native dependencies on Debian or Ubuntu, run:
 
 ```shell
 pip install uv && \
-sudo apt-get install -y libgss-dev krb5-config libkrb5-dev \
+sudo apt-get install -y \
+  libgss-dev \
+  krb5-config \
+  libkrb5-dev \
+  postgresql-server-dev-all \
+  postgresql \
+  redis
  postgresql-server-dev-all postgresql redis
 ```
 
