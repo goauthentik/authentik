@@ -1,11 +1,6 @@
 import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
 
-// @ts-check
-
-/**
- * ESLint configuration for authentik's monorepo.
- */
-const ESLintConfig = createESLintPackageConfig({
+export default createESLintPackageConfig({
     ignorePatterns: [
         // ---
         ...DefaultIgnorePatterns,
@@ -13,5 +8,3 @@ const ESLintConfig = createESLintPackageConfig({
         "./build",
     ],
 });
-
-export default ESLintConfig;

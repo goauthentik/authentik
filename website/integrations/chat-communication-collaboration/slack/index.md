@@ -19,7 +19,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-For additional information about integrating with Slack, refer to their [documentation](https://slack.com/help/articles/205168057-Custom-SAML-single-sign-on).
+For additional information about integrating with Slack, refer to their [documentation](https://slack.com/help/docs/205168057-Custom-SAML-single-sign-on).
 
 ## authentik configuration
 

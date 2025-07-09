@@ -5,8 +5,11 @@
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
  */
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import { createRequire } from "node:module";
+
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
