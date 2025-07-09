@@ -68,12 +68,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        return html`<form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
+        return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">
                 <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>

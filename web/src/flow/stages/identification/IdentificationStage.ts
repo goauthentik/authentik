@@ -144,11 +144,12 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
-            password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key === "Enter") {
-                    this.submitForm(ev);
+            password.onkeyup = (event: KeyboardEvent) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    this.submitForm();
                 }
-                const el = ev.target as HTMLInputElement;
+                const el = event.target as HTMLInputElement;
                 // Because the password field is not actually on this page,
                 // and we want to 'prefill' the password for the user,
                 // save it globally
@@ -169,11 +170,12 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
-        totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key === "Enter") {
-                this.submitForm(ev);
+        totp.onkeyup = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                this.submitForm();
             }
-            const el = ev.target as HTMLInputElement;
+            const el = event.target as HTMLInputElement;
             // Because the totp field is not actually on this page,
             // and we want to 'prefill' the totp for the user,
             // save it globally
@@ -322,12 +324,7 @@ export class IdentificationStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}

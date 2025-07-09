@@ -79,14 +79,18 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
         return html`<form
             class="pf-c-input-group"
             method="get"
-            @submit=${(e: Event) => {
-                e.preventDefault();
+            @submit=${(event: SubmitEvent) => {
+                event.preventDefault();
+
                 if (!this.onSearch) return;
+
                 const el = this.shadowRoot?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
                     "[name=search]",
                 );
+
                 if (!el) return;
                 if (el.value === "") return;
+
                 this.onSearch(el?.value);
             }}
         >

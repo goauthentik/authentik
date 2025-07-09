@@ -21,12 +21,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
                     <p>${msg("Check your Inbox for a verification email.")}</p>
                 </div>
