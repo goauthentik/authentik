@@ -36,7 +36,7 @@ class SCIMPatcher:
                 ctx_wk = ctx_wk[path_part]
             last_path_element = path_elements[-1]
             if op.op == PatchOp.add:
-                if isinstance(ctx_wk[last_path_element], list):
+                if last_path_element in ctx_wk and isinstance(ctx_wk[last_path_element], list):
                     ctx_wk[last_path_element].extend(op.value)
                 else:
                     ctx_wk[last_path_element] = op.value
