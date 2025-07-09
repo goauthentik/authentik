@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all clean test web website
+.PHONY: gen dev-reset all clean test web docs
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -73,7 +73,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: web-install docs-install core-install  ## Install all requires dependencies for `web`, `docs` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -221,22 +221,38 @@ web-i18n-extract:
 	cd web && npm run extract-locales
 
 #########################
-## Website
+## Docs
 #########################
 
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
+docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-website-install:
-	cd website && npm ci
+docs-install:
+	npm ci --prefix website
 
-website-lint-fix: lint-codespell
-	cd website && npm run prettier
+docs-lint-fix: lint-codespell
+	npm run prettier --prefix website
 
-website-build:
-	cd website && npm run build
+docs-build:
+	npm run build --prefix website
 
-website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+docs-watch:  ## Build and watch the topics documentation
+	npm run start --prefix website
+
+docs-integrations-build:
+	npm run build --prefix website -w integrations
+
+docs-integrations-watch:  ## Build and watch the Integrations documentation
+	npm run start --prefix website -w integrations
+
+docs-api-build:
+	npm run build --prefix website -w api
+
+docs-api-watch:  ## Build and watch the API documentation
+	npm run build:api --prefix website -w api
+	npm run start --prefix website -w api
+
+docs-api-clean: ## Clean generated API documentation
+	npm run build:api:clean --prefix website -w api
 
 #########################
 ## Docker

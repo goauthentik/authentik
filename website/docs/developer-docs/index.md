@@ -27,7 +27,7 @@ authentik consists of a few larger components:
 - _outpost-ldap_ is a Go LDAP server that uses the _authentik_ application server as its backend
 - _outpost-radius_ is a Go RADIUS server that uses the _authentik_ application server as its backend
 - _web_ is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
-- _website_ is the Website/documentation, which uses docusaurus.
+- _docs_ is the documentation, which uses docusaurus.
 
 ### authentik's structure
 
@@ -136,7 +136,7 @@ The process described here has several goals:
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Follow the [styleguides](#style-guides)
-2. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
+2. After you submit your pull request, verify that all [status checks](https://help.github.com/docs/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
 3. Ensure your Code has tests. While it is not always possible to test every single case, the majority of the code should be tested.
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
@@ -149,7 +149,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
     - See [here](#authentiks-structure) for `package`
     - Examples:
       `providers/saml2: fix parsing of requests`
-      `website/docs: add config info for GWS`
+      `docs: add config info for GWS`
 
 ### Git commit messages
 

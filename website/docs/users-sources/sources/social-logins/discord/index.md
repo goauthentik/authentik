@@ -135,7 +135,7 @@ guild_member_object = requests.get(
 ).json()
 
 # The response for JSON errors is held within guild_member_object['code']
-# See: https://discord.com/developers/docs/topics/opcodes-and-status-codes#json
+# See: https://discord.com/developers/docs/docs/opcodes-and-status-codes#json
 # If the user isn't in the queried guild, it gives the somewhat misleading code = 10004.
 if "code" in guild_member_object:
     if guild_member_object['code'] == 10004:
@@ -317,7 +317,7 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 :::
 
 :::info
-In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://docs.goauthentik.io/docs/core/settings#avatars
+In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://docs.goauthentik.io/core/settings#avatars
 :::
 
 Create a new **Expression Policy** with the content below, adjusting the variables where required:

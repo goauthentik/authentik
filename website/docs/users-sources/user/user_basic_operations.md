@@ -2,13 +2,13 @@
 title: Manage users
 ---
 
-The following topics are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
+The following docs are for the basic management of users: how to create, modify, delete or deactivate users, and using a recovery email.
 
 [Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
 
 ### Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/docs/developer-docs/api/reference/core-users-create).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 2. Select the folder where you want to create a user.
@@ -27,7 +27,7 @@ The following topics are for the basic management of users: how to create, modif
 
 6. Click **Create**
 
-You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations#modify-a-user).
+You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list. You can directly click the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
 
 :::info
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).

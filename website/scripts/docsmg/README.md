@@ -15,7 +15,7 @@ Use this migration tool to:
     - Install [rust](rustup.rs) or update rust to the latest version with `rustup update`
     - If installing rust from scratch, you may need to run `. $HOME/.cargo/env`
 2. Install the cli tool with `cargo install --git https://github.com/goauthentik/authentik --bin docsmg`
-3. In the `/website` directory, create a file named `docsmg.env` with the entry of `MIGRATE_PATH=./docs`.
+3. In the `/docs` directory, create a file named `docsmg.env` with the entry of `MIGRATE_PATH=./docs`.
 
 ## Steps to use
 
@@ -27,11 +27,11 @@ Use this migration tool to:
 
 ### Create the mapping file (`migratefile`)
 
-1. Navigate to the `authentik/website` dir.
+1. Navigate to the `authentik/docs` dir.
 2. Generate a migratefile with `docsmg generate | sort  >> migratefile`.
    You can also just run `docsmg generate | sort` to see the output in the terminal, before writing it to a file.
 
-    :::info The new `migratefile` will be created in the `/website` dir.
+    :::info The new `migratefile` will be created in the `/docs` dir.
     :::
 
 3. Edit the `migratefile` to add the target directory paths in the new structure for each entry.
@@ -58,11 +58,11 @@ Because the structure is completely changed, you will need to modify/reconstruct
 
 ## Test the results
 
-To test the internal links, navigate up a level to `authentik` and then run `make website-watch`.
+To test the internal links, navigate up a level to `authentik` and then run `make docs-watch`.
 
 ## Troubleshooting
 
 - If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
     - the `docsmg.env` exists
-    - that it is in `/website`
+    - that it is in `/docs`
     - the content is `MIGRATE_PATH=./docs`

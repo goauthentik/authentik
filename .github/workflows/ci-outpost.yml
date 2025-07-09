@@ -24,6 +24,7 @@ jobs:
         run: |
           # Create folder structure for go embeds
           mkdir -p web/dist
+          # TODO Remove this after moving website to docs
           mkdir -p website/help
           touch web/dist/test website/help/test
       - name: Generate API

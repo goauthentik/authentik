@@ -13,7 +13,7 @@
 - Create/update the release notes
 
     #### For initial releases:
-    - Copy `website/docs/releases/_template.md` to `website/docs/releases/v2022.12.md` and replace `xxxx.x` with the version that is being released
+    - Copy `docs/docs/releases/_template.md` to `docs/docs/releases/v2022.12.md` and replace `xxxx.x` with the version that is being released
 
     - Fill in the section of `Breaking changes` and `New features`, or remove the headers if there's nothing applicable
 
@@ -21,26 +21,22 @@
 
     - Paste the list of commits since the previous release under the `Minor changes/fixes` section.
 
-        Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
+        Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `docs/` prefix.
 
     - Sort the list of commits alphabetically and remove all commits that have little importance, like dependency updates and linting fixes
 
     - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`
 
-    - Update `website/sidebars.js` to include the new release notes, and move the oldest release into the `Previous versions` category.
-
-        If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
-
-    - Run `make website`
+    - Run `make docs`
 
     #### For subsequent releases:
-    - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
+    - Paste the list of commits since the previous release into `docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
 
-    - Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
+    - Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `docs/` prefix.
 
     - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
 
-    - Run `make website`
+    - Run `make docs`
 
 - Run `bumpversion` on the version branch with the new version (i.e. `bumpversion --new-version 2022.12.2 minor --verbose`)
 - Push the tag and commit
@@ -108,7 +104,7 @@ If you have any questions or comments about this advisory:
 
     Create a new file `/website/docs/security/CVE-....md` with the same structure as the GitHub advisory
 
-    Include the new file in the `/website/sidebars.js`
+    Include the new file in the `/website/docs/sidebars.js`
 
     Push the branch to https://github.com/goauthentik/authentik-internal for CI to run and for reviews
 

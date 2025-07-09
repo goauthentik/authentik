@@ -1,0 +1,24 @@
+{
+    "name": "@goauthentik/api-docs",
+    "version": "0.0.0",
+    "description": "API Documentation",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:api build:types build:docusaurus",
+        "build:api": "docusaurus gen-api-docs all",
+        "build:api:clean": "docusaurus clean-api-docs all",
+        "build:docusaurus": "docusaurus build",
+        "build:types": "tsc -b .",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve",
+        "start": "docusaurus start",
+        "swizzle": "docusaurus swizzle"
+    },
+    "imports": {
+        "#reference/sidebar": "./reference/sidebar.ts"
+    },
+    "dependencies": {
+        "@goauthentik/docusaurus-theme": "*"
+    }
+}

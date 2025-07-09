@@ -40,7 +40,7 @@ During the Kickoff call, there will be time to peruse existing Issues and add em
 
 ## Agenda
 
-- **Wednesday, July 26th**: Kickoff, voting for topics to work on, teams formed, participants select the Issue/team they are going to work on, and get their environment set up. After the online kickoff, you can start your work at any time.
+- **Wednesday, July 26th**: Kickoff, voting for docs to work on, teams formed, participants select the Issue/team they are going to work on, and get their environment set up. After the online kickoff, you can start your work at any time.
 
 - **Thursday July 27th**: HackDay #1: participants working on their PRs, a one-hour Check-in call
 

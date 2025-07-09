@@ -14,6 +14,6 @@ For example, let's take a look at the following scenario:
 
 The easiest workflow for setting up these new users involves [creating a role](./manage_roles.md#create-a-role) specifically for their type of work, and then [assigning that role to a group](./manage_roles.md#assign-a-role-to-a-group) to which all of the users belong.
 
-To learn more about working with roles in authentik, refer to the following topics:
+To learn more about working with roles in authentik, refer to the following docs:
 
 <DocCardList />

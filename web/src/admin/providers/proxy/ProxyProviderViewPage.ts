@@ -163,7 +163,7 @@ export class ProxyProviderViewPage extends AKElement {
                     return input;
                 }
                 const extHost = new URL(this.provider.externalHost);
-                // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
+                // See docs/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
                         .replaceAll("authentik.company", window.location.hostname)

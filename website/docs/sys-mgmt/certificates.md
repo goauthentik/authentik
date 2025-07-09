@@ -14,7 +14,7 @@ Certificates in authentik are used for:
 
 Every authentik installation generates a self-signed certificate on first startup. The certificate is named `authentik Self-signed Certificate` and is valid for 1 year.
 
-This certificate serves as the default for all OAuth2/OIDC providers, as these don't require certificate configuration on both sides (JWT signatures are validated using the [JWKS](../users-sources/sources/protocols/oauth/#jwks) URL).
+This certificate serves as the default for all OAuth2/OIDC providers, as these don't require certificate configuration on both sides (JWT signatures are validated using the [JWKS](../users-sources/sources/protocols/oauth/index.mdx#jwks) URL).
 
 While this certificate can be used for SAML providers/sources, remember that it's only valid for a year. Since some SAML applications require valid certificates, you might need to rotate them regularly.
 

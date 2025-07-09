@@ -1,0 +1,20 @@
+{
+    "name": "@goauthentik/docs-topics",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:types build:docusaurus",
+        "build:docusaurus": "docusaurus build --out-dir ../build",
+        "build:types": "tsc -b .",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve --dir ../build",
+        "start": "docusaurus start"
+    },
+    "dependencies": {
+        "@goauthentik/docusaurus-theme": "*"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

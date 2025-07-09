@@ -1,0 +1,23 @@
+{
+    "name": "@goauthentik/docusaurus-theme",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./index.js",
+        "./config": "./config.js",
+        "./remark": "./remark/index.mjs",
+        "./components/*": "./components/*",
+        "./releases/plugin": "./releases/plugin.mjs",
+        "./releases/utils": "./releases/utils.mjs"
+    },
+    "imports": {
+        "#remark": "./remark/index.mjs",
+        "#remark/*": "./remark/*",
+        "#components/*": "./components/*",
+        "#hooks/*": "./hooks/*",
+        "#theme/*": "./theme/*"
+    }
+}

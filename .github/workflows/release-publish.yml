@@ -52,6 +52,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
+        # TODO Replace after moving website to docs
           file: website/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
