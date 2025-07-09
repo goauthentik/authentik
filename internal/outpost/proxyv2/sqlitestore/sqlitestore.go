@@ -33,34 +33,40 @@ type SQLiteStore struct {
 	keyGen KeyGenFunc
 	// session serializer
 	serializer SessionSerializer
-	// cleanup interval
-	cleanupInterval time.Duration
-	// stop channel for cleanup goroutine
-	stopCleanup chan bool
+	// path to the SQLite database file
+	dbPath string
+	// provider UUID to associate with sessions
+	providerID string
 }
 
 // KeyGenFunc defines a function used by store to generate a key
 type KeyGenFunc func() (string, error)
 
 // NewSQLiteStore returns a new SQLiteStore with default configuration
-func NewSQLiteStore(dbPath string, cleanupInterval time.Duration) (*SQLiteStore, error) {
+func NewSQLiteStore(dbPath string, providerID string) (*SQLiteStore, error) {
 	// Ensure the directory exists
 	dir := filepath.Dir(dbPath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create directory for SQLite database: %w", err)
 	}
 
+	// Create a new SQLite database
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open SQLite database: %w", err)
 	}
 
-	// Create sessions table if it doesn't exist
+	// Create sessions table with schema matching Django model
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS sessions (
-			id TEXT PRIMARY KEY,
+		CREATE TABLE IF NOT EXISTS authentik_outposts_proxysession (
+			uuid TEXT PRIMARY KEY,
+			session_key TEXT UNIQUE,
 			data BLOB,
-			expiry DATETIME
+			expires DATETIME,
+			expiring BOOLEAN DEFAULT 1,
+			provider_id TEXT,
+			claims TEXT DEFAULT '{}',
+			redirect TEXT DEFAULT ''
 		)
 	`)
 	if err != nil {
@@ -68,13 +74,22 @@ func NewSQLiteStore(dbPath string, cleanupInterval time.Duration) (*SQLiteStore,
 		return nil, fmt.Errorf("failed to create sessions table: %w", err)
 	}
 
-	// Create index on expiry for efficient cleanup
+	// Create index on expires for efficient queries
 	_, err = db.Exec(`
-		CREATE INDEX IF NOT EXISTS idx_sessions_expiry ON sessions(expiry)
+		CREATE INDEX IF NOT EXISTS idx_proxysession_expires ON authentik_outposts_proxysession(expires)
 	`)
 	if err != nil {
 		db.Close()
 		return nil, fmt.Errorf("failed to create expiry index: %w", err)
+	}
+
+	// Create index on session_key for efficient lookups
+	_, err = db.Exec(`
+		CREATE INDEX IF NOT EXISTS idx_proxysession_session_key ON authentik_outposts_proxysession(session_key)
+	`)
+	if err != nil {
+		db.Close()
+		return nil, fmt.Errorf("failed to create session_key index: %w", err)
 	}
 
 	store := &SQLiteStore{
@@ -83,23 +98,30 @@ func NewSQLiteStore(dbPath string, cleanupInterval time.Duration) (*SQLiteStore,
 			Path:   "/",
 			MaxAge: 86400 * 30,
 		},
-		keyPrefix:       "session:",
-		keyGen:          generateRandomKey,
-		serializer:      GobSerializer{},
-		cleanupInterval: cleanupInterval,
-		stopCleanup:     make(chan bool),
+		keyPrefix:  "session:",
+		keyGen:     generateRandomKey,
+		serializer: GobSerializer{},
+		dbPath:     dbPath,
+		providerID: providerID,
 	}
-
-	// Start cleanup goroutine
-	go store.startCleanup()
 
 	return store, nil
 }
 
-// Close closes the SQLite store and stops the cleanup goroutine
+// Close closes the SQLite store
 func (s *SQLiteStore) Close() error {
-	s.stopCleanup <- true
-	return s.db.Close()
+	err := s.db.Close()
+
+	// Attempt to remove the database file if it's in a temp directory
+	if strings.Contains(s.dbPath, os.TempDir()) {
+		if rmErr := os.Remove(s.dbPath); rmErr != nil {
+			log.WithError(rmErr).Warning("failed to remove temporary SQLite database")
+		} else {
+			log.WithField("path", s.dbPath).Info("Removed temporary SQLite database")
+		}
+	}
+
+	return err
 }
 
 // Get returns a session for the given name after adding it to the registry.
@@ -199,11 +221,35 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 		expiry = time.Now()
 	}
 
+	// Generate a UUID for the session if it doesn't exist
+	uuid, err := generateRandomKey()
+	if err != nil {
+		return err
+	}
+
+	sessionKey := s.keyPrefix + session.ID
+
+	// Extract claims and redirect from session if they exist
+	claims := "{}"
+	if c, ok := session.Values["claims"]; ok && c != nil {
+		claims = fmt.Sprintf("%v", c)
+	}
+
+	redirect := ""
+	if r, ok := session.Values["redirect"]; ok && r != nil {
+		redirect = fmt.Sprintf("%v", r)
+	}
+
 	_, err = s.db.ExecContext(ctx, `
-		INSERT INTO sessions (id, data, expiry) 
-		VALUES (?, ?, ?) 
-		ON CONFLICT(id) DO UPDATE SET data = excluded.data, expiry = excluded.expiry
-	`, s.keyPrefix+session.ID, b, expiry)
+		INSERT INTO authentik_outposts_proxysession (
+			uuid, session_key, data, expires, expiring, provider_id, claims, redirect
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(session_key) DO UPDATE SET 
+			data = excluded.data, 
+			expires = excluded.expires, 
+			claims = excluded.claims,
+			redirect = excluded.redirect
+	`, uuid, sessionKey, b, expiry, true, s.providerID, claims, redirect)
 
 	return err
 }
@@ -212,8 +258,8 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 func (s *SQLiteStore) load(ctx context.Context, session *sessions.Session) error {
 	var data []byte
 	err := s.db.QueryRowContext(ctx, `
-		SELECT data FROM sessions 
-		WHERE id = ? AND (expiry IS NULL OR expiry > datetime('now'))
+		SELECT data FROM authentik_outposts_proxysession 
+		WHERE session_key = ? AND (expires IS NULL OR expires > datetime('now'))
 	`, s.keyPrefix+session.ID).Scan(&data)
 
 	if err != nil {
@@ -225,7 +271,7 @@ func (s *SQLiteStore) load(ctx context.Context, session *sessions.Session) error
 
 // delete deletes session from SQLite
 func (s *SQLiteStore) delete(ctx context.Context, session *sessions.Session) error {
-	_, err := s.db.ExecContext(ctx, `DELETE FROM sessions WHERE id = ?`, s.keyPrefix+session.ID)
+	_, err := s.db.ExecContext(ctx, `DELETE FROM authentik_outposts_proxysession WHERE session_key = ?`, s.keyPrefix+session.ID)
 	return err
 }
 
@@ -234,34 +280,11 @@ func (s *SQLiteStore) Delete(ctx context.Context, session *sessions.Session) err
 	return s.delete(ctx, session)
 }
 
-// cleanup removes expired sessions from the database
-func (s *SQLiteStore) cleanup() {
-	_, err := s.db.Exec(`DELETE FROM sessions WHERE expiry <= datetime('now')`)
-	if err != nil {
-		log.WithError(err).Warning("failed to cleanup expired sessions")
-	}
-}
-
-// startCleanup starts the cleanup goroutine which removes expired sessions periodically
-func (s *SQLiteStore) startCleanup() {
-	ticker := time.NewTicker(s.cleanupInterval)
-	defer ticker.Stop()
-
-	for {
-		select {
-		case <-ticker.C:
-			s.cleanup()
-		case <-s.stopCleanup:
-			return
-		}
-	}
-}
-
 // GetAllSessions returns all sessions in the database
 func (s *SQLiteStore) GetAllSessions(ctx context.Context) ([]*sessions.Session, error) {
 	rows, err := s.db.QueryContext(ctx, `
-		SELECT id, data FROM sessions 
-		WHERE (expiry IS NULL OR expiry > datetime('now'))
+		SELECT session_key, data FROM authentik_outposts_proxysession 
+		WHERE (expires IS NULL OR expires > datetime('now'))
 	`)
 	if err != nil {
 		return nil, err

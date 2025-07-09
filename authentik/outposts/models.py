@@ -29,6 +29,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
     UserTypes,
+    ExpiringModel,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -490,3 +491,35 @@ class OutpostState:
         """Manually delete from cache, used on channel disconnect"""
         full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
         cache.delete(full_key)
+
+
+class ProxySession(ExpiringModel):
+    """Session for Proxy Outpost"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    
+    # Link to the provider that created this session
+    provider = models.ForeignKey("authentik_providers_proxy.ProxyProvider", on_delete=models.CASCADE, null=True)
+    
+    # Session ID used by Gorilla sessions
+    session_key = models.CharField(max_length=255, unique=True)
+    
+    # Session data
+    data = models.BinaryField()
+    
+    # User claims and authentication info
+    claims = models.JSONField(default=dict)
+    
+    # Redirect URL after authentication
+    redirect = models.TextField(blank=True)
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Proxy Provider Session")
+        verbose_name_plural = _("Proxy Provider Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key"]),
+            models.Index(fields=["provider"]),
+        ]
+        
+    def __str__(self):
+        return f"Proxy Session {self.session_key}"

@@ -29,6 +29,8 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/outpost/proxyv2/pgstore"
+	"goauthentik.io/internal/outpost/proxyv2/sqlitestore"
 	"goauthentik.io/internal/outpost/proxyv2/templates"
 	"goauthentik.io/internal/utils/web"
 	"golang.org/x/oauth2"
@@ -57,6 +59,7 @@ type Application struct {
 
 	errorTemplates  *template.Template
 	authHeaderCache *ttlcache.Cache[string, Claims]
+	isEmbedded      bool
 }
 
 type Server interface {
@@ -91,11 +94,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
+	isEmbedded := false
+	if m := server.API().Outpost.Managed.Get(); m != nil {
+		isEmbedded = *m == "goauthentik.io/outposts/embedded"
+	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
 		server.API().Outpost.Config["authentik_host"].(string),
-		false,
+		isEmbedded,
 	)
 
 	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
@@ -141,6 +148,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		ak:                   server.API(),
 		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
 		srv:                  server,
+		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
 	if oldApp != nil && oldApp.sessions != nil {
@@ -282,7 +290,26 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (a *Application) Stop() {
-	a.authHeaderCache.Stop()
+	if a.authHeaderCache != nil {
+		a.authHeaderCache.Stop()
+	}
+
+	// Close session stores to ensure proper cleanup
+	if a.sessions != nil {
+		if ss, ok := a.sessions.(*sqlitestore.SQLiteStore); ok {
+			if err := ss.Close(); err != nil {
+				a.log.WithError(err).Warning("failed to close SQLite session store")
+			} else {
+				a.log.Debug("SQLite session store closed and temporary database removed")
+			}
+		} else if ps, ok := a.sessions.(*pgstore.PGStore); ok {
+			if err := ps.Close(); err != nil {
+				a.log.WithError(err).Warning("failed to close PostgreSQL session store")
+			} else {
+				a.log.Debug("PostgreSQL session store closed")
+			}
+		}
+	}
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
