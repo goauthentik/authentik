@@ -6,6 +6,8 @@
  */
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import { createRequire } from "node:module";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -16,6 +18,7 @@ import remarkSupportDirective from "../remark/support-directive.mjs";
 import remarkVersionDirective from "../remark/version-directive.mjs";
 
 const require = createRequire(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * Documentation site configuration for Docusaurus.
@@ -98,7 +101,7 @@ const config = createDocusaurusConfig({
                     id: "docsIntegrations",
                     path: "integrations",
                     routeBasePath: "integrations",
-                    sidebarPath: "./sidebars/integrations.mjs",
+                    sidebarPath: "./integrations/sidebar.mjs",
                     editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
                     showLastUpdateTime: false,
 
@@ -133,7 +136,10 @@ const config = createDocusaurusConfig({
                     anonymizeIP: true,
                 },
                 theme: {
-                    customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+                    customCss: [
+                        require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+                        path.join(__dirname, "custom.css"),
+                    ],
                 },
             }),
         ],
