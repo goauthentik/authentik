@@ -1,29 +1,31 @@
 /**
- * @file Remark plugin to transform `ak-enterprise` directives into badges.
+ * @file Remark plugin to transform `ak-preview` directives into preview badges.
  *
  * @import { Root } from "mdast";
+ * @import {} from "mdast-util-directive";
  */
+
 import { h } from "hastscript";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
- * MDAST plugin to transform `ak-enterprise` directives into badges.
+ * MDAST plugin to transform `ak-preview` directives into preview badges.
  */
-function remarkEnterpriseDirective() {
+export function remarkPreviewDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */
     return (tree) => {
         visit(tree, "textDirective", (node) => {
-            if (node.name !== "ak-enterprise") return SKIP;
+            if (node.name !== "ak-preview") return SKIP;
 
             const data = node.data || (node.data = {});
 
             const hast = h("span", {
                 ...node.attributes,
-                "className": "badge badge--primary",
-                "title": `This feature is available in the enterprise version of authentik.`,
-                "aria-description": "Enterprise badge",
+                "className": "badge badge--preview",
+                "title": `This feature is in preview and may change in the future.`,
+                "aria-description": "Preview badge",
                 "role": "img",
             });
 
@@ -33,7 +35,7 @@ function remarkEnterpriseDirective() {
             data.hChildren = [
                 {
                     type: "text",
-                    value: "Enterprise",
+                    value: "Preview",
                 },
             ];
 
@@ -44,4 +46,4 @@ function remarkEnterpriseDirective() {
     };
 }
 
-export default remarkEnterpriseDirective;
+export default remarkPreviewDirective;
