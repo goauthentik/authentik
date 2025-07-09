@@ -493,6 +493,16 @@ class OutpostState:
         cache.delete(full_key)
 
 
+class ProxySessionManager(models.Manager):
+    """Manager for ProxySession"""
+
+    def cleanup_expired(self) -> int:
+        """Delete expired sessions and return count of deleted sessions"""
+        from django.utils import timezone
+        result = self.filter(expires__lt=timezone.now()).delete()
+        return result[0] if result else 0
+
+
 class ProxySession(ExpiringModel):
     """Session for Proxy Outpost"""
 
@@ -512,6 +522,8 @@ class ProxySession(ExpiringModel):
     
     # Redirect URL after authentication
     redirect = models.TextField(blank=True)
+
+    objects = ProxySessionManager()
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Proxy Provider Session")

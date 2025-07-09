@@ -5,7 +5,6 @@ type Config struct {
 	Storage        StorageConfig        `yaml:"storage"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
-	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
 	SQLite         SQLiteConfig         `yaml:"sqlite" env:", prefix=AUTHENTIK_SQLITE__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
 
@@ -26,17 +25,6 @@ type Config struct {
 	AuthentikInsecure    bool   `env:"AUTHENTIK_INSECURE"`
 }
 
-type RedisConfig struct {
-	Host      string `yaml:"host" env:"HOST, overwrite"`
-	Port      int    `yaml:"port" env:"PORT, overwrite"`
-	DB        int    `yaml:"db" env:"DB, overwrite"`
-	Username  string `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
-}
-
 type SQLiteConfig struct {
 	Path            string `yaml:"path" env:"PATH, overwrite"`
 	CleanupInterval int    `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL, overwrite"`
@@ -54,7 +42,8 @@ type ListenConfig struct {
 }
 
 type StorageConfig struct {
-	Media StorageMediaConfig `yaml:"media"`
+	Media      StorageMediaConfig      `yaml:"media"`
+	PostgreSQL StoragePostgreSQLConfig `yaml:"postgresql"`
 }
 
 type StorageMediaConfig struct {
@@ -64,6 +53,18 @@ type StorageMediaConfig struct {
 
 type StorageFileConfig struct {
 	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
+}
+
+type StoragePostgreSQLConfig struct { // todo use prefixes like like it was done by redis
+	Host        string `yaml:"host" env:"AUTHENTIK_POSTGRESQL__HOST"`
+	Port        int    `yaml:"port" env:"AUTHENTIK_POSTGRESQL__PORT"`
+	Name        string `yaml:"name" env:"AUTHENTIK_POSTGRESQL__NAME"`
+	User        string `yaml:"user" env:"AUTHENTIK_POSTGRESQL__USER"`
+	Password    string `yaml:"password" env:"AUTHENTIK_POSTGRESQL__PASSWORD"`
+	SSLMode     string `yaml:"sslmode" env:"AUTHENTIK_POSTGRESQL__SSLMODE"`
+	SSLRootCert string `yaml:"sslrootcert" env:"AUTHENTIK_POSTGRESQL__SSLROOTCERT"`
+	SSLCert     string `yaml:"sslcert" env:"AUTHENTIK_POSTGRESQL__SSLCERT"`
+	SSLKey      string `yaml:"sslkey" env:"AUTHENTIK_POSTGRESQL__SSLKEY"`
 }
 
 type ErrorReportingConfig struct {

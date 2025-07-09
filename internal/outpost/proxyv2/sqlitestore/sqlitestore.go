@@ -18,7 +18,9 @@ import (
 
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/proxyv2/metrics"
 )
 
 // SQLiteStore stores gorilla sessions in SQLite
@@ -206,6 +208,21 @@ func (s *SQLiteStore) Serializer(ss SessionSerializer) {
 
 // save writes session in SQLite
 func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start).Seconds()
+		metrics.SessionDuration.With(prometheus.Labels{
+			"outpost_name": "proxy", // TODO: Get actual outpost name
+			"operation":    "save",
+			"backend":      "sqlite",
+		}).Observe(duration)
+		metrics.SessionOperations.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "save",
+			"backend":      "sqlite",
+		}).Inc()
+	}()
+
 	b, err := s.serializer.Serialize(session)
 	if err != nil {
 		return err
@@ -256,6 +273,21 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 
 // load reads session from SQLite
 func (s *SQLiteStore) load(ctx context.Context, session *sessions.Session) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start).Seconds()
+		metrics.SessionDuration.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "load",
+			"backend":      "sqlite",
+		}).Observe(duration)
+		metrics.SessionOperations.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "load",
+			"backend":      "sqlite",
+		}).Inc()
+	}()
+
 	var data []byte
 	err := s.db.QueryRowContext(ctx, `
 		SELECT data FROM authentik_outposts_proxysession 
@@ -271,6 +303,21 @@ func (s *SQLiteStore) load(ctx context.Context, session *sessions.Session) error
 
 // delete deletes session from SQLite
 func (s *SQLiteStore) delete(ctx context.Context, session *sessions.Session) error {
+	start := time.Now()
+	defer func() {
+		duration := time.Since(start).Seconds()
+		metrics.SessionDuration.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "delete",
+			"backend":      "sqlite",
+		}).Observe(duration)
+		metrics.SessionOperations.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "delete",
+			"backend":      "sqlite",
+		}).Inc()
+	}()
+
 	_, err := s.db.ExecContext(ctx, `DELETE FROM authentik_outposts_proxysession WHERE session_key = ?`, s.keyPrefix+session.ID)
 	return err
 }
@@ -345,4 +392,43 @@ func generateRandomKey() (string, error) {
 		return "", err
 	}
 	return strings.TrimRight(base32.StdEncoding.EncodeToString(k), "="), nil
+}
+
+func (s *SQLiteStore) DB() *sql.DB {
+	return s.db
+}
+
+// CleanupExpired deletes all expired sessions from the database
+func (s *SQLiteStore) CleanupExpired(ctx context.Context) (int64, error) {
+	start := time.Now()
+	defer func(start time.Time) {
+		duration := time.Since(start).Seconds()
+		metrics.SessionDuration.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "cleanup",
+			"backend":      "sqlite",
+		}).Observe(duration)
+		metrics.SessionOperations.With(prometheus.Labels{
+			"outpost_name": "proxy",
+			"operation":    "cleanup",
+			"backend":      "sqlite",
+		}).Inc()
+	}(start)
+
+	result, err := s.db.ExecContext(ctx, `DELETE FROM authentik_outposts_proxysession WHERE expires IS NOT NULL AND expires < datetime('now')`)
+	if err != nil {
+		return 0, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	metrics.SessionCleanupTotal.With(prometheus.Labels{
+		"outpost_name": "proxy",
+		"backend":      "sqlite",
+	}).Add(float64(rowsAffected))
+
+	return rowsAffected, nil
 }
