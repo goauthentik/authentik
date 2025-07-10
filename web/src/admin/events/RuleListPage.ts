@@ -10,6 +10,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@goauthentik/elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -18,6 +19,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import {
     EventsApi,
+    ModelEnum,
     NotificationRule,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
@@ -124,6 +126,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     renderExpanded(item: NotificationRule): TemplateResult {
+        const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
         return html` <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <p>
@@ -133,6 +136,22 @@ Bindings to groups/users are checked against the user of the event.`,
                     )}
                 </p>
                 <ak-bound-policies-list .target=${item.pk}> </ak-bound-policies-list>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
             </div>
         </td>`;
     }

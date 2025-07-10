@@ -9,11 +9,11 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync, sync_tasks
+from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
 
@@ -356,7 +356,7 @@ class SCIMUserTests(TestCase):
             email=f"{uid}@goauthentik.io",
         )
 
-        sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+        scim_sync.send(self.provider.pk)
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -428,14 +428,19 @@ class SCIMUserTests(TestCase):
                 email=f"{uid}@goauthentik.io",
             )
 
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+            scim_sync.send(self.provider.pk)
 
             self.assertEqual(mock.call_count, 3)
             for request in mock.request_history:
                 self.assertIn(request.method, SAFE_METHODS)
-        task = SystemTask.objects.filter(uid=slugify(self.provider.name)).first()
+        task = list(
+            Task.objects.filter(
+                actor_name=scim_sync_objects.actor_name,
+                _uid=slugify(self.provider.name),
+            ).order_by("-mtime")
+        )[1]
         self.assertIsNotNone(task)
-        drop_msg = task.messages[3]
+        drop_msg = task._messages[3]
         self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
         self.assertIsNotNone(drop_msg["attributes"]["url"])
         self.assertIsNotNone(drop_msg["attributes"]["body"])

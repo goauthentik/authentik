@@ -23,8 +23,7 @@ class TestConfig(TestCase):
     """Test config loader"""
 
     check_deprecations_env_vars = {
-        ENV_PREFIX + "_REDIS__BROKER_URL": "redis://myredis:8327/43",
-        ENV_PREFIX + "_REDIS__BROKER_TRANSPORT_OPTIONS": "bWFzdGVybmFtZT1teW1hc3Rlcg==",
+        ENV_PREFIX + "_WORKER__CONCURRENCY": "2",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT": "124s",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS": "32m",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
@@ -176,14 +175,12 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.update_from_env()
         config.check_deprecations()
-        self.assertEqual(config.get("redis.broker_url", UNSET), UNSET)
-        self.assertEqual(config.get("redis.broker_transport_options", UNSET), UNSET)
+        self.assertEqual(config.get("worker.concurrency", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
-        self.assertEqual(config.get("broker.url"), "redis://myredis:8327/43")
-        self.assertEqual(config.get("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
+        self.assertEqual(config.get("worker.processes"), 2)
         self.assertEqual(config.get("cache.timeout"), "124s")
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
