@@ -4,12 +4,13 @@ import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 import { camelToSnake } from "#common/utils";
 
-import { isControlElement, isNamedElement, NamedElement } from "#elements/AkControlElement";
+import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
+import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
@@ -232,32 +233,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     /**
-     * Return the form elements that may contain filenames. Not sure why this is quite so
-     * convoluted. There is exactly one case where this is used:
-     * `./flow/stages/prompt/PromptStage: 147: case PromptTypeEnum.File.`
-     * Consider moving this functionality to there.
+     * Return the form elements that may contain filenames.
      */
-    getFormFiles(): { [key: string]: File } {
-        const files: { [key: string]: File } = {};
-        const elements =
-            this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                "ak-form-element-horizontal",
-            ) || [];
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            element.requestUpdate();
-            const inputElement = element.querySelector<HTMLInputElement>("[name]");
-            if (!inputElement) {
-                continue;
-            }
-            if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "file") {
-                if ((inputElement.files || []).length < 1) {
-                    continue;
-                }
-                files[element.name] = (inputElement.files || [])[0];
-            }
-        }
-        return files;
+    public files<T extends PropertyKey = PropertyKey>(): Map<T, File> {
+        return createFileMap<T>(this.shadowRoot?.querySelectorAll("ak-form-element-horizontal"));
     }
 
     public checkValidity(): boolean {
