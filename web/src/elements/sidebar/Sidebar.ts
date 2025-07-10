@@ -1,15 +1,16 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/sidebar/SidebarVersion";
+import "#elements/sidebar/SidebarVersion";
+
+import { AKElement } from "#elements/Base";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {

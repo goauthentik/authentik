@@ -1,18 +1,17 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-switch-input.js";
-import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-switch-input";
+import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -24,7 +23,10 @@ import {
     UserFieldsEnum,
 } from "@goauthentik/api";
 
-import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
+import { msg } from "@lit/localize";
+import { css, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {

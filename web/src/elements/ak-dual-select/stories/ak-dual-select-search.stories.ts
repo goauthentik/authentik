@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-search-bar.js";
+
+import { AkSearchbar } from "../components/ak-search-bar.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-search-bar";
-import { AkSearchbar } from "../components/ak-search-bar";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkSearchbar> = {
     title: "Elements / Dual Select / Search Bar",

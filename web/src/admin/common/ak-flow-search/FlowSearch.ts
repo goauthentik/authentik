@@ -1,16 +1,19 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/forms/SearchSelect";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { CustomListenerElement } from "#elements/utils/eventEmitter";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+
+import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
+import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
 import { html } from "lit";
 import { property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
-import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
 
 export function renderElement(flow: Flow) {
     return RenderFlowOption(flow);

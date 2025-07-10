@@ -1,18 +1,8 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import "@goauthentik/admin/stages/prompt/PromptForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import { PromptStage, StagesApi } from "@goauthentik/api";
+import "#admin/stages/prompt/PromptForm";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
 
 import {
     policiesProvider,
@@ -20,6 +10,18 @@ import {
     promptFieldsProvider,
     promptFieldsSelector,
 } from "./PromptStageFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
+
+import { PromptStage, StagesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {

@@ -1,19 +1,24 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { rootInterface } from "@goauthentik/common/theme";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/user/SessionList";
-import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/sources/SourceSettings";
-import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
-import "@goauthentik/user/user-settings/details/UserPassword";
-import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
-import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
-import "@goauthentik/user/user-settings/tokens/UserTokenList";
+import "#elements/Tabs";
+import "#elements/user/SessionList";
+import "#elements/user/UserConsentList";
+import "#elements/user/sources/SourceSettings";
+import "#user/user-settings/details/UserPassword";
+import "#user/user-settings/details/UserSettingsFlowExecutor";
+import "#user/user-settings/mfa/MFADevicesPage";
+import "#user/user-settings/tokens/UserTokenList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { rootInterface } from "#common/theme";
+
+import { AKElement } from "#elements/Base";
+
+import type { UserInterface } from "#user/index.entrypoint";
+
+import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -28,8 +33,6 @@ import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-
-import { StagesApi, UserSetting } from "@goauthentik/api";
 
 @localized()
 @customElement("ak-user-settings")

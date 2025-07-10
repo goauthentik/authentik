@@ -1,11 +1,20 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    AuthenticatorDuoChallenge,
+    AuthenticatorDuoChallengeResponseRequest,
+    DuoResponseEnum,
+    StagesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -15,13 +24,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorDuoChallenge,
-    AuthenticatorDuoChallengeResponseRequest,
-    DuoResponseEnum,
-    StagesApi,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo")
 export class AuthenticatorDuoStage extends BaseStage<

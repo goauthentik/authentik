@@ -1,27 +1,30 @@
-import { EventWithContext } from "#common/events";
-import { globalAK } from "#common/global";
-import { PaginatedResponse } from "#elements/table/Table";
-import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
-import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector";
-import OlMap from "@openlayers-elements/core/ol-map";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
-import Feature from "ol/Feature";
-import { isEmpty } from "ol/extent";
-import { Point } from "ol/geom";
-import { fromLonLat } from "ol/proj";
-import Icon from "ol/style/Icon";
-import Style from "ol/style/Style";
 
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { EventWithContext } from "#common/events";
+import { globalAK } from "#common/global";
+
+import { AKElement } from "#elements/Base";
+import { PaginatedResponse } from "#elements/table/Table";
+
+import { Event } from "@goauthentik/api";
+
+import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector.js";
+import OlMap from "@openlayers-elements/core/ol-map.js";
+import { isEmpty } from "ol/extent.js";
+import Feature from "ol/Feature.js";
+import { Point } from "ol/geom.js";
+import { fromLonLat } from "ol/proj.js";
+import Icon from "ol/style/Icon.js";
+import Style from "ol/style/Style.js";
+
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import OL from "ol/ol.css";
-
-import { Event } from "@goauthentik/api";
 
 @customElement("ak-map")
 export class Map extends OlMap {

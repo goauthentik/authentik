@@ -1,13 +1,14 @@
-import type { Meta, StoryObj } from "@storybook/web-components";
+import "../ak-hidden-textarea-input.js";
 
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../ak-hidden-textarea-input";
 import {
     type AkHiddenTextAreaInput,
     type AkHiddenTextAreaInputProps,
 } from "../ak-hidden-textarea-input.js";
+
+import type { Meta, StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<AkHiddenTextAreaInputProps> = {
     title: "Components / <ak-hidden-textarea-input>",

@@ -1,19 +1,29 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/sources/saml/SAMLSourceForm";
-import { sourceBindingTypeNotices } from "@goauthentik/admin/sources/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/sources/saml/SAMLSourceForm";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/ModalForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { CodeMirrorMode } from "#elements/CodeMirror";
+
+import { sourceBindingTypeNotices } from "#admin/sources/utils";
+
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -24,13 +34,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SAMLMetadata,
-    SAMLSource,
-    SourcesApi,
-} from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {

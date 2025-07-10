@@ -1,22 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/LogViewer";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/events/LogViewer";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
+import { EventsApi, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
+
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { EventsApi, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-system-task-list")
 export class SystemTaskListPage extends TablePage<SystemTask> {

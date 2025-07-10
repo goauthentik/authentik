@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../AdminSettingsFooterLinks.js";
+
+import { FooterLinkInput } from "../AdminSettingsFooterLinks.js";
+
 import { Meta, StoryObj, WebComponentsRenderer } from "@storybook/web-components";
 import { DecoratorFunction } from "storybook/internal/types";
 
 import { html } from "lit";
-
-import { FooterLinkInput } from "../AdminSettingsFooterLinks.js";
-import "../AdminSettingsFooterLinks.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Decorator = DecoratorFunction<WebComponentsRenderer, any>;

@@ -1,3 +1,11 @@
+import "./ak-visibility-toggle.js";
+
+import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
+import {
+    HorizontalLightComponent,
+    HorizontalLightComponentProps,
+} from "./HorizontalLightComponent.js";
+
 import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
@@ -5,13 +13,6 @@ import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import {
-    HorizontalLightComponent,
-    HorizontalLightComponentProps,
-} from "./HorizontalLightComponent";
-import "./ak-visibility-toggle.js";
-import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &
     Pick<VisibilityToggleProps, "showMessage" | "hideMessage">;

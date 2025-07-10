@@ -1,9 +1,16 @@
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    ConsentChallenge,
+    ConsentChallengeResponseRequest,
+    ConsentPermission,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -16,12 +23,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 import PFText from "@patternfly/patternfly/utilities/Text/text.css";
-
-import {
-    ConsentChallenge,
-    ConsentChallengeResponseRequest,
-    ConsentPermission,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {

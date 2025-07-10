@@ -1,12 +1,13 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-dual-select-available-pane.js";
+import "./sb-host-provider.js";
+
+import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-dual-select-available-pane";
-import { AkDualSelectAvailablePane } from "../components/ak-dual-select-available-pane";
-import "./sb-host-provider";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkDualSelectAvailablePane> = {
     title: "Elements / Dual Select / Available Items Pane",

@@ -1,9 +1,9 @@
-import { groupBy } from "@goauthentik/common/utils";
+import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
+
+import { groupBy } from "#common/utils";
 
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;

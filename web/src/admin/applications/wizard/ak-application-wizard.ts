@@ -1,11 +1,12 @@
-import { WizardCloseEvent } from "@goauthentik/components/ak-wizard/events.js";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
+import "./ak-application-wizard-main.js";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { bound } from "#elements/decorators/bound";
+
+import { WizardCloseEvent } from "#components/ak-wizard/events";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import "./ak-application-wizard-main.js";
 
 @customElement("ak-application-wizard")
 export class AkApplicationWizard extends ModalButton {

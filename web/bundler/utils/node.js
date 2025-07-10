@@ -1,6 +1,7 @@
 /**
  * @file Bundler utilities.
  */
+
 import { NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/core/environment/node";
 import { AuthentikVersion } from "@goauthentik/core/version/node";
 

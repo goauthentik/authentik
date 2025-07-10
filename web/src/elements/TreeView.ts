@@ -1,9 +1,10 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { setURLParams } from "#elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
