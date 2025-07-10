@@ -82,6 +82,7 @@ metadata:
         # remove annotations not used
         nginx.ingress.kubernetes.io/affinity: cookie
         nginx.ingress.kubernetes.io/proxy-buffer-size: 16k
+        nginx.ingress.kubernetes.io/proxy-busy-buffers-size: 32k,
         nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
         traefik.ingress.kubernetes.io/affinity: "true"
     labels:
