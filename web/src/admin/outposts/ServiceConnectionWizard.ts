@@ -20,9 +20,7 @@ import { OutpostsApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

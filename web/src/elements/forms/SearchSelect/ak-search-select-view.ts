@@ -69,9 +69,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static get styles() {
-        return [PFBase, PFForm, PFFormControl, PFSelect];
-    }
+    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See

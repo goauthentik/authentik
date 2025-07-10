@@ -16,9 +16,7 @@ import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api"
 
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

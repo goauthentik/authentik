@@ -17,17 +17,15 @@ export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
     outpostHealth?: OutpostHealth;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFDescriptionList,
-            css`
-                li {
-                    margin: 5px 0;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFDescriptionList,
+        css`
+            li {
+                margin: 5px 0;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         if (!this.outpostHealth) {

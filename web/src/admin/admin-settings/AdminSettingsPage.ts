@@ -30,20 +30,18 @@ import { AdminApi, Settings } from "@goauthentik/api";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+    ];
 
     @query("ak-admin-settings-form#form")
     form?: AdminSettingsForm;

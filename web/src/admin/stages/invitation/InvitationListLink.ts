@@ -21,9 +21,7 @@ export class InvitationListLink extends AKElement {
     @property()
     selectedFlow?: string;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFDescriptionList];
-    }
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
 
     renderLink(): string {
         if (this.invitation?.flowObj) {

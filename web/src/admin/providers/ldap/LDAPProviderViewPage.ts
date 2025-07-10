@@ -46,21 +46,19 @@ export class LDAPProviderViewPage extends AKElement {
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFBanner,
-            PFForm,
-            PFFormControl,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFBanner,
+        PFForm,
+        PFFormControl,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

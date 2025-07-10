@@ -90,21 +90,19 @@ function iframeTemplate(children: TemplateResult, challengeURL: string): Templat
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            css`
-                iframe {
-                    width: 100%;
-                    height: 0;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        css`
+            iframe {
+                width: 100%;
+                height: 0;
+            }
+        `,
+    ];
 
     @property({ type: Boolean })
     embedded = false;

@@ -33,9 +33,15 @@ export abstract class WizardForm extends Form<KeyUnknown> {
 }
 
 export class WizardFormPage extends WizardPage {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFAlert, PFInputGroup, PFFormControl];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+    ];
 
     inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");

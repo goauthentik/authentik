@@ -24,9 +24,7 @@ export interface IQuickActionsCard {
  */
 @customElement("ak-quick-actions-card")
 export class QuickActionsCard extends AKElement implements IQuickActionsCard {
-    static get styles() {
-        return [PFBase, PFList];
-    }
+    static styles = [PFBase, PFList];
 
     /**
      * Card title

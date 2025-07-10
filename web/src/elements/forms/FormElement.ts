@@ -18,9 +18,7 @@ import { ErrorDetail } from "@goauthentik/api";
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl];
-    }
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @property()
     label?: string;

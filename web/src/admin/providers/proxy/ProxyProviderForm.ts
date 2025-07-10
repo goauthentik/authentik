@@ -16,9 +16,7 @@ import { SetMode, SetShowHttpBasic, renderForm } from "./ProxyProviderFormForm.j
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent, PFList, PFSpacing];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({

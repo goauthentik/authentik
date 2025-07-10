@@ -76,22 +76,20 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
-    static get styles() {
-        return [
-            ...ApplicationWizardStep.styles,
-            PFBullseye,
-            PFEmptyState,
-            PFTitle,
-            PFProgressStepper,
-            PFDescriptionList,
-            css`
-                .ak-wizard-main-content .pf-c-title {
-                    padding-bottom: var(--pf-global--spacer--md);
-                    padding-top: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        ...ApplicationWizardStep.styles,
+        PFBullseye,
+        PFEmptyState,
+        PFTitle,
+        PFProgressStepper,
+        PFDescriptionList,
+        css`
+            .ak-wizard-main-content .pf-c-title {
+                padding-bottom: var(--pf-global--spacer--md);
+                padding-top: var(--pf-global--spacer--md);
+            }
+        `,
+    ];
 
     label = msg("Review and Submit Application");
 

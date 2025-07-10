@@ -30,23 +30,21 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
     @property()
     onSearch?: (value: string) => void;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFToolbar,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                ::-webkit-search-cancel-button {
-                    display: none;
-                }
-                ak-search-ql {
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFToolbar,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            ::-webkit-search-cancel-button {
+                display: none;
+            }
+            ak-search-ql {
+                width: 100%;
+            }
+        `,
+    ];
 
     renderInput(): TemplateResult {
         if (

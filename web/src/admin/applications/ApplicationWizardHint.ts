@@ -36,22 +36,20 @@ const closeButtonIcon = html`<svg
 
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
-    static get styles() {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFLabel,
-            css`
-                .pf-c-page__main-section {
-                    padding-bottom: 0;
-                }
-                .ak-hint-text {
-                    padding-bottom: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFLabel,
+        css`
+            .pf-c-page__main-section {
+                padding-bottom: 0;
+            }
+            .ak-hint-text {
+                padding-bottom: var(--pf-global--spacer--md);
+            }
+        `,
+    ];
 
     @property({ type: Boolean, attribute: "show-hint" })
     forceHint: boolean = false;

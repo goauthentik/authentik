@@ -47,19 +47,17 @@ export class ApplicationViewPage extends AKElement {
     @state()
     missingOutpost = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFList,
-            PFBanner,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGrid,
-            PFCard,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFList,
+        PFBanner,
+        PFPage,
+        PFContent,
+        PFButton,
+        PFDescriptionList,
+        PFGrid,
+        PFCard,
+    ];
 
     fetchIsMissingOutpost(providersByPk: Array<number>) {
         new OutpostsApi(DEFAULT_CONFIG)

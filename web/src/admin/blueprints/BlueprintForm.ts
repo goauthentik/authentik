@@ -48,9 +48,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             : msg("Successfully created instance.");
     }
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent];
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {

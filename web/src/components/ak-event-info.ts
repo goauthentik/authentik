@@ -87,35 +87,33 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFFlex,
-            PFCard,
-            PFTable,
-            PFList,
-            PFSplit,
-            PFDescriptionList,
-            css`
-                code {
-                    display: block;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                }
-                .pf-l-flex {
-                    justify-content: space-between;
-                }
-                .pf-l-flex__item {
-                    min-width: 25%;
-                }
-                iframe {
-                    width: 100%;
-                    height: 50rem;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFFlex,
+        PFCard,
+        PFTable,
+        PFList,
+        PFSplit,
+        PFDescriptionList,
+        css`
+            code {
+                display: block;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+            .pf-l-flex {
+                justify-content: space-between;
+            }
+            .pf-l-flex__item {
+                min-width: 25%;
+            }
+            iframe {
+                width: 100%;
+                height: 50rem;
+            }
+        `,
+    ];
 
     renderDescriptionGroup([term, description]: FieldLabelTuple) {
         return html` <div class="pf-c-description-list__group">

@@ -51,9 +51,15 @@ export class SAMLSourceViewPage extends AKElement {
     @state()
     metadata?: SAMLMetadata;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFGrid,
+        PFButton,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

@@ -20,16 +20,14 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
-    static get styles() {
-        return [
-            ...super.styles,
-            css`
-                .show-disabled-toggle-group {
-                    margin-inline-start: 0.5rem;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        ...super.styles,
+        css`
+            .show-disabled-toggle-group {
+                margin-inline-start: 0.5rem;
+            }
+        `,
+    ];
 
     checkbox = true;
     checkboxChip = true;

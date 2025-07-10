@@ -47,20 +47,18 @@ export class GroupViewPage extends AKElement {
     @property({ attribute: false })
     group?: Group;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFList,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFList,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+    ];
 
     constructor() {
         super();

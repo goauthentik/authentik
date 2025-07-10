@@ -33,9 +33,7 @@ export class Message extends AKElement {
     @property({ attribute: false })
     onRemove?: (m: APIMessage) => void;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFAlert, PFAlertGroup];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
 
     firstUpdated(): void {
         setTimeout(() => {

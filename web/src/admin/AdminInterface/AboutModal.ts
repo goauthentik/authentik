@@ -16,16 +16,15 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
-    static get styles() {
-        return ModalButton.styles.concat(
-            PFAbout,
-            css`
-                .pf-c-about-modal-box__hero {
-                    background-image: url("/static/dist/assets/images/flow_background.jpg");
-                }
-            `,
-        );
-    }
+    static styles = [
+        ...ModalButton.styles,
+        PFAbout,
+        css`
+            .pf-c-about-modal-box__hero {
+                background-image: url("/static/dist/assets/images/flow_background.jpg");
+            }
+        `,
+    ];
 
     async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();

@@ -35,23 +35,20 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__title {
-                    --pf-c-card__title--FontFamily: var(
-                        --pf-global--FontFamily--heading--sans-serif
-                    );
-                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                    --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-                }
-                * {
-                    word-break: break-all;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFCard,
+        css`
+            .pf-c-card__title {
+                --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
+                --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
+                --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
+            }
+            * {
+                word-break: break-all;
+            }
+        `,
+    ];
 
     columns(): TableColumn[] {
         return [

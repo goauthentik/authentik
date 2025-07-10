@@ -23,19 +23,17 @@ const hasLegalScheme = (url: string) =>
 
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AkControlElement<FooterLink> {
-    static get styles() {
-        return [
-            PFBase,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                .pf-c-input-group input#linkname {
-                    flex-grow: 1;
-                    width: 8rem;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            .pf-c-input-group input#linkname {
+                flex-grow: 1;
+                width: 8rem;
+            }
+        `,
+    ];
 
     @property({ type: Object, attribute: false })
     footerLink: FooterLink = {

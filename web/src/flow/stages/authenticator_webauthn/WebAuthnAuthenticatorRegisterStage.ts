@@ -42,26 +42,24 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFFormControl,
-            PFForm,
-            PFTitle,
-            PFButton,
-            // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
-            css`
-                .pf-c-form__group.pf-m-action {
-                    display: flex;
-                    gap: 16px;
-                    margin-top: 0;
-                    margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
-                    flex-direction: column;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFFormControl,
+        PFForm,
+        PFTitle,
+        PFButton,
+        // FIXME: this is technically duplicate with ../authenticator_validate/base.ts
+        css`
+            .pf-c-form__group.pf-m-action {
+                display: flex;
+                gap: 16px;
+                margin-top: 0;
+                margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+                flex-direction: column;
+            }
+        `,
+    ];
 
     async register(): Promise<void> {
         if (!this.challenge) {

@@ -44,21 +44,19 @@ export class RACProviderViewPage extends AKElement {
     @state()
     provider?: RACProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFList,
-            PFForm,
-            PFFormControl,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFList,
+        PFForm,
+        PFFormControl,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+    ];
 
     constructor() {
         super();

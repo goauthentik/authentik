@@ -99,9 +99,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             : msg("Successfully created prompt.");
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFGrid, PFTitle);
-    }
+    static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 
     _shouldRefresh = false;
     _timer = 0;

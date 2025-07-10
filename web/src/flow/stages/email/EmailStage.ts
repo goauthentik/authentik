@@ -16,9 +16,7 @@ import { EmailChallenge, EmailChallengeResponseRequest } from "@goauthentik/api"
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

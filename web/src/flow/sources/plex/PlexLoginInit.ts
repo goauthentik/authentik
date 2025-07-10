@@ -33,9 +33,15 @@ export class PlexLoginInit extends BaseStage<
     @state()
     authUrl?: string;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+        PFDivider,
+    ];
 
     async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");

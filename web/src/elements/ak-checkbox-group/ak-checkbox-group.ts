@@ -79,20 +79,18 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static get styles() {
-        return [
-            PFBase,
-            PFForm,
-            PFCheck,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFForm,
+        PFCheck,
+        css`
+            .pf-c-form__group-control {
+                padding-top: calc(
+                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                );
+            }
+        `,
+    ];
 
     static get formAssociated() {
         return true;

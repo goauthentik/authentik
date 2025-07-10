@@ -28,32 +28,30 @@ type Keyed<T> = { key: string; item: T };
 
 @customElement("ak-array-input")
 export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
-    static get styles() {
-        return [
-            PFBase,
-            PFButton,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                select.pf-c-form-control {
-                    width: 100px;
-                }
-                .pf-c-input-group {
-                    padding-bottom: 0;
-                }
-                .ak-plus-button {
-                    display: flex;
-                    justify-content: flex-end;
-                    flex-direction: row;
-                }
-                .ak-input-group {
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFButton,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            select.pf-c-form-control {
+                width: 100px;
+            }
+            .pf-c-input-group {
+                padding-bottom: 0;
+            }
+            .ak-plus-button {
+                display: flex;
+                justify-content: flex-end;
+                flex-direction: row;
+            }
+            .ak-input-group {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+            }
+        `,
+    ];
 
     @property({ type: Boolean })
     validate = false;

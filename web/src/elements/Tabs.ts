@@ -21,29 +21,27 @@ export class Tabs extends AKElement {
     @property({ type: Boolean })
     vertical = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFGlobal,
-            PFTabs,
-            css`
-                ::slotted(*) {
-                    flex-grow: 2;
-                }
-                :host([vertical]) {
-                    display: flex;
-                }
-                :host([vertical]) .pf-c-tabs {
-                    width: auto !important;
-                }
-                :host([vertical]) .pf-c-tabs__list {
-                    height: 100%;
-                }
-                :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFGlobal,
+        PFTabs,
+        css`
+            ::slotted(*) {
+                flex-grow: 2;
+            }
+            :host([vertical]) {
+                display: flex;
+            }
+            :host([vertical]) .pf-c-tabs {
+                width: auto !important;
+            }
+            :host([vertical]) .pf-c-tabs__list {
+                height: 100%;
+            }
+            :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
+                border-color: transparent;
+            }
+        `,
+    ];
 
     observer: MutationObserver;
 

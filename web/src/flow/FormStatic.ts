@@ -15,32 +15,30 @@ export class FormStatic extends AKElement {
     @property()
     user?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFAvatar,
-            css`
-                /* Form with user */
-                .form-control-static {
-                    margin-top: var(--pf-global--spacer--sm);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-                .form-control-static .avatar {
-                    display: flex;
-                    align-items: center;
-                }
-                .form-control-static img {
-                    margin-right: var(--pf-global--spacer--xs);
-                }
-                .form-control-static a {
-                    padding-top: var(--pf-global--spacer--xs);
-                    padding-bottom: var(--pf-global--spacer--xs);
-                    line-height: var(--pf-global--spacer--xl);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFAvatar,
+        css`
+            /* Form with user */
+            .form-control-static {
+                margin-top: var(--pf-global--spacer--sm);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .form-control-static .avatar {
+                display: flex;
+                align-items: center;
+            }
+            .form-control-static img {
+                margin-right: var(--pf-global--spacer--xs);
+            }
+            .form-control-static a {
+                padding-top: var(--pf-global--spacer--xs);
+                padding-bottom: var(--pf-global--spacer--xs);
+                line-height: var(--pf-global--spacer--xl);
+            }
+        `,
+    ];
 
     render() {
         if (!this.user) {

@@ -19,28 +19,26 @@ import { LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFNav,
-            PFAvatar,
-            PFButton,
-            css`
-                :host {
-                    display: flex;
-                    width: 100%;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    padding: 1rem !important;
-                }
-                p {
-                    text-align: center;
-                    width: 100%;
-                    font-size: var(--pf-global--FontSize--xs);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFNav,
+        PFAvatar,
+        PFButton,
+        css`
+            :host {
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 1rem !important;
+            }
+            p {
+                text-align: center;
+                width: 100%;
+                font-size: var(--pf-global--FontSize--xs);
+            }
+        `,
+    ];
 
     render() {
         if (!this.version || !this.licenseSummary) {

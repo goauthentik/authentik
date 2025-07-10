@@ -16,9 +16,7 @@ export class KerberosSourceConnectivity extends AKElement {
         };
     };
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFList];
-    }
+    static styles: CSSResult[] = [PFBase, PFList];
 
     render(): TemplateResult {
         if (!this.connectivity) {

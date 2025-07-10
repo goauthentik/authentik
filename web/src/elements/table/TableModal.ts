@@ -34,17 +34,16 @@ export abstract class TableModal<T> extends Table<T> {
 
     _open = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFModalBox,
-            PFBullseye,
-            PFContent,
-            PFBackdrop,
-            PFPage,
-            PFStack,
-            MODAL_BUTTON_STYLES,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFModalBox,
+        PFBullseye,
+        PFContent,
+        PFBackdrop,
+        PFPage,
+        PFStack,
+        MODAL_BUTTON_STYLES,
+    ];
 
     public async fetch(): Promise<void> {
         if (!this.open) {

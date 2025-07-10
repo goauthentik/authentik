@@ -40,20 +40,18 @@ const LAYOUTS = new Map<string, [string, string]>([
  */
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFContent,
-            PFGrid,
-            css`
-                .app-group-header {
-                    margin-bottom: 1em;
-                    margin-top: 1.2em;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFEmptyState,
+        PFContent,
+        PFGrid,
+        css`
+            .app-group-header {
+                margin-bottom: 1em;
+                margin-top: 1.2em;
+            }
+        `,
+    ];
 
     @property({ attribute: true })
     layout = "row" as LayoutType;

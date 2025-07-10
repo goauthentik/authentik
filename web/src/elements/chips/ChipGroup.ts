@@ -11,22 +11,20 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
 export class ChipGroup extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFChip,
-            PFChipGroup,
-            PFButton,
-            css`
-                ::slotted(*) {
-                    margin: 0 2px;
-                }
-                .pf-c-chip-group {
-                    margin-bottom: 8px;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFChip,
+        PFChipGroup,
+        PFButton,
+        css`
+            ::slotted(*) {
+                margin: 0 2px;
+            }
+            .pf-c-chip-group {
+                margin-bottom: 8px;
+            }
+        `,
+    ];
 
     @property()
     name?: string;

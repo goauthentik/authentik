@@ -63,17 +63,15 @@ export class Alert extends AKElement implements IAlert {
     @property()
     icon = "fa-exclamation-circle";
 
-    static get styles() {
-        return [
-            PFBase,
-            PFAlert,
-            css`
-                p {
-                    margin: 0;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFAlert,
+        css`
+            p {
+                margin: 0;
+            }
+        `,
+    ];
 
     get classmap() {
         const level = levelNames.includes(this.level)

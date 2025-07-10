@@ -28,9 +28,7 @@ export class AuthenticatorDuoStage extends BaseStage<
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
     updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {

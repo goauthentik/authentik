@@ -20,18 +20,16 @@ export interface IRedirectURIInput {
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
-    static get styles() {
-        return [
-            PFBase,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                .pf-c-input-group select {
-                    width: 10em;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            .pf-c-input-group select {
+                width: 10em;
+            }
+        `,
+    ];
 
     @property({ type: Object, attribute: false })
     redirectURI: RedirectURI = {

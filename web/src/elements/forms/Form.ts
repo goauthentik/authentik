@@ -165,23 +165,21 @@ export abstract class Form<T> extends AKElement {
     @state()
     nonFieldErrors?: string[];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            PFButton,
-            PFForm,
-            PFAlert,
-            PFInputGroup,
-            PFFormControl,
-            PFSwitch,
-            css`
-                select[multiple] {
-                    height: 15em;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        css`
+            select[multiple] {
+                height: 15em;
+            }
+        `,
+    ];
 
     /**
      * Called by the render function. Blocks rendering the form if the form is not within the

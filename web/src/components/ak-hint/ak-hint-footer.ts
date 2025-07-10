@@ -14,9 +14,7 @@ const style = css`
 
 @customElement("ak-hint-footer")
 export class AkHintFooter extends AKElement {
-    static get styles() {
-        return [style];
-    }
+    static styles = [style];
 
     render() {
         return html`<div id="host" part="ak-hint-footer"><slot></slot></div>`;

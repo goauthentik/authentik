@@ -76,21 +76,19 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFList,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFList,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+    ];
 
     constructor() {
         super();

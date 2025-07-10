@@ -28,16 +28,14 @@ import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpe
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
-    static get styles() {
-        return [
-            ...super.styles,
-            css`
-                ak-checkbox-group::part(checkbox-group) {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        ...super.styles,
+        css`
+            ak-checkbox-group::part(checkbox-group) {
+                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+            }
+        `,
+    ];
 
     loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({

@@ -39,9 +39,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
     @property()
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
         return new EventsApi(DEFAULT_CONFIG).eventsSystemTasksList(

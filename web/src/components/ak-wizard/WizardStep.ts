@@ -57,23 +57,21 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
 export class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
-    static get styles() {
-        return [
-            PFWizard,
-            PFContent,
-            PFTitle,
-            css`
-                .ak-wizard-box {
-                    height: 75%;
-                    height: 75vh;
-                    display: flex;
-                    flex-direction: column;
-                    position: relative;
-                    z-index: 500;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFWizard,
+        PFContent,
+        PFTitle,
+        css`
+            .ak-wizard-box {
+                height: 75%;
+                height: 75vh;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                z-index: 500;
+            }
+        `,
+    ];
 
     @property({ type: Boolean, attribute: true, reflect: true })
     enabled = false;

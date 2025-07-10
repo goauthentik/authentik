@@ -9,9 +9,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-wizard-binding-step-edit-button")
 export class ApplicationWizardBindingStepEditButton extends AKElement {
-    static get styles() {
-        return [PFButton];
-    }
+    static styles = [PFButton];
 
     @property({ type: Number })
     value = -1;

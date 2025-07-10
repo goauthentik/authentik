@@ -26,17 +26,15 @@ export class Expand extends AKElement implements IExpand {
     @property({ type: String, attribute: "text-closed" })
     textClosed = msg("Show more");
 
-    static get styles() {
-        return [
-            PFBase,
-            PFExpandableSection,
-            css`
-                .pf-c-expandable-section.pf-m-display-lg {
-                    background-color: var(--pf-global--BackgroundColor--100);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFExpandableSection,
+        css`
+            .pf-c-expandable-section.pf-m-display-lg {
+                background-color: var(--pf-global--BackgroundColor--100);
+            }
+        `,
+    ];
 
     render() {
         return html`<div

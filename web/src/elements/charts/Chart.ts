@@ -53,31 +53,29 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                .container {
-                    height: 100%;
-                    width: 100%;
+    static styles: CSSResult[] = [
+        css`
+            .container {
+                height: 100%;
+                width: 100%;
 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                }
-                .container > span {
-                    position: absolute;
-                    font-size: 2.5rem;
-                }
-                canvas {
-                    width: 100px;
-                    height: 100px;
-                    z-index: 1;
-                    cursor: crosshair;
-                }
-            `,
-        ];
-    }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .container > span {
+                position: absolute;
+                font-size: 2.5rem;
+            }
+            canvas {
+                width: 100px;
+                height: 100px;
+                z-index: 1;
+                cursor: crosshair;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();

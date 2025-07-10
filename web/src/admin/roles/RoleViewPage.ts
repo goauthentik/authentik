@@ -42,27 +42,25 @@ export class RoleViewPage extends AKElement {
     @state()
     _role?: Role;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
-                .ak-button-collection {
-                    max-width: 12em;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        css`
+            .pf-c-description-list__description ak-action-button {
+                margin-right: 6px;
+                margin-bottom: 6px;
+            }
+            .ak-button-collection {
+                max-width: 12em;
+            }
+        `,
+    ];
 
     constructor() {
         super();

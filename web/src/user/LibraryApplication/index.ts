@@ -36,40 +36,38 @@ export class LibraryApplication extends AKElement {
     @query("ak-library-rac-endpoint-launch")
     racEndpointLaunch?: RACLaunchEndpointModal;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            PFButton,
-            css`
-                .pf-c-card {
-                    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
-                }
-                .pf-c-card__header {
-                    justify-content: space-between;
-                    flex-direction: column;
-                }
-                .pf-c-card__header a {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
-                a:hover {
-                    text-decoration: none;
-                }
-                .expander {
-                    flex-grow: 1;
-                }
-                .pf-c-card__title {
-                    text-align: center;
-                    /* This is not ideal as it hard limits us to 2 lines of text for the title
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFButton,
+        css`
+            .pf-c-card {
+                --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
+            }
+            .pf-c-card__header {
+                justify-content: space-between;
+                flex-direction: column;
+            }
+            .pf-c-card__header a {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            a:hover {
+                text-decoration: none;
+            }
+            .expander {
+                flex-grow: 1;
+            }
+            .pf-c-card__title {
+                text-align: center;
+                /* This is not ideal as it hard limits us to 2 lines of text for the title
                     of the application. In theory that should be fine for most cases, but ideally
                     we don't do this */
-                    height: 48px;
-                }
-            `,
-        ];
-    }
+                height: 48px;
+            }
+        `,
+    ];
 
     renderExpansion(application: Application) {
         const { me, uiConfig } = rootInterface<UserInterface>();

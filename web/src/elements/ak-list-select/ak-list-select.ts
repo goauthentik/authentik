@@ -50,29 +50,27 @@ export interface IListSelect {
  */
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
-    static get styles() {
-        return [
-            PFBase,
-            PFDropdown,
-            PFSelect,
-            css`
-                :host {
-                    overflow: visible;
-                    z-index: 9999;
-                }
+    static styles = [
+        PFBase,
+        PFDropdown,
+        PFSelect,
+        css`
+            :host {
+                overflow: visible;
+                z-index: 9999;
+            }
 
-                :host([hidden]) {
-                    display: none;
-                }
+            :host([hidden]) {
+                display: none;
+            }
 
-                .pf-c-dropdown__menu {
-                    max-height: 50vh;
-                    overflow-y: auto;
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+            .pf-c-dropdown__menu {
+                max-height: 50vh;
+                overflow-y: auto;
+                width: 100%;
+            }
+        `,
+    ];
 
     /**
      * See the search options type, described in the `./types` file, for the relevant types.

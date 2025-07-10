@@ -178,44 +178,42 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     @state()
     error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFTable,
-            PFBullseye,
-            PFButton,
-            PFSwitch,
-            PFToolbar,
-            PFDropdown,
-            PFPagination,
-            css`
-                .pf-c-toolbar__group.pf-m-search-filter.ql {
-                    flex-grow: 1;
-                }
-                ak-table-search.ql {
-                    width: 100% !important;
-                }
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFTable,
+        PFBullseye,
+        PFButton,
+        PFSwitch,
+        PFToolbar,
+        PFDropdown,
+        PFPagination,
+        css`
+            .pf-c-toolbar__group.pf-m-search-filter.ql {
+                flex-grow: 1;
+            }
+            ak-table-search.ql {
+                width: 100% !important;
+            }
+            .pf-c-table thead .pf-c-table__check {
+                min-width: 3rem;
+            }
+            .pf-c-table tbody .pf-c-table__check input {
+                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+            }
+            .pf-c-toolbar__content {
+                row-gap: var(--pf-global--spacer--sm);
+            }
+            .pf-c-toolbar__item .pf-c-input-group {
+                padding: 0 var(--pf-global--spacer--sm);
+            }
 
-                .pf-c-table {
-                    --pf-c-table--m-striped__tr--BackgroundColor: var(
-                        --pf-global--BackgroundColor--dark-300
-                    );
-                }
-            `,
-        ];
-    }
+            .pf-c-table {
+                --pf-c-table--m-striped__tr--BackgroundColor: var(
+                    --pf-global--BackgroundColor--dark-300
+                );
+            }
+        `,
+    ];
 
     constructor() {
         super();

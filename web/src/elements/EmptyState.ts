@@ -61,19 +61,17 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFTitle,
-            css`
-                i.pf-c-empty-state__icon {
-                    height: var(--pf-global--icon--FontSize--2xl);
-                    line-height: var(--pf-global--icon--FontSize--2xl);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFEmptyState,
+        PFTitle,
+        css`
+            i.pf-c-empty-state__icon {
+                height: var(--pf-global--icon--FontSize--2xl);
+                line-height: var(--pf-global--icon--FontSize--2xl);
+            }
+        `,
+    ];
 
     willUpdate() {
         if (this.defaultLabel && this.querySelector("span:not([slot])") === null) {

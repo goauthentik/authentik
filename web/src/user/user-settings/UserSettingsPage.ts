@@ -34,46 +34,44 @@ import { StagesApi, UserSetting } from "@goauthentik/api";
 @localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFDisplay,
-            PFGallery,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            css`
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFDisplay,
+        PFGallery,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        css`
+            .pf-c-page {
+                --pf-c-page--BackgroundColor: transparent;
+            }
+            .pf-c-page__main-section {
+                --pf-c-page__main-section--BackgroundColor: transparent;
+            }
+            :host([theme="dark"]) .pf-c-page {
+                --pf-c-page--BackgroundColor: transparent;
+            }
+            :host([theme="dark"]) .pf-c-page__main-section {
+                --pf-c-page__main-section--BackgroundColor: transparent;
+            }
+            .pf-c-page__main {
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            @media screen and (min-width: 1200px) {
+                :host {
+                    width: 90rem;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
-                .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                .pf-c-page__main {
-                    min-height: 100vh;
-                    overflow-y: auto;
-                }
-                @media screen and (min-width: 1200px) {
-                    :host {
-                        width: 90rem;
-                        margin-left: auto;
-                        margin-right: auto;
-                    }
-                }
-            `,
-        ];
-    }
+            }
+        `,
+    ];
 
     @state()
     userSettings?: UserSetting[];

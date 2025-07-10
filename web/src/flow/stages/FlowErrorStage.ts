@@ -17,25 +17,23 @@ import { FlowChallengeResponseRequest, FlowErrorChallenge } from "@goauthentik/a
 
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            css`
-                pre {
-                    overflow-x: scroll;
-                    max-width: calc(
-                        35rem - var(--pf-c-login__main-body--PaddingRight) - var(
-                                --pf-c-login__main-body--PaddingRight
-                            )
-                    );
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        css`
+            pre {
+                overflow-x: scroll;
+                max-width: calc(
+                    35rem - var(--pf-c-login__main-body--PaddingRight) - var(
+                            --pf-c-login__main-body--PaddingRight
+                        )
+                );
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

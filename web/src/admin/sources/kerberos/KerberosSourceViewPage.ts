@@ -54,19 +54,17 @@ export class KerberosSourceViewPage extends AKElement {
     @state()
     syncState?: SyncStatus;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-            PFList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+        PFList,
+    ];
 
     constructor() {
         super();

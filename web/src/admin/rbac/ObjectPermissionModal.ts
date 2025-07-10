@@ -50,9 +50,7 @@ export class ObjectPermissionModal extends AKElement {
     @property()
     objectPk?: string | number;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     render(): TemplateResult {
         return html`

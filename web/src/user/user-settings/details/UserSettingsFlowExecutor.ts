@@ -53,9 +53,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFButton, PFContent];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();

@@ -64,18 +64,16 @@ export class RouterOutlet extends AKElement {
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    background-color: transparent !important;
-                }
-                *:first-child {
-                    flex-direction: column;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            :host {
+                background-color: transparent !important;
+            }
+            *:first-child {
+                flex-direction: column;
+            }
+        `,
+    ];
 
     constructor() {
         super();

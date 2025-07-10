@@ -83,22 +83,20 @@ export class MessageContainer extends AKElement {
     @property()
     alignment: "top" | "bottom" = "top";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlertGroup,
-            css`
-                /* Fix spacing between messages */
-                ak-message {
-                    display: block;
-                }
-                :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                    bottom: var(--pf-c-alert-group--m-toast--Top);
-                    top: unset;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlertGroup,
+        css`
+            /* Fix spacing between messages */
+            ak-message {
+                display: block;
+            }
+            :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
+                bottom: var(--pf-c-alert-group--m-toast--Top);
+                top: unset;
+            }
+        `,
+    ];
 
     constructor() {
         super();
