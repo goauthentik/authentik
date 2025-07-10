@@ -236,6 +236,9 @@ class _PostgresConsumer(Consumer):
         # Override because dramatiq doesn't allow us setting this manually
         self.timeout = Conf().worker["consumer_listen_timeout"]
 
+        self.task_purge_interval = timezone.timedelta(seconds=Conf().task_purge_interval)
+        self.task_purge_last_run = timezone.now() - self.task_purge_interval
+
         self.scheduler = None
         if Conf().schedule_model:
             self.scheduler = import_string(Conf().scheduler_class)()
@@ -377,16 +380,13 @@ class _PostgresConsumer(Consumer):
         if not self.notifies:
             self._poll_for_notify()
 
-        if not self.notifies and not randint(0, 300):  # nosec
-            # If there aren't any more notifies, randomly poll for missed/crashed messages.
-            # Since this method is called every second, this condition limits polling to
-            # on average one SELECT every five minutes of inactivity.
+        if not self.notifies:
             self.notifies[:] = self._fetch_pending_notifies()
 
         # If we have some notifies, loop to find one to do
         while self.notifies:
             notify = self.notifies.pop(0)
-            task = self.query_set.get(message_id=notify.payload)
+            task: TaskBase = self.query_set.get(message_id=notify.payload)
             message = Message.decode(task.message)
             message.options["task"] = task
             if self._consume_one(message):
@@ -414,11 +414,7 @@ class _PostgresConsumer(Consumer):
             self.unlock_queue.task_done()
 
     def _auto_purge(self):
-        # Automatically purge messages on average every n iterations.
-        # We manually set the timeout to 30s, so we need to divide by 30 to
-        # get the number of actual iterations.
-        iterations = int(Conf().task_purge_interval / 30)
-        if randint(0, iterations):  # nosec
+        if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
         self.logger.debug("Running garbage collector")
         count = self.query_set.filter(
