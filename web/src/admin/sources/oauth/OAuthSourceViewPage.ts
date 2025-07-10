@@ -59,8 +59,8 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "Patreon";
         case ProviderTypeEnum.Reddit:
             return "Reddit";
-        case ProviderTypeEnum.Twitter:
-            return "Twitter";
+        case ProviderTypeEnum.X:
+            return "X";
         case ProviderTypeEnum.Twitch:
             return "Twitch";
         case ProviderTypeEnum.UnknownDefaultOpenApi:
