@@ -235,8 +235,17 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         return html`<div class="ak-button-collection">
             <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                 <span slot="submit">${msg("Update password")}</span>
-                <span slot="header">${msg("Update password")}</span>
-                <ak-user-password-form slot="form" .instancePk=${user.pk}></ak-user-password-form>
+                <span slot="header">
+                    ${msg(str`Update ${user.name || user.username}'s password`)}
+                </span>
+
+                <ak-user-password-form
+                    username=${user.username}
+                    email=${ifDefined(user.email)}
+                    slot="form"
+                    .instancePk=${user.pk}
+                >
+                </ak-user-password-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
                     <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
                         ${msg("Set password")}
@@ -379,12 +388,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl pf-m-5-col-on-2xl"
                     >
                         ${this.renderUserCard()}
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-7-col-on-xl pf-m-7-col-on-2xl"
                     >
                         <div class="pf-c-card__title">
                             ${msg("Actions over the last week (per 8 hours)")}

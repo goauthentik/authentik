@@ -282,8 +282,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                 <div class="pf-c-description-list__text">
                                     <ak-forms-modal>
                                         <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">${msg("Update password")}</span>
+                                        <span slot="header">
+                                            ${msg(
+                                                str`Update ${item.name || item.username}'s password`,
+                                            )}
+                                        </span>
                                         <ak-user-password-form
+                                            username=${item.username}
+                                            email=${ifDefined(item.email)}
                                             slot="form"
                                             .instancePk=${item.pk}
                                         ></ak-user-password-form>

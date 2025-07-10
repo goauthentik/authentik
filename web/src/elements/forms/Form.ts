@@ -176,10 +176,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     //#region Properties
 
     @property()
-    successMessage = "";
+    public successMessage = "";
 
     @property({ type: String })
-    autocomplete?: AutoFill;
+    public autocomplete?: AutoFill;
 
     //#endregion
 

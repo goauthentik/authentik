@@ -73,6 +73,12 @@ html > form > input {
 
 /* #endregion */
 
+/* #region Form */
+
+.pf-c-form {
+    --pf-c-form__group--m-action--MarginTop: var(--pf-global--spacer--form-element);
+}
+
 /* #region Icons */
 
 .pf-icon {

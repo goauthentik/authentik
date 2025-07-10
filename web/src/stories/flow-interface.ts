@@ -10,12 +10,12 @@ import { customElement } from "lit/decorators.js";
 export class StoryFlowInterface extends FlowExecutor {
     async firstUpdated() {}
 
-    async submit(
+    submit = async (
         payload?: FlowChallengeResponseRequest,
         options?: SubmitOptions,
-    ): Promise<boolean> {
+    ): Promise<boolean> => {
         return true;
-    }
+    };
 
     async renderChallenge(): Promise<TemplateResult> {
         return html`<slot></slot>`;
