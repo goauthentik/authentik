@@ -3,7 +3,6 @@ import logging
 import time
 from collections.abc import Iterable
 from queue import Empty, Queue
-from random import randint
 from typing import Any
 
 import tenacity
