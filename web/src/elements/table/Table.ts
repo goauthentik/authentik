@@ -1,3 +1,4 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import {
     APIError,
@@ -17,7 +18,7 @@ import "@goauthentik/elements/table/TableSearch";
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -31,11 +32,18 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Pagination } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 export interface TableLike {
     order?: string;
     fetch: () => void;
+}
+
+export interface PaginatedResponse<T> {
+    pagination: Pagination;
+    autocomplete?: { [key: string]: string };
+
+    results: Array<T>;
 }
 
 export class TableColumn {
@@ -94,18 +102,18 @@ export class TableColumn {
     }
 }
 
-export interface PaginatedResponse<T> {
-    pagination: Pagination;
-
-    results: Array<T>;
-}
-
-export abstract class Table<T> extends AKElement implements TableLike {
+export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
     abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): SlottedTemplateResult[];
 
     private isLoading = false;
+
+    #pageParam = `${this.tagName.toLowerCase()}-page`;
+    #searchParam = `${this.tagName.toLowerCase()}-search`;
+
+    @property({ type: Boolean })
+    supportsQL: boolean = false;
 
     searchEnabled(): boolean {
         return false;
@@ -123,7 +131,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam("tablePage", 1);
+    page = getURLParam(this.#pageParam, 1);
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -181,6 +189,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFDropdown,
             PFPagination,
             css`
+                .pf-c-toolbar__group.pf-m-search-filter.ql {
+                    flex-grow: 1;
+                }
+                ak-table-search.ql {
+                    width: 100% !important;
+                }
                 .pf-c-table thead .pf-c-table__check {
                     min-width: 3rem;
                 }
@@ -209,7 +223,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             await this.fetch();
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam("search", "");
+            this.search = getURLParam(this.#searchParam, "");
         }
     }
 
@@ -288,9 +302,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state loading
-                        ><span slot="header">${msg("Loading")}</span></ak-empty-state
-                    >
+                    <ak-empty-state default-label></ak-empty-state>
                 </div>
             </td>
         </tr>`;
@@ -303,7 +315,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span slot="header">${msg("No objects found.")}</span> >
+                            ><span>${msg("No objects found.")}</span>
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -320,7 +332,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
-            ><span slot="header">${msg("Failed to fetch objects.")}</span>
+            ><span>${msg("Failed to fetch objects.")}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }
@@ -466,22 +478,36 @@ export abstract class Table<T> extends AKElement implements TableLike {
         return nothing;
     }
 
+    protected willUpdate(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("page")) {
+            updateURLParams({
+                [this.#pageParam]: this.page,
+            });
+        }
+        if (changedProperties.has("search")) {
+            updateURLParams({
+                [this.#searchParam]: this.search,
+            });
+        }
+    }
+
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
-            updateURLParams({
-                search: value,
-            });
+            this.page = 1;
             this.fetch();
         };
-
+        const isQL =
+            this.supportsQL && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         return !this.searchEnabled()
             ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
                   <ak-table-search
-                      class="pf-c-toolbar__item pf-m-search-filter"
+                      ?supportsQL=${this.supportsQL}
+                      class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}
+                      .apiResponse=${this.data}
                   >
                   </ak-table-search>
               </div>`;
@@ -552,7 +578,6 @@ export abstract class Table<T> extends AKElement implements TableLike {
     /* A simple pagination display, shown at both the top and bottom of the page. */
     renderTablePagination(): TemplateResult {
         const handler = (page: number) => {
-            updateURLParams({ tablePage: page });
             this.page = page;
             this.fetch();
         };

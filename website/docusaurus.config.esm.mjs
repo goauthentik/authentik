@@ -5,12 +5,16 @@
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
  */
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import { createRequire } from "node:module";
+
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
 import remarkEnterpriseDirective from "./remark/enterprise-directive.mjs";
+import remarkLinkRewrite from "./remark/link-rewrite-directive.mjs";
 import remarkPreviewDirective from "./remark/preview-directive.mjs";
 import remarkSupportDirective from "./remark/support-directive.mjs";
 import remarkVersionDirective from "./remark/version-directive.mjs";
@@ -43,9 +47,10 @@ const config = createDocusaurusConfig({
                     target: "_self",
                 },
                 {
-                    to: "integrations/",
+                    to: "https://integrations.goauthentik.io",
                     label: "Integrations",
                     position: "left",
+                    target: "_self",
                 },
                 {
                     to: "docs/",
@@ -86,7 +91,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
-            externalUrlRegex: ":\\/\\/goauthentik\\.io",
+            externalUrlRegex: /.*/.source,
         },
     },
     presets: [
@@ -95,6 +100,7 @@ const config = createDocusaurusConfig({
             /** @type {Preset.Options} */ ({
                 docs: {
                     id: "docs",
+                    routeBasePath: "docs",
                     sidebarPath: "./sidebars/docs.mjs",
                     showLastUpdateTime: false,
                     editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
@@ -102,6 +108,9 @@ const config = createDocusaurusConfig({
 
                     beforeDefaultRemarkPlugins: [
                         remarkDirective,
+                        remarkLinkRewrite(
+                            new Map([["/integrations", "https://integrations.goauthentik.io"]]),
+                        ),
                         remarkVersionDirective,
                         remarkEnterpriseDirective,
                         remarkPreviewDirective,
@@ -125,6 +134,10 @@ const config = createDocusaurusConfig({
                         ],
                     ],
                 },
+                gtag: {
+                    trackingID: ["G-9MVR9WZFZH"],
+                    anonymizeIP: true,
+                },
                 theme: {
                     customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
                 },
@@ -132,16 +145,6 @@ const config = createDocusaurusConfig({
         ],
     ],
     plugins: [
-        [
-            "@docusaurus/plugin-content-docs",
-            {
-                id: "docsIntegrations",
-                path: "integrations",
-                routeBasePath: "integrations",
-                sidebarPath: "./sidebars/integrations.mjs",
-                editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
-            },
-        ],
         [
             "docusaurus-plugin-openapi-docs",
             {

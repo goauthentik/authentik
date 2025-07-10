@@ -86,6 +86,10 @@ dev-create-db:
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
 
+update-test-mmdb:  ## Update test GeoIP and ASN Databases
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
+
 #########################
 ## API Schema
 #########################
@@ -146,9 +150,9 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ${PWD}/${GEN_API_TS} && npm i
-	\cp -rf ${PWD}/${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+	cd ${PWD}/${GEN_API_TS} && npm link
+	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \

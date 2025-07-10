@@ -116,7 +116,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
                     .content=${[]}
                 ></ak-select-table>
                 <ak-empty-state icon="pf-icon-module"
-                    ><span slot="header">${msg("No bound policies.")} </span>
+                    ><span>${msg("No bound policies.")}</span>
                     <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                     <div slot="primary">
                         <button
