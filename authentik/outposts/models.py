@@ -508,20 +508,17 @@ class ProxySession(ExpiringModel):
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     
-    # Link to the provider that created this session
-    provider = models.ForeignKey("authentik_providers_proxy.ProxyProvider", on_delete=models.CASCADE, null=True)
+    provider_id = models.CharField(max_length=255, null=False, blank=False)
     
-    # Session ID used by Gorilla sessions
-    session_key = models.CharField(max_length=255, unique=True)
+    session_key = models.CharField(max_length=255, null=False, blank=False)
     
-    # Session data
     data = models.BinaryField()
     
-    # User claims and authentication info
-    claims = models.JSONField(default=dict)
+    claims = models.TextField(blank=True, default="")
     
-    # Redirect URL after authentication
-    redirect = models.TextField(blank=True)
+    redirect = models.TextField(blank=True, default="")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = ProxySessionManager()
 
@@ -529,9 +526,22 @@ class ProxySession(ExpiringModel):
         verbose_name = _("Proxy Provider Session")
         verbose_name_plural = _("Proxy Provider Sessions")
         indexes = ExpiringModel.Meta.indexes + [
-            models.Index(fields=["session_key"]),
-            models.Index(fields=["provider"]),
+            models.Index(fields=["session_key", "provider_id"]),
+            models.Index(fields=["provider_id"]),
+            models.Index(fields=["created_at"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["session_key", "provider_id"],
+                name="unique_session_key_provider_id"
+            ),
         ]
         
     def __str__(self):
-        return f"Proxy Session {self.session_key}"
+        return f"Proxy Session {self.session_key} (Provider: {self.provider_id})"
+
+    def save(self, *args, **kwargs):
+        # Ensure expiring defaults to False to match golang expectations
+        if self.expiring is None:
+            self.expiring = False
+        super().save(*args, **kwargs)

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
@@ -147,14 +148,33 @@ func (s *PGStore) save(ctx context.Context, session *sessions.Session) error {
 	expiry := s.CalculateExpiry(session)
 	sessionKey := s.GetSessionKey(session.ID)
 
+	// Generate UUID for the session
+	sessionUUID := uuid.New().String()
+
+	// Extract claims and redirect from session
+	claims := "{}"
+	if c, ok := session.Values["claims"]; ok && c != nil {
+		claims = fmt.Sprintf("%v", c)
+	}
+
+	redirect := ""
+	if r, ok := session.Values["redirect"]; ok && r != nil {
+		redirect = fmt.Sprintf("%v", r)
+	}
+
 	// Use the new table and column names
 	query := fmt.Sprintf(`
-		INSERT INTO %s.authentik_outposts_proxysession (session_key, data, expires, expiring, provider_id) 
-		VALUES ($1, $2, $3, $4, $5) 
-		ON CONFLICT(session_key) DO UPDATE SET data = EXCLUDED.data, expires = EXCLUDED.expires
+		INSERT INTO %s.authentik_outposts_proxysession (
+			uuid, session_key, data, expires, expiring, provider_id, claims, redirect, created_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+		ON CONFLICT(session_key, provider_id) DO UPDATE SET 
+			data = EXCLUDED.data, 
+			expires = EXCLUDED.expires, 
+			claims = EXCLUDED.claims,
+			redirect = EXCLUDED.redirect
 	`, s.schema)
 
-	_, err = s.db.ExecContext(ctx, query, sessionKey, data, expiry, true, s.ProviderID())
+	_, err = s.db.ExecContext(ctx, query, sessionUUID, sessionKey, data, expiry, true, s.ProviderID(), claims, redirect, time.Now())
 	return err
 }
 
@@ -170,10 +190,10 @@ func (s *PGStore) load(ctx context.Context, session *sessions.Session) error {
 
 	query := fmt.Sprintf(`
 		SELECT data FROM %s.authentik_outposts_proxysession 
-		WHERE session_key = $1 AND (expires IS NULL OR expires > NOW())
+		WHERE session_key = $1 AND provider_id = $2 AND (expires IS NULL OR expires > NOW())
 	`, s.schema)
 
-	err := s.db.QueryRowContext(ctx, query, sessionKey).Scan(&data)
+	err := s.db.QueryRowContext(ctx, query, sessionKey, s.ProviderID()).Scan(&data)
 	if err != nil {
 		return err
 	}
@@ -189,8 +209,8 @@ func (s *PGStore) delete(ctx context.Context, session *sessions.Session) error {
 	}()
 
 	sessionKey := s.GetSessionKey(session.ID)
-	query := fmt.Sprintf(`DELETE FROM %s.authentik_outposts_proxysession WHERE session_key = $1`, s.schema)
-	_, err := s.db.ExecContext(ctx, query, sessionKey)
+	query := fmt.Sprintf(`DELETE FROM %s.authentik_outposts_proxysession WHERE session_key = $1 AND provider_id = $2`, s.schema)
+	_, err := s.db.ExecContext(ctx, query, sessionKey, s.ProviderID())
 	return err
 }
 
@@ -209,10 +229,10 @@ func (s *PGStore) GetAllSessions(ctx context.Context) ([]*sessions.Session, erro
 
 	query := fmt.Sprintf(`
 		SELECT session_key, data FROM %s.authentik_outposts_proxysession 
-		WHERE (expires IS NULL OR expires > NOW())
+		WHERE provider_id = $1 AND (expires IS NULL OR expires > NOW())
 	`, s.schema)
 
-	rows, err := s.db.QueryContext(ctx, query)
+	rows, err := s.db.QueryContext(ctx, query, s.ProviderID())
 	if err != nil {
 		return nil, err
 	}

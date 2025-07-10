@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
@@ -269,10 +270,7 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 	sessionKey := s.GetSessionKey(session.ID)
 
 	// Generate UUID for the session
-	uuid, err := sessionstore.GenerateRandomKey()
-	if err != nil {
-		return err
-	}
+	sessionUUID := uuid.New().String()
 
 	// Extract claims and redirect from session
 	claims := "{}"
@@ -289,14 +287,14 @@ func (s *SQLiteStore) save(ctx context.Context, session *sessions.Session) error
 	return s.executeWithRetry(ctx, func() error {
 		_, err := s.db.ExecContext(ctx, `
 			INSERT INTO authentik_outposts_proxysession (
-				uuid, session_key, data, expires, expiring, provider_id, claims, redirect
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+				uuid, session_key, data, expires, expiring, provider_id, claims, redirect, created_at
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 			ON CONFLICT(session_key, provider_id) DO UPDATE SET 
 				data = excluded.data, 
 				expires = excluded.expires, 
 				claims = excluded.claims,
 				redirect = excluded.redirect
-		`, uuid, sessionKey, data, expiry, true, s.ProviderID(), claims, redirect)
+		`, sessionUUID, sessionKey, data, expiry, true, s.ProviderID(), claims, redirect, time.Now())
 		return err
 	})
 }
