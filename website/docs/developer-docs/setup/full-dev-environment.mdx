@@ -13,88 +13,98 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-## Requirements
+## Prerequisites
+
+Before you begin, ensure you have the following tools installed:
 
 - [Python](https://www.python.org/) (3.13 or later)
-- [uv](https://docs.astral.sh/uv/getting-started/installation/), (Latest stable release)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
 - [Go](https://go.dev/) (1.24 or later)
 - [Node.js](https://nodejs.org/en) (24 or later)
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
-- [Redis](https://redis.io/) (7 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 
-## Services Setup
+## 1. Setting Up Required Services
 
-authentik uses [Redis](https://redis.io/), [PostgreSQL](https://www.postgresql.org/), [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/), and [Sentry Spotlight](https://spotlightjs.com/). You can run these services using the docker-compose.yml file in the scripts/ directory with the following command:
+authentik depends on several external services:
+
+- [Redis](https://redis.io/) for caching
+- [PostgreSQL](https://www.postgresql.org/) for database storage
+- [Zenko CloudServer (S3)](https://www.zenko.io/cloudserver/) for object storage
+- [Sentry Spotlight](https://spotlightjs.com/) for error tracking and visualization
+
+### Option A: Using Docker Compose (Recommended)
+
+The easiest way to set up these services is using the provided Docker Compose configuration:
 
 ```shell
 docker compose -f scripts/docker-compose.yml up -d
 ```
 
-Alternatively, you can install and run these services directly on your system if you prefer.
+### Option B: Using local installations
+
+Alternatively, you can install and run these services directly on your system.
 
 :::info
-If you use locally installed databases, the PostgreSQL credentials given to authentik should have permissions for `CREATE DATABASE` and `DROP DATABASE`, because authentik creates a temporary database for tests.
+If using locally installed databases, ensure the PostgreSQL credentials provided to authentik have `CREATE DATABASE` and `DROP DATABASE` permissions, as authentik creates temporary databases for testing.
 :::
 
-## Backend Setup
+## 2. Installing Platform-Specific Dependencies
 
-:::info
-Depending on your platform, some native dependencies might be required.
+<Tabs defaultValue="Mac">
+<TabItem value="Mac">
 
-<Tabs
-defaultValue={ (ExecutionEnvironment.canUseDOM) ? (() => {
-const ua = window.navigator.userAgent.toLowerCase();
-return ["linux", "windows", "mac"].find((p) => ua.includes(p)) || "mac";
-})() : "mac" }
+Install the required native dependencies on macOS using Homebrew:
 
-values={[
-{label: "macOS", value: "mac"},
-{label: "Linux", value: "linux"},
-{label: "Windows", value: "windows"},
-]}>
-
-  <TabItem value="mac">
-    To install the native dependencies on macOS, run:
-
-    ```shell
-    brew install libxmlsec1 libpq krb5 pkg-config \
-    uv postgresql redis node@24 golangci-lint
-    ```
+```shell
+brew install \
+libxmlsec1 \
+libpq \
+krb5 \
+pkg-config \
+uv \
+postgresql \
+redis \
+node@24 \
+golangci-lint
+```
 
 </TabItem>
+<TabItem value="Linux">
 
-<TabItem value="linux">
-To install native dependencies on Debian or Ubuntu, run:
+For Debian/Ubuntu-based distributions:
 
 ```shell
 pip install uv && \
 sudo apt-get install -y \
-  libgss-dev \
-  krb5-config \
-  libkrb5-dev \
-  postgresql-server-dev-all \
-  postgresql \
-  redis
+libgss-dev \
+krb5-config \
+libkrb5-dev \
+postgresql-server-dev-all \
+postresql \
+redis
+```
 
-Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
+For other distributions (Red Hat, SUSE, Arch), adjust the package names as needed.
 
-Install golangci-lint locally [from the site instructions](https://golangci-lint.run/welcome/install/#other-ci).
+Install `golangci-lint` by following the [official installation instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
-  </TabItem>
-
-<TabItem value="windows">
-    [We request community input on running the full dev environment on Windows]
 </TabItem>
+<TabItem value="Windows">
 
+We're currently seeking community input on running the full development environment on Windows. If you have experience with this setup, please consider contributing to this documentation.
+
+</TabItem>
 </Tabs>
 
-:::
+## 3. Setting up the backend
 
 :::info
 All `make` commands must be executed from the root directory of your local authentik Git repository.
 :::
+
+### Installing dependencies
 
 Install all required JavaScript and Python dependencies and create an isolated Python environment:
 
@@ -102,96 +112,133 @@ Install all required JavaScript and Python dependencies and create an isolated P
 make install
 ```
 
-Then generate a local config file to use the local databases for development:
+### Generating Development Configuration
+
+Create a local configuration file that uses the local databases for development:
 
 ```shell
 make gen-dev-config
 ```
 
-Generally speaking, authentik is a Django application, ran by gunicorn, proxied by a Go application. The Go application serves static files.
+### Understanding the Architecture
 
-Most functions and classes have type-hints and docstrings, so it is recommended to install a Python Type-checking Extension in your IDE to navigate around the code.
+authentik is primarily a Django application running under gunicorn, proxied by a Go application that serves static files.
+For better code navigation, most functions and classes have type hints and docstrings. We recommend installing a Python Type-checking Extension in your IDE.
 
-## Frontend Setup
+## 4. Setting Up the Frontend
 
-By default, no compiled bundle of the frontend is included so this step is required even if you're not developing for the UI.
-The UI requires the authentik API files for Typescript be built and installed.
+Even if you're not planning to develop the UI, you need to build the frontend as no compiled bundle is included by default.
 
-You first need to run database migrations:
+### Running database migrations
+
+First, apply all database migrations:
 
 ```shell
 make migrate
 ```
 
-And then you need to generate the schema files (schema.yml, blueprints/schema.json) and the TypeScript client:
+### Generating schema files
+
+Generate the required schema files and TypeScript client:
 
 ```shell
 make gen
 ```
 
 :::info
-If you make changes to the authentik API, you must re-run `make gen` so that the corresponding
-changes are made to the API library that is used by the UI.
+After making changes to the authentik API, you must re-run `make gen` to update the API library used by the UI.
 :::
 
-You can do a one time build of the UI:
+### Building the UI
+
+You have several options for building the UI:
+
+#### One-time build
 
 ```shell
 make web-build
 ```
 
-You can also make live edits to the UI, with real-time feedback as updates are rebuilt automatically:
+#### Live development mode
+
+For real-time feedback as you make changes:
 
 ```shell
 make web-watch
 ```
 
-And you can format the front-end code after you've made changes:
+#### Formatting frontend code
+
+After making changes:
 
 ```shell
 make web
 ```
 
-## Running authentik
+## 5. Running authentik
 
-Now that the backend and frontend have been setup and built, you can start authentik:
+With both backend and frontend set up, start the application:
 
 ```shell
 make run
 ```
 
-And now, authentik should now be accessible at `http://localhost:9000`.
+authentik will be accessible at http://localhost:9000.
+
+### Initial setup
+
+To set a password for the default admin user (**akadmin**):
+
+1. Navigate to http://localhost:9000/if/flow/initial-setup/ in your browser.
+2. Follow the setup wizard to create your admin account.
 
 :::info
-To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
+If you encounter issues during setup, you can reset to a fresh state with:
 
-In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
+```shell
+make dev-reset
+```
+
+This drops and recreates the authentik PostgreSQL instance.
 :::
 
-## Submitting Pull Requests
+## 6. Contributing code
 
-Before submitting a pull request, you'll need to make sure that:
+### Before submitting a pull request
 
-The code is properly linted:
+Ensure your code meets our quality standards by running:
 
-```shell
-make lint
-```
+1. **Code linting**:
 
-We've generated an updated OpenAPI Doc for our changes:
+    ```shell
+    make lint
+    ```
 
-```shell
-make gen
-```
+2. **Generate updated API documentation**:
 
-And we've formatted our front-end code:
+    ```shell
+    make gen
+    ```
 
-```shell
-make web
-```
+3. **Format frontend code**:
 
-You can do all of these at once with the following:
+    ```shell
+    make web
+    ```
+
+You can run all these checks at once with:
 
 ```shell
 make lint gen web
 ```
+
+### Submitting your changes
+
+Once your code passes all checks, you can submit a pull request through [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
+
+- Provide a clear description of your changes
+- Reference any related issues
+- Follow our code style guidelines
+- Include tests for your changes where appropriate
+
+Thank you for contributing to authentik!
