@@ -63,9 +63,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     @property()
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(

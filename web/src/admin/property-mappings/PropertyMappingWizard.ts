@@ -33,9 +33,7 @@ import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static get styles() {
-        return [PFBase, PFButton];
-    }
+    static styles = [PFBase, PFButton];
 
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];

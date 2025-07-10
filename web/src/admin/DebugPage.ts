@@ -19,9 +19,7 @@ import { AdminApi } from "@goauthentik/api";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFGrid, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
 
     render(): TemplateResult {
         return html`

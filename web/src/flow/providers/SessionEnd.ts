@@ -19,9 +19,7 @@ import { SessionEndChallenge } from "@goauthentik/api";
 
 @customElement("ak-stage-session-end")
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

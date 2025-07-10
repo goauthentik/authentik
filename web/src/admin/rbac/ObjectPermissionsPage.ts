@@ -29,9 +29,7 @@ export class ObjectPermissionPage extends AKElement {
     @property({ type: Boolean })
     embedded = false;
 
-    static get styles() {
-        return [PFBase, PFGrid, PFPage, PFCard];
-    }
+    static styles = [PFBase, PFGrid, PFPage, PFCard];
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>

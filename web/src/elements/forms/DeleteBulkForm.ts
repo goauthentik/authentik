@@ -34,9 +34,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
     @state()
     usedByData: Map<T, UsedBy[]> = new Map();
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFList];
 
     async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({

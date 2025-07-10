@@ -66,23 +66,21 @@ export class CodeMirrorTextarea<T> extends AKElement {
     syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
     syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
-    static get styles(): CSSResult[] {
-        return [
-            // Better alignment with patternfly components
-            css`
-                .cm-editor {
-                    padding-top: calc(
-                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                    );
-                    padding-bottom: calc(
-                        var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
-                    );
-                    padding-right: var(--pf-c-form-control--inset--base);
-                    padding-left: var(--pf-c-form-control--inset--base);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        // Better alignment with patternfly components
+        css`
+            .cm-editor {
+                padding-top: calc(
+                    var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+                );
+                padding-bottom: calc(
+                    var(--pf-global--spacer--form-element) - var(--pf-global--BorderWidth--sm)
+                );
+                padding-right: var(--pf-c-form-control--inset--base);
+                padding-left: var(--pf-c-form-control--inset--base);
+            }
+        `,
+    ];
 
     @property()
     set value(v: T | string) {

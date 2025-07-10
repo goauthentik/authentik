@@ -63,23 +63,22 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     installID?: string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFGrid,
-            PFBanner,
-            PFFormControl,
-            PFButton,
-            PFCard,
-            css`
-                .pf-m-no-padding-bottom {
-                    padding-bottom: 0;
-                }
-                .install-id {
-                    word-break: break-all;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFGrid,
+        PFBanner,
+        PFFormControl,
+        PFButton,
+        PFCard,
+        css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+            .install-id {
+                word-break: break-all;
+            }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();

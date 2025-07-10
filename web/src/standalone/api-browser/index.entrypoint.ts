@@ -21,17 +21,15 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                img.logo {
-                    width: 100%;
-                    padding: 1rem 0.5rem 1.5rem 0.5rem;
-                    min-height: 48px;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            img.logo {
+                width: 100%;
+                padding: 1rem 0.5rem 1.5rem 0.5rem;
+                min-height: 48px;
+            }
+        `,
+    ];
 
     @state()
     bgColor = "#000000";

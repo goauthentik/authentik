@@ -23,19 +23,18 @@ export class EventVolumeChart extends EventChart {
         this.refreshHandler();
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                :host([with-map]) .pf-c-card {
-                    height: 24rem;
-                }
-                .pf-c-card {
-                    height: 20rem;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFCard,
+        css`
+            :host([with-map]) .pf-c-card {
+                height: 24rem;
+            }
+            .pf-c-card {
+                height: 20rem;
+            }
+        `,
+    ];
 
     apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({

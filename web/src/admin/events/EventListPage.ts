@@ -43,17 +43,15 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     @property()
     order = "-created";
 
-    static get styles(): CSSResult[] {
-        // @ts-expect-error
-        return super.styles.concat(
-            PFGrid,
-            css`
-                .pf-m-no-padding-bottom {
-                    padding-bottom: 0;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFGrid,
+        css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());

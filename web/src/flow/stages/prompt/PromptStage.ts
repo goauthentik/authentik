@@ -30,25 +30,23 @@ import {
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFAlert,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            PFCheck,
-            css`
-                textarea {
-                    min-height: 4em;
-                    max-height: 15em;
-                    resize: vertical;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFAlert,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        PFCheck,
+        css`
+            textarea {
+                min-height: 4em;
+                max-height: 15em;
+                resize: vertical;
+            }
+        `,
+    ];
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
         switch (prompt.type) {

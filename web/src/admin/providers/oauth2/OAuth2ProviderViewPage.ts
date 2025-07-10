@@ -78,21 +78,19 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-            PFDivider,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+        PFDivider,
+    ];
 
     constructor() {
         super();

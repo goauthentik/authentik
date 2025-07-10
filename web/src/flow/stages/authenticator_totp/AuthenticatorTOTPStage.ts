@@ -28,23 +28,21 @@ export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .qr-container {
-                    display: flex;
-                    flex-direction: column;
-                    place-items: center;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        css`
+            .qr-container {
+                display: flex;
+                flex-direction: column;
+                place-items: center;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

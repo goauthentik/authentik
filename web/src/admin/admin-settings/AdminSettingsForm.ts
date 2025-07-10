@@ -43,16 +43,15 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
 
     private _settings?: Settings;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFList,
-            css`
-                ak-array-input {
-                    width: 100%;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFList,
+        css`
+            ak-array-input {
+                width: 100%;
+            }
+        `,
+    ];
 
     getSuccessMessage(): string {
         return msg("Successfully updated settings.");

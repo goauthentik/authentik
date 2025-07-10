@@ -20,9 +20,7 @@ export class UserSettingsPassword extends AKElement {
     @property()
     configureUrl?: string;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFFormControl];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
 
     render(): TemplateResult {
         // For this stage we don't need to check for a configureFlow,

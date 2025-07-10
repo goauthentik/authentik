@@ -23,16 +23,14 @@ export class Diagram extends AKElement {
 
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: flex;
-                    justify-content: center;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            :host {
+                display: flex;
+                justify-content: center;
+            }
+        `,
+    ];
 
     config: MermaidConfig;
 

@@ -19,39 +19,37 @@ export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFNotificationDrawer,
-            PFButton,
-            PFContent,
-            PFDropdown,
-            css`
-                :host {
-                    --header-height: 114px;
-                }
-                .pf-c-notification-drawer__header {
-                    height: var(--header-height);
-                    align-items: center;
-                }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__list-item-description {
-                    white-space: pre-wrap;
-                    font-family: monospace;
-                }
-                .pf-c-notification-drawer__body {
-                    overflow-x: hidden;
-                }
-                .pf-c-notification-drawer__list {
-                    max-height: calc(100vh - var(--header-height));
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFNotificationDrawer,
+        PFButton,
+        PFContent,
+        PFDropdown,
+        css`
+            :host {
+                --header-height: 114px;
+            }
+            .pf-c-notification-drawer__header {
+                height: var(--header-height);
+                align-items: center;
+            }
+            .pf-c-notification-drawer__header-action,
+            .pf-c-notification-drawer__header-action-close,
+            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__list-item-description {
+                white-space: pre-wrap;
+                font-family: monospace;
+            }
+            .pf-c-notification-drawer__body {
+                overflow-x: hidden;
+            }
+            .pf-c-notification-drawer__list {
+                max-height: calc(100vh - var(--header-height));
+            }
+        `,
+    ];
 
     constructor() {
         super();

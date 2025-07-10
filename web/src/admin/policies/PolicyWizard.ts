@@ -28,9 +28,7 @@ import { PoliciesApi, Policy, PolicyBinding, TypeCreate } from "@goauthentik/api
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

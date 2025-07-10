@@ -38,19 +38,17 @@ export class RadiusProviderViewPage extends AKElement {
     @state()
     provider?: RadiusProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFDisplay,
-            PFGallery,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFDisplay,
+        PFGallery,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+    ];
 
     constructor() {
         super();

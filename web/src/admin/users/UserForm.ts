@@ -26,16 +26,17 @@ export class UserForm extends ModelForm<User, number> {
         return {};
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .pf-c-button.pf-m-control {
                 height: 100%;
             }
             .pf-c-form-control {
                 height: auto !important;
             }
-        `);
-    }
+        `,
+    ];
 
     loadInstance(pk: number): Promise<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({

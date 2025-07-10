@@ -45,21 +45,19 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     @state()
     syncState?: SyncStatus;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

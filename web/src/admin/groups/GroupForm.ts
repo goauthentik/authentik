@@ -24,16 +24,17 @@ export function rbacRolePair(item: Role): DualSelectPair {
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .pf-c-button.pf-m-control {
                 height: 100%;
             }
             .pf-c-form-control {
                 height: auto !important;
             }
-        `);
-    }
+        `,
+    ];
 
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({

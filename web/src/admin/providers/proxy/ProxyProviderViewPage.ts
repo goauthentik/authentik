@@ -80,26 +80,24 @@ export class ProxyProviderViewPage extends AKElement {
     @state()
     provider?: ProxyProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFList,
-            PFForm,
-            PFFormControl,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-            css`
-                :host(:not([theme="dark"])) .ak-markdown-section {
-                    background-color: var(--pf-c-card--BackgroundColor);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFList,
+        PFForm,
+        PFFormControl,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+        css`
+            :host(:not([theme="dark"])) .ak-markdown-section {
+                background-color: var(--pf-c-card--BackgroundColor);
+            }
+        `,
+    ];
 
     constructor() {
         super();

@@ -70,9 +70,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         });
     }
 
-    static get styles(): CSSResult[] {
-        return TablePage.styles.concat(PFCard, applicationListStyle);
-    }
+    static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
     columns(): TableColumn[] {
         return [

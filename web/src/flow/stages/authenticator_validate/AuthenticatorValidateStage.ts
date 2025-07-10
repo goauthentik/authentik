@@ -65,9 +65,15 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        customCSS,
+    ];
 
     flowSlug = "";
 

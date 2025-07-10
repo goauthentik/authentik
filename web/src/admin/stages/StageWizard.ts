@@ -44,9 +44,7 @@ import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api
 
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

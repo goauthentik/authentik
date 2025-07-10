@@ -15,9 +15,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
     interface: "admin" | "user" | "flow" | "" = "";
 
-    static get styles() {
-        return [PFBanner];
-    }
+    static styles = [PFBanner];
 
     renderStatusBanner() {
         // Check if we're in the correct interface to render a banner

@@ -22,9 +22,15 @@ import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthenti
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFInputGroup, PFForm, PFFormControl, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFInputGroup,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
     hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];

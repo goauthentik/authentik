@@ -14,9 +14,7 @@ import { Provider } from "@goauthentik/api";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     provider?: Provider;

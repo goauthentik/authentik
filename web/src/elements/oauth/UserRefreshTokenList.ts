@@ -22,9 +22,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     @property({ type: Number })
     userId?: number;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFFlex);
-    }
+    static styles: CSSResult[] = [...super.styles, PFFlex];
 
     async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({

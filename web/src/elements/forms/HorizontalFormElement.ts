@@ -49,24 +49,22 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFFormControl,
-            css`
-                .pf-c-form__group {
-                    display: grid;
-                    grid-template-columns:
-                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
-                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-                }
-                .pf-c-form__group-label {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFFormControl,
+        css`
+            .pf-c-form__group {
+                display: grid;
+                grid-template-columns:
+                    var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                    var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
+            }
+            .pf-c-form__group-label {
+                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+            }
+        `,
+    ];
 
     @property()
     label = "";

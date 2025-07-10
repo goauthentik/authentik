@@ -16,9 +16,7 @@ import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
     obj?: Record<string, unknown>;

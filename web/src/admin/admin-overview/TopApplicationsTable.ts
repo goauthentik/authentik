@@ -15,9 +15,7 @@ export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
     topN?: EventTopPerUser[];
 
-    static get styles(): CSSResult[] {
-        return [PFTable];
-    }
+    static styles: CSSResult[] = [PFTable];
 
     firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)

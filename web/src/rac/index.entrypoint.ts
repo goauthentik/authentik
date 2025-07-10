@@ -44,33 +44,31 @@ const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
 export class RacInterface extends WithBrandConfig(Interface) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFContent,
-            AKGlobal,
-            css`
-                :host {
-                    cursor: none;
-                }
-                canvas {
-                    z-index: unset !important;
-                }
-                .container {
-                    overflow: hidden;
-                    height: 100vh;
-                    background-color: black;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                ak-loading-overlay {
-                    z-index: 5;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFContent,
+        AKGlobal,
+        css`
+            :host {
+                cursor: none;
+            }
+            canvas {
+                z-index: unset !important;
+            }
+            .container {
+                overflow: hidden;
+                height: 100vh;
+                background-color: black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            ak-loading-overlay {
+                z-index: 5;
+            }
+        `,
+    ];
 
     client?: Guacamole.Client;
     tunnel?: Guacamole.Tunnel;

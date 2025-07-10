@@ -34,31 +34,29 @@ export class FlowInspector extends AKElement {
     @property({ attribute: false })
     error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFStack,
-            PFCard,
-            PFNotificationDrawer,
-            PFDescriptionList,
-            PFProgressStepper,
-            css`
-                .pf-c-drawer__body {
-                    min-height: 100vh;
-                    max-height: 100vh;
-                }
-                code.break {
-                    word-break: break-all;
-                }
-                pre {
-                    word-break: break-all;
-                    overflow-x: hidden;
-                    white-space: break-spaces;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFStack,
+        PFCard,
+        PFNotificationDrawer,
+        PFDescriptionList,
+        PFProgressStepper,
+        css`
+            .pf-c-drawer__body {
+                min-height: 100vh;
+                max-height: 100vh;
+            }
+            code.break {
+                word-break: break-all;
+            }
+            pre {
+                word-break: break-all;
+                overflow-x: hidden;
+                white-space: break-spaces;
+            }
+        `,
+    ];
 
     constructor() {
         super();

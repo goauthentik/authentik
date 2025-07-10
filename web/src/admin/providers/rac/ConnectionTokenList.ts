@@ -32,9 +32,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     @property({ type: Number })
     userId?: number;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({

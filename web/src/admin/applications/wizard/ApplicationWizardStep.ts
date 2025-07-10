@@ -20,9 +20,7 @@ import {
 } from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
-    static get styles() {
-        return [...WizardStep.styles, ...styles];
-    }
+    static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;

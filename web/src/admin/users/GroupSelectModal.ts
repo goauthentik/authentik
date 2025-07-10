@@ -27,9 +27,7 @@ export class GroupSelectModal extends TableModal<Group> {
 
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
-    }
+    static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({

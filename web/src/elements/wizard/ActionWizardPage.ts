@@ -29,9 +29,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
-    }
+    static styles: CSSResult[] = [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
 
     @property({ attribute: false })
     states: ActionStateBundle[] = [];

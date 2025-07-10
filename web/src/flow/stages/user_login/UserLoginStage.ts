@@ -23,9 +23,15 @@ export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFSpacing, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFSpacing,
+        PFButton,
+        PFTitle,
+    ];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

@@ -36,9 +36,7 @@ export class ProviderViewPage extends AKElement {
     @property({ attribute: false })
     provider?: Provider;
 
-    static get styles(): CSSResult[] {
-        return [PFPage];
-    }
+    static styles: CSSResult[] = [PFPage];
 
     renderProvider(): TemplateResult {
         if (!this.provider) {

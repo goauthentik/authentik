@@ -22,21 +22,19 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     startedRedirect = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            PFTitle,
-            css`
-                code {
-                    word-break: break-all;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFButton,
+        PFFormControl,
+        PFTitle,
+        css`
+            code {
+                word-break: break-all;
+            }
+        `,
+    ];
 
     getURL(): string {
         return new URL(this.challenge.to, document.baseURI).toString();

@@ -35,33 +35,31 @@ const AdminOverviewBase = WithLicenseSummary(AKElement);
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFDivider,
-            css`
-                .pf-l-grid__item {
-                    height: 100%;
-                }
-                .pf-l-grid__item.big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-                .ak-external-link {
-                    display: inline-block;
-                    margin-left: 0.175rem;
-                    vertical-align: super;
-                    line-height: normal;
-                    font-size: var(--pf-global--icon--FontSize--sm);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFDivider,
+        css`
+            .pf-l-grid__item {
+                height: 100%;
+            }
+            .pf-l-grid__item.big-graph-container {
+                height: 35em;
+            }
+            .card-container {
+                max-height: 10em;
+            }
+            .ak-external-link {
+                display: inline-block;
+                margin-left: 0.175rem;
+                vertical-align: super;
+                line-height: normal;
+                font-size: var(--pf-global--icon--FontSize--sm);
+            }
+        `,
+    ];
 
     quickActions: QuickAction[] = [
         [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],

@@ -74,26 +74,24 @@ export interface ISimpleTable {
 
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
-    static get styles() {
-        return [
-            PFBase,
-            PFTable,
-            css`
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFTable,
+        css`
+            .pf-c-table thead .pf-c-table__check {
+                min-width: 3rem;
+            }
+            .pf-c-table tbody .pf-c-table__check input {
+                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+            }
+            .pf-c-toolbar__content {
+                row-gap: var(--pf-global--spacer--sm);
+            }
+            .pf-c-toolbar__item .pf-c-input-group {
+                padding: 0 var(--pf-global--spacer--sm);
+            }
+        `,
+    ];
 
     @property({ type: String, attribute: true, reflect: true })
     order?: string;

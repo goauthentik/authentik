@@ -21,16 +21,15 @@ export const ApplyActionsSlot = "apply-actions";
 
 @customElement("ak-wizard")
 export class Wizard extends ModalButton {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFWizard,
-            css`
-                .pf-c-modal-box {
-                    height: 75%;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFWizard,
+        css`
+            .pf-c-modal-box {
+                height: 75%;
+            }
+        `,
+    ];
 
     //#region Properties
 

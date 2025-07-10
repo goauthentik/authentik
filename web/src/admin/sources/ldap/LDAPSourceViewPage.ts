@@ -51,9 +51,16 @@ export class LDAPSourceViewPage extends AKElement {
     @state()
     syncState?: SyncStatus;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFList,
+    ];
 
     constructor() {
         super();

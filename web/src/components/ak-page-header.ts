@@ -44,15 +44,13 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: Boolean })
     iconImage = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: none;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            :host {
+                display: none;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();

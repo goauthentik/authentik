@@ -40,15 +40,13 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     extends HorizontalLightComponent<string>
     implements AkHiddenTextInputProps
 {
-    public static get styles() {
-        return [
-            css`
-                main {
-                    display: flex;
-                }
-            `,
-        ];
-    }
+    public static styles = [
+        css`
+            main {
+                display: flex;
+            }
+        `,
+    ];
 
     /**
      * @property

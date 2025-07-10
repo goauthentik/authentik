@@ -26,9 +26,15 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallenge,
     AuthenticatorSMSChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
     renderPhoneNumber(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

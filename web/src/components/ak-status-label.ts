@@ -71,9 +71,7 @@ const styles = css`
 
 @customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
-    static get styles() {
-        return [PFBase, PFLabel, styles];
-    }
+    static styles = [PFBase, PFLabel, styles];
 
     @property({ type: Boolean })
     good = false;

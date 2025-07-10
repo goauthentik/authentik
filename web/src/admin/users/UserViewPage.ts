@@ -82,41 +82,39 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     @state()
     me?: SessionUser;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-            PFBanner,
-            css`
-                .ak-button-collection {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.375rem;
-                    max-width: 12rem;
-                }
-                .ak-button-collection > * {
-                    flex: 1 0 100%;
-                }
-                #reset-password-button {
-                    margin-right: 0;
-                }
+    static styles = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+        PFBanner,
+        css`
+            .ak-button-collection {
+                display: flex;
+                flex-direction: column;
+                gap: 0.375rem;
+                max-width: 12rem;
+            }
+            .ak-button-collection > * {
+                flex: 1 0 100%;
+            }
+            #reset-password-button {
+                margin-right: 0;
+            }
 
-                #ak-email-recovery-request,
-                #update-password-request .pf-c-button,
-                #ak-email-recovery-request .pf-c-button {
-                    margin: 0;
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+            #ak-email-recovery-request,
+            #update-password-request .pf-c-button,
+            #ak-email-recovery-request .pf-c-button {
+                margin: 0;
+                width: 100%;
+            }
+        `,
+    ];
 
     constructor() {
         super();

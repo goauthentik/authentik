@@ -65,21 +65,19 @@ export class EventMap extends AKElement {
     @property({ type: Number })
     zoomPaddingPx = 100;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            css`
-                .pf-c-card,
-                ol-map {
-                    height: 24rem;
-                }
-                :host([theme="dark"]) ol-map {
-                    filter: invert(100%) hue-rotate(180deg);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        css`
+            .pf-c-card,
+            ol-map {
+                height: 24rem;
+            }
+            :host([theme="dark"]) ol-map {
+                filter: invert(100%) hue-rotate(180deg);
+            }
+        `,
+    ];
 
     updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {

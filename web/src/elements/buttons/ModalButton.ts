@@ -48,30 +48,28 @@ export class ModalButton extends AKElement {
 
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFModalBox,
-            PFForm,
-            PFTitle,
-            PFFormControl,
-            PFBullseye,
-            PFBackdrop,
-            PFPage,
-            PFCard,
-            PFContent,
-            MODAL_BUTTON_STYLES,
-            css`
-                .locked {
-                    overflow-y: hidden !important;
-                }
-                .pf-c-modal-box.pf-m-xl {
-                    --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFModalBox,
+        PFForm,
+        PFTitle,
+        PFFormControl,
+        PFBullseye,
+        PFBackdrop,
+        PFPage,
+        PFCard,
+        PFContent,
+        MODAL_BUTTON_STYLES,
+        css`
+            .locked {
+                overflow-y: hidden !important;
+            }
+            .pf-c-modal-box.pf-m-xl {
+                --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+            }
+        `,
+    ];
 
     closeModal() {
         this.resetForms();

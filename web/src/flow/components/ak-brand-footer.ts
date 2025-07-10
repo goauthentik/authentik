@@ -23,9 +23,7 @@ const styles = css`
 
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    static get styles() {
-        return [PFBase, PFList, styles];
-    }
+    static styles = [PFBase, PFList, styles];
 
     @property({ type: Array, attribute: false })
     links: FooterLink[] = [];

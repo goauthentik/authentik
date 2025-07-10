@@ -26,9 +26,15 @@ export class AuthenticatorEmailStage extends BaseStage<
     AuthenticatorEmailChallenge,
     AuthenticatorEmailChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

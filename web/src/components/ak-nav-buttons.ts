@@ -44,32 +44,30 @@ export class NavigationButtons extends AKElement {
     @property({ type: Number })
     notificationsCount = 0;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFDisplay,
-            PFBrand,
-            PFPage,
-            PFAvatar,
-            PFButton,
-            PFDrawer,
-            PFDropdown,
-            PFNotificationBadge,
-            css`
-                .pf-c-page__header-tools {
-                    display: flex;
-                }
-                :host([theme="dark"]) .pf-c-page__header-tools {
-                    color: var(--ak-dark-foreground) !important;
-                }
-                :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-                :host([theme="light"]) .pf-c-notification-badge__count,
-                :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
-                    color: var(--ak-global--Color--100) !important;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFDisplay,
+        PFBrand,
+        PFPage,
+        PFAvatar,
+        PFButton,
+        PFDrawer,
+        PFDropdown,
+        PFNotificationBadge,
+        css`
+            .pf-c-page__header-tools {
+                display: flex;
+            }
+            :host([theme="dark"]) .pf-c-page__header-tools {
+                color: var(--ak-dark-foreground) !important;
+            }
+            :host([theme="light"]) .pf-c-page__header-tools-item .fas,
+            :host([theme="light"]) .pf-c-notification-badge__count,
+            :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
+                color: var(--ak-global--Color--100) !important;
+            }
+        `,
+    ];
 
     async firstUpdated() {
         this.me = await me();

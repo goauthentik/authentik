@@ -21,21 +21,19 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFEmptyState,
-            PFButton,
-            PFContent,
-            PFSpacing,
-            css`
-                .cta {
-                    display: inline-block;
-                    font-weight: bold;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFEmptyState,
+        PFButton,
+        PFContent,
+        PFSpacing,
+        css`
+            .cta {
+                display: inline-block;
+                font-weight: bold;
+            }
+        `,
+    ];
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;

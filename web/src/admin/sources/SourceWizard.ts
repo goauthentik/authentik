@@ -24,9 +24,7 @@ import { SourcesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     sourceTypes: TypeCreate[] = [];

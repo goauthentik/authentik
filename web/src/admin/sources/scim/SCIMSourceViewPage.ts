@@ -48,19 +48,17 @@ export class SCIMSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: SCIMSource;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFForm,
-            PFFormControl,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

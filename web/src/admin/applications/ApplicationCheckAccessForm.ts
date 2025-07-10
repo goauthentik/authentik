@@ -48,9 +48,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         this.result = undefined;
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     renderResult(): TemplateResult {
         return html`

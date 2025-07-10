@@ -34,16 +34,23 @@ export class FlowViewPage extends AKElement {
     @state()
     flow!: Flow;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFDescriptionList,
+        PFButton,
+        PFCard,
+        PFContent,
+        PFGrid,
+        css`
             img.pf-icon {
                 max-height: 24px;
             }
             ak-tabs {
                 height: 100%;
             }
-        `);
-    }
+        `,
+    ];
 
     fetchFlow(slug: string) {
         new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {

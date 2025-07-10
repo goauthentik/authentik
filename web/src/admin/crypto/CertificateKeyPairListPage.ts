@@ -48,9 +48,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     @property()
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(

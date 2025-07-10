@@ -44,16 +44,15 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     @query("ak-select-table")
     selectTable!: SelectTable;
 
-    static get styles() {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card {
-                    margin-top: 1em;
-                }
-            `,
-        );
-    }
+    static styles = [
+        ...super.styles,
+        PFCard,
+        css`
+            .pf-c-card {
+                margin-top: 1em;
+            }
+        `,
+    ];
 
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {

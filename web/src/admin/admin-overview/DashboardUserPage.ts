@@ -17,23 +17,21 @@ import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFList,
-            PFDivider,
-            css`
-                .big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFList,
+        PFDivider,
+        css`
+            .big-graph-container {
+                height: 35em;
+            }
+            .card-container {
+                max-height: 10em;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User Statistics")}>

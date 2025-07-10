@@ -46,22 +46,20 @@ export class SCIMProviderViewPage extends AKElement {
     @state()
     provider?: SCIMProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFBanner,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFBanner,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

@@ -76,9 +76,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         return msg("Successfully created binding.");
     }
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent];
 
     async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,

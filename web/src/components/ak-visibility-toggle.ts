@@ -27,9 +27,7 @@ export interface VisibilityToggleProps {
  */
 @customElement("ak-visibility-toggle")
 export class VisibilityToggle extends AKElement implements VisibilityToggleProps {
-    static get styles() {
-        return [PFBase, PFButton];
-    }
+    static styles = [PFBase, PFButton];
 
     /**
      * @property

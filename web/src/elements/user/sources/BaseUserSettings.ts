@@ -15,7 +15,5 @@ export abstract class BaseUserSettings extends AKElement {
     @property()
     configureUrl?: string;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFForm, PFFormControl];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton, PFForm, PFFormControl];
 }

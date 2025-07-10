@@ -27,31 +27,29 @@ export class FlowCard extends AKElement {
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFTitle,
-            css`
-                slot[name="footer"],
-                slot[name="footer-band"] {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    flex-basis: 100%;
-                }
-                slot[name="footer-band"] {
-                    text-align: center;
-                    background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
-                    padding: 0;
-                    margin-top: 1em;
-                }
-                .pf-c-login__main-body:last-child {
-                    padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFTitle,
+        css`
+            slot[name="footer"],
+            slot[name="footer-band"] {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                flex-basis: 100%;
+            }
+            slot[name="footer-band"] {
+                text-align: center;
+                background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
+                padding: 0;
+                margin-top: 1em;
+            }
+            .pf-c-login__main-body:last-child {
+                padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
+            }
+        `,
+    ];
 
     render() {
         let inner = html`<slot></slot>`;

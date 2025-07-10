@@ -16,9 +16,7 @@ export abstract class TablePage<T> extends Table<T> {
     abstract pageDescription(): string | undefined;
     abstract pageIcon(): string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFPage, PFContent, PFSidebar);
-    }
+    static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
 
     renderSidebarBefore(): TemplateResult {
         return html``;
