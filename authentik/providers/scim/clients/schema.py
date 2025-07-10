@@ -92,7 +92,7 @@ class PatchOperation(BasePatchOperation):
     """PatchOperation with optional path"""
 
     op: PatchOp
-    path: str | None
+    path: str | None = None
 
 
 class SCIMError(BaseSCIMError):

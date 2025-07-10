@@ -116,6 +116,7 @@ class GroupsView(SCIMObjectView):
                 id=data.get("externalId") or str(uuid4()),
             )
         else:
+            connection.id = data.get("externalId", connection.id)
             connection.attributes = data
             connection.save()
         return connection
