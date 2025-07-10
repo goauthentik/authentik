@@ -24,30 +24,30 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
 
     //#endregion
 
-    #innerElement?: CustomFormElement;
+    protected innerElement?: CustomFormElement;
 
     //#region Public methods
 
     public override get form(): HTMLFormElement | null {
-        return this.#innerElement?.form || null;
+        return this.innerElement?.form || null;
     }
 
     public override async submit(event: SubmitEvent): Promise<unknown | undefined> {
-        return this.#innerElement?.submit(event);
+        return this.innerElement?.submit(event);
     }
 
     public override reset(): void {
-        this.#innerElement?.reset();
+        this.innerElement?.reset();
     }
 
     public override getSuccessMessage(): string {
-        return this.#innerElement?.getSuccessMessage() || "";
+        return this.innerElement?.getSuccessMessage() || "";
     }
 
     public override async requestUpdate(name?: PropertyKey, oldValue?: unknown): Promise<unknown> {
         const result = super.requestUpdate(name, oldValue);
 
-        this.#innerElement?.requestUpdate();
+        this.innerElement?.requestUpdate();
 
         return result;
     }
@@ -62,19 +62,19 @@ export abstract class ProxyForm<T = unknown> extends Form<T> {
             throw new TypeError("No element name provided");
         }
 
-        if (!this.#innerElement) {
-            this.#innerElement = document.createElement(elementName);
+        if (!this.innerElement) {
+            this.innerElement = document.createElement(elementName);
         }
 
-        this.#innerElement.viewportCheck = this.viewportCheck;
+        this.innerElement.viewportCheck = this.viewportCheck;
 
         for (const [key, value] of Object.entries(this.args)) {
-            this.#innerElement.setAttribute(key, String(value));
+            this.innerElement.setAttribute(key, String(value));
         }
 
-        Object.assign(this.#innerElement, this.args);
+        Object.assign(this.innerElement, this.args);
 
-        return html`${this.#innerElement}`;
+        return html`${this.innerElement}`;
     }
 
     //#endregion
