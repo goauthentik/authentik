@@ -37,7 +37,6 @@ entries:
     - attrs:
           attributes:
               env_null: !Env [bar-baz, null]
-              json_parse: !ParseJSON '{"foo": "bar"}'
               policy_pk1:
                   !Format [
                       "%s-%s",

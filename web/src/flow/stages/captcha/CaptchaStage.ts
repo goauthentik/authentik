@@ -1,6 +1,7 @@
 /// <reference types="@hcaptcha/types"/>
 /// <reference types="turnstile-types"/>
 import { renderStaticHTMLUnsafe } from "@goauthentik/common/purify";
+import "@goauthentik/elements/EmptyState";
 import { akEmptyState } from "@goauthentik/elements/EmptyState";
 import { bound } from "@goauthentik/elements/decorators/bound";
 import "@goauthentik/elements/forms/FormElement";
@@ -8,7 +9,6 @@ import { createIFrameHTMLWrapper } from "@goauthentik/elements/utils/iframe";
 import { ListenerController } from "@goauthentik/elements/utils/listenerController.js";
 import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { P, match } from "ts-pattern";
 
@@ -327,29 +327,35 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         // [hasError, isInteractive]
         // prettier-ignore
         return match([Boolean(this.error), Boolean(this.challenge?.interactive)])
-            .with([true,  P.any], () => akEmptyState({ icon: "fa-times" }, { heading: this.error }))
+            .with([true,  P.any], () => akEmptyState({ icon: "fa-times", header: this.error }))
             .with([false, true],  () => html`${this.captchaFrame}`)
-            .with([false, false], () => akEmptyState({ loading: true }, { heading: msg("Verifying...") }))
+            .with([false, false], () => akEmptyState({ loading: true, header: msg("Verifying...") }))
             .exhaustive();
     }
 
     renderMain() {
-        return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form">
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
-                >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
-                ${this.renderBody()}
-            </form>
-        </ak-flow-card>`;
+        return html`<header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                <form class="pf-c-form">
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
+                    >
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${msg("Not you?")}</a
+                            >
+                        </div>
+                    </ak-form-static>
+                    ${this.renderBody()}
+                </form>
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
     }
 
     render() {

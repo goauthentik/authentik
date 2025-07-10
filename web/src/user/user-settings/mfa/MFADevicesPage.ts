@@ -13,7 +13,7 @@ import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -130,14 +130,8 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`<div>${deviceTypeName(item)}</div>
-                ${item.extraDescription
-                    ? html`
-                          <pf-tooltip position="top" content=${item.externalId || ""}>
-                              <small>${item.extraDescription}</small>
-                          </pf-tooltip>
-                      `
-                    : nothing} `,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.created.getTime() > 0
                 ? html`<div>${formatElapsedTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`

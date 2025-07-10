@@ -48,7 +48,7 @@ The site is built using npm, below are some useful make commands:
 Be sure to run a formatting command before committing changes.
 :::
 
-## Documentation for integrations
+## Documentation for Integrations
 
 In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
 

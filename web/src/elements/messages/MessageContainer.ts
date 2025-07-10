@@ -80,9 +80,6 @@ export class MessageContainer extends AKElement {
     @property({ attribute: false })
     messages: APIMessage[] = [];
 
-    @property()
-    alignment: "top" | "bottom" = "top";
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -91,10 +88,6 @@ export class MessageContainer extends AKElement {
                 /* Fix spacing between messages */
                 ak-message {
                     display: block;
-                }
-                :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                    bottom: var(--pf-c-alert-group--m-toast--Top);
-                    top: unset;
                 }
             `,
         ];
@@ -127,18 +120,16 @@ export class MessageContainer extends AKElement {
 
     render(): TemplateResult {
         return html`<ul class="pf-c-alert-group pf-m-toast">
-            ${Array.from(this.messages)
-                .reverse()
-                .map((message) => {
-                    return html`<ak-message
-                        .message=${message}
-                        .onRemove=${(m: APIMessage) => {
-                            this.messages = this.messages.filter((v) => v !== m);
-                            this.requestUpdate();
-                        }}
-                    >
-                    </ak-message>`;
-                })}
+            ${this.messages.map((message) => {
+                return html`<ak-message
+                    .message=${message}
+                    .onRemove=${(m: APIMessage) => {
+                        this.messages = this.messages.filter((v) => v !== m);
+                        this.requestUpdate();
+                    }}
+                >
+                </ak-message>`;
+            })}
         </ul>`;
     }
 }

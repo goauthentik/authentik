@@ -1,36 +1,29 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "3.0.1",
+    "version": "2.0.0",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p .",
-        "prettier": "prettier --write .",
-        "prettier-check": "prettier --check ."
+        "build": "tsc -p ."
     },
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": "./index.js",
-        "./imports-plugin": "./lib/imports.js",
-        "./formatter": "./lib/formatter.js"
-    },
-    "dependencies": {
-        "format-imports": "^4.0.7"
-    },
+    "exports": "./index.js",
     "devDependencies": {
         "@goauthentik/tsconfig": "^1.0.1",
-        "@types/node": "^24.0.4",
-        "prettier": "^3.6.1",
-        "prettier-plugin-packagejson": "^2.5.16",
-        "typescript": "^5.8.3"
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "prettier": "^3.5.3",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-packagejson": "^2.5.14",
+        "typescript": "^5.8.2"
     },
     "peerDependencies": {
-        "prettier": "^3.6.1",
-        "prettier-plugin-packagejson": "^2.5.16"
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "prettier": "^3.5.3",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-packagejson": "^2.5.14"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=20.11"
     },
     "types": "./out/index.d.ts",
     "files": [
@@ -39,11 +32,6 @@
         "out/**/*"
     ],
     "prettier": "./index.js",
-    "overrides": {
-        "format-imports": {
-            "eslint": "^9.30.1"
-        }
-    },
     "publishConfig": {
         "access": "public"
     }

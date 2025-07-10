@@ -65,10 +65,10 @@ export class PolicyListPage extends TablePage<Policy> {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
-                    ? html`<ak-label color=${PFColor.Green} compact>
+                    ? html`<ak-label color=${PFColor.Green} ?compact=${true}>
                           ${msg(str`Assigned to ${item.boundTo} object(s).`)}
                       </ak-label>`
-                    : html`<ak-label color=${PFColor.Orange} compact>
+                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
                           ${msg("Warning: Policy is not assigned.")}
                       </ak-label>`}`,
             html`${item.verboseName}`,

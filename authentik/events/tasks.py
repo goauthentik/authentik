@@ -62,17 +62,20 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     policy_engine.mode = PolicyEngineMode.MODE_ANY
     policy_engine.empty_result = False
     policy_engine.use_cache = False
-    policy_engine.request.obj = event
     policy_engine.request.context["event"] = event
     policy_engine.build()
     result = policy_engine.result
     if not result.passing:
         return
 
+    if not trigger.group:
+        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
+        return
+
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
     for transport in trigger.transports.all():
-        for user in trigger.destination_users(event):
+        for user in trigger.group.users.all():
             LOGGER.debug("created notification")
             notification_transport.apply_async(
                 args=[

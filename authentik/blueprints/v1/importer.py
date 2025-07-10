@@ -384,7 +384,7 @@ class Importer:
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
-        for entry in self._import.iter_entries():
+        for entry in self._import.entries:
             model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)

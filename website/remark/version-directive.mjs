@@ -3,7 +3,6 @@
  *
  * @import { Root } from "mdast";
  */
-
 import { h } from "hastscript";
 import { coerce } from "semver";
 import { SKIP, visit } from "unist-util-visit";

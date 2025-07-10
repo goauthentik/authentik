@@ -8,18 +8,17 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.models import AuthenticatedSession, Session
-from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.user_login.middleware import (
-    SESSION_KEY_BINDING_NET,
     BoundSessionMiddleware,
     SessionBindingBroken,
     logout_extra,
@@ -32,7 +31,7 @@ class TestUserLoginStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
-        self.user = create_test_user()
+        self.user = create_test_admin_user()
 
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = UserLoginStage.objects.create(name="login")
@@ -248,21 +247,3 @@ class TestUserLoginStage(FlowTestCase):
                 request.session = self.client.session
                 request.user = self.user
                 logout_extra(request, cm.exception)
-
-    def test_session_binding_broken(self):
-        """Test session binding"""
-        self.client.force_login(self.user)
-        session = self.client.session
-        session[Session.Keys.LAST_IP] = "192.0.2.1"
-        session[SESSION_KEY_BINDING_NET] = NetworkBinding.BIND_ASN_NETWORK_IP
-        session.save()
-
-        res = self.client.get(reverse("authentik_api:user-me"))
-        self.assertEqual(res.status_code, 302)
-        self.assertEqual(
-            res.url,
-            reverse(
-                "authentik_flows:default-authentication",
-            )
-            + f"?{NEXT_ARG_NAME}={reverse("authentik_api:user-me")}",
-        )

@@ -43,6 +43,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 2. Click **Create**.
 
 3. Define the settings for the application:
+
     - **Name**: define a descriptive name of the application.
     - **Slug**: optionally define the internal application name used in URLs.
     - **Group**: optionally select a group that you want to have access to this application.

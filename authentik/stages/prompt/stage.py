@@ -1,6 +1,6 @@
 """Prompt Stage Logic"""
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from email.policy import Policy
 from types import MethodType
 from typing import Any
@@ -190,7 +190,7 @@ class ListPolicyEngine(PolicyEngine):
         self.__list = policies
         self.use_cache = False
 
-    def bindings(self):
+    def iterate_bindings(self) -> Iterator[PolicyBinding]:
         for policy in self.__list:
             yield PolicyBinding(
                 policy=policy,

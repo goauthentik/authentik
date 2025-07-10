@@ -10,7 +10,6 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { themeImage } from "#elements/utils/images";
 import "#flow/components/ak-brand-footer";
-import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/stages/FlowErrorStage";
@@ -63,11 +62,7 @@ export class FlowExecutor
         } else {
             document.title = this.brandingTitle;
         }
-        if (value?.flowInfo) {
-            this.flowInfo = value.flowInfo;
-        } else {
-            this.requestUpdate();
-        }
+        this.requestUpdate();
     }
 
     get challenge(): ChallengeTypes | undefined {
@@ -230,6 +225,9 @@ export class FlowExecutor
                 );
             }
             this.challenge = challenge;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
             return !this.challenge.responseErrors;
         } catch (exc: unknown) {
             this.errorMessage(exc as Error | ResponseError | FetchError);
@@ -258,6 +256,9 @@ export class FlowExecutor
                 );
             }
             this.challenge = challenge;
+            if (this.challenge.flowInfo) {
+                this.flowInfo = this.challenge.flowInfo;
+            }
         } catch (exc: unknown) {
             // Catch JSON or Update errors
             this.errorMessage(exc as Error | ResponseError | FetchError);
@@ -303,7 +304,7 @@ export class FlowExecutor
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-flow-card loading></ak-flow-card>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":

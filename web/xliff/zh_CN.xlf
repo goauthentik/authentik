@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
         <target>代表
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -660,6 +660,12 @@
       <trans-unit id="s6e09a19aa3952509">
         <source>Apps with most usage</source>
         <target>使用率最高的应用</target>
+        
+      </trans-unit>
+      <trans-unit id="sda5e1499f93146ad">
+        <source><x id="0" equiv-text="${ago}"/> days ago</source>
+        <target>
+        <x id="0" equiv-text="${ago}"/>天前</target>
         
       </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
@@ -2812,9 +2818,19 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>用户路径</target>
         
       </trans-unit>
+      <trans-unit id="sd18170637295bace">
+        <source>Addition User DN</source>
+        <target>额外的用户 DN</target>
+        
+      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>额外的用户 DN，添加到 Base DN 起始处。</target>
+        
+      </trans-unit>
+      <trans-unit id="s5944355d69db1fb8">
+        <source>Addition Group DN</source>
+        <target>额外的组 DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -3010,6 +3026,11 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s91f389c796720a81">
         <source>Load servers</source>
         <target>加载服务器</target>
+        
+      </trans-unit>
+      <trans-unit id="s24f405197ede5ebb">
+        <source>Re-authenticate with plex</source>
+        <target>使用 Plex 重新验证身份</target>
         
       </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
@@ -5703,6 +5724,11 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>已成功创建规则。</target>
         
       </trans-unit>
+      <trans-unit id="sa55ee64c5c51df0f">
+        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
+        <target>选择一组用于发送警告的用户。如果未选择组，则此规则被禁用。</target>
+        
+      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>传输</target>
@@ -5736,6 +5762,11 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>通知规则</target>
+        
+      </trans-unit>
+      <trans-unit id="s5140d157642d7362">
+        <source>None (rule disabled)</source>
+        <target>无（规则已禁用）</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -6098,9 +6129,19 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>下载私钥</target>
         
       </trans-unit>
+      <trans-unit id="s3a5fec3d73ac9edc">
+        <source>Create Certificate-Key Pair</source>
+        <target>创建证书密钥对</target>
+        
+      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>生成</target>
+        
+      </trans-unit>
+      <trans-unit id="sf9bddaf910f4eea5">
+        <source>Generate Certificate-Key Pair</source>
+        <target>生成证书密钥对</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -7501,6 +7542,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
   <target>配置 SCIM 提供程序</target>
+</trans-unit>
+<trans-unit id="s7513372fe60f6387">
+  <source>Event volume</source>
+  <target>事件容量</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -9232,6 +9277,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No app entitlements created.</source>
   <target>未创建应用程序授权。</target>
 </trans-unit>
+<trans-unit id="sdc8a8f29af6aa411">
+  <source>This application does currently not have any application entitlement defined.</source>
+  <target>此应用程序目前没有定义任何应用程序授权。</target>
+</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
   <target>创建授权</target>
@@ -9642,6 +9691,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
   <target>预览输入失败</target>
 </trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'。当选中“使用用户属性查询”时，此配置应该为用户属性，否则为组属性。</target>
+</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
   <target>使用用户属性查询</target>
@@ -9825,98 +9878,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
   <target>删除之前由此源提供，但现已缺失的用户和组。</target>
-</trans-unit>
-<trans-unit id="s0a2cb398b54a6207">
-  <source>Welcome.</source>
-  <target>欢迎。</target>
-</trans-unit>
-<trans-unit id="s4e1d2cb86cf5ecd0">
-  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
-  <target>包含组成员的字段。此字段的值与用户成员关系属性匹配。</target>
-</trans-unit>
-<trans-unit id="s6478025f3e0174fa">
-  <source>User membership attribute</source>
-  <target>用户成员关系属性</target>
-</trans-unit>
-<trans-unit id="s344be99cf5d36407">
-  <source>Attribute which matches the value of Group membership field.</source>
-  <target>匹配组成员关系字段值的属性。</target>
-</trans-unit>
-<trans-unit id="sfa6b7b105640e457">
-  <source>Additional User DN</source>
-  <target>额外的用户 DN</target>
-</trans-unit>
-<trans-unit id="s04bb32ec9f359507">
-  <source>Additional Group DN</source>
-  <target>额外的组 DN</target>
-</trans-unit>
-<trans-unit id="sb7af25ce6e30d61a">
-  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
-  <target>当前所选策略引擎模式为 <x id="0" equiv-text="${policyEngineMode.label}"/>：</target>
-</trans-unit>
-<trans-unit id="se1d2545eda4b1600">
-  <source>Import Existing Certificate-Key Pair</source>
-  <target>导入已有的证书密钥对</target>
-</trans-unit>
-<trans-unit id="sb3d5c0a0501669df">
-  <source>Generate New Certificate-Key Pair</source>
-  <target>生成新的证书密钥对</target>
-</trans-unit>
-<trans-unit id="sf9686d31d28fcf7d">
-  <source>Show field content</source>
-  <target>显示字段内容</target>
-</trans-unit>
-<trans-unit id="sb1b05a7573ab618c">
-  <source>Hide field content</source>
-  <target>隐藏字段内容</target>
-</trans-unit>
-<trans-unit id="s4f820625804ed29b">
-  <source>Re-authenticate with Plex</source>
-  <target>使用 Plex 重新验证身份</target>
-</trans-unit>
-<trans-unit id="s0433d667ea6eec1a">
-  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
-  <target>邀请名称必须是一个 Slug：仅允许小写字母、数字和连字符。</target>
-</trans-unit>
-<trans-unit id="s2e9d5ea88f02ae68">
-  <source>Select the group of users which the alerts are sent to. </source>
-  <target>选择一组用于发送警告的用户。</target>
-</trans-unit>
-<trans-unit id="se630f2ccd39bf9e6">
-  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
-  <target>如果未选择组，并且“发送通知给事件用户”被禁用，则此规则被禁用。</target>
-</trans-unit>
-<trans-unit id="s47966b2a708694e2">
-  <source>Send notification to event user</source>
-  <target>发送通知给事件用户</target>
-</trans-unit>
-<trans-unit id="sd30f00ff2135589c">
-  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>启用时，通知不仅会发送给触发事件的用户，还会发送到组中的任何用户。事件用户将总是第一个用户，要只向事件用户发送通知，则需要在通知传输中启用“发送一次”。</target>
-</trans-unit>
-<trans-unit id="sbd65aeeb8a3b9bbc">
-  <source>Maximum registration attempts</source>
-  <target>最大注册尝试次数</target>
-</trans-unit>
-<trans-unit id="s8495753cb15e8d8e">
-  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
-  <target>允许的最大注册尝试次数。设置为 0 则不限制次数。</target>
-</trans-unit>
-<trans-unit id="sab4db6a3bd6abc1e">
-  <source>This application does currently not have any application entitlements defined.</source>
-  <target>此应用程序目前没有定义任何应用程序授权。</target>
-</trans-unit>
-<trans-unit id="s7225aacf0eee94d2">
-  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
-  <target>以 <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/> 身份通过验证</target>
-</trans-unit>
-<trans-unit id="sa3ff409b84679db8">
-  <source>Remember device</source>
-  <target>记住设备</target>
-</trans-unit>
-<trans-unit id="s3b123cba0bf03f29">
-  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
-  <target>如果设置大于 0 的时长，则会以该时长存储一条 Cookie，使 authentik 知道用户是否从新设备登录。</target>
 </trans-unit>
     </body>
   </file>

@@ -1,7 +1,6 @@
 """Serializer for tenants models"""
 
 from django_tenants.utils import get_public_schema_name
-from rest_framework.fields import JSONField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 
@@ -12,8 +11,6 @@ from authentik.tenants.models import Tenant
 
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
-
-    footer_links = JSONField(required=False)
 
     class Meta:
         model = Tenant

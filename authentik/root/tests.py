@@ -4,11 +4,11 @@ from pathlib import Path
 from secrets import token_urlsafe
 from tempfile import gettempdir
 
-from django.test import TransactionTestCase
+from django.test import TestCase
 from django.urls import reverse
 
 
-class TestRoot(TransactionTestCase):
+class TestRoot(TestCase):
     """Test root application"""
 
     def setUp(self):

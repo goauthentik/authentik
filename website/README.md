@@ -1,11 +1,25 @@
-# authentik documentation source
+# Website
 
-This directory contains the source files for the [authentik technical documentation](https://docs.goauthentik.io/docs?utm_source=github) and the [authentik integration guides](https://docs.goauthentik.io/integrations?utm_source=github).
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
-Contributions are welcome! Please refer to our [contributor guidelines](https://docs.goauthentik.io/docs/developer-docs?utm_source=github) for details about contributing code or docs.
+## Installation
 
-For instructions to set up your local environment for building docs locally, refer to our [Docs development environment](https://docs.goauthentik.io/docs/developer-docs/setup/website-dev-environment?utm_source=github) page.
+```console
+npm ci
+```
 
-For instructions for writing the docs and then testing in your local build, plus tips on writing, links to our Style Guide and templates, see the [Writing documentation guide](https://docs.goauthentik.io/docs/developer-docs/docs/writing-documentation?utm_source=github).
+## Local Development
 
-To ensure a smooth review process, we encourage you to build the documentation locally to preview and test your documentation contributions. Be sure to test locally before opening a pull request. Let us know if you have any questions or want help with any part of the process.
+```console
+npm run watch
+```
+
+This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
+
+## Build
+
+```console
+npm run build
+```
+
+This command generates static content into the `build` directory and can be served using any static contents hosting service.

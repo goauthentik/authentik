@@ -18,7 +18,7 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTE, with_cte
+from django_cte import CTEQuerySet, With
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -136,7 +136,7 @@ class AttributesMixin(models.Model):
         return instance, False
 
 
-class GroupQuerySet(QuerySet):
+class GroupQuerySet(CTEQuerySet):
     def with_children_recursive(self):
         """Recursively get all groups that have the current queryset as parents
         or are indirectly related."""
@@ -165,9 +165,9 @@ class GroupQuerySet(QuerySet):
             )
 
         # Build the recursive query, see above
-        cte = CTE.recursive(make_cte)
+        cte = With.recursive(make_cte)
         # Return the result, as a usable queryset for Group.
-        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
+        return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
 
 
 class Group(SerializerModel, AttributesMixin):

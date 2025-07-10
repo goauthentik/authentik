@@ -173,7 +173,6 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             {
                 "auth_method": "auth_mfa",
                 "auth_method_args": {
-                    "known_device": False,
                     "mfa_devices": [
                         {
                             "app": "authentik_stages_authenticator_duo",
@@ -181,7 +180,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                             "name": "",
                             "pk": duo_device.pk,
                         }
-                    ],
+                    ]
                 },
                 "http_request": {
                     "args": {},

@@ -1,4 +1,4 @@
-import { createESLintPackageConfig, DefaultIgnorePatterns } from "@goauthentik/eslint-config";
+import { DefaultIgnorePatterns, createESLintPackageConfig } from "@goauthentik/eslint-config";
 
 // @ts-check
 

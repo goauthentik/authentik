@@ -36,6 +36,7 @@ Next, you need to add property mappings for each remote machine you want to acce
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization > Property Mappings** and click **Create**.
+
     - **Select Type**: RAC Property Mappings
     - **Create RAC Property Mapping**:
         - **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
@@ -60,6 +61,7 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 2. Navigate to **Applications > Providers**.
 3. Click the **Edit** button on the RAC provider that you previously created.
 4. On the Provider page, under **Endpoints**, click **Create**, and provide the following settings:
+
     - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC).
     - **Protocol**: select the appropriate protocol.
     - **Host**: enter the host name or IP address of the remote machine.

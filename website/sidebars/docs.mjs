@@ -3,7 +3,6 @@
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs-types"
  */
-
 import apiReference from "../docs/developer-docs/api/reference/sidebar";
 import { generateVersionDropdown } from "../src/utils.js";
 
@@ -409,9 +408,21 @@ const items = [
                 type: "category",
                 label: "Interfaces",
                 items: [
-                    "customize/interfaces/flow/index",
-                    "customize/interfaces/user/index",
-                    "customize/interfaces/admin/index",
+                    {
+                        type: "category",
+                        label: "Flow",
+                        items: ["customize/interfaces/flow/customization"],
+                    },
+                    {
+                        type: "category",
+                        label: "User",
+                        items: ["customize/interfaces/user/customization"],
+                    },
+                    {
+                        type: "category",
+                        label: "Admin",
+                        items: ["customize/interfaces/admin/customization"],
+                    },
                 ],
             },
             {

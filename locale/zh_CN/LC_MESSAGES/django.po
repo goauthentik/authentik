@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-05 00:10+0000\n"
+"POT-Creation-Date: 2025-05-28 11:25+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -116,6 +116,10 @@ msgstr "品牌"
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "用户没有访问此应用程序的权限。"
+
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr "额外描述不可用"
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
@@ -336,10 +340,6 @@ msgstr "令牌"
 #: authentik/core/models.py
 msgid "View token's key"
 msgstr "查看令牌密钥"
-
-#: authentik/core/models.py
-msgid "Set a token's key"
-msgstr "设置令牌密钥"
 
 #: authentik/core/models.py
 msgid "Property Mapping"
@@ -775,12 +775,6 @@ msgid ""
 msgstr "定义此通知应该发送到哪些用户组。如果留空，则不会发送通知。"
 
 #: authentik/events/models.py
-msgid ""
-"When enabled, notification will be sent to user the user that triggered the "
-"event.When destination_group is configured, notification is sent to both."
-msgstr "启用时，通知会被发送到触发事件的用户。当配置了 destination_group 时，通知也会同时发送到对应组。"
-
-#: authentik/events/models.py
 msgid "Notification Rule"
 msgstr "通知规则"
 
@@ -989,8 +983,8 @@ msgstr "正在同步组"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of {object_type}"
-msgstr "正在同步 {object_type} 页面 {page}"
+msgid "Syncing page {page} of groups"
+msgstr "正在同步群组页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
@@ -2263,10 +2257,6 @@ msgstr "额外的组 DN"
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
 msgstr "将与此筛选器匹配的对象视为用户。"
-
-#: authentik/sources/ldap/models.py
-msgid "Attribute which matches the value of `group_membership_field`."
-msgstr "匹配 `group_membership_field` 值的属性。"
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
@@ -3558,15 +3548,6 @@ msgstr ""
 "表示不显示“记住我”选项。（格式：hours=-1;minutes=-2;seconds=-3）"
 
 #: authentik/stages/user_login/models.py
-msgid ""
-"When set to a non-zero value, authentik will save a cookie with a longer "
-"expiry,to remember the device the user is logging in from. (Format: "
-"hours=-1;minutes=-2;seconds=-3)"
-msgstr ""
-"当设置为非零值时，authentik 将会以更长的过期时间保存 "
-"Cookie，以记住用户的登录设备。（格式：hours=-1;minutes=-2;seconds=-3）"
-
-#: authentik/stages/user_login/models.py
 msgid "User Login Stage"
 msgstr "用户登录阶段"
 
@@ -3577,6 +3558,10 @@ msgstr "用户登录阶段"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "没有待定用户可以登录。"
+
+#: authentik/stages/user_login/stage.py
+msgid "Successfully logged in!"
+msgstr "已成功登录！"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"

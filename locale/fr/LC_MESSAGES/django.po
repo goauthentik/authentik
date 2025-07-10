@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-04 00:12+0000\n"
+"POT-Creation-Date: 2025-05-28 11:25+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1065,8 +1065,8 @@ msgstr "Synchronisation des groupes"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of {object_type}"
-msgstr "Synchronisation de la page {page} de {object_type}"
+msgid "Syncing page {page} of groups"
+msgstr "Synchronisation de la page {page} de groupes"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
@@ -2476,10 +2476,6 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "Les objets appliqués à ce filtre seront des utilisateurs."
 
 #: authentik/sources/ldap/models.py
-msgid "Attribute which matches the value of `group_membership_field`."
-msgstr "Attribut qui correspond à la valeur de `group_membership_field`."
-
-#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr "Champ qui contient les membres d'un groupe."
 
@@ -3878,6 +3874,10 @@ msgstr "Étapes de connexion utilisateur"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Pas d'utilisateurs en attente à connecter."
+
+#: authentik/stages/user_login/stage.py
+msgid "Successfully logged in!"
+msgstr "Connexion réussie !"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"

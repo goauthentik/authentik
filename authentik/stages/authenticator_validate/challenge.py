@@ -1,7 +1,6 @@
 """Validation stage challenge checking"""
 
 from json import loads
-from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.http import HttpRequest
@@ -9,7 +8,7 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField, ChoiceField, DateTimeField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import options_to_json
@@ -18,7 +17,7 @@ from webauthn.authentication.verify_authentication_response import verify_authen
 from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
-from webauthn.helpers.structs import PublicKeyCredentialType, UserVerificationRequirement
+from webauthn.helpers.structs import UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
@@ -37,29 +36,27 @@ from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
-from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
 LOGGER = get_logger()
-if TYPE_CHECKING:
-    from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
 
 
 class DeviceChallenge(PassiveSerializer):
     """Single device challenge"""
 
-    device_class = ChoiceField(choices=DeviceClasses.choices)
+    device_class = CharField()
     device_uid = CharField()
     challenge = JSONDictField()
     last_used = DateTimeField(allow_null=True)
 
 
 def get_challenge_for_device(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage, device: Device
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: Device
 ) -> dict:
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
-        return get_webauthn_challenge(stage_view, stage, device)
+        return get_webauthn_challenge(request, stage, device)
     if isinstance(device, EmailDevice):
         return {"email": mask_email(device.email)}
     # Code-based challenges have no hints
@@ -67,30 +64,26 @@ def get_challenge_for_device(
 
 
 def get_webauthn_challenge_without_user(
-    stage_view: "AuthenticatorValidateStageView", stage: AuthenticatorValidateStage
+    request: HttpRequest, stage: AuthenticatorValidateStage
 ) -> dict:
     """Same as `get_webauthn_challenge`, but allows any client device. We can then later check
     who the device belongs to."""
-    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
+    request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
     authentication_options = generate_authentication_options(
-        rp_id=get_rp_id(stage_view.request),
+        rp_id=get_rp_id(request),
         allow_credentials=[],
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
-    stage_view.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = (
-        authentication_options.challenge
-    )
+    request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
     return loads(options_to_json(authentication_options))
 
 
 def get_webauthn_challenge(
-    stage_view: "AuthenticatorValidateStageView",
-    stage: AuthenticatorValidateStage,
-    device: WebAuthnDevice | None = None,
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: WebAuthnDevice | None = None
 ) -> dict:
     """Send the client a challenge that we'll check later"""
-    stage_view.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
+    request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
 
     allowed_credentials = []
 
@@ -101,14 +94,12 @@ def get_webauthn_challenge(
             allowed_credentials.append(user_device.descriptor)
 
     authentication_options = generate_authentication_options(
-        rp_id=get_rp_id(stage_view.request),
+        rp_id=get_rp_id(request),
         allow_credentials=allowed_credentials,
         user_verification=UserVerificationRequirement(stage.webauthn_user_verification),
     )
 
-    stage_view.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = (
-        authentication_options.challenge
-    )
+    request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
     return loads(options_to_json(authentication_options))
 
@@ -155,14 +146,8 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
 def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
     """Validate WebAuthn Challenge"""
     request = stage_view.request
-    challenge = stage_view.executor.plan.context.get(PLAN_CONTEXT_WEBAUTHN_CHALLENGE)
+    challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
     stage: AuthenticatorValidateStage = stage_view.executor.current_stage
-    if "MinuteMaid" in request.META.get("HTTP_USER_AGENT", ""):
-        # Workaround for Android sign-in, when signing into Google Workspace on android while
-        # adding the account to the system (not in Chrome), for some reason `type` is not set
-        # so in that case we fall back to `public-key`
-        # since that's the only option we support anyways
-        data.setdefault("type", PublicKeyCredentialType.PUBLIC_KEY)
     try:
         credential = parse_authentication_credential_json(data)
     except InvalidJSONStructure as exc:

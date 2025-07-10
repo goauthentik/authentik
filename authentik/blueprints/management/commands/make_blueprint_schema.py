@@ -72,33 +72,20 @@ class Command(BaseCommand):
                     "additionalProperties": True,
                 },
                 "entries": {
-                    "anyOf": [
-                        {
-                            "type": "array",
-                            "items": {"$ref": "#/$defs/blueprint_entry"},
-                        },
-                        {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "array",
-                                "items": {"$ref": "#/$defs/blueprint_entry"},
-                            },
-                        },
-                    ],
+                    "type": "array",
+                    "items": {
+                        "oneOf": [],
+                    },
                 },
             },
-            "$defs": {"blueprint_entry": {"oneOf": []}},
+            "$defs": {},
         }
 
-    def add_arguments(self, parser):
-        parser.add_argument("--file", type=str)
-
     @no_translations
-    def handle(self, *args, file: str, **options):
+    def handle(self, *args, **options):
         """Generate JSON Schema for blueprints"""
         self.build()
-        with open(file, "w") as _schema:
-            _schema.write(dumps(self.schema, indent=4, default=Command.json_default))
+        self.stdout.write(dumps(self.schema, indent=4, default=Command.json_default))
 
     @staticmethod
     def json_default(value: Any) -> Any:
@@ -125,7 +112,7 @@ class Command(BaseCommand):
                 }
             )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
-            self.schema["$defs"]["blueprint_entry"]["oneOf"].append(
+            self.schema["properties"]["entries"]["items"]["oneOf"].append(
                 self.template_entry(model_path, model, serializer)
             )
 
@@ -147,7 +134,7 @@ class Command(BaseCommand):
                 "id": {"type": "string"},
                 "state": {
                     "type": "string",
-                    "enum": sorted([s.value for s in BlueprintEntryDesiredState]),
+                    "enum": [s.value for s in BlueprintEntryDesiredState],
                     "default": "present",
                 },
                 "conditions": {"type": "array", "items": {"type": "boolean"}},
@@ -218,7 +205,7 @@ class Command(BaseCommand):
                 "type": "object",
                 "required": ["permission"],
                 "properties": {
-                    "permission": {"type": "string", "enum": sorted(perms)},
+                    "permission": {"type": "string", "enum": perms},
                     "user": {"type": "integer"},
                     "role": {"type": "string"},
                 },

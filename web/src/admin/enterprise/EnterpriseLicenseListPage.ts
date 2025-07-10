@@ -109,8 +109,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()}
-                      ><span>${msg("No licenses found.")}</span>
+                : html`<ak-empty-state
+                      icon=${this.pageIcon()}
+                      header="${msg("No licenses found.")}"
+                  >
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>

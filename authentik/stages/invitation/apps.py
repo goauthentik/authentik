@@ -1,12 +1,11 @@
 """authentik invitation stage app config"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikStageInvitationConfig(ManagedAppConfig):
+class AuthentikStageInvitationConfig(AppConfig):
     """authentik invitation stage config"""
 
     name = "authentik.stages.invitation"
     label = "authentik_stages_invitation"
     verbose_name = "authentik Stages.Invitation"
-    default = True

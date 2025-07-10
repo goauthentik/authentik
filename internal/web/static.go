@@ -31,6 +31,8 @@ func (ws *WebServer) configureStatic() {
 		return h
 	}
 
+	helpHandler := http.FileServer(http.Dir("./website/help/"))
+
 	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
 		distFs,
 		"static/dist/",
@@ -75,6 +77,13 @@ func (ws *WebServer) configureStatic() {
 			config.Get().Web.Path,
 		))
 	}
+
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/help/").Handler(pathStripper(
+		helpHandler,
+		config.Get().Web.Path,
+		"/if/help/",
+	))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/help").Handler(http.RedirectHandler(fmt.Sprintf("%sif/help/", config.Get().Web.Path), http.StatusMovedPermanently))
 
 	staticRouter.PathPrefix(config.Get().Web.Path).Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}

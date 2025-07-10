@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -64,45 +64,57 @@ export class AuthenticatorDuoStage extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                <ak-form-static
-                    class="pf-c-form__group"
-                    userAvatar="${this.challenge.pendingUserAvatar}"
-                    user=${this.challenge.pendingUser}
+        if (!this.challenge) {
+            return html`<ak-empty-state loading> </ak-empty-state>`;
+        }
+        return html`<header class="pf-c-login__main-header">
+                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+            </header>
+            <div class="pf-c-login__main-body">
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
                 >
-                    <div slot="link">
-                        <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                            >${msg("Not you?")}</a
-                        >
-                    </div>
-                </ak-form-static>
-                <img src=${this.challenge.activationBarcode} alt=${msg("Duo activation QR code")} />
-                <p>
-                    ${msg(
-                        "Alternatively, if your current device has Duo installed, click on this link:",
-                    )}
-                </p>
-                <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
-
-                <div class="pf-c-form__group pf-m-action">
-                    <button
-                        type="button"
-                        class="pf-c-button pf-m-primary pf-m-block"
-                        @click=${() => {
-                            this.checkEnrollStatus();
-                        }}
+                    <ak-form-static
+                        class="pf-c-form__group"
+                        userAvatar="${this.challenge.pendingUserAvatar}"
+                        user=${this.challenge.pendingUser}
                     >
-                        ${msg("Check status")}
-                    </button>
-                </div>
-            </form>
-        </ak-flow-card>`;
+                        <div slot="link">
+                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
+                                >${msg("Not you?")}</a
+                            >
+                        </div>
+                    </ak-form-static>
+                    <img
+                        src=${this.challenge.activationBarcode}
+                        alt=${msg("Duo activation QR code")}
+                    />
+                    <p>
+                        ${msg(
+                            "Alternatively, if your current device has Duo installed, click on this link:",
+                        )}
+                    </p>
+                    <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
+
+                    <div class="pf-c-form__group pf-m-action">
+                        <button
+                            type="button"
+                            class="pf-c-button pf-m-primary pf-m-block"
+                            @click=${() => {
+                                this.checkEnrollStatus();
+                            }}
+                        >
+                            ${msg("Check status")}
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
     }
 }
 

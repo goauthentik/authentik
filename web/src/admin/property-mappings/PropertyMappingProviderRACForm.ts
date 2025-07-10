@@ -62,7 +62,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("General settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

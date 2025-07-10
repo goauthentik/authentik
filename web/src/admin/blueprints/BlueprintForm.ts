@@ -65,7 +65,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -133,7 +133,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   .selected=${(item: BlueprintFile): boolean => {
                                       return this.instance?.path === item.path;
                                   }}
-                                  blankable
+                                  ?blankable=${true}
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`

@@ -21,6 +21,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
     :::
 
     You can set the session to expire after any duration using the syntax of `hours=1,minutes=2,seconds=3`. The following keys are allowed:
+
     - Microseconds
     - Milliseconds
     - Seconds

@@ -105,10 +105,13 @@ When using authentik without a reverse proxy, select the certificate authorities
 4. In the Admin interface, navigate to **Flows -> Stages**.
 
 5. Click **Create**, and select **Mutual TLS Stage**, and in the **New stage** box, define the following fields:
+
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 
     - **Stage-specific settings**
+
         - **Mode**: Configure the mode this stage operates in.
+
             - **Certificate optional**: When no certificate is provided by the user or the reverse proxy, the flow will continue to the next stage.
             - **Certificate required**: When no certificate is provided, the flow ends with an error message.
 
