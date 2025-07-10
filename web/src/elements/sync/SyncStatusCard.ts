@@ -25,14 +25,15 @@ export class SyncStatusTable extends Table<SystemTask> {
 
     expandable = true;
 
-    static get styles() {
-        return super.styles.concat(css`
+    static styles = [
+        ...super.styles,
+        css`
             code:not(:last-of-type)::after {
                 content: "-";
                 margin: 0 0.25rem;
             }
-        `);
-    }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
         if (this.tasks.length === 1) {
@@ -107,9 +108,7 @@ export class SyncStatusCard extends AKElement {
     @property({ attribute: false })
     triggerSync!: () => Promise<unknown>;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFCard, PFTable];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton, PFCard, PFTable];
 
     firstUpdated() {
         this.loading = true;

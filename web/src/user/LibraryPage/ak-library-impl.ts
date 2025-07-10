@@ -40,9 +40,7 @@ import type { PageUIConfig } from "./types.js";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static get styles() {
-        return styles;
-    }
+    static styles = styles;
 
     /**
      * Controls showing the "Switch to Admin" button.

@@ -9,15 +9,14 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 
+import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css.js";
 import { type ApplicationWizardState, type OneOfProvider } from "../../types";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    static get styles() {
-        return AwadStyles;
-    }
+    static styles: CSSResult[] = [...AwadStyles];
 
     label = "";
 

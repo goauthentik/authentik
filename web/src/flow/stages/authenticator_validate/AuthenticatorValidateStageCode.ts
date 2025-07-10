@@ -18,8 +18,9 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .icon-description {
                 display: flex;
             }
@@ -28,8 +29,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 padding: 0.25em;
                 padding-right: 0.5em;
             }
-        `);
-    }
+        `,
+    ];
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {

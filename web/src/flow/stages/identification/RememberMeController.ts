@@ -9,14 +9,14 @@ import type { IdentificationStage } from "./IdentificationStage.js";
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
 
 export class AkRememberMeController implements ReactiveController {
-    static get styles() {
-        return css`
+    static styles = [
+        css`
             .remember-me-switch {
                 display: inline-block;
                 padding-top: 0.25rem;
             }
-        `;
-    }
+        `,
+    ];
 
     username?: string;
 

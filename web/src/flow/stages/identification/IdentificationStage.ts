@@ -56,35 +56,33 @@ export class IdentificationStage extends BaseStage<
     @state()
     captchaRefreshedAt = new Date();
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlert,
-            PFInputGroup,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AkRememberMeController.styles,
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFInputGroup,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        ...AkRememberMeController.styles,
+        css`
+            /* login page's icons */
+            .pf-c-login__main-footer-links-item button {
+                background-color: transparent;
+                border: 0;
+                display: flex;
+                align-items: stretch;
+            }
+            .pf-c-login__main-footer-links-item img {
+                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                width: 100px;
+                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                height: 100%;
+                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+            }
+        `,
+    ];
 
     constructor() {
         super();

@@ -60,13 +60,14 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
-    static get styles() {
-        return super.styles.concat(css`
+    static styles = [
+        ...super.styles,
+        css`
             ak-array-input {
                 width: 100%;
             }
-        `);
-    }
+        `,
+    ];
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
