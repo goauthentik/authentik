@@ -194,49 +194,49 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 
 ## Worker settings
 
-#### `AUTHENTIK_WORKER__PROCESSES`
+##### `AUTHENTIK_WORKER__PROCESSES`
 
 Configure how many Dramatiq worker processes should be started.
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 
-#### `AUTHENTIK_WORKER__THREADS`
+##### `AUTHENTIK_WORKER__THREADS`
 
 Configure how many Dramatiq threads are started per worker.
 
 Defaults to 1.
 
-#### `AUTHENTIK_WORKER__CONSUMER_LISTEN_TIMEOUT`
+##### `AUTHENTIK_WORKER__CONSUMER_LISTEN_TIMEOUT`
 
 Configure how long a worker waits for a PostgreSQL `LISTEN` notification.
 
 Defaults to `seconds=30`.
 
-#### `AUTHENTIK_WORKER__TASK_MAX_RETRIES`
+##### `AUTHENTIK_WORKER__TASK_MAX_RETRIES`
 
 Configure how many times a failing task will be retried before abandoning.
 
 Defaults to 20.
 
-#### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
+##### `AUTHENTIK_WORKER__TASK_DEFAULT_TIME_LIMIT`
 
 Configure the default duration a task can run for before it is aborted. Some tasks will override this setting based on other settings, such as LDAP source synchronization tasks.
 
 Defaults to `minutes=10`.
 
-#### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
+##### `AUTHENTIK_WORKER__TASK_PURGE_INTERVAL`
 
 Configure the interval at which old tasks are cleaned up.
 
 Defaults to `days=1`.
 
-#### `AUTHENTIK_WORKER__TASK_EXPIRATION`
+##### `AUTHENTIK_WORKER__TASK_EXPIRATION`
 
 Configure how long tasks are kept in the database before they are deleted.
 
 Defaults to `days=30`.
 
-#### `AUTHENTIK_WORKER__SCHEDULER_INTERVAL`
+##### `AUTHENTIK_WORKER__SCHEDULER_INTERVAL`
 
 Configure how often the task scheduler runs.
 
@@ -244,18 +244,71 @@ Defaults to `seconds=60`.
 
 ## Listen Settings
 
-- `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
-- `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
-- `AUTHENTIK_LISTEN__LDAP`: Listening address:port (e.g. `0.0.0.0:3389`) for LDAP (Applies to LDAP outpost)
-- `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
-- `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
-- `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
-- `AUTHENTIK_LISTEN__DEBUG_PY`: Listening address:port (e.g. `0.0.0.0:9901`) for Python debugging server (Applies to Server, see [Debugging](../../developer-docs/setup/debugging.md))
-- `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of comma-separated CIDRs that proxy headers should be accepted from (Applies to Server)
+##### `AUTHENTIK_LISTEN__HTTP`
 
-    Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
+Listening address:port for HTTP.
 
-    Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
+Applies to the Server, the Worker, and Proxy outposts.
+
+Defaults to `0.0.0.0:9000`.
+
+##### `AUTHENTIK_LISTEN__HTTPS`
+
+Listening address:port for HTTPS.
+
+Applies to the Server and Proxy outposts.
+
+Defaults to `0.0.0.0:9443`.
+
+##### `AUTHENTIK_LISTEN__LDAP`
+
+Listening address:port for LDAP.
+
+Applies to LDAP outposts.
+
+Defaults to `0.0.0.0:3389`.
+
+##### `AUTHENTIK_LISTEN__LDAPS`
+
+Listening address:port for LDAPS.
+
+Applies to LDAP outposts.
+
+Defaults to `0.0.0.0:6636`.
+
+##### `AUTHENTIK_LISTEN__METRICS`
+
+Listening address:port for Prometheus metrics.
+
+Applies to all.
+
+Defaults to `0.0.0.0:9300`.
+
+##### `AUTHENTIK_LISTEN__DEBUG`
+
+Listening address:port for Go Debugging metrics.
+
+Applies to all, except the worker.
+
+Defaults to `0.0.0.0:9900`.
+
+##### `AUTHENTIK_LISTEN__DEBUG_PY`
+
+Listening address:port for Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+
+Applies to the Server and the Worker.
+
+Defaults to `0.0.0.0:9901`.
+
+##### `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`
+
+List of comma-separated CIDRs that proxy headers should be accepted from.
+
+Applies to the Server.
+
+Requests directly coming from one an address within a CIDR specified here are able to set proxy headers, such as `X-Forwarded-For`. Requests coming from other addresses will not be able to set these headers.
+
+Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
 ## Media Storage Settings
 
