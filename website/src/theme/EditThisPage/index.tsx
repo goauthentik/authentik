@@ -1,6 +1,6 @@
 import Link from "@docusaurus/Link";
-import Translate from "@docusaurus/Translate";
 import { ThemeClassNames } from "@docusaurus/theme-common";
+import Translate from "@docusaurus/Translate";
 import type { Props } from "@theme/EditThisPage";
 import React, { type ReactNode } from "react";
 

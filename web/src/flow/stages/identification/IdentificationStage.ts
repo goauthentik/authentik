@@ -310,7 +310,7 @@ export class IdentificationStage extends BaseStage<
                       ></ak-stage-captcha>
                   `
                 : nothing}
-            <div class="pf-c-form__group pf-m-action">
+            <div class="pf-c-form__group ${this.challenge.captchaStage ? "" : "pf-m-action"}">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>

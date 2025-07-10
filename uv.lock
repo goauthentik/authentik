@@ -291,7 +291,7 @@ requires-dist = [
     { name = "fido2", specifier = "==2.0.0" },
     { name = "geoip2", specifier = "==5.1.0" },
     { name = "geopy", specifier = "==2.4.1" },
-    { name = "google-api-python-client", specifier = "==2.175.0" },
+    { name = "google-api-python-client", specifier = "==2.176.0" },
     { name = "gssapi", specifier = "==1.9.0" },
     { name = "gunicorn", specifier = "==23.0.0" },
     { name = "jsonpatch", specifier = "==1.33" },
@@ -299,7 +299,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==33.1.0" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.0.0" },
-    { name = "msgraph-sdk", specifier = "==1.36.0" },
+    { name = "msgraph-sdk", specifier = "==1.37.0" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==3.5.1" },
@@ -1399,7 +1399,7 @@ wheels = [
 
 [[package]]
 name = "google-api-python-client"
-version = "2.175.0"
+version = "2.176.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-api-core" },
@@ -1408,9 +1408,9 @@ dependencies = [
     { name = "httplib2" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/14/ecabbf7376afe500282ba83fc0015d4bc33a00fd73d189ca66437d17acae/google_api_python_client-2.175.0.tar.gz", hash = "sha256:f6d5b5c0141194a72cebef33feb1377fa668b3f14dc90a2fae258dbbbdcdb30c", size = 13143355, upload-time = "2025-07-04T01:02:28.364Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3e/38/daf70faf6d05556d382bac640bc6765f09fcfb9dfb51ac4a595d3453a2a9/google_api_python_client-2.176.0.tar.gz", hash = "sha256:2b451cdd7fd10faeb5dd20f7d992f185e1e8f4124c35f2cdcc77c843139a4cf1", size = 13154773, upload-time = "2025-07-08T18:07:10.354Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/b8/2800f1aee399ea325fa675244de5178ab938485506ded2d17acf73e23cdb/google_api_python_client-2.175.0-py3-none-any.whl", hash = "sha256:5f4313a914d11d2b0840d1daa336caef3f53e28e8234077c139f7b236fba9622", size = 13667772, upload-time = "2025-07-04T01:02:25.764Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/2c/758f415a19a12c3c6d06902794b0dd4c521d912a59b98ab752bba48812df/google_api_python_client-2.176.0-py3-none-any.whl", hash = "sha256:e22239797f1d085341e12cd924591fc65c56d08e0af02549d7606092e6296510", size = 13678445, upload-time = "2025-07-08T18:07:07.799Z" },
 ]
 
 [[package]]
@@ -2067,7 +2067,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.36.0"
+version = "1.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2077,9 +2077,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/df/c5d078fc9c866f41c9b308673de336cc1b9a3d8852cf1f530235e9b4fc97/msgraph_sdk-1.36.0.tar.gz", hash = "sha256:40f8e1a21d8726fdef5b125d5f2757847df03c591a1d34b9992cc170a9cc5feb", size = 5971755, upload-time = "2025-07-02T12:52:58.789Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a5/97/c3da48fa964afa07f5dd644d0fca57dbf6bb6a254c6741e10e1fb1552195/msgraph_sdk-1.37.0.tar.gz", hash = "sha256:92ccafe9f3d10f92e3d24794ff77924e4cc4f03202278595d3221f8cf1220d2f", size = 6001375, upload-time = "2025-07-08T12:33:35.195Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b0/9c/2305e270e26894c4b3358166324e1e8103005bc6930fa3d734286409d179/msgraph_sdk-1.36.0-py3-none-any.whl", hash = "sha256:9b6a1c26ef2c0780bfa0efc4aac60dcbf68d31b7f935ae1da52f6180cddbc7d4", size = 24503193, upload-time = "2025-07-02T12:52:56.191Z" },
+    { url = "https://files.pythonhosted.org/packages/77/22/8985a3fee5ed411f12775541898b2a9d470afd230419b709b5318da84556/msgraph_sdk-1.37.0-py3-none-any.whl", hash = "sha256:e51580cb12b78984280cf3094892e254f34405c9bd6450931b0baa91d7dad8f6", size = 24606234, upload-time = "2025-07-08T12:33:31.986Z" },
 ]
 
 [[package]]

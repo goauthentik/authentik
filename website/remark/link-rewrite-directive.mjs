@@ -1,6 +1,7 @@
 /**
  * @import { Root } from "mdast";
  */
+
 import { visit } from "unist-util-visit";
 
 /**

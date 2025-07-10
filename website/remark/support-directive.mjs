@@ -3,6 +3,7 @@
  *
  * @import { Root } from "mdast";
  */
+
 import { h } from "hastscript";
 import { SKIP, visit } from "unist-util-visit";
 
