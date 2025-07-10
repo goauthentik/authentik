@@ -4,8 +4,7 @@ import {
     type ApplicationWizardStateUpdate,
 } from "./types.js";
 
-import { KeyUnknown, serializeForm } from "#elements/forms/Form";
-import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { serializeForm } from "#elements/forms/Form";
 
 import {
     NavigationEventInit,
@@ -21,7 +20,7 @@ import { ValidationError } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
-export class ApplicationWizardStep extends WizardStep {
+export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardStep {
     static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
@@ -37,14 +36,11 @@ export class ApplicationWizardStep extends WizardStep {
     @query("form")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues(): T {
+        return serializeForm<T>([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     protected removeErrors(

@@ -11,8 +11,7 @@ import { type ApplicationWizardState, type OneOfProvider } from "../../types.js"
 import { camelToSnake } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
-import { KeyUnknown, serializeForm } from "#elements/forms/Form";
-import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { serializeForm } from "#elements/forms/Form";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
@@ -31,14 +30,11 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     @query("form#providerform")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues() {
+        return serializeForm([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     get valid() {

@@ -29,18 +29,9 @@ export class OAuth2DeviceCode extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                <p>${msg("Enter the code shown on your device.")}</p>
-                <ak-form-element
-                    label="${msg("Code")}"
-                    required
-                    class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {}).code}
+                <form
+                    class="pf-c-form"
+                    @submit=${this.submitForm}
                 >
                     <input
                         type="text"

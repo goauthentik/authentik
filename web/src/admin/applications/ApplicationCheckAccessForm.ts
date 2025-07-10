@@ -16,7 +16,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -27,7 +27,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     application!: Application;
 
     @property({ attribute: false })
-    result?: PolicyTestResult;
+    result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
     request?: number;
@@ -45,9 +45,9 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return (this.result = result);
     }
 
-    resetForm(): void {
-        super.resetForm();
-        this.result = undefined;
+    reset(): void {
+        super.reset();
+        this.result = null;
     }
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
@@ -120,7 +120,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}`;
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

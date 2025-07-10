@@ -3,6 +3,7 @@ import { PFSize } from "#common/enums";
 import { AKElement } from "#elements/Base";
 import { MODAL_BUTTON_STYLES } from "#elements/buttons/ModalButton";
 import { ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
+import type { Form } from "#elements/forms/Form";
 import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -58,11 +59,9 @@ export abstract class TableModal<T> extends Table<T> {
     }
 
     resetForms(): void {
-        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
-            if ("resetForm" in form) {
-                form?.resetForm();
-            }
-        });
+        for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
+            form.reset?.();
+        }
     }
 
     onClick(): void {
