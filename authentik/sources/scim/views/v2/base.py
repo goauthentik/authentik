@@ -54,6 +54,13 @@ class SCIMView(APIView):
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
 
+    def remove_excluded_attributes(self, data: dict):
+        """Remove attributes specified in excludedAttributes"""
+        excluded: str = self.request.query_params.get("excludedAttributes", "")
+        for key in excluded.split(","):
+            data.pop(key.strip(), None)
+        return data
+
     def filter_parse(self, request: Request):
         """Parse the path of a Patch Operation"""
         path = request.query_params.get("filter")

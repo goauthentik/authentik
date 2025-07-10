@@ -55,7 +55,8 @@ class GroupsView(SCIMObjectView):
         for member in scim_group.group.users.order_by("pk"):
             member: User
             payload.members.append(GroupMember(value=str(member.uuid)))
-        return payload.model_dump(mode="json", exclude_unset=True)
+        final_payload = payload.model_dump(mode="json", exclude_unset=True)
+        return self.remove_excluded_attributes(final_payload)
 
     def get(self, request: Request, group_id: str | None = None, **kwargs) -> Response:
         """List Group handler"""
