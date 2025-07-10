@@ -66,11 +66,5 @@ export const VersionPickerLoader: React.FC<VersionPickerLoaderProps> = ({ plugin
         return () => controller.abort("unmount");
     }, [browser, pluginData.publicPath, prereleaseOrigin]);
 
-    return (
-        <VersionDropdown
-            hostname={hostname}
-            prereleaseOrigin={prereleaseOrigin}
-            releases={releases}
-        />
-    );
+    return <VersionDropdown hostname={hostname} branch={pluginData.branch} releases={releases} />;
 };

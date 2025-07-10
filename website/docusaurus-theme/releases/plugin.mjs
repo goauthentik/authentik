@@ -20,6 +20,7 @@ const RELEASES_FILENAME = "releases.gen.json";
 
 /**
  * @typedef {object} AKReleasesPluginData
+ * @property {string} [branch]
  * @property {string} publicPath The URL to the plugin's public directory.
  * @property {string[]} releases The available versions of the documentation.
  */
@@ -48,6 +49,7 @@ async function akReleasesPlugin(loadContext, { docsDirectory }) {
              * @type {AKReleasesPluginData}
              */
             const content = {
+                branch: process.env.BRANCH,
                 releases,
                 publicPath: path.join("/", RELEASES_FILENAME),
             };

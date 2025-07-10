@@ -32,10 +32,10 @@ export function isPrerelease(hostname: string | null): boolean {
 /**
  * Given a hostname, parse the semver from the subdomain.
  */
-export function parseHostnameSemVer(hostname: string | null): string | null {
+export function parseBranchSemVer(hostname?: string | null): string | null {
     if (!hostname) return null;
 
-    const [, possibleSemVer] = hostname.match(/version-(.+)\.goauthentik\.io/) || [];
+    const [, possibleSemVer] = hostname.match(/version-(.+)/) || [];
 
     if (!possibleSemVer) return null;
 

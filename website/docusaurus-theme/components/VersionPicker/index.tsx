@@ -1,4 +1,4 @@
-import { useHostname, usePrereleaseOrigin } from "#components/VersionPicker/utils.ts";
+import { useHostname } from "#components/VersionPicker/utils.ts";
 import { VersionDropdown } from "#components/VersionPicker/VersionDropdown.tsx";
 
 import { AKReleasesPluginData } from "@goauthentik/docusaurus-theme/releases/plugin";
@@ -12,7 +12,6 @@ import { usePluginData } from "@docusaurus/useGlobalData";
  */
 export const VersionPicker: React.FC = () => {
     const hostname = useHostname();
-    const prereleaseOrigin = usePrereleaseOrigin();
 
     const pluginData = usePluginData("ak-releases-plugin", undefined) as
         | AKReleasesPluginData
@@ -25,8 +24,8 @@ export const VersionPicker: React.FC = () => {
     return (
         <VersionDropdown
             hostname={hostname}
-            prereleaseOrigin={prereleaseOrigin}
             releases={pluginData.releases}
+            branch={pluginData.branch}
         />
     );
 };

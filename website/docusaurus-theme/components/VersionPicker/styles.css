@@ -29,5 +29,11 @@
             box-shadow: var(--ifm-global-shadow-lw);
             border: 1px solid var(--ifm-color-emphasis-200);
         }
+
+        .separator {
+            background-color: var(--ifm-color-emphasis-200);
+            margin-block: calc(var(--ifm-hr-margin-vertical) / 4);
+            margin-inline: -0.5rem;
+        }
     }
 }

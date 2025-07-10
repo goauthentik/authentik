@@ -1,10 +1,6 @@
 import "./styles.css";
 
-import {
-    createVersionURL,
-    isPrerelease,
-    parseHostnameSemVer,
-} from "#components/VersionPicker/utils.ts";
+import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/utils.ts";
 
 import clsx from "clsx";
 import React, { memo } from "react";
@@ -15,11 +11,9 @@ export interface VersionDropdownProps {
      */
     hostname: string | null;
     /**
-     * The origin of the prerelease documentation.
-     *
-     * @format url
+     * The branch of the documentation.
      */
-    prereleaseOrigin: string;
+    branch?: string;
     /**
      * The available versions of the documentation.
      *
@@ -31,67 +25,67 @@ export interface VersionDropdownProps {
 /**
  * A dropdown that shows the available versions of the documentation.
  */
-export const VersionDropdown = memo<VersionDropdownProps>(
-    ({ hostname, prereleaseOrigin, releases }) => {
-        const prerelease = isPrerelease(hostname);
-        const parsedSemVer = !prerelease ? parseHostnameSemVer(hostname) : null;
+export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases }) => {
+    const parsedSemVer = parseBranchSemVer(branch);
 
-        const currentLabel = parsedSemVer || "Pre-release";
+    const currentLabel = parsedSemVer || "Pre-release";
 
-        const endIndex = parsedSemVer ? releases.indexOf(parsedSemVer) : -1;
+    const endIndex = parsedSemVer ? releases.indexOf(parsedSemVer) : -1;
 
-        const visibleReleases = releases.slice(0, endIndex === -1 ? 3 : endIndex + 3);
+    const visibleReleases = releases.slice(0, endIndex === -1 ? 3 : endIndex + 3);
 
-        return (
-            <li className="navbar__item dropdown dropdown--hoverable dropdown--right ak-version-selector">
-                <div
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                    role="button"
-                    className="navbar__link menu__link"
-                >
-                    Version: {currentLabel}
-                </div>
+    return (
+        <li className="navbar__item dropdown dropdown--hoverable dropdown--right ak-version-selector">
+            <div
+                aria-haspopup="true"
+                aria-expanded="false"
+                role="button"
+                className="navbar__link menu__link"
+            >
+                Version: {currentLabel}
+            </div>
 
-                <ul className="dropdown__menu menu__list-item--collapsed">
-                    {!prerelease ? (
+            <ul className="dropdown__menu menu__list-item--collapsed">
+                {branch ? (
+                    <>
                         <li>
                             <a
-                                href={prereleaseOrigin}
+                                href="https://docs.goauthentik.io"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="dropdown__link menu__link"
                             >
-                                Pre-release
+                                ✨ Pre-release
                             </a>
                         </li>
-                    ) : null}
+                        <hr className="separator" />
+                    </>
+                ) : null}
 
-                    {visibleReleases.map((semVer, idx) => {
-                        const label = semVer;
+                {visibleReleases.map((semVer, idx) => {
+                    const label = semVer;
 
-                        // TODO: Flesh this out after we settle on versioning strategy.
-                        // if (idx === 0) {
-                        //     label += " (Current Release)";
-                        // }
+                    // TODO: Flesh this out after we settle on versioning strategy.
+                    // if (idx === 0) {
+                    //     label += " (Current Release)";
+                    // }
 
-                        return (
-                            <li key={idx}>
-                                <a
-                                    href={createVersionURL(semVer)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={clsx("dropdown__link menu__link", {
-                                        "menu__link--active": semVer === currentLabel,
-                                    })}
-                                >
-                                    {label}
-                                </a>
-                            </li>
-                        );
-                    })}
-                </ul>
-            </li>
-        );
-    },
-);
+                    return (
+                        <li key={idx}>
+                            <a
+                                href={createVersionURL(semVer)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={clsx("dropdown__link menu__link", {
+                                    "menu__link--active": semVer === currentLabel,
+                                })}
+                            >
+                                {label}
+                            </a>
+                        </li>
+                    );
+                })}
+            </ul>
+        </li>
+    );
+});
