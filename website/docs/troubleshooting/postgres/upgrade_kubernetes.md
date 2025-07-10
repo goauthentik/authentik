@@ -52,7 +52,7 @@ cd /bitnami/postgresql/
 export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Create a full database dump
-pg_dump -U $POSTGRES_USER $POSTGRES_DB > /bitnami/postgresql/dump.sql
+pg_dump -U $POSTGRES_USER $POSTGRES_DATABASE > /bitnami/postgresql/dump.sql
 ```
 
 :::tip
@@ -120,7 +120,7 @@ ls -lh dump.sql
 export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Import the database dump
-psql -U $POSTGRES_USER $POSTGRES_DB < dump.sql
+psql -U $POSTGRES_USER $POSTGRES_DATABASE < dump.sql
 ```
 
 ## Restart authentik services
