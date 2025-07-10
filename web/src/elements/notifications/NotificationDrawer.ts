@@ -31,8 +31,13 @@ export class NotificationDrawer extends AKElement {
     @property({ type: Number })
     unread = 0;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFNotificationDrawer,
+        PFContent,
+        PFDropdown,
+        css`
             .pf-c-drawer__body {
                 height: 100%;
             }
@@ -52,8 +57,8 @@ export class NotificationDrawer extends AKElement {
             .pf-c-notification-drawer__list-item-description {
                 white-space: pre-wrap;
             }
-        `);
-    }
+        `,
+    ];
 
     firstUpdated(): void {
         me().then((user) => {

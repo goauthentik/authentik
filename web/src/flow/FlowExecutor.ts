@@ -88,8 +88,15 @@ export class FlowExecutor
 
     ws: WebsocketClient;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFDrawer,
+        PFButton,
+        PFTitle,
+        PFList,
+        PFBackgroundImage,
+        css`
             :host {
                 --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
             }
@@ -172,8 +179,8 @@ export class FlowExecutor
                 right: 1rem;
                 z-index: 100;
             }
-        `);
-    }
+        `,
+    ];
 
     constructor() {
         configureSentry();
