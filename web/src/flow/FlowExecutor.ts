@@ -86,8 +86,6 @@ export class FlowExecutor
     @state()
     flowInfo?: ContextualFlowInfo;
 
-    ws: WebsocketClient;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             :host {
@@ -177,8 +175,11 @@ export class FlowExecutor
 
     constructor() {
         configureSentry();
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         const inspector = new URL(window.location.toString()).searchParams.get("inspector");
         if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;

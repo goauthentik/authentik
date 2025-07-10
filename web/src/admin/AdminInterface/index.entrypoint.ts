@@ -54,8 +54,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     @property({ type: Boolean })
     public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    protected readonly ws: WebsocketClient;
-
     @property({ type: Object, attribute: false })
     public user?: SessionUser;
 
@@ -128,8 +126,11 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     constructor() {
         configureSentry(true);
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
@@ -159,6 +160,8 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     public disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+
+        WebsocketClient.close();
     }
 
     async firstUpdated(): Promise<void> {
