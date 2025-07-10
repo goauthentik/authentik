@@ -1,4 +1,3 @@
-/// <reference types="@docusaurus/plugin-content-docs" />
 /**
  * @file Swizzled DocItemContent component.
  *
@@ -8,11 +7,14 @@
  * the content of a documentation page. However, it also adds support for
  * support badges, and Authentik version badges.
  */
+
+import { SupportBadge } from "#components/SupportBadge.tsx";
+import { VersionBadge } from "#components/VersionBadge.tsx";
+
+import { useSyntheticTitle } from "#hooks/title.ts";
+
 import { useDoc } from "@docusaurus/plugin-content-docs/client";
 import { ThemeClassNames } from "@docusaurus/theme-common";
-import { SupportBadge } from "@site/src/components/SupportBadge";
-import { VersionBadge } from "@site/src/components/VersionBadge";
-import { useSyntheticTitle } from "@site/src/hooks/title";
 import type { Props } from "@theme/DocItem/Content";
 import Heading from "@theme/Heading";
 import MDXContent from "@theme/MDXContent";
@@ -56,6 +58,22 @@ function useBadgeLinterEffect() {
         throw new MarkdownLintError(message);
     }, [hide_title, id]);
 }
+
+interface BadgesProps {
+    badges: JSX.Element[];
+}
+
+const BadgeGroup: React.FC<BadgesProps> = ({ badges }) => {
+    if (!badges.length) return null;
+
+    return (
+        <p className="badge-group">
+            {badges.map((badge, index) => (
+                <React.Fragment key={index}>{badge}</React.Fragment>
+            ))}
+        </p>
+    );
+};
 
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
@@ -113,22 +131,6 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
             <MDXContent>{children}</MDXContent>
         </div>
-    );
-};
-
-interface BadgesProps {
-    badges: JSX.Element[];
-}
-
-const BadgeGroup: React.FC<BadgesProps> = ({ badges }) => {
-    if (!badges.length) return null;
-
-    return (
-        <p className="badge-group">
-            {badges.map((badge, index) => (
-                <React.Fragment key={index}>{badge}</React.Fragment>
-            ))}
-        </p>
     );
 };
 

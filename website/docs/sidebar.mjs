@@ -1,88 +1,42 @@
 /**
  * @file Sidebar configuration for documentation entries.
  *
- * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs-types"
+ * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
 
-import apiReference from "../docs/developer-docs/api/reference/sidebar";
-import { generateVersionDropdown } from "../src/utils.js";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
-/**
- * @type {SidebarItemConfig[]}
- */
-const releases = [
-    "releases/2025/v2025.6",
-    "releases/2025/v2025.4",
-    "releases/2025/v2025.2",
-    {
-        type: "category",
-        label: "Previous versions",
-        items: [
-            "releases/2024/v2024.12",
-            "releases/2024/v2024.10",
-            "releases/2024/v2024.8",
-            "releases/2024/v2024.6",
-            "releases/2024/v2024.4",
-            "releases/2024/v2024.2",
-            "releases/2023/v2023.10",
-            "releases/2023/v2023.8",
-            "releases/2023/v2023.6",
-            "releases/2023/v2023.5",
-            "releases/2023/v2023.4",
-            "releases/2023/v2023.3",
-            "releases/2023/v2023.2",
-            "releases/2023/v2023.1",
-            "releases/2022/v2022.12",
-            "releases/2022/v2022.11",
-            "releases/2022/v2022.10",
-            "releases/2022/v2022.9",
-            "releases/2022/v2022.8",
-            "releases/2022/v2022.7",
-            "releases/2022/v2022.6",
-            "releases/2022/v2022.5",
-            "releases/2022/v2022.4",
-            "releases/2022/v2022.2",
-            "releases/2022/v2022.1",
-            "releases/2021/v2021.12",
-            "releases/2021/v2021.10",
-            "releases/2021/v2021.9",
-            "releases/2021/v2021.8",
-            "releases/2021/v2021.7",
-            "releases/2021/v2021.6",
-            "releases/2021/v2021.5",
-            "releases/2021/v2021.4",
-            "releases/2021/v2021.3",
-            "releases/2021/v2021.2",
-            "releases/2021/v2021.1",
-            "releases/old/v0.14",
-            "releases/old/v0.13",
-            "releases/old/v0.12",
-            "releases/old/v0.11",
-            "releases/old/v0.10",
-            "releases/old/v0.9",
-        ],
-    },
-];
+import {
+    collectReleaseFiles,
+    createReleaseSidebarEntries,
+} from "@goauthentik/docusaurus-theme/releases/utils";
+
+import apiReference from "./developer-docs/api/reference/sidebar.ts";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const releases = collectReleaseFiles(path.join(__dirname));
 
 /**
  * @type {SidebarItemConfig[]}
  */
 const items = [
     {
-        type: "html",
-        value: generateVersionDropdown(releases),
-    },
-    {
         type: "doc",
         id: "index",
     },
     {
+        //#region Core Concepts
         type: "category",
         label: "Core Concepts",
         collapsed: true,
         items: ["core/terminology", "core/architecture"],
     },
     {
+        //#endregion
+
+        //#region Enterprise
         type: "category",
         label: "Enterprise",
         collapsed: true,
@@ -93,6 +47,9 @@ const items = [
         items: ["enterprise/get-started", "enterprise/manage-enterprise", "enterprise/entsupport"],
     },
     {
+        //#endregion
+
+        //#region Installation and Configuration
         type: "category",
         label: "Installation and Configuration ",
         collapsed: true,
@@ -102,6 +59,9 @@ const items = [
         },
         items: [
             {
+                //#endregion
+
+                //#region Installation
                 type: "category",
                 label: "Installation",
                 collapsed: true,
@@ -112,6 +72,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Configuration
                 type: "category",
                 label: "Configuration",
                 link: {
@@ -128,11 +91,17 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Add and Secure Applications
         type: "category",
         label: "Add and Secure Applications",
         collapsed: true,
         items: [
             {
+                //#endregion
+
+                //#region Applications
                 type: "category",
                 label: "Applications",
                 link: {
@@ -142,6 +111,9 @@ const items = [
                 items: ["add-secure-apps/applications/manage_apps"],
             },
             {
+                //#endregion
+
+                //#region Providers
                 type: "category",
                 label: "Providers",
                 link: {
@@ -260,6 +232,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Flows and Stages
                 type: "category",
                 label: "Flows and Stages",
                 collapsed: true,
@@ -339,6 +314,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Outposts
                 type: "category",
                 label: "Outposts",
                 link: {
@@ -371,6 +349,9 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Customize your instance
         type: "category",
         label: "Customize your instance",
         collapsed: true,
@@ -380,6 +361,9 @@ const items = [
         },
         items: [
             {
+                //#endregion
+
+                //#region Policies
                 type: "category",
                 label: "Policies",
                 collapsed: true,
@@ -406,6 +390,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Interfaces
                 type: "category",
                 label: "Interfaces",
                 items: [
@@ -415,6 +402,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Blueprints
                 type: "category",
                 label: "Blueprints",
                 link: {
@@ -441,11 +431,17 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Manage Users and Sources
         type: "category",
         label: "Manage Users and Sources",
         collapsed: true,
         items: [
             {
+                //#endregion
+
+                //#region Users
                 type: "category",
                 label: "Users",
                 link: {
@@ -459,6 +455,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Groups
                 type: "category",
                 label: "Groups",
                 link: {
@@ -468,6 +467,9 @@ const items = [
                 items: ["users-sources/groups/manage_groups", "users-sources/groups/group_ref"],
             },
             {
+                //#endregion
+
+                //#region Roles
                 type: "category",
                 label: "Roles",
                 link: {
@@ -477,6 +479,9 @@ const items = [
                 items: ["users-sources/roles/manage_roles"],
             },
             {
+                //#endregion
+
+                //#region Access Control
                 type: "category",
                 label: "Access Control",
                 link: {
@@ -490,6 +495,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Federated and Social Sources
                 type: "category",
                 label: "Federated and Social Sources",
                 collapsed: true,
@@ -571,12 +579,18 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region System Management
         type: "category",
         label: "System Management",
         collapsed: true,
         items: [
             "sys-mgmt/brands",
             {
+                //#endregion
+
+                //#region Operations
                 type: "category",
                 label: "Operations",
                 collapsed: true,
@@ -588,6 +602,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region Events
                 type: "category",
                 label: "Events",
                 collapsed: true,
@@ -608,6 +625,9 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Developer Documentation
         type: "category",
         label: "Developer Documentation",
         collapsed: true,
@@ -616,16 +636,6 @@ const items = [
             id: "developer-docs/index",
         },
         items: [
-            {
-                type: "category",
-                label: "Development environment",
-                items: [
-                    "developer-docs/setup/full-dev-environment",
-                    "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
-                    "developer-docs/setup/debugging",
-                ],
-            },
             {
                 type: "category",
                 label: "API",
@@ -645,7 +655,32 @@ const items = [
                     "developer-docs/api/clients",
                 ],
             },
+
+            // TODO: Enable when API docs are ready
+            // {
+            //     type: "link",
+            //     href: process.env.API_DOCS_URL || "https://api.goauthentik.io",
+            //     label: "API Overview",
+            //     className: "api-overview",
+            // },
+
             {
+                //#endregion
+
+                //#region Development environment
+                type: "category",
+                label: "Development environment",
+                items: [
+                    "developer-docs/setup/full-dev-environment",
+                    "developer-docs/setup/frontend-dev-environment",
+                    "developer-docs/setup/website-dev-environment",
+                    "developer-docs/setup/debugging",
+                ],
+            },
+            {
+                //#endregion
+
+                //#region Writing documentation
                 type: "category",
                 label: "Writing documentation",
                 link: {
@@ -678,6 +713,9 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Security
         type: "category",
         label: "Security",
         collapsed: true,
@@ -690,6 +728,9 @@ const items = [
             "security/policy",
             "security/security-hardening",
             {
+                //#endregion
+
+                //#region Audits and Certificates
                 type: "category",
                 label: "Audits and Certificates",
                 items: [
@@ -698,6 +739,9 @@ const items = [
                 ],
             },
             {
+                //#endregion
+
+                //#region CVEs
                 type: "category",
                 label: "CVEs",
                 items: [
@@ -747,6 +791,9 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Troubleshooting
         type: "category",
         label: "Troubleshooting",
         link: {
@@ -757,6 +804,9 @@ const items = [
         },
         items: [
             {
+                //#endregion
+
+                //#region Forward auth
                 type: "category",
                 label: "Forward auth",
                 items: ["troubleshooting/forward_auth/general"],
@@ -769,6 +819,9 @@ const items = [
                 },
             },
             {
+                //#endregion
+
+                //#region PostgreSQL
                 type: "category",
                 label: "PostgreSQL",
                 items: [
@@ -788,6 +841,9 @@ const items = [
         ],
     },
     {
+        //#endregion
+
+        //#region Release Notes
         type: "category",
         label: "Release Notes",
         link: {
@@ -796,7 +852,7 @@ const items = [
             slug: "releases",
             description: "Release Notes for recent authentik versions",
         },
-        items: releases,
+        items: createReleaseSidebarEntries(releases),
     },
 ];
 

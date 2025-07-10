@@ -2,6 +2,7 @@
  * @file Remark plugin to transform `ak-enterprise` directives into badges.
  *
  * @import { Root } from "mdast";
+ * @import {} from "mdast-util-directive";
  */
 
 import { h } from "hastscript";
@@ -10,7 +11,7 @@ import { SKIP, visit } from "unist-util-visit";
 /**
  * MDAST plugin to transform `ak-enterprise` directives into badges.
  */
-function remarkEnterpriseDirective() {
+export function remarkEnterpriseDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */
