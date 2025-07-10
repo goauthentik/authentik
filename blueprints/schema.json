@@ -504,6 +504,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_apple_psso.appleplatformssoprovider"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_providers_google_workspace.googleworkspaceprovider"
                         },
                         "id": {
@@ -5030,6 +5070,22 @@
                             "authentik_policies_unique_password.delete_userpasswordhistory",
                             "authentik_policies_unique_password.view_uniquepasswordpolicy",
                             "authentik_policies_unique_password.view_userpasswordhistory",
+                            "authentik_providers_apple_psso.add_appledevice",
+                            "authentik_providers_apple_psso.add_appledeviceuser",
+                            "authentik_providers_apple_psso.add_applenonce",
+                            "authentik_providers_apple_psso.add_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.change_appledevice",
+                            "authentik_providers_apple_psso.change_appledeviceuser",
+                            "authentik_providers_apple_psso.change_applenonce",
+                            "authentik_providers_apple_psso.change_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.delete_appledevice",
+                            "authentik_providers_apple_psso.delete_appledeviceuser",
+                            "authentik_providers_apple_psso.delete_applenonce",
+                            "authentik_providers_apple_psso.delete_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.view_appledevice",
+                            "authentik_providers_apple_psso.view_appledeviceuser",
+                            "authentik_providers_apple_psso.view_applenonce",
+                            "authentik_providers_apple_psso.view_appleplatformssoprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -5590,6 +5646,43 @@
                             "change_uniquepasswordpolicy",
                             "delete_uniquepasswordpolicy",
                             "view_uniquepasswordpolicy"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_apple_psso.appleplatformssoprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_apple_psso.appleplatformssoprovider_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_appleplatformssoprovider",
+                            "change_appleplatformssoprovider",
+                            "delete_appleplatformssoprovider",
+                            "view_appleplatformssoprovider"
                         ]
                     },
                     "user": {
@@ -7344,6 +7437,7 @@
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.policies.unique_password",
+                        "authentik.enterprise.providers.apple_psso",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
@@ -7454,6 +7548,7 @@
                         "authentik_core.token",
                         "authentik_enterprise.license",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
+                        "authentik_providers_apple_psso.appleplatformssoprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
@@ -9677,6 +9772,22 @@
                             "authentik_policies_unique_password.delete_userpasswordhistory",
                             "authentik_policies_unique_password.view_uniquepasswordpolicy",
                             "authentik_policies_unique_password.view_userpasswordhistory",
+                            "authentik_providers_apple_psso.add_appledevice",
+                            "authentik_providers_apple_psso.add_appledeviceuser",
+                            "authentik_providers_apple_psso.add_applenonce",
+                            "authentik_providers_apple_psso.add_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.change_appledevice",
+                            "authentik_providers_apple_psso.change_appledeviceuser",
+                            "authentik_providers_apple_psso.change_applenonce",
+                            "authentik_providers_apple_psso.change_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.delete_appledevice",
+                            "authentik_providers_apple_psso.delete_appledeviceuser",
+                            "authentik_providers_apple_psso.delete_applenonce",
+                            "authentik_providers_apple_psso.delete_appleplatformssoprovider",
+                            "authentik_providers_apple_psso.view_appledevice",
+                            "authentik_providers_apple_psso.view_appledeviceuser",
+                            "authentik_providers_apple_psso.view_applenonce",
+                            "authentik_providers_apple_psso.view_appleplatformssoprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
