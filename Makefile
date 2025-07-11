@@ -188,7 +188,8 @@ gen: gen-build gen-client-ts
 #########################
 
 node-install:  ## Install the necessary libraries to build Node.js packages
-	npm ci && npm ci --prefix web
+	npm ci
+	npm ci --prefix web
 
 #########################
 ## Web
