@@ -45,10 +45,11 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
                 id: this.instance.pk,
                 proxyProviderRequest: data,
             });
+        } else {
+            return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
+                proxyProviderRequest: data,
+            });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
-            proxyProviderRequest: data,
-        });
     }
 
     renderForm() {

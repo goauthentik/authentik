@@ -1,3 +1,4 @@
+import { VERSION } from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/sentry";
 
 export interface PlexPinResponse {
@@ -18,7 +19,7 @@ export const DEFAULT_HEADERS = {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "X-Plex-Product": "authentik",
-    "X-Plex-Version": import.meta.env.AK_VERSION,
+    "X-Plex-Version": VERSION,
     "X-Plex-Device-Vendor": "goauthentik.io",
 };
 

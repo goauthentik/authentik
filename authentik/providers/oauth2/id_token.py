@@ -16,7 +16,6 @@ from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
-    AMR_SMART_CARD,
     AMR_WEBAUTHN,
 )
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -140,10 +139,9 @@ class IDToken:
                 amr.append(AMR_PASSWORD)
             if method == "auth_webauthn_pwl":
                 amr.append(AMR_WEBAUTHN)
-            if "certificate" in method_args:
-                amr.append(AMR_SMART_CARD)
             if "mfa_devices" in method_args:
-                amr.append(AMR_MFA)
+                if len(amr) > 0:
+                    amr.append(AMR_MFA)
             if amr:
                 id_token.amr = amr
 

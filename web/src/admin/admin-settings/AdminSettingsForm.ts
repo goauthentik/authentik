@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
@@ -183,14 +184,20 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Reputation: lower limit")}
                 required
                 name="reputationLowerLimit"
-                value="${this._settings?.reputationLowerLimit ?? DEFAULT_REPUTATION_LOWER_LIMIT}"
+                value="${first(
+                    this._settings?.reputationLowerLimit,
+                    DEFAULT_REPUTATION_LOWER_LIMIT,
+                )}"
                 help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
             ></ak-number-input>
             <ak-number-input
                 label=${msg("Reputation: upper limit")}
                 required
                 name="reputationUpperLimit"
-                value="${this._settings?.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
+                value="${first(
+                    this._settings?.reputationUpperLimit,
+                    DEFAULT_REPUTATION_UPPER_LIMIT,
+                )}"
                 help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
@@ -250,7 +257,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Default token length")}
                 required
                 name="defaultTokenLength"
-                value="${this._settings?.defaultTokenLength ?? 60}"
+                value="${first(this._settings?.defaultTokenLength, 60)}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
         `;

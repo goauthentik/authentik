@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-Follow [official documentation](/docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
+Follow [official documentation](../../../docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
 
 ### The Lounge configuration
 

@@ -42,7 +42,7 @@ To support the integration of Active Directory with authentik, you need to creat
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation & Social login**.
 3. Click **Create** and select **LDAP Source** as the type.
 4. Provide a name, slug, and the following required configurations:

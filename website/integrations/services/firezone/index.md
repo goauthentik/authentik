@@ -27,7 +27,7 @@ To support the integration of Firezone with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -60,11 +60,11 @@ Set the following values in the Firezone UI:
 - **Redirect URI**: <kbd>https://<em>firezone.company</em>/auth/oidc/authentik/callback/</kbd>
 - **Auth-create Users**: Turn this on
 
-## Configuration verification
-
-To verify that authentik is correctly set up with Firezone, navigate to your Firezone installation and click **authentik**. A successful login should redirect you to the main page of your installation.
-
 ## Resources
 
 - [Firezone administration documentation on OpenID Connect authentication](https://www.firezone.dev/docs/authenticate/oidc/)
 - [Firezone OIDC troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli)
+
+## Configuration verification
+
+To verify that authentik is correctly set up with Firezone, navigate to your Firezone installation and click **authentik**. A successful login should redirect you to the main page of your installation.

@@ -3,7 +3,6 @@
 from time import sleep
 from unittest.mock import patch
 
-from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -18,12 +17,7 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.user_login.middleware import (
-    BoundSessionMiddleware,
-    SessionBindingBroken,
-    logout_extra,
-)
-from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
+from authentik.stages.user_login.models import UserLoginStage
 
 
 class TestUserLoginStage(FlowTestCase):
@@ -198,52 +192,3 @@ class TestUserLoginStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         response = self.client.get(reverse("authentik_api:application-list"))
         self.assertEqual(response.status_code, 403)
-
-    def test_binding_net_break_log(self):
-        """Test logout_extra with exception"""
-        # IPs from https://github.com/maxmind/MaxMind-DB/blob/main/source-data/GeoLite2-ASN-Test.json
-        for args, expect in [
-            [[NetworkBinding.BIND_ASN, "8.8.8.8", "8.8.8.8"], ["network.missing"]],
-            [[NetworkBinding.BIND_ASN, "1.0.0.1", "1.128.0.1"], ["network.asn"]],
-            [
-                [NetworkBinding.BIND_ASN_NETWORK, "12.81.96.1", "12.81.128.1"],
-                ["network.asn_network"],
-            ],
-            [[NetworkBinding.BIND_ASN_NETWORK_IP, "1.0.0.1", "1.0.0.2"], ["network.ip"]],
-        ]:
-            with self.subTest(args[0]):
-                with self.assertRaises(SessionBindingBroken) as cm:
-                    BoundSessionMiddleware.recheck_session_net(*args)
-                self.assertEqual(cm.exception.reason, expect[0])
-                # Ensure the request can be logged without throwing errors
-                self.client.force_login(self.user)
-                request = HttpRequest()
-                request.session = self.client.session
-                request.user = self.user
-                logout_extra(request, cm.exception)
-
-    def test_binding_geo_break_log(self):
-        """Test logout_extra with exception"""
-        # IPs from https://github.com/maxmind/MaxMind-DB/blob/main/source-data/GeoLite2-City-Test.json
-        for args, expect in [
-            [[GeoIPBinding.BIND_CONTINENT, "8.8.8.8", "8.8.8.8"], ["geoip.missing"]],
-            [[GeoIPBinding.BIND_CONTINENT, "2.125.160.216", "67.43.156.1"], ["geoip.continent"]],
-            [
-                [GeoIPBinding.BIND_CONTINENT_COUNTRY, "81.2.69.142", "89.160.20.112"],
-                ["geoip.country"],
-            ],
-            [
-                [GeoIPBinding.BIND_CONTINENT_COUNTRY_CITY, "2.125.160.216", "81.2.69.142"],
-                ["geoip.city"],
-            ],
-        ]:
-            with self.subTest(args[0]):
-                with self.assertRaises(SessionBindingBroken) as cm:
-                    BoundSessionMiddleware.recheck_session_geo(*args)
-                self.assertEqual(cm.exception.reason, expect[0])
-                # Ensure the request can be logged without throwing errors
-                self.client.force_login(self.user)
-                request = HttpRequest()
-                request.session = self.client.session
-                request.user = self.user
-                logout_extra(request, cm.exception)

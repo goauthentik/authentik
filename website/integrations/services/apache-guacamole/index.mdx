@@ -4,8 +4,8 @@ sidebar_label: Apache Guacamole™
 support_level: authentik
 ---
 
-import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## What is Apache Guacamole™
 
@@ -30,7 +30,7 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -188,10 +188,10 @@ This section depends on the operating system hosting Apache Guacamole.
 More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
 :::
 
-## Configuration verification
-
-To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom left of the login page.
-
 ## Resources
 
 - [Apache Guacamole official documentation on OpenID Connect integrations](https://guacamole.apache.org/doc/gug/openid-auth.html#configuring-guacamole-for-single-sign-on-with-openid-connect)
+
+## Configuration verification
+
+To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom left of the login page.

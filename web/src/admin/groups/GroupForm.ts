@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/MemberSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
@@ -54,11 +55,12 @@ export class GroupForm extends ModelForm<Group, string> {
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
+        } else {
+            data.users = [];
+            return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
+                groupRequest: data,
+            });
         }
-        data.users = [];
-        return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-            groupRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -75,7 +77,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.isSuperuser ?? false}
+                        ?checked=${first(this.instance?.isSuperuser, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -148,7 +150,7 @@ export class GroupForm extends ModelForm<Group, string> {
             >
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(this.instance?.attributes ?? {})}"
+                    value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">

@@ -1,5 +1,6 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -24,10 +25,11 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                 policyUuid: this.instance.pk || "",
                 passwordExpiryPolicyRequest: data,
             });
+        } else {
+            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
+                passwordExpiryPolicyRequest: data,
+            });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
-            passwordExpiryPolicyRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -49,7 +51,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
+                        ?checked=${first(this.instance?.executionLogging, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -84,7 +86,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.denyOnly ?? false}
+                                ?checked=${first(this.instance?.denyOnly, false)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

@@ -58,16 +58,18 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         group_count = 0
         for group in page_data:
-            if (attributes := self.get_attributes(group)) is None:
+            if "attributes" not in group:
                 continue
+            attributes = group.get("attributes", {})
             group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
-            if not (uniq := self.get_identifier(attributes)):
+            if not attributes.get(self._source.object_uniqueness_field):
                 self.message(
                     f"Uniqueness field not found/not set in attributes: '{group_dn}'",
                     attributes=attributes.keys(),
                     dn=group_dn,
                 )
                 continue
+            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = {
                     k: flatten(v)

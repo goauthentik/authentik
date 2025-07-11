@@ -28,18 +28,16 @@ func NewSessionBinder(si server.LDAPServerInstance, oldBinder bind.Binder) *Sess
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.binder.session"),
 	}
-	if oldBinder != nil {
-		if oldSb, ok := oldBinder.(*SessionBinder); ok {
-			sb.DirectBinder = oldSb.DirectBinder
-			sb.sessions = oldSb.sessions
-			sb.log.Debug("re-initialised session binder")
-			return sb
-		}
+	if oldSb, ok := oldBinder.(*SessionBinder); ok {
+		sb.DirectBinder = oldSb.DirectBinder
+		sb.sessions = oldSb.sessions
+		sb.log.Debug("re-initialised session binder")
+	} else {
+		sb.sessions = ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]())
+		sb.DirectBinder = *direct.NewDirectBinder(si)
+		go sb.sessions.Start()
+		sb.log.Debug("initialised session binder")
 	}
-	sb.sessions = ttlcache.New(ttlcache.WithDisableTouchOnHit[Credentials, ldap.LDAPResultCode]())
-	sb.DirectBinder = *direct.NewDirectBinder(si)
-	go sb.sessions.Start()
-	sb.log.Debug("initialised session binder")
 	return sb
 }
 

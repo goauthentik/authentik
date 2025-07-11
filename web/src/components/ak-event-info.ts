@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { VERSION } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
 import {
     EventContext,
@@ -75,7 +76,7 @@ ${context.message as string}
 
 
 **Version and Deployment (please complete the following information):**
-- authentik version: ${import.meta.env.AK_VERSION}
+- authentik version: ${VERSION}
 - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
@@ -374,7 +375,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
 
     renderEmailSent() {
         let body = this.event.context.body as string;
-        body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
+        body = body.replace("cid:logo.png", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>

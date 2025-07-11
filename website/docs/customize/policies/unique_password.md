@@ -1,6 +1,7 @@
 ---
 title: Password Uniqueness Policy
 sidebar_label: Password Uniqueness Policy
+support_level: authentik
 tags:
     - policy
     - password

@@ -31,7 +31,7 @@ func (ps *ProxyServer) Refresh() error {
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
 		hc := &http.Client{
 			Transport: web.NewUserAgentTransport(
-				constants.UserAgentOutpost()+ua,
+				constants.OutpostUserAgent()+ua,
 				web.NewTracingTransport(
 					rsp.Context(),
 					ak.GetTLSTransport(),

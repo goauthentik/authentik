@@ -15,13 +15,13 @@ class MMDBContextProcessor(EventContextProcessor):
         self.reader: Reader | None = None
         self._last_mtime: float = 0.0
         self.logger = get_logger()
-        self.load()
+        self.open()
 
     def path(self) -> str | None:
         """Get the path to the MMDB file to load"""
         raise NotImplementedError
 
-    def load(self):
+    def open(self):
         """Get GeoIP Reader, if configured, otherwise none"""
         path = self.path()
         if path == "" or not path:
@@ -44,7 +44,7 @@ class MMDBContextProcessor(EventContextProcessor):
             diff = self._last_mtime < mtime
             if diff > 0:
                 self.logger.info("Found new MMDB Database, reopening", diff=diff, path=path)
-                self.load()
+                self.open()
         except OSError as exc:
             self.logger.warning("Failed to check MMDB age", exc=exc)
 

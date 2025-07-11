@@ -16,14 +16,12 @@
         {% block head_before %}
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
-        <style>{{ brand_css }}</style>
+        <style>{{ brand.branding_custom_css }}</style>
         <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
         <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
-        {% for key, value in html_meta.items %}
-        <meta name="{{key}}" content="{{ value }}" />
-        {% endfor %}
+        <meta name="sentry-trace" content="{{ sentry_trace }}" />
     </head>
     <body>
         {% block body %}

@@ -1,12 +1,3 @@
-/**
- * @file authentik dark UI theme.
- */
-
-/* Defined to better identify the dark theme when debugging constructed stylesheets. */
-.__AK_UI_DARK__ {
-    --__AK_UI_DARK__: 1;
-}
-
 /* #region Global */
 
 :root {
@@ -14,6 +5,9 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --ak-mermaid-message-text: var(--ak-dark-foreground) !important;
+    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter) !important;
+    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
 }
 
 body {
@@ -201,10 +195,6 @@ select[multiple] option:checked {
     --pf-c-input-group--BackgroundColor: transparent;
 }
 
-select.pf-c-form-control {
-    --pf-c-form-control__select--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath fill='%23fafafa' d='M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z'/%3E%3C/svg%3E");
-}
-
 .pf-c-form-control {
     --pf-c-form-control--BorderTopColor: transparent !important;
     --pf-c-form-control--BorderRightColor: transparent !important;
@@ -266,13 +256,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--ak-dark-background-lighter);
 }
 
-.pf-c-button.pf-m-plain {
-    --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
-    --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
-
-    &:focus:hover {
-        color: var(--pf-c-button--m-plain--hover--Color);
-    }
+.pf-c-button.pf-m-plain:hover {
+    color: var(--ak-dark-foreground);
 }
 
 .pf-c-button.pf-m-control {

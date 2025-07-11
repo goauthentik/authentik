@@ -31,19 +31,18 @@ const container = (testItem: TemplateResult) =>
             li {
                 display: block;
             }
-
-            ak-hint {
-                --ak-hint--Color: var(--pf-global--Color--dark-100);
-            }
-
-            @media (prefers-color-scheme: dark) {
-                ak-hint {
-                    --ak-hint--Color: var(--pf-global--Color--light-100);
-                }
-            }
-
             p {
+                color: black;
                 margin-top: 1em;
+            }
+
+            * {
+                --ak-hint--Color: black !important;
+            }
+            ak-hint-title::part(ak-hint-title),
+            ak-hint-footer::part(ak-hint-footer),
+            slotted::(*) {
+                color: black;
             }
         </style>
 

@@ -1,28 +1,18 @@
-import {
-    ConstructorWithMixin,
-    LitElementConstructor,
-    createMixin,
-} from "@goauthentik/elements/types";
+import { createMixin } from "@goauthentik/elements/types";
 import { CustomEventDetail, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
 
-export interface CustomEventEmitterMixin<EventType extends string = string> {
-    dispatchCustomEvent<D extends CustomEventDetail>(
-        eventType: EventType,
-        detail?: D,
+export interface EmmiterElementHandler {
+    dispatchCustomEvent<T>(
+        eventName: string,
+        detail?: T extends CustomEvent<infer U> ? U : T,
         eventInit?: EventInit,
     ): void;
 }
 
-export function CustomEmitterElement<
-    EventType extends string = string,
-    T extends LitElementConstructor = LitElementConstructor,
->(SuperClass: T) {
-    abstract class CustomEventEmmiter
-        extends SuperClass
-        implements CustomEventEmitterMixin<EventType>
-    {
+export const CustomEmitterElement = createMixin<EmmiterElementHandler>(({ SuperClass }) => {
+    return class EmmiterElementHandler extends SuperClass {
         public dispatchCustomEvent<D extends CustomEventDetail>(
-            eventType: string,
+            eventName: string,
             detail: D = {} as D,
             eventInit: EventInit = {},
         ) {
@@ -36,7 +26,7 @@ export function CustomEmitterElement<
             }
 
             this.dispatchEvent(
-                new CustomEvent(eventType, {
+                new CustomEvent(eventName, {
                     composed: true,
                     bubbles: true,
                     ...eventInit,
@@ -44,20 +34,34 @@ export function CustomEmitterElement<
                 }),
             );
         }
-    }
+    };
+});
 
-    return CustomEventEmmiter as unknown as ConstructorWithMixin<
-        T,
-        CustomEventEmitterMixin<EventType>
-    >;
+/**
+ * Mixin that enables Lit Elements to handle custom events in a more straightforward manner.
+ *
+ */
+
+// This is a neat trick: this static "class" is just a namespace for these unique symbols. Because
+// of all the constraints on them, they're legal field names in Typescript objects! Which means that
+// we can use them as identifiers for internal references in a Typescript class with absolutely no
+// risk that a future user who wants a name like 'addHandler' or 'removeHandler' will override any
+// of those, either in this mixin or in any class that this is mixed into, past or present along the
+// chain of inheritance.
+
+class HK {
+    public static readonly listenHandlers: unique symbol = Symbol();
+    public static readonly addHandler: unique symbol = Symbol();
+    public static readonly removeHandler: unique symbol = Symbol();
+    public static readonly getHandler: unique symbol = Symbol();
 }
 
-type CustomEventListener<D = unknown> = (ev: CustomEvent<D>) => void;
-type EventMap<D = unknown> = WeakMap<CustomEventListener<D>, CustomEventListener<D>>;
+type EventHandler = (ev: CustomEvent) => void;
+type EventMap = WeakMap<EventHandler, EventHandler>;
 
-export interface CustomEventTarget<EventType extends string = string> {
-    addCustomListener<D = unknown>(eventType: EventType, handler: CustomEventListener<D>): void;
-    removeCustomListener<D = unknown>(eventType: EventType, handler: CustomEventListener<D>): void;
+export interface CustomEventTarget {
+    addCustomListener(eventName: string, handler: EventHandler): void;
+    removeCustomListener(eventName: string, handler: EventHandler): void;
 }
 
 /**
@@ -68,15 +72,11 @@ export interface CustomEventTarget<EventType extends string = string> {
  */
 export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClass }) => {
     return class ListenerElementHandler extends SuperClass implements CustomEventTarget {
-        #listenHandlers = new Map<string, EventMap>();
+        private [HK.listenHandlers] = new Map<string, EventMap>();
 
-        #getListener<D = unknown>(
-            eventType: string,
-            handler: CustomEventListener<D>,
-        ): CustomEventListener<D> | undefined {
-            const internalMap = this.#listenHandlers.get(eventType) as EventMap<D> | undefined;
-
-            return internalMap?.get(handler);
+        private [HK.getHandler](eventName: string, handler: EventHandler) {
+            const internalMap = this[HK.listenHandlers].get(eventName);
+            return internalMap ? internalMap.get(handler) : undefined;
         }
 
         // For every event NAME, we create a WeakMap that pairs the event handler given to us by the
@@ -85,58 +85,50 @@ export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClas
         // meanwhile, this allows us to remove it from the event listeners if it's still around
         // using the original handler's identity as the key.
         //
-        #addListener<D = unknown>(
-            eventType: string,
-            handler: CustomEventListener<D>,
-            internalHandler: CustomEventListener<D>,
+        private [HK.addHandler](
+            eventName: string,
+            handler: EventHandler,
+            internalHandler: EventHandler,
         ) {
-            let internalMap = this.#listenHandlers.get(eventType) as EventMap<D> | undefined;
-
-            if (!internalMap) {
-                internalMap = new WeakMap();
-
-                this.#listenHandlers.set(eventType, internalMap as EventMap);
+            if (!this[HK.listenHandlers].has(eventName)) {
+                this[HK.listenHandlers].set(eventName, new WeakMap());
             }
-
-            internalMap.set(handler, internalHandler);
-        }
-
-        #removeListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
-            const internalMap = this.#listenHandlers.get(eventType) as EventMap<D> | undefined;
-
+            const internalMap = this[HK.listenHandlers].get(eventName);
             if (internalMap) {
-                internalMap.delete(listener);
+                internalMap.set(handler, internalHandler);
             }
         }
 
-        addCustomListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
-            const internalHandler = (event: Event) => {
-                if (!isCustomEvent<D>(event)) {
-                    console.error(
-                        `Received a standard event for custom event ${eventType}; event will not be handled.`,
-                    );
-
-                    return null;
-                }
-
-                return listener(event);
-            };
-
-            this.#addListener(eventType, listener, internalHandler);
-            this.addEventListener(eventType, internalHandler);
+        private [HK.removeHandler](eventName: string, handler: EventHandler) {
+            const internalMap = this[HK.listenHandlers].get(eventName);
+            if (internalMap) {
+                internalMap.delete(handler);
+            }
         }
 
-        removeCustomListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
-            const realHandler = this.#getListener(eventType, listener);
+        addCustomListener(eventName: string, handler: EventHandler) {
+            const internalHandler = (event: Event) => {
+                if (!isCustomEvent(event)) {
+                    console.error(
+                        `Received a standard event for custom event ${eventName}; event will not be handled.`,
+                    );
+                    return;
+                }
+                handler(event);
+            };
+            this[HK.addHandler](eventName, handler, internalHandler);
+            this.addEventListener(eventName, internalHandler);
+        }
 
+        removeCustomListener(eventName: string, handler: EventHandler) {
+            const realHandler = this[HK.getHandler](eventName, handler);
             if (realHandler) {
                 this.removeEventListener(
-                    eventType,
+                    eventName,
                     realHandler as EventListenerOrEventListenerObject,
                 );
             }
-
-            this.#removeListener<D>(eventType, listener);
+            this[HK.removeHandler](eventName, handler);
         }
     };
 });

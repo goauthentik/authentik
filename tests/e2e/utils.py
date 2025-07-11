@@ -1,6 +1,7 @@
 """authentik e2e testing utilities"""
 
 import json
+import os
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
@@ -25,10 +26,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 
@@ -36,10 +35,20 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
-from authentik.root.test_runner import get_docker_tag
 
+RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
-RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "main")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
 
 
 def get_local_ip() -> str:
@@ -155,35 +164,30 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::group::authentik Logs", file=stderr)
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
-        self.logger = get_logger()
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
+        self.logger = get_logger()
         self.user = create_test_admin_user()
         super().setUp()
 
     def _get_driver(self) -> WebDriver:
         count = 0
-        opts = webdriver.ChromeOptions()
-        opts.add_argument("--disable-search-engine-choice-screen")
-        # This breaks selenium when running remotely...?
-        # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
-        opts.add_experimental_option(
-            "prefs",
-            {
-                "profile.password_manager_leak_detection": False,
-            },
-        )
+        try:
+            opts = webdriver.ChromeOptions()
+            opts.add_argument("--disable-search-engine-choice-screen")
+            return webdriver.Chrome(options=opts)
+        except WebDriverException:
+            pass
         while count < RETRIES:
             try:
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    options=opts,
+                    options=webdriver.ChromeOptions(),
                 )
                 driver.maximize_window()
                 return driver
-            except WebDriverException as exc:
-                self.logger.warning("Failed to setup webdriver", exc=exc)
+            except WebDriverException:
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
@@ -193,12 +197,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         super().tearDown()
         if IS_CI:
             print("::group::Browser logs")
-        # Very verbose way to get browser logs
-        # https://github.com/SeleniumHQ/selenium/pull/15641
-        # for some reason this removes the `get_log` API from Remote Webdriver
-        # and only keeps it on the local Chrome web driver, even when using
-        # a remote chrome driver...? (nvm the fact this was released as a minor version)
-        for line in self.driver.execute(Command.GET_LOG, {"type": "browser"})["value"]:
+        for line in self.driver.get_log("browser"):
             print(line["message"])
         if IS_CI:
             print("::endgroup::")
@@ -235,30 +234,10 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         element = self.driver.execute_script("return arguments[0].shadowRoot", shadow_root)
         return element
 
-    def shady_dom(self) -> WebElement:
-        class wrapper:
-            def __init__(self, container: WebDriver):
-                self.container = container
-
-            def find_element(self, by: str, selector: str) -> WebElement:
-                return self.container.execute_script(
-                    "return document.__shady_native_querySelector(arguments[0])", selector
-                )
-
-        return wrapper(self.driver)
-
-    def login(self, shadow_dom=True):
-        """Do entire login flow"""
-
-        if shadow_dom:
-            flow_executor = self.get_shadow_root("ak-flow-executor")
-            identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
-        else:
-            flow_executor = self.shady_dom()
-            identification_stage = self.shady_dom()
-
-        wait = WebDriverWait(identification_stage, self.wait_timeout)
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=uidField]")))
+    def login(self):
+        """Do entire login flow and check user afterwards"""
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
 
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").click()
         identification_stage.find_element(By.CSS_SELECTOR, "input[name=uidField]").send_keys(
@@ -268,16 +247,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             Keys.ENTER
         )
 
-        if shadow_dom:
-            flow_executor = self.get_shadow_root("ak-flow-executor")
-            password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
-        else:
-            flow_executor = self.shady_dom()
-            password_stage = self.shady_dom()
-
-        wait = WebDriverWait(password_stage, self.wait_timeout)
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "input[name=password]")))
-
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        password_stage = self.get_shadow_root("ak-stage-password", flow_executor)
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
             self.user.username
         )

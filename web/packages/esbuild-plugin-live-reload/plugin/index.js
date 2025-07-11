@@ -7,18 +7,12 @@
  */
 import { findFreePorts } from "find-free-ports";
 import * as http from "node:http";
-import { resolve as resolvePath } from "node:path";
+import * as path from "node:path";
 
 /**
  * Serializes a custom event to a text stream.
- *
  * @param {Event} event
  * @returns {string}
- *
- * @category Server API
- * @ignore
- * @internal
- * @runtime node
  */
 export function serializeCustomEventToStream(event) {
     // @ts-expect-error - TS doesn't know about the detail property
@@ -60,28 +54,20 @@ async function findDisparatePort() {
  * @property {string} pathname
  * @property {EventTarget} dispatcher
  * @property {string} [logPrefix]
- *
- * @category Server API
- * @runtime node
  */
 
 /**
  * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
- *
- * @category Server API
- * @runtime node
  */
 
 /**
  * Create an event request handler.
- *
  * @param {EventServerInit} options
  * @returns {RequestHandler}
- *
- * @category Server API
- * @runtime node
+ * @category ESBuild
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
+    // eslint-disable-next-line no-console
     const log = console.log.bind(console, `[${logPrefix}]`);
 
     /**
@@ -144,22 +130,19 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
 /**
  * Options for the build observer plugin.
  *
- * @category Plugin API
- * @runtime node
+ * @typedef {object} BuildObserverOptions
  *
- * @typedef {object} LiveReloadPluginOptions
- *
- * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
- * @property {ListenOptions} [listenOptions] Options for the server's listen method.
- * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
- * @property {string} [logPrefix] A prefix to use for log messages.
- * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
+ * @property {HTTPServer | HTTPSServer} [server]
+ * @property {ListenOptions} [listenOptions]
+ * @property {string | URL} [publicURL]
+ * @property {string} [logPrefix]
+ * @property {string} [relativeRoot]
  */
 
 /**
  * Creates a plugin that listens for build events and sends them to a server-sent event stream.
  *
- * @param {LiveReloadPluginOptions} [options]
+ * @param {BuildObserverOptions} [options]
  * @returns {import('esbuild').Plugin}
  */
 export function liveReloadPlugin(options = {}) {
@@ -194,10 +177,6 @@ export function liveReloadPlugin(options = {}) {
                 "import.meta.env.ESBUILD_WATCHER_URL": JSON.stringify(publicURL.href),
             };
 
-            build.initialOptions.define["process.env.NODE_ENV"] ??= JSON.stringify(
-                process.env.NODE_ENV || "development",
-            );
-
             const requestHandler = createRequestHandler({
                 pathname: publicURL.pathname,
                 dispatcher,
@@ -212,6 +191,7 @@ export function liveReloadPlugin(options = {}) {
             };
 
             server.listen(listenOptions, () => {
+                // eslint-disable-next-line no-console
                 console.log(`[${logPrefix}] Listening`);
             });
 
@@ -251,7 +231,7 @@ export function liveReloadPlugin(options = {}) {
                             location: error.location
                                 ? {
                                       ...error.location,
-                                      file: resolvePath(relativeRoot, error.location.file),
+                                      file: path.resolve(relativeRoot, error.location.file),
                                   }
                                 : null,
                         })),
@@ -261,5 +241,3 @@ export function liveReloadPlugin(options = {}) {
         },
     };
 }
-
-export default liveReloadPlugin;

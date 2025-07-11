@@ -1,13 +1,17 @@
 import {
+    CSRFHeaderName,
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware.js";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
-import { globalAK } from "@goauthentik/common/global.js";
-import { SentryMiddleware } from "@goauthentik/common/sentry/middleware";
+} from "@goauthentik/common/api/middleware";
+import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+
+// HACK: Workaround for ESBuild not being able to hoist import statement across entrypoints.
+// This can be removed after ESBuild uses a single build context for all entrypoints.
+export { CSRFHeaderName };
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
@@ -62,13 +66,21 @@ export function brand(): Promise<CurrentBrand> {
     return globalBrandPromise;
 }
 
+export function getMetaContent(key: string): string {
+    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
+    if (!metaEl) return "";
+    return metaEl.content;
+}
+
 export const DEFAULT_CONFIG = new Configuration({
     basePath: `${globalAK().api.base}api/v3`,
+    headers: {
+        "sentry-trace": getMetaContent("sentry-trace"),
+    },
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),
-        new SentryMiddleware(),
     ],
 });
 
@@ -79,6 +91,4 @@ export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
 
-console.debug(
-    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
-);
+console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);

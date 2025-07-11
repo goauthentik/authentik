@@ -23,7 +23,6 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -87,8 +86,7 @@ class EmailStageView(ChallengeStageView):
                 user=pending_user,
                 identifier=identifier,
                 flow=self.executor.flow,
-                _plan=pickle_flow_token_for_email(self.executor.plan),
-                revoke_on_execution=False,
+                _plan=FlowToken.pickle(self.executor.plan),
             )
         token = tokens.first()
         # Check if token is expired and rotate key if so

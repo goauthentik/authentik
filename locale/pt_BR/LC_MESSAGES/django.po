@@ -8,19 +8,19 @@
 # Josenivaldo Benito Junior, 2023
 # Caio Lima, 2023
 # Hacklab, 2023
+# Wagner Santos, 2024
 # Rafael Mundel, 2024
 # Anderson Silva Andrade <anderson.asa89@gmail.com>, 2025
 # Gil Poiares-Oliveira, 2025
-# Wagner Santos, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 11:25+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Wagner Santos, 2025\n"
+"Last-Translator: Gil Poiares-Oliveira, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/authentik/teams/119923/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -111,10 +111,6 @@ msgstr ""
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Certificado da Web usado pelo servidor da web authentik Core."
-
-#: authentik/brands/models.py
-msgid "Certificates used for client authentication."
-msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brand"
@@ -275,11 +271,11 @@ msgstr "Aplicativos"
 
 #: authentik/core/models.py
 msgid "Application Entitlement"
-msgstr "Autorização de aplicação"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Application Entitlements"
-msgstr "Autorizações de aplicação"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
@@ -383,15 +379,15 @@ msgstr "Mapeamentos de propriedades"
 
 #: authentik/core/models.py
 msgid "session data"
-msgstr "dados de sessão"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Session"
-msgstr "Sessão"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Sessions"
-msgstr "Sessões"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -509,7 +505,7 @@ msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Number of passwords to check against."
-msgstr "Número de senhas para verificar."
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
@@ -518,19 +514,19 @@ msgstr "Senha não definida no contexto"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "This password has been used previously. Please choose a different one."
-msgstr "A senha já foi utilizada antes. Por favor, escolha uma diferente."
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policy"
-msgstr "Política de exclusividade de senha"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policies"
-msgstr "Políticas de exclusividade de senha"
+msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "User Password History"
-msgstr "Histórico de senhas do usuário"
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -614,39 +610,39 @@ msgstr "Chave de Assinatura"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Key used to sign the SSF Events."
-msgstr "Chave utilizada para assinar os eventos SSF."
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Provider"
-msgstr "Provedor de Shared Signals Framework"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Providers"
-msgstr "Provedores de Shared Signals Framework"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
-msgstr "Adicionar stream ao fornecedor SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
-msgstr "Stream SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr "Streams SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
-msgstr "Evento de stream SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Events"
-msgstr "Eventos de stream SSF"
+msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Failed to send request"
-msgstr "Falha ao enviar requisição"
+msgstr ""
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
@@ -668,33 +664,6 @@ msgstr ""
 msgid "Verifying your browser..."
 msgstr ""
 
-#: authentik/enterprise/stages/mtls/models.py
-msgid ""
-"Configure certificate authorities to validate the certificate against. This "
-"option has a higher priority than the `client_certificate` option on "
-"`Brand`."
-msgstr ""
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Mutual TLS Stage"
-msgstr ""
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Mutual TLS Stages"
-msgstr ""
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Permissions to pass Certificates for outposts."
-msgstr ""
-
-#: authentik/enterprise/stages/mtls/stage.py
-msgid "Certificate required but no certificate was given."
-msgstr ""
-
-#: authentik/enterprise/stages/mtls/stage.py
-msgid "No user found for certificate."
-msgstr ""
-
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
@@ -712,7 +681,7 @@ msgstr ""
 #: authentik/events/api/tasks.py
 #, python-brace-format
 msgid "Successfully started task {name}."
-msgstr "Tarefa {name} iniciada com sucesso."
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Event"
@@ -744,16 +713,12 @@ msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
-"Personalize o corpo do pedido. O mapeamento deve retornar dados que sejam "
-"serializáveis em JSON."
 
 #: authentik/events/models.py
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
 msgstr ""
-"Configurar cabeçalhos adicionais a serem enviados. O mapeamento deve "
-"retornar um dicionário de pares chave-valor"
 
 #: authentik/events/models.py
 msgid ""
@@ -1033,11 +998,8 @@ msgid "Starting full provider sync"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-msgid "Syncing users"
-msgstr ""
-
-#: authentik/lib/sync/outgoing/tasks.py
-msgid "Syncing groups"
+#, python-brace-format
+msgid "Syncing page {page} of users"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -1352,7 +1314,7 @@ msgstr ""
 #: authentik/policies/password/models.py
 #, python-brace-format
 msgid "Password exists on {count} online lists."
-msgstr "A senha está presente em {count}  listas de senhas vulneráveis."
+msgstr ""
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -2435,12 +2397,6 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
-msgid ""
-"Delete authentik users and groups which were previously supplied by this "
-"source, but are now missing from it."
-msgstr ""
-
-#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Fonte LDAP"
 
@@ -2454,11 +2410,6 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
-msgstr ""
-
-#: authentik/sources/ldap/models.py
-msgid ""
-"Unique ID used while checking if this object still exists in the directory."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -2851,11 +2802,6 @@ msgstr ""
 msgid "Group SAML Source Connections"
 msgstr ""
 
-#: authentik/sources/saml/views.py
-#, python-brace-format
-msgid "Continue to {source_name}"
-msgstr ""
-
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr ""
@@ -3228,10 +3174,6 @@ msgstr "Consentimento do usuário"
 msgid "User Consents"
 msgstr "Consentimentos do usuário"
 
-#: authentik/stages/consent/stage.py
-msgid "Invalid consent token, re-showing prompt"
-msgstr ""
-
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Negar Estágio"
@@ -3247,14 +3189,6 @@ msgstr "Palco fictício"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "Fases fictícias"
-
-#: authentik/stages/email/flow.py
-msgid "Continue to confirm this email address."
-msgstr ""
-
-#: authentik/stages/email/flow.py
-msgid "Link was already used, please request a new link."
-msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"

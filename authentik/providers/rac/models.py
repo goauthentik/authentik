@@ -166,6 +166,7 @@ class ConnectionToken(ExpiringModel):
         always_merger.merge(settings, default_settings)
         always_merger.merge(settings, self.endpoint.provider.settings)
         always_merger.merge(settings, self.endpoint.settings)
+        always_merger.merge(settings, self.settings)
 
         def mapping_evaluator(mappings: QuerySet):
             for mapping in mappings:
@@ -190,7 +191,6 @@ class ConnectionToken(ExpiringModel):
         mapping_evaluator(
             RACPropertyMapping.objects.filter(endpoint__in=[self.endpoint]).order_by("name")
         )
-        always_merger.merge(settings, self.settings)
 
         settings["drive-path"] = f"/tmp/connection/{self.token}"  # nosec
         settings["create-drive-path"] = "true"

@@ -4,6 +4,7 @@ import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
+import MDSourceKerberosBrowser from "@goauthentik/docs/users-sources/sources/protocols/kerberos/browser.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
@@ -12,7 +13,6 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/sync/SyncStatusCard";
-import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

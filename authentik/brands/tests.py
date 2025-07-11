@@ -148,14 +148,3 @@ class TestBrands(APITestCase):
                 "default_locale": "",
             },
         )
-
-    def test_custom_css(self):
-        """Test custom_css"""
-        brand = create_test_brand()
-        brand.branding_custom_css = """* {
-            font-family: "Foo bar";
-        }"""
-        brand.save()
-        res = self.client.get(reverse("authentik_core:if-user"))
-        self.assertEqual(res.status_code, 200)
-        self.assertIn(brand.branding_custom_css, res.content.decode())

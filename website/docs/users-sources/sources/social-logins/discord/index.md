@@ -380,7 +380,3 @@ return True
 ```
 
 Now bind this policy to the chosen enrollment and authentication flows for the Discord OAuth source.
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
-:::

@@ -1,9 +1,9 @@
-import "#components/ak-page-header";
-import { updateURLParams } from "#elements/router/RouteMatch";
-import { Table } from "#elements/table/Table";
+import "@goauthentik/elements/PageHeader";
+import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { Table } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult, nothing } from "lit";
+import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -44,7 +44,7 @@ export abstract class TablePage<T> extends Table<T> {
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No objects found.")}">
                       <div slot="body">
-                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : nothing}
+                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
@@ -60,7 +60,9 @@ export abstract class TablePage<T> extends Table<T> {
                 this.search = "";
                 this.requestUpdate();
                 this.fetch();
-                this.page = 1;
+                updateURLParams({
+                    search: "",
+                });
             }}
             class="pf-c-button pf-m-link"
         >

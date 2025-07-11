@@ -32,7 +32,7 @@ To support the integration of Frappe with authentik, you need to create an appli
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -90,10 +90,10 @@ To support the integration of Frappe with authentik, you need to create an appli
 4. **Save the Configuration**
     - Click the black **Save** button in the top-right corner to complete the setup.
 
-## Configuration verification
-
-To verify that authentik is correctly set up with Frappe, navigate to your Frappe installation and click **Login with Provider**. A successful login should redirect you to the main page of your installation.
-
 ## Resources
 
 - [Frappe's official OpenID Connect guide](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)
+
+## Configuration verification
+
+To verify that authentik is correctly set up with Frappe, navigate to your Frappe installation and click **Login with Provider**. A successful login should redirect you to the main page of your installation.

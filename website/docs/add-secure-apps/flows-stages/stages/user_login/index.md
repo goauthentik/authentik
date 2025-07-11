@@ -40,7 +40,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
     When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
-    Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/event-actions#logout) event will contain additional data related to what caused the binding to be broken:
+    Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/index.md#logout) event will contain additional data related to what caused the binding to be broken:
 
     ```json
     {

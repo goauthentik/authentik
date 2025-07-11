@@ -101,9 +101,9 @@ class BoundSessionMiddleware(SessionMiddleware):
             SESSION_KEY_BINDING_GEO, GeoIPBinding.NO_BINDING
         )
         if configured_binding_net != NetworkBinding.NO_BINDING:
-            BoundSessionMiddleware.recheck_session_net(configured_binding_net, last_ip, new_ip)
+            self.recheck_session_net(configured_binding_net, last_ip, new_ip)
         if configured_binding_geo != GeoIPBinding.NO_BINDING:
-            BoundSessionMiddleware.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
+            self.recheck_session_geo(configured_binding_geo, last_ip, new_ip)
         # If we got to this point without any error being raised, we need to
         # update the last saved IP to the current one
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
@@ -111,8 +111,7 @@ class BoundSessionMiddleware(SessionMiddleware):
             # (== basically requires the user to be logged in)
             request.session[request.session.model.Keys.LAST_IP] = new_ip
 
-    @staticmethod
-    def recheck_session_net(binding: NetworkBinding, last_ip: str, new_ip: str):
+    def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""
         last_asn = ASN_CONTEXT_PROCESSOR.asn(last_ip)
         new_asn = ASN_CONTEXT_PROCESSOR.asn(new_ip)
@@ -159,8 +158,7 @@ class BoundSessionMiddleware(SessionMiddleware):
                     new_ip,
                 )
 
-    @staticmethod
-    def recheck_session_geo(binding: GeoIPBinding, last_ip: str, new_ip: str):
+    def recheck_session_geo(self, binding: GeoIPBinding, last_ip: str, new_ip: str):
         """Check GeoIP binding"""
         last_geo = GEOIP_CONTEXT_PROCESSOR.city(last_ip)
         new_geo = GEOIP_CONTEXT_PROCESSOR.city(new_ip)
@@ -181,8 +179,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.continent != new_geo.continent:
                 raise SessionBindingBroken(
                     "geoip.continent",
-                    last_geo.continent.to_dict(),
-                    new_geo.continent.to_dict(),
+                    last_geo.continent,
+                    new_geo.continent,
                     last_ip,
                     new_ip,
                 )
@@ -194,8 +192,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.country != new_geo.country:
                 raise SessionBindingBroken(
                     "geoip.country",
-                    last_geo.country.to_dict(),
-                    new_geo.country.to_dict(),
+                    last_geo.country,
+                    new_geo.country,
                     last_ip,
                     new_ip,
                 )
@@ -204,8 +202,8 @@ class BoundSessionMiddleware(SessionMiddleware):
             if last_geo.city != new_geo.city:
                 raise SessionBindingBroken(
                     "geoip.city",
-                    last_geo.city.to_dict(),
-                    new_geo.city.to_dict(),
+                    last_geo.city,
+                    new_geo.city,
                     last_ip,
                     new_ip,
                 )

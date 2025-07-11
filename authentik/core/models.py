@@ -953,10 +953,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
-        permissions = [
-            ("view_token_key", _("View token's key")),
-            ("set_token_key", _("Set a token's key")),
-        ]
+        permissions = [("view_token_key", _("View token's key"))]
 
     def __str__(self):
         description = f"{self.identifier}"
@@ -1084,12 +1081,6 @@ class AuthenticatedSession(SerializerModel):
     uuid = models.UUIDField(default=uuid4, unique=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
-
-        return AuthenticatedSessionSerializer
 
     class Meta:
         verbose_name = _("Authenticated Session")

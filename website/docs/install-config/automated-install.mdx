@@ -29,10 +29,9 @@ authentik:
 To store the password and token in a secret, use:
 
 ```yaml
-global:
-    envFrom:
-        - secretRef:
-              name: _some-secret_
+envFrom:
+    - secretRef:
+          name: _some-secret_
 ```
 
 where _some-secret_ contains the environment variables as in the documentation above.

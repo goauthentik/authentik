@@ -5,7 +5,6 @@ import { TemplateResult, html } from "lit";
 
 import "../components/ak-pagination";
 import { AkPagination } from "../components/ak-pagination";
-import { DualSelectEventType } from "../types";
 
 const metadata: Meta<AkPagination> = {
     title: "Elements / Dual Select / Pagination Control",
@@ -55,7 +54,7 @@ const handleMoveChanged = (result: any) => {
     );
 };
 
-window.addEventListener(DualSelectEventType.NavigateTo, handleMoveChanged);
+window.addEventListener("ak-pagination-nav-to", handleMoveChanged);
 
 type Story = StoryObj;
 

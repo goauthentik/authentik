@@ -17,8 +17,6 @@ from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
-from authentik.sources.ldap.sync.forward_delete_groups import GroupLDAPForwardDeletion
-from authentik.sources.ldap.sync.forward_delete_users import UserLDAPForwardDeletion
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
@@ -54,11 +52,11 @@ def ldap_connectivity_check(pk: str | None = None):
 
 
 @CELERY_APP.task(
-    # We take the configured hours timeout time by 3.5 as we run user and
-    # group in parallel and then membership, then deletions, so 3x is to cover the serial tasks,
+    # We take the configured hours timeout time by 2.5 as we run user and
+    # group in parallel and then membership, so 2x is to cover the serial tasks,
     # and 0.5x on top of that to give some more leeway
-    soft_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3.5,
-    task_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3.5,
+    soft_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
+    task_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
 )
 def ldap_sync_single(source_pk: str):
     """Sync a single source"""
@@ -71,31 +69,18 @@ def ldap_sync_single(source_pk: str):
             return
         # Delete all sync tasks from the cache
         DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
-
-        # The order of these operations needs to be preserved as each depends on the previous one(s)
-        # 1. User and group sync can happen simultaneously
-        # 2. Membership sync needs to run afterwards
-        # 3. Finally, user and group deletions can happen simultaneously
-        user_group_sync = ldap_sync_paginator(source, UserLDAPSynchronizer) + ldap_sync_paginator(
-            source, GroupLDAPSynchronizer
+        task = chain(
+            # User and group sync can happen at once, they have no dependencies on each other
+            group(
+                ldap_sync_paginator(source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+            ),
+            # Membership sync needs to run afterwards
+            group(
+                ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+            ),
         )
-        membership_sync = ldap_sync_paginator(source, MembershipLDAPSynchronizer)
-        user_group_deletion = ldap_sync_paginator(
-            source, UserLDAPForwardDeletion
-        ) + ldap_sync_paginator(source, GroupLDAPForwardDeletion)
-
-        # Celery is buggy with empty groups, so we are careful only to add non-empty groups.
-        # See https://github.com/celery/celery/issues/9772
-        task_groups = []
-        if user_group_sync:
-            task_groups.append(group(user_group_sync))
-        if membership_sync:
-            task_groups.append(group(membership_sync))
-        if user_group_deletion:
-            task_groups.append(group(user_group_deletion))
-
-        all_tasks = chain(task_groups)
-        all_tasks()
+        task()
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:

@@ -27,7 +27,7 @@ To support the integration of NetBird with authentik, you need to create an appl
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -57,7 +57,7 @@ If an access group is created for the Netbird application, the Netbird service a
 
 ### Set up a service account
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log into authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**, and click **Create a service account**.
 3. Set the **Username** to `NetBird` and disable the **Create group** option. Click **Create** and take note of the **password**.
 
@@ -65,13 +65,13 @@ If an access group is created for the Netbird application, the Netbird service a
 
 NetBird requires the service account to have full administrative access to the authentik instance. Follow these steps to make it an administrator.
 
-1. Log into authentik as an administrator and open the authentik Admin interface.
+1. Log into authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups**, and click **`authentik Admins`**.
 3. On the top of the group configuration page, switch to the **Users** tab near the top of the page, then click **Add existing user**, and select the service account you just created.
 
 ### Create and apply a device token authentication flow
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)

@@ -3,6 +3,10 @@ title: Integrate with Chronograf
 sidebar_label: Chronograf
 ---
 
+# Integrate with Chronograf
+
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Chronograf
 
 > Chronograf lets you quickly visualize the data stored in InfluxDB, enabling you to build robust queries and alerts. It is simple to use and comes with templates and libraries for rapidly creating dashboards with real-time data visualizations.
@@ -26,9 +30,9 @@ To support the integration of Chronograf with authentik, you need to create an a
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-3. Log in to authentik as an administrator and open the authentik Admin interface.
+3. Log in to authentik as an admin, and open the authentik Admin interface.
 4. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -65,10 +69,10 @@ Refer to the [Chronograf configuration options documentation](https://docs.influ
     USE_ID_TOKEN=true
     ```
 
-## Configuration verification
-
-To confirm that authentik is properly configured with Chronograf, visit your Chronograf installation, and click **Log in with authentik**.
-
 ## Resources
 
 - [Chronograf official documentation on OpenID Connect integration](https://docs.influxdata.com/chronograf/v1/administration/managing-security/#configure-chronograf-to-use-any-oauth-20-provider)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Chronograf, visit your Chronograf installation, and click **Log in with authentik**.

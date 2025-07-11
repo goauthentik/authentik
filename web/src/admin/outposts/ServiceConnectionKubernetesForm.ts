@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -35,10 +36,11 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
+        } else {
+            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+                kubernetesServiceConnectionRequest: data,
+            });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-            kubernetesServiceConnectionRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -55,7 +57,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.local ?? false}
+                        ?checked=${first(this.instance?.local, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -73,7 +75,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
+                    value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
@@ -85,7 +87,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.verifySsl ?? true}
+                        ?checked=${first(this.instance?.verifySsl, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

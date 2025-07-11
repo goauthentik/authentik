@@ -23,10 +23,11 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                 stageUuid: this.instance.pk || "",
                 denyStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
+                denyStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
-            denyStageRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {

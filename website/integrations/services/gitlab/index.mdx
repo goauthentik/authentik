@@ -29,8 +29,8 @@ This documentation lists only the settings that you need to change from their de
 
 There are two ways to configure single sign-on for GitLab. You can configure it via SAML authentication or via OpenID Connect.
 
-import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 <Tabs
     defaultValue="saml"
@@ -104,7 +104,7 @@ To support the integration of GitLab with authentik, you need to create an appli
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.

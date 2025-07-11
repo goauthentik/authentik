@@ -31,26 +31,13 @@ type MemorySearcher struct {
 	groups []api.Group
 }
 
-func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *MemorySearcher {
+func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 	ms := &MemorySearcher{
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
 		ds:  direct.NewDirectSearcher(si),
 	}
-	if existing != nil {
-		if ems, ok := existing.(*MemorySearcher); ok {
-			ems.si = si
-			ems.fetch()
-			ems.log.Debug("re-initialised memory searcher")
-			return ems
-		}
-	}
-	ms.fetch()
 	ms.log.Debug("initialised memory searcher")
-	return ms
-}
-
-func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
 	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
 		PageSize: 100,
@@ -62,6 +49,7 @@ func (ms *MemorySearcher) fetch() {
 		Logger:   ms.log,
 	})
 	ms.groups = groups
+	return ms
 }
 
 func (ms *MemorySearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {

@@ -1,11 +1,14 @@
 ---
 title: Integrate with BookStack
 sidebar_label: BookStack
-support_level: community
 ---
 
-import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Integrate with BookStack
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is BookStack
 
@@ -42,7 +45,7 @@ To support the integration of BookStack with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -81,7 +84,7 @@ To support the integration of BookStack with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
@@ -122,12 +125,12 @@ Once that's done, the next step is to update your `.env` file to include the fol
 </TabItem>
 </Tabs>
 
-## Configuration verification
-
-To confirm that authentik is properly configured with BookStack, visit your BookStack installation, and click **Login with authentik**.
-
 ## Resources
 
 - [BookStack Administrator Documentation for OpenID Connect](https://www.bookstackapp.com/docs/admin/oidc-auth/)
 - [Bookstack Administrator Documentation for SAML2](https://www.bookstackapp.com/docs/admin/saml2-auth/)
 - [PeerTube video detailing a setup with authentik (OpenID Connect)](https://foss.video/w/a744K8GxFF1LqBFSadAsuV)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with BookStack, visit your BookStack installation, and click **Login with authentik**.

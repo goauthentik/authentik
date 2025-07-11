@@ -27,7 +27,7 @@ To support the integration of AdventureLog with authentik, you need to create an
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -73,10 +73,10 @@ Ensure the `https://adventurelog.company/accounts` path is routed to the backend
 
 Launch your authentik dashboard as an admin and find the AdventureLog app. Click **More details** then **Edit**. In the admin interface, click **Test** under **Check Access**. If you get a 403 error, you need to grant the user the correct permissions. This can be done by going to the user's profile and adding the correct permissions.
 
-## Configuration verification
-
-To confirm authentik is correctly integrated with AdventureLog, log out and attempt to log back in using OpenID Connect by clicking the **authentik** button on the AdventureLog login page.
-
 ## Resources
 
 - [AdventureLog's official documentation](https://adventurelog.app/docs/configuration/social_auth/authentik.html)
+
+## Configuration verification
+
+To confirm authentik is correctly integrated with AdventureLog, log out and attempt to log back in using OpenID Connect by clicking the **authentik** button on the AdventureLog login page.

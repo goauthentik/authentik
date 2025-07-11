@@ -19,6 +19,7 @@ import (
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
+	"goauthentik.io/internal/web/brand_tls"
 )
 
 var rootCmd = &cobra.Command{
@@ -66,12 +67,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		ws := web.NewWebServer()
-		ws.Core().AddHealthyCallback(func() {
+		ws.Core().HealthyCallback = func() {
 			if config.Get().Outposts.DisableEmbeddedOutpost {
 				return
 			}
 			go attemptProxyStart(ws, u)
-		})
+		}
 		ws.Start()
 		<-ex
 		l.Info("shutting down webserver")
@@ -94,8 +95,13 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
+		// Init brand_tls here too since it requires an API Client,
+		// so we just reuse the same one as the outpost uses
+		tw := brand_tls.NewWatcher(ac.Client)
+		go tw.Start()
+		ws.BrandTLS = tw
 		ac.AddRefreshHandler(func() {
-			ws.BrandTLS.Check()
+			tw.Check()
 		})
 
 		srv := proxyv2.NewProxyServer(ac)

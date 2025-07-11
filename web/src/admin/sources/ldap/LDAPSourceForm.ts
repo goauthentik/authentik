@@ -2,6 +2,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -66,7 +67,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.enabled ?? true}
+                        ?checked=${first(this.instance?.enabled, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -81,7 +82,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
+                        ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -103,7 +104,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.syncUsers ?? true}
+                        ?checked=${first(this.instance?.syncUsers, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -118,7 +119,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.syncUsersPassword ?? true}
+                        ?checked=${first(this.instance?.syncUsersPassword, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -138,7 +139,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.syncGroups ?? true}
+                        ?checked=${first(this.instance?.syncGroups, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -147,26 +148,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </span>
                     <span class="pf-c-switch__label">${msg("Sync groups")}</span>
                 </label>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="deleteNotFoundObjects">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.deleteNotFoundObjects ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Delete Not Found Objects")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Delete authentik users and groups which were previously supplied by this source, but are now missing from it.",
-                    )}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Connection settings")} </span>
@@ -192,7 +173,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.startTls ?? true}
+                                ?checked=${first(this.instance?.startTls, true)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -210,7 +191,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.sni ?? false}
+                                ?checked=${first(this.instance?.sni, false)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -354,14 +335,16 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ??
-                            "goauthentik.io/sources/%(slug)s"}"
+                            value="${first(
+                                this.instance?.userPathTemplate,
+                                "goauthentik.io/sources/%(slug)s",
+                            )}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Additional User DN")}
+                        label=${msg("Addition User DN")}
                         name="additionalUserDn"
                     >
                         <input
@@ -374,7 +357,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Additional Group DN")}
+                        label=${msg("Addition Group DN")}
                         name="additionalGroupDn"
                     >
                         <input
@@ -429,23 +412,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains members of a group. The value of this field is matched against User membership attribute.",
+                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.",
                             )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("User membership attribute")}
-                        ?required=${true}
-                        name="userMembershipAttribute"
-                    >
-                        <input
-                            type="text"
-                            value="${this.instance?.userMembershipAttribute || "distinguishedName"}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Attribute which matches the value of Group membership field.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="lookupGroupsFromUser">
@@ -453,7 +421,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.lookupGroupsFromUser ?? false}
+                                ?checked=${first(this.instance?.lookupGroupsFromUser, false)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

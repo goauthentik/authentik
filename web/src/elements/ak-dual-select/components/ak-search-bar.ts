@@ -4,45 +4,47 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import type { Ref } from "lit/directives/ref.js";
 
+import { globalVariables, searchStyles } from "./search.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { SearchbarEventDetail, SearchbarEventSource } from "../types.ts";
-import { globalVariables, searchStyles } from "./search.css.js";
+import type { SearchbarEvent } from "../types";
+
+const styles = [PFBase, globalVariables, searchStyles];
 
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
-    static styles = [PFBase, globalVariables, searchStyles];
+    static get styles() {
+        return styles;
+    }
 
     @property({ type: String, reflect: true })
-    public value = "";
+    value = "";
 
     /**
      * If you're using more than one search, this token can help listeners distinguishing between
      * those searches. Lit's own helpers sometimes erase the source and current targets.
      */
     @property({ type: String })
-    public name?: SearchbarEventSource;
+    name = "";
 
-    protected inputRef = createRef<HTMLInputElement>();
+    input: Ref<HTMLInputElement> = createRef();
 
-    #changeListener = () => {
-        const inputElement = this.inputRef.value;
+    constructor() {
+        super();
+        this.onChange = this.onChange.bind(this);
+    }
 
-        if (inputElement) {
-            this.value = inputElement.value;
+    onChange(_event: Event) {
+        if (this.input.value) {
+            this.value = this.input.value.value;
         }
-
-        if (!this.name) {
-            console.warn("ak-search-bar: no name provided, event will not be dispatched");
-            return;
-        }
-
-        this.dispatchCustomEvent<SearchbarEventDetail>("ak-search", {
+        this.dispatchCustomEvent<SearchbarEvent>("ak-search", {
             source: this.name,
             value: this.value,
         });
-    };
+    }
 
     render() {
         return html`
@@ -54,8 +56,8 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
                         ><input
                             type="search"
                             class="pf-c-text-input-group__text-input"
-                            ${ref(this.inputRef)}
-                            @input=${this.#changeListener}
+                            ${ref(this.input)}
+                            @input=${this.onChange}
                             value="${this.value}"
                     /></span>
                 </div>

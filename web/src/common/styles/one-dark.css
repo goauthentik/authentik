@@ -1,48 +1,42 @@
-/**
- * @file Atom One Dark syntax highlighting theme.
- *
- * @see https://github.com/atom/one-dark-syntax
- */
+/*
 
-/* Defined to better identify the One Dark theme when debugging constructed stylesheets. */
-.__HIGHLIGHT_THEME_ONE_DARK__ {
-    --__HIGHLIGHT_THEME_ONE_DARK__: 1;
-}
+Atom One Dark by Daniel Gamage
+Original One Dark Syntax theme from https://github.com/atom/one-dark-syntax
 
-:root {
-    --one-dark-base: #282c34;
-    --one-dark-mono-1: #abb2bf;
-    --one-dark-mono-2: #818896;
-    --one-dark-mono-3: #5c6370;
-    --one-dark-hue-1: #56b6c2;
-    --one-dark-hue-2: #61aeee;
-    --one-dark-hue-3: #c678dd;
-    --one-dark-hue-4: #98c379;
-    --one-dark-hue-5: #e06c75;
-    --one-dark-hue-5-2: #be5046;
-    --one-dark-hue-6: #d19a66;
-    --one-dark-hue-6-2: #e6c07b;
-}
+base:    #282c34
+mono-1:  #abb2bf
+mono-2:  #818896
+mono-3:  #5c6370
+hue-1:   #56b6c2
+hue-2:   #61aeee
+hue-3:   #c678dd
+hue-4:   #98c379
+hue-5:   #e06c75
+hue-5-2: #be5046
+hue-6:   #d19a66
+hue-6-2: #e6c07b
+
+*/
 
 .hljs {
-    color: var(--one-dark-mono-1);
-    background: var(--one-dark-base);
+    color: #abb2bf;
+    background: #282c34;
 }
 
 pre:has(.hljs) {
-    background: var(--one-dark-base);
+    background: #282c34;
 }
 
 .hljs-comment,
 .hljs-quote {
-    color: var(--one-dark-mono-3);
+    color: #5c6370;
     font-style: italic;
 }
 
 .hljs-doctag,
 .hljs-keyword,
 .hljs-formula {
-    color: var(--one-dark-hue-3);
+    color: #c678dd;
 }
 
 .hljs-section,
@@ -50,11 +44,11 @@ pre:has(.hljs) {
 .hljs-selector-tag,
 .hljs-deletion,
 .hljs-subst {
-    color: var(--one-dark-hue-5);
+    color: #e06c75;
 }
 
 .hljs-literal {
-    color: var(--one-dark-hue-1);
+    color: #56b6c2;
 }
 
 .hljs-string,
@@ -62,7 +56,7 @@ pre:has(.hljs) {
 .hljs-addition,
 .hljs-attribute,
 .hljs-meta .hljs-string {
-    color: var(--one-dark-hue-4);
+    color: #98c379;
 }
 
 .hljs-attr,
@@ -73,7 +67,7 @@ pre:has(.hljs) {
 .hljs-selector-attr,
 .hljs-selector-pseudo,
 .hljs-number {
-    color: var(--one-dark-hue-6);
+    color: #d19a66;
 }
 
 .hljs-symbol,
@@ -82,13 +76,13 @@ pre:has(.hljs) {
 .hljs-meta,
 .hljs-selector-id,
 .hljs-title {
-    color: var(--one-dark-hue-2);
+    color: #61aeee;
 }
 
 .hljs-built_in,
 .hljs-title.class_,
 .hljs-class .hljs-title {
-    color: var(--one-dark-hue-6-2);
+    color: #e6c07b;
 }
 
 .hljs-emphasis {

@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -54,10 +55,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+                promptRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
-            promptRequest: data,
-        });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
@@ -267,7 +269,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.required ?? false}
+                        ?checked=${first(this.instance?.required, false)}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
@@ -285,7 +287,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.placeholderExpression ?? false}
+                        ?checked=${first(this.instance?.placeholderExpression, false)}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
@@ -328,7 +330,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.initialValueExpression ?? false}
+                        ?checked=${first(this.instance?.initialValueExpression, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -374,7 +376,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <input
                     type="number"
-                    value="${this.instance?.order ?? 0}"
+                    value="${first(this.instance?.order, 0)}"
                     class="pf-c-form-control"
                     required
                 />

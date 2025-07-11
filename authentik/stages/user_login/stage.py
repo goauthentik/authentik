@@ -11,7 +11,7 @@ from rest_framework.fields import BooleanField, CharField
 from authentik.core.models import Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -108,6 +108,10 @@ class UserLoginStageView(ChallengeStageView):
             flow_slug=self.executor.flow.slug,
             session_duration=delta,
         )
+        # Only show success message if we don't have a source in the flow
+        # as sources show their own success messages
+        if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
+            messages.success(self.request, _("Successfully logged in!"))
         if self.executor.current_stage.terminate_other_sessions:
             Session.objects.filter(
                 authenticatedsession__user=user,

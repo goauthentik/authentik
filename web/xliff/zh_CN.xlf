@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
         
@@ -9010,8 +9010,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>此选项配置流程执行器页面上的页脚链接。URL 限为 Web 和电子邮件地址。如果名称留空，则显示 URL 自身。</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brandingTitle}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9180,6 +9180,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
   <target>创建一个策略/用户/组绑定</target>
+</trans-unit>
+<trans-unit id="s10ba15343fe64890">
+  <source>Choose A Provider</source>
+  <target>选择提供程序</target>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
@@ -9802,82 +9806,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
   <target>检查历史密码数量</target>
-</trans-unit>
-<trans-unit id="sdd66c5a2e706fb81">
-  <source>Toggle sidebar</source>
-  <target>切换侧边栏</target>
-</trans-unit>
-<trans-unit id="s7d4ec232535a36f0">
-  <source>Choose a Provider</source>
-  <target>选择提供程序</target>
-</trans-unit>
-<trans-unit id="sa30ba280de276758">
-  <source>When enabled, the SAML response will be signed.</source>
-  <target>启用时，SAML 响应会被签名。</target>
-</trans-unit>
-<trans-unit id="s2c42bb3c6f5420d2">
-  <source>Client Certificates</source>
-  <target>客户端证书</target>
-</trans-unit>
-<trans-unit id="s95901716c0629274">
-  <source>Available Certificates</source>
-  <target>可用证书</target>
-</trans-unit>
-<trans-unit id="sdbf6b484fa1436b0">
-  <source>Selected Certificates</source>
-  <target>已选证书</target>
-</trans-unit>
-<trans-unit id="s9300147e327fd8f6">
-  <source>Client-certificate/mTLS authentication/enrollment.</source>
-  <target>客户端证书/mTLS 身份验证/注册。</target>
-</trans-unit>
-<trans-unit id="sbf990ec848470f5c">
-  <source>Certificate optional</source>
-  <target>证书可选</target>
-</trans-unit>
-<trans-unit id="s72e2876e9409b9eb">
-  <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
-  <target>如果未提供证书，此阶段会成功并继续到下一阶段。</target>
-</trans-unit>
-<trans-unit id="se07d973901a6e6b9">
-  <source>Certificate required</source>
-  <target>需要证书</target>
-</trans-unit>
-<trans-unit id="s664c47df020ee414">
-  <source>If no certificate was provided, this stage will stop flow execution.</source>
-  <target>如果未提供证书，此阶段会停止流程执行。</target>
-</trans-unit>
-<trans-unit id="sbe9da6dad795aa39">
-  <source>Certificate authorities</source>
-  <target>证书机构（CA）</target>
-</trans-unit>
-<trans-unit id="se3a6aa4f0ab7568e">
-  <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
-  <target>配置用于验证客户端证书的证书机构。证书机构也可以在品牌中配置，这样可以为不同的域配置不同的证书机构。</target>
-</trans-unit>
-<trans-unit id="sb8fdf5a09a969870">
-  <source>Certificate attribute</source>
-  <target>证书属性</target>
-</trans-unit>
-<trans-unit id="s8069037a865037c9">
-  <source>Configure the attribute of the certificate used to look for a user.</source>
-  <target>配置用于查询用户的证书属性。</target>
-</trans-unit>
-<trans-unit id="sc185a8ad96f8eaa2">
-  <source>User attribute</source>
-  <target>用户属性</target>
-</trans-unit>
-<trans-unit id="s4f9860fefb8fbe01">
-  <source>Configure the attribute of the user used to look for a user.</source>
-  <target>配置用于查询用户的用户属性。</target>
-</trans-unit>
-<trans-unit id="s42b57339ad2f3ac7">
-  <source>Delete Not Found Objects</source>
-  <target>删除不存在对象</target>
-</trans-unit>
-<trans-unit id="se3b26b762110bda0">
-  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
-  <target>删除之前由此源提供，但现已缺失的用户和组。</target>
 </trans-unit>
     </body>
   </file>

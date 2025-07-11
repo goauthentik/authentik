@@ -1,5 +1,6 @@
 import "@goauthentik/admin/users/GroupSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -46,11 +47,12 @@ export class UserForm extends ModelForm<User, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
+        } else {
+            if (this.group) {
+                return msg(str`Successfully created user and added to group ${this.group.name}`);
+            }
+            return msg("Successfully created user.");
         }
-        if (this.group) {
-            return msg(str`Successfully created user and added to group ${this.group.name}`);
-        }
-        return msg("Successfully created user.");
     }
 
     async send(data: User): Promise<User> {
@@ -157,7 +159,7 @@ export class UserForm extends ModelForm<User, number> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.isActive ?? true}
+                        ?checked=${first(this.instance?.isActive, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -175,7 +177,7 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
                 <input
                     type="text"
-                    value="${this.instance?.path ?? this.defaultPath}"
+                    value="${first(this.instance?.path, this.defaultPath)}"
                     class="pf-c-form-control"
                     required
                 />
@@ -188,7 +190,7 @@ export class UserForm extends ModelForm<User, number> {
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
+                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
                     )}"
                 >
                 </ak-codemirror>

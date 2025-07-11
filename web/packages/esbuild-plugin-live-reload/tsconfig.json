@@ -6,9 +6,5 @@
         "baseUrl": ".",
         "checkJs": true,
         "emitDeclarationOnly": true
-    },
-    "exclude": [
-        // ---
-        "**/out/**/*"
-    ]
+    }
 }

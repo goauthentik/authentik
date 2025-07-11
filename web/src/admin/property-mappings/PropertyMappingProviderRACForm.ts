@@ -46,10 +46,11 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
+        } else {
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
+                rACPropertyMappingRequest: data,
+            });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
-            rACPropertyMappingRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {

@@ -4,8 +4,8 @@ sidebar_label: Actual Budget
 support_level: community
 ---
 
-import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 ## What is Actual Budget
 
@@ -30,7 +30,7 @@ To support the integration of Actual Budget with authentik, you need to create a
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -102,10 +102,10 @@ The first user to log into Actual Budget via OpenID will become the owner and ad
 To do so, navigate to **Server online** > **User Directory**, and create users matching exiting authentik usernames. Then, grant access to the budget via the **User Access** tab.
 :::
 
-## Configuration verification
-
-To confirm that authentik is properly configured with Actual Budget, visit your Actual Budget installation, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.
-
 ## Resources
 
 - [Official Actual Budget documentation on OpenID Connect integration](https://actualbudget.org/docs/experimental/oauth-auth/)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Actual Budget, visit your Actual Budget installation, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.

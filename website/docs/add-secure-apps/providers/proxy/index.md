@@ -152,17 +152,3 @@ return {
 ```
 
 Afterwards, edit the _Proxy provider_ and add this new mapping. The expression is only evaluated when the user logs into the application.
-
-## Host header:ak-version[2025.6.1]
-
-By default, the proxy provider will use forwarded Host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the Host header with a property mapping.
-
-```python
-return {
-    "ak_proxy": {
-        "host_header": "my-internal-host-header"
-    }
-}
-```
-
-Afterwards, edit the _Proxy provider_ and add this new mapping. The expression is only evaluated when the user logs into the application.

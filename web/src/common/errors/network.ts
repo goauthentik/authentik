@@ -26,48 +26,13 @@ export const HTTPStatusCodeTransformer: Record<number, HTTPErrorJSONTransformer>
     [HTTPStatusCode.Forbidden]: GenericErrorFromJSON,
 } as const;
 
-//#endregion
-
-//#region Type Predicates
-
 /**
- * Type predicate to check if a response contains a JSON body.
+ * Type guard to check if a response contains a JSON body.
  *
  * This is useful to guard against parsing errors when attempting to read the response body.
  */
 export function isJSONResponse(response: Response): boolean {
     return Boolean(response.headers.get("content-type")?.includes("application/json"));
-}
-
-/**
- * An error originating from an aborted request.
- *
- * @see {@linkcode isAbortError} to check if an error originates from an aborted request.
- */
-export interface AbortErrorLike extends DOMException {
-    name: "AbortError";
-}
-
-/**
- * Type predicate to check if an error originates from an aborted request.
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort | MDN}
- */
-export function isAbortError(error: unknown): error is AbortErrorLike {
-    return error instanceof DOMException && error.name === "AbortError";
-}
-
-/**
- * Type predicate to check if an error originates from an aborted request.
- *
- * @see {@linkcode isAbortError} for the underlying implementation.
- */
-export function isCausedByAbortError(error: unknown): error is AbortErrorLike {
-    return (
-        error instanceof Error &&
-        // ---
-        (isAbortError(error) || isAbortError(error.cause))
-    );
 }
 
 //#endregion

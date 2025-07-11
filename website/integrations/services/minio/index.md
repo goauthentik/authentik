@@ -17,10 +17,6 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::warning
-MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
-:::
-
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -31,7 +27,7 @@ To support the integration of MinIO with authentik, you need to create an applic
 
 ### Create property mappings
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
 
 - **Name**: Set an appropriate name
@@ -46,7 +42,7 @@ To support the integration of MinIO with authentik, you need to create an applic
     }
     ```
 
-    If you wish to create a more granular mapping based on the user's groups in authentik, you can use an expression similar to:
+    If you wish to create a more franular mapping based on the user's groups in authentik, you can use an expression similar to:
 
     ```python
     if ak_is_group_member(request.user, name="Minio admins"):
@@ -64,7 +60,7 @@ You can assign multiple policies to a user by returning a list, and returning `N
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.

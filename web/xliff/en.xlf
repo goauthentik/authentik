@@ -493,7 +493,7 @@
         <target>General system status</target>
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>Welcome,
         <x id="0" equiv-text="${name}"/>.</target>
       </trans-unit>
@@ -7099,7 +7099,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -7226,6 +7226,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
+</trans-unit>
+<trans-unit id="s10ba15343fe64890">
+  <source>Choose A Provider</source>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
@@ -7608,6 +7611,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
 </trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
 </trans-unit>
@@ -7688,75 +7694,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
-</trans-unit>
-<trans-unit id="sdd66c5a2e706fb81">
-  <source>Toggle sidebar</source>
-</trans-unit>
-<trans-unit id="s7d4ec232535a36f0">
-  <source>Choose a Provider</source>
-</trans-unit>
-<trans-unit id="sa30ba280de276758">
-  <source>When enabled, the SAML response will be signed.</source>
-</trans-unit>
-<trans-unit id="s2c42bb3c6f5420d2">
-  <source>Client Certificates</source>
-</trans-unit>
-<trans-unit id="s95901716c0629274">
-  <source>Available Certificates</source>
-</trans-unit>
-<trans-unit id="sdbf6b484fa1436b0">
-  <source>Selected Certificates</source>
-</trans-unit>
-<trans-unit id="s9300147e327fd8f6">
-  <source>Client-certificate/mTLS authentication/enrollment.</source>
-</trans-unit>
-<trans-unit id="sbf990ec848470f5c">
-  <source>Certificate optional</source>
-</trans-unit>
-<trans-unit id="s72e2876e9409b9eb">
-  <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
-</trans-unit>
-<trans-unit id="se07d973901a6e6b9">
-  <source>Certificate required</source>
-</trans-unit>
-<trans-unit id="s664c47df020ee414">
-  <source>If no certificate was provided, this stage will stop flow execution.</source>
-</trans-unit>
-<trans-unit id="sbe9da6dad795aa39">
-  <source>Certificate authorities</source>
-</trans-unit>
-<trans-unit id="se3a6aa4f0ab7568e">
-  <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
-</trans-unit>
-<trans-unit id="sb8fdf5a09a969870">
-  <source>Certificate attribute</source>
-</trans-unit>
-<trans-unit id="s8069037a865037c9">
-  <source>Configure the attribute of the certificate used to look for a user.</source>
-</trans-unit>
-<trans-unit id="sc185a8ad96f8eaa2">
-  <source>User attribute</source>
-</trans-unit>
-<trans-unit id="s4f9860fefb8fbe01">
-  <source>Configure the attribute of the user used to look for a user.</source>
-</trans-unit>
-<trans-unit id="s42b57339ad2f3ac7">
-  <source>Delete Not Found Objects</source>
-</trans-unit>
-<trans-unit id="se3b26b762110bda0">
-  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
-</trans-unit>
-<trans-unit id="s0a2cb398b54a6207">
-  <source>Welcome.</source>
-</trans-unit>
-<trans-unit id="s4e1d2cb86cf5ecd0">
-  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
-</trans-unit>
-<trans-unit id="s6478025f3e0174fa">
-  <source>User membership attribute</source>
-</trans-unit>
-<trans-unit id="s344be99cf5d36407">
-  <source>Attribute which matches the value of Group membership field.</source>
 </trans-unit>
     </body>
   </file>

@@ -36,12 +36,12 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::warning
-The provider configuration assumes that connections to the outpost use LDAPS, with properly configured certificates on both authentik and the host running sssd. LDAPS is the recommended protocol for secure communication. For details on setting up SSL and StartTLS on the outpost, refer to [authentik’s LDAP provider documentation](/docs/add-secure-apps/providers/ldap#ssl--starttls).
+The provider configuration assumes that connections to the outpost use LDAPS, with properly configured certificates on both authentik and the host running sssd. LDAPS is the recommended protocol for secure communication. For details on setting up SSL and StartTLS on the outpost, refer to [authentik’s LDAP provider documentation](../../../docs/add-secure-apps/providers/ldap#ssl--starttls).
 :::
 
 ## authentik configuration
 
-Follow [official documentation](/docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
+Follow [official documentation](../../../docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
 
 ## sssd configuration
 

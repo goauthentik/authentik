@@ -28,7 +28,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Create a user group in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a name for the group (e.g. `wazuh-administrators`) and click **Create**.
 4. Click the name of the newly created group and navigate to the **Users** tab.
@@ -36,7 +36,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Create a property mapping in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
 
     - **Name**: Choose a descriptive name
@@ -53,7 +53,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name (e.g., `Wazuh`), an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -71,7 +71,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 ### Download metadata file
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
 3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your `SAML Metadata` file and it will be required in the next section.
 

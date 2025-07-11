@@ -1,5 +1,6 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -27,10 +28,11 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorEndpointGDTCStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
+                authenticatorEndpointGDTCStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
-            authenticatorEndpointGDTCStageRequest: data,
-        });
     }
 
     static get styles() {
@@ -50,7 +52,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${this.instance?.name ?? ""}"
+                    value="${first(this.instance?.name, "")}"
                     class="pf-c-form-control"
                     required
                 />
@@ -65,7 +67,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     >
                         <ak-codemirror
                             mode=${CodeMirrorMode.JavaScript}
-                            .value="${this.instance?.credentials ?? {}}"
+                            .value="${first(this.instance?.credentials, {})}"
                         ></ak-codemirror>
                         <p class="pf-c-form__helper-text">
                             ${msg("Google Cloud credentials file.")}

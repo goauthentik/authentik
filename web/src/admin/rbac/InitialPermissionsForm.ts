@@ -46,10 +46,11 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 id: this.instance.pk,
                 patchedInitialPermissionsRequest: data,
             });
+        } else {
+            return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
+                initialPermissionsRequest: data,
+            });
         }
-        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
-            initialPermissionsRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
