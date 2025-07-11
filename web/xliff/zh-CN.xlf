@@ -357,7 +357,7 @@
   <source>Successful Logins</source>
 </trans-unit>
 <trans-unit id="s0382d73823585617">
-  <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
 </trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
@@ -4563,9 +4563,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s859b2e00391da380">
   <source>Select Yes to reduce the number of times you're asked to sign in.</source>
 </trans-unit>
-<trans-unit id="sc1589121ae2f5f92">
-  <source>Enter the code shown on your device.</source>
-</trans-unit>
 <trans-unit id="s67664f8ee9aea98d">
   <source>Please enter your Code</source>
 </trans-unit>
@@ -5071,9 +5068,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
-</trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -6391,6 +6385,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
 </trans-unit>
 </body>
 </file>
