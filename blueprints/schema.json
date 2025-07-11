@@ -9241,6 +9241,18 @@
                     "type": "string",
                     "title": "Default relay state",
                     "description": "Default relay_state value for IDP-initiated logins"
+                },
+                "default_name_id_policy": {
+                    "type": "string",
+                    "enum": [
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    ],
+                    "title": "Default name id policy"
                 }
             },
             "required": []
@@ -11664,7 +11676,8 @@
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
-                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
                     ],
                     "title": "Name id policy",
                     "description": "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
