@@ -42,7 +42,7 @@
         "@goauthentik/prettier-config": "^3.0.1",
         "@goauthentik/tsconfig": "^1.0.4",
         "@mdx-js/react": "^3.1.0",
-        "@reduxjs/toolkit": "^1.7.1",
+        "@reduxjs/toolkit": "^2.8.2",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/lodash": "^4.17.20",
         "@types/node": "^24.0.12",
