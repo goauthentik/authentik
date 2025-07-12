@@ -44547,6 +44547,14 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        recovery_cache_timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
       - component
       - meta_model_name
@@ -44607,6 +44615,14 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        recovery_cache_timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
       required:
       - name
     Endpoint:
@@ -53043,6 +53059,14 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        recovery_cache_timeout:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
     PatchedEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
