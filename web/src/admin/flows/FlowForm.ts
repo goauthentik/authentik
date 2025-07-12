@@ -1,17 +1,15 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
+import "#components/ak-slug-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { DesignationToLabel, LayoutToLabel } from "#admin/flows/utils";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
     DeniedActionEnum,
@@ -20,6 +18,12 @@ import {
     FlowLayoutEnum,
     FlowsApi,
 } from "@goauthentik/api";
+import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum.js";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
@@ -54,7 +58,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         }
 
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles().background;
+            const icon = this.files().get("background");
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,
@@ -91,17 +95,16 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 />
                 <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
-            </ak-form-element-horizontal>
+
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                help=${msg("Visible in the URL.")}
+                input-hint="code"
+            ></ak-slug-input>
+
             <ak-form-element-horizontal label=${msg("Designation")} required name="designation">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>

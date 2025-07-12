@@ -1,16 +1,16 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-number-input";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DataProvision } from "#elements/ak-dual-select/types";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { deviceTypeRestrictionPair } from "#admin/stages/authenticator_webauthn/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorAttachmentEnum,
@@ -23,6 +23,10 @@ import {
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {
@@ -165,6 +169,15 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
+                    <ak-number-input
+                        label=${msg("Maximum registration attempts")}
+                        required
+                        name="maxAttempts"
+                        value="${this.instance?.maxAttempts || 0}"
+                        help=${msg(
+                            "Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.",
+                        )}
+                    ></ak-number-input>
                     <ak-form-element-horizontal
                         label=${msg("Device type restrictions")}
                         name="deviceTypeRestrictions"

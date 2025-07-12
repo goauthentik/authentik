@@ -1,13 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-toggle-group";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     CoreApi,
@@ -17,6 +15,10 @@ import {
     RbacApi,
     User,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 interface UserAssignData {
     user: number;

@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -15,36 +15,34 @@ export class FormStatic extends AKElement {
     @property()
     user?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFAvatar,
-            css`
-                /* Form with user */
-                .form-control-static {
-                    margin-top: var(--pf-global--spacer--sm);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-                .form-control-static .avatar {
-                    display: flex;
-                    align-items: center;
-                }
-                .form-control-static img {
-                    margin-right: var(--pf-global--spacer--xs);
-                }
-                .form-control-static a {
-                    padding-top: var(--pf-global--spacer--xs);
-                    padding-bottom: var(--pf-global--spacer--xs);
-                    line-height: var(--pf-global--spacer--xl);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFAvatar,
+        css`
+            /* Form with user */
+            .form-control-static {
+                margin-top: var(--pf-global--spacer--sm);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .form-control-static .avatar {
+                display: flex;
+                align-items: center;
+            }
+            .form-control-static img {
+                margin-right: var(--pf-global--spacer--xs);
+            }
+            .form-control-static a {
+                padding-top: var(--pf-global--spacer--xs);
+                padding-bottom: var(--pf-global--spacer--xs);
+                line-height: var(--pf-global--spacer--xl);
+            }
+        `,
+    ];
 
-    render(): TemplateResult {
+    render() {
         if (!this.user) {
-            return html``;
+            return nothing;
         }
         return html`
             <div class="form-control-static">

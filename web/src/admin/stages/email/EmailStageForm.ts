@@ -1,16 +1,18 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-text-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#components/ak-secret-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
@@ -73,11 +75,11 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-private-text-input
+                <ak-secret-text-input
                     label=${msg("SMTP Password")}
                     name="password"
                     ?revealed=${this.instance === undefined}
-                ></ak-private-text-input>
+                ></ak-secret-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input

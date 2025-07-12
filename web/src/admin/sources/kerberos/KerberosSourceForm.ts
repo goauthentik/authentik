@@ -1,26 +1,24 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-text-input.js";
-import "@goauthentik/components/ak-private-textarea-input.js";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-secret-text-input";
+import "#components/ak-secret-textarea-input";
+import "#components/ak-slug-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
+
+import { config, DEFAULT_CONFIG } from "#common/api/config";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -32,7 +30,10 @@ import {
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
@@ -61,7 +62,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles().icon;
+            const icon = this.files().get("icon");
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -87,12 +88,13 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-text-input
+            <ak-slug-input
                 name="slug"
-                label=${msg("Slug")}
                 value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
                 required
-            ></ak-text-input>
+                input-hint="code"
+            ></ak-slug-input>
             <ak-switch-input
                 name="enabled"
                 ?checked=${this.instance?.enabled ?? true}
@@ -248,22 +250,22 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         value=${ifDefined(this.instance?.syncPrincipal)}
                         help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
-                    <ak-private-text-input
+                    <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
-                    ></ak-private-text-input>
-                    <ak-private-textarea-input
+                    ></ak-secret-text-input>
+                    <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
-                    ></ak-private-textarea-input>
+                    ></ak-secret-textarea-input>
                     <ak-text-input
                         name="syncCcache"
                         label=${msg("Sync credentials cache")}
@@ -285,14 +287,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                             "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain",
                         )}
                     ></ak-text-input>
-                    <ak-private-textarea-input
+                    <ak-secret-textarea-input
                         name="spnegoKeytab"
                         label=${msg("SPNEGO keytab")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
-                    ></ak-private-textarea-input>
+                    ></ak-secret-textarea-input>
                     <ak-text-input
                         name="spnegoCcache"
                         label=${msg("SPNEGO credentials cache")}

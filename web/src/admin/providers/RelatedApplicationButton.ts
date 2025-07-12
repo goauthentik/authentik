@@ -1,22 +1,21 @@
-import "@goauthentik/admin/applications/ApplicationForm";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/applications/ApplicationForm";
+import "#elements/Spinner";
+import "#elements/forms/ModalForm";
+
+import { AKElement } from "#elements/Base";
+
+import { Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Provider } from "@goauthentik/api";
-
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     provider?: Provider;

@@ -1,17 +1,17 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-text-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-crypto-certificate-search";
+import "#components/ak-secret-text-input";
+import "#components/ak-slug-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { placeholderHelperText } from "#admin/helperText";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
 import {
     CoreApi,
@@ -22,7 +22,10 @@ import {
     SourcesApi,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
@@ -54,14 +57,15 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+
             <ak-form-element-horizontal name="enabled">
                 <label class="pf-c-switch">
                     <input
@@ -260,11 +264,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-private-text-input
+                    <ak-secret-text-input
                         label=${msg("Bind Password")}
                         name="bindPassword"
                         ?revealed=${this.instance === undefined}
-                    ></ak-private-text-input>
+                    ></ak-secret-text-input>
                     <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
                             type="text"

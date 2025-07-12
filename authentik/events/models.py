@@ -1,10 +1,12 @@
 """authentik events models"""
 
+from collections.abc import Generator
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
+from typing import Any
 from uuid import uuid4
 
 from django.apps import apps
@@ -191,17 +193,32 @@ class Event(SerializerModel, ExpiringModel):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
-            original_user = None
-            if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
-            self.user = get_user(request.user, original_user)
+            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
-        # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
+            from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+            # Check if we're currently impersonating, and add that user
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
                 self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
+            # Special case for events that happen during a flow, the user might not be authenticated
+            # yet but is a pending user instead
+            if SESSION_KEY_PLAN in request.session:
+                from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+
+                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+                pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER, None)
+                # Only save `authenticated_as` if there's a different pending user in the flow
+                # than the user that is authenticated
+                if pending_user and (
+                    (pending_user.pk and pending_user.pk != self.user.get("pk"))
+                    or (not pending_user.pk)
+                ):
+                    orig_user = self.user.copy()
+
+                    self.user = {"authenticated_as": orig_user, **get_user(pending_user)}
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
@@ -547,7 +564,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         default=NotificationSeverity.NOTICE,
         help_text=_("Controls which severity level the created notifications will have."),
     )
-    group = models.ForeignKey(
+    destination_group = models.ForeignKey(
         Group,
         help_text=_(
             "Define which group of users this notification should be sent and shown to. "
@@ -557,6 +574,19 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+    destination_event_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, notification will be sent to user the user that triggered the event."
+            "When destination_group is configured, notification is sent to both."
+        ),
+    )
+
+    def destination_users(self, event: Event) -> Generator[User, Any]:
+        if self.destination_event_user and event.user.get("pk"):
+            yield User(pk=event.user.get("pk"))
+        if self.destination_group:
+            yield from self.destination_group.users.all()
 
     @property
     def serializer(self) -> type[Serializer]:

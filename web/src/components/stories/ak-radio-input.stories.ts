@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-radio-input.js";
+
+import AkRadioInput from "../ak-radio-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-radio-input";
-import AkRadioInput from "../ak-radio-input";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkRadioInput<Record<string, number>>> = {
     title: "Components / Radio Input",

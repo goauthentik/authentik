@@ -156,16 +156,17 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "CountryCodeEnum": "django_countries.countries",
+        "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
-        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
-        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
-        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
-        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
-        "UserTypeEnum": "authentik.core.models.UserTypes",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "UserTypeEnum": "authentik.core.models.UserTypes",
+        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -446,6 +447,8 @@ _DISALLOWED_ITEMS = [
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+    "SPECTACULAR_SETTINGS",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -468,6 +471,8 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:

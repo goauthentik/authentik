@@ -1,8 +1,11 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/elements/EmptyState";
-import { Form } from "@goauthentik/elements/forms/Form";
+import "#elements/EmptyState";
 
-import { TemplateResult, html } from "lit";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { html, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
@@ -64,7 +67,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    resetForm(): void {
+    reset(): void {
         this.instance = undefined;
         this._initialLoad = false;
     }
@@ -76,7 +79,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         return super.renderVisible();
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         // if we're in viewport now and haven't loaded AND have a PK set, load now
         // Or if we don't check for viewport in some cases
         const viewportVisible = this.isInViewport || !this.viewportCheck;

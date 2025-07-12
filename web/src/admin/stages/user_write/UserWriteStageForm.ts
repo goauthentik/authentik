@@ -1,15 +1,11 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     CoreApi,
@@ -19,6 +15,12 @@ import {
     UserTypeEnum,
     UserWriteStage,
 } from "@goauthentik/api";
+import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum.js";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {

@@ -1,3 +1,11 @@
+[[plugins]]
+package = "netlify-plugin-cache"
+  [plugins.inputs]
+  paths = ["website/.docusaurus", "website/node_modules/.cache"]
+
+[[plugins]]
+package = "netlify-plugin-debug-cache"
+
 [[redirects]]
   from = "/blog/*"
   to = "https://goauthentik.io/blog/:splat"
@@ -18,17 +26,6 @@
   to = "/docs/:firstPart/:secondPart/"
   status = 302
   force = true
-[[redirects]]
-  from = "/integrations/:firstPart/index"
-  to = "/integrations/:firstPart/"
-  status = 302
-  force = true
-[[redirects]]
-  from = "/integrations/:firstPart/:secondPart/index"
-  to = "/integrations/:firstPart/:secondPart/"
-  status = 302
-  force = true
-
 [[headers]]
   for = "/*"
   [headers.values]
@@ -45,10 +42,10 @@
   to = "/docs/applications"
   status = 302
 
-# Moved Sources from Integrations to Docs
+# Split integrations to separate deploy
 [[redirects]]
-  from = "/integrations/sources/*"
-  to = "/docs/sources/:splat"
+  from = "/integrations/*"
+  to = "https://integrations.goauthentik.io/:splat"
   status = 302
 
 # Split Property Mappings docs between Providers and Sources
@@ -72,6 +69,20 @@
   to = "/docs/customize/branding"
   status = 302
 
+[[redirects]]
+  from = "/docs/customize/interfaces/admin/customization"
+  to = "/docs/customize/interfaces/admin"
+  status = 302
+
+[[redirects]]
+  from = "/docs/customize/interfaces/user/customization"
+  to = "/docs/customize/interfaces/user"
+  status = 302
+
+[[redirects]]
+  from = "/docs/customize/interfaces/flow/customization"
+  to = "/docs/customize/interfaces/flow"
+  status = 302
 
 # Migration to new structure with script Sept 2025
 [[redirects]]

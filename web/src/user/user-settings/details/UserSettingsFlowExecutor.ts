@@ -1,25 +1,17 @@
+import "#user/user-settings/details/stages/prompt/PromptStage";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
 import { refreshMe } from "#common/users";
+
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+
 import { StageHost } from "#flow/stages/base";
-import "#user/user-settings/details/stages/prompt/PromptStage";
-
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeTypes,
@@ -29,6 +21,17 @@ import {
     RedirectChallenge,
     ShellChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
@@ -53,9 +56,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFButton, PFContent];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
@@ -71,6 +72,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
+                delete this.challenge.flowInfo;
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -93,7 +95,7 @@ export class UserSettingsFlowExecutor
     }
 
     updated(): void {
-        if (!this.flowSlug && this.brand) {
+        if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }
@@ -106,6 +108,7 @@ export class UserSettingsFlowExecutor
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             });
+            delete challenge.flowInfo;
             this.challenge = challenge;
         } catch (e: unknown) {
             // Catch JSON or Update errors
@@ -172,7 +175,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+                return html`<ak-empty-state default-label></ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -193,7 +196,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }

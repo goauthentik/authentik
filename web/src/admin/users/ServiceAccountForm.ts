@@ -1,13 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/temporal";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
+import "#components/ak-hidden-text-input";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { Form } from "#elements/forms/Form";
+import { ModalForm } from "#elements/forms/ModalForm";
 
 import {
     CoreApi,
@@ -16,10 +14,15 @@ import {
     UserServiceAccountResponse,
 } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
-    result?: UserServiceAccountResponse;
+    result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
     group?: Group;
@@ -48,9 +51,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    resetForm(): void {
-        super.resetForm();
-        this.result = undefined;
+    reset(): void {
+        super.reset();
+        this.result = null;
     }
 
     renderForm(): TemplateResult {
@@ -124,19 +127,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Password")}>
-                    <input
-                        type="text"
-                        readonly
-                        value=${ifDefined(this.result?.token)}
-                        class="pf-c-form-control"
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-hidden-text-input
+                    label=${msg("Password")}
+                    value="${this.result?.token ?? ""}"
+                    .help=${msg(
+                        "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                    )}
+                >
+                </ak-hidden-text-input>
             </form>`;
     }
 

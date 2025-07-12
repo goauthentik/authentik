@@ -1,18 +1,21 @@
-import { placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-slug-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { placeholderHelperText } from "#admin/helperText";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 
 import { SCIMSource, SCIMSourceRequest, SourcesApi } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
@@ -48,14 +51,15 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+
             <ak-form-element-horizontal name="enabled">
                 <div class="pf-c-check">
                     <input

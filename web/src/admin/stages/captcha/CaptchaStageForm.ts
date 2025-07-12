@@ -1,17 +1,19 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-private-text-input.js";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-number-input";
+import "#components/ak-secret-text-input";
+import "#components/ak-switch-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { CaptchaStage, CaptchaStageRequest, StagesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
@@ -70,7 +72,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         </p>
                     </ak-form-element-horizontal>
 
-                    <ak-private-text-input
+                    <ak-secret-text-input
                         name="privateKey"
                         label=${msg("Private Key")}
                         input-hint="code"
@@ -79,7 +81,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         help=${msg(
                             "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
                         )}
-                    ></ak-private-text-input>
+                    ></ak-secret-text-input>
 
                     <ak-switch-input
                         name="interactive"

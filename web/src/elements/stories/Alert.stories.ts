@@ -1,10 +1,11 @@
+import "../Alert.js";
+
+import { Alert, type IAlert } from "../Alert.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Alert, type IAlert } from "../Alert.js";
-import "../Alert.js";
 
 type IAlertForTesting = IAlert & { message: string };
 

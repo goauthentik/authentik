@@ -214,8 +214,20 @@ class TestPromptStage(FlowTestCase):
         """Test challenge_response validation"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         expr = "False"
-        expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
+        expr_policy = ExpressionPolicy.objects.create(name=generate_id(), expression=expr)
         self.stage.validation_policies.set([expr_policy])
+        self.stage.save()
+        challenge_response = PromptChallengeResponse(
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+
+    def test_invalid_challenge_multiple(self):
+        """Test challenge_response validation (multiple policies)"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        expr_policy1 = ExpressionPolicy.objects.create(name=generate_id(), expression="False")
+        expr_policy2 = ExpressionPolicy.objects.create(name=generate_id(), expression="False")
+        self.stage.validation_policies.set([expr_policy1, expr_policy2])
         self.stage.save()
         challenge_response = PromptChallengeResponse(
             None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
@@ -234,7 +246,7 @@ class TestPromptStage(FlowTestCase):
             "return request.context['prompt_data']['password_prompt'] "
             "== request.context['prompt_data']['password2_prompt']"
         )
-        expr_policy = ExpressionPolicy.objects.create(name="validate-form", expression=expr)
+        expr_policy = ExpressionPolicy.objects.create(name=generate_id(), expression=expr)
         self.stage.validation_policies.set([expr_policy])
         self.stage.save()
         challenge_response = PromptChallengeResponse(

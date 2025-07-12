@@ -294,7 +294,7 @@
   <source>Recent events</source>
 </trans-unit>
 <trans-unit id="sc35581d9c1cd67ff">
-  <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+  <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
 </trans-unit>
 <trans-unit id="saf63a04c86018698">
   <source>-</source>
@@ -357,7 +357,7 @@
   <source>Successful Logins</source>
 </trans-unit>
 <trans-unit id="s0382d73823585617">
-  <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
 </trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
@@ -2127,9 +2127,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s91f389c796720a81">
   <source>Load servers</source>
-</trans-unit>
-<trans-unit id="s24f405197ede5ebb">
-  <source>Re-authenticate with plex</source>
 </trans-unit>
 <trans-unit id="sc297b2e13c28ecf9">
   <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
@@ -4037,9 +4034,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s72e102414fec81a4">
   <source>Successfully created rule.</source>
 </trans-unit>
-<trans-unit id="sa55ee64c5c51df0f">
-  <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-</trans-unit>
 <trans-unit id="sffa171e11d4ae513">
   <source>Transports</source>
 </trans-unit>
@@ -4057,9 +4051,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sc92ed9d5e01d3f24">
   <source>Notification rule(s)</source>
-</trans-unit>
-<trans-unit id="s5140d157642d7362">
-  <source>None (rule disabled)</source>
 </trans-unit>
 <trans-unit id="sd1146418b344f81f">
   <source>Update Notification Rule</source>
@@ -4572,9 +4563,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s859b2e00391da380">
   <source>Select Yes to reduce the number of times you're asked to sign in.</source>
 </trans-unit>
-<trans-unit id="sc1589121ae2f5f92">
-  <source>Enter the code shown on your device.</source>
-</trans-unit>
 <trans-unit id="s67664f8ee9aea98d">
   <source>Please enter your Code</source>
 </trans-unit>
@@ -5080,9 +5068,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
-</trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -5888,9 +5873,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
 </trans-unit>
@@ -6361,6 +6343,57 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="sbd65aeeb8a3b9bbc">
+  <source>Maximum registration attempts</source>
+</trans-unit>
+<trans-unit id="s8495753cb15e8d8e">
+  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+</trans-unit>
+<trans-unit id="sa3ff409b84679db8">
+  <source>Remember device</source>
+</trans-unit>
+<trans-unit id="s3b123cba0bf03f29">
+  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
 </trans-unit>
 </body>
 </file>

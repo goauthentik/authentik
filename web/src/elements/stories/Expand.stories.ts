@@ -1,10 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/web-components";
-
-import { TemplateResult, html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import "../Expand.js";
 
 import { Expand, type IExpand } from "../Expand.js";
-import "../Expand.js";
+
+import type { Meta, StoryObj } from "@storybook/web-components";
+
+import { html, TemplateResult } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const metadata: Meta<Expand> = {
     title: "Elements/<ak-expand>",
