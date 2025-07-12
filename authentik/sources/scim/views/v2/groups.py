@@ -23,6 +23,7 @@ from authentik.sources.scim.views.v2.exceptions import (
     SCIMNotFoundError,
     SCIMValidationError,
 )
+from authentik.sources.scim.views.v2.patch import SCIMPatcher
 
 
 class GroupsView(SCIMObjectView):
@@ -81,7 +82,7 @@ class GroupsView(SCIMObjectView):
         )
 
     @atomic
-    def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict):
+    def update_group(self, connection: SCIMSourceGroup | None, data: QueryDict, apply_members=True):
         """Partial update a group"""
         properties = self.build_object_properties(data)
 
@@ -94,7 +95,7 @@ class GroupsView(SCIMObjectView):
 
         group.update_attributes(properties)
 
-        if "members" in data:
+        if "members" in data and apply_members:
             query = Q()
             for _member in data.get("members", []):
                 try:
@@ -105,6 +106,7 @@ class GroupsView(SCIMObjectView):
                 query |= Q(uuid=member.value)
             if query:
                 group.users.set(User.objects.filter(query))
+        data["members"] = self._convert_members(group)
         if not connection:
             connection, _ = SCIMSourceGroup.objects.get_or_create(
                 source=self.source,
@@ -139,6 +141,12 @@ class GroupsView(SCIMObjectView):
         connection = self.update_group(connection, request.data)
         return Response(self.group_to_scim(connection), status=200)
 
+    def _convert_members(self, group: Group):
+        users = []
+        for user in group.users.all():
+            users.append({"value": str(user.uuid)})
+        return sorted(users, key=lambda u: u["value"])
+
     @atomic
     def patch(self, request: Request, group_id: str, **kwargs) -> Response:
         """Patch group handler"""
@@ -171,6 +179,11 @@ class GroupsView(SCIMObjectView):
                         query |= Q(uuid=member["value"])
                     if query:
                         connection.group.users.remove(*User.objects.filter(query))
+        connection.attributes["members"] = self._convert_members(connection.group)
+        patcher = SCIMPatcher(connection, request.data.get("Operations", []))
+        patched_data = patcher.apply()
+        if patched_data != connection.attributes:
+            self.update_group(connection, patched_data, apply_members=False)
         return Response(self.group_to_scim(connection), status=200)
 
     @atomic
