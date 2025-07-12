@@ -145,7 +145,7 @@ class EmailStageView(ChallengeStageView):
             messages.success(request, _("Successfully verified Email."))
             if self.executor.current_stage.activate_user_on_success:
                 user.is_active = True
-                user.save()
+                user.save(update_fields=["is_active"])
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.logger.debug("No pending user")
