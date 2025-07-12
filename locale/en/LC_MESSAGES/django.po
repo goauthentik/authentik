@@ -1867,8 +1867,8 @@ msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
-"Session not valid on or after current time + this value (Format: "
-"hours=1;minutes=2;seconds=3)."
+"Session not valid on or after current time + this value (Format: hours=1;"
+"minutes=2;seconds=3)."
 msgstr ""
 
 #: authentik/providers/saml/models.py authentik/sources/saml/models.py
