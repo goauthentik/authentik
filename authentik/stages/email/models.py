@@ -16,6 +16,9 @@ from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
 
+EMAIL_RECOVERY_MAX_ATTEMPTS = CONFIG.get_int("email_recovery.max_attempts")
+EMAIL_RECOVERY_CACHE_TIMEOUT = CONFIG.get_int("email_recovery.cache_timeout")
+
 LOGGER = get_logger()
 
 
@@ -70,6 +73,8 @@ class EmailStage(Stage):
     use_ssl = models.BooleanField(default=False)
     timeout = models.IntegerField(default=10)
     from_address = models.EmailField(default="system@authentik.local")
+    recovery_max_attempts = models.IntegerField(default=EMAIL_RECOVERY_MAX_ATTEMPTS)
+    recovery_cache_timeout = models.IntegerField(default=EMAIL_RECOVERY_CACHE_TIMEOUT)
 
     activate_user_on_success = models.BooleanField(
         default=False, help_text=_("Activate users upon completion of stage.")
