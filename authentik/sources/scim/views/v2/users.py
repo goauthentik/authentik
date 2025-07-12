@@ -15,9 +15,9 @@ from authentik.core.models import User
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
+from authentik.sources.scim.patch import SCIMPatchProcessor
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
-from authentik.sources.scim.views.v2.patch import SCIMPatcher
 
 
 class UsersView(SCIMObjectView):
@@ -133,8 +133,10 @@ class UsersView(SCIMObjectView):
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
             raise SCIMNotFoundError("User not found.")
-        patcher = SCIMPatcher(connection, request.data.get("Operations", []))
-        patched_data = patcher.apply()
+        patcher = SCIMPatchProcessor()
+        patched_data = patcher.apply_patches(
+            connection.attributes, request.data.get("Operations", [])
+        )
         if patched_data != connection.attributes:
             self.update_user(connection, patched_data)
         return Response(self.user_to_scim(connection), status=200)

@@ -51,6 +51,11 @@ class SCIMView(APIView):
         self.logger = get_logger().bind()
         super().setup(request, *args, **kwargs)
 
+    def dispatch(self, request, *args, **kwargs):
+        res = super().dispatch(request, *args, **kwargs)
+        print(self.request.data)
+        return res
+
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
 

@@ -17,13 +17,13 @@ from authentik.core.models import Group, User
 from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchOp, PatchOperation
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
+from authentik.sources.scim.patch import SCIMPatchProcessor
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 from authentik.sources.scim.views.v2.exceptions import (
     SCIMConflictError,
     SCIMNotFoundError,
     SCIMValidationError,
 )
-from authentik.sources.scim.views.v2.patch import SCIMPatcher
 
 
 class GroupsView(SCIMObjectView):
@@ -182,8 +182,10 @@ class GroupsView(SCIMObjectView):
                     if query:
                         connection.group.users.remove(*User.objects.filter(query))
         connection.attributes["members"] = self._convert_members(connection.group)
-        patcher = SCIMPatcher(connection, request.data.get("Operations", []))
-        patched_data = patcher.apply()
+        patcher = SCIMPatchProcessor()
+        patched_data = patcher.apply_patches(
+            connection.attributes, request.data.get("Operations", [])
+        )
         if patched_data != connection.attributes:
             self.update_group(connection, patched_data, apply_members=False)
         return Response(self.group_to_scim(connection), status=200)
