@@ -1,3 +1,5 @@
+@import url("./fonts.css");
+
 /**
  * @file authentik base UI theme.
  */
@@ -77,6 +79,48 @@ html > form > input {
 
 .pf-c-form {
     --pf-c-form__group--m-action--MarginTop: var(--pf-global--spacer--form-element);
+
+    &.ak-m-radio-list {
+        --pf-c-form--GridGap: 0.5rem;
+
+        .pf-c-radio {
+            --pf-c-radio__input--MarginTop: 0;
+            --pf-c-radio__input--first-child--MarginLeft: 0.25rem;
+            padding: 1rem;
+
+            .pf-c-radio__input {
+                place-self: center;
+                grid-row: 3 / -1;
+            }
+        }
+    }
+}
+
+.pf-c-radio {
+    --pf-c-radio__label--FontWeight: 500;
+    --pf-c-radio--GridGap: var(--pf-global--spacer--xs) var(--pf-global--spacer--lg);
+
+    user-select: none;
+    cursor: pointer;
+    border-radius: var(--pf-c-card--m-rounded--BorderRadius);
+
+    transition: background-color linear 100ms;
+
+    outline: 1px solid transparent;
+
+    &:hover {
+        background-color: var(
+            --radio-background-color--hover,
+            var(--pf-global--BackgroundColor--light-200)
+        );
+    }
+
+    &:has(input:checked) {
+        background-color: var(
+            --radio-background-color--selected,
+            var(--pf-global--BackgroundColor--light-200)
+        );
+    }
 }
 
 /* #region Icons */

@@ -79,7 +79,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String })
-    public autocomplete?: "none" | AutoFill;
+    public autocomplete?: AutoFill;
 
     /**
      * @property
@@ -118,6 +118,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         return html` <input
             style="flex: 1 1 auto; min-width: 0;"
             part="input"
+            autocomplete=${ifDefined(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
             @input=${setValue}
             value=${ifDefined(this.value)}
