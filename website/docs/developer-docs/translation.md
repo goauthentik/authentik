@@ -23,6 +23,7 @@ To simplify translation you can use https://www.transifex.com/authentik/authenti
 - Docker
 
 ### Frontend
+
 Run `npm i` in the `/web` folder to install all dependencies.
 
 Ensure the language code is in the `lit-localize.json` file in `web/`:
@@ -45,9 +46,11 @@ The .xlf files can be edited by any text editor, or using a tool such as [POEdit
 To see the change, run `make web-watch` in the root directory of the repository.
 
 ### Backend
+
 Backend translations are handled by `core-i18n-extract`.
 
 Use Django's translation utility to declare the string, e.g.:
+
 ```python
 from django.utils.translation import gettext as _
 
