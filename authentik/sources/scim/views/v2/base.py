@@ -1,6 +1,7 @@
 """SCIM Utils"""
 
 from typing import Any
+from uuid import UUID
 
 from django.conf import settings
 from django.core.paginator import Page, Paginator
@@ -21,6 +22,7 @@ from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
+from authentik.sources.scim.views.v2.exceptions import SCIMNotFoundError
 
 SCIM_CONTENT_TYPE = "application/scim+json"
 
@@ -50,6 +52,15 @@ class SCIMView(APIView):
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         self.logger = get_logger().bind()
         super().setup(request, *args, **kwargs)
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        for key, value in kwargs.items():
+            if key.endswith("_id"):
+                try:
+                    UUID(value)
+                except ValueError:
+                    raise SCIMNotFoundError("Invalid ID") from None
 
     def dispatch(self, request, *args, **kwargs):
         res = super().dispatch(request, *args, **kwargs)
