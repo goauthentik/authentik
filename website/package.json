@@ -54,7 +54,7 @@
         "clsx": "^2.1.1",
         "cross-env": "^7.0.3",
         "docusaurus-plugin-openapi-docs": "^4.4.0",
-        "docusaurus-theme-openapi-docs": "^4.4.0",
+        "docusaurus-theme-openapi-docs": "^4.5.1",
         "eslint": "^9.30.1",
         "fast-glob": "^3.3.3",
         "netlify-plugin-cache": "^1.0.3",
