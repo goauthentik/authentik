@@ -25,7 +25,6 @@ from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.flow import pickle_flow_token_for_email
@@ -33,8 +32,6 @@ from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
-EMAIL_RECOVERY_MAX_ATTEMPTS = CONFIG.get_int("email_recovery.max_attempts")
-EMAIL_RECOVERY_CACHE_TIMEOUT = CONFIG.get_int("email_recovery.cache_timeout")
 EMAIL_RECOVERY_CACHE_KEY = "goauthentik.io/stages/email/stage/"
 
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
@@ -186,27 +183,31 @@ class EmailStageView(ChallengeStageView):
         user_email_hashed = sha256(user.email.lower().encode("utf-8")).hexdigest()
         return EMAIL_RECOVERY_CACHE_KEY + user_email_hashed
 
-    def _should_be_rate_limited(self) -> int | None:
+    def _is_rate_limited(self) -> int | None:
         """Check whether the email recovery attempt should be rate limited.
 
         If the request should be rate limited, update the cache and return the
         remaining time in minutes before the user is allowed to try again.
         Otherwise, return None."""
         cache_key = self._get_cache_key()
-
         attempts = cache.get(cache_key, [])
 
+        stage = self.executor.current_stage
+        stage.refresh_from_db()
+        max_attempts = stage.recovery_max_attempts
+        cache_timeout = stage.recovery_cache_timeout
+
         now = time.time()
-        start_window = now - EMAIL_RECOVERY_CACHE_TIMEOUT
+        start_window = now - cache_timeout
         recent_attempts_in_window = [attempt for attempt in attempts if attempt > start_window]
 
-        if len(recent_attempts_in_window) >= EMAIL_RECOVERY_MAX_ATTEMPTS:
-            retry_after = int(min(recent_attempts_in_window) + EMAIL_RECOVERY_CACHE_TIMEOUT - now)
+        if len(recent_attempts_in_window) >= max_attempts:
+            retry_after = int(min(recent_attempts_in_window) + cache_timeout - now)
             minutes_left = max(1, math.ceil(retry_after / 60))
             return minutes_left
 
         recent_attempts_in_window.append(now)
-        cache.set(cache_key, recent_attempts_in_window, EMAIL_RECOVERY_CACHE_TIMEOUT)
+        cache.set(cache_key, recent_attempts_in_window, cache_timeout)
 
         return None
 
