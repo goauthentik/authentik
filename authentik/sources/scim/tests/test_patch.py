@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 
 from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
+from authentik.sources.scim.constants import SCIM_URN_ENTERPRISE_USER
 from authentik.sources.scim.patch import SCIMPatchProcessor, SCIMPathParser
 
 
@@ -168,9 +169,20 @@ class TestSCIMPatchProcessor(APITestCase):
                     }
                 ],
             },
+            {
+                "filter": f"{SCIM_URN_ENTERPRISE_USER}:manager",
+                "components": [
+                    {
+                        "attribute": f"{SCIM_URN_ENTERPRISE_USER}:manager",
+                        "filter": None,
+                        "sub_attribute": None,
+                    }
+                ],
+            },
         ]
 
-        parser = SCIMPathParser()
         for path in test_paths:
-            components = parser.parse_path(path["filter"])
-            self.assertEqual(components, path["components"])
+            with self.subTest(path=path["filter"]):
+                parser = SCIMPathParser()
+                components = parser.parse_path(path["filter"])
+                self.assertEqual(components, path["components"])

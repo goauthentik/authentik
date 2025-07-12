@@ -145,7 +145,7 @@ class GroupsView(SCIMObjectView):
 
     def _convert_members(self, group: Group):
         users = []
-        for user in group.users.all():
+        for user in group.users.all().order_by("uuid"):
             users.append({"value": str(user.uuid)})
         return sorted(users, key=lambda u: u["value"])
 
@@ -181,11 +181,11 @@ class GroupsView(SCIMObjectView):
                         query |= Q(uuid=member["value"])
                     if query:
                         connection.group.users.remove(*User.objects.filter(query))
-        connection.attributes["members"] = self._convert_members(connection.group)
         patcher = SCIMPatchProcessor()
         patched_data = patcher.apply_patches(
             connection.attributes, request.data.get("Operations", [])
         )
+        patched_data["members"] = self._convert_members(connection.group)
         if patched_data != connection.attributes:
             self.update_group(connection, patched_data, apply_members=False)
         return Response(self.group_to_scim(connection), status=200)

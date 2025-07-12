@@ -10,6 +10,7 @@ from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
+from authentik.sources.scim.constants import SCIM_URN_ENTERPRISE_USER
 from authentik.sources.scim.models import SCIMSource, SCIMSourcePropertyMapping, SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE
 
@@ -234,9 +235,7 @@ class TestSCIMUsers(APITestCase):
                     "Operations": [
                         {
                             "op": "Add",
-                            "path": (
-                                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager"
-                            ),
+                            "path": f"{SCIM_URN_ENTERPRISE_USER}:manager",
                             "value": "86b2ed3e-30cd-4881-bb58-c4e910821339",
                         }
                     ],
@@ -248,9 +247,7 @@ class TestSCIMUsers(APITestCase):
         self.assertEqual(response.status_code, 200)
         existing.refresh_from_db()
         self.assertEqual(
-            existing.attributes["manager"][
-                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User"
-            ],
+            existing.attributes[f"{SCIM_URN_ENTERPRISE_USER}:manager"],
             "86b2ed3e-30cd-4881-bb58-c4e910821339",
         )
 
