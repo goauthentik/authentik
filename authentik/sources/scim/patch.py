@@ -80,11 +80,26 @@ class SCIMPathLexer:
         return value
 
     def read_identifier(self):
-        """Read an identifier (attribute name or operator)"""
+        """Read an identifier (attribute name or operator) - supports URN format"""
         value = ""
-        while self.current_char and (self.current_char.isalnum() or self.current_char in "_-"):
+        while self.current_char and (self.current_char.isalnum() or self.current_char in "_-:"):
             value += self.current_char
             self.advance()
+
+            # Handle dots within URN identifiers (like "2.0")
+            # A dot is part of the identifier if it's followed by a digit
+            if (
+                self.current_char == "."
+                and self.pos + 1 < len(self.text)
+                and self.text[self.pos + 1].isdigit()
+            ):
+                value += self.current_char
+                self.advance()
+                # Continue reading digits after the dot
+                while self.current_char and self.current_char.isdigit():
+                    value += self.current_char
+                    self.advance()
+
         return value
 
     def get_next_token(self) -> Token:  # noqa PLR0911
