@@ -241,7 +241,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     >
                         <input
                             type="number"
-                            value="${this.instance?.recoveryMaxAttempts ?? 555}"
+                            value="${this.instance?.recoveryMaxAttempts ?? 5}"
                             class="pf-c-form-control"
                             required
                         />
@@ -253,7 +253,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     >
                         <input
                             type="number"
-                            value="${this.instance?.recoveryCacheTimeout ?? 888}"
+                            value="${this.instance?.recoveryCacheTimeout ?? 300}"
                             class="pf-c-form-control"
                             required
                         />
