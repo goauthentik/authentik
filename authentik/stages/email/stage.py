@@ -1,9 +1,13 @@
 """authentik multi-stage authentication engine"""
 
+import math
+import time
 from datetime import timedelta
+from hashlib import sha256
 from uuid import uuid4
 
 from django.contrib import messages
+from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.template.exceptions import TemplateSyntaxError
@@ -21,11 +25,17 @@ from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
+from authentik.lib.config import CONFIG
+from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+
+EMAIL_RECOVERY_MAX_ATTEMPTS = CONFIG.get_int("email_recovery.max_attempts")
+EMAIL_RECOVERY_CACHE_TIMEOUT = CONFIG.get_int("email_recovery.cache_timeout")
+EMAIL_RECOVERY_CACHE_KEY = "goauthentik.io/stages/email/stage/"
 
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
@@ -170,10 +180,48 @@ class EmailStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         return super().challenge_invalid(response)
 
+    def _get_cache_key(self) -> str:
+        """Return the cache key used for rate limiting email recovery attempts."""
+        user = self.get_pending_user()
+        user_email_hashed = sha256(user.email.lower().encode("utf-8")).hexdigest()
+        return EMAIL_RECOVERY_CACHE_KEY + user_email_hashed
+
+    def _should_be_rate_limited(self) -> int | None:
+        """Check whether the email recovery attempt should be rate limited.
+
+        If the request should be rate limited, update the cache and return the
+        remaining time in minutes before the user is allowed to try again.
+        Otherwise, return None."""
+        cache_key = self._get_cache_key()
+
+        attempts = cache.get(cache_key, [])
+
+        now = time.time()
+        start_window = now - EMAIL_RECOVERY_CACHE_TIMEOUT
+        recent_attempts_in_window = [attempt for attempt in attempts if attempt > start_window]
+
+        if len(recent_attempts_in_window) >= EMAIL_RECOVERY_MAX_ATTEMPTS:
+            retry_after = int(min(recent_attempts_in_window) + EMAIL_RECOVERY_CACHE_TIMEOUT - now)
+            minutes_left = max(1, math.ceil(retry_after / 60))
+            return minutes_left
+
+        recent_attempts_in_window.append(now)
+        cache.set(cache_key, recent_attempts_in_window, EMAIL_RECOVERY_CACHE_TIMEOUT)
+
+        return None
+
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
+        if minutes_left := self._is_rate_limited():
+            error = _(
+                "Too many account recovery attempts. Please try again after {minutes} minutes."
+            ).format(minutes=minutes_left)
+            messages.error(self.request, error)
+            return super().challenge_invalid(response)
+
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             messages.error(self.request, _("No pending user."))
             return super().challenge_invalid(response)
+
         self.send_email()
         messages.success(self.request, _("Email Successfully sent."))
         # We can't call stage_ok yet, as we're still waiting
