@@ -44,7 +44,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             return
         post_init.disconnect(dispatch_uid=request.request_id)
 
-    def serialize_simple(self, model: Model) -> dict:
+    def serialize_simple(self, model: Model, update_fields: list[str] | None = None) -> dict:
         """Serialize a model in a very simple way. No ForeignKeys or other relationships are
         resolved"""
         data = {}
@@ -52,6 +52,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         for field in model._meta.concrete_fields:
             value = None
             if field.get_attname() in deferred_fields:
+                continue
+            if update_fields and field.name not in update_fields:
                 continue
 
             field_value = getattr(model, field.attname)
@@ -95,6 +97,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         instance: Model,
         created: bool,
         thread_kwargs: dict | None = None,
+        update_fields: list[str] | None = None,
         **_,
     ):
         if not self.enabled:
@@ -107,7 +110,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             if created:
                 prev_state = {}
             # Get current state
-            new_state = self.serialize_simple(instance)
+            new_state = self.serialize_simple(instance, update_fields)
             diff = self.diff(prev_state, new_state)
             thread_kwargs["diff"] = diff
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
