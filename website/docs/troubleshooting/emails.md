@@ -37,14 +37,25 @@ First, confirm the outbound IP address that authentik will use to send emails wi
 - Do not set **Require SMTP Authentication**.
 - Select **Require TLS encryption**.
 
-Then, set the following environment variables for authentik:
+If you are using docker compose, set the following environment variables for authentik:
 
 ```
 AUTHENTIK_EMAIL__HOST=smtp-relay.gmail.com
 AUTHENTIK_EMAIL__PORT=587
 AUTHENTIK_EMAIL__USE_TLS=true
 AUTHENTIK_EMAIL__USE_SSL=false
-AUTHENTIK_EMAIL__TIMEOUT=10
+AUTHENTIK_EMAIL__TIMEOUT=30
+```
+
+Or, if you are using the Helm chart, set the following in the `email` section:
+
+```yaml
+  email:
+    host: "smtp-relay.gmail.com"
+    port: 587
+    use_tls: true
+    use_ssl: false
+    timeout: 30
 ```
 
 Redeploy the authentik containers, and use the `ak test_email` command to confirm email is working.
