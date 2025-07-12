@@ -57,8 +57,7 @@ type Application struct {
 
 	errorTemplates  *template.Template
 	authHeaderCache *ttlcache.Cache[string, Claims]
-
-	isEmbedded bool
+	isEmbedded      bool
 }
 
 type Server interface {
@@ -95,7 +94,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 
 	isEmbedded := false
 	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
+		managedValue := *m
+		isEmbedded = managedValue == "goauthentik.io/outposts/embedded"
+		muxLogger.WithFields(log.Fields{
+			"managed_value": managedValue,
+			"is_embedded":   isEmbedded,
+		}).Debug("Determining if outpost is embedded")
+	} else {
+		muxLogger.Debug("No managed value found, treating as standalone outpost")
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
@@ -153,11 +159,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	if oldApp != nil && oldApp.sessions != nil {
 		a.sessions = oldApp.sessions
 	} else {
-		sess, err := a.getStore(p, externalHost)
+		store, err := a.getStore(p, externalHost)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to setup sessions: %w", err)
 		}
-		a.sessions = sess
+		a.sessions = store
 	}
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
 		c := a.getClaimsFromSession(r)
@@ -288,8 +294,15 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(rw, r)
 }
 
+// Stop closes all connections and cleans up resources
 func (a *Application) Stop() {
-	a.authHeaderCache.Stop()
+	a.log.Debug("Stopping application")
+
+	// Stop the auth header cache
+	if a.authHeaderCache != nil {
+		a.log.Debug("Stopping auth header cache")
+		a.authHeaderCache.Stop()
+	}
 }
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {

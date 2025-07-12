@@ -29,6 +29,7 @@ from authentik.core.models import (
     TokenIntents,
     User,
     UserTypes,
+    ExpiringModel,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -490,3 +491,57 @@ class OutpostState:
         """Manually delete from cache, used on channel disconnect"""
         full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
         cache.delete(full_key)
+
+
+class ProxySessionManager(models.Manager):
+    """Manager for ProxySession"""
+
+    def cleanup_expired(self) -> int:
+        """Delete expired sessions and return count of deleted sessions"""
+        from django.utils import timezone
+        result = self.filter(expires__lt=timezone.now()).delete()
+        return result[0] if result else 0
+
+
+class ProxySession(ExpiringModel):
+    """Session for Proxy Outpost"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    
+    provider_id = models.CharField(max_length=255, null=False, blank=False)
+    
+    session_key = models.CharField(max_length=255, null=False, blank=False)
+    
+    data = models.BinaryField()
+    
+    claims = models.TextField(blank=True, default="")
+    
+    redirect = models.TextField(blank=True, default="")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    objects = ProxySessionManager()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Proxy Provider Session")
+        verbose_name_plural = _("Proxy Provider Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key", "provider_id"]),
+            models.Index(fields=["provider_id"]),
+            models.Index(fields=["created_at"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["session_key", "provider_id"],
+                name="unique_session_key_provider_id"
+            ),
+        ]
+        
+    def __str__(self):
+        return f"Proxy Session {self.session_key} (Provider: {self.provider_id})"
+
+    def save(self, *args, **kwargs):
+        # Ensure expiring defaults to False to match golang expectations
+        if self.expiring is None:
+            self.expiring = False
+        super().save(*args, **kwargs)

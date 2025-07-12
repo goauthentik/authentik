@@ -18,6 +18,8 @@ from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
+from celery.schedules import crontab
+from celery import Celery
 
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
@@ -35,6 +37,10 @@ from authentik.outposts.models import (
     OutpostServiceConnection,
     OutpostType,
     ServiceConnectionInvalid,
+    OutpostState,
+    Outpost,
+    OutpostServiceConnection,
+    ProxySession,
 )
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
@@ -84,8 +90,8 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
 
 
 @CELERY_APP.task()
-def outpost_service_connection_state(connection_pk: Any):
-    """Update cached state of a service connection"""
+def outpost_service_connection_state(connection_pk: str):
+    """Update OutpostServiceConnection state"""
     connection: OutpostServiceConnection = (
         OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
     )
@@ -312,3 +318,22 @@ def outpost_session_end(session_id: str):
                 "session_id": hashed_session_id,
             },
         )
+
+# bad time to do this especially with dramatiq migration. todo once marc merges it
+
+@CELERY_APP.task()
+def proxy_session_cleanup():
+    """Cleanup expired proxy sessions"""
+    count = ProxySession.objects.cleanup_expired()
+    if count > 0:
+        LOGGER.debug("Cleaned up %d expired proxy sessions", count)
+    return count
+
+
+@CELERY_APP.on_after_finalize.connect
+def setup_periodic_tasks(sender: Celery, **_):
+    """setup periodic tasks"""
+    sender.add_periodic_task(
+        crontab(minute="*/5"),
+        proxy_session_cleanup.s(),
+    )
