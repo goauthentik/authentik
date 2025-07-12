@@ -232,6 +232,30 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             })}
                         </select>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Max Attempts")}
+                        required
+                        name="recoveryMaxAttempts"
+                    >
+                        <input
+                            type="number"
+                            value="${this.instance?.recoveryMaxAttempts ?? 555}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Cache Timeout")}
+                        required
+                        name="recoveryCacheTimeout"
+                    >
+                        <input
+                            type="number"
+                            value="${this.instance?.recoveryCacheTimeout ?? 888}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             ${this.renderConnectionSettings()}`;
