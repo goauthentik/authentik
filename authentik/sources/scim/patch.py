@@ -2,18 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
-
-class PatchOperation(Enum):
-    ADD = "add"
-    REMOVE = "remove"
-    REPLACE = "replace"
-
-
-@dataclass
-class PatchOp:
-    op: PatchOperation
-    path: str
-    value: Any = None
+from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
 
 
 # Token types for SCIM path parsing
@@ -98,7 +87,7 @@ class SCIMPathLexer:
             self.advance()
         return value
 
-    def get_next_token(self) -> Token:
+    def get_next_token(self) -> Token:  # noqa PLR0911
         """Get the next token from the input"""
         while self.current_char:
             if self.current_char.isspace():
@@ -168,8 +157,10 @@ class SCIMPathParser:
         self.lexer = None
         self.current_token = None
 
-    def parse_path(self, path: str) -> list[dict[str, Any]]:
+    def parse_path(self, path: str | None) -> list[dict[str, Any]]:
         """Parse a SCIM path into components"""
+        if not path:
+            return [{"attribute": None, "filter": None, "sub_attribute": None}]
         self.lexer = SCIMPathLexer(path)
         self.current_token = self.lexer.get_next_token()
 
@@ -209,7 +200,8 @@ class SCIMPathParser:
         return {"attribute": attribute, "filter": filter_expr, "sub_attribute": sub_attribute}
 
     def _parse_filter_expression(self) -> dict[str, Any] | None:
-        """Parse a filter expression like 'primary eq true' or 'type eq "work" and primary eq true'"""
+        """Parse a filter expression like 'primary eq true' or
+        'type eq "work" and primary eq true'"""
         return self._parse_or_expression()
 
     def _parse_or_expression(self) -> dict[str, Any] | None:
@@ -294,16 +286,17 @@ class SCIMPatchProcessor:
     def __init__(self):
         self.parser = SCIMPathParser()
 
-    def apply_patches(self, data: dict[str, Any], patches: list[PatchOp]) -> dict[str, Any]:
+    def apply_patches(self, data: dict[str, Any], patches: list[PatchOperation]) -> dict[str, Any]:
         """Apply a list of patch operations to the data"""
         result = data.copy()
 
-        for patch in patches:
-            if patch.op == PatchOperation.ADD:
+        for _patch in patches:
+            patch = PatchOperation.model_validate(_patch)
+            if patch.op == PatchOp.add:
                 self._apply_add(result, patch.path, patch.value)
-            elif patch.op == PatchOperation.REMOVE:
+            elif patch.op == PatchOp.remove:
                 self._apply_remove(result, patch.path)
-            elif patch.op == PatchOperation.REPLACE:
+            elif patch.op == PatchOp.replace:
                 self._apply_replace(result, patch.path, patch.value)
 
         return result
@@ -315,10 +308,14 @@ class SCIMPatchProcessor:
         if len(components) == 1 and not components[0]["filter"]:
             # Simple path
             attr = components[0]["attribute"]
-            if components[0]["sub_attribute"]:
+            if not components[0]["attribute"]:
+                data.update(value)
+            elif components[0]["sub_attribute"]:
                 if attr not in data:
                     data[attr] = {}
                 data[attr][components[0]["sub_attribute"]] = value
+            elif attr in data:
+                data[attr].append(value)
             else:
                 data[attr] = value
         else:
@@ -348,7 +345,9 @@ class SCIMPatchProcessor:
         if len(components) == 1 and not components[0]["filter"]:
             # Simple path
             attr = components[0]["attribute"]
-            if components[0]["sub_attribute"]:
+            if not components[0]["attribute"]:
+                data.update(value)
+            elif components[0]["sub_attribute"]:
                 if attr not in data:
                     data[attr] = {}
                 data[attr][components[0]["sub_attribute"]] = value
@@ -358,7 +357,7 @@ class SCIMPatchProcessor:
             # Complex path with filters
             self._navigate_and_modify(data, components, value, "replace")
 
-    def _navigate_and_modify(
+    def _navigate_and_modify(  # noqa PLR0912
         self, data: dict[str, Any], components: list[dict[str, Any]], value: Any, operation: str
     ):
         """Navigate through complex paths and apply modifications"""
@@ -396,11 +395,11 @@ class SCIMPatchProcessor:
                 # Apply operation to matching items
                 for item in matching_items:
                     if sub_attr:
-                        if operation == "add" or operation == "replace":
+                        if operation in {"add", "replace"}:
                             item[sub_attr] = value
                         elif operation == "remove":
                             item.pop(sub_attr, None)
-                    elif operation == "add" or operation == "replace":
+                    elif operation in {"add", "replace"}:
                         if isinstance(value, dict):
                             item.update(value)
                         else:
@@ -416,11 +415,11 @@ class SCIMPatchProcessor:
                 if sub_attr:
                     if attr not in current:
                         current[attr] = {}
-                    if operation == "add" or operation == "replace":
+                    if operation in {"add", "replace"}:
                         current[attr][sub_attr] = value
                     elif operation == "remove":
                         current[attr].pop(sub_attr, None)
-                elif operation == "add" or operation == "replace":
+                elif operation in {"add", "replace"}:
                     current[attr] = value
                 elif operation == "remove":
                     current.pop(attr, None)
@@ -444,7 +443,9 @@ class SCIMPatchProcessor:
 
         return False
 
-    def _matches_comparison(self, item: dict[str, Any], filter_expr: dict[str, Any]) -> bool:
+    def _matches_comparison(  # noqa PLR0912
+        self, item: dict[str, Any], filter_expr: dict[str, Any]
+    ) -> bool:
         """Check if an item matches a comparison filter"""
         attr = filter_expr["attribute"]
         operator = filter_expr["operator"]
@@ -495,90 +496,3 @@ class SCIMPatchProcessor:
             return not operand_result
 
         return False
-
-
-# Example usage and testing
-if __name__ == "__main__":
-    # Sample SCIM user data
-    user_data = {
-        "id": "user123",
-        "userName": "john.doe",
-        "name": {"formatted": "John Doe", "familyName": "Doe", "givenName": "John"},
-        "emails": [
-            {"value": "john.doe@example.com", "type": "work", "primary": True},
-            {"value": "john.personal@example.com", "type": "personal", "primary": False},
-        ],
-        "phoneNumbers": [
-            {"value": "+1-555-123-4567", "type": "work", "primary": True},
-            {"value": "+1-555-987-6543", "type": "mobile", "primary": False},
-        ],
-        "addresses": [
-            {"streetAddress": "123 Work St", "city": "Work City", "type": "work", "primary": True},
-            {
-                "streetAddress": "456 Home Ave",
-                "city": "Home City",
-                "type": "home",
-                "primary": False,
-            },
-            {
-                "streetAddress": "789 Other Rd",
-                "city": "Other City",
-                "type": "work",
-                "primary": False,
-            },
-        ],
-    }
-
-    # Create processor
-    processor = SCIMPatchProcessor()
-
-    # Example patch operations
-    patches = [
-        # Replace primary phone number
-        PatchOp(
-            op=PatchOperation.REPLACE,
-            path="phoneNumbers[primary eq true].value",
-            value="+1-555-999-0000",
-        ),
-        # Add new email
-        PatchOp(
-            op=PatchOperation.ADD,
-            path="emails",
-            value={"value": "john.new@example.com", "type": "home", "primary": False},
-        ),
-        # Update user's given name
-        PatchOp(op=PatchOperation.REPLACE, path="name.givenName", value="Johnny"),
-        # Remove work email
-        PatchOp(op=PatchOperation.REMOVE, path='emails[type eq "work"]'),
-    ]
-
-    print("Original data:")
-    print(user_data)
-    print("\nApplying patches...")
-
-    # Apply patches
-    result = processor.apply_patches(user_data, patches)
-
-    print("\nResult after patches:")
-    print(result)
-
-    # Test path parsing
-    print("\n--- Path Parsing Tests ---")
-    test_paths = [
-        "userName",
-        "name.givenName",
-        "emails[primary eq true].value",
-        'phoneNumbers[type eq "work"].value',
-        'addresses[type eq "work" and primary eq true].streetAddress',
-    ]
-
-    parser = SCIMPathParser()
-    for path in test_paths:
-        try:
-            components = parser.parse_path(path)
-            print(f"Path: {path}")
-            print(f"  Components: {components}")
-        except Exception as e:
-            print(f"Path: {path}")
-            print(f"  Error: {e}")
-        print()
