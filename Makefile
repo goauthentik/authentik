@@ -151,7 +151,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 
-	cd ${PWD}/${GEN_API_TS} && npm link
+	cd ${PWD}/${GEN_API_TS} && npm install && npm link
 	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
