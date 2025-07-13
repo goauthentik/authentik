@@ -60,7 +60,9 @@ class UsersView(SCIMObjectView):
         )
         final_payload = payload.model_dump(mode="json", exclude_unset=True)
         final_payload.update(scim_user.attributes)
-        return self.remove_excluded_attributes(final_payload)
+        return self.remove_excluded_attributes(
+            SCIMUserModel.model_validate(final_payload).model_dump(mode="json", exclude_unset=True)
+        )
 
     def get(self, request: Request, user_id: str | None = None, **kwargs) -> Response:
         """List User handler"""
