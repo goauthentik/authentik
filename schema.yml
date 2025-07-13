@@ -56719,6 +56719,7 @@ components:
       enum:
       - apple
       - openidconnect
+      - entraid
       - azuread
       - discord
       - facebook
@@ -58971,7 +58972,6 @@ components:
       - external_id
       - group
       - group_obj
-      - id
       - source
     SCIMSourceGroupRequest:
       type: object
@@ -58995,7 +58995,6 @@ components:
       required:
       - external_id
       - group
-      - id
       - source
     SCIMSourcePropertyMapping:
       type: object
@@ -59118,7 +59117,6 @@ components:
           additionalProperties: {}
       required:
       - external_id
-      - id
       - source
       - user
       - user_obj
@@ -59142,7 +59140,6 @@ components:
           additionalProperties: {}
       required:
       - external_id
-      - id
       - source
       - user
     SMSDevice:

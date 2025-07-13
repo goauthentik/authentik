@@ -1,12 +1,12 @@
-"""azure ad Type tests"""
+"""Entra ID Type tests"""
 
 from django.test import TestCase
 
 from authentik.sources.oauth.models import OAuthSource
-from authentik.sources.oauth.types.azure_ad import AzureADOAuthCallback, AzureADType
+from authentik.sources.oauth.types.entra_id import EntraIDOAuthCallback, EntraIDType
 
 # https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0&tabs=http#response-2
-AAD_USER = {
+EID_USER = {
     "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
     "@odata.id": (
         "https://graph.microsoft.com/v2/7ce9b89e-646a-41d2-9fa6-8371c6a8423d/"
@@ -41,11 +41,11 @@ class TestTypeAzureAD(TestCase):
 
     def test_enroll_context(self):
         """Test azure_ad Enrollment context"""
-        ak_context = AzureADType().get_base_user_properties(source=self.source, info=AAD_USER)
-        self.assertEqual(ak_context["username"], AAD_USER["userPrincipalName"])
-        self.assertEqual(ak_context["email"], AAD_USER["mail"])
-        self.assertEqual(ak_context["name"], AAD_USER["displayName"])
+        ak_context = EntraIDType().get_base_user_properties(source=self.source, info=EID_USER)
+        self.assertEqual(ak_context["username"], EID_USER["userPrincipalName"])
+        self.assertEqual(ak_context["email"], EID_USER["mail"])
+        self.assertEqual(ak_context["name"], EID_USER["displayName"])
 
     def test_user_id(self):
-        """Test azure AD user ID"""
-        self.assertEqual(AzureADOAuthCallback().get_user_id(AAD_USER), AAD_USER["id"])
+        """Test Entra ID user ID"""
+        self.assertEqual(EntraIDOAuthCallback().get_user_id(EID_USER), EID_USER["id"])
