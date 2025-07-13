@@ -38,7 +38,7 @@ export class AutosubmitStage extends BaseStage<
             title = this.challenge.title;
         }
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form" action="${this.challenge.url}" method="POST">
+            <form class="pf-c-form" action="${this.challenge.url}" method="post">
                 ${Object.entries(this.challenge.attrs).map(([key, value]) => {
                     return html`<input
                         type="hidden"
@@ -46,9 +46,7 @@ export class AutosubmitStage extends BaseStage<
                         value="${value as string}"
                     />`;
                 })}
-                <ak-empty-state loading>
-                    <span>${title}</span>
-                </ak-empty-state>
+                <ak-empty-state loading default-label></ak-empty-state>
             </form>
         </ak-flow-card>`;
     }
