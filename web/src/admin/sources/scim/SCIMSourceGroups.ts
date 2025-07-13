@@ -42,7 +42,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
             </a>`,
-            html`${item.id}`,
+            html`${item.externalId}`,
         ];
     }
 }

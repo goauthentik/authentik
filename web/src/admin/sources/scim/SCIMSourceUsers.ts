@@ -43,7 +43,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,
-            html`${item.id}`,
+            html`${item.externalId}`,
         ];
     }
 }

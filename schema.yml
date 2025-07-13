@@ -55232,6 +55232,9 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
@@ -55294,6 +55297,9 @@ components:
       description: SCIMSourceUser Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         user:
@@ -58946,6 +58952,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -58960,6 +58968,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
       - group_obj
       - id
@@ -58969,6 +58978,9 @@ components:
       description: SCIMSourceGroup Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         group:
@@ -58981,6 +58993,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
       - id
       - source
@@ -59089,6 +59102,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         user:
           type: integer
         user_obj:
@@ -59102,6 +59117,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - id
       - source
       - user
@@ -59113,6 +59129,9 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         user:
           type: integer
         source:
@@ -59122,6 +59141,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - id
       - source
       - user
