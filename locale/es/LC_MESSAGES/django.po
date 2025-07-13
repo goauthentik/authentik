@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-04 00:12+0000\n"
+"POT-Creation-Date: 2025-07-05 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Iamanaws, 2025\n"
 "Language-Team: Spanish (https://app.transifex.com/authentik/teams/119923/es/)\n"
@@ -124,10 +124,6 @@ msgstr "Marcas"
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "El usuario no tiene acceso a la aplicación"
-
-#: authentik/core/api/devices.py
-msgid "Extra description not available"
-msgstr "Descripción adicional no disponible."
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
@@ -374,6 +370,10 @@ msgstr "Tokens"
 #: authentik/core/models.py
 msgid "View token's key"
 msgstr "Ver llave del token"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "Establecer la clave de un token"
 
 #: authentik/core/models.py
 msgid "Property Mapping"
@@ -837,6 +837,15 @@ msgid ""
 msgstr ""
 "Define a qué grupo de usuarios se les debe enviar y mostrar esta "
 "notificación. Si se deja vacío, no se enviará Notificación."
+
+#: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+"Cuando está habilitada, se enviará una notificación al usuario que "
+"desencadenó el evento. Cuando se configura destination_group, la "
+"notificación se enviará a ambos."
 
 #: authentik/events/models.py
 msgid "Notification Rule"
@@ -3868,6 +3877,17 @@ msgstr ""
 "El tiempo que se extenderá la sesión cuando el usuario seleccione la opción "
 "Recordarme. El valor predeterminado de 0 significa que no se mostrará la "
 "opción Recordarme. (Formato: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Cuando se establece en un valor distinto de cero, authentik guardará una "
+"cookie con una expiración más larga para recordar el dispositivo desde el "
+"cual el usuario está iniciando sesión. (Formato: "
+"hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"
