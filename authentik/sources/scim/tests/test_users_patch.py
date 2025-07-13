@@ -403,12 +403,12 @@ class TestSCIMUsersPatch(APITestCase):
                 "ims": [{"primary": "true", "value": "IGWZUUMCMKXS", "display": "PJVGMMKYYHRU"}],
                 "locale": "JLOJHLPWZODG",
                 "name": {
-                    "formatted": "Ladarius",
-                    "familyName": "Manley",
-                    "givenName": "Mazie",
-                    "middleName": "Vernon",
-                    "honorificPrefix": "Melyssa",
-                    "honorificSuffix": "Demarcus",
+                    "formatted": "Dell",
+                    "familyName": "Gay",
+                    "givenName": "Kyler",
+                    "middleName": "Hannah",
+                    "honorificPrefix": "Cassie",
+                    "honorificSuffix": "Yolanda",
                 },
                 "nickName": "BKSPMIRMFBTI",
                 "phoneNumbers": [
@@ -425,26 +425,62 @@ class TestSCIMUsersPatch(APITestCase):
                 "timezone": "America/Argentina/Rio_Gallegos",
                 "title": "NBZCOAXVYJUY",
                 SCIM_URN_USER_ENTERPRISE: {
-                    "employeeNumber": "XHDMEJUURJNR",
-                    "costCenter": "RXUYBXOTRCZH",
-                    "organization": "CEXWXMBRYAHN",
-                    "division": "XMPFMDCLRKCW",
-                    "department": "BKMNJVMCJUYS",
+                    "employeeNumber": "PDFWRRZBQOHB",
+                    "costCenter": "HACMZWSEDOTQ",
+                    "organization": "LXVHJUOLNCLS",
+                    "division": "JASVTPKPBPMG",
+                    "department": "GMSBFLMNPABY",
                     "manager": "PNGSGXLYVWMV",
                 },
                 "userName": "imelda.auer@kshlerin.co.uk",
                 "userType": "ZGJMYZRUORZE",
                 "x509Certificates": [{"primary": "true", "value": "KOVKWGIVVEHH"}],
-                "name.formatted": "Dell",
-                "name.familyName": "Gay",
-                "name.givenName": "Kyler",
-                "name.middleName": "Hannah",
-                "name.honorificPrefix": "Cassie",
-                "name.honorificSuffix": "Yolanda",
-                f"{SCIM_URN_USER_ENTERPRISE}:employeeNumber": "PDFWRRZBQOHB",
-                f"{SCIM_URN_USER_ENTERPRISE}:costCenter": "HACMZWSEDOTQ",
-                f"{SCIM_URN_USER_ENTERPRISE}:organization": "LXVHJUOLNCLS",
-                f"{SCIM_URN_USER_ENTERPRISE}:division": "JASVTPKPBPMG",
-                f"{SCIM_URN_USER_ENTERPRISE}:department": "GMSBFLMNPABY",
+            },
+        )
+
+    def test_schema_urn_manager(self):
+        req = {
+            "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+            "Operations": [
+                {
+                    "op": "Add",
+                    "value": {
+                        "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager": "foo"
+                    },
+                },
+            ],
+        }
+        user = create_test_user()
+        source = SCIMSource.objects.create(slug=generate_id())
+        connection = SCIMSourceUser.objects.create(
+            user=user,
+            id=generate_id(),
+            source=source,
+            attributes={
+                "meta": {"resourceType": "User"},
+                "active": True,
+                "schemas": [
+                    "urn:ietf:params:scim:schemas:core:2.0:User",
+                    SCIM_URN_USER_ENTERPRISE,
+                ],
+                "userName": "test@t.goauthentik.io",
+                "externalId": "test",
+                "displayName": "Test MS",
+            },
+        )
+        updated = SCIMPatchProcessor().apply_patches(connection.attributes, req["Operations"])
+        self.assertEqual(
+            updated,
+            {
+                "meta": {"resourceType": "User"},
+                "active": True,
+                "schemas": [
+                    "urn:ietf:params:scim:schemas:core:2.0:User",
+                    SCIM_URN_USER_ENTERPRISE,
+                ],
+                "userName": "test@t.goauthentik.io",
+                "externalId": "test",
+                "displayName": "Test MS",
+                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {"manager": "foo"},
             },
         )
