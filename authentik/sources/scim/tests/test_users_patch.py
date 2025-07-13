@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
-from authentik.sources.scim.constants import SCIM_URN_ENTERPRISE_USER
+from authentik.sources.scim.constants import SCIM_URN_USER_ENTERPRISE
 from authentik.sources.scim.models import SCIMSource, SCIMSourceUser
 from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 
@@ -30,7 +30,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -50,7 +50,7 @@ class TestSCIMUsersPatch(APITestCase):
                 },
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -77,7 +77,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "displayName": "Test MS",
@@ -91,7 +91,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "aqwer",
@@ -117,7 +117,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -135,7 +135,7 @@ class TestSCIMUsersPatch(APITestCase):
                 },
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -162,7 +162,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -177,7 +177,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "aqwer",
@@ -206,7 +206,7 @@ class TestSCIMUsersPatch(APITestCase):
                 },
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -221,7 +221,7 @@ class TestSCIMUsersPatch(APITestCase):
                 "active": True,
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
@@ -310,11 +310,11 @@ class TestSCIMUsersPatch(APITestCase):
                         "locale": "JLOJHLPWZODG",
                         "timezone": "America/Argentina/Rio_Gallegos",
                         "active": True,
-                        f"{SCIM_URN_ENTERPRISE_USER}:employeeNumber": "PDFWRRZBQOHB",
-                        f"{SCIM_URN_ENTERPRISE_USER}:costCenter": "HACMZWSEDOTQ",
-                        f"{SCIM_URN_ENTERPRISE_USER}:organization": "LXVHJUOLNCLS",
-                        f"{SCIM_URN_ENTERPRISE_USER}:division": "JASVTPKPBPMG",
-                        f"{SCIM_URN_ENTERPRISE_USER}:department": "GMSBFLMNPABY",
+                        f"{SCIM_URN_USER_ENTERPRISE}:employeeNumber": "PDFWRRZBQOHB",
+                        f"{SCIM_URN_USER_ENTERPRISE}:costCenter": "HACMZWSEDOTQ",
+                        f"{SCIM_URN_USER_ENTERPRISE}:organization": "LXVHJUOLNCLS",
+                        f"{SCIM_URN_USER_ENTERPRISE}:division": "JASVTPKPBPMG",
+                        f"{SCIM_URN_USER_ENTERPRISE}:department": "GMSBFLMNPABY",
                     },
                 },
             ],
@@ -363,11 +363,11 @@ class TestSCIMUsersPatch(APITestCase):
                 "roles": [{"primary": "true", "value": "TLGYITOIZGKP"}],
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "timezone": "America/Indiana/Petersburg",
                 "title": "EJWFXLHNHMCD",
-                SCIM_URN_ENTERPRISE_USER: {
+                SCIM_URN_USER_ENTERPRISE: {
                     "employeeNumber": "XHDMEJUURJNR",
                     "costCenter": "RXUYBXOTRCZH",
                     "organization": "CEXWXMBRYAHN",
@@ -420,11 +420,11 @@ class TestSCIMUsersPatch(APITestCase):
                 "roles": [{"primary": "true", "value": "TLGYITOIZGKP"}],
                 "schemas": [
                     "urn:ietf:params:scim:schemas:core:2.0:User",
-                    SCIM_URN_ENTERPRISE_USER,
+                    SCIM_URN_USER_ENTERPRISE,
                 ],
                 "timezone": "America/Argentina/Rio_Gallegos",
                 "title": "NBZCOAXVYJUY",
-                SCIM_URN_ENTERPRISE_USER: {
+                SCIM_URN_USER_ENTERPRISE: {
                     "employeeNumber": "XHDMEJUURJNR",
                     "costCenter": "RXUYBXOTRCZH",
                     "organization": "CEXWXMBRYAHN",
@@ -441,10 +441,10 @@ class TestSCIMUsersPatch(APITestCase):
                 "name.middleName": "Hannah",
                 "name.honorificPrefix": "Cassie",
                 "name.honorificSuffix": "Yolanda",
-                f"{SCIM_URN_ENTERPRISE_USER}:employeeNumber": "PDFWRRZBQOHB",
-                f"{SCIM_URN_ENTERPRISE_USER}:costCenter": "HACMZWSEDOTQ",
-                f"{SCIM_URN_ENTERPRISE_USER}:organization": "LXVHJUOLNCLS",
-                f"{SCIM_URN_ENTERPRISE_USER}:division": "JASVTPKPBPMG",
-                f"{SCIM_URN_ENTERPRISE_USER}:department": "GMSBFLMNPABY",
+                f"{SCIM_URN_USER_ENTERPRISE}:employeeNumber": "PDFWRRZBQOHB",
+                f"{SCIM_URN_USER_ENTERPRISE}:costCenter": "HACMZWSEDOTQ",
+                f"{SCIM_URN_USER_ENTERPRISE}:organization": "LXVHJUOLNCLS",
+                f"{SCIM_URN_USER_ENTERPRISE}:division": "JASVTPKPBPMG",
+                f"{SCIM_URN_USER_ENTERPRISE}:department": "GMSBFLMNPABY",
             },
         )

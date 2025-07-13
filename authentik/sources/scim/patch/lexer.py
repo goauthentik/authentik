@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from authentik.sources.scim.constants import (
+    SCIM_URN_GROUP,
+    SCIM_URN_SCHEMA,
+    SCIM_URN_USER,
+    SCIM_URN_USER_ENTERPRISE,
+)
+
 
 # Token types for SCIM path parsing
 class TokenType(Enum):
@@ -34,6 +41,12 @@ class SCIMPathLexer:
     OPERATORS = ["eq", "ne", "co", "sw", "ew", "gt", "lt", "ge", "le", "pr"]
 
     def __init__(self, text: str):
+        self.schema_urns = [
+            SCIM_URN_SCHEMA,
+            SCIM_URN_GROUP,
+            SCIM_URN_USER,
+            SCIM_URN_USER_ENTERPRISE,
+        ]
         self.text = text
         self.pos = 0
         self.current_char = self.text[self.pos] if self.pos < len(self.text) else None
@@ -82,6 +95,11 @@ class SCIMPathLexer:
         while self.current_char and (self.current_char.isalnum() or self.current_char in "_-:"):
             value += self.current_char
             self.advance()
+            # If the identifier value so far is a schema URN, take that as the identifier and
+            # treat the next part as a sub_attribute
+            if value in self.schema_urns:
+                self.current_char = "."
+                return value
 
             # Handle dots within URN identifiers (like "2.0")
             # A dot is part of the identifier if it's followed by a digit
