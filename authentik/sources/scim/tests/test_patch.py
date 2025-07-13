@@ -63,7 +63,10 @@ class TestSCIMPatchProcessor(APITestCase):
             PatchOperation(op=PatchOp.replace, path="name.givenName", value="Johnny"),
             # Remove work email
             PatchOperation(op=PatchOp.remove, path='emails[type eq "work"]'),
+            # Add with empty path, simple object
             PatchOperation(op=PatchOp.add, path=None, value={"foo": "bar"}),
+            # Empty path with complex object
+            PatchOperation(op=PatchOp.add, path=None, value={"name.formatted": "formatted"}),
         ]
         result = processor.apply_patches(user_data, patches)
         self.assertEqual(
@@ -71,7 +74,7 @@ class TestSCIMPatchProcessor(APITestCase):
             {
                 "id": "user123",
                 "userName": "john.doe",
-                "name": {"formatted": "John Doe", "familyName": "Doe", "givenName": "Johnny"},
+                "name": {"formatted": "formatted", "familyName": "Doe", "givenName": "Johnny"},
                 "emails": [
                     {"value": "john.personal@example.com", "type": "personal", "primary": False},
                     {"value": "john.new@example.com", "type": "home", "primary": False},

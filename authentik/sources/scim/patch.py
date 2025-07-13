@@ -174,8 +174,6 @@ class SCIMPathParser:
 
     def parse_path(self, path: str | None) -> list[dict[str, Any]]:
         """Parse a SCIM path into components"""
-        if not path:
-            return [{"attribute": None, "filter": None, "sub_attribute": None}]
         self.lexer = SCIMPathLexer(path)
         self.current_token = self.lexer.get_next_token()
 
@@ -307,7 +305,10 @@ class SCIMPatchProcessor:
 
         for _patch in patches:
             patch = PatchOperation.model_validate(_patch)
-            if patch.op == PatchOp.add:
+            if patch.path is None:
+                # Handle operations with no path - value contains attribute paths as keys
+                self._apply_bulk_operation(result, patch.op, patch.value)
+            elif patch.op == PatchOp.add:
                 self._apply_add(result, patch.path, patch.value)
             elif patch.op == PatchOp.remove:
                 self._apply_remove(result, patch.path)
@@ -316,6 +317,20 @@ class SCIMPatchProcessor:
 
         return result
 
+    def _apply_bulk_operation(
+        self, data: dict[str, Any], operation: PatchOp, value: dict[str, Any]
+    ):
+        """Apply bulk operations when path is None"""
+        if not isinstance(value, dict):
+            return
+        for path, val in value.items():
+            if operation == PatchOp.add:
+                self._apply_add(data, path, val)
+            elif operation == PatchOp.remove:
+                self._apply_remove(data, path)
+            elif operation == PatchOp.replace:
+                self._apply_replace(data, path, val)
+
     def _apply_add(self, data: dict[str, Any], path: str, value: Any):
         """Apply ADD operation"""
         components = self.parser.parse_path(path)
@@ -323,9 +338,7 @@ class SCIMPatchProcessor:
         if len(components) == 1 and not components[0]["filter"]:
             # Simple path
             attr = components[0]["attribute"]
-            if not components[0]["attribute"]:
-                data.update(value)
-            elif components[0]["sub_attribute"]:
+            if components[0]["sub_attribute"]:
                 if attr not in data:
                     data[attr] = {}
                 data[attr][components[0]["sub_attribute"]] = value
@@ -360,9 +373,7 @@ class SCIMPatchProcessor:
         if len(components) == 1 and not components[0]["filter"]:
             # Simple path
             attr = components[0]["attribute"]
-            if not components[0]["attribute"]:
-                data.update(value)
-            elif components[0]["sub_attribute"]:
+            if components[0]["sub_attribute"]:
                 if attr not in data:
                     data[attr] = {}
                 data[attr][components[0]["sub_attribute"]] = value

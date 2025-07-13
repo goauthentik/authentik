@@ -53,15 +53,6 @@ class SCIMView(APIView):
         self.logger = get_logger().bind()
         super().setup(request, *args, **kwargs)
 
-    def initial(self, request, *args, **kwargs):
-        super().initial(request, *args, **kwargs)
-        for key, value in kwargs.items():
-            if key.endswith("_id"):
-                try:
-                    UUID(value)
-                except ValueError:
-                    raise SCIMNotFoundError("Invalid ID") from None
-
     def dispatch(self, request, *args, **kwargs):
         res = super().dispatch(request, *args, **kwargs)
         print(self.request.data)
@@ -126,6 +117,12 @@ class SCIMObjectView(SCIMView):
         # a source attribute before
         self.mapper = SourceMapper(self.source)
         self.manager = self.mapper.get_manager(self.model, ["data"])
+        for key, value in kwargs.items():
+            if key.endswith("_id"):
+                try:
+                    UUID(value)
+                except ValueError:
+                    raise SCIMNotFoundError("Invalid ID") from None
 
     def build_object_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
         return self.mapper.build_object_properties(
