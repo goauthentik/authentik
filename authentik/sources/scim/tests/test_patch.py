@@ -2,7 +2,8 @@ from rest_framework.test import APITestCase
 
 from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
 from authentik.sources.scim.constants import SCIM_URN_ENTERPRISE_USER
-from authentik.sources.scim.patch import SCIMPatchProcessor, SCIMPathParser
+from authentik.sources.scim.patch.parser import SCIMPathParser
+from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 
 
 class TestSCIMPatchProcessor(APITestCase):
@@ -176,9 +177,9 @@ class TestSCIMPatchProcessor(APITestCase):
                 "filter": f"{SCIM_URN_ENTERPRISE_USER}:manager",
                 "components": [
                     {
-                        "attribute": f"{SCIM_URN_ENTERPRISE_USER}:manager",
+                        "attribute": SCIM_URN_ENTERPRISE_USER,
                         "filter": None,
-                        "sub_attribute": None,
+                        "sub_attribute": "manager",
                     }
                 ],
             },

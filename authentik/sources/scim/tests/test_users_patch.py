@@ -4,7 +4,7 @@ from authentik.core.tests.utils import create_test_user
 from authentik.lib.generators import generate_id
 from authentik.sources.scim.constants import SCIM_URN_ENTERPRISE_USER
 from authentik.sources.scim.models import SCIMSource, SCIMSourceUser
-from authentik.sources.scim.patch import SCIMPatchProcessor
+from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 
 
 class TestSCIMUsersPatch(APITestCase):
