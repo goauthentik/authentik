@@ -93,7 +93,12 @@ class SCIMPatchProcessor:
             if components[0]["sub_attribute"]:
                 if attr not in data:
                     data[attr] = {}
-                data[attr][components[0]["sub_attribute"]] = value
+                # Somewhat hacky workaround for the manager attribute of the enterprise schema
+                # ideally we'd do this based on the schema
+                if attr == SCIM_URN_USER_ENTERPRISE and components[0]["sub_attribute"] == "manager":
+                    data[attr][components[0]["sub_attribute"]] = {"value": value}
+                else:
+                    data[attr][components[0]["sub_attribute"]] = value
             else:
                 data[attr] = value
         else:
