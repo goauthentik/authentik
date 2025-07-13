@@ -85,4 +85,14 @@ class Migration(migrations.Migration):
             name="id",
             field=models.TextField(default=uuid.uuid4, primary_key=True, serialize=False),
         ),
+        migrations.AddField(
+            model_name="scimsourcegroup",
+            name="last_update",
+            field=models.DateTimeField(auto_now=True),
+        ),
+        migrations.AddField(
+            model_name="scimsourceuser",
+            name="last_update",
+            field=models.DateTimeField(auto_now=True),
+        ),
     ]

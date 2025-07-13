@@ -41,6 +41,7 @@ class GroupsView(SCIMObjectView):
             members=[],
             meta={
                 "resourceType": "Group",
+                "lastModified": scim_group.last_update,
                 "location": self.request.build_absolute_uri(
                     reverse(
                         "authentik_sources_scim:v2-groups",

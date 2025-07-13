@@ -45,8 +45,7 @@ class UsersView(SCIMObjectView):
             meta={
                 "resourceType": "User",
                 "created": scim_user.user.date_joined,
-                # TODO: use events to find last edit?
-                "lastModified": scim_user.user.date_joined,
+                "lastModified": scim_user.last_update,
                 "location": self.request.build_absolute_uri(
                     reverse(
                         "authentik_sources_scim:v2-users",

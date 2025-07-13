@@ -250,7 +250,6 @@ class TestSCIMUsers(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
         existing.refresh_from_db()
-        print(existing.attributes)
         self.assertEqual(
             existing.attributes[SCIM_URN_USER_ENTERPRISE],
             {"manager": {"value": "86b2ed3e-30cd-4881-bb58-c4e910821339"}},

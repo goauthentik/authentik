@@ -109,6 +109,7 @@ class SCIMSourceUser(SerializerModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+    last_update = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> BaseSerializer:
@@ -134,6 +135,7 @@ class SCIMSourceGroup(SerializerModel):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     source = models.ForeignKey(SCIMSource, on_delete=models.CASCADE)
     attributes = models.JSONField(default=dict)
+    last_update = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> BaseSerializer:
