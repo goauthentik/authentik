@@ -75,7 +75,9 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).exists())
+        self.assertTrue(
+            SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
@@ -105,7 +107,7 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        connection = SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).first()
+        connection = SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).first()
         self.assertIsNotNone(connection)
         self.assertTrue(
             Event.objects.filter(
@@ -137,7 +139,9 @@ class TestSCIMGroups(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceGroup.objects.filter(source=self.source, id=ext_id).exists())
+        self.assertTrue(
+            SCIMSourceGroup.objects.filter(source=self.source, external_id=ext_id).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
@@ -147,7 +151,9 @@ class TestSCIMGroups(APITestCase):
     def test_group_create_duplicate(self):
         """Test group create (duplicate)"""
         group = Group.objects.create(name=generate_id())
-        existing = SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        existing = SCIMSourceGroup.objects.create(
+            source=self.source, group=group, external_id=uuid4()
+        )
         ext_id = generate_id()
         response = self.client.post(
             reverse(
@@ -176,7 +182,9 @@ class TestSCIMGroups(APITestCase):
     def test_group_update(self):
         """Test group update"""
         group = Group.objects.create(name=generate_id())
-        existing = SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        existing = SCIMSourceGroup.objects.create(
+            source=self.source, group=group, external_id=uuid4()
+        )
         ext_id = generate_id()
         response = self.client.put(
             reverse(
@@ -222,7 +230,7 @@ class TestSCIMGroups(APITestCase):
         connection = SCIMSourceGroup.objects.create(
             source=self.source,
             group=group,
-            id=uuid4(),
+            external_id=uuid4(),
             attributes={"displayName": group.name, "members": []},
         )
         response = self.client.patch(
@@ -256,7 +264,7 @@ class TestSCIMGroups(APITestCase):
         connection = SCIMSourceGroup.objects.create(
             source=self.source,
             group=group,
-            id=uuid4(),
+            external_id=uuid4(),
             attributes={"displayName": group.name, "members": [{"value": str(other_user.uuid)}]},
         )
         response = self.client.patch(
@@ -302,7 +310,7 @@ class TestSCIMGroups(APITestCase):
         connection = SCIMSourceGroup.objects.create(
             source=self.source,
             group=group,
-            id=uuid4(),
+            external_id=uuid4(),
             attributes={"displayName": group.name, "members": []},
         )
         response = self.client.patch(
@@ -338,7 +346,7 @@ class TestSCIMGroups(APITestCase):
     def test_group_delete(self):
         """Test group delete"""
         group = Group.objects.create(name=generate_id())
-        SCIMSourceGroup.objects.create(source=self.source, group=group, id=uuid4())
+        SCIMSourceGroup.objects.create(source=self.source, group=group, external_id=uuid4())
         response = self.client.delete(
             reverse(
                 "authentik_sources_scim:v2-groups",

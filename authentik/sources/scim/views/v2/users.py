@@ -30,7 +30,7 @@ class UsersView(SCIMObjectView):
         payload = SCIMUserModel(
             schemas=[SCIM_USER_SCHEMA],
             id=str(scim_user.user.uuid),
-            externalId=scim_user.id,
+            externalId=scim_user.external_id,
             userName=scim_user.user.username,
             name=Name(
                 formatted=scim_user.user.name,
@@ -102,14 +102,16 @@ class UsersView(SCIMObjectView):
         user.update_attributes(properties)
 
         if not connection:
-            connection, _ = SCIMSourceUser.objects.get_or_create(
+            connection, _ = SCIMSourceUser.objects.update_or_create(
+                external_id=data.get("externalId") or str(uuid4()),
                 source=self.source,
                 user=user,
-                attributes=data,
-                id=data.get("externalId") or str(uuid4()),
+                defaults={
+                    "attributes": data,
+                },
             )
         else:
-            connection.id = data.get("externalId", connection.id)
+            connection.external_id = data.get("externalId", connection.external_id)
             connection.attributes = data
             connection.save()
         return connection

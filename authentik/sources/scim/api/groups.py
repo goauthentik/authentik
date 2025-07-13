@@ -18,6 +18,7 @@ class SCIMSourceGroupSerializer(SourceSerializer):
         model = SCIMSourceGroup
         fields = [
             "id",
+            "external_id",
             "group",
             "group_obj",
             "source",

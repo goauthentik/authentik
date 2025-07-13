@@ -18,6 +18,7 @@ class SCIMSourceUserSerializer(SourceSerializer):
         model = SCIMSourceUser
         fields = [
             "id",
+            "external_id",
             "user",
             "user_obj",
             "source",

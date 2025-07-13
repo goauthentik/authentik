@@ -36,7 +36,7 @@ class GroupsView(SCIMObjectView):
         payload = SCIMGroupModel(
             schemas=[SCIM_GROUP_SCHEMA],
             id=str(scim_group.group.pk),
-            externalId=scim_group.id,
+            externalId=scim_group.external_id,
             displayName=scim_group.group.name,
             members=[],
             meta={
@@ -109,22 +109,16 @@ class GroupsView(SCIMObjectView):
                 group.users.set(User.objects.filter(query))
         data["members"] = self._convert_members(group)
         if not connection:
-            if SCIMSourceGroup.objects.filter(
-                source=self.source, id=data.get("externalId")
-            ).exists():
-                raise SCIMConflictError("Group with externalId already exiss.")
-            connection, _ = SCIMSourceGroup.objects.get_or_create(
+            connection, _ = SCIMSourceGroup.objects.update_or_create(
+                external_id=data.get("externalId") or str(uuid4()),
                 source=self.source,
                 group=group,
-                attributes=data,
-                id=data.get("externalId") or str(uuid4()),
+                defaults={
+                    "attributes": data,
+                },
             )
         else:
-            if data.get("externalId", connection.id) != connection.id:
-                old_id = connection.id
-                connection.id = data.get("externalId", connection.id)
-                connection.save()
-                SCIMSourceGroup.objects.filter(pk=old_id).delete()
+            connection.external_id = data.get("externalId", connection.external_id)
             connection.attributes = data
             connection.save()
         return connection
