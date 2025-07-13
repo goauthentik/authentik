@@ -216,7 +216,38 @@ class TestSCIMGroups(APITestCase):
             },
         )
 
-    def test_group_patch_add(self):
+    def test_group_patch_modify(self):
+        """Test group patch"""
+        group = Group.objects.create(name=generate_id())
+        connection = SCIMSourceGroup.objects.create(
+            source=self.source,
+            group=group,
+            id=uuid4(),
+            attributes={"displayName": group.name, "members": []},
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-groups",
+                kwargs={"source_slug": self.source.slug, "group_id": group.pk},
+            ),
+            data=dumps(
+                {
+                    "Operations": [
+                        {
+                            "op": "Add",
+                            "value": {"externalId": "d85051cb-0557-4aa1-98ca-51eabcee4d40"},
+                        }
+                    ]
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        connection = SCIMSourceGroup.objects.filter(id="d85051cb-0557-4aa1-98ca-51eabcee4d40")
+        self.assertIsNotNone(connection)
+
+    def test_group_patch_member_add(self):
         """Test group patch"""
         user = create_test_user()
         other_user = create_test_user()
@@ -262,7 +293,7 @@ class TestSCIMGroups(APITestCase):
             },
         )
 
-    def test_group_patch_remove(self):
+    def test_group_patch_member_remove(self):
         """Test group patch"""
         user = create_test_user()
 

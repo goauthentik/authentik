@@ -481,6 +481,8 @@ class TestSCIMUsersPatch(APITestCase):
                 "userName": "test@t.goauthentik.io",
                 "externalId": "test",
                 "displayName": "Test MS",
-                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {"manager": "foo"},
+                "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": {
+                    "manager": {"value": "foo"}
+                },
             },
         )
