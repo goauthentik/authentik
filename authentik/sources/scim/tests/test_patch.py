@@ -1,3 +1,5 @@
+from unittest.mock import Mock, patch
+
 from rest_framework.test import APITestCase
 
 from authentik.providers.scim.clients.schema import PatchOp, PatchOperation
@@ -7,6 +9,19 @@ from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 
 
 class TestSCIMPatchProcessor(APITestCase):
+
+    def setUp(self):
+        """Set up test fixtures"""
+        self.processor = SCIMPatchProcessor()
+        self.sample_data = {
+            "userName": "john.doe",
+            "name": {"givenName": "John", "familyName": "Doe"},
+            "emails": [
+                {"value": "john@example.com", "type": "work", "primary": True},
+                {"value": "john.personal@example.com", "type": "personal"},
+            ],
+            "active": True,
+        }
 
     def test_data(self):
         user_data = {
@@ -190,3 +205,703 @@ class TestSCIMPatchProcessor(APITestCase):
                 parser = SCIMPathParser()
                 components = parser.parse_path(path["filter"])
                 self.assertEqual(components, path["components"])
+
+    def test_init(self):
+        """Test processor initialization"""
+        processor = SCIMPatchProcessor()
+        self.assertIsNotNone(processor.parser)
+
+    def test_apply_patches_empty_list(self):
+        """Test applying empty patch list returns unchanged data"""
+        result = self.processor.apply_patches(self.sample_data, [])
+        self.assertEqual(result, self.sample_data)
+        # Ensure original data is not modified
+        self.assertIsNot(result, self.sample_data)
+
+    def test_apply_patches_with_validation(self):
+        """Test that patches are validated using PatchOperation.model_validate"""
+        with patch("authentik.sources.scim.patch.processor.PatchOperation") as mock_patch_op:
+            mock_patch_op.model_validate.return_value = Mock(
+                path="userName", op=PatchOp.replace, value="jane.doe"
+            )
+
+            patches = [{"op": "replace", "path": "userName", "value": "jane.doe"}]
+            self.processor.apply_patches(self.sample_data, patches)
+
+            mock_patch_op.model_validate.assert_called_once()
+
+    # Test ADD operations
+    def test_apply_add_simple_attribute(self):
+        """Test adding a simple attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "title", "filter": None, "sub_attribute": None}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.add, path="title", value="Manager")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["title"], "Manager")
+
+    def test_apply_add_sub_attribute(self):
+        """Test adding a sub-attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "name", "filter": None, "sub_attribute": "middleName"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.add, path="name.middleName", value="William")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["name"]["middleName"], "William")
+
+    def test_apply_add_sub_attribute_new_parent(self):
+        """Test adding a sub-attribute when parent doesn't exist"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "address", "filter": None, "sub_attribute": "street"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.add, path="address.street", value="123 Main St")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["address"]["street"], "123 Main St")
+
+    def test_apply_add_enterprise_manager(self):
+        """Test adding enterprise manager attribute (special case)"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": SCIM_URN_USER_ENTERPRISE, "filter": None, "sub_attribute": "manager"}
+            ]
+
+            patches = [
+                PatchOperation(
+                    op=PatchOp.add, path=f"{SCIM_URN_USER_ENTERPRISE}.manager", value="mgr123"
+                )
+            ]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result[SCIM_URN_USER_ENTERPRISE]["manager"], {"value": "mgr123"})
+
+    def test_apply_add_to_existing_array(self):
+        """Test adding to an existing array attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "emails", "filter": None, "sub_attribute": None}
+            ]
+
+            new_email = {"value": "john.work@example.com", "type": "work"}
+            patches = [PatchOperation(op=PatchOp.add, path="emails", value=new_email)]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(len(result["emails"]), 3)
+            self.assertIn(new_email, result["emails"])
+
+    def test_apply_add_new_attribute_as_value(self):
+        """Test adding a new attribute that gets set as value (not array)"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "department", "filter": None, "sub_attribute": None}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.add, path="department", value="Engineering")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["department"], "Engineering")
+
+    def test_apply_add_complex_path(self):
+        """Test adding with complex path (filters)"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {
+                    "attribute": "emails",
+                    "filter": {"type": "comparison"},
+                    "sub_attribute": "verified",
+                }
+            ]
+
+            patches = [
+                PatchOperation(op=PatchOp.add, path='emails[type eq "work"].verified', value=True)
+            ]
+
+            with patch.object(self.processor, "_navigate_and_modify") as mock_navigate:
+                self.processor.apply_patches(self.sample_data, patches)
+                mock_navigate.assert_called_once()
+
+    # Test REMOVE operations
+    def test_apply_remove_simple_attribute(self):
+        """Test removing a simple attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "active", "filter": None, "sub_attribute": None}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.remove, path="active")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertNotIn("active", result)
+
+    def test_apply_remove_sub_attribute(self):
+        """Test removing a sub-attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "name", "filter": None, "sub_attribute": "givenName"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.remove, path="name.givenName")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertNotIn("givenName", result["name"])
+            self.assertIn("familyName", result["name"])  # Other sub-attributes remain
+
+    def test_apply_remove_sub_attribute_nonexistent_parent(self):
+        """Test removing sub-attribute when parent doesn't exist"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "nonexistent", "filter": None, "sub_attribute": "field"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.remove, path="nonexistent.field")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            # Should not raise error and data should be unchanged
+            self.assertEqual(result, self.sample_data)
+
+    def test_apply_remove_nonexistent_attribute(self):
+        """Test removing a non-existent attribute (should not raise error)"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "nonexistent", "filter": None, "sub_attribute": None}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.remove, path="nonexistent")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            # Should not raise error and data should be unchanged
+            self.assertEqual(result, self.sample_data)
+
+    # Test REPLACE operations
+    def test_apply_replace_simple_attribute(self):
+        """Test replacing a simple attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "userName", "filter": None, "sub_attribute": None}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.replace, path="userName", value="jane.doe")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["userName"], "jane.doe")
+
+    def test_apply_replace_sub_attribute(self):
+        """Test replacing a sub-attribute"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "name", "filter": None, "sub_attribute": "givenName"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.replace, path="name.givenName", value="Jane")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["name"]["givenName"], "Jane")
+
+    def test_apply_replace_sub_attribute_new_parent(self):
+        """Test replacing sub-attribute when parent doesn't exist"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": "address", "filter": None, "sub_attribute": "city"}
+            ]
+
+            patches = [PatchOperation(op=PatchOp.replace, path="address.city", value="New York")]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["address"]["city"], "New York")
+
+    def test_apply_replace_enterprise_manager(self):
+        """Test replacing enterprise manager attribute (special case)"""
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.return_value = [
+                {"attribute": SCIM_URN_USER_ENTERPRISE, "filter": None, "sub_attribute": "manager"}
+            ]
+
+            patches = [
+                PatchOperation(
+                    op=PatchOp.replace,
+                    path=f"{SCIM_URN_USER_ENTERPRISE}.manager",
+                    value="newmgr456",
+                )
+            ]
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result[SCIM_URN_USER_ENTERPRISE]["manager"], {"value": "newmgr456"})
+
+    # Test bulk operations (path is None)
+    def test_apply_bulk_add_operation(self):
+        """Test bulk add operation when path is None"""
+        patches = [
+            PatchOperation(
+                op=PatchOp.add, path=None, value={"title": "Manager", "department": "IT"}
+            )
+        ]
+
+        with patch.object(self.processor, "_apply_add") as mock_add:
+            self.processor.apply_patches(self.sample_data, patches)
+            self.assertEqual(mock_add.call_count, 2)
+
+    def test_apply_bulk_remove_operation(self):
+        """Test bulk remove operation when path is None"""
+        patches = [
+            PatchOperation(op=PatchOp.remove, path=None, value={"active": None, "userName": None})
+        ]
+
+        with patch.object(self.processor, "_apply_remove") as mock_remove:
+            self.processor.apply_patches(self.sample_data, patches)
+            self.assertEqual(mock_remove.call_count, 2)
+
+    def test_apply_bulk_replace_operation(self):
+        """Test bulk replace operation when path is None"""
+        patches = [
+            PatchOperation(
+                op=PatchOp.replace, path=None, value={"userName": "jane.doe", "active": False}
+            )
+        ]
+
+        with patch.object(self.processor, "_apply_replace") as mock_replace:
+            self.processor.apply_patches(self.sample_data, patches)
+            self.assertEqual(mock_replace.call_count, 2)
+
+    def test_apply_bulk_operation_invalid_value(self):
+        """Test bulk operation with non-dict value (should be ignored)"""
+        patches = [PatchOperation(op=PatchOp.add, path=None, value="invalid")]
+        result = self.processor.apply_patches(self.sample_data, patches)
+
+        self.assertEqual(result, self.sample_data)
+
+    # Test _navigate_and_modify method
+    def test_navigate_and_modify_with_filter_add_new_item(self):
+        """Test navigating with filter and adding new item"""
+        components = [
+            {
+                "attribute": "emails",
+                "filter": {
+                    "type": "comparison",
+                    "attribute": "type",
+                    "operator": "eq",
+                    "value": "home",
+                },
+                "sub_attribute": None,
+            }
+        ]
+
+        new_email = {"value": "home@example.com", "type": "home"}
+        data_copy = self.sample_data.copy()
+        data_copy["emails"] = self.sample_data["emails"].copy()
+
+        self.processor._navigate_and_modify(data_copy, components, new_email, "add")
+
+        # Should add new email with type "home"
+        home_emails = [email for email in data_copy["emails"] if email.get("type") == "home"]
+        self.assertEqual(len(home_emails), 1)
+
+    def test_navigate_and_modify_with_filter_modify_existing(self):
+        """Test navigating with filter and modifying existing item"""
+        components = [
+            {
+                "attribute": "emails",
+                "filter": {
+                    "type": "comparison",
+                    "attribute": "type",
+                    "operator": "eq",
+                    "value": "work",
+                },
+                "sub_attribute": "verified",
+            }
+        ]
+
+        data_copy = self.sample_data.copy()
+        data_copy["emails"] = [email.copy() for email in self.sample_data["emails"]]
+
+        self.processor._navigate_and_modify(data_copy, components, True, "add")
+
+        # Should add verified field to work email
+        work_email = next(email for email in data_copy["emails"] if email.get("type") == "work")
+        self.assertTrue(work_email["verified"])
+
+    def test_navigate_and_modify_remove_item(self):
+        """Test removing entire item with filter"""
+        components = [
+            {
+                "attribute": "emails",
+                "filter": {
+                    "type": "comparison",
+                    "attribute": "type",
+                    "operator": "eq",
+                    "value": "personal",
+                },
+                "sub_attribute": None,
+            }
+        ]
+
+        data_copy = self.sample_data.copy()
+        data_copy["emails"] = [email.copy() for email in self.sample_data["emails"]]
+        original_count = len(data_copy["emails"])
+
+        self.processor._navigate_and_modify(data_copy, components, None, "remove")
+
+        # Should remove personal email
+        self.assertEqual(len(data_copy["emails"]), original_count - 1)
+        personal_emails = [
+            email for email in data_copy["emails"] if email.get("type") == "personal"
+        ]
+        self.assertEqual(len(personal_emails), 0)
+
+    def test_navigate_and_modify_nonexistent_attribute_add(self):
+        """Test navigating to non-existent attribute for add operation"""
+        components = [
+            {
+                "attribute": "phones",
+                "filter": {
+                    "type": "comparison",
+                    "attribute": "type",
+                    "operator": "eq",
+                    "value": "mobile",
+                },
+                "sub_attribute": None,
+            }
+        ]
+
+        data_copy = self.sample_data.copy()
+        self.processor._navigate_and_modify(
+            data_copy, components, {"value": "123-456-7890", "type": "mobile"}, "add"
+        )
+
+        # Should create new phones array
+        self.assertIn("phones", data_copy)
+        self.assertEqual(len(data_copy["phones"]), 1)
+
+    def test_navigate_and_modify_nonexistent_attribute_remove(self):
+        """Test navigating to non-existent attribute for remove operation"""
+        components = [
+            {
+                "attribute": "phones",
+                "filter": {
+                    "type": "comparison",
+                    "attribute": "type",
+                    "operator": "eq",
+                    "value": "mobile",
+                },
+                "sub_attribute": None,
+            }
+        ]
+
+        data_copy = self.sample_data.copy()
+        self.processor._navigate_and_modify(data_copy, components, None, "remove")
+
+        # Should not create attribute or raise error
+        self.assertNotIn("phones", data_copy)
+
+    # Test filter matching methods
+    def test_matches_filter_no_filter(self):
+        """Test matching with no filter (should return True)"""
+        item = {"type": "work"}
+        result = self.processor._matches_filter(item, None)
+        self.assertTrue(result)
+
+    def test_matches_filter_empty_filter(self):
+        """Test matching with empty filter (should return True)"""
+        item = {"type": "work"}
+        result = self.processor._matches_filter(item, {})
+        self.assertTrue(result)
+
+    def test_matches_filter_unknown_type(self):
+        """Test matching with unknown filter type"""
+        item = {"type": "work"}
+        filter_expr = {"type": "unknown"}
+        result = self.processor._matches_filter(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_comparison_eq(self):
+        """Test comparison filter with eq operator"""
+        item = {"type": "work", "primary": True}
+        filter_expr = {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_eq_false(self):
+        """Test comparison filter with eq operator (false case)"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "type",
+            "operator": "eq",
+            "value": "personal",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_comparison_ne(self):
+        """Test comparison filter with ne operator"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "type",
+            "operator": "ne",
+            "value": "personal",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_co(self):
+        """Test comparison filter with co (contains) operator"""
+        item = {"value": "john@example.com"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "value",
+            "operator": "co",
+            "value": "example",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_sw(self):
+        """Test comparison filter with sw (starts with) operator"""
+        item = {"value": "john@example.com"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "value",
+            "operator": "sw",
+            "value": "john",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_ew(self):
+        """Test comparison filter with ew (ends with) operator"""
+        item = {"value": "john@example.com"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "value",
+            "operator": "ew",
+            "value": ".com",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_gt(self):
+        """Test comparison filter with gt (greater than) operator"""
+        item = {"priority": 10}
+        filter_expr = {"type": "comparison", "attribute": "priority", "operator": "gt", "value": 5}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_lt(self):
+        """Test comparison filter with lt (less than) operator"""
+        item = {"priority": 3}
+        filter_expr = {"type": "comparison", "attribute": "priority", "operator": "lt", "value": 5}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_ge(self):
+        """Test comparison filter with ge (greater than or equal) operator"""
+        item = {"priority": 5}
+        filter_expr = {"type": "comparison", "attribute": "priority", "operator": "ge", "value": 5}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_le(self):
+        """Test comparison filter with le (less than or equal) operator"""
+        item = {"priority": 5}
+        filter_expr = {"type": "comparison", "attribute": "priority", "operator": "le", "value": 5}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_pr(self):
+        """Test comparison filter with pr (present) operator"""
+        item = {"value": "john@example.com"}
+        filter_expr = {"type": "comparison", "attribute": "value", "operator": "pr", "value": None}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_comparison_pr_false(self):
+        """Test comparison filter with pr operator (false case)"""
+        item = {"value": None}
+        filter_expr = {"type": "comparison", "attribute": "value", "operator": "pr", "value": None}
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_comparison_missing_attribute(self):
+        """Test comparison filter with missing attribute"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "missing",
+            "operator": "eq",
+            "value": "test",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_comparison_unknown_operator(self):
+        """Test comparison filter with unknown operator"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "comparison",
+            "attribute": "type",
+            "operator": "unknown",
+            "value": "work",
+        }
+
+        result = self.processor._matches_comparison(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_logical_and_true(self):
+        """Test logical AND filter (true case)"""
+        item = {"type": "work", "primary": True}
+        filter_expr = {
+            "type": "logical",
+            "operator": "and",
+            "left": {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"},
+            "right": {
+                "type": "comparison",
+                "attribute": "primary",
+                "operator": "eq",
+                "value": True,
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_logical_and_false(self):
+        """Test logical AND filter (false case)"""
+        item = {"type": "work", "primary": False}
+        filter_expr = {
+            "type": "logical",
+            "operator": "and",
+            "left": {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"},
+            "right": {
+                "type": "comparison",
+                "attribute": "primary",
+                "operator": "eq",
+                "value": True,
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_logical_or_true(self):
+        """Test logical OR filter (true case)"""
+        item = {"type": "personal", "primary": True}
+        filter_expr = {
+            "type": "logical",
+            "operator": "or",
+            "left": {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"},
+            "right": {
+                "type": "comparison",
+                "attribute": "primary",
+                "operator": "eq",
+                "value": True,
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_logical_or_false(self):
+        """Test logical OR filter (false case)"""
+        item = {"type": "personal", "primary": False}
+        filter_expr = {
+            "type": "logical",
+            "operator": "or",
+            "left": {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"},
+            "right": {
+                "type": "comparison",
+                "attribute": "primary",
+                "operator": "eq",
+                "value": True,
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_logical_not_true(self):
+        """Test logical NOT filter (true case)"""
+        item = {"type": "personal"}
+        filter_expr = {
+            "type": "logical",
+            "operator": "not",
+            "operand": {
+                "type": "comparison",
+                "attribute": "type",
+                "operator": "eq",
+                "value": "work",
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertTrue(result)
+
+    def test_matches_logical_not_false(self):
+        """Test logical NOT filter (false case)"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "logical",
+            "operator": "not",
+            "operand": {
+                "type": "comparison",
+                "attribute": "type",
+                "operator": "eq",
+                "value": "work",
+            },
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_matches_logical_unknown_operator(self):
+        """Test logical filter with unknown operator"""
+        item = {"type": "work"}
+        filter_expr = {
+            "type": "logical",
+            "operator": "unknown",
+            "left": {"type": "comparison", "attribute": "type", "operator": "eq", "value": "work"},
+        }
+
+        result = self.processor._matches_logical(item, filter_expr)
+        self.assertFalse(result)
+
+    def test_multiple_patches_applied_sequentially(self):
+        """Test that multiple patches are applied in sequence"""
+        patches = [
+            PatchOperation(op=PatchOp.add, path="title", value="Manager"),
+            PatchOperation(op=PatchOp.replace, path="userName", value="jane.doe"),
+            PatchOperation(op=PatchOp.remove, path="active"),
+        ]
+
+        with patch.object(self.processor.parser, "parse_path") as mock_parse:
+            mock_parse.side_effect = [
+                [{"attribute": "title", "filter": None, "sub_attribute": None}],
+                [{"attribute": "userName", "filter": None, "sub_attribute": None}],
+                [{"attribute": "active", "filter": None, "sub_attribute": None}],
+            ]
+
+            result = self.processor.apply_patches(self.sample_data, patches)
+
+            self.assertEqual(result["title"], "Manager")
+            self.assertEqual(result["userName"], "jane.doe")
+            self.assertNotIn("active", result)
