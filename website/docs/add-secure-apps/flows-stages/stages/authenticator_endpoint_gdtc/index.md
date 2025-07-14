@@ -1,5 +1,5 @@
 ---
-title: Chrome Enterprise Device Trust connector endpoint
+title: Google Chrome Device Trust Authenticator Stage
 authentik_version: "2024.10"
 authentik_preview: true
 authentik_enterprise: true
