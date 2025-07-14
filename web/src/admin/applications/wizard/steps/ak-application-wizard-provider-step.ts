@@ -43,27 +43,28 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         return this.element.formValues;
     }
 
-    override handleButton(button: NavigableButton) {
-        if (button.kind === "next") {
-            if (!this.valid) {
-                this.handleEnabling({
-                    disabled: ["bindings", "submit"],
-                });
-                return;
-            }
-            const payload = {
-                provider: {
-                    ...this.formValues,
-                    mode: this.wizard.proxyMode,
-                },
-                errors: this.removeErrors("provider"),
-            };
-            this.handleUpdate(payload, button.destination, {
-                enable: ["bindings", "submit"],
+    protected override dispatchButtonEvent(button: NavigableButton) {
+        if (button.kind !== "next") {
+            return super.dispatchButtonEvent(button);
+        }
+
+        if (!this.valid) {
+            this.handleEnabling({
+                disabled: ["bindings", "submit"],
             });
             return;
         }
-        super.handleButton(button);
+
+        const payload = {
+            provider: {
+                ...this.formValues,
+                mode: this.wizard.proxyMode,
+            },
+            errors: this.removeErrors("provider"),
+        };
+        this.handleUpdate(payload, button.destination, {
+            enable: ["bindings", "submit"],
+        });
     }
 
     get buttons(): WizardButton[] {

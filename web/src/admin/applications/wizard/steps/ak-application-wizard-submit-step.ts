@@ -177,16 +177,16 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    override handleButton(button: WizardButton) {
-        match([button.kind, this.state])
+    protected override dispatchButtonEvent(button: WizardButton) {
+        return match([button.kind, this.state])
             .with([P.union("back", "cancel"), P._], () => {
-                super.handleButton(button);
+                return super.dispatchButtonEvent(button);
             })
             .with(["close", "submitted"], () => {
-                super.handleButton(button);
+                return super.dispatchButtonEvent(button);
             })
             .with(["next", "reviewing"], () => {
-                this.send();
+                return this.send();
             })
             .with([P._, "running"], () => {
                 throw new Error("No buttons should be showing when running submit phase");

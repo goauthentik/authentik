@@ -143,7 +143,7 @@ export class WizardStep extends AKElement {
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
-    public handleButton(button: WizardButton, details?: NavigationEventInit) {
+    protected dispatchButtonEvent(button: WizardButton, details?: NavigationEventInit) {
         if (["close", "cancel"].includes(button.kind)) {
             this.dispatchEvent(new WizardCloseEvent());
             return;
@@ -180,7 +180,7 @@ export class WizardStep extends AKElement {
         if (!isNavigable(button)) {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
-        this.handleButton(button);
+        this.dispatchButtonEvent(button);
     }
 
     @bound

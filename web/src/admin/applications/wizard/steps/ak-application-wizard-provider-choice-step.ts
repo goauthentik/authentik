@@ -40,18 +40,20 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override dispatchButtonEvent(button: NavigableButton) {
         this.failureMessage = "";
-        if (button.kind === "next") {
-            if (!this.wizard.providerModel) {
-                this.failureMessage = msg("Please choose a provider type before proceeding.");
-                this.handleEnabling({ disabled: ["provider", "bindings", "submit"] });
-                return;
-            }
-            this.handleUpdate(undefined, button.destination, { enable: "provider" });
+
+        if (button.kind !== "next") {
+            return super.dispatchButtonEvent(button);
+        }
+
+        if (!this.wizard.providerModel) {
+            this.failureMessage = msg("Please choose a provider type before proceeding.");
+            this.handleEnabling({ disabled: ["provider", "bindings", "submit"] });
             return;
         }
-        super.handleButton(button);
+
+        this.handleUpdate(undefined, button.destination, { enable: "provider" });
     }
 
     @bound

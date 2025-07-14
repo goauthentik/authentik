@@ -24,16 +24,10 @@ import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
-
-const trimMany = (o: Record<string, unknown>, vs: string[]) =>
-    Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isStr = (v: any): v is string => typeof v === "string";
-
 @customElement("ak-application-wizard-application-step")
-export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
+export class ApplicationWizardApplicationStep extends ApplicationWizardStep<
+    Partial<ApplicationRequest>
+> {
     label = msg("Application");
 
     @state()
@@ -60,53 +54,57 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
     }
 
-    get valid() {
+    public reportValidity() {
         this.errors = new Map();
-        const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 
-        if (values.name === "") {
+        const name = this.formValues.name?.trim();
+        const slug = this.formValues.slug?.trim();
+        const metaLaunchUrl = this.formValues.metaLaunchUrl?.trim();
+
+        if (!name) {
             this.errors.set("name", msg("An application name is required"));
         }
-        if (
-            !(
-                isStr(values.metaLaunchUrl) &&
-                (values.metaLaunchUrl === "" || URL.canParse(values.metaLaunchUrl))
-            )
-        ) {
+
+        if (!metaLaunchUrl || !URL.canParse(metaLaunchUrl)) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
-        if (!(isStr(values.slug) && values.slug !== "" && isSlug(values.slug))) {
+
+        if (!slug || !isSlug(slug)) {
             this.errors.set("slug", msg("Not a valid slug"));
         }
+
         return this.errors.size === 0;
     }
 
-    override handleButton(button: NavigableButton) {
-        if (button.kind === "next") {
-            if (!this.valid) {
-                this.handleEnabling({
-                    disabled: ["provider-choice", "provider", "bindings", "submit"],
-                });
-                return;
-            }
-            const app: Partial<ApplicationRequest> = this.formValues as Partial<ApplicationRequest>;
+    protected override dispatchButtonEvent(button: NavigableButton) {
+        if (button.kind !== "next") {
+            return super.dispatchButtonEvent(button);
+        }
 
-            let payload: ApplicationWizardStateUpdate = {
-                app: this.formValues,
-                errors: this.removeErrors("app"),
-            };
-            if (app.name && (this.wizard.provider?.name ?? "").trim() === "") {
-                payload = {
-                    ...payload,
-                    provider: { name: `Provider for ${app.name}` },
-                };
-            }
-            this.handleUpdate(payload, button.destination, {
-                enable: "provider-choice",
+        if (!this.reportValidity()) {
+            this.handleEnabling({
+                disabled: ["provider-choice", "provider", "bindings", "submit"],
             });
             return;
         }
-        super.handleButton(button);
+
+        const app = this.formValues;
+
+        let payload: ApplicationWizardStateUpdate = {
+            app: this.formValues,
+            errors: this.removeErrors("app"),
+        };
+
+        if (app.name && (this.wizard.provider?.name ?? "").trim() === "") {
+            payload = {
+                ...payload,
+                provider: { name: `Provider for ${app.name}` },
+            };
+        }
+
+        this.handleUpdate(payload, button.destination, {
+            enable: "provider-choice",
+        });
     }
 
     renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {

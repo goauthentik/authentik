@@ -69,7 +69,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override dispatchButtonEvent(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form.checkValidity()) {
                 return;
@@ -93,7 +93,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             this.handleUpdate({ bindings }, "bindings");
             return;
         }
-        super.handleButton(button);
+        super.dispatchButtonEvent(button);
     }
 
     // The search select configurations for the three different types of fetches that we care about,
