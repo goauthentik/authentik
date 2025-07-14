@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -26,52 +26,50 @@ export class FormGroup extends AKElement {
     @property({ type: String, attribute: "aria-label", reflect: true })
     ariaLabel = msg("Details");
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            css`
-                /**
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFButton,
+        PFFormControl,
+        css`
+            /**
                  * Workaround to trigger the hover effect on the button when the header is hovered.
                  *
                  * Alternatively, we group the expander button and header, but the grid would have to be
                  * restructured to allow for this.
                  */
-                .pf-c-form__field-group:has(.pf-c-form__field-group-header:hover) .pf-c-button {
-                    color: var(--pf-c-button--m-plain--hover--Color) !important;
-                }
+            .pf-c-form__field-group:has(.pf-c-form__field-group-header:hover) .pf-c-button {
+                color: var(--pf-c-button--m-plain--hover--Color) !important;
+            }
 
-                /**
+            /**
                  * Transition ensuring a smooth animation when the body is expanded/collapsed.
                  */
+            slot[name="body"] {
+                transition-behavior: allow-discrete;
+                transition-property: opacity, display, transform;
+                transition-duration: var(--pf-global--TransitionDuration);
+                transition-timing-function: var(--pf-global--TimingFunction);
+                display: block;
+                opacity: 1;
+                transform: scaleY(1);
+                transform-origin: top left;
+                will-change: opacity, display, transform;
+            }
+
+            slot[name="body"][hidden] {
+                opacity: 0 !important;
+                display: none !important;
+                transform: scaleY(0) !important;
+            }
+
+            @media (prefers-reduced-motion) {
                 slot[name="body"] {
-                    transition-behavior: allow-discrete;
-                    transition-property: opacity, display, transform;
-                    transition-duration: var(--pf-global--TransitionDuration);
-                    transition-timing-function: var(--pf-global--TimingFunction);
-                    display: block;
-                    opacity: 1;
-                    transform: scaleY(1);
-                    transform-origin: top left;
-                    will-change: opacity, display, transform;
+                    transition-duration: 0s;
                 }
-
-                slot[name="body"][hidden] {
-                    opacity: 0 !important;
-                    display: none !important;
-                    transform: scaleY(0) !important;
-                }
-
-                @media (prefers-reduced-motion) {
-                    slot[name="body"] {
-                        transition-duration: 0s;
-                    }
-                }
-            `,
-        ];
-    }
+            }
+        `,
+    ];
 
     formRef = createRef<HTMLFormElement>();
 

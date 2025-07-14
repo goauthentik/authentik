@@ -1,6 +1,8 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import "#elements/EmptyState";
+
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { css, html, nothing } from "lit";
@@ -51,28 +53,26 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     @property({ type: String })
     icon?: string;
 
-    static get styles() {
-        return [
-            PFBase,
-            css`
-                :host {
-                    top: 0;
-                    left: 0;
-                    display: flex;
-                    height: 100%;
-                    width: 100%;
-                    justify-content: center;
-                    align-items: center;
-                    position: absolute;
-                    background-color: var(--pf-global--BackgroundColor--dark-transparent-200);
-                    z-index: 1;
-                }
-                :host([topmost]) {
-                    z-index: 999;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        css`
+            :host {
+                top: 0;
+                left: 0;
+                display: flex;
+                height: 100%;
+                width: 100%;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                background-color: var(--pf-global--BackgroundColor--dark-transparent-200);
+                z-index: 1;
+            }
+            :host([topmost]) {
+                z-index: 999;
+            }
+        `,
+    ];
 
     render() {
         // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...

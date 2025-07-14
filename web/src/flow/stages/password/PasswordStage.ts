@@ -1,12 +1,15 @@
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import "@goauthentik/flow/components/ak-flow-password-input.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+import "#flow/components/ak-flow-password-input";
+
+import { BaseStage } from "#flow/stages/base";
+import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
+
+import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -18,13 +21,17 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
-
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFInputGroup, PFForm, PFFormControl, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFInputGroup,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
     hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];
@@ -33,12 +40,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"
@@ -52,8 +54,10 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                 </ak-form-static>
                 <input
                     name="username"
+                    type="text"
                     autocomplete="username"
-                    type="hidden"
+                    hidden
+                    readonly
                     value="${this.challenge.pendingUser}"
                 />
                 <ak-flow-input-password
@@ -66,17 +70,19 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     invalid=${this.hasError("password").toString()}
                     prefill=${PasswordManagerPrefill.password ?? ""}
                 ></ak-flow-input-password>
-
-                ${this.challenge.recoveryUrl
-                    ? html`<a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>`
-                    : ""}
-
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                         ${msg("Continue")}
                     </button>
                 </div>
             </form>
+            ${this.challenge.recoveryUrl
+                ? html`<div slot="footer-band" class="pf-c-login__main-footer-band">
+                      <p class="pf-c-login__main-footer-band-item">
+                          <a href="${this.challenge.recoveryUrl}"> ${msg("Forgot password?")}</a>
+                      </p>
+                  </div>`
+                : nothing}
         </ak-flow-card>`;
     }
 }

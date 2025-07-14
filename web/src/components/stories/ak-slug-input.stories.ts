@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-slug-input.js";
+import "../ak-text-input.js";
+
+import AkSlugInput from "../ak-slug-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-slug-input";
-import AkSlugInput from "../ak-slug-input";
-import "../ak-text-input";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkSlugInput> = {
     title: "Components / Slug Input",

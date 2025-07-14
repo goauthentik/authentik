@@ -1,10 +1,11 @@
+import "../AggregateCard.js";
+
+import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
-import "../AggregateCard.js";
 
 const metadata: Meta<AggregateCard> = {
     title: "Elements/<ak-aggregate-card>",

@@ -1,12 +1,11 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    ModalHideEvent,
-    ModalShowEvent,
-} from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
+import { Form } from "#elements/forms/Form";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
@@ -37,6 +36,8 @@ export const MODAL_BUTTON_STYLES = css`
 
 @customElement("ak-modal-button")
 export class ModalButton extends AKElement {
+    //#region Properties
+
     @property()
     size: PFSize = PFSize.Large;
 
@@ -46,32 +47,32 @@ export class ModalButton extends AKElement {
     @property({ type: Boolean })
     locked = false;
 
+    //#endregion
+
     handlerBound = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFModalBox,
-            PFForm,
-            PFTitle,
-            PFFormControl,
-            PFBullseye,
-            PFBackdrop,
-            PFPage,
-            PFCard,
-            PFContent,
-            MODAL_BUTTON_STYLES,
-            css`
-                .locked {
-                    overflow-y: hidden !important;
-                }
-                .pf-c-modal-box.pf-m-xl {
-                    --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFModalBox,
+        PFForm,
+        PFTitle,
+        PFFormControl,
+        PFBullseye,
+        PFBackdrop,
+        PFPage,
+        PFCard,
+        PFContent,
+        MODAL_BUTTON_STYLES,
+        css`
+            .locked {
+                overflow-y: hidden !important;
+            }
+            .pf-c-modal-box.pf-m-xl {
+                --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+            }
+        `,
+    ];
 
     closeModal() {
         this.resetForms();
@@ -79,11 +80,9 @@ export class ModalButton extends AKElement {
     }
 
     resetForms(): void {
-        this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
-            if ("resetForm" in form) {
-                form?.resetForm();
-            }
-        });
+        for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
+            form.reset?.();
+        }
     }
 
     onClick(): void {
@@ -95,6 +94,8 @@ export class ModalButton extends AKElement {
             }
         });
     }
+
+    //#region Render
 
     renderModalInner(): TemplateResult | typeof nothing {
         return html`<slot name="modal"></slot>`;
@@ -133,6 +134,8 @@ export class ModalButton extends AKElement {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }
+
+    //#endregion
 }
 
 declare global {

@@ -10987,6 +10987,7 @@
                     "enum": [
                         "apple",
                         "openidconnect",
+                        "entraid",
                         "azuread",
                         "discord",
                         "facebook",
@@ -15575,6 +15576,12 @@
                     ],
                     "title": "Geoip binding",
                     "description": "Bind sessions created by this stage to the configured GeoIP location"
+                },
+                "remember_device": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Remember device",
+                    "description": "When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)"
                 }
             },
             "required": []

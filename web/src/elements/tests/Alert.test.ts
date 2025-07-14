@@ -1,10 +1,12 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../Alert.js";
+
+import { akAlert, Level } from "../Alert.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import "../Alert.js";
-import { Level, akAlert } from "../Alert.js";
 
 describe("ak-alert", () => {
     it("should render an alert with the enum", async () => {

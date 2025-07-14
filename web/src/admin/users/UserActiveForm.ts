@@ -1,11 +1,13 @@
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/buttons/SpinnerButton/index";
+
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { DeleteForm } from "#elements/forms/DeleteForm";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-active-form")

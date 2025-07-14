@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -27,9 +27,7 @@ export interface VisibilityToggleProps {
  */
 @customElement("ak-visibility-toggle")
 export class VisibilityToggle extends AKElement implements VisibilityToggleProps {
-    static get styles() {
-        return [PFBase, PFButton];
-    }
+    static styles = [PFBase, PFButton];
 
     /**
      * @property

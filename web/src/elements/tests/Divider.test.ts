@@ -1,10 +1,12 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../Divider.js";
+
+import { akDivider } from "../Divider.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import "../Divider.js";
-import { akDivider } from "../Divider.js";
 
 describe("ak-divider", () => {
     it("should render the divider", async () => {

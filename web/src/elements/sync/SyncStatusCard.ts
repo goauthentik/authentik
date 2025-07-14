@@ -1,22 +1,24 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-status-label";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/events/LogViewer";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-status-label";
+import "#elements/EmptyState";
+import "#elements/buttons/ActionButton/index";
+import "#elements/events/LogViewer";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-sync-status-table")
 export class SyncStatusTable extends Table<SystemTask> {
@@ -25,14 +27,15 @@ export class SyncStatusTable extends Table<SystemTask> {
 
     expandable = true;
 
-    static get styles() {
-        return super.styles.concat(css`
+    static styles = [
+        ...super.styles,
+        css`
             code:not(:last-of-type)::after {
                 content: "-";
                 margin: 0 0.25rem;
             }
-        `);
-    }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
         if (this.tasks.length === 1) {
@@ -107,9 +110,7 @@ export class SyncStatusCard extends AKElement {
     @property({ attribute: false })
     triggerSync!: () => Promise<unknown>;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFCard, PFTable];
-    }
+    static styles: CSSResult[] = [PFBase, PFButton, PFCard, PFTable];
 
     firstUpdated() {
         this.loading = true;

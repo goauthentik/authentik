@@ -1,7 +1,7 @@
+import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
+
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
@@ -45,9 +45,7 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static get styles() {
-        return [...SearchSelectBase.styles];
-    }
+    static styles = [...SearchSelectBase.styles];
 
     @property({ type: Object, attribute: false })
     config!: ISearchSelectApi<T>;

@@ -39777,6 +39777,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: remember_device
+        schema:
+          type: string
+      - in: query
         name: remember_me_offset
         schema:
           type: string
@@ -44036,7 +44040,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
         challenge:
@@ -44056,8 +44060,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
-          minLength: 1
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
           minLength: 1
@@ -55241,6 +55244,9 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
@@ -55303,6 +55309,9 @@ components:
       description: SCIMSourceUser Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         user:
@@ -55590,6 +55599,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -56716,6 +56731,7 @@ components:
       enum:
       - apple
       - openidconnect
+      - entraid
       - azuread
       - discord
       - facebook
@@ -58949,6 +58965,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -58963,15 +58981,18 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
       - group_obj
-      - id
       - source
     SCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         group:
@@ -58984,8 +59005,8 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
-      - id
       - source
     SCIMSourcePropertyMapping:
       type: object
@@ -59092,6 +59113,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         user:
           type: integer
         user_obj:
@@ -59105,7 +59128,7 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
       - user_obj
@@ -59114,6 +59137,9 @@ components:
       description: SCIMSourceUser Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         user:
@@ -59125,7 +59151,7 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
     SMSDevice:
@@ -61106,6 +61132,11 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
       - meta_model_name
@@ -61147,6 +61178,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - name
     UserLogoutStage:
