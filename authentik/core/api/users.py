@@ -16,6 +16,7 @@ from django.utils.translation import gettext as _
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
+    IsoDateTimeFilter,
     ModelMultipleChoiceFilter,
     MultipleChoiceFilter,
     UUIDFilter,
@@ -241,6 +242,8 @@ class UserSerializer(ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "created_at",
+            "updated_at",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -331,6 +334,20 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
+    created_at__lt = IsoDateTimeFilter(field_name="created_at", lookup_expr="lt")
+
+    created_at = IsoDateTimeFilter(
+        field_name="created_at",
+    )
+
+    created_at__gt = IsoDateTimeFilter(field_name="created_at", lookup_expr="gt")
+
+    updated_at__lt = IsoDateTimeFilter(field_name="updated_at", lookup_expr="lt")
+
+    updated_at = IsoDateTimeFilter(field_name="updated_at")
+
+    updated_at__gt = IsoDateTimeFilter(field_name="updated_at", lookup_expr="gt")
+
     is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
@@ -376,6 +393,8 @@ class UsersFilter(FilterSet):
         fields = [
             "username",
             "email",
+            "created_at",
+            "updated_at",
             "name",
             "is_active",
             "is_superuser",
@@ -390,10 +409,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username"]
+    ordering = ["username", "created_at", "updated_at"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
+    search_fields = [
+        "username",
+        "name",
+        "is_active",
+        "email",
+        "uuid",
+        "attributes",
+        "created_at",
+        "updated_at",
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
