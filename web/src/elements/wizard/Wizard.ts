@@ -202,9 +202,9 @@ export class Wizard extends ModalButton {
     //#region Event Listeners
 
     /**
-     * Reset the wizard to it's initial state.
+     * Reset the wizard to its initial state.
      */
-    #resetListener = (event?: Event) => {
+    #reset = (event?: Event) => {
         event?.preventDefault();
         event?.stopPropagation();
 
@@ -243,7 +243,7 @@ export class Wizard extends ModalButton {
     public renderModalInner(): TemplateResult {
         const { activeStepIndex, lastPage } = this.#gatherSteps();
 
-        const navigatePreviousListener = () => {
+        const navigatePrevious = () => {
             const prevPage = this.getStepElementByIndex(activeStepIndex - 1);
 
             if (prevPage) {
@@ -251,7 +251,7 @@ export class Wizard extends ModalButton {
             }
         };
 
-        const navigateNextListener = async (): Promise<void> => {
+        const navigateNext = async (): Promise<void> => {
             if (!this.activeStepElement) return;
 
             if (this.activeStepElement.nextCallback) {
@@ -261,7 +261,7 @@ export class Wizard extends ModalButton {
 
                 if (lastPage) {
                     await this.finalHandler?.();
-                    this.#resetListener();
+                    this.#reset();
 
                     return;
                 }
@@ -280,7 +280,7 @@ export class Wizard extends ModalButton {
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
                           aria-label="${msg("Close")}"
-                          @click=${this.#resetListener}
+                          @click=${this.#reset}
                       >
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
@@ -330,7 +330,7 @@ export class Wizard extends ModalButton {
                         class="pf-c-button pf-m-primary"
                         ?disabled=${!this.isValid}
                         type="button"
-                        @click=${navigateNextListener}
+                        @click=${navigateNext}
                     >
                         ${lastPage ? msg("Finish") : msg("Next")}
                     </button>
@@ -341,7 +341,7 @@ export class Wizard extends ModalButton {
                               <button
                                   class="pf-c-button pf-m-secondary"
                                   type="button"
-                                  @click=${navigatePreviousListener}
+                                  @click=${navigatePrevious}
                               >
                                   ${msg("Back")}
                               </button>
@@ -352,7 +352,7 @@ export class Wizard extends ModalButton {
                               <button
                                   class="pf-c-button pf-m-link"
                                   type="button"
-                                  @click=${(ev: Event) => this.#resetListener(ev)}
+                                  @click=${this.#reset}
                               >
                                   ${msg("Cancel")}
                               </button>
