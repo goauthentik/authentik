@@ -7,7 +7,6 @@ import { camelToSnake } from "#common/utils";
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
 import { PreventFormSubmit } from "#elements/forms/helpers";
-import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
@@ -170,9 +169,9 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
  *
  */
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
-    abstract send(data: T): Promise<unknown>;
+    public abstract send(data: T): Promise<unknown>;
 
-    viewportCheck = true;
+    public viewportCheck = true;
 
     //#region Properties
 
@@ -298,16 +297,16 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
                 if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
-                    const elements =
-                        this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                            "ak-form-element-horizontal",
-                        ) || [];
+                    const elements = this.shadowRoot?.querySelectorAll(
+                        "ak-form-element-horizontal",
+                    );
 
-                    elements.forEach((element) => {
+                    for (const element of elements || []) {
                         element.requestUpdate();
 
                         const elementName = element.name;
-                        if (!elementName) return;
+
+                        if (!elementName) continue;
 
                         const snakeProperty = camelToSnake(elementName);
 
@@ -318,19 +317,13 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                             element.errorMessages = [];
                             element.invalid = false;
                         }
-                    });
+                    }
 
                     if (parsedError.nonFieldErrors) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
                     }
 
-                    errorMessage = msg("Invalid update request.");
-
-                    // Only change the message when we have `detail`.
-                    // Everything else is handled in the form.
-                    if ("detail" in parsedError) {
-                        errorMessage = parsedError.detail;
-                    }
+                    errorMessage = pluckErrorDetail(parsedError, msg("Invalid update request."));
                 }
 
                 showMessage({

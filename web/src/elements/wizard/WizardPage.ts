@@ -1,7 +1,7 @@
 import { AKElement } from "#elements/Base";
 import { Wizard } from "#elements/wizard/Wizard";
 
-import { CSSResult, html, PropertyDeclaration, TemplateResult } from "lit";
+import { CSSResult, html, LitElement, PropertyDeclaration, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -64,16 +64,17 @@ export class WizardPage extends AKElement {
         return Promise.resolve(true);
     };
 
-    requestUpdate(
+    public requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
         options?: PropertyDeclaration<unknown, unknown>,
     ): void {
-        this.querySelectorAll("*").forEach((el) => {
-            if ("requestUpdate" in el) {
-                (el as AKElement).requestUpdate();
+        for (const element of this.querySelectorAll("*")) {
+            if (element instanceof LitElement) {
+                element.requestUpdate();
             }
-        });
+        }
+
         return super.requestUpdate(name, oldValue, options);
     }
 
