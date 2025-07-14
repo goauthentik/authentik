@@ -74,6 +74,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     <ak-hidden-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
+                        autocomplete="off"
                         value="${this.instance?.clientSecret ?? ""}"
                         input-hint="code"
                         required
