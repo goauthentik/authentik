@@ -65,7 +65,7 @@ export class SourceWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
+                            .sidebarLabel=${msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form
                                 .args=${{

@@ -58,7 +58,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.valid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public override sidebarLabel = msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];

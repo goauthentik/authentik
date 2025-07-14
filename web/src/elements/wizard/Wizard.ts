@@ -297,8 +297,6 @@ export class Wizard extends ModalButton {
 
                                 if (!stepEl) return html`<p>Unexpected missing step: ${step}</p>`;
 
-                                const sidebarLabel = stepEl.sidebarLabel();
-
                                 return html`
                                     <li class="pf-c-wizard__nav-item">
                                         <button
@@ -312,7 +310,7 @@ export class Wizard extends ModalButton {
                                                 this.activeStepElement = stepEl;
                                             }}
                                         >
-                                            ${sidebarLabel}
+                                            ${stepEl.sidebarLabel || msg("Label Missing")}
                                         </button>
                                     </li>
                                 `;

@@ -24,14 +24,9 @@ export class WizardPage extends AKElement {
 
     /**
      * The label to display in the sidebar for this page.
-     *
-     * Override this to provide a custom label.
-     * @todo: Should this be a getter or static property?
      */
     @property()
-    sidebarLabel = (): string => {
-        return "UNNAMED";
-    };
+    public sidebarLabel?: string;
 
     get host(): Wizard {
         return this.parentElement as Wizard;
