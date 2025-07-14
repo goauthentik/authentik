@@ -367,6 +367,8 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
     # See https://github.com/goauthentik/authentik/issues/14320
     pool_options = False
 
+    custom_options = config.get("postgresql.options", default={})
+
     db = {
         "default": {
             "ENGINE": "authentik.root.db",
@@ -376,6 +378,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             "PASSWORD": config.get("postgresql.password"),
             "PORT": config.get("postgresql.port"),
             "OPTIONS": {
+                **custom_options,
                 "sslmode": config.get("postgresql.sslmode"),
                 "sslrootcert": config.get("postgresql.sslrootcert"),
                 "sslcert": config.get("postgresql.sslcert"),
