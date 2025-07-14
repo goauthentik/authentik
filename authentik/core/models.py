@@ -282,6 +282,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         permissions = [
             ("reset_user_password", _("Reset Password")),
             ("impersonate", _("Can impersonate other users")),
+            ("view_password_hashes", _("Can read password hashes from other users")),
             ("assign_user_permissions", _("Can assign permissions to users")),
             ("unassign_user_permissions", _("Can unassign permissions from users")),
             ("preview_user", _("Can preview user data sent to providers")),

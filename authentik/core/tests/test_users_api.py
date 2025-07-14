@@ -4,6 +4,7 @@ from datetime import datetime
 from json import loads
 
 from django.urls.base import reverse
+from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
@@ -78,7 +79,10 @@ class TestUsersAPI(APITestCase):
     def test_list_with_groups(self):
         """Test listing with groups"""
         self.client.force_login(self.admin)
-        response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"include_groups": True},
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_recovery_no_flow(self):
@@ -387,3 +391,69 @@ class TestUsersAPI(APITestCase):
         self.assertFalse(
             AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
         )
+
+    def test_list_with_passwords(self):
+        """Test listing with groups"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"include_password": "true"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIsNotNone(body["results"][0].get("password"))
+
+    def test_list_with_passwords_no_perm(self):
+        """Test listing with groups not having permissions"""
+        User.objects.all().delete()
+        user = create_test_user()
+        assign_perm("authentik_core.view_user", user)
+        self.client.force_login(user)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "include_password": "true",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIsNone(body["results"][0].get("password"))
+
+    def test_list_with_passwords_with_perm(self):
+        """Test listing with groups not having permissions"""
+        User.objects.all().delete()
+        user = create_test_user()
+        assign_perm("authentik_core.view_user", user)
+        assign_perm("authentik_core.view_password_hashes", user)
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "include_password": "true",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIsNotNone(body["results"][0].get("password"))
+
+    def test_list_with_passwords_with_perm_no_param(self):
+        """Test listing with groups not having permissions"""
+        User.objects.all().delete()
+        user = create_test_user()
+        assign_perm("authentik_core.view_user", user)
+        assign_perm("authentik_core.view_password_hashes", user)
+        self.client.force_login(user)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "include_password": "false",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertIsNone(body["results"][0].get("password"))
