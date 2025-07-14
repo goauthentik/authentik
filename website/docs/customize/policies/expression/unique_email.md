@@ -12,7 +12,7 @@ from authentik.core.models import User
 # Ensure this matches the *Field Key* value of the prompt
 field_name = "email"
 email = request.context["prompt_data"][field_name]
-if User.objects.filter(email=email).exists():
+if User.objects.filter(email__iexact=email).exists():
   ak_message("Email address in use")
   return False
 return True
