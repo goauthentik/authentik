@@ -19,7 +19,7 @@ export type WizardPageActiveCallback = () => void | Promise<void>;
 export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 @customElement("ak-wizard-page")
-export class WizardPage extends AKElement {
+export abstract class WizardPage extends AKElement {
     static styles: CSSResult[] = [PFBase];
 
     /**
@@ -28,7 +28,7 @@ export class WizardPage extends AKElement {
     @property()
     public sidebarLabel?: string;
 
-    get host(): Wizard {
+    public get host(): Wizard {
         return this.parentElement as Wizard;
     }
 
@@ -37,14 +37,12 @@ export class WizardPage extends AKElement {
      *
      * @abstract
      */
-    public reset(): void | Promise<void> {
-        console.debug(`authentik/wizard ${this.localName}: reset)`);
-    }
+    public reset?: () => void | Promise<void>;
 
     /**
      * Called when this is the page brought into view.
      */
-    activeCallback: WizardPageActiveCallback = () => {
+    public activeCallback: WizardPageActiveCallback = () => {
         this.host.valid = false;
     };
 
@@ -55,9 +53,7 @@ export class WizardPage extends AKElement {
      *
      * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
      */
-    nextCallback: WizardPageNextCallback = () => {
-        return Promise.resolve(true);
-    };
+    public abstract nextCallback: WizardPageNextCallback | null;
 
     public requestUpdate(
         name?: PropertyKey,
@@ -73,7 +69,7 @@ export class WizardPage extends AKElement {
         return super.requestUpdate(name, oldValue, options);
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

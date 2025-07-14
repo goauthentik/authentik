@@ -19,13 +19,13 @@ import { property, query } from "lit/decorators.js";
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...AwadStyles];
 
-    label = "";
+    public label = "";
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
     @property({ type: Object, attribute: false })
-    errors: Record<string | number | symbol, string> = {};
+    public errors: Record<string, string> = {};
 
     @query("form#providerform")
     form!: HTMLFormElement;
@@ -50,7 +50,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
                   []);
     }
 
-    isValid(name: keyof T) {
+    isValid(name: Extract<keyof T, string>) {
         return !(
             (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
             this.errors?.[name] !== undefined

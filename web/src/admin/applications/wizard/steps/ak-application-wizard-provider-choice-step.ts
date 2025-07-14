@@ -24,10 +24,10 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose a Provider");
+    public override label = msg("Choose a Provider");
 
     @state()
-    failureMessage = "";
+    protected failureMessage = "";
 
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
     public providerModelsList!: LocalTypeCreate[];
@@ -64,31 +64,33 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     }
 
     renderMain() {
+        if (this.providerModelsList.length === 0) {
+            return html`<ak-empty-state default-label></ak-empty-state>`;
+        }
+
         const selectedTypes = this.providerModelsList.filter(
             (t) => t.modelName === this.wizard.providerModel,
         );
 
-        return this.providerModelsList.length > 0
-            ? html` <ak-wizard-title>${msg("Choose a Provider Type")}</ak-wizard-title>
-                  <form class="pf-c-form pf-m-horizontal">
-                      <ak-wizard-page-type-create
-                          .types=${this.providerModelsList}
-                          name="selectProviderType"
-                          layout=${TypeCreateWizardPageLayouts.grid}
-                          .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
-                          @select=${(ev: CustomEvent<LocalTypeCreate>) => {
-                              this.handleUpdate(
-                                  {
-                                      ...this.wizard,
-                                      providerModel: ev.detail.modelName,
-                                  },
-                                  undefined,
-                                  { enable: "provider" },
-                              );
-                          }}
-                      ></ak-wizard-page-type-create>
-                  </form>`
-            : html`<ak-empty-state default-label></ak-empty-state>`;
+        return html` <ak-wizard-title>${msg("Choose a Provider Type")}</ak-wizard-title>
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-wizard-page-type-create
+                    .types=${this.providerModelsList}
+                    name="selectProviderType"
+                    layout=${TypeCreateWizardPageLayouts.grid}
+                    .selectedType=${selectedTypes.length > 0 ? selectedTypes[0] : undefined}
+                    @select=${(ev: CustomEvent<LocalTypeCreate>) => {
+                        this.handleUpdate(
+                            {
+                                ...this.wizard,
+                                providerModel: ev.detail.modelName,
+                            },
+                            undefined,
+                            { enable: "provider" },
+                        );
+                    }}
+                ></ak-wizard-page-type-create>
+            </form>`;
     }
 }
 

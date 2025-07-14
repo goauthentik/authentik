@@ -26,15 +26,17 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#region Properties
 
     @property({ attribute: false })
-    types: TypeCreate[] = [];
+    public types: TypeCreate[] = [];
 
     @property({ attribute: false })
-    selectedType?: TypeCreate;
+    public selectedType: TypeCreate | null = null;
 
     @property({ type: String })
-    layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+    public layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     //#endregion
+
+    public override nextCallback = null;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -55,20 +57,19 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#region Refs
 
-    formRef: Ref<HTMLFormElement> = createRef();
+    #formRef: Ref<HTMLFormElement> = createRef();
 
     //#endregion
 
     public override sidebarLabel = msg("Select type");
 
-    public reset = () => {
-        super.reset();
-        this.selectedType = undefined;
-        this.formRef.value?.reset();
+    public reset = (): void => {
+        this.selectedType = null;
+        this.#formRef.value?.reset();
     };
 
     activeCallback = (): void => {
-        const form = this.formRef.value;
+        const form = this.#formRef.value;
 
         this.host.valid = form?.checkValidity() ?? false;
 
@@ -138,7 +139,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     renderList(): TemplateResult {
         return html`<form
-            ${ref(this.formRef)}
+            ${ref(this.#formRef)}
             class="pf-c-form pf-m-horizontal"
             data-ouid-component-type="ak-type-create-list"
         >

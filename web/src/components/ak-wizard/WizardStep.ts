@@ -10,6 +10,7 @@ import { wizardStepContext } from "./WizardContexts.js";
 
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { match, P } from "ts-pattern";
 
@@ -41,6 +42,17 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
     close: msg("Close"),
 };
 
+function buttonLabel(button: WizardButton) {
+    return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
+}
+
+function buttonClasses(button: WizardButton) {
+    return {
+        "pf-c-button": true,
+        [BUTTON_KIND_TO_CLASS[button.kind]]: true,
+    };
+}
+
 /**
  * @class WizardStep
  *
@@ -60,7 +72,7 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  * @fires WizardCloseEvent - request parent container (Wizard) to close the wizard
  */
 
-export class WizardStep extends AKElement {
+export abstract class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
     static styles = [
@@ -79,39 +91,43 @@ export class WizardStep extends AKElement {
         `,
     ];
 
+    //#region Properties
+
     @property({ type: Boolean, attribute: true, reflect: true })
-    enabled = false;
+    public enabled = false;
 
     /**
      * The name. Should match the slot. Reflected if not present.
      */
     @property({ type: String, attribute: true, reflect: true })
-    name?: string;
+    public name?: string;
+
+    //#endregion
 
     @consume({ context: wizardStepContext, subscribe: true })
-    wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
+    protected wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
 
     /**
      * What appears in the titlebar of the Wizard. Usually, but not necessarily, the same for all
-     * steps. Recommendation: Set this, the description, and `canCancel` in a subclass, and stop
+     * steps. Recommendation: Set this, the description, and `cancelable` in a subclass, and stop
      * worrying about them.
      */
-    wizardTitle = "--unset--";
+    protected wizardTitle = "--unset--";
 
     /**
      * The text for a descriptive subtitle for the wizard
      */
-    wizardDescription?: string;
+    protected wizardDescription?: string;
 
     /**
      * Show the [Cancel] icon and offer the [Cancel] button
      */
-    canCancel = false;
+    protected cancelable = false;
 
     /**
      * The ID of the current step.
      */
-    id = "";
+    public id = "";
 
     /**
      *The label of the current step.  Displayed in the navigation bar.
@@ -121,7 +137,7 @@ export class WizardStep extends AKElement {
     /**
      * If true, this step's label will not be shown in the navigation bar
      */
-    hide = false;
+    public hide = false;
 
     //  ___      _    _ _        _   ___ ___
     // | _ \_  _| |__| (_)__    /_\ | _ \_ _|
@@ -137,9 +153,7 @@ export class WizardStep extends AKElement {
     }
 
     // Override this to provide the form.
-    public renderMain() {
-        throw new Error("This must be overridden in client classes");
-    }
+    public abstract renderMain(): SlottedTemplateResult;
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
@@ -163,25 +177,32 @@ export class WizardStep extends AKElement {
 
     // END Public API
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         if (!this.name) {
             const name = this.getAttribute("slot");
+
             if (!name) {
-                throw new Error("Steps must have a unique slot attribute.");
+                throw new TypeError("Steps must have a unique slot attribute.");
             }
+
             this.name = name;
         }
     }
 
-    @bound
-    onWizardNavigationEvent(ev: Event, button: WizardButton) {
-        ev.stopPropagation();
+    //#endregion
+
+    //#region Event Listeners
+
+    #wizardNavigationListener = (event: Event, button: WizardButton) => {
+        event.stopPropagation();
+
         if (!isNavigable(button)) {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
+
         this.dispatchButtonEvent(button);
-    }
+    };
 
     @bound
     onWizardCloseEvent(ev: Event) {
@@ -189,46 +210,39 @@ export class WizardStep extends AKElement {
         this.dispatchEvent(new WizardCloseEvent());
     }
 
-    getButtonLabel(button: WizardButton) {
-        return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
-    }
+    //#endregion
 
-    getButtonClasses(button: WizardButton) {
-        return {
-            "pf-c-button": true,
-            [BUTTON_KIND_TO_CLASS[button.kind]]: true,
-        };
-    }
+    //#region Render
 
     @bound
     renderCloseButton(button: WizardButton) {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
-                class=${classMap(this.getButtonClasses(button))}
+                class=${classMap(buttonClasses(button))}
                 type="button"
                 @click=${this.onWizardCloseEvent}
             >
-                ${this.getButtonLabel(button)}
+                ${buttonLabel(button)}
             </button>
         </div>`;
     }
 
     @bound
     renderDisabledButton(button: WizardButton) {
-        return html`<button class=${classMap(this.getButtonClasses(button))} type="button" disabled>
-            ${this.getButtonLabel(button)}
+        return html`<button class=${classMap(buttonClasses(button))} type="button" disabled>
+            ${buttonLabel(button)}
         </button>`;
     }
 
     @bound
     renderNavigableButton(button: WizardButton) {
         return html`<button
-            class=${classMap(this.getButtonClasses(button))}
+            class=${classMap(buttonClasses(button))}
             type="button"
-            @click=${(ev: Event) => this.onWizardNavigationEvent(ev, button)}
+            @click=${(ev: Event) => this.#wizardNavigationListener(ev, button)}
             data-ouid-button-kind="wizard-${button.kind}"
         >
-            ${this.getButtonLabel(button)}
+            ${buttonLabel(button)}
         </button>`;
     }
 
@@ -277,46 +291,42 @@ export class WizardStep extends AKElement {
     }
 
     render() {
-        return this.wizardStepState.currentStep === this.getAttribute("slot")
-            ? html` <div class="pf-c-modal-box ak-wizard-box">
-                  <div class="pf-c-wizard">
-                      <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
-                          ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
-                          <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">
-                              ${this.wizardTitle}
-                          </h1>
-                          <p class="pf-c-wizard__description">${this.wizardDescription}</p>
-                      </div>
+        if (this.wizardStepState.currentStep !== this.getAttribute("slot")) {
+            return nothing;
+        }
 
-                      <div class="pf-c-wizard__outer-wrap">
-                          <div class="pf-c-wizard__inner-wrap">
-                              <nav class="pf-c-wizard__nav" data-ouid-component-id="wizard-navbar">
-                                  <ol class="pf-c-wizard__nav-list">
-                                      ${map(
-                                          this.wizardStepState.stepLabels,
-                                          this.renderSidebarStep,
-                                      )}
-                                  </ol>
-                              </nav>
-                              <main class="pf-c-wizard__main">
-                                  <div
-                                      id="main-content"
-                                      class="pf-c-wizard__main-body"
-                                      data-ouid-component-id="wizard-body"
-                                  >
-                                      ${this.renderMain()}
-                                  </div>
-                              </main>
-                          </div>
-                          <footer
-                              class="pf-c-wizard__footer"
-                              data-ouid-component-id="wizard-footer"
-                          >
-                              ${this.buttons.map(this.renderButton)}
-                          </footer>
-                      </div>
-                  </div>
-              </div>`
-            : nothing;
+        return html` <div class="pf-c-modal-box ak-wizard-box">
+            <div class="pf-c-wizard">
+                <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
+                    ${this.cancelable ? this.renderHeaderCancelIcon() : nothing}
+                    <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.wizardTitle}</h1>
+                    <p class="pf-c-wizard__description">${this.wizardDescription}</p>
+                </div>
+
+                <div class="pf-c-wizard__outer-wrap">
+                    <div class="pf-c-wizard__inner-wrap">
+                        <nav class="pf-c-wizard__nav" data-ouid-component-id="wizard-navbar">
+                            <ol class="pf-c-wizard__nav-list">
+                                ${map(this.wizardStepState.stepLabels, this.renderSidebarStep)}
+                            </ol>
+                        </nav>
+                        <main class="pf-c-wizard__main">
+                            <div
+                                id="main-content"
+                                class="pf-c-wizard__main-body"
+                                data-ouid-component-id="wizard-body"
+                            >
+                                ${this.renderMain()}
+                            </div>
+                        </main>
+                    </div>
+                    <footer class="pf-c-wizard__footer" data-ouid-component-id="wizard-footer">
+                        ${this.buttons.map(this.renderButton)}
+                    </footer>
+                </div>
+            </div>
+        </div>`;
     }
+
+    //#endregion
 }

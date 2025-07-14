@@ -100,12 +100,16 @@ export class TableColumn {
     }
 }
 
-export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
+export abstract class Table<T extends object>
+    extends WithLicenseSummary(AKElement)
+    implements TableLike
+{
     abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): SlottedTemplateResult[];
 
-    private isLoading = false;
+    @state()
+    protected loading = false;
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
@@ -126,10 +130,10 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     @property({ attribute: false })
-    data?: PaginatedResponse<T>;
+    public data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam(this.#pageParam, 1);
+    public page = getURLParam(this.#pageParam, 1);
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -138,43 +142,43 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
      * @prop
      */
     @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
-    clearOnRefresh = false;
+    public clearOnRefresh = false;
 
     @property({ type: String })
-    order?: string;
+    public order?: string;
 
     @property({ type: String })
-    search: string = "";
+    public search: string = "";
 
     @property({ type: Boolean })
-    checkbox = false;
+    public checkbox = false;
 
     @property({ type: Boolean })
-    clickable = false;
+    public clickable = false;
 
     @property({ attribute: false })
-    clickHandler: (item: T) => void = () => {};
+    public clickHandler: (item: T) => void = () => {};
 
     @property({ type: Boolean })
-    radioSelect = false;
+    public radioSelect = false;
 
     @property({ type: Boolean })
-    checkboxChip = false;
+    public checkboxChip = false;
 
     @property({ attribute: false })
-    selectedElements: T[] = [];
+    public selectedElements: T[] = [];
 
     @property({ type: Boolean })
-    paginated = true;
+    public paginated = true;
 
     @property({ type: Boolean })
-    expandable = false;
+    public expandable = false;
 
     @property({ attribute: false })
-    expandedElements: T[] = [];
+    public expandedElements: T[] = [];
 
     @state()
-    error?: APIError;
+    protected error: APIError | null = null;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -213,15 +217,24 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         `,
     ];
 
-    constructor() {
-        super();
-        this.addEventListener(EVENT_REFRESH, async () => {
-            await this.fetch();
-        });
+    //#region Lifecycle
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener(EVENT_REFRESH, () => this.fetch());
+
         if (this.searchEnabled()) {
             this.search = getURLParam(this.#searchParam, "");
         }
     }
+
+    public override firstUpdated(): void {
+        this.fetch();
+    }
+
+    //#endregion
+
+    //#region API
 
     async defaultEndpointConfig() {
         return {
@@ -239,14 +252,14 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     public async fetch(): Promise<void> {
-        if (this.isLoading) return;
+        if (this.loading) return;
 
-        this.isLoading = true;
+        this.loading = true;
 
         return this.apiEndpoint()
             .then((data) => {
                 this.data = data;
-                this.error = undefined;
+                this.error = null;
 
                 this.page = this.data.pagination.current;
                 const newExpanded: T[] = [];
@@ -289,10 +302,13 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
-                this.isLoading = false;
-                this.requestUpdate();
+                this.loading = false;
             });
     }
+
+    //#endregion
+
+    //#region Render
 
     private renderLoading(): TemplateResult {
         return html`<tr role="row">
@@ -337,7 +353,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
-        if (!this.data || this.isLoading) {
+        if (!this.data || this.loading) {
             return [this.renderLoading()];
         }
         if (this.data.pagination.count === 0) {
@@ -521,10 +537,6 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </div>`;
     }
 
-    firstUpdated(): void {
-        this.fetch();
-    }
-
     /* The checkbox on the table header row that allows the user to "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
@@ -610,4 +622,6 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     render(): TemplateResult {
         return this.renderTable();
     }
+
+    //#endregion
 }

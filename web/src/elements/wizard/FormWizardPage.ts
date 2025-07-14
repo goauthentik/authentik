@@ -10,32 +10,37 @@ import { customElement } from "lit/decorators.js";
  */
 @customElement("ak-wizard-page-form")
 export class FormWizardPage extends WizardPage {
-    activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
-        return Promise.resolve();
-    };
+    public activePageCallback?: (context: FormWizardPage) => Promise<void>;
 
-    activeCallback = async () => {
+    public override activeCallback = async () => {
         this.host.valid = true;
-        this.activePageCallback(this);
+        this.activePageCallback?.(this);
     };
 
-    nextCallback = async (): Promise<boolean> => {
-        const form = this.querySelector<Form<unknown>>("*");
+    public override nextCallback = (): Promise<boolean> => {
+        const form = this.querySelector("*");
 
         if (!form) {
-            return Promise.reject(msg("No form found"));
+            throw new TypeError(msg("No child elements found in wizard page"));
         }
 
-        const formPromise = form.submit(new SubmitEvent("submit"));
-
-        if (!formPromise) {
-            return Promise.reject(msg("Form didn't return a promise for submitting"));
+        if (!(form instanceof Form || form instanceof HTMLFormElement)) {
+            console.warn("authentik/wizard: form inside the form slot is not a Form", form);
+            throw new TypeError(msg("Wizard page doesn't contain a form"));
         }
 
-        return formPromise
+        const validity = form.reportValidity();
+
+        if (!validity) {
+            return Promise.resolve(false);
+        }
+
+        const submitResult = form.submit(new SubmitEvent("submit"));
+
+        return Promise.resolve(submitResult)
             .then((data) => {
                 this.host.state[this.slot] = data;
-                this.host.canBack = false;
+                this.host.previousNavigation = false;
 
                 return true;
             })

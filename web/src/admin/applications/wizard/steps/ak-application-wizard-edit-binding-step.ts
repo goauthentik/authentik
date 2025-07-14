@@ -44,18 +44,18 @@ const PASS_FAIL = [
 
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
-    label = msg("Edit Binding");
+    public label = msg("Edit Binding");
 
-    hide = true;
+    public override hide = true;
 
     @query("form#bindingform")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
     @query(".policy-search-select")
     searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
 
     @state()
-    policyGroupUser: target = target.policy;
+    protected policyGroupUser: target = target.policy;
 
     instanceId = -1;
 

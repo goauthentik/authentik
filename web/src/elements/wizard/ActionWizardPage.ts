@@ -1,9 +1,8 @@
 import { EVENT_REFRESH } from "#common/constants";
+import { pluckErrorDetail } from "#common/errors/network";
 
 import { WizardAction } from "#elements/wizard/Wizard";
 import { WizardPage } from "#elements/wizard/WizardPage";
-
-import { ResponseError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -33,61 +32,54 @@ export class ActionWizardPage extends WizardPage {
     static styles: CSSResult[] = [PFBase, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
 
     @property({ attribute: false })
-    states: ActionStateBundle[] = [];
+    public states: ActionStateBundle[] = [];
 
     @property({ attribute: false })
-    currentStep?: ActionStateBundle;
+    public currentStep?: ActionStateBundle;
 
-    activeCallback = async (): Promise<void> => {
-        this.states = [];
+    public override nextCallback = null;
 
-        this.host.actions.map((act, idx) => {
-            this.states.push({
-                action: act,
-                state: ActionState.pending,
-                idx: idx,
-            });
+    public override activeCallback = (): Promise<void> => {
+        this.states = this.host.actions.map((action, idx) => ({
+            action,
+            state: ActionState.pending,
+            idx: idx,
+        }));
+
+        this.host.previousNavigation = false;
+        this.host.cancelable = false;
+
+        return this.#run().finally(() => {
+            // Ensure wizard is closable, even when run() failed
+            this.host.valid = true;
         });
-
-        this.host.canBack = false;
-        this.host.canCancel = false;
-
-        await this.run();
-
-        // Ensure wizard is closable, even when run() failed
-        this.host.valid = true;
     };
 
     public override sidebarLabel = msg("Apply changes");
 
-    async run(): Promise<void> {
+    async #run(): Promise<void> {
         this.currentStep = this.states[0];
 
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => requestAnimationFrame(r));
 
         for await (const bundle of this.states) {
             this.currentStep = bundle;
             this.currentStep.state = ActionState.running;
+
             this.requestUpdate();
+
             try {
                 await bundle.action.run();
-
-                await new Promise((r) => setTimeout(r, 500));
+                await new Promise((r) => requestAnimationFrame(r));
 
                 this.currentStep.state = ActionState.done;
 
                 this.requestUpdate();
-            } catch (exc) {
-                if (exc instanceof ResponseError) {
-                    this.currentStep.action.subText = await exc.response.text();
-                } else {
-                    this.currentStep.action.subText = (exc as Error).toString();
-                }
-
+            } catch (error) {
+                this.currentStep.action.subText = pluckErrorDetail(error);
                 this.currentStep.state = ActionState.failed;
-                this.requestUpdate();
 
-                return;
+                this.requestUpdate();
             }
         }
 

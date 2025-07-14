@@ -28,26 +28,31 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep<
     Partial<ApplicationRequest>
 > {
-    label = msg("Application");
+    public override label = msg("Application");
 
     @state()
-    errors = new Map<string, string>();
+    protected errors = new Map<string, string>();
 
     @query("form#applicationform")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
-    constructor() {
-        super();
-        // This is the first step. Ensure it is always enabled.
-        this.enabled = true;
-    }
+    // This is the first step. Ensure it is always enabled.
+    public override enabled = false;
 
-    errorMessages(name: string) {
-        return this.errors.has(name)
-            ? [this.errors.get(name)]
-            : (this.wizard.errors?.app?.[name] ??
-                  this.wizard.errors?.app?.[camelToSnake(name)] ??
-                  []);
+    protected errorMessages(name: string) {
+        const message = this.errors.get(name);
+
+        if (message) {
+            return [message];
+        }
+
+        const appErrors = this.wizard.errors?.app;
+
+        if (!appErrors || typeof appErrors !== "object") {
+            return [];
+        }
+
+        return appErrors[name] ?? appErrors[camelToSnake(name)] ?? [];
     }
 
     get buttons(): WizardButton[] {

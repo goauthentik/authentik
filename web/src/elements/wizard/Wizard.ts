@@ -40,13 +40,13 @@ export class Wizard extends ModalButton {
      * Whether the wizard can be cancelled.
      */
     @property({ type: Boolean })
-    canCancel = true;
+    public cancelable = true;
 
     /**
      * Whether the wizard can go back to the previous step.
      */
     @property({ type: Boolean })
-    canBack = true;
+    public previousNavigation = true;
 
     /**
      * Header title of the wizard.
@@ -64,7 +64,7 @@ export class Wizard extends ModalButton {
      * Whether the wizard is valid and can proceed to the next step.
      */
     @property({ type: Boolean })
-    valid = false;
+    public valid = false;
 
     /**
      * Actions to display at the end of the wizard.
@@ -223,9 +223,9 @@ export class Wizard extends ModalButton {
         this.steps = this.#initialSteps;
         this.actions = [];
         this.state = {};
-        this.canBack = true;
-        this.canCancel = true;
         this.activeStepElement = null;
+        this.previousNavigation = true;
+        this.cancelable = true;
     };
 
     #refreshListener = (event: Event) => {
@@ -273,9 +273,10 @@ export class Wizard extends ModalButton {
                 this.activeStepElement = nextPage;
             }
         };
+
         return html`<div class="pf-c-wizard">
             <div class="pf-c-wizard__header">
-                ${this.canCancel
+                ${this.cancelable
                     ? html`<button
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
@@ -326,15 +327,15 @@ export class Wizard extends ModalButton {
                 <footer class="pf-c-wizard__footer">
                     <button
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.valid}
                         type="button"
+                        ?disabled=${!this.valid}
                         @click=${navigateNextListener}
                     >
                         ${lastPage ? msg("Finish") : msg("Next")}
                     </button>
                     ${(this.activeStepElement
                         ? this.steps.indexOf(this.activeStepElement.slot)
-                        : 0) > 0 && this.canBack
+                        : 0) > 0 && this.previousNavigation
                         ? html`
                               <button
                                   class="pf-c-button pf-m-secondary"
@@ -345,7 +346,7 @@ export class Wizard extends ModalButton {
                               </button>
                           `
                         : nothing}
-                    ${this.canCancel
+                    ${this.cancelable
                         ? html`<div class="pf-c-wizard__footer-cancel">
                               <button
                                   class="pf-c-button pf-m-link"

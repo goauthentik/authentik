@@ -23,17 +23,18 @@ export abstract class TableModal<T extends object> extends Table<T> {
 
     @property({ type: Boolean })
     set open(value: boolean) {
-        this._open = value;
+        this.#open = value;
+
         if (value) {
             this.fetch();
         }
     }
 
     get open(): boolean {
-        return this._open;
+        return this.#open;
     }
 
-    _open = false;
+    #open = false;
 
     static styles: CSSResult[] = [
         ...super.styles,
@@ -47,9 +48,8 @@ export abstract class TableModal<T extends object> extends Table<T> {
     ];
 
     public async fetch(): Promise<void> {
-        if (!this.open) {
-            return;
-        }
+        if (!this.open) return;
+
         return super.fetch();
     }
 
