@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.kdf.concatkdf import ConcatKDFHash
 from django.http import HttpResponse
 from jwcrypto.common import base64url_decode, base64url_encode
 
-from authentik.enterprise.providers.apple_psso.models import AppleDevice
+from authentik.enterprise.endpoints.apple_psso.models import AppleDeviceConnection
 
 
 def length_prefixed(data: bytes) -> bytes:
@@ -109,7 +109,7 @@ class JWEResponse(HttpResponse):
     def __init__(
         self,
         data: dict,
-        device: AppleDevice,
+        device: AppleDeviceConnection,
         apv: str,
     ):
         super().__init__(

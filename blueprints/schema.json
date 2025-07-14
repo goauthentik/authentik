@@ -424,6 +424,166 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_endpoints.device"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints.device_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints.device"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints.device"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_apple_psso.appledeviceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_apple_psso.appledeviceuser"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceuser_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceuser"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appledeviceuser"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_endpoints_apple_psso.appleplatformssoconnector"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appleplatformssoconnector_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appleplatformssoconnector"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_endpoints_apple_psso.appleplatformssoconnector"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_enterprise.license"
                         },
                         "id": {
@@ -493,46 +653,6 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
-                        }
-                    }
-                },
-                {
-                    "type": "object",
-                    "required": [
-                        "model",
-                        "identifiers"
-                    ],
-                    "properties": {
-                        "model": {
-                            "const": "authentik_providers_apple_psso.appleplatformssoprovider"
-                        },
-                        "id": {
-                            "type": "string"
-                        },
-                        "state": {
-                            "type": "string",
-                            "enum": [
-                                "absent",
-                                "created",
-                                "must_created",
-                                "present"
-                            ],
-                            "default": "present"
-                        },
-                        "conditions": {
-                            "type": "array",
-                            "items": {
-                                "type": "boolean"
-                            }
-                        },
-                        "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider_permissions"
-                        },
-                        "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider"
-                        },
-                        "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_apple_psso.appleplatformssoprovider"
                         }
                     }
                 },
@@ -4950,6 +5070,38 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_endpoints.add_device",
+                            "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_deviceuser",
+                            "authentik_endpoints.add_endpointconnector",
+                            "authentik_endpoints.change_device",
+                            "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_deviceuser",
+                            "authentik_endpoints.change_endpointconnector",
+                            "authentik_endpoints.delete_device",
+                            "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_deviceuser",
+                            "authentik_endpoints.delete_endpointconnector",
+                            "authentik_endpoints.view_device",
+                            "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_deviceuser",
+                            "authentik_endpoints.view_endpointconnector",
+                            "authentik_endpoints_apple_psso.add_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.add_appledeviceuser",
+                            "authentik_endpoints_apple_psso.add_applenonce",
+                            "authentik_endpoints_apple_psso.add_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.change_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.change_appledeviceuser",
+                            "authentik_endpoints_apple_psso.change_applenonce",
+                            "authentik_endpoints_apple_psso.change_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.delete_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.delete_appledeviceuser",
+                            "authentik_endpoints_apple_psso.delete_applenonce",
+                            "authentik_endpoints_apple_psso.delete_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.view_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.view_appledeviceuser",
+                            "authentik_endpoints_apple_psso.view_applenonce",
+                            "authentik_endpoints_apple_psso.view_appleplatformssoconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -5070,22 +5222,6 @@
                             "authentik_policies_unique_password.delete_userpasswordhistory",
                             "authentik_policies_unique_password.view_uniquepasswordpolicy",
                             "authentik_policies_unique_password.view_userpasswordhistory",
-                            "authentik_providers_apple_psso.add_appledevice",
-                            "authentik_providers_apple_psso.add_appledeviceuser",
-                            "authentik_providers_apple_psso.add_applenonce",
-                            "authentik_providers_apple_psso.add_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.change_appledevice",
-                            "authentik_providers_apple_psso.change_appledeviceuser",
-                            "authentik_providers_apple_psso.change_applenonce",
-                            "authentik_providers_apple_psso.change_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.delete_appledevice",
-                            "authentik_providers_apple_psso.delete_appledeviceuser",
-                            "authentik_providers_apple_psso.delete_applenonce",
-                            "authentik_providers_apple_psso.delete_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.view_appledevice",
-                            "authentik_providers_apple_psso.view_appledeviceuser",
-                            "authentik_providers_apple_psso.view_applenonce",
-                            "authentik_providers_apple_psso.view_appleplatformssoprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -5565,6 +5701,166 @@
                 }
             }
         },
+        "model_authentik_endpoints.device": {
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints.device_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_device",
+                            "change_device",
+                            "delete_device",
+                            "view_device"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_apple_psso.appledeviceconnection": {
+            "type": "object",
+            "properties": {
+                "sign_key_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Sign key id"
+                },
+                "enc_key_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Enc key id"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_apple_psso.appledeviceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_appledeviceconnection",
+                            "change_appledeviceconnection",
+                            "delete_appledeviceconnection",
+                            "view_appledeviceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_apple_psso.appledeviceuser": {
+            "type": "object",
+            "properties": {
+                "device": {
+                    "type": "integer",
+                    "title": "Device"
+                },
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "is_primary": {
+                    "type": "boolean",
+                    "title": "Is primary"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_apple_psso.appledeviceuser_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_appledeviceuser",
+                            "change_appledeviceuser",
+                            "delete_appledeviceuser",
+                            "view_appledeviceuser"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_endpoints_apple_psso.appleplatformssoconnector": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_endpoints_apple_psso.appleplatformssoconnector_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_appleplatformssoconnector",
+                            "change_appleplatformssoconnector",
+                            "delete_appleplatformssoconnector",
+                            "view_appleplatformssoconnector"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_enterprise.license": {
             "type": "object",
             "properties": {
@@ -5646,43 +5942,6 @@
                             "change_uniquepasswordpolicy",
                             "delete_uniquepasswordpolicy",
                             "view_uniquepasswordpolicy"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_providers_apple_psso.appleplatformssoprovider": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                }
-            },
-            "required": []
-        },
-        "model_authentik_providers_apple_psso.appleplatformssoprovider_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_appleplatformssoprovider",
-                            "change_appleplatformssoprovider",
-                            "delete_appleplatformssoprovider",
-                            "view_appleplatformssoprovider"
                         ]
                     },
                     "user": {
@@ -7384,6 +7643,7 @@
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
+                        "authentik.endpoints",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -7436,8 +7696,8 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.endpoints.apple_psso",
                         "authentik.enterprise.policies.unique_password",
-                        "authentik.enterprise.providers.apple_psso",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
@@ -7459,6 +7719,7 @@
                         null,
                         "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_endpoints.device",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",
@@ -7547,8 +7808,10 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_endpoints_apple_psso.appleplatformssoconnector",
+                        "authentik_endpoints_apple_psso.appledeviceconnection",
+                        "authentik_endpoints_apple_psso.appledeviceuser",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
-                        "authentik_providers_apple_psso.appleplatformssoprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
@@ -9652,6 +9915,38 @@
                             "authentik_crypto.change_certificatekeypair",
                             "authentik_crypto.delete_certificatekeypair",
                             "authentik_crypto.view_certificatekeypair",
+                            "authentik_endpoints.add_device",
+                            "authentik_endpoints.add_deviceconnection",
+                            "authentik_endpoints.add_deviceuser",
+                            "authentik_endpoints.add_endpointconnector",
+                            "authentik_endpoints.change_device",
+                            "authentik_endpoints.change_deviceconnection",
+                            "authentik_endpoints.change_deviceuser",
+                            "authentik_endpoints.change_endpointconnector",
+                            "authentik_endpoints.delete_device",
+                            "authentik_endpoints.delete_deviceconnection",
+                            "authentik_endpoints.delete_deviceuser",
+                            "authentik_endpoints.delete_endpointconnector",
+                            "authentik_endpoints.view_device",
+                            "authentik_endpoints.view_deviceconnection",
+                            "authentik_endpoints.view_deviceuser",
+                            "authentik_endpoints.view_endpointconnector",
+                            "authentik_endpoints_apple_psso.add_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.add_appledeviceuser",
+                            "authentik_endpoints_apple_psso.add_applenonce",
+                            "authentik_endpoints_apple_psso.add_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.change_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.change_appledeviceuser",
+                            "authentik_endpoints_apple_psso.change_applenonce",
+                            "authentik_endpoints_apple_psso.change_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.delete_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.delete_appledeviceuser",
+                            "authentik_endpoints_apple_psso.delete_applenonce",
+                            "authentik_endpoints_apple_psso.delete_appleplatformssoconnector",
+                            "authentik_endpoints_apple_psso.view_appledeviceconnection",
+                            "authentik_endpoints_apple_psso.view_appledeviceuser",
+                            "authentik_endpoints_apple_psso.view_applenonce",
+                            "authentik_endpoints_apple_psso.view_appleplatformssoconnector",
                             "authentik_enterprise.add_license",
                             "authentik_enterprise.add_licenseusage",
                             "authentik_enterprise.change_license",
@@ -9772,22 +10067,6 @@
                             "authentik_policies_unique_password.delete_userpasswordhistory",
                             "authentik_policies_unique_password.view_uniquepasswordpolicy",
                             "authentik_policies_unique_password.view_userpasswordhistory",
-                            "authentik_providers_apple_psso.add_appledevice",
-                            "authentik_providers_apple_psso.add_appledeviceuser",
-                            "authentik_providers_apple_psso.add_applenonce",
-                            "authentik_providers_apple_psso.add_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.change_appledevice",
-                            "authentik_providers_apple_psso.change_appledeviceuser",
-                            "authentik_providers_apple_psso.change_applenonce",
-                            "authentik_providers_apple_psso.change_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.delete_appledevice",
-                            "authentik_providers_apple_psso.delete_appledeviceuser",
-                            "authentik_providers_apple_psso.delete_applenonce",
-                            "authentik_providers_apple_psso.delete_appleplatformssoprovider",
-                            "authentik_providers_apple_psso.view_appledevice",
-                            "authentik_providers_apple_psso.view_appledeviceuser",
-                            "authentik_providers_apple_psso.view_applenonce",
-                            "authentik_providers_apple_psso.view_appleplatformssoprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",

@@ -1,0 +1,2 @@
+class FactsView:
+    pass

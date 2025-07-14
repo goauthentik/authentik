@@ -11,12 +11,13 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
-from authentik.enterprise.providers.apple_psso.http import JWEResponse
-from authentik.enterprise.providers.apple_psso.models import (
-    AppleDevice,
+from authentik.endpoints.models import Device
+from authentik.enterprise.endpoints.apple_psso.http import JWEResponse
+from authentik.enterprise.endpoints.apple_psso.models import (
+    AppleDeviceConnection,
     AppleDeviceUser,
     AppleNonce,
-    ApplePlatformSSOProvider,
+    ApplePlatformSSOConnector,
 )
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
@@ -31,8 +32,8 @@ LOGGER = get_logger()
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
 
-    device: AppleDevice
-    provider: ApplePlatformSSOProvider
+    device: Device
+    connector: ApplePlatformSSOConnector
 
     def post(self, request: HttpRequest) -> HttpResponse:
         version = request.POST.get("platform_sso_version")
@@ -44,10 +45,15 @@ class TokenView(View):
         LOGGER.debug(decode_unvalidated["header"])
         expected_kid = decode_unvalidated["header"]["kid"]
 
-        self.device = AppleDevice.objects.filter(sign_key_id=expected_kid).first()
+        self.device_connection = AppleDeviceConnection.objects.filter(
+            sign_key_id=expected_kid
+        ).first()
         if not self.device:
             raise Http404
-        self.provider = self.device.provider
+        self.device = self.device_connection.device
+        if not self.device:
+            raise Http404
+        self.connector = self.device_connection.connector
 
         # Properly decode the JWT with the key from the device
         decoded = decode(
@@ -135,6 +141,6 @@ class TokenView(View):
                 "token_type": TOKEN_TYPE,
                 "session_key": self.create_auth_session(user.user),
             },
-            device=self.device,
+            device=self.device_connection,
             apv=decoded["jwe_crypto"]["apv"],
         )
