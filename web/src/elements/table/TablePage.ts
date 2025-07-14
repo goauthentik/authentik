@@ -10,7 +10,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
-export abstract class TablePage<T> extends Table<T> {
+export abstract class TablePage<T extends object> extends Table<T> {
     abstract pageTitle(): string;
     abstract pageDescription(): string | undefined;
     abstract pageIcon(): string;

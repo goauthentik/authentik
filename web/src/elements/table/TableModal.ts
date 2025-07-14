@@ -17,7 +17,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
-export abstract class TableModal<T> extends Table<T> {
+export abstract class TableModal<T extends object> extends Table<T> {
     @property()
     size: PFSize = PFSize.Large;
 

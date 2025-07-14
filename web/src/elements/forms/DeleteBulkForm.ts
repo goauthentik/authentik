@@ -20,7 +20,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<T> extends Table<T> {
+export class DeleteObjectsTable<T extends object = object> extends Table<T> {
     paginated = false;
 
     @property({ attribute: false })
@@ -117,7 +117,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
 }
 
 @customElement("ak-forms-delete-bulk")
-export class DeleteBulkForm<T> extends ModalButton {
+export class DeleteBulkForm<T = object> extends ModalButton {
     @property({ attribute: false })
     objects: T[] = [];
 
@@ -246,7 +246,7 @@ export class DeleteBulkForm<T> extends ModalButton {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-delete-objects-table": DeleteObjectsTable<unknown>;
-        "ak-forms-delete-bulk": DeleteBulkForm<unknown>;
+        "ak-delete-objects-table": DeleteObjectsTable;
+        "ak-forms-delete-bulk": DeleteBulkForm;
     }
 }
