@@ -20,10 +20,9 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import {
-    IBackchannelLogoutURIInput,
     akOAuthBackchannelLogoutURIInput,
+    IBackchannelLogoutURIInput,
 } from "#admin/providers/oauth2/OAuth2ProviderBackchannelLogoutURI";
-
 import {
     akOAuthRedirectURIInput,
     IRedirectURIInput,
