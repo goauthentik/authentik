@@ -15,6 +15,12 @@ export function isNamedElement(element: Element): element is NamedElement {
     return "name" in element.attributes;
 }
 
+declare global {
+    interface HTMLElementTagNameMap {
+        "[name]": NamedElement<HTMLElement>;
+    }
+}
+
 /**
  * Create a map of files provided by input elements within the given iterable.
  */

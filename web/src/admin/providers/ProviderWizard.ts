@@ -68,7 +68,7 @@ export class ProviderWizard extends AKElement {
                     @select=${(ev: CustomEvent<TypeCreate>) => {
                         if (!this.wizard) return;
                         this.wizard.steps = ["initial", `type-${ev.detail.component}`];
-                        this.wizard.isValid = true;
+                        this.wizard.valid = true;
                     }}
                 >
                 </ak-wizard-page-type-create>

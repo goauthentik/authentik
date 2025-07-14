@@ -48,7 +48,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
         ) as unknown as RedirectURI;
     }
 
-    get isValid() {
+    get valid() {
         return true;
     }
 

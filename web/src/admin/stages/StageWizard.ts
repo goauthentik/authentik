@@ -93,7 +93,7 @@ export class StageWizard extends AKElement {
                             0,
                             `type-${ev.detail.component}-${ev.detail.modelName}`,
                         );
-                        this.wizard.isValid = true;
+                        this.wizard.valid = true;
                     }}
                 >
                 </ak-wizard-page-type-create>

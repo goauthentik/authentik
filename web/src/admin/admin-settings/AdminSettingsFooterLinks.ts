@@ -51,7 +51,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
         ) as unknown as FooterLink;
     }
 
-    get isValid() {
+    get valid() {
         const href = this.json()?.href ?? "";
         return hasLegalScheme(href) && URL.canParse(href);
     }

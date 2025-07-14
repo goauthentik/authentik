@@ -64,7 +64,7 @@ export class Wizard extends ModalButton {
      * Whether the wizard is valid and can proceed to the next step.
      */
     @property({ type: Boolean })
-    isValid = false;
+    valid = false;
 
     /**
      * Actions to display at the end of the wizard.
@@ -328,7 +328,7 @@ export class Wizard extends ModalButton {
                 <footer class="pf-c-wizard__footer">
                     <button
                         class="pf-c-button pf-m-primary"
-                        ?disabled=${!this.isValid}
+                        ?disabled=${!this.valid}
                         type="button"
                         @click=${navigateNextListener}
                     >

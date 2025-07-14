@@ -34,7 +34,7 @@ const metadata: Meta<FooterLinkInput> = {
                         return;
                     }
                     const target = event.target as FooterLinkInput;
-                    messages!.innerText = `${JSON.stringify(target.json(), null, 2)}\n\nValid: ${target.isValid ? "Yes" : "No"}`;
+                    messages!.innerText = `${JSON.stringify(target.json(), null, 2)}\n\nValid: ${target.valid ? "Yes" : "No"}`;
                 });
             }, 250);
 

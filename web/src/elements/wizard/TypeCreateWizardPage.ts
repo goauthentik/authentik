@@ -70,7 +70,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     activeCallback = (): void => {
         const form = this.formRef.value;
 
-        this.host.isValid = form?.checkValidity() ?? false;
+        this.host.valid = form?.checkValidity() ?? false;
 
         if (this.selectedType) {
             this.selectDispatch(this.selectedType);

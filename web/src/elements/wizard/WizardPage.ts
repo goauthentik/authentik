@@ -50,7 +50,7 @@ export class WizardPage extends AKElement {
      * Called when this is the page brought into view.
      */
     activeCallback: WizardPageActiveCallback = () => {
-        this.host.isValid = false;
+        this.host.valid = false;
     };
 
     /**

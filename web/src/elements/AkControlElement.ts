@@ -22,7 +22,7 @@ export class AkControlElement<T = string | string[]> extends AKElement {
         return this.json();
     }
 
-    get isValid(): boolean {
+    get valid(): boolean {
         return true;
     }
 }

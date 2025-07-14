@@ -66,7 +66,7 @@ export class PolicyWizard extends AKElement {
 
         this.wizard.steps.splice(idx, 0, `type-${component}-${modelName}`);
 
-        this.wizard.isValid = true;
+        this.wizard.valid = true;
     };
 
     render(): TemplateResult {

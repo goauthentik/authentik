@@ -15,7 +15,7 @@ export class FormWizardPage extends WizardPage {
     };
 
     activeCallback = async () => {
-        this.host.isValid = true;
+        this.host.valid = true;
         this.activePageCallback(this);
     };
 

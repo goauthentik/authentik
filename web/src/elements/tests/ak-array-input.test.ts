@@ -42,7 +42,7 @@ describe("ak-array-input", () => {
         await component();
         const link = await $("ak-array-input");
         await browser.pause(500);
-        await expect(await link.getProperty("isValid")).toStrictEqual(true);
+        await expect(await link.getProperty("valid")).toStrictEqual(true);
         await expect(await link.getProperty("toJson")).toEqual([]);
     });
 
@@ -50,7 +50,7 @@ describe("ak-array-input", () => {
         await component(sampleItems);
         const link = await $("ak-array-input");
         await browser.pause(500);
-        await expect(await link.getProperty("isValid")).toStrictEqual(true);
+        await expect(await link.getProperty("valid")).toStrictEqual(true);
         await expect(await link.getProperty("toJson")).toEqual(sampleItems);
     });
 });

@@ -59,7 +59,7 @@ export class AkRememberMeController implements ReactiveController {
         ) as HTMLInputElement | null;
     }
 
-    get isValidChallenge() {
+    get validChallenge() {
         return !(
             this.host.challenge.responseErrors &&
             this.host.challenge.responseErrors.non_field_errors &&
