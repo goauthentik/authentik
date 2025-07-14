@@ -10961,6 +10961,7 @@
                     "enum": [
                         "apple",
                         "openidconnect",
+                        "entraid",
                         "azuread",
                         "discord",
                         "facebook",

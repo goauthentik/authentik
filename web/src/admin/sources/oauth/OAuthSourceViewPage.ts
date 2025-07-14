@@ -41,11 +41,13 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
         case ProviderTypeEnum.Apple:
             return "Apple";
         case ProviderTypeEnum.Azuread:
-            return "Azure Active Directory";
+            return "Azure Active Directory (Deprecated)";
         case ProviderTypeEnum.Discord:
             return "Discord";
         case ProviderTypeEnum.Facebook:
             return "Facebook";
+        case ProviderTypeEnum.Entraid:
+            return "Entra ID";
         case ProviderTypeEnum.Github:
             return "GitHub";
         case ProviderTypeEnum.Gitlab:
