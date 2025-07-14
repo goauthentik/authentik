@@ -105,7 +105,8 @@ class BackChannelLogoutView(View):
                         session__session_key=session_id
                     ).first()
                     if session:
-                        # Revoke all refresh tokens associated with this session
+                        # Revoke all tokens associated with this session
+                        AccessToken.objects.filter(session=session).update(revoked=True)
                         RefreshToken.objects.filter(session=session).update(revoked=True)
                         # End the session
                         session.delete()
