@@ -14,6 +14,8 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --radio-background-color--hover: rgba(3, 3, 3, 0.1);
+    --radio-background-color--selected: rgba(3, 3, 3, 0.3);
 }
 
 body {
