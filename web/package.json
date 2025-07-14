@@ -182,7 +182,7 @@
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
-        "eslint": "^9.30.1",
+        "eslint": "^9.31.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "github-slugger": "^2.0.0",
