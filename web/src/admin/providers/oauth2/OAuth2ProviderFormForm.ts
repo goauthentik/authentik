@@ -171,6 +171,7 @@ export function renderForm(
                 </ak-text-input>
                 <ak-hidden-text-input
                     name="clientSecret"
+                    autocomplete="off"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     input-hint="code"
