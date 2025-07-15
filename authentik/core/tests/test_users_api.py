@@ -387,3 +387,72 @@ class TestUsersAPI(APITestCase):
         self.assertFalse(
             AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
         )
+
+    def test_sort_by_updated_at(self):
+        """Test API sorting by updated_at"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user = create_test_user()
+        admin.first_name = "Sample change"
+        admin.last_name = "To trigger an update"
+        admin.save()
+
+        # Ascending
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "updated_at",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], user.pk)
+
+        # Descending
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "-updated_at",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], admin.pk)
+
+    def test_sort_by_created_at(self):
+        """Test API sorting by created_at"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user = create_test_user()
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "created_at",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], admin.pk)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "-created_at",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], user.pk)
