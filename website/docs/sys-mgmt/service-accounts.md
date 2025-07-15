@@ -79,7 +79,7 @@ Service accounts authenticate using [HTTP Basic Authentication](https://datatrac
 
 ## Permissions and Access Control
 
-Like regular user accounts, with service accounts you can assign [permissions and use RBAC](../users-sources/access-control/manage_permissions).
+Like regular user accounts, with service accounts you can assign [permissions and use RBAC](../users-sources/access-control/manage_permissions.md).
 
 1. Assign the service account to groups to inherit group permissions.
 2. Grant specific permissions directly to the service account.
