@@ -5684,17 +5684,17 @@ paths:
           type: string
         description: Attributes
       - in: query
-        name: created_at
+        name: date_joined
         schema:
           type: string
           format: date-time
       - in: query
-        name: created_at__gt
+        name: date_joined__gt
         schema:
           type: string
           format: date-time
       - in: query
-        name: created_at__lt
+        name: date_joined__lt
         schema:
           type: string
           format: date-time
@@ -60747,17 +60747,12 @@ components:
           type: string
           format: date-time
           readOnly: true
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
         updated_at:
           type: string
           format: date-time
           readOnly: true
       required:
       - avatar
-      - created_at
       - date_joined
       - groups_obj
       - is_superuser

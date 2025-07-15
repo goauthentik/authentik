@@ -425,8 +425,8 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(len(body["results"]), 2)
         self.assertEqual(body["results"][0]["pk"], admin.pk)
 
-    def test_sort_by_created_at(self):
-        """Test API sorting by created_at"""
+    def test_sort_by_date_joined(self):
+        """Test API sorting by date_joined"""
         User.objects.all().delete()
         admin = create_test_admin_user()
         self.client.force_login(admin)
@@ -436,7 +436,7 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
-                "ordering": "created_at",
+                "ordering": "date_joined",
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -448,7 +448,7 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
-                "ordering": "-created_at",
+                "ordering": "-date_joined",
             },
         )
         self.assertEqual(response.status_code, 200)

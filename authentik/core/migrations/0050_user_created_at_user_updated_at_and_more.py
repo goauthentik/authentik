@@ -14,18 +14,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="user",
-            name="created_at",
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name="user",
             name="updated_at",
             field=models.DateTimeField(auto_now=True),
-        ),
-        migrations.AddIndex(
-            model_name="user",
-            index=models.Index(fields=["created_at"], name="authentik_c_created_31bbec_idx"),
         ),
         migrations.AddIndex(
             model_name="user",

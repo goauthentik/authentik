@@ -242,7 +242,6 @@ class UserSerializer(ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
-            "created_at",
             "updated_at",
         ]
         extra_kwargs = {
@@ -334,13 +333,11 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
-    created_at__lt = IsoDateTimeFilter(field_name="created_at", lookup_expr="lt")
+    date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
 
-    created_at = IsoDateTimeFilter(
-        field_name="created_at",
-    )
+    date_joined = IsoDateTimeFilter(field_name="date_joined")
 
-    created_at__gt = IsoDateTimeFilter(field_name="created_at", lookup_expr="gt")
+    date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
 
     updated_at__lt = IsoDateTimeFilter(field_name="updated_at", lookup_expr="lt")
 
@@ -393,7 +390,7 @@ class UsersFilter(FilterSet):
         fields = [
             "username",
             "email",
-            "created_at",
+            "date_joined",
             "updated_at",
             "name",
             "is_active",
@@ -409,7 +406,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "created_at", "updated_at"]
+    ordering = ["username", "date_joined", "updated_at"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = [
@@ -419,7 +416,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         "email",
         "uuid",
         "attributes",
-        "created_at",
+        "date_joined",
         "updated_at",
     ]
 
