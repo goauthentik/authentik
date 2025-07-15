@@ -429,21 +429,17 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         for setting in db["default"]["OPTIONS"].keys():
             if setting in opts:
                 _database["OPTIONS"].pop(setting, None)
-            if setting in replica_opts:
-                _database["OPTIONS"][setting] = replica_opts[setting]
-
+        _database["OPTIONS"].update(replica_opts)
+        for setting in db["default"]["OPTIONS"].keys():
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
             )
             if override is not UNSET:
                 _database["OPTIONS"][setting] = override
-
-            conn_opts_override = config.get(
-                f"postgresql.read_replicas.{replica}.conn_opts.{setting.lower()}", default=UNSET
-            )
-            if conn_opts_override is not UNSET:
-                _database["OPTIONS"][setting] = conn_opts_override
-
+        replica_only_opts = config.get(
+            f"postgresql.read_replicas.{replica}.conn_opts", default={}
+        )
+        _database["OPTIONS"].update(replica_only_opts)
         db[f"replica_{replica}"] = _database
     return db
 
