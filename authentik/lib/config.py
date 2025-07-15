@@ -367,7 +367,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
     # See https://github.com/goauthentik/authentik/issues/14320
     pool_options = False
 
-    custom_options = config.get("postgresql.options", default={})
+    opts = config.get("postgresql.conn_opts", default={})
 
     db = {
         "default": {
@@ -378,12 +378,12 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             "PASSWORD": config.get("postgresql.password"),
             "PORT": config.get("postgresql.port"),
             "OPTIONS": {
-                **custom_options,
                 "sslmode": config.get("postgresql.sslmode"),
                 "sslrootcert": config.get("postgresql.sslrootcert"),
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
                 "pool": pool_options,
+                **opts,
             },
             "CONN_MAX_AGE": config.get_optional_int("postgresql.conn_max_age", 0),
             "CONN_HEALTH_CHECKS": config.get_bool("postgresql.conn_health_checks", False),
@@ -413,8 +413,11 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         if conn_max_age is not UNSET:
             db["default"]["CONN_MAX_AGE"] = conn_max_age
 
+    replica_opts = config.get("postgresql.global_replica_conn_opts", default={})
+
     for replica in config.get_keys("postgresql.read_replicas"):
         _database = deepcopy(db["default"])
+
         for setting, current_value in db["default"].items():
             if isinstance(current_value, dict):
                 continue
@@ -424,6 +427,11 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             if override is not UNSET:
                 _database[setting] = override
         for setting in db["default"]["OPTIONS"].keys():
+            if setting in opts:
+                _database["OPTIONS"].pop(setting, None)
+            if setting in replica_opts:
+                _database["OPTIONS"][setting] = replica_opts[setting]
+
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
             )
