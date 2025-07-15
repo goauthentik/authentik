@@ -274,7 +274,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
-    updated_at = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
 
@@ -295,7 +295,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
-            models.Index(fields=["updated_at"]),
+            models.Index(fields=["last_updated"]),
         ]
 
     def __str__(self):

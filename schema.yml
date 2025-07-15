@@ -5733,6 +5733,21 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: name
         schema:
           type: string
@@ -5781,21 +5796,6 @@ paths:
             - service_account
         explode: true
         style: form
-      - in: query
-        name: updated_at
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: updated_at__gt
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: updated_at__lt
-        schema:
-          type: string
-          format: date-time
       - in: query
         name: username
         schema:
@@ -60747,7 +60747,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        updated_at:
+        last_updated:
           type: string
           format: date-time
           readOnly: true
@@ -60756,11 +60756,11 @@ components:
       - date_joined
       - groups_obj
       - is_superuser
+      - last_updated
       - name
       - password_change_date
       - pk
       - uid
-      - updated_at
       - username
       - uuid
     UserAccountRequest:

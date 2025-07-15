@@ -242,7 +242,7 @@ class UserSerializer(ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
-            "updated_at",
+            "last_updated",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -334,16 +334,12 @@ class UsersFilter(FilterSet):
     )
 
     date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
-
     date_joined = IsoDateTimeFilter(field_name="date_joined")
-
     date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
 
-    updated_at__lt = IsoDateTimeFilter(field_name="updated_at", lookup_expr="lt")
-
-    updated_at = IsoDateTimeFilter(field_name="updated_at")
-
-    updated_at__gt = IsoDateTimeFilter(field_name="updated_at", lookup_expr="gt")
+    last_updated__lt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="lt")
+    last_updated = IsoDateTimeFilter(field_name="last_updated")
+    last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
 
     is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
@@ -391,7 +387,7 @@ class UsersFilter(FilterSet):
             "username",
             "email",
             "date_joined",
-            "updated_at",
+            "last_updated",
             "name",
             "is_active",
             "is_superuser",
@@ -406,7 +402,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username", "date_joined", "updated_at"]
+    ordering = ["username", "date_joined", "last_updated"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
     search_fields = [
@@ -417,7 +413,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         "uuid",
         "attributes",
         "date_joined",
-        "updated_at",
+        "last_updated",
     ]
 
     def get_ql_fields(self):

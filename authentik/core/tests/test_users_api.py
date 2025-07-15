@@ -388,8 +388,8 @@ class TestUsersAPI(APITestCase):
             AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
         )
 
-    def test_sort_by_updated_at(self):
-        """Test API sorting by updated_at"""
+    def test_sort_by_last_updated(self):
+        """Test API sorting by last_updated"""
         User.objects.all().delete()
         admin = create_test_admin_user()
         self.client.force_login(admin)
@@ -403,7 +403,7 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
-                "ordering": "updated_at",
+                "ordering": "last_updated",
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -416,7 +416,7 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(
             reverse("authentik_api:user-list"),
             data={
-                "ordering": "-updated_at",
+                "ordering": "-last_updated",
             },
         )
         self.assertEqual(response.status_code, 200)
