@@ -3092,12 +3092,6 @@ msgid "Email sent."
 msgstr ""
 
 #: authentik/stages/email/stage.py
-#, python-brace-format
-msgid ""
-"Too many account recovery attempts. Please try again after {minutes} minutes."
-msgstr ""
-
-#: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
 msgstr ""
 
