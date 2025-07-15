@@ -436,9 +436,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             )
             if override is not UNSET:
                 _database["OPTIONS"][setting] = override
-        replica_only_opts = config.get(
-            f"postgresql.read_replicas.{replica}.conn_opts", default={}
-        )
+        replica_only_opts = config.get(f"postgresql.read_replicas.{replica}.conn_opts", default={})
         _database["OPTIONS"].update(replica_only_opts)
         db[f"replica_{replica}"] = _database
     return db

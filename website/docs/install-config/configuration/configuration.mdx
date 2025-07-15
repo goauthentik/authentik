@@ -121,6 +121,14 @@ These settings control connection persistence and behavior, which is particularl
 
     This can only be set before authentik is started for the first time. If you specify a custom schema, it must already exist in the database, and the user that authentik connects with must have permissions to access it. The `search_path` for the database user must also be configured to include this schema.
 
+- `AUTHENTIK_POSTGRESQL__CONN_OPTS__<key>`
+
+    Allows the user to pass arbirarty libpq keyword parameters to the database connection. A list of options can be found [in the postgresql documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS)
+
+    Options passed via `CONN_OPTS` will overwrite those passed in the default manner. For example `AUTHENTIK_POSTGRESQL__CONN_OPTS__SSLMODE` will overwrite the default `AUTHENTIK_POSTGRESQL__SSLMODE` field.
+
+    These custom options will not be applied to any read replica servers.
+
 ### Read Replicas
 
 You can configure additional read replica databases to distribute database load and improve performance. When read replicas are configured, authentik automatically routes query operations between the primary database (for writes) and read replica databases (for queries). By default, the primary database won't be used for queries when read replicas are available. If you want the primary database to also handle queries, add it as a read replica.
@@ -141,6 +149,15 @@ The same PostgreSQL settings as described above are used for each read replica. 
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
+
+Arbitrary connection options can be passed to read replicas in two ways.
+- `AUTHENTIK_POSTGRESQL__GLOBAL_REPLICA_CONN_OPTS__<key>`
+
+    This will apply the same options to all read replica instances. These global options are applied before the default options or any replica specific options are parsed therefore `AUTHENTIK_POSTGRESQL__GLOBAL_REPLICA_CONN_OPTS__SSLMODE` will be overwritten by `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE` but only for that replica.
+
+- `AUTHENTIK_POSTGRESQL__READ_REPLICA__0__CONN_OPTS__<key>`
+
+    Options defined this way will only be applied to that replica. Similarly to the primary connection options, these are applied last and will overwrite the defaults. (e.g. `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE` will be overwritten by `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTS__SSLMODE`)
 
 ### Using a PostgreSQL Connection Pooler
 
