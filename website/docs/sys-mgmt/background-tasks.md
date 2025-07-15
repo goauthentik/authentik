@@ -55,7 +55,7 @@ By default, successful tasks are hidden to minimize the number of shown items. D
 
 When the authentik system creates a schedule it is assigned a default interval. The schedule uses a format based on [unix-cron](https://man7.org/linux/man-pages/man5/crontab.5.html).
 
-To change that interval, click the Edit icon for the specific schedule and update it. 
+To change that interval, click the Edit icon for the specific schedule and update it.
 
 :::warning
 Some tasks are required to run at regular intervals. For tuning reasons we recommend editing the intervals only for synchronization schedules, not for other types of schedules.
