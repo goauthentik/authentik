@@ -254,7 +254,7 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             session=session,
-            token_type="refresh",
+            token_type="refresh",  # nosec
             token_id="test-refresh-token",
         )
 
@@ -457,14 +457,14 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             session=sessions[0],
-            token_type="access",
+            token_type="access",  # nosec
             token_id="access-token-1",
         )
         self._create_token(
             provider=self.provider,
             user=self.user,
             session=sessions[1],
-            token_type="access",
+            token_type="access",  # nosec
             token_id="access-token-2",
         )
 
@@ -473,14 +473,14 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             session=sessions[1],
-            token_type="refresh",
+            token_type="refresh",  # nosec
             token_id="refresh-token-2",
         )
         self._create_token(
             provider=self.provider,
             user=self.user,
             session=sessions[2],
-            token_type="refresh",
+            token_type="refresh",  # nosec
             token_id="refresh-token-3",
         )
 
@@ -493,7 +493,7 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=other_provider,
             user=self.user,
             session=other_session,
-            token_type="access",
+            token_type="access",  # nosec
             token_id="access-token-other",
         )
 
@@ -535,14 +535,14 @@ class TestBackChannelLogout(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             session=None,  # No session
-            token_type="access",
+            token_type="access",  # nosec
             token_id="access-token-no-session",
         )
         refresh_token = self._create_token(
             provider=self.provider,
             user=self.user,
             session=None,  # No session
-            token_type="refresh",
+            token_type="refresh",  # nosec
             token_id="refresh-token-no-session",
         )
 
