@@ -211,7 +211,7 @@ class BackChannelLogoutView(View):
             try:
                 session = AuthenticatedSession.objects.get(pk=session_id)
                 # Store session key before deleting the session
-                session_key = session.session.session_key if hasattr(session, 'session') else None
+                session_key = session.session.session_key if hasattr(session, "session") else None
                 username = user.username
                 provider_name = self.provider.name
 
