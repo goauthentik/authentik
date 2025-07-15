@@ -54,8 +54,10 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 
 For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
-- Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If this is not done the service will not appear in the table of contents to the left.
-
 - For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 
-- Try to order the documentation sections in an order that makes it easiest for the user to configure.
+Make sure to create a directory for your service in a fitting category within `/website/integrations/`.
+
+:::tip
+You no longer need to modify the integrations sidebar file manually. This is now automatically generated from the categories in `/website/integrations/categories.mjs`.
+:::
