@@ -8,7 +8,7 @@ from django.test import RequestFactory
 from django.utils import timezone
 from requests import Response
 
-from authentik.core.models import Application, AuthenticatedSession, Session
+from authentik.core.models import Application, AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
@@ -589,3 +589,181 @@ class TestBackChannelLogout(OAuthTestCase):
         # Test non-existent user
         found_user = view._find_user_by_sub("non-existent")
         self.assertIsNone(found_user)
+
+    def test_backchannel_logout_view_terminate_user_sessions(self):
+        """Test back-channel logout view terminates user sessions correctly"""
+
+        # Create test sessions
+        session1 = Session.objects.create(
+            last_ip="255.255.255.255",
+            session_key="test-session-1",
+            expires=timezone.now() + timezone.timedelta(hours=1),
+        )
+        session2 = Session.objects.create(
+            session_key="test-session-2",
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="255.255.255.255",
+        )
+        session3 = Session.objects.create(
+            session_key="test-session-3",
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="255.255.255.255",
+        )
+
+        # Create authenticated sessions
+        auth_session1 = AuthenticatedSession.objects.create(
+            session=session1,
+            user=self.user,
+        )
+        auth_session2 = AuthenticatedSession.objects.create(
+            session=session2,
+            user=self.user,
+        )
+        auth_session3 = AuthenticatedSession.objects.create(
+            session=session3,
+            user=self.user,
+        )
+
+        # Create access tokens for sessions 1 and 2
+        access_token1 = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session_id=auth_session1.session_id,
+            token="access-token-1",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+        access_token2 = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session_id=auth_session2.session_id,
+            token="access-token-2",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+
+        # Create refresh token for session 2 and 3
+        refresh_token2 = RefreshToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session_id=auth_session2.session_id,
+            token="refresh-token-2",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+        refresh_token3 = RefreshToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session_id=auth_session3.session_id,
+            token="refresh-token-3",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+
+        # Create a separate session for tokens from different provider
+        other_session = Session.objects.create(
+            session_key="other-session",
+            expires=timezone.now() + timezone.timedelta(hours=1),
+            last_ip="255.255.255.255",
+        )
+        other_auth_session = AuthenticatedSession.objects.create(
+            session=other_session,
+            user=self.user,
+        )
+
+        # Create tokens for different provider (should not be affected)
+        other_provider = OAuth2Provider.objects.create(
+            name="Other Provider",
+            client_id="other-client",
+            authorization_flow=create_test_flow(),
+        )
+        other_access_token = AccessToken.objects.create(
+            provider=other_provider,
+            user=self.user,
+            session=other_auth_session,  # Different session
+            token="access-token-other",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+
+        # Verify initial state
+        self.assertEqual(AccessToken.objects.filter(provider=self.provider).count(), 2)
+        self.assertEqual(RefreshToken.objects.filter(provider=self.provider).count(), 2)
+        self.assertEqual(AuthenticatedSession.objects.count(), 4)
+        self.assertFalse(access_token1.revoked)
+        self.assertFalse(access_token2.revoked)
+        self.assertFalse(refresh_token2.revoked)
+        self.assertFalse(refresh_token3.revoked)
+        self.assertFalse(other_access_token.revoked)
+
+        # Test the _terminate_user_sessions method
+        view = BackChannelLogoutView()
+        view.provider = self.provider
+        view._terminate_user_sessions(self.user)
+
+        # Verify tokens with sessions are deleted due to cascade delete
+        # When AuthenticatedSession is deleted, it triggers Session deletion,
+        # which cascades to delete associated tokens
+        self.assertEqual(AccessToken.objects.filter(provider=self.provider).count(), 0)
+        self.assertEqual(RefreshToken.objects.filter(provider=self.provider).count(), 0)
+
+        with self.assertRaises(AccessToken.DoesNotExist):
+            AccessToken.objects.get(token="access-token-1")
+        with self.assertRaises(AccessToken.DoesNotExist):
+            AccessToken.objects.get(token="access-token-2")
+        self.assertTrue(RefreshToken.objects.get(token="refresh-token-2").revoked)
+        self.assertTrue(RefreshToken.objects.get(token="refresh-token-3").revoked)
+
+        # Token from different provider should still exist and not be revoked
+        # (it's in a different session that wasn't terminated)
+        other_access_token.refresh_from_db()
+        self.assertFalse(other_access_token.revoked)
+
+        # Verify sessions are terminated
+        # Sessions 1, 2, and 3 should be deleted because they had tokens from this provider
+        # The other_auth_session should remain because it has no tokens from this provider
+        self.assertEqual(AuthenticatedSession.objects.count(), 1)
+        self.assertEqual(Session.objects.count(), 1)
+
+    def test_backchannel_logout_view_terminate_user_sessions_no_tokens(self):
+        """Test _terminate_user_sessions with user that has no tokens"""
+
+        # Create a user with no tokens
+        user_no_tokens = User.objects.create(username="no-tokens-user")
+
+        view = BackChannelLogoutView()
+        view.provider = self.provider
+
+        # Should not raise any exceptions
+        view._terminate_user_sessions(user_no_tokens)
+
+    def test_backchannel_logout_view_terminate_user_sessions_no_sessions(self):
+        """Test _terminate_user_sessions with tokens that have no sessions"""
+
+        # Create tokens without sessions
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=None,  # No session
+            token="access-token-no-session",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+        RefreshToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=None,  # No session
+            token="refresh-token-no-session",
+            _id_token="{}",
+            auth_time=timezone.now(),
+        )
+
+        view = BackChannelLogoutView()
+        view.provider = self.provider
+        view._terminate_user_sessions(self.user)
+
+        # Verify tokens are still revoked even without sessions
+        revoked_access_token = AccessToken.objects.get(token="access-token-no-session")
+        revoked_refresh_token = RefreshToken.objects.get(token="refresh-token-no-session")
+        self.assertTrue(revoked_access_token.revoked)
+        self.assertTrue(revoked_refresh_token.revoked)

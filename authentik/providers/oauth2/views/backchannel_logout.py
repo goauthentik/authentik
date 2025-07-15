@@ -210,12 +210,19 @@ class BackChannelLogoutView(View):
         for session_id in session_ids:
             try:
                 session = AuthenticatedSession.objects.get(pk=session_id)
+                # Store session key before deleting the session
+                session_key = session.session.session_key if hasattr(session, 'session') else None
+                username = user.username
+                provider_name = self.provider.name
+
+                # Delete the session
                 session.delete()
+
                 LOGGER.info(
                     "Terminated session via back-channel logout",
-                    session_id=session.session.session_key,
-                    user=user.username,
-                    provider=self.provider.name,
+                    session_id=session_key,
+                    user=username,
+                    provider=provider_name,
                 )
             except AuthenticatedSession.DoesNotExist:
                 LOGGER.debug("Session already terminated", session_id=session_id)
