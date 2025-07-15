@@ -1,24 +1,34 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/scim/SCIMProviderForm";
-import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
-import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/sync/SyncStatusCard";
-import "@goauthentik/elements/tasks/ScheduleList";
-import "@goauthentik/elements/tasks/TaskList";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/scim/SCIMProviderForm";
+import "#admin/providers/scim/SCIMProviderGroupList";
+import "#admin/providers/scim/SCIMProviderUserList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#elements/sync/SyncStatusCard";
+import "#elements/tasks/ScheduleList";
+import "#elements/tasks/TaskList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    ModelEnum,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SCIMProvider,
+} from "@goauthentik/api";
+
 import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -34,13 +44,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SCIMProvider,
-} from "@goauthentik/api";
-
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
     @property({ type: Number })
@@ -49,22 +52,20 @@ export class SCIMProviderViewPage extends AKElement {
     @state()
     provider?: SCIMProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFBanner,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFBanner,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

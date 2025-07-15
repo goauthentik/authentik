@@ -1,23 +1,17 @@
-import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/LogViewer";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import "@goauthentik/elements/tasks/TaskStatus";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/events/LogViewer";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/tasks/TaskStatus";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { formatElapsedTime } from "#common/temporal";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import {
     Task,
@@ -25,6 +19,12 @@ import {
     TasksTasksListAggregatedStatusEnum,
     TasksTasksListStateEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {

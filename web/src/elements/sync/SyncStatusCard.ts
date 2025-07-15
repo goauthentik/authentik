@@ -1,13 +1,17 @@
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-status-label";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/events/LogViewer";
-import "@goauthentik/elements/tasks/TaskStatus";
+import "#components/ak-status-label";
+import "#elements/EmptyState";
+import "#elements/buttons/ActionButton/index";
+import "#elements/events/LogViewer";
+import "#elements/tasks/TaskStatus";
+
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+
+import { SyncStatus } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -15,8 +19,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { SyncStatus } from "@goauthentik/api";
 
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {

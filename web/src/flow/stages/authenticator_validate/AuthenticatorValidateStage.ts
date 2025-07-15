@@ -1,21 +1,12 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
-import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "#flow/components/ak-flow-card";
+import "#flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
+import "#flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
+import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
-import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { BaseStage, StageHost, SubmitOptions } from "#flow/stages/base";
+import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 
 import {
     AuthenticatorValidationChallenge,
@@ -25,6 +16,17 @@ import {
     DeviceClassesEnum,
     FlowsApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 const customCSS = css`
     ul {
@@ -65,9 +67,15 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, customCSS];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        customCSS,
+    ];
 
     flowSlug = "";
 

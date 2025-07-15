@@ -1,10 +1,13 @@
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import { UserLoginChallenge, UserLoginChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -16,20 +19,35 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { UserLoginChallenge, UserLoginChallengeResponseRequest } from "@goauthentik/api";
-
 @customElement("ak-stage-user-login")
 export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFSpacing, PFButton, PFTitle];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFSpacing,
+        PFButton,
+        PFTitle,
+    ];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form class="pf-c-form">
+            <form
+                class="pf-c-form"
+                @submit=${(event: SubmitEvent) => {
+                    event.preventDefault();
+
+                    const rememberMe = typeof event.submitter?.dataset.rememberMe === "string";
+
+                    this.submitForm(event, {
+                        rememberMe,
+                    });
+                }}
+            >
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"
@@ -51,26 +69,10 @@ export class PasswordStage extends BaseStage<
                 </div>
 
                 <div class="pf-c-form__group pf-m-action">
-                    <button
-                        @click=${(e: Event) => {
-                            this.submitForm(e, {
-                                rememberMe: true,
-                            });
-                        }}
-                        class="pf-c-button pf-m-primary"
-                    >
+                    <button type="submit" data-remember-me class="pf-c-button pf-m-primary">
                         ${msg("Yes")}
                     </button>
-                    <button
-                        @click=${(e: Event) => {
-                            this.submitForm(e, {
-                                rememberMe: false,
-                            });
-                        }}
-                        class="pf-c-button pf-m-secondary"
-                    >
-                        ${msg("No")}
-                    </button>
+                    <button type="submit" class="pf-c-button pf-m-secondary">${msg("No")}</button>
                 </div>
             </form>
         </ak-flow-card>`;

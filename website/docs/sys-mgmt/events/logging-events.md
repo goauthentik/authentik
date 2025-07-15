@@ -6,11 +6,11 @@ Logs are a vital tool for system diagnostics, event auditing, user management, r
 
 Event logging in authentik is highly configurable. You can set the [retention period](./index.md#event-retention-and-forwarding) for storing and displaying events, specify which events should trigger a [notification](./notifications.md), and access low-level details about when and where each event occurred.
 
-### Troubleshooting with event logs
+## Troubleshooting with event logs
 
 For guidance on troubleshooting with logs, including setting log levels (info, warning, etc.), enabling `trace` mode, viewing historical logs, and streaming logs in real-time, see [Capturing logs in authentik](../../troubleshooting/logs.mdx).
 
-## Enhanced audit logging (Enterprise)
+## Enhanced audit logging :ak-enterprise
 
 In the enterprise version, two enhancements make reading the logs even easier:
 
@@ -26,7 +26,7 @@ You can view audit details in the following areas of the authentik Admin interfa
 
 - **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
-## Viewing events in maps and charts (Enterprise)
+## Viewing events in maps and charts :ak-enterprise :ak-version[2025.8]
 
 With the enterprise version, you can view recent events on both a world map view with pinpoints indicating where each event occurred and also a color-coded chart that highlights event types and volume.
 

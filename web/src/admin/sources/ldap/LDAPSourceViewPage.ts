@@ -1,20 +1,29 @@
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
-import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncStatusCard";
-import "@goauthentik/elements/tasks/ScheduleList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/sources/ldap/LDAPSourceConnectivity";
+import "#admin/sources/ldap/LDAPSourceForm";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncStatusCard";
+import "#elements/tasks/ScheduleList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    LDAPSource,
+    ModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -25,13 +34,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    LDAPSource,
-    ModelEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SourcesApi,
-} from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
@@ -49,9 +51,16 @@ export class LDAPSourceViewPage extends AKElement {
     @property({ attribute: false })
     source!: LDAPSource;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFList,
+    ];
 
     constructor() {
         super();

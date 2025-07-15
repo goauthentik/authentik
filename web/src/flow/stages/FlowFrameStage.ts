@@ -1,9 +1,12 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { BaseStage } from "#flow/stages/base";
+
+import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api";
+
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -12,13 +15,9 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api";
-
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
-    }
+    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

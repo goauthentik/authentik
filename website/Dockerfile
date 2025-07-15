@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -12,10 +12,11 @@ RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.js
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
+COPY ./docker-compose.yml /work/
 COPY ./SECURITY.md /work/
 
-RUN npm run build-bundled
+RUN npm run build
 
-FROM docker.io/library/nginx:1.27.5
+FROM docker.io/library/nginx:1.29.0
 
-COPY --from=website-builder /work/website/build /usr/share/nginx/html
+COPY --from=docs-builder /work/website/build /usr/share/nginx/html

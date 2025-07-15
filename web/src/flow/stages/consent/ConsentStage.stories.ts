@@ -1,13 +1,12 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "../../../stories/flow-interface.js";
+import "./ConsentStage.js";
 
 import { ConsentChallenge, ContextualFlowInfoLayoutEnum, UiThemeEnum } from "@goauthentik/api";
 
-import "../../../stories/flow-interface";
-import "./ConsentStage";
+import type { StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 export default {
     title: "Flow / Stages / <ak-stage-consent>",

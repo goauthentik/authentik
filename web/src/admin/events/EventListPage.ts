@@ -1,26 +1,28 @@
+import "#admin/events/EventMap";
+import "#admin/events/EventVolumeChart";
+import "#components/ak-event-info";
 import "#elements/Tabs";
-import { WithLicenseSummary } from "#elements/mixins/license";
-import "@goauthentik/admin/events/EventMap";
-import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, renderEventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, renderEventUser } from "#admin/events/utils";
+
+import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
@@ -43,17 +45,15 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     @property()
     order = "-created";
 
-    static get styles(): CSSResult[] {
-        // @ts-expect-error
-        return super.styles.concat(
-            PFGrid,
-            css`
-                .pf-m-no-padding-bottom {
-                    padding-bottom: 0;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFGrid,
+        css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+        `,
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());

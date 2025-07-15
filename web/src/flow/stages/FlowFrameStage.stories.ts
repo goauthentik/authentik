@@ -1,13 +1,12 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "../../stories/flow-interface.js";
+import "./FlowErrorStage.js";
 
 import { ContextualFlowInfoLayoutEnum, FrameChallenge, UiThemeEnum } from "@goauthentik/api";
 
-import "../../stories/flow-interface";
-import "./FlowErrorStage";
+import type { StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 export default {
     title: "Flow / Stages / <xak-flow-frame>",

@@ -6,5 +6,11 @@
 //
 // @see https://docusaurus.io/docs/typescript-support
 {
-    "extends": "./tsconfig.base.json"
+    "extends": "./tsconfig.base.json",
+    "files": [],
+    "references": [
+        {
+            "path": "docusaurus-theme"
+        }
+    ]
 }

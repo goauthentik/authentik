@@ -1,21 +1,30 @@
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/events/LogViewer";
-import "@goauthentik/elements/sync/SyncStatusCard";
-import "@goauthentik/elements/tasks/ScheduleList";
-import "@goauthentik/elements/tasks/TaskList";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#elements/events/LogViewer";
+import "#elements/sync/SyncStatusCard";
+import "#elements/tasks/ScheduleList";
+import "#elements/tasks/TaskList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    MicrosoftEntraProvider,
+    ModelEnum,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,13 +39,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    MicrosoftEntraProvider,
-    ModelEnum,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
-
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
     @property({ type: Number })
@@ -45,21 +47,19 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     @state()
     provider?: MicrosoftEntraProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();

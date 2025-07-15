@@ -1,19 +1,20 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { PFColor } from "#elements/Label";
 
 import {
     LastTaskStatusEnum,
     TaskAggregatedStatusEnum,
     TasksTasksListAggregatedStatusEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {

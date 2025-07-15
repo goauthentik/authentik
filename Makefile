@@ -76,7 +76,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: node-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -187,16 +187,21 @@ gen-dev-config:  ## Generate a local development config file
 gen: gen-build gen-client-ts
 
 #########################
+## Node.js
+#########################
+
+node-install:  ## Install the necessary libraries to build Node.js packages
+	npm ci
+	npm ci --prefix web
+
+#########################
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
+web-build: node-install  ## Build the Authentik UI
 	cd web && npm run build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
-
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
 
 web-test: ## Run tests for the Authentik UI
 	cd web && npm run test

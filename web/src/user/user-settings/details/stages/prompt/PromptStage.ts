@@ -1,13 +1,15 @@
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+import "#elements/forms/HorizontalFormElement";
+import "#flow/components/ak-flow-card";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { globalAK } from "#common/global";
+
+import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
@@ -65,18 +67,17 @@ export class UserSettingsPromptStage extends PromptStage {
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                ${this.challenge.fields.map((prompt) => {
-                    return this.renderField(prompt);
-                })}
-                ${this.renderNonFieldErrors()} ${this.renderContinue()}
-            </form>
-        </ak-flow-card>`;
+                <form
+                    class="pf-c-form"
+                    @submit=${this.submitForm}
+                >
+                    ${this.challenge.fields.map((prompt) => {
+                        return this.renderField(prompt);
+                    })}
+                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
+                </form>
+            </div>
+            </ak-flow-card>`;
     }
 }
 

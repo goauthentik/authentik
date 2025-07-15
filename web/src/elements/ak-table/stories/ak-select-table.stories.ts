@@ -1,13 +1,14 @@
+import "../ak-select-table.js";
+
+import { SelectTable } from "../ak-select-table.js";
+import { TableSortEvent } from "../TableColumn.js";
+import { nutritionDbUSDA } from "./sample_nutrition_db.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
-import { LitElement, TemplateResult, html } from "lit";
+import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import { TableSortEvent } from "../TableColumn.js";
-import "../ak-select-table.js";
-import { SelectTable } from "../ak-select-table.js";
-import { nutritionDbUSDA } from "./sample_nutrition_db.js";
 
 const metadata: Meta<SelectTable> = {
     title: "Elements / Table / SelectTable",
