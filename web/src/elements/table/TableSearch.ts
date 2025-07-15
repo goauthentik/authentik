@@ -4,8 +4,6 @@ import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { PaginatedResponse } from "#elements/table/Table";
 
-import { LicenseSummaryStatusEnum } from "@goauthentik/api";
-
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -48,10 +46,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
     ];
 
     renderInput(): TemplateResult {
-        if (
-            this.supportsQL &&
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed
-        ) {
+        if (this.supportsQL && this.hasEnterpriseLicense) {
             return html`<ak-search-ql
                 .apiResponse=${this.apiResponse}
                 .value=${this.value}
