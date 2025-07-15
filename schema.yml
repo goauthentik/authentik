@@ -104,6 +104,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SettingsRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -55417,6 +55418,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -59550,6 +59558,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -59603,6 +59620,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SeverityEnum:
       enum:
       - notice

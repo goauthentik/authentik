@@ -1,0 +1,37 @@
+from typing import Any
+
+from django.db import DatabaseError, InternalError, ProgrammingError
+
+from authentik.lib.utils.reflection import all_subclasses
+
+
+class Flag[T]:
+
+    default: T | None = None
+
+    def __init_subclass__(cls, key: str, **kwargs):
+        cls.__key = key
+
+    @property
+    def key(self) -> str:
+        return self.__key
+
+    def get(self) -> T | None:
+        from authentik.tenants.utils import get_current_tenant
+
+        flags = {}
+        try:
+            flags: dict[str, Any] = get_current_tenant("flags").flags
+        except (DatabaseError, ProgrammingError, InternalError):
+            pass
+        value = flags.get(self.__key, None)
+        if value is None:
+            return self.get_default()
+        return value
+
+    def get_default(self) -> T | None:
+        return self.default
+
+    @staticmethod
+    def available():
+        return all_subclasses(Flag)

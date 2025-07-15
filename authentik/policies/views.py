@@ -24,6 +24,7 @@ from authentik.flows.views.executor import (
     SESSION_KEY_POST,
 )
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -181,6 +182,8 @@ class BufferedPolicyAccessView(PolicyAccessView):
                 return super().handle_no_permission()
         if not plan and authenticating is None:
             LOGGER.debug("Not buffering request, no flow plan active")
+            return super().handle_no_permission()
+        if not BufferedPolicyAccessViewFlag().get():
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
             LOGGER.debug("Not buffering request, explicit skip")
