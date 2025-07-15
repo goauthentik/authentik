@@ -12,9 +12,9 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 
 - Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and keeps the documentation structure and headings consistent.
 
-- To test how the documentation renders you can build locally and then use the Netlify Deploy Preview, especially when using Docusaurus-specific features. You can also run the `make website-watch` command on your local build, to see the rendered pages as you make changes.
+- To test how the documentation renders you can build locally and then use the Netlify Deploy Preview, especially when using Docusaurus-specific features. You can also run the `make docs-watch` command on your local build, to see the rendered pages as you make changes.
 
-- Be sure to run the `make website` command on your local branch, before pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done.
+- Be sure to run the `make docs` command on your local branch, before pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done.
 
 - For new entries, make sure to add any new pages to the appropriate `sidebar.js` file. Otherwise, the new page will not appear in the table of contents to the left.
 
@@ -26,21 +26,21 @@ Requirements:
 
 The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
 
-You can do local builds of the documentation to test your changes or review your new content, and to run the required `make website` command (which runs `prettier` and other linters) before pushing your PR.
+You can do local builds of the documentation to test your changes or review your new content, and to run the required `make docs` command (which runs `prettier` and other linters) before pushing your PR.
 
 The documentation site is situated in the `/website` folder of the repo.
 
 The site is built using npm, below are some useful make commands:
 
-- **Installation**: `make website-install`
+- **Installation**: `make docs-install`
 
     This command is required before running any of the following commands, and after upgrading any dependencies.
 
-- **Formatting**: `make website`, `make website-lint-fix`, or `npm run prettier`
+- **Formatting**: `make docs`, `make docs-lint-fix`, or `npm run prettier`
 
     Run the appropriate formatting command for your set up before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
 
-- **Live editing**: `make website-watch`
+- **Live editing**: `make docs-watch`
 
     For real-time viewing of changes, as you make them.
 
