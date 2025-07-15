@@ -31,7 +31,7 @@
 
         If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
 
-    - Run `make website`
+    - Run `make docs`
 
     #### For subsequent releases:
     - Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
@@ -40,7 +40,7 @@
 
     - Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
 
-    - Run `make website`
+    - Run `make docs`
 
 - Run `bumpversion` on the version branch with the new version (i.e. `bumpversion --new-version 2022.12.2 minor --verbose`)
 - Push the tag and commit

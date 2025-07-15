@@ -22,6 +22,6 @@ Depending on platform, some native dependencies might be required. On macOS, run
 ### Instructions
 
 1. Clone the git repo from https://github.com/goauthentik/authentik
-2. Run `make website-install` to install the website development dependencies
-3. Run `make website-watch` to start a development server to see and preview your changes
-4. Finally when you're about to commit your changes, run `make website` to run the linter and auto-formatter.
+2. Run `make docs-install` to install the docs development dependencies
+3. Run `make docs-watch` to start a development server to see and preview your changes
+4. Finally when you're about to commit your changes, run `make docs` to run the linter and auto-formatter.
