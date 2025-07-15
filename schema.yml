@@ -5710,6 +5710,11 @@ paths:
           type: boolean
           default: true
       - in: query
+        name: include_password
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: is_active
         schema:
           type: boolean
