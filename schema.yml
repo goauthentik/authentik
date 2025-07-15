@@ -5684,6 +5684,21 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: created_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: created_at__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: email
         schema:
           type: string
@@ -5766,6 +5781,21 @@ paths:
             - service_account
         explode: true
         style: form
+      - in: query
+        name: updated_at
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: updated_at__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: updated_at__lt
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: username
         schema:
@@ -60717,8 +60747,17 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
+      - created_at
       - date_joined
       - groups_obj
       - is_superuser
@@ -60726,6 +60765,7 @@ components:
       - password_change_date
       - pk
       - uid
+      - updated_at
       - username
       - uuid
     UserAccountRequest:
