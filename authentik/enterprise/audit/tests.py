@@ -214,9 +214,18 @@ class TestEnterpriseAudit(APITestCase):
         "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware.enabled",
         PropertyMock(return_value=True),
     )
-    def test_serialize_fields(self):
+    def test_diff_update_fields(self):
         """Test update audit log"""
         self.client.force_login(self.user)
-        user = create_test_admin_user()
-        state = EnterpriseAuditMiddleware(None).serialize_simple(user, update_fields=["is_active"])
-        self.assertEqual(state, {"is_active": True})
+        diff = EnterpriseAuditMiddleware(None).diff(
+            {
+                "foo": "bar",
+                "is_active": False,
+            },
+            {
+                "foo": "baz",
+                "is_active": True,
+            },
+            update_fields=["is_active"],
+        )
+        self.assertEqual(diff, {"is_active": {"new_value": True, "previous_value": False}})
