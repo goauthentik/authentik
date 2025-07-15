@@ -62,7 +62,9 @@ class TestBackChannelLogout(OAuthTestCase):
         )
         return auth_session
 
-    def _create_token(self, provider, user, session=None, token_type="access", token_id=None):
+    def _create_token(
+        self, provider, user, session=None, token_type="access", token_id=None
+    ):  # nosec
         """Create a token of the specified type"""
         token_id = token_id or f"{token_type}-token-{generate_id()}"
         kwargs = {
@@ -74,7 +76,7 @@ class TestBackChannelLogout(OAuthTestCase):
             "auth_time": timezone.now(),
         }
 
-        if token_type == "access":
+        if token_type == "access":  # nosec
             return AccessToken.objects.create(**kwargs)
         else:  # refresh
             return RefreshToken.objects.create(**kwargs)
