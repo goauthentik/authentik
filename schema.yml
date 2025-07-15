@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.6.2
+  version: 2025.6.3
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -39777,6 +39777,10 @@ paths:
         schema:
           type: integer
       - in: query
+        name: remember_device
+        schema:
+          type: string
+      - in: query
         name: remember_me_offset
         schema:
           type: string
@@ -41338,7 +41342,9 @@ components:
         app:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - app
       - name
@@ -41353,7 +41359,9 @@ components:
         app:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - app
       - name
@@ -41942,7 +41950,9 @@ components:
         friendly_name:
           type: string
           nullable: true
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
       required:
       - component
       - credentials
@@ -41972,7 +41982,9 @@ components:
           type: string
           nullable: true
           minLength: 1
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
       required:
       - credentials
       - name
@@ -42777,7 +42789,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         last_applied:
           type: string
           format: date-time
@@ -42797,6 +42811,8 @@ components:
             type: string
           readOnly: true
         metadata:
+          type: object
+          additionalProperties: {}
           readOnly: true
         content:
           type: string
@@ -42818,7 +42834,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         enabled:
           type: boolean
         content:
@@ -42898,7 +42916,9 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - brand_uuid
       - domain
@@ -42968,7 +42988,9 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
       - domain
     Cache:
@@ -43953,7 +43975,7 @@ components:
       - name
     Device:
       type: object
-      description: Serializer for Duo authenticator devices
+      description: Serializer for authenticator devices
       properties:
         verbose_name:
           type: string
@@ -43992,11 +44014,18 @@ components:
           nullable: true
         extra_description:
           type: string
+          nullable: true
           description: Get extra description
+          readOnly: true
+        external_id:
+          type: string
+          nullable: true
+          description: Get external Device ID
           readOnly: true
       required:
       - confirmed
       - created
+      - external_id
       - extra_description
       - last_updated
       - last_used
@@ -44011,7 +44040,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
         challenge:
@@ -44031,8 +44060,7 @@ components:
       description: Single device challenge
       properties:
         device_class:
-          type: string
-          minLength: 1
+          $ref: '#/components/schemas/DeviceClassesEnum'
         device_uid:
           type: string
           minLength: 1
@@ -44602,7 +44630,9 @@ components:
           $ref: '#/components/schemas/ProtocolEnum'
         host:
           type: string
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         property_mappings:
           type: array
           items:
@@ -44673,7 +44703,9 @@ components:
         host:
           type: string
           minLength: 1
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         property_mappings:
           type: array
           items:
@@ -44737,12 +44769,16 @@ components:
           format: uuid
           readOnly: true
           title: Event uuid
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -44753,7 +44789,9 @@ components:
         expires:
           type: string
           format: date-time
-        brand: {}
+        brand:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app
@@ -44898,13 +44936,17 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -44912,7 +44954,9 @@ components:
         expires:
           type: string
           format: date-time
-        brand: {}
+        brand:
+          type: object
+          additionalProperties: {}
       required:
       - action
       - app
@@ -45887,7 +45931,9 @@ components:
           type: string
           format: email
           maxLength: 254
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
         scopes:
           type: string
         exclude_users_service_account:
@@ -45938,6 +45984,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -46052,7 +46100,9 @@ components:
           format: email
           minLength: 1
           maxLength: 254
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
         scopes:
           type: string
           minLength: 1
@@ -46097,6 +46147,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -47425,6 +47477,8 @@ components:
           description: Return internal model name
           readOnly: true
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -47449,6 +47503,8 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -48385,6 +48441,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -48541,6 +48599,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -49453,7 +49513,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
         authorization_code_auth_method:
           allOf:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
@@ -49627,7 +49689,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
         authorization_code_auth_method:
           allOf:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
@@ -52312,7 +52376,9 @@ components:
         app:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedApplicationRequest:
       type: object
       description: Application Serializer
@@ -52464,7 +52530,9 @@ components:
           type: string
           nullable: true
           minLength: 1
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -52651,7 +52719,9 @@ components:
         path:
           type: string
           default: ''
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         enabled:
           type: boolean
         content:
@@ -52722,7 +52792,9 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
@@ -52998,7 +53070,9 @@ components:
         host:
           type: string
           minLength: 1
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         property_mappings:
           type: array
           items:
@@ -53050,13 +53124,17 @@ components:
       type: object
       description: Event Serializer
       properties:
-        user: {}
+        user:
+          type: object
+          additionalProperties: {}
         action:
           $ref: '#/components/schemas/EventActions'
         app:
           type: string
           minLength: 1
-        context: {}
+        context:
+          type: object
+          additionalProperties: {}
         client_ip:
           type: string
           nullable: true
@@ -53064,7 +53142,9 @@ components:
         expires:
           type: string
           format: date-time
-        brand: {}
+        brand:
+          type: object
+          additionalProperties: {}
     PatchedExpressionPolicyRequest:
       type: object
       description: Group Membership Policy Serializer
@@ -53247,7 +53327,9 @@ components:
           format: email
           minLength: 1
           maxLength: 254
-        credentials: {}
+        credentials:
+          type: object
+          additionalProperties: {}
         scopes:
           type: string
           minLength: 1
@@ -53631,6 +53713,8 @@ components:
           description: If enabled, use the local connection. Required Docker socket/Kubernetes
             Integration
         kubeconfig:
+          type: object
+          additionalProperties: {}
           description: Paste your kubeconfig here. authentik will automatically use
             the currently selected context.
         verify_ssl:
@@ -54214,7 +54298,9 @@ components:
           type: string
         oidc_jwks_url:
           type: string
-        oidc_jwks: {}
+        oidc_jwks:
+          type: object
+          additionalProperties: {}
         authorization_code_auth_method:
           allOf:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
@@ -54693,7 +54779,9 @@ components:
           items:
             type: string
             format: uuid
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         connection_expiry:
           type: string
           minLength: 1
@@ -55144,13 +55232,18 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedSCIMSourcePropertyMappingRequest:
       type: object
       description: SCIMSourcePropertyMapping Serializer
@@ -55206,12 +55299,17 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         user:
           type: integer
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -55298,9 +55396,7 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
-        footer_links:
-          description: The option configures the footer links on the flow executor
-            pages.
+        footer_links: {}
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -55491,6 +55587,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -56617,6 +56719,7 @@ components:
       enum:
       - apple
       - openidconnect
+      - entraid
       - azuread
       - discord
       - facebook
@@ -57112,7 +57215,9 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         outpost_set:
           type: array
           items:
@@ -57160,7 +57265,9 @@ components:
           items:
             type: string
             format: uuid
-        settings: {}
+        settings:
+          type: object
+          additionalProperties: {}
         connection_expiry:
           type: string
           minLength: 1
@@ -57570,8 +57677,12 @@ components:
           type: string
         ip:
           type: string
-        ip_geo_data: {}
-        ip_asn_data: {}
+        ip_geo_data:
+          type: object
+          additionalProperties: {}
+        ip_asn_data:
+          type: object
+          additionalProperties: {}
         score:
           type: integer
           maximum: 9223372036854775807
@@ -58644,6 +58755,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -58734,6 +58847,8 @@ components:
         provider:
           type: integer
         attributes:
+          type: object
+          additionalProperties: {}
           readOnly: true
       required:
       - attributes
@@ -58838,6 +58953,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -58848,11 +58965,13 @@ components:
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
+      - external_id
       - group
       - group_obj
-      - id
       - source
     SCIMSourceGroupRequest:
       type: object
@@ -58861,16 +58980,21 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
+      - external_id
       - group
-      - id
       - source
     SCIMSourcePropertyMapping:
       type: object
@@ -58977,6 +59101,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         user:
           type: integer
         user_obj:
@@ -58986,9 +59112,11 @@ components:
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
       - user_obj
@@ -58999,14 +59127,19 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         user:
           type: integer
         source:
           type: string
           format: uuid
-        attributes: {}
+        attributes:
+          type: object
+          additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
     SMSDevice:
@@ -59397,9 +59530,7 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
-        footer_links:
-          description: The option configures the footer links on the flow executor
-            pages.
+        footer_links: {}
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -59451,9 +59582,7 @@ components:
           minimum: 0
           description: Reputation cannot increase higher than this value. Zero or
             positive.
-        footer_links:
-          description: The option configures the footer links on the flow executor
-            pages.
+        footer_links: {}
         gdpr_compliance:
           type: boolean
           description: When enabled, all the events caused by a user will be deleted
@@ -60991,6 +61120,11 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
       - meta_model_name
@@ -61032,6 +61166,12 @@ components:
           - $ref: '#/components/schemas/GeoipBindingEnum'
           description: Bind sessions created by this stage to the configured GeoIP
             location
+        remember_device:
+          type: string
+          minLength: 1
+          description: 'When set to a non-zero value, authentik will save a cookie
+            with a longer expiry,to remember the device the user is logging in from.
+            (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - name
     UserLogoutStage:

@@ -1,32 +1,42 @@
 /**
- * @file Docusaurus config.
+ * @file Docusaurus Integrations config.
  *
- * @import * as Preset from "@docusaurus/preset-classic";
+ * @import { Config } from "@docusaurus/types";
+ * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
  * @import { BuildUrlValues } from "remark-github";
+ * @import { Options as DocsPluginOptions } from "@docusaurus/plugin-content-docs";
+ * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
-import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
-import { createRequire } from "node:module";
-import remarkDirective from "remark-directive";
-import remarkGithub, { defaultBuildUrl } from "remark-github";
 
-import remarkEnterpriseDirective from "../remark/enterprise-directive.mjs";
-import remarkLinkRewrite from "../remark/link-rewrite-directive.mjs";
-import remarkPreviewDirective from "../remark/preview-directive.mjs";
-import remarkSupportDirective from "../remark/support-directive.mjs";
-import remarkVersionDirective from "../remark/version-directive.mjs";
+import { createRequire } from "node:module";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { CommonConfig, CommonDocsPluginOptions } from "@goauthentik/docusaurus-theme/config";
+import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
+
+import { GlobExcludeDefault } from "@docusaurus/utils";
+import { deepmerge } from "deepmerge-ts";
+
+import { legacyRedirects } from "./legacy-redirects.mjs";
 
 const require = createRequire(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+//#region Configuration
 
 /**
  * Documentation site configuration for Docusaurus.
+ * @satisfies {Partial<Config>}
  */
-const config = createDocusaurusConfig({
+const config = {
     url: "https://integrations.goauthentik.io",
     future: {
         experimental_faster: true,
     },
-    themes: ["@docusaurus/theme-mermaid"],
-    themeConfig: {
+    themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+    themeConfig: /** @type {UserThemeConfig} */ ({
         image: "img/social.png",
         navbar: {
             logo: {
@@ -43,7 +53,7 @@ const config = createDocusaurusConfig({
                     target: "_self",
                 },
                 {
-                    to: "integrations/",
+                    to: "https://integrations.goauthentik.io",
                     label: "Integrations",
                     position: "left",
                 },
@@ -83,57 +93,65 @@ const config = createDocusaurusConfig({
             links: [],
             copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
         },
-        algolia: {
-            appId: "36ROD0O0FV",
-            apiKey: "727db511300ca9aec5425645bbbddfb5",
-            indexName: "goauthentik",
-            externalUrlRegex: /(:\/\/goauthentik\.io|docs\.goauthentik\.io)/.toString(),
-        },
-    },
-    presets: [
+    }),
+
+    plugins: [
         [
-            "@docusaurus/preset-classic",
-            /** @type {Preset.Options} */ ({
-                docs: {
+            "@docusaurus/theme-classic",
+            {
+                customCss: [
+                    require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+                    join(__dirname, "./custom.css"),
+                ],
+            },
+        ],
+
+        //#region Documentation
+
+        [
+            "@docusaurus/plugin-content-docs",
+            deepmerge(
+                CommonDocsPluginOptions,
+                /** @type {DocsPluginOptions} */ ({
                     id: "docsIntegrations",
+                    exclude: [...GlobExcludeDefault],
+                    include: ["**/*.mdx", "**/*.md"],
+
                     path: "integrations",
-                    routeBasePath: "integrations",
-                    sidebarPath: "./sidebars/integrations.mjs",
+                    routeBasePath: "/",
+                    sidebarPath: "./integrations/sidebar.mjs",
                     editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
                     showLastUpdateTime: false,
+                    //#region Docs Plugins
 
                     beforeDefaultRemarkPlugins: [
-                        remarkDirective,
-                        remarkLinkRewrite(new Map([["/docs", "https://docs.goauthentik.io"]])),
-                        remarkVersionDirective,
-                        remarkEnterpriseDirective,
-                        remarkPreviewDirective,
-                        remarkSupportDirective,
+                        remarkLinkRewrite([
+                            // ---
+                            ["/api", "https://api.goauthentik.io"],
+                            ["/docs", "https://docs.goauthentik.io"],
+                        ]),
                     ],
-                    remarkPlugins: [
-                        [
-                            remarkGithub,
-                            {
-                                repository: "goauthentik/authentik",
-                                /**
-                                 * @param {BuildUrlValues} values
-                                 */
-                                buildUrl: (values) => {
-                                    // Only replace issues and PR links
-                                    return values.type === "issue" || values.type === "mention"
-                                        ? defaultBuildUrl(values)
-                                        : false;
-                                },
-                            },
-                        ],
-                    ],
-                },
-                theme: {
-                    customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
-                },
+                }),
+            ),
+        ],
+        [
+            "@docusaurus/plugin-client-redirects",
+            /** @type {RedirectsPluginOptions} */ ({
+                redirects: [
+                    {
+                        from: "/integrations",
+                        to: "/",
+                    },
+                    ...Array.from(legacyRedirects, ([from, to]) => {
+                        return {
+                            from: [from, `/integrations${from}`],
+                            to,
+                        };
+                    }),
+                ],
             }),
         ],
     ],
-});
+};
 
-export default config;
+export default /** @type {Config} */ (deepmerge(CommonConfig, createDocusaurusConfig(config)));

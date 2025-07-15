@@ -42,16 +42,18 @@ class BaseSchema(DjangoQLSchema):
 class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 
+    def __init__(self):
+        super().__init__()
+        self._fallback = SearchFilter()
+
     @property
     def enabled(self):
         return apps.get_app_config("authentik_enterprise").enabled()
 
-    def get_search_terms(self, request) -> str:
-        """
-        Search terms are set by a ?search=... query parameter,
-        and may be comma and/or whitespace delimited.
-        """
-        params = request.query_params.get(self.search_param, "")
+    def get_search_terms(self, request: Request) -> str:
+        """Search terms are set by a ?search=... query parameter,
+        and may be comma and/or whitespace delimited."""
+        params = request.query_params.get("search", "")
         params = params.replace("\x00", "")  # strip null characters
         return params
 
@@ -70,9 +72,9 @@ class QLSearch(SearchFilter):
         search_query = self.get_search_terms(request)
         schema = self.get_schema(request, view)
         if len(search_query) == 0 or not self.enabled:
-            return super().filter_queryset(request, queryset, view)
+            return self._fallback.filter_queryset(request, queryset, view)
         try:
             return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
             LOGGER.debug("Failed to parse search expression", exc=exc)
-            return super().filter_queryset(request, queryset, view)
+            return self._fallback.filter_queryset(request, queryset, view)

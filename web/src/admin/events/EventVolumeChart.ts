@@ -1,13 +1,15 @@
+import { DEFAULT_CONFIG } from "#common/api/config";
+
 import { EventChart } from "#elements/charts/EventChart";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { EventsApi, EventsEventsListRequest, EventVolume } from "@goauthentik/api";
+
 import { ChartData } from "chart.js";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-import { EventVolume, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {
@@ -23,19 +25,18 @@ export class EventVolumeChart extends EventChart {
         this.refreshHandler();
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                :host([with-map]) .pf-c-card {
-                    height: 24rem;
-                }
-                .pf-c-card {
-                    height: 20rem;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFCard,
+        css`
+            :host([with-map]) .pf-c-card {
+                height: 24rem;
+            }
+            .pf-c-card {
+                height: 20rem;
+            }
+        `,
+    ];
 
     apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({

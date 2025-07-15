@@ -153,13 +153,13 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         plan.append_stage(stage)
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
-                "device_class": "static",
+                "device_class": DeviceClasses.STATIC,
                 "device_uid": "1",
                 "challenge": {},
                 "last_used": now(),
             },
             {
-                "device_class": "totp",
+                "device_class": DeviceClasses.TOTP,
                 "device_uid": "2",
                 "challenge": {},
                 "last_used": now(),
@@ -172,7 +172,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             data={
                 "selected_challenge": {
-                    "device_class": "baz",
+                    "device_class": DeviceClasses.WEBAUTHN,
                     "device_uid": "quox",
                     "challenge": {},
                     "last_used": None,

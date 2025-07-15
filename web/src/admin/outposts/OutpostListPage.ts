@@ -1,35 +1,34 @@
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostForm";
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/OutpostHealthSimple";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/outposts/OutpostDeploymentModal";
+import "#admin/outposts/OutpostForm";
+import "#admin/outposts/OutpostHealth";
+import "#admin/outposts/OutpostHealthSimple";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
 
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 
 import {
     Outpost,
     OutpostHealth,
-    OutpostTypeEnum,
     OutpostsApi,
+    OutpostTypeEnum,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -98,9 +97,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     checkbox = true;
     clearOnRefresh = true;

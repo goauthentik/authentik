@@ -1,10 +1,11 @@
+import "../ak-visibility-toggle.js";
+
+import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../ak-visibility-toggle";
-import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
 
 const metadata: Meta<VisibilityToggleProps> = {
     title: "Elements/<ak-visibility-toggle>",

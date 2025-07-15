@@ -1,10 +1,12 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/buttons/Dropdown";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "#elements/buttons/Dropdown";
+
+import { AKElement } from "#elements/Base";
+import { PaginatedResponse } from "#elements/table/Table";
+
 import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -56,50 +58,46 @@ export class QLSearch extends AKElement {
         this.ql.loadIntrospections(value.autocomplete as unknown as Introspections);
     }
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFFormControl,
-            PFSearchInput,
-            css`
-                ::-webkit-search-cancel-button {
-                    display: none;
-                }
-                .ql.pf-c-form-control {
-                    font-family: monospace;
-                    resize: vertical;
-                    height: 2.25em;
-                }
-                .selected {
-                    background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
-                }
-                :host([theme="dark"]) .pf-c-search-input__menu {
-                    --pf-c-search-input__menu--BackgroundColor: var(--ak-dark-background-light-ish);
-                    color: var(--ak-dark-foreground);
-                }
-                :host([theme="dark"]) .pf-c-search-input__menu-item {
-                    --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
-                }
-                :host([theme="dark"]) .pf-c-search-input__menu-item:hover {
-                    --pf-c-search-input__menu-item--BackgroundColor: var(
-                        --ak-dark-background-lighter
-                    );
-                }
-                :host([theme="dark"]) .pf-c-search-input__menu-list-item.selected {
-                    --pf-c-search-input__menu-item--hover--BackgroundColor: var(
-                        --ak-dark-background-light
-                    );
-                }
-                :host([theme="dark"]) .pf-c-search-input__text::before {
-                    border: 0;
-                }
-                .pf-c-search-input__menu {
-                    position: fixed;
-                    min-width: 0;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFFormControl,
+        PFSearchInput,
+        css`
+            ::-webkit-search-cancel-button {
+                display: none;
+            }
+            .ql.pf-c-form-control {
+                font-family: monospace;
+                resize: vertical;
+                height: 2.25em;
+            }
+            .selected {
+                background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
+            }
+            :host([theme="dark"]) .pf-c-search-input__menu {
+                --pf-c-search-input__menu--BackgroundColor: var(--ak-dark-background-light-ish);
+                color: var(--ak-dark-foreground);
+            }
+            :host([theme="dark"]) .pf-c-search-input__menu-item {
+                --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
+            }
+            :host([theme="dark"]) .pf-c-search-input__menu-item:hover {
+                --pf-c-search-input__menu-item--BackgroundColor: var(--ak-dark-background-lighter);
+            }
+            :host([theme="dark"]) .pf-c-search-input__menu-list-item.selected {
+                --pf-c-search-input__menu-item--hover--BackgroundColor: var(
+                    --ak-dark-background-light
+                );
+            }
+            :host([theme="dark"]) .pf-c-search-input__text::before {
+                border: 0;
+            }
+            .pf-c-search-input__menu {
+                position: fixed;
+                min-width: 0;
+            }
+        `,
+    ];
 
     firstUpdated() {
         if (!this.searchElement) {

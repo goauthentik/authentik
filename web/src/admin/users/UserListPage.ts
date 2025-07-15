@@ -1,43 +1,46 @@
-import { WithBrandConfig } from "#elements/mixins/branding";
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
-import "@goauthentik/admin/users/ServiceAccountForm";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserImpersonateForm";
-import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { parseAPIResponseError } from "@goauthentik/common/errors/network";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { rootInterface } from "@goauthentik/common/theme";
-import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/TreeView";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { showAPIErrorMessage, showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
+import "#admin/users/ServiceAccountForm";
+import "#admin/users/UserActiveForm";
+import "#admin/users/UserForm";
+import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserPasswordForm";
+import "#admin/users/UserResetEmailForm";
+import "#components/ak-status-label";
+import "#elements/TreeView";
+import "#elements/buttons/ActionButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
+import { userTypeToLabel } from "#common/labels";
+import { MessageLevel } from "#common/messages";
+import { formatElapsedTime } from "#common/temporal";
+import { rootInterface } from "#common/theme";
+import { DefaultUIConfig, uiConfig } from "#common/ui/config";
+import { me } from "#common/users";
+
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { writeToClipboard } from "#elements/utils/writeToClipboard";
+
+import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
+
+import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
+
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
@@ -115,9 +118,13 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return [...TablePage.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
-    }
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFDescriptionList,
+        PFCard,
+        PFAlert,
+        recoveryButtonStyles,
+    ];
 
     constructor() {
         super();
@@ -133,7 +140,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            pathStartswith: getURLParam("path", ""),
+            pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });
@@ -341,8 +348,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                         id="update-password-request"
                                     >
                                         <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">${msg("Update password")}</span>
+                                        <span slot="header">
+                                            ${msg(
+                                                str`Update ${item.name || item.username}'s password`,
+                                            )}
+                                        </span>
                                         <ak-user-password-form
+                                            username=${item.username}
+                                            email=${ifDefined(item.email)}
                                             slot="form"
                                             .instancePk=${item.pk}
                                         ></ak-user-password-form>

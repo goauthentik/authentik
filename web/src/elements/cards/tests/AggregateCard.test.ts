@@ -1,9 +1,10 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../AggregateCard.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import "../AggregateCard.js";
 
 describe("ak-aggregate-card", () => {
     it("should render the standard card without an icon, link, or subtext", async () => {

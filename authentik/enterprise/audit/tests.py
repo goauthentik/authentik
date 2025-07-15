@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.enterprise.audit.middleware import EnterpriseAuditMiddleware
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
 from authentik.lib.generators import generate_id
@@ -208,3 +209,14 @@ class TestEnterpriseAudit(APITestCase):
             diff,
             {"users": {"remove": [user.pk]}},
         )
+
+    @patch(
+        "authentik.enterprise.audit.middleware.EnterpriseAuditMiddleware.enabled",
+        PropertyMock(return_value=True),
+    )
+    def test_serialize_fields(self):
+        """Test update audit log"""
+        self.client.force_login(self.user)
+        user = create_test_admin_user()
+        state = EnterpriseAuditMiddleware(None).serialize_simple(user, update_fields=["is_active"])
+        self.assertEqual(state, {"is_active": True})

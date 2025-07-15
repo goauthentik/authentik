@@ -1,11 +1,13 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../EmptyState.js";
+
+import { akEmptyState } from "../EmptyState.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import "../EmptyState.js";
-import { akEmptyState } from "../EmptyState.js";
 
 describe("ak-empty-state", () => {
     afterEach(async () => {
@@ -19,11 +21,7 @@ describe("ak-empty-state", () => {
     });
 
     it("should render the default loader", async () => {
-        render(
-            html`<ak-empty-state loading
-                ><span slot="header">${msg("Loading")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state default-label></ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
@@ -33,25 +31,17 @@ describe("ak-empty-state", () => {
     });
 
     it("should handle standard boolean", async () => {
-        render(
-            html`<ak-empty-state loading
-                ><span slot="header">${msg("Loading")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state loading>Waiting</ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
 
         const header = await $("ak-empty-state").$(">>>.pf-c-title");
-        await expect(header).toHaveText("Loading");
+        await expect(header).toHaveText("Waiting");
     });
 
     it("should render a static empty state", async () => {
-        render(
-            html`<ak-empty-state
-                ><span slot="header">${msg("No messages found")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state><span>${msg("No messages found")}</span> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
@@ -64,7 +54,7 @@ describe("ak-empty-state", () => {
     it("should render a slotted message", async () => {
         render(
             html`<ak-empty-state
-                ><span slot="header">${msg("No messages found")}</span>
+                ><span>${msg("No messages found")}</span>
                 <p slot="body">Try again with a different filter</p>
             </ak-empty-state>`,
         );
