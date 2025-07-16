@@ -164,7 +164,7 @@
         "@types/mocha": "^10.0.10",
         "@types/node": "^22.15.21",
         "@types/react": "^19.1.8",
-        "@types/react-dom": "^19.1.5",
+        "@types/react-dom": "^19.1.6",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "9.15",
