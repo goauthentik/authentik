@@ -17,11 +17,12 @@ class OAuth2Error(SentryIgnoredException):
     description: str
     cause: str | None = None
 
-    def create_dict(self):
+    def create_dict(self, request: HttpRequest):
         """Return error as dict for JSON Rendering"""
         return {
             "error": self.error,
             "error_description": self.description,
+            "request_id": request.request_id,
         }
 
     def __repr__(self) -> str:
@@ -32,6 +33,7 @@ class OAuth2Error(SentryIgnoredException):
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
+            cause=self.cause,
             **kwargs,
         )
 
