@@ -249,7 +249,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${msg("Backchannel Logout URIs")}</span
+                                        >${msg("Back-Channel Logout URIs")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">

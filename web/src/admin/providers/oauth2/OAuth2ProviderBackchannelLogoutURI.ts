@@ -84,7 +84,7 @@ export class OAuth2ProviderBackchannelLogoutURI extends AkControlElement<Redirec
                 spellcheck="false"
                 autocomplete="off"
                 id="url"
-                placeholder=${msg("Backchannel Logout URL")}
+                placeholder=${msg("Back-Channel Logout URL")}
                 name="url"
                 tabindex="1"
             />
