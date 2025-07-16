@@ -45,7 +45,7 @@ export const DefaultStory: StoryObj = {
         const runThis = (timeout: number, value: string) =>
             new Promise((resolve) => setTimeout(resolve, timeout, value));
 
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`>
             <style>
                 ak-aggregate-card-promise {
                     display: inline-block;
@@ -61,8 +61,7 @@ export const DefaultStory: StoryObj = {
                 ?left-justified=${leftJustified}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
-            </ak-aggregate-card-promise>
-        </div>`;
+            </ak-aggregate-card-promise> `;
     },
 };
 
@@ -86,7 +85,7 @@ export const PromiseRejected: StoryObj = {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-aggregate-card-promise {
                     display: inline-block;
@@ -104,6 +103,6 @@ export const PromiseRejected: StoryObj = {
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
-        </div>`;
+        `;
     },
 };

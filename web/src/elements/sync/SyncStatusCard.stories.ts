@@ -63,13 +63,13 @@ export const SingleTask: StoryObj = {
     },
     // @ts-ignore
     render: ({ status }: SyncStatus) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <ak-sync-status-card
                 .fetch=${async () => {
                     return status;
                 }}
             ></ak-sync-status-card>
-        </div>`;
+        `;
     },
 };
 
@@ -146,12 +146,12 @@ export const MultipleTasks: StoryObj = {
     },
     // @ts-ignore
     render: ({ status }: SyncStatus) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <ak-sync-status-card
                 .fetch=${async () => {
                     return status;
                 }}
             ></ak-sync-status-card>
-        </div>`;
+        `;
     },
 };

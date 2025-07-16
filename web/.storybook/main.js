@@ -28,11 +28,6 @@ const inlineCSSPlugin = {
 };
 
 /**
- * @satisfies {InlineConfig}
- */
-// const viteFinal = ;
-
-/**
  * @satisfies {StorybookConfig}
  */
 const config = {
@@ -42,18 +37,11 @@ const config = {
         { from: "../authentik", to: "/static/authentik" },
     ],
     addons: [
-        "@storybook/addon-controls",
+        // ---
         "@storybook/addon-links",
-        "@storybook/addon-essentials",
-        "storybook-addon-mock",
+        "@storybook/addon-docs",
     ],
-    framework: {
-        name: "@storybook/web-components-vite",
-        options: {},
-    },
-    docs: {
-        autodocs: "tag",
-    },
+    framework: "@storybook/web-components-vite",
     async viteFinal(config) {
         const [{ mergeConfig }, { createBundleDefinitions }] = await Promise.all([
             import("vite"),
@@ -71,4 +59,5 @@ const config = {
         return mergeConfig(config, overrides);
     },
 };
+
 export default config;

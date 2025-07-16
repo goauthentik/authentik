@@ -30,18 +30,17 @@ const metadata: Meta<AppIcon> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #f0f0f0; padding: 1em">
-        <style>
-            li {
-                display: block;
-            }
-            p {
-                margin-top: 1em;
-            }
-        </style>
-        ${testItem}
-    </div>`;
+const container = (testItem: TemplateResult) => html`
+    <style>
+        li {
+            display: block;
+        }
+        p {
+            margin-top: 1em;
+        }
+    </style>
+    ${testItem}
+`;
 
 export const DefaultStory: StoryObj = {
     args: {
