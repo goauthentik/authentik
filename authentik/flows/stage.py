@@ -319,7 +319,7 @@ class SessionEndStage(ChallengeStageView):
             except Exception as exc:
                 # Log the error but don't fail the logout process
                 self.logger.warning(
-                    "Failed to send backchannel logout notifications",
+                    "Failed to send back-channel logout notifications",
                     user=self.request.user.username,
                     error=str(exc),
                 )
