@@ -127,8 +127,8 @@ class SystemTask(TenantTask):
         )
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
-            message=f"Task {self.__name__} encountered an error: {exception_to_string(exc)}",
-        ).save()
+            message=f"Task {self.__name__} encountered an error",
+        ).with_exception(exc).save()
 
     def run(self, *args, **kwargs):
         raise NotImplementedError

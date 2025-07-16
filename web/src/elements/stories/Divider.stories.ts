@@ -18,16 +18,15 @@ const metadata: Meta<Divider> = {
 
 export default metadata;
 
-const container = (content: TemplateResult) =>
-    html` <div style="background-color: #f0f0f0; padding: 1rem;">
-        <style>
-            ak-divider {
-                display: inline-block;
-                width: 32rem;
-                max-width: 32rem;
-            }</style
-        >${content}
-    </div>`;
+const container = (content: TemplateResult) => html`
+    <style>
+        ak-divider {
+            display: inline-block;
+            width: 32rem;
+            max-width: 32rem;
+        }</style
+    >${content}
+`;
 
 export const DefaultStory: StoryObj = {
     render: () => container(html` <ak-divider> </ak-divider> `),

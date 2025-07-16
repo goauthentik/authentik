@@ -42,6 +42,7 @@
         // ---
         "**/out/**/*",
         "**/dist/**/*",
+        "storybook-static",
         "src/**/*.test.ts",
         "./tests",
 

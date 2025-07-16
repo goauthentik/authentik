@@ -151,6 +151,7 @@ const config = {
                 ],
             }),
         ],
+        ["@docusaurus/plugin-sitemap", {}],
     ],
 };
 
