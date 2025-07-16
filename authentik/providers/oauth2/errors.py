@@ -250,13 +250,14 @@ class TokenRevocationError(OAuth2Error):
         self.description = self.errors[error]
 
 
-class DeviceCodeError(OAuth2Error):
+class DeviceCodeError(TokenError):
     """
     Device-code flow errors
     See https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+    Can also use codes form TokenError
     """
 
-    errors = {
+    errors = TokenError.errors | {
         "authorization_pending": (
             "The authorization request is still pending as the end user hasn't "
             "yet completed the user-interaction steps"
@@ -267,6 +268,11 @@ class DeviceCodeError(OAuth2Error):
             "session has concluded.  The client MAY commence a new device "
             "authorization request but SHOULD wait for user interaction before "
             "restarting to avoid unnecessary polling."
+        ),
+        "slow_down": (
+            'A variant of "authorization_pending", the authorization request is'
+            "still pending and polling should continue, but the interval MUST"
+            "be increased by 5 seconds for this and all subsequent requests."
         ),
     }
 
