@@ -11,89 +11,80 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 
 - Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
 
-- Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and keeps the documentation structure and headings consistent.
+- Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
 
-## authentik documentation
+- Remember to use our templates when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and they keep the documentation structure and headings consistent.
+    - [docs templates](./templates/index.md)
+    - integration guide template
 
-### Set up your local build
+- For new entries, make sure to add any new pages to the appropriate `sidebar.mjs` file.
+  Otherwise, the new page will not appear in the table of contents to the left.
 
-The docs and the code are in the same [GitHub repo](https://github.com/goauthentik/authentik), so if you have cloned the repo, you already have the docs.
+- Finally, be sure to run the `make docs` command on your local branch, _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authetnik repo, and also check on the build status of your PR after you create it.
 
-You can do local builds of the documentation to test your changes or review your new content, and to run the required `make docs` command (which runs `prettier` and other linters) before pushing your PR.
+:::tip
+If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
+:::
+
+## Set up your local build
+
+The documentation, ntegratins guides, API docs, and the code are in the same [GitHub repo](https://github.com/goauthentik/authentik), so if you have cloned the repo, you already have the docs.
+
+You can do local builds of the documentation, integration guide, and API docs in order to test your changes or review your new content, and to run the required `make` commands (which runs `prettier` and other linters) before pushing your PR to the authetnik repository.
 
 Requirements:
 
-- Node.js 24 (or greater)
+- Node.js 24 (or later)
 
-Commands to build the documentation locally are defined in the `Makefile` in the root of the repository.
-Each command is prefixed with `docs-` and corresponds to an NPM script within the `website` directory.
+## Technical docs
 
-#### `make docs-install`
+If you are contributing content to our technical documentation (https://docs.goauthentik.io/docs/)
 
-Installs the build dependencies such as Docusaurus, Prettier, and ESLint.
-You should run this command after pulling any new changes to your fork of the authentik repository.
+The docs site is built using npm, and the commands to build the documentation locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` and corresponds to an NPM script within the `website` directory.
 
-### Live editing
+- **Install (or update) the build tools**: `make docs-install`
 
-For new entries, make sure to add any new pages to the appropriate `sidebar.mjs` file.
-Otherwise, the new page will not appear in the table of contents to the left.
+    Installs the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command after pulling any new changes to your fork of the authentik repository.
 
-#### `make docs-watch`
+- **Build locally**: `make docs`
 
-Starts a development server for the documentation site.
-This command will automatically rebuild the documentation site whenever you make changes to the Markdown (MDX) files in the `website/docs` directory.
+    This command is a combination of `make docs-lint-fix` and `make docs-build`. This command should always be run on your local branch before committing your changes to a pull request to the authentik repo.
 
-### Formatting
+- **Live editing**: `make docs-watch`
 
-Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
+    Starts a development server for the documentation site. This command will automatically rebuild the documentation site whenever you make changes to the Markdown (MDX) files in the `website/docs` directory.
 
-Note that linter errors will prevent the build from passing, so it is important to run this command before committing changes.
+- **Formatting**: `make docs-lint-fix`
 
-#### `make docs-lint-fix`
+    Applies formatting and code style fixes via Prettier and ESLint. This command will automatically apply most fixes to the documentation, but any fixes that cannot be applied will be reported as warnings. It is important to run this command before committing changes, because linter errors will prevent the build checks from passing.
 
-Applies formatting and code style fixes via Prettier and ESLint.
+- **Build without running linters**: `make docs-build`
 
-This command will automatically apply most fixes to the documentation, but any fixes that cannot be applied will be reported as warnings.
+    Builds the documentation site for production deployment.
 
-### Build
+## Integration Guides
 
-#### `make docs-build`
+The Integrations site is built using npm, and the commands to build the documentation locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-integrations-` and corresponds to an NPM script within the `website` directory.
 
-Builds the documentation site for production deployment.
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides.
 
-#### `make docs`
-
-A combination of `make docs-lint-fix` and `make docs-build`.
-This command is useful before committing your changes to a pull request.
-
-Be sure to run the `make docs` command on your local branch before pushing the PR to the authentik repo.
-
-## Integrations
-
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
-
-For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+- For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 - For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 
-Make sure to create a directory for your service in a fitting category within [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations).
+- Make sure to create a directory for your service in a fitting category within [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations).
 
 :::tip Sidebars and categories
 You no longer need to modify the integrations sidebar file manually. This is now automatically generated from the categories in [`/website/integrations/categories.mjs`](https://github.com/goauthentik/authentik/blob/main/website/integrations/categories.mjs).
 :::
 
-### Live editing
+- **Live editing**: `make docs-integrations-watch`
 
-#### `make docs-integrations-watch`
+    Starts a development server for the integrations guides. This command will automatically rebuild the documentation site whenever you make changes to the Markdown (MDX) files in the [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations) directory.
 
-Starts a development server for the integrations guides.
-This command will automatically rebuild the documentation site whenever you make changes to the Markdown (MDX) files in the [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations) directory.
+- **Build the Integrations site**: `make docs-integrations-build`
 
-### Build
-
-#### `make docs-integrations-build`
-
-Builds the integrations guides for production deployment.
+    Builds the integrations guides for production deployment.
 
 ## API documentation
 
