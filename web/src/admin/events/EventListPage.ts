@@ -16,7 +16,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
-import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -71,7 +71,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     renderSectionBefore(): TemplateResult {
-        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.hasEnterpriseLicense) {
             return html`<div
                 class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
             >

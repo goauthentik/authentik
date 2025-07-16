@@ -42,7 +42,10 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
             public readonly licenseSummary!: LicenseSummary;
 
             get hasEnterpriseLicense() {
-                return this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+                return (
+                    this.licenseSummary.status === LicenseSummaryStatusEnum.Valid ||
+                    this.licenseSummary.status === LicenseSummaryStatusEnum.ExpirySoon
+                );
             }
         }
 

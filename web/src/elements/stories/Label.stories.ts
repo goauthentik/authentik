@@ -36,7 +36,7 @@ export const DefaultStory: StoryObj = {
 
     // @ts-ignore
     render: ({ compact, color, icon, message }: ILabelForTesting) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`>
             <style>
                 ak-label {
                     display: inline-block;
@@ -46,8 +46,7 @@ export const DefaultStory: StoryObj = {
             </style>
             <ak-label color=${ifDefined(color)} ?compact=${compact} icon=${ifDefined(icon)}>
                 <p>${message}</p>
-            </ak-label>
-        </div>`;
+            </ak-label> `;
     },
 };
 
