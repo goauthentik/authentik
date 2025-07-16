@@ -278,7 +278,7 @@ class DeviceCodeError(TokenError):
     }
 
     def __init__(self, error: str):
-        super().__init__()
+        super().__init__(error)
         self.error = error
         self.description = self.errors[error]
 
