@@ -48,7 +48,6 @@ urlpatterns = [
         EndSessionView.as_view(),
         name="end-session",
     ),
-
     path("<slug:application_slug>/jwks/", JWKSView.as_view(), name="jwks"),
     path(
         "<slug:application_slug>/",

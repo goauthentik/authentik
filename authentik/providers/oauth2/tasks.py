@@ -135,22 +135,22 @@ def send_backchannel_logout_notification(
 
     if session:
         # Get providers from access tokens (covers all OAuth2 flows)
-        access_tokens = AccessToken.objects.filter(session=session)
+        access_tokens = AccessToken.objects.select_related("provider").filter(session=session)
         for token in access_tokens:
             provider_pks.add(token.provider.pk)
 
         # Also include refresh tokens for completeness
-        refresh_tokens = RefreshToken.objects.filter(session=session)
+        refresh_tokens = RefreshToken.objects.select_related("provider").filter(session=session)
         for token in refresh_tokens:
             provider_pks.add(token.provider.pk)
     else:
         # Get providers from access tokens (covers all OAuth2 flows)
-        access_tokens = AccessToken.objects.filter(user=user)
+        access_tokens = AccessToken.objects.select_related("provider").filter(user=user)
         for token in access_tokens:
             provider_pks.add(token.provider.pk)
 
         # Also include refresh tokens for completeness
-        refresh_tokens = RefreshToken.objects.filter(user=user)
+        refresh_tokens = RefreshToken.objects.select_related("provider").filter(user=user)
         for token in refresh_tokens:
             provider_pks.add(token.provider.pk)
 
