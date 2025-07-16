@@ -34,6 +34,7 @@ class OAuth2Error(SentryIgnoredException):
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
             cause=self.cause,
+            error=self.error,
             **kwargs,
         )
 

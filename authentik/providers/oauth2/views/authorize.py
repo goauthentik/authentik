@@ -294,7 +294,7 @@ class OAuthAuthorizationParams:
             LOGGER.warning("Missing nonce for OpenID Request")
             raise AuthorizeError(
                 self.redirect_uri, "invalid_request", self.grant_type, self.state
-            ).with_cause("none_missing")
+            ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""

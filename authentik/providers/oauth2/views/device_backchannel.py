@@ -30,7 +30,7 @@ class DeviceView(View):
     provider: OAuth2Provider
     scopes: list[str] = []
 
-    def parse_request(self) -> HttpResponse | None:
+    def parse_request(self):
         """Parse incoming request"""
         client_id = self.request.POST.get("client_id", None)
         if not client_id:
@@ -45,7 +45,6 @@ class DeviceView(View):
         self.provider = provider
         self.client_id = client_id
         self.scopes = self.request.POST.get("scope", "").split(" ")
-        return None
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
