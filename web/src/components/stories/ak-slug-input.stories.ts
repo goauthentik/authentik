@@ -23,7 +23,7 @@ const metadata: Meta<AkSlugInput> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #000; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

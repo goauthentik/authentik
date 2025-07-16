@@ -36,7 +36,7 @@ export const DefaultStory: StoryObj = {
 
     // @ts-ignore
     render: ({ inline, level, icon, message }: IAlertForTesting) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-alert {
                     display: inline-block;
@@ -47,7 +47,7 @@ export const DefaultStory: StoryObj = {
             <ak-alert level=${ifDefined(level)} ?inline=${inline} icon=${ifDefined(icon)}>
                 <p>${message}</p>
             </ak-alert>
-        </div>`;
+        `;
     },
 };
 
