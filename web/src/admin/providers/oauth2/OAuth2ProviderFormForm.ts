@@ -123,7 +123,7 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
 
 const backchannelLogoutUriHelpMessages = [
     msg(
-        "URIs to send backchannel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
+        "URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
     ),
     msg(
         "These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.",

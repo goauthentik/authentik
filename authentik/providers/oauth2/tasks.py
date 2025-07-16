@@ -44,7 +44,7 @@ def send_backchannel_logout_request(
         return False
 
     # Get the back-channel logout URI from the provider's dedicated backchannel_logout_uris field
-    # Backchannel logout requires explicit configuration - no fallback to redirect URIs
+    # Back-channel logout requires explicit configuration - no fallback to redirect URIs
 
     backchannel_logout_uri = None
 
