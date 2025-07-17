@@ -111,7 +111,7 @@ export class ScheduleList extends Table<Schedule> {
     row(item: Schedule): TemplateResult[] {
         return [
             html`<div>${item.description}</div>
-                <small>${item.uid.replace(new RegExp("^authentik."), "")}</small>`,
+                <small>${item.uid}</small>`,
             html`${item.crontab}`,
             html`
                 ${item.paused
