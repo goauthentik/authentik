@@ -23,6 +23,7 @@ type PostgreSQLConnectionConfig struct {
 	SSLRootCert string
 	SSLCert     string
 	SSLKey      string
+	ConnOptions map[string]string
 }
 
 // LoadPostgreSQLConfig loads PostgreSQL configuration from the global config
@@ -39,6 +40,7 @@ func LoadPostgreSQLConfig() PostgreSQLConnectionConfig {
 		SSLRootCert: pgConfig.SSLRootCert,
 		SSLCert:     pgConfig.SSLCert,
 		SSLKey:      pgConfig.SSLKey,
+		ConnOptions: pgConfig.ConnOptions,
 	}
 }
 
@@ -117,11 +119,12 @@ func (c PostgreSQLConnectionConfig) ValidateConfig(logger *log.Entry) error {
 	}
 
 	logger.WithFields(log.Fields{
-		"host":     c.Host,
-		"port":     c.Port,
-		"database": c.Database,
-		"user":     c.User,
-		"sslmode":  c.SSLMode,
+		"host":         c.Host,
+		"port":         c.Port,
+		"database":     c.Database,
+		"user":         c.User,
+		"sslmode":      c.SSLMode,
+		"conn_options": c.ConnOptions,
 	}).Debug("PostgreSQL configuration validated")
 
 	return nil
@@ -143,6 +146,10 @@ func (c PostgreSQLConnectionConfig) BuildConnectionString() string {
 	}
 	if c.SSLKey != "" {
 		connStr += fmt.Sprintf(" sslkey=%s", c.SSLKey)
+	}
+
+	for key, value := range c.ConnOptions {
+		connStr += fmt.Sprintf(" %s=%s", key, value)
 	}
 
 	return connStr

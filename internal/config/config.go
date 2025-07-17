@@ -3,6 +3,8 @@ package config
 import (
 	"context"
 	_ "embed"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
@@ -22,6 +24,29 @@ import (
 var cfg *Config
 
 const defaultConfigPath = "./authentik/lib/default.yml"
+
+// GetDictFromB64JSON decodes a base64-encoded JSON string into a map[string]string
+func (c *Config) GetDictFromB64JSON(key string, default_ map[string]string) map[string]string {
+	value := os.Getenv(fmt.Sprintf("AUTHENTIK_%s", strings.ToUpper(strings.ReplaceAll(key, ".", "__"))))
+	if value == "" {
+		return default_
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		log.WithError(err).WithField("key", key).Warning("Failed to decode base64 value")
+		return default_
+	}
+
+	var result map[string]string
+	err = json.Unmarshal(decoded, &result)
+	if err != nil {
+		log.WithError(err).WithField("key", key).Warning("Failed to decode JSON value")
+		return default_
+	}
+
+	return result
+}
 
 func getConfigPaths() []string {
 	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}

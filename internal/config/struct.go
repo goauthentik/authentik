@@ -61,15 +61,16 @@ type StorageFileConfig struct {
 }
 
 type PostgreSQLConfig struct {
-	Host        string `yaml:"host" env:"HOST, overwrite"`
-	Port        int    `yaml:"port" env:"PORT, overwrite"`
-	Name        string `yaml:"name" env:"NAME, overwrite"`
-	User        string `yaml:"user" env:"USER, overwrite"`
-	Password    string `yaml:"password" env:"PASSWORD, overwrite"`
-	SSLMode     string `yaml:"sslmode" env:"SSLMODE, overwrite"` // none of these are in lib/default.yml, need to confirm if exact
-	SSLRootCert string `yaml:"sslrootcert" env:"SSLROOTCERT, overwrite"`
-	SSLCert     string `yaml:"sslcert" env:"SSLCERT, overwrite"`
-	SSLKey      string `yaml:"sslkey" env:"SSLKEY, overwrite"`
+	Host        string            `yaml:"host" env:"HOST, overwrite"`
+	Port        int               `yaml:"port" env:"PORT, overwrite"`
+	Name        string            `yaml:"name" env:"NAME, overwrite"`
+	User        string            `yaml:"user" env:"USER, overwrite"`
+	Password    string            `yaml:"password" env:"PASSWORD, overwrite"`
+	SSLMode     string            `yaml:"sslmode" env:"SSLMODE, overwrite"`
+	SSLRootCert string            `yaml:"sslrootcert" env:"SSLROOTCERT, overwrite"`
+	SSLCert     string            `yaml:"sslcert" env:"SSLCERT, overwrite"`
+	SSLKey      string            `yaml:"sslkey" env:"SSLKEY, overwrite"`
+	ConnOptions map[string]string `yaml:"conn_options" env:"CONN_OPTIONS, overwrite"`
 }
 
 type ErrorReportingConfig struct {
