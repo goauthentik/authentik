@@ -19,7 +19,6 @@ from authentik.events.models import Event, EventAction, NotificationWebhookMappi
 from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
 from authentik.stages.authenticator.models import SideChannelDevice
 
@@ -142,10 +141,9 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message="Error sending SMS",
-                exc=exception_to_string(exc),
                 status_code=response.status_code,
                 body=response.text,
-            ).set_user(device.user).save()
+            ).with_exception(exc).set_user(device.user).save()
             if response.status_code >= HttpResponseBadRequest.status_code:
                 raise ValidationError(response.text) from None
             raise

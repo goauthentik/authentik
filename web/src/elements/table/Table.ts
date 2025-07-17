@@ -15,7 +15,7 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
+import { Pagination } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
@@ -493,8 +493,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             this.page = 1;
             this.fetch();
         };
-        const isQL =
-            this.supportsQL && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const isQL = this.supportsQL && this.hasEnterpriseLicense;
         return !this.searchEnabled()
             ? html``
             : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">

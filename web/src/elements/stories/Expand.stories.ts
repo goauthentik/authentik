@@ -25,7 +25,7 @@ const metadata: Meta<Expand> = {
 export default metadata;
 
 const container = (content: TemplateResult) =>
-    html` <div style="background-color: #f0f0f0; padding: 1rem;">
+    html` <div>
         <style>
             ak-divider {
                 display: inline-block;

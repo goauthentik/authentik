@@ -34,7 +34,7 @@ export const DefaultStory: StoryObj = {
         title: "Quick actions",
     },
     render: ({ title }) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-quick-actions-card {
                     display: inline-block;
@@ -43,6 +43,6 @@ export const DefaultStory: StoryObj = {
                 }
             </style>
             <ak-quick-actions-card title=${title} .actions=${ACTIONS}></ak-quick-actions-card>
-        </div>`;
+        `;
     },
 };

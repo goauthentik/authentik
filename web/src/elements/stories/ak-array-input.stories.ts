@@ -44,10 +44,7 @@ const metadata: Meta<IArrayInput<unknown>> = {
                 });
             }, 250);
 
-            return html`<div
-                style="background: #fff; padding: 2em; position: relative"
-                id="the-main-event"
-            >
+            return html`<div style="padding: 2em; position: relative" id="the-main-event">
                 <style>
                     li {
                         display: block;
