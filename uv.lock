@@ -194,6 +194,7 @@ dependencies = [
     { name = "dumb-init" },
     { name = "duo-client" },
     { name = "fido2" },
+    { name = "filprofiler" },
     { name = "flower" },
     { name = "geoip2" },
     { name = "geopy" },
@@ -292,6 +293,7 @@ requires-dist = [
     { name = "dumb-init", specifier = "==1.2.5.post1" },
     { name = "duo-client", specifier = "==5.5.0" },
     { name = "fido2", specifier = "==2.0.0" },
+    { name = "filprofiler", specifier = ">=2024.11.2" },
     { name = "flower", specifier = "==2.0.1" },
     { name = "geoip2", specifier = "==5.1.0" },
     { name = "geopy", specifier = "==2.4.1" },
@@ -1271,6 +1273,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8d/b9/6ec8d8ec5715efc6ae39e8694bd48d57c189906f0628558f56688d0447b2/fido2-2.0.0.tar.gz", hash = "sha256:3061cd05e73b3a0ef6afc3b803d57c826aa2d6a9732d16abd7277361f58e7964", size = 274942, upload-time = "2025-05-20T09:45:00.974Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4c/7d/a1dba174d7ec4b6b8d6360eed0ac3a4a4e2aa45f234e903592d3184c6c3f/fido2-2.0.0-py3-none-any.whl", hash = "sha256:685f54a50a57e019c6156e2dd699802a603e3abf70bab334f26affdd4fb8d4f7", size = 224761, upload-time = "2025-05-20T09:44:59.029Z" },
+]
+
+[[package]]
+name = "filprofiler"
+version = "2024.11.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "threadpoolctl" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/ea/a9e9f9af45b048f08d5c8b7cfc4cb9b879ef71614b8355f13cf189f901dc/filprofiler-2024.11.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:0d8e5355ff0a78afa5b06ce1a2da3cda22edf711e5a4f717da907df083fe4c2e", size = 491090, upload-time = "2024-11-04T00:52:43.772Z" },
+    { url = "https://files.pythonhosted.org/packages/b4/5f/a73a18ac37478413e863e956fe08193156e4a3550e436df26196bcadfa01/filprofiler-2024.11.2-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:07fdd470cb8faae7aa4cc87a5b478ce5c96697ba769195a581f96976200ed0c5", size = 508743, upload-time = "2024-11-04T00:52:45.182Z" },
+    { url = "https://files.pythonhosted.org/packages/be/73/a64d4ebc66e21121997110f509483b6f27f2b057f17a965107cc241a35e4/filprofiler-2024.11.2-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:93d93a344f9999258b9b13036cff3227e38f3eeecec8646cb7c29441f0f389fd", size = 1472462, upload-time = "2024-11-04T01:37:16.145Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/62/81f15b683f62f5b7d4f814fbb06145ef17c164c6540a7174933d8d864c93/filprofiler-2024.11.2-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:f1e05647175bfc83dbadde95e65d4ce3bfe248fff0f64fddf96ebc54c73f34de", size = 1517731, upload-time = "2024-11-04T00:58:40.335Z" },
+    { url = "https://files.pythonhosted.org/packages/b1/65/8d53f2f6d25e62bbe9994a39543942f46ac47fb098fd477c72e5a886a4fe/filprofiler-2024.11.2-cp313-cp313t-manylinux_2_28_x86_64.whl", hash = "sha256:c662c341f87faf460a94af10c6fc0723295e0341b6ba49e2eae64326698b8ce7", size = 1517999, upload-time = "2024-11-04T00:58:42.203Z" },
 ]
 
 [[package]]
@@ -3108,6 +3125,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d0/fe/cfe19eb7cc3ad8e39d7df7b7c44414bf665b6ac6660c998eb498f89d16c6/tenant_schemas_celery-3.0.0.tar.gz", hash = "sha256:6be3ae1a5826f262f0f3dd343c6a85a34a1c59b89e04ae37de018f36562fed55", size = 15954, upload-time = "2024-05-19T11:16:41.837Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/db/2c/376e1e641ad08b374c75d896468a7be2e6906ce3621fd0c9f9dc09ff1963/tenant_schemas_celery-3.0.0-py3-none-any.whl", hash = "sha256:ca0f69e78ef698eb4813468231df5a0ab6a660c08e657b65f5ac92e16887eec8", size = 18108, upload-time = "2024-05-19T11:16:39.92Z" },
+]
+
+[[package]]
+name = "threadpoolctl"
+version = "3.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/4d/08c89e34946fce2aec4fbb45c9016efd5f4d7f24af8e5d93296e935631d8/threadpoolctl-3.6.0.tar.gz", hash = "sha256:8ab8b4aa3491d812b623328249fab5302a68d2d71745c8a4c719a2fcaba9f44e", size = 21274, upload-time = "2025-03-13T13:49:23.031Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/32/d5/f9a850d79b0851d1d4ef6456097579a9005b31fea68726a4ae5f2d82ddd9/threadpoolctl-3.6.0-py3-none-any.whl", hash = "sha256:43a0b8fd5a2928500110039e43a5eed8480b918967083ea48dc3ab9f13c4a7fb", size = 18638, upload-time = "2025-03-13T13:49:21.846Z" },
 ]
 
 [[package]]
