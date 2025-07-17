@@ -4,6 +4,7 @@ import string
 from collections.abc import Iterable
 from random import SystemRandom
 from urllib.parse import urljoin
+from uuid import uuid4
 
 from django.db import models
 from django.templatetags.static import static
@@ -11,7 +12,7 @@ from django.utils.translation import gettext as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, ExpiringModel
 from authentik.outposts.models import OutpostModel
 from authentik.providers.oauth2.models import (
     ClientTypes,
@@ -167,3 +168,60 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         verbose_name = _("Proxy Provider")
         verbose_name_plural = _("Proxy Providers")
         authentik_used_by_shadows = ["authentik_providers_oauth2.oauth2provider"]
+
+
+class ProxySessionManager(models.Manager):
+    """Manager for ProxySession"""
+
+    def get_queryset(self):
+        """Filter out soft-deleted sessions"""
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
+    def cleanup_expired(self) -> int:
+        """Delete expired sessions and return count of deleted sessions"""
+        from django.utils import timezone
+        result = self.filter(expires__lt=timezone.now()).delete()
+        return result[0] if result else 0
+
+
+class ProxySession(ExpiringModel):
+    """Session for Proxy Outpost"""
+
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    
+    provider_id = models.CharField(max_length=255, null=False, blank=False)
+    
+    session_key = models.CharField(max_length=255, null=False, blank=False)
+    
+    data = models.BinaryField()
+    
+    claims = models.TextField(blank=True, default="")
+    
+    redirect = models.TextField(blank=True, default="")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    deleted_at = models.DateTimeField(null=True, blank=True, default=None) # used by gorm for soft delete
+
+    objects = ProxySessionManager()
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Proxy Provider Session")
+        verbose_name_plural = _("Proxy Provider Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["session_key", "provider_id"]),
+            models.Index(fields=["provider_id"]),
+            models.Index(fields=["created_at"]),
+            models.Index(fields=["deleted_at"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["session_key", "provider_id"],
+                name="unique_session_key_provider_id"
+            ),
+        ]
+        
+    def __str__(self):
+        return f"Proxy Session {self.session_key} (Provider: {self.provider_id})"

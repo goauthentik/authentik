@@ -10,8 +10,8 @@ from django.test import TestCase
 from django.utils import timezone
 
 from authentik.core.tests.utils import create_test_flow
-from authentik.outposts.models import ProxySession, ProxySessionManager, Outpost, OutpostType
-from authentik.providers.proxy.models import ProxyProvider
+from authentik.outposts.models import Outpost, OutpostType
+from authentik.providers.proxy.models import ProxyProvider, ProxySession, ProxySessionManager
 
 
 class TestProxySessionModel(TestCase):
