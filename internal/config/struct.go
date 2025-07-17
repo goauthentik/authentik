@@ -28,8 +28,7 @@ type Config struct {
 }
 
 type SQLiteConfig struct {
-	Path            string `yaml:"path" env:"PATH, overwrite"`
-	CleanupInterval int    `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL, overwrite"`
+	CleanupInterval int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL, overwrite"`
 }
 
 type RetriesConfig struct {

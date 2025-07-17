@@ -58,7 +58,6 @@ redis:
   tls_ca_cert: null
 
 sqlite:
-  path: ""
   cleanup_interval: 3600
 
 # broker:
