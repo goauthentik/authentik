@@ -598,9 +598,9 @@ class TokenView(View):
                     return TokenResponse(self.create_device_code_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
-            return TokenResponse(error.create_dict(), status=400)
+            return TokenResponse(error.create_dict(request), status=400)
         except UserAuthError as error:
-            return TokenResponse(error.create_dict(), status=403)
+            return TokenResponse(error.create_dict(request), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""

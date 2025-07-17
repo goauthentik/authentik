@@ -10,7 +10,7 @@ from django_dramatiq_postgres.models import TaskBase, TaskState
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
 
 
@@ -98,7 +98,11 @@ class Task(SerializerModel, TaskBase):
         cls, logger: str, log_level: TaskStatus, message: str | Exception, **attributes
     ) -> dict[str, Any]:
         if isinstance(message, Exception):
-            message = exception_to_string(message)
+            attributes = {
+                "exception": exception_to_dict(message),
+                **attributes,
+            }
+            message = str(message)
         log = LogEvent(
             message,
             logger=logger,

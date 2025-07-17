@@ -35,7 +35,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.lib import ScheduleSpec
@@ -358,9 +357,8 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
                                 "While setting the permissions for the service-account, a "
                                 "permission was not found: Check "
                                 "https://goauthentik.io/docs/troubleshooting/missing_permission"
-                            )
-                            + exception_to_string(exc),
-                        ).set_user(user).save()
+                            ),
+                        ).with_exception(exc).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
                     permission = Permission.objects.filter(

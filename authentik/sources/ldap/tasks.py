@@ -13,7 +13,6 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
@@ -153,7 +152,7 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
         self.info(f"Synced {count} objects.")
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:
-        # No explicit event is created here as .set_status with an error will do that
-        LOGGER.warning(exception_to_string(exc))
+        # No explicit event is created here as .error will do that
+        LOGGER.warning("Failed to sync LDAP", exc=exc, source=source)
         self.error(exc)
         raise exc

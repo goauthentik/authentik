@@ -8,7 +8,6 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.tasks.models import Task
@@ -49,6 +48,6 @@ def kerberos_sync(pk: str):
             syncer = KerberosSync(source, self)
             syncer.sync()
     except StopSync as exc:
-        LOGGER.warning(exception_to_string(exc))
+        LOGGER.warning("Error syncing kerberos", exc=exc, source=source)
         self.error(exc)
         raise exc
