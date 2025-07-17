@@ -1,0 +1,138 @@
+.theme-doc-sidebar-item-link.theme-doc-sidebar-item-link-level-1 > .menu__link,
+.theme-doc-sidebar-item-category.theme-doc-sidebar-item-category-level-1
+    > .menu__list-item-collapsible
+    > .menu__link {
+    font-weight: 600;
+}
+
+.theme-doc-sidebar-item-category-level-1 .menu__list-item-collapsible {
+    padding-block: 0.25em;
+}
+
+.theme-layout-main {
+    --doc-sidebar-width: 400px;
+}
+
+.navbar-sidebar__upwards {
+    .menu__link {
+        font-size: var(--ifm-h6-font-size);
+        font-weight: var(--ifm-font-weight-bold);
+        color: var(--ifm-color-info-light);
+        padding-block: calc(var(--ifm-spacing-vertical) / 1.5);
+    }
+}
+
+.theme-doc-sidebar-item-category.api-reference {
+    > .menu__list-item-collapsible {
+        font-weight: 900;
+        font-size: var(--ifm-h3-font-size);
+    }
+
+    .menu__list {
+        padding-left: 0;
+    }
+
+    .theme-doc-sidebar-item-category-level-2 .menu__list-item-collapsible {
+        font-size: var(--ifm-h4-font-size);
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+}
+
+.menu__link.menu__link--external {
+    align-items: center;
+}
+
+.menu__list-item.api-method {
+    .badge-container {
+        flex: 0 0 auto;
+        display: flex;
+        width: 100%;
+        justify-content: end;
+    }
+
+    > .menu__link {
+        --menu-border-width: 2px;
+
+        color: var(--menu-item-contrast-foreground, red);
+        background-color: var(--menu-item-background-color, transparent);
+        flex-flow: column;
+        font-family: var(--ifm-font-family-monospace);
+        font-weight: 600;
+        gap: 0.25em;
+        padding-inline-end: 0.25em;
+        word-break: break-all;
+        align-items: start;
+        border-radius: 0;
+        margin-inline-end: calc(var(--ifm-menu-link-padding-horizontal) / 2);
+        font-size: var(--ifm-h6-font-size);
+        letter-spacing: 0.015em;
+        text-rendering: optimizelegibility;
+        position: relative;
+        box-shadow: var(--ifm-global-shadow-lw);
+
+        &::before {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: var(--menu-border-width);
+            height: 100%;
+            display: block;
+            z-index: 1;
+            background-color: var(--ifm-badge-color, var(--ifm-color-primary));
+            content: "";
+            transition: width 0.2s var(--ifm-transition-timing-default);
+        }
+
+        &:hover,
+        &.menu__link--active {
+            --menu-border-width: 6px;
+        }
+    }
+
+    &.get {
+        --method-label: "GET";
+        --menu-item-contrast-foreground: var(--ifm-color-content);
+        --menu-item-background-color: var(--ifm-card-background-color);
+        --ifm-badge-color: var(--ifm-color-primary-light);
+    }
+
+    &.post {
+        --method-label: "POST";
+        --menu-item-contrast-foreground: var(--ifm-color-success-contrast-foreground);
+        --menu-item-background-color: var(--ifm-color-success-contrast-background);
+        --ifm-badge-color: var(--ifm-color-success-lightest);
+    }
+
+    &.put {
+        --method-label: "PUT";
+        --menu-item-contrast-foreground: var(--ifm-color-info-contrast-foreground);
+        --menu-item-background-color: var(--ifm-color-info-contrast-background);
+        --ifm-badge-color: var(--ifm-color-info-lightest);
+    }
+
+    &.patch {
+        --method-label: "PATCH";
+        --menu-item-contrast-foreground: var(--ifm-color-warning-contrast-foreground);
+        --menu-item-background-color: var(--ifm-color-warning-contrast-background);
+        --ifm-badge-color: var(--ifm-color-warning-lightest);
+    }
+
+    &.delete {
+        --method-label: "DELETE";
+        --menu-item-contrast-foreground: var(--ifm-color-danger-contrast-foreground);
+        --menu-item-background-color: var(--ifm-color-danger-contrast-background);
+        --ifm-badge-color: var(--ifm-color-danger-lightest);
+    }
+}
+
+.badge.method {
+    position: relative;
+    flex: 0 0 auto;
+    user-select: none;
+
+    &::before {
+        content: var(--method-label, "METHOD");
+        display: block;
+    }
+}

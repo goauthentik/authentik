@@ -12,8 +12,6 @@ import {
     createReleaseSidebarEntries,
 } from "@goauthentik/docusaurus-theme/releases/utils";
 
-import apiReference from "./developer-docs/api/reference/sidebar.ts";
-
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const releases = collectReleaseFiles(path.join(__dirname));
@@ -637,32 +635,11 @@ const items = [
         },
         items: [
             {
-                type: "category",
-                label: "API",
-                link: {
-                    type: "doc",
-                    id: "developer-docs/api/api",
-                },
-                items: [
-                    "developer-docs/api/flow-executor",
-                    "developer-docs/api/making-schema-changes",
-                    "developer-docs/api/websocket",
-                    {
-                        type: "category",
-                        label: "Reference",
-                        items: apiReference,
-                    },
-                    "developer-docs/api/clients",
-                ],
+                type: "link",
+                href: "pathname:///api",
+                label: "API Overview",
+                className: "api-overview",
             },
-
-            // TODO: Enable when API docs are ready
-            // {
-            //     type: "link",
-            //     href: process.env.API_DOCS_URL || "https://api.goauthentik.io",
-            //     label: "API Overview",
-            //     className: "api-overview",
-            // },
 
             {
                 //#endregion
