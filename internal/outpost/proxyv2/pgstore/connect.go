@@ -28,7 +28,10 @@ type PostgreSQLConnectionConfig struct {
 
 // LoadPostgreSQLConfig loads PostgreSQL configuration from the global config
 func LoadPostgreSQLConfig() PostgreSQLConnectionConfig {
-	pgConfig := config.Get().PostgreSQL
+	cfg := config.Get()
+	pgConfig := cfg.PostgreSQL
+
+	connOptions := cfg.GetDictFromB64JSON("postgresql.conn_options", make(map[string]string))
 
 	return PostgreSQLConnectionConfig{
 		Host:        pgConfig.Host,
@@ -40,7 +43,7 @@ func LoadPostgreSQLConfig() PostgreSQLConnectionConfig {
 		SSLRootCert: pgConfig.SSLRootCert,
 		SSLCert:     pgConfig.SSLCert,
 		SSLKey:      pgConfig.SSLKey,
-		ConnOptions: pgConfig.ConnOptions,
+		ConnOptions: connOptions,
 	}
 }
 
@@ -167,13 +170,14 @@ func CreateStoreFromConfig(schema string, providerID string, sessionOptions *ses
 
 	// Log connection attempt
 	logger.WithFields(log.Fields{
-		"host":     config.Host,
-		"port":     config.Port,
-		"database": config.Database,
-		"user":     config.User,
-		"schema":   schema,
-		"sslmode":  config.SSLMode,
-		"has_cert": config.SSLCert != "",
+		"host":         config.Host,
+		"port":         config.Port,
+		"database":     config.Database,
+		"user":         config.User,
+		"schema":       schema,
+		"sslmode":      config.SSLMode,
+		"has_cert":     config.SSLCert != "",
+		"conn_options": config.ConnOptions,
 	}).Debug("Connecting to PostgreSQL")
 
 	// Create GORM DB instance directly
