@@ -1,8 +1,8 @@
 import { createMixin } from "#elements/types";
 
-import { Context, consume, createContext } from "@lit/context";
-
 import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
+import { consume, Context, createContext } from "@lit/context";
 
 export const LicenseContext = createContext<LicenseSummary>(
     Symbol.for("authentik-license-context"),
@@ -42,7 +42,10 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
             public readonly licenseSummary!: LicenseSummary;
 
             get hasEnterpriseLicense() {
-                return this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+                return (
+                    this.licenseSummary.status === LicenseSummaryStatusEnum.Valid ||
+                    this.licenseSummary.status === LicenseSummaryStatusEnum.ExpirySoon
+                );
             }
         }
 

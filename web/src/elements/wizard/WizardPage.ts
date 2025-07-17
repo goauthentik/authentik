@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import { AKElement } from "#elements/Base";
+import { Wizard } from "#elements/wizard/Wizard";
 
-import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyDeclaration, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -20,9 +20,7 @@ export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase];
-    }
+    static styles: CSSResult[] = [PFBase];
 
     /**
      * The label to display in the sidebar for this page.

@@ -1,11 +1,13 @@
-import { PFSize } from "@goauthentik/common/enums.js";
+import "../AppIcon.js";
+
+import { AppIcon } from "../AppIcon.js";
+
+import { PFSize } from "#common/enums";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../AppIcon";
-import { AppIcon } from "../AppIcon";
 
 const sizeOptions = Array.from(Object.values(PFSize));
 
@@ -28,18 +30,17 @@ const metadata: Meta<AppIcon> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #f0f0f0; padding: 1em">
-        <style>
-            li {
-                display: block;
-            }
-            p {
-                margin-top: 1em;
-            }
-        </style>
-        ${testItem}
-    </div>`;
+const container = (testItem: TemplateResult) => html`
+    <style>
+        li {
+            display: block;
+        }
+        p {
+            margin-top: 1em;
+        }
+    </style>
+    ${testItem}
+`;
 
 export const DefaultStory: StoryObj = {
     args: {

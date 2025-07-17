@@ -1,11 +1,13 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../EmptyState.js";
+
+import { akEmptyState } from "../EmptyState.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import "../EmptyState.js";
-import { akEmptyState } from "../EmptyState.js";
 
 describe("ak-empty-state", () => {
     afterEach(async () => {

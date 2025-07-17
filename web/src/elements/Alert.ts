@@ -1,5 +1,6 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { css, html, nothing } from "lit";
@@ -63,17 +64,15 @@ export class Alert extends AKElement implements IAlert {
     @property()
     icon = "fa-exclamation-circle";
 
-    static get styles() {
-        return [
-            PFBase,
-            PFAlert,
-            css`
-                p {
-                    margin: 0;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFAlert,
+        css`
+            p {
+                margin: 0;
+            }
+        `,
+    ];
 
     get classmap() {
         const level = levelNames.includes(this.level)

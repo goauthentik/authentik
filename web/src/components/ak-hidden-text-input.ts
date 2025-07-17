@@ -1,3 +1,11 @@
+import "./ak-visibility-toggle.js";
+
+import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
+import {
+    HorizontalLightComponent,
+    HorizontalLightComponentProps,
+} from "./HorizontalLightComponent.js";
+
 import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
@@ -5,13 +13,6 @@ import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import {
-    HorizontalLightComponent,
-    HorizontalLightComponentProps,
-} from "./HorizontalLightComponent";
-import "./ak-visibility-toggle.js";
-import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &
     Pick<VisibilityToggleProps, "showMessage" | "hideMessage">;
@@ -40,15 +41,13 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     extends HorizontalLightComponent<string>
     implements AkHiddenTextInputProps
 {
-    public static get styles() {
-        return [
-            css`
-                main {
-                    display: flex;
-                }
-            `,
-        ];
-    }
+    public static styles = [
+        css`
+            main {
+                display: flex;
+            }
+        `,
+    ];
 
     /**
      * @property
@@ -80,7 +79,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String })
-    public autocomplete?: "none" | AutoFill;
+    public autocomplete?: AutoFill;
 
     /**
      * @property
@@ -119,6 +118,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         return html` <input
             style="flex: 1 1 auto; min-width: 0;"
             part="input"
+            autocomplete=${ifDefined(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
             @input=${setValue}
             value=${ifDefined(this.value)}

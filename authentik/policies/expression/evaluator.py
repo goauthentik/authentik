@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.exceptions import PolicyException
@@ -45,6 +46,10 @@ class PolicyEvaluator(BaseEvaluator):
             self.set_http_request(request.http_request)
         self._context["request"] = request
         self._context["context"] = request.context
+        if request.obj and isinstance(request.obj, Event):
+            self._context["ak_client_ip"] = ip_address(
+                request.obj.client_ip or ClientIPMiddleware.default_ip
+            )
 
     def set_http_request(self, request: HttpRequest):
         """Update context based on http request"""

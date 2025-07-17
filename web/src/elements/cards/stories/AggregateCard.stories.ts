@@ -1,10 +1,11 @@
+import "../AggregateCard.js";
+
+import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AggregateCard, type IAggregateCard } from "../AggregateCard.js";
-import "../AggregateCard.js";
 
 const metadata: Meta<AggregateCard> = {
     title: "Elements/<ak-aggregate-card>",
@@ -34,7 +35,7 @@ export const DefaultStory: StoryObj = {
         leftJustified: false,
     },
     render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregateCard) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-aggregate-card {
                     display: inline-block;
@@ -57,6 +58,6 @@ export const DefaultStory: StoryObj = {
                     guys, but race without a finish line, nor thought shower.
                 </p>
             </ak-aggregate-card>
-        </div>`;
+        `;
     },
 };

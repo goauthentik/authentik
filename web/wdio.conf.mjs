@@ -1,11 +1,11 @@
+import { addCommands } from "./commands.mjs";
+
 /**
  * @file WebdriverIO configuration file for **integration tests**.
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
 import { browser } from "@wdio/globals";
-
-import { addCommands } from "./commands.mjs";
 
 /// <reference types="@wdio/globals/types" />
 /// <reference types="./types/webdriver.js" />

@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "./ak-action-button.js";
+
+import AKActionButton from "./ak-action-button.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "./ak-action-button";
-import AKActionButton from "./ak-action-button";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AKActionButton> = {
     title: "Elements / <ak-action-button>",
@@ -28,7 +29,7 @@ const metadata: Meta<AKActionButton> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

@@ -1,24 +1,22 @@
-import {
-    EVENT_MESSAGE,
-    EVENT_WS_MESSAGE,
-    WS_MSG_TYPE_MESSAGE,
-} from "@goauthentik/common/constants";
-import { APIError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-import { WSMessage } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/messages/Message";
-import { APIMessage } from "@goauthentik/elements/messages/Message";
+import "#elements/messages/Message";
+
+import { EVENT_MESSAGE, EVENT_WS_MESSAGE, WS_MSG_TYPE_MESSAGE } from "#common/constants";
+import { APIError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+import { SentryIgnoredError } from "#common/sentry/index";
+import { WSMessage } from "#common/ws";
+
+import { AKElement } from "#elements/Base";
+import { APIMessage } from "#elements/messages/Message";
+
+import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { instanceOfValidationError } from "@goauthentik/api";
 
 /**
  * Adds a message to the message container, displaying it to the user.
@@ -83,22 +81,20 @@ export class MessageContainer extends AKElement {
     @property()
     alignment: "top" | "bottom" = "top";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlertGroup,
-            css`
-                /* Fix spacing between messages */
-                ak-message {
-                    display: block;
-                }
-                :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
-                    bottom: var(--pf-c-alert-group--m-toast--Top);
-                    top: unset;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlertGroup,
+        css`
+            /* Fix spacing between messages */
+            ak-message {
+                display: block;
+            }
+            :host([alignment="bottom"]) .pf-c-alert-group.pf-m-toast {
+                bottom: var(--pf-c-alert-group--m-toast--Top);
+                top: unset;
+            }
+        `,
+    ];
 
     constructor() {
         super();

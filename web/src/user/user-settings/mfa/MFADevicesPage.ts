@@ -1,23 +1,25 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
-import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/TokenCopyButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { globalAK } from "#common/global";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
     stage.title ?? `Invalid stage component ${stage.component}`;
