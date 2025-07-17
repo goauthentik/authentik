@@ -310,9 +310,8 @@ def outpost_session_end(session_id: str):
     if not channel_layer:
         return
     hashed_session_id = hash_session_key(session_id)
-    LOGGER.info(
-        "Sending session end event to outposts",
-        original_session_id=session_id,
+    LOGGER.debug(
+        "Sending session end event",
         hashed_session_id=hashed_session_id,
     )
     # The group name is the outpost token, this way we don't have to check
