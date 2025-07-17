@@ -1,3 +1,5 @@
+import styles from "./styles.module.css";
+
 import Translate from "@docusaurus/Translate";
 import Admonition from "@theme/Admonition";
 import type { Props } from "@theme/EditMetaRow";
@@ -5,8 +7,6 @@ import EditThisPage from "@theme/EditThisPage";
 import LastUpdated from "@theme/LastUpdated";
 import clsx from "clsx";
 import React from "react";
-
-import styles from "./styles.module.css";
 
 const EditMetaRow: React.FC<Props> = ({
     className,

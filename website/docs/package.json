@@ -1,0 +1,36 @@
+{
+    "name": "@goauthentik/docs-topics",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s check-types build:docusaurus",
+        "build:docusaurus": "docusaurus build --out-dir ../build",
+        "check-types": "tsc -b .",
+        "clear": "docusaurus clear",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve --dir ../build",
+        "start": "docusaurus start"
+    },
+    "dependencies": {
+        "@docusaurus/core": "3.7.0",
+        "@docusaurus/module-type-aliases": "3.7.0",
+        "@docusaurus/preset-classic": "3.7.0",
+        "@docusaurus/theme-mermaid": "3.7.0",
+        "@docusaurus/tsconfig": "3.7.0",
+        "@docusaurus/types": "3.7.0",
+        "@goauthentik/docusaurus-config": "1.1.0",
+        "@goauthentik/docusaurus-theme": "*",
+        "@mdx-js/react": "^3.1.0",
+        "@types/react": "^18.3.22",
+        "@types/react-dom": "^18.3.0",
+        "prism-react-renderer": "^2.3.0",
+        "react": "^18.3.1",
+        "react-before-after-slider-component": "^1.1.8",
+        "react-dom": "^18.3.1",
+        "unist-util-visit": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

@@ -6,8 +6,12 @@ WORKDIR /work/website
 
 RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
     --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    --mount=type=bind,target=/work/website/docusaurus-theme/package.json,src=./website/docusaurus-theme/package.json \
+    --mount=type=bind,target=/work/website/api/package.json,src=./website/api/package.json \
+    --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
+    --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+    npm ci --workspaces --include-workspace-root
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/

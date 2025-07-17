@@ -1,11 +1,13 @@
 /**
- * @file Docusaurus Integrations config.
+ * @file Docusaurus Documentation config.
  *
  * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
- * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
+ * @import { ReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  */
 
-import { legacyRedirects } from "./legacy-redirects.mjs";
+import { cp } from "node:fs/promises";
+import { basename, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import {
@@ -15,6 +17,28 @@ import {
 } from "@goauthentik/docusaurus-theme/config";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const rootStaticDirectory = resolve(__dirname, "..", "static");
+const authentikModulePath = resolve(__dirname, "..", "..");
+
+//#region Copy static files
+
+const files = [
+    // ---
+    resolve(authentikModulePath, "docker-compose.yml"),
+];
+
+await Promise.all(
+    files.map((file) => {
+        const fileName = basename(file);
+        const destPath = resolve(rootStaticDirectory, fileName);
+        return cp(file, destPath, { recursive: true });
+    }),
+);
+
+//#endregion
+
 //#region Configuration
 
 export default createDocusaurusConfig(
@@ -23,24 +47,31 @@ export default createDocusaurusConfig(
             experimental_faster: true,
         },
 
-        url: "https://integrations.goauthentik.io",
-
+        url: "https://docs.goauthentik.io",
         //#region Preset
 
         presets: [
             createClassicPreset({
+                pages: {
+                    path: "pages",
+                },
                 docs: {
+                    routeBasePath: "/docs",
                     path: ".",
-                    routeBasePath: "/",
+
                     sidebarPath: "./sidebar.mjs",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/integrations/",
+                    showLastUpdateTime: false,
+                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/docs/",
+
+                    //#region Docs Plugins
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
                             // ---
+                            // TODO: Enable after base path is set to '/'
+                            // ["/docs", ""],
                             ["/api", "https://api.goauthentik.io"],
-                            ["/docs", "https://docs.goauthentik.io"],
+                            ["/integrations", "https://integrations.goauthentik.io"],
                         ]),
                     ],
                 },
@@ -53,20 +84,9 @@ export default createDocusaurusConfig(
 
         plugins: [
             [
-                "@docusaurus/plugin-client-redirects",
-                /** @type {RedirectsPluginOptions} */ ({
-                    redirects: [
-                        {
-                            from: "/integrations",
-                            to: "/",
-                        },
-                        ...Array.from(legacyRedirects, ([from, to]) => {
-                            return {
-                                from: [from, `/integrations${from}`],
-                                to,
-                            };
-                        }),
-                    ],
+                "@goauthentik/docusaurus-theme/releases/plugin",
+                /** @type {ReleasesPluginOptions} */ ({
+                    docsDirectory: __dirname,
                 }),
             ],
         ],
@@ -79,8 +99,9 @@ export default createDocusaurusConfig(
 
         themeConfig: /** @type {UserThemeConfig} */ ({
             algolia: createAlgoliaConfig({
-                externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
+                externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
             }),
+
             image: "img/social.png",
             navbar: {
                 logo: {
@@ -97,15 +118,15 @@ export default createDocusaurusConfig(
                         target: "_self",
                     },
                     {
-                        to: "/",
+                        to: "https://integrations.goauthentik.io",
                         label: "Integrations",
                         position: "left",
+                        target: "_self",
                     },
                     {
-                        to: "https://docs.goauthentik.io",
+                        to: "docs/",
                         label: "Documentation",
                         position: "left",
-                        target: "_self",
                     },
                     {
                         to: "https://goauthentik.io/pricing/",

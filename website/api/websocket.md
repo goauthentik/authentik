@@ -1,5 +1,7 @@
 ---
 title: Websocket API
+sidebar_position: 3
+sidebar_label: Websockets
 ---
 
 authentik has two different WebSocket endpoints, one is used for web-based clients to get real-time updates, and the other is used for outposts to report their healthiness.
