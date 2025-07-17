@@ -1,5 +1,6 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from socket import gethostname
+import socket
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer as BaseHTTPServer
 from time import sleep
 from typing import Any
 
@@ -144,6 +145,14 @@ class DescriptionMiddleware(Middleware):
         return {"description"}
 
 
+class HTTPServer(BaseHTTPServer):
+    address_family = socket.AF_INET6
+
+    def server_bind(self):
+        self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
+        super().server_bind()
+
+
 class _healthcheck_handler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         try:
@@ -172,12 +181,15 @@ class WorkerHealthcheckMiddleware(Middleware):
 
     @staticmethod
     def run(addr: str, port: int):
+        if addr == "0.0.0.0":
+            addr = "::"
         try:
             httpd = HTTPServer((addr, port), _healthcheck_handler)
             httpd.serve_forever()
-        except OSError:
+        except OSError as exc:
             get_logger(__name__, type(WorkerHealthcheckMiddleware)).warning(
-                "Port is already in use, not starting healthcheck server"
+                "Port is already in use, not starting healthcheck server",
+                exc=exc,
             )
 
 
@@ -191,7 +203,7 @@ class WorkerStatusMiddleware(Middleware):
     @staticmethod
     def run():
         status = WorkerStatus.objects.create(
-            hostname=gethostname(),
+            hostname=socket.gethostname(),
             version=get_full_version(),
         )
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
