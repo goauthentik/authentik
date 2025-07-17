@@ -494,6 +494,65 @@ class TestConfig(TestCase):
             },
         )
 
+    def test_db_conn_options(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+
+        conf = django_db_config(config)
+
+        self.assertEqual(
+            conf["default"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertNotIn("connect_timeout", conf["replica_0"]["OPTIONS"])
+
+    def test_db_conn_options_read_replicas(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.replica_conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+        config.set("postgresql.read_replicas.1.host", "bar")
+        config.set(
+            "postgresql.read_replicas.1.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "20",
+                    }
+                ).encode()
+            ).decode(),
+        )
+
+        conf = django_db_config(config)
+
+        self.assertNotIn("connect_timeout", conf["default"]["OPTIONS"])
+        self.assertEqual(
+            conf["replica_0"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertEqual(
+            conf["replica_1"]["OPTIONS"]["connect_timeout"],
+            "20",
+        )
+
     # FIXME: Temporarily force pool to be deactivated.
     # See https://github.com/goauthentik/authentik/issues/14320
     # def test_db_pool(self):
