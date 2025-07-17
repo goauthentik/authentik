@@ -1,6 +1,8 @@
 package radius
 
 import (
+	"crypto/hmac"
+	"crypto/md5"
 	"crypto/sha512"
 	"encoding/hex"
 	"time"
@@ -13,6 +15,7 @@ import (
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"goauthentik.io/internal/utils"
 	"layeh.com/radius"
+	"layeh.com/radius/rfc2869"
 )
 
 type RadiusRequest struct {
@@ -33,6 +36,27 @@ func (r *RadiusRequest) RemoteAddr() string {
 
 func (r *RadiusRequest) ID() string {
 	return r.id
+}
+
+func (r *RadiusRequest) setMessageAuthenticator(rp *radius.Packet) error {
+	_ = rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
+	hash := hmac.New(md5.New, rp.Secret)
+	encode, err := rp.MarshalBinary()
+	if err != nil {
+		return err
+	}
+	hash.Write(encode)
+	_ = rfc2869.MessageAuthenticator_Set(rp, hash.Sum(nil))
+	return nil
+}
+
+func (r *RadiusRequest) Reject() *radius.Packet {
+	res := r.Response(radius.CodeAccessReject)
+	err := r.setMessageAuthenticator(res)
+	if err != nil {
+		r.log.WithError(err).Warning("failed to set message authenticator")
+	}
+	return res
 }
 
 func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) {
@@ -72,7 +96,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		hs := sha512.Sum512([]byte(r.Secret))
 		bs := hex.EncodeToString(hs[:])
 		nr.Log().WithField("hashed_secret", bs).Warning("No provider found")
-		_ = w.Write(r.Response(radius.CodeAccessReject))
+		_ = w.Write(nr.Reject())
 		return
 	}
 	nr.pi = pi
