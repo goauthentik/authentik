@@ -162,7 +162,7 @@
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.3",
         "@types/mocha": "^10.0.10",
-        "@types/node": "^22.15.21",
+        "@types/node": "^24.0.14",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
