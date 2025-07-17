@@ -2,13 +2,13 @@ package config
 
 type Config struct {
 	// Core specific config
-	Storage        StorageConfig           `yaml:"storage"`
-	LogLevel       string                  `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
-	ErrorReporting ErrorReportingConfig    `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
-	SQLite         SQLiteConfig            `yaml:"sqlite" env:", prefix=AUTHENTIK_SQLITE__"`
-	PostgreSQL     StoragePostgreSQLConfig `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
-	Outposts       OutpostConfig           `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
-	Retries        RetriesConfig           `yaml:"retries" env:", prefix=AUTHENTIK_RETRIES__"`
+	Storage        StorageConfig        `yaml:"storage"`
+	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
+	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
+	SQLite         SQLiteConfig         `yaml:"sqlite" env:", prefix=AUTHENTIK_SQLITE__"`
+	PostgreSQL     PostgreSQLConfig     `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
+	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Retries        RetriesConfig        `yaml:"retries" env:", prefix=AUTHENTIK_RETRIES__"`
 
 	// Config for core and embedded outpost
 	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
@@ -60,7 +60,7 @@ type StorageFileConfig struct {
 	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
 }
 
-type StoragePostgreSQLConfig struct {
+type PostgreSQLConfig struct {
 	Host        string `yaml:"host" env:"HOST, overwrite"`
 	Port        int    `yaml:"port" env:"PORT, overwrite"`
 	Name        string `yaml:"name" env:"NAME, overwrite"`

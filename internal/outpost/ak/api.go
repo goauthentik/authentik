@@ -21,7 +21,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
@@ -87,7 +86,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
 			return outposts, err
 		},
-		retry.Attempts(config.Get().Retries.Attempts),
+		retry.Attempts(0),
 		retry.Delay(time.Second*3),
 		retry.OnRetry(func(attempt uint, err error) {
 			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")

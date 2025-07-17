@@ -18,7 +18,6 @@ import (
 
 // SQLiteConnectionConfig holds connection configuration for SQLite
 type SQLiteConnectionConfig struct {
-	BasePath        string
 	DatabaseName    string
 	CleanupInterval int
 	// Performance settings
@@ -58,7 +57,7 @@ func LoadSQLiteConfig() SQLiteConnectionConfig {
 	}
 }
 
-// getCleanupInterval determines appropriate cleanup interval
+// getCleanupInterval determines cleanup interval
 func getCleanupInterval(cfg *config.Config) int {
 	if cfg.SQLite.CleanupInterval > 0 {
 		return cfg.SQLite.CleanupInterval
@@ -71,22 +70,13 @@ func (c SQLiteConnectionConfig) DetermineBasePath(logger *log.Entry) (string, er
 	var basePath string
 	var pathType string
 
-	// Priority order for database location:
-	// 1. Explicit user configuration
-	// 2. /dev/shm (if available and has sufficient space)
-	// 3. /tmp/authentik-sessions
-	// 4. OS temp directory fallback
-
-	if c.BasePath != "" {
-		basePath = c.BasePath
-		pathType = "user-configured"
-	} else if canUseShm(logger) {
-		basePath = "/dev/shm/authentik-sessions"
-		pathType = "shared-memory"
-	} else {
-		basePath = filepath.Join(os.TempDir(), "authentik-sessions")
-		pathType = "temp-directory"
+	// Use TMPDIR environment variable or fallback to /tmp
+	tmpDir := os.Getenv("TMPDIR")
+	if tmpDir == "" {
+		tmpDir = os.TempDir()
 	}
+	basePath = filepath.Join(tmpDir, "authentik-sessions")
+	pathType = "temp-directory"
 
 	logger.WithFields(log.Fields{
 		"path":      basePath,
@@ -109,28 +99,6 @@ func (c SQLiteConnectionConfig) DetermineBasePath(logger *log.Entry) (string, er
 	os.Remove(testFile) // Clean up test file
 
 	return basePath, nil
-}
-
-// canUseShm checks if /dev/shm is available and has sufficient space
-func canUseShm(logger *log.Entry) bool {
-	shmPath := "/dev/shm"
-
-	// Check if /dev/shm exists and is writable
-	if stat, err := os.Stat(shmPath); err != nil || !stat.IsDir() {
-		logger.Debug("/dev/shm not available")
-		return false
-	}
-
-	// Test write permissions
-	testFile := filepath.Join(shmPath, ".authentik_test")
-	if err := os.WriteFile(testFile, []byte("test"), 0644); err != nil {
-		logger.WithError(err).Debug("/dev/shm not writable")
-		return false
-	}
-	os.Remove(testFile)
-
-	logger.Debug("Using /dev/shm for SQLite database")
-	return true
 }
 
 // BuildDatabasePath builds the full path to the SQLite database file
