@@ -70,7 +70,6 @@ func (c SQLiteConnectionConfig) DetermineBasePath(logger *log.Entry) (string, er
 	var basePath string
 	var pathType string
 
-	// Use TMPDIR environment variable or fallback to /tmp
 	tmpDir := os.TempDir()
 	basePath = filepath.Join(tmpDir, "authentik-sessions")
 	pathType = "temp-directory"
