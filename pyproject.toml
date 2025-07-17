@@ -150,6 +150,7 @@ skip = [
     "./gen-go-api",
     "*.api.mdx",
     "./htmlcov",
+    "./media",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
