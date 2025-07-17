@@ -88,7 +88,7 @@
         "@codemirror/lang-javascript": "^6.2.4",
         "@codemirror/lang-python": "^6.2.1",
         "@codemirror/lang-xml": "^6.1.0",
-        "@codemirror/legacy-modes": "^6.4.1",
+        "@codemirror/legacy-modes": "^6.5.1",
         "@codemirror/theme-one-dark": "^6.1.2",
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.7.11",
