@@ -6,7 +6,7 @@ This stage configures an SMS-based authenticator using either Twilio, or a gener
 
 ## Providers
 
-#### Twilio
+### Twilio
 
 Navigate to https://console.twilio.com/, and log in to your existing account, or create a new one.
 
@@ -22,7 +22,7 @@ The other two steps can be skipped using the _Skip setup_ button.
 
 Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik. Copy the value of **Account SID**. This is the value for the _Twilio Account SID_ field in authentik.
 
-##### Custom message :ak-version[2025.8]
+#### Custom message :ak-version[2025.8]
 
 It is also possible to customize the text message when using Twilio by using a mapping. The mapping should return a dictionary with the `message` key, which will be sent to the user. For example:
 
@@ -35,7 +35,7 @@ return {
 }
 ```
 
-#### Generic
+### Generic
 
 For the generic provider, a POST request will be sent to the URL you have specified in the _External API URL_ field. The request payload looks like this
 
@@ -49,7 +49,7 @@ For the generic provider, a POST request will be sent to the URL you have specif
 
 Authentication can either be done as HTTP Basic, or via a Bearer Token. Any response with status 400 or above is counted as failed, and will prevent the user from proceeding.
 
-##### Custom message
+#### Custom message
 
 A custom webhook mapping can be specified to freely customize the payload of the request. For example:
 
