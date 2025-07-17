@@ -256,9 +256,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .renderElement=${(item: NotificationWebhookMapping): string => {
                                 return item.name;
                             }}
-                            .value=${(
-                                item: NotificationWebhookMapping | undefined,
-                            ): string | undefined => {
+                            .value=${(item?: NotificationWebhookMapping) => {
                                 return item?.pk;
                             }}
                             .selected=${(item: NotificationWebhookMapping): boolean => {
