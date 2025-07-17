@@ -245,7 +245,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 const args: PropertymappingsNotificationListRequest = {
                                     ordering: "name",
                                 };
-                                if (query !== undefined) {
+                                if (query) {
                                     args.search = query;
                                 }
                                 const items = await new PropertymappingsApi(
