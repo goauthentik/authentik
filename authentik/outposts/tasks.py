@@ -40,8 +40,8 @@ from authentik.outposts.models import (
     OutpostState,
     Outpost,
     OutpostServiceConnection,
-    ProxySession,
 )
+from authentik.providers.proxy.models import ProxySession
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
