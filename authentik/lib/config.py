@@ -367,7 +367,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
     # See https://github.com/goauthentik/authentik/issues/14320
     pool_options = False
 
-    opts = config.get("postgresql.conn_opts", default={})
+    conn_options = config.get_dict_from_b64_json("postgresql.conn_options", default={})
 
     db = {
         "default": {
@@ -383,7 +383,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
                 "pool": pool_options,
-                **opts,
+                **conn_options,
             },
             "CONN_MAX_AGE": config.get_optional_int("postgresql.conn_max_age", 0),
             "CONN_HEALTH_CHECKS": config.get_bool("postgresql.conn_health_checks", False),
@@ -413,7 +413,10 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         if conn_max_age is not UNSET:
             db["default"]["CONN_MAX_AGE"] = conn_max_age
 
-    replica_opts = config.get("postgresql.global_replica_conn_opts", default={})
+    all_replica_conn_options = config.get_dict_from_b64_json(
+        "postgresql.replica_conn_options",
+        default={},
+    )
 
     for replica in config.get_keys("postgresql.read_replicas"):
         _database = deepcopy(db["default"])
@@ -426,18 +429,23 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             )
             if override is not UNSET:
                 _database[setting] = override
-        for setting in db["default"]["OPTIONS"].keys():
-            if setting in opts:
-                _database["OPTIONS"].pop(setting, None)
-        _database["OPTIONS"].update(replica_opts)
+
+        for option in conn_options.keys():
+            _database["OPTIONS"].pop(option, None)
+
         for setting in db["default"]["OPTIONS"].keys():
             override = config.get(
                 f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
             )
             if override is not UNSET:
                 _database["OPTIONS"][setting] = override
-        replica_only_opts = config.get(f"postgresql.read_replicas.{replica}.conn_opts", default={})
-        _database["OPTIONS"].update(replica_only_opts)
+
+        _database["OPTIONS"].update(all_replica_conn_options)
+        replica_conn_options = config.get_dict_from_b64_json(
+            f"postgresql.read_replicas.{replica}.conn_options", default={}
+        )
+        _database["OPTIONS"].update(replica_conn_options)
+
         db[f"replica_{replica}"] = _database
     return db
 
