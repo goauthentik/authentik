@@ -265,7 +265,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <ak-action-button
                     class="pf-m-secondary pf-m-block"
                     .apiRequest=${() => {
-                        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseSupportBundleRetrieve();
+                        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseSupportBundleCreate();
                     }}
                 >
                     ${msg("Create support bundle")}

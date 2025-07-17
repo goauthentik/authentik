@@ -160,16 +160,16 @@ class BinaryRenderer(BaseRenderer):
 
 
 class SupportBundleView(APIView):
-    """Retrieve a support bundle."""
+    """Generate a support bundle."""
 
     permission_classes = [HasPermission("authentik_rbac.view_system_info")]
     pagination_class = None
     filter_backends = []
     renderer_classes = [BinaryRenderer]
 
-    @extend_schema(responses=bytes)
-    def get(self, request: Request) -> Response:
-        """Retrieve a support bundle."""
+    @extend_schema(responses=bytes, request=None)
+    def post(self, request: Request) -> Response:
+        """Generate a support bundle."""
         response = HttpResponse(generate_support_bundle(), content_type=BinaryRenderer.media_type)
         response["Content-Disposition"] = 'attachment; filename="authentik_support.tgz"'
         return response

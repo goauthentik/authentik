@@ -7007,9 +7007,9 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /enterprise/support_bundle/:
-    get:
-      operationId: enterprise_support_bundle_retrieve
-      description: Retrieve a support bundle.
+    post:
+      operationId: enterprise_support_bundle_create
+      description: Generate a support bundle.
       tags:
       - enterprise
       security:
