@@ -4,7 +4,7 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 LOGGER = get_logger()
 

@@ -1,7 +1,7 @@
 """authentik core app config"""
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class AuthentikCoreConfig(ManagedAppConfig):

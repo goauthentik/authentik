@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
 

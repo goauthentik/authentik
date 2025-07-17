@@ -5,7 +5,7 @@ from prometheus_client import Gauge, Histogram
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG, ENV_PREFIX
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 # TODO: Deprecated metric - remove in 2024.2 or later
 GAUGE_TASKS = Gauge(

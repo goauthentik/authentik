@@ -5,7 +5,7 @@ from prometheus_client import Info
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 PROM_INFO = Info("authentik_version", "Currently running authentik version")
 

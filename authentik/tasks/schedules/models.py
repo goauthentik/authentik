@@ -7,7 +7,7 @@ from django_dramatiq_postgres.models import ScheduleBase
 
 from authentik.lib.models import SerializerModel
 from authentik.tasks.models import TasksModel
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class Schedule(TasksModel, SerializerModel, ScheduleBase):

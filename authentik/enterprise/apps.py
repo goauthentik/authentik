@@ -4,7 +4,7 @@ from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class EnterpriseConfig(ManagedAppConfig):

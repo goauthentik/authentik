@@ -21,7 +21,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import fqdn_rand
 from authentik.stages.identification.stage import LoginChallengeMixin
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
 

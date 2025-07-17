@@ -11,7 +11,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.lib.utils.time import fqdn_rand
 from authentik.root.signals import startup
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 
 
 class ManagedAppConfig(AppConfig):

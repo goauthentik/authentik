@@ -11,7 +11,7 @@ from authentik.core.models import Group, User
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
 
