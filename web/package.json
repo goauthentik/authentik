@@ -124,7 +124,7 @@
         "hastscript": "^9.0.1",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.6.0",
+        "mermaid": "^11.9.0",
         "rapidoc": "^9.3.8",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
