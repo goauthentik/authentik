@@ -1,10 +1,12 @@
 """SAMLSource API Views"""
 
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.sources import SourceSerializer
@@ -16,6 +18,18 @@ from authentik.sources.saml.processors.metadata import MetadataProcessor
 
 class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
+
+    def validate(self, attrs: dict):
+        if attrs.get("verification_kp"):
+            if not attrs.get("signed_assertion") and not attrs.get("signed_response"):
+                raise ValidationError(
+                    _(
+                        "With a Verification Certificate selected, at least one of"
+                        " 'Verify Assertion Signature' or 'Verify Response Signature' "
+                        "must be selected."
+                    )
+                )
+        return super().validate(attrs)
 
     class Meta:
         model = SAMLSource
@@ -34,6 +48,8 @@ class SAMLSourceSerializer(SourceSerializer):
             "signature_algorithm",
             "temporary_user_delete_after",
             "encryption_kp",
+            "signed_assertion",
+            "signed_response",
         ]
 
 
@@ -65,6 +81,8 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
         "digest_algorithm",
         "signature_algorithm",
         "temporary_user_delete_after",
+        "signed_assertion",
+        "signed_response",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]

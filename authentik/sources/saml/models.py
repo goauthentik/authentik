@@ -198,6 +198,9 @@ class SAMLSource(Source):
         default=RSA_SHA256,
     )
 
+    signed_assertion = models.BooleanField(default=False)
+    signed_response = models.BooleanField(default=False)
+
     @property
     def component(self) -> str:
         return "ak-source-saml-form"

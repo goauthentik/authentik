@@ -11727,6 +11727,14 @@
                     "format": "uuid",
                     "title": "Encryption Keypair",
                     "description": "When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key."
+                },
+                "signed_assertion": {
+                    "type": "boolean",
+                    "title": "Signed assertion"
+                },
+                "signed_response": {
+                    "type": "boolean",
+                    "title": "Signed response"
                 }
             },
             "required": []
