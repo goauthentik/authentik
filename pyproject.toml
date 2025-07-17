@@ -144,7 +144,13 @@ skip = [
     "**/web/out",
     "./web/storybook-static",
     "./web/custom-elements.json",
+    # TODO: Remove this after moving website to docs
     "./website/build",
+    "./website/api/build",
+    "./website/integrations/build",
+    "./docs/build",
+    "./docs/api/build",
+    "./docs/integrations/build",
     "./gen-ts-api",
     "./gen-py-api",
     "./gen-go-api",
@@ -199,7 +205,9 @@ omit = [
     "*/migrations/*",
     "*/management/commands/*",
     "*/apps.py",
+    # TODO: Remove this after moving website to docs
     "website/",
+    "docs/",
 ]
 
 [tool.coverage.report]
