@@ -22,18 +22,21 @@ The other two steps can be skipped using the _Skip setup_ button.
 
 Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik. Copy the value of **Account SID**. This is the value for the _Twilio Account SID_ field in authentik.
 
-#### Custom message :ak-version[2025.8]
+#### Custom SMS message :ak-version[2025.8]
 
-It is also possible to customize the text message when using Twilio by using a mapping. The mapping should return a dictionary with the `message` key, which will be sent to the user. For example:
+Using a property mapping, it is possible to customize the SMS message sent via Twilio. The mapping should return a dictionary with the `message` key, which will be sent to the user. For example:
 
 ```python
-# You also have access to the device, for example `device.phone_number`
-# and the stage sending the message, for example `stage.from_number`
-# and the request this code is being sent from, for example `request.http_request.brand`
 return {
     "message": f"This is a custom message for {request.http_request.brand.branding_title} SMS authentication. The code is {token}".
 }
 ```
+
+Variables related to different objects can be used within the message:
+
+    - The end user device, for example: `device.phone_number`
+    - The stage sending the message, for example: `stage.from_number`
+    - The request this verification code is being sent from, for example: `request.http_request.brand`
 
 ### Generic
 
@@ -49,7 +52,7 @@ For the generic provider, a POST request will be sent to the URL you have specif
 
 Authentication can either be done as HTTP Basic, or via a Bearer Token. Any response with status 400 or above is counted as failed, and will prevent the user from proceeding.
 
-#### Custom message
+#### Custom SMS message
 
 A custom webhook mapping can be used to customize the SMS message sent to users. For example:
 
