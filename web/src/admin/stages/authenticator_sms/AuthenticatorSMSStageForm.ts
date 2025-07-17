@@ -161,38 +161,6 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the password to be used with basic auth")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
-                <ak-search-select
-                    .fetchObjects=${async (
-                        query?: string,
-                    ): Promise<NotificationWebhookMapping[]> => {
-                        const args: PropertymappingsNotificationListRequest = {
-                            ordering: "saml_name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const items = await new PropertymappingsApi(
-                            DEFAULT_CONFIG,
-                        ).propertymappingsNotificationList(args);
-                        return items.results;
-                    }}
-                    .renderElement=${(item: NotificationWebhookMapping): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
-                    .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.mapping === item.pk;
-                    }}
-                    blankable
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Modify the payload sent to the custom provider.")}
-                </p>
-            </ak-form-element-horizontal>
         `;
     }
 
@@ -269,6 +237,40 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${this.provider === ProviderEnum.Generic
                         ? this.renderProviderGeneric()
                         : this.renderProviderTwillio()}
+                    <ak-form-element-horizontal label=${msg("Mapping")} name="mapping">
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<NotificationWebhookMapping[]> => {
+                                const args: PropertymappingsNotificationListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const items = await new PropertymappingsApi(
+                                    DEFAULT_CONFIG,
+                                ).propertymappingsNotificationList(args);
+                                return items.results;
+                            }}
+                            .renderElement=${(item: NotificationWebhookMapping): string => {
+                                return item.name;
+                            }}
+                            .value=${(
+                                item: NotificationWebhookMapping | undefined,
+                            ): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: NotificationWebhookMapping): boolean => {
+                                return this.instance?.mapping === item.pk;
+                            }}
+                            blankable
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Modify the payload sent to the provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="verifyOnly">
                         <label class="pf-c-switch">
                             <input
