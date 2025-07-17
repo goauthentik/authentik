@@ -603,10 +603,13 @@ class TestConfig(TestCase):
         config.update_from_env()
         self.assertEqual(config.get("sqlite.cleanup_interval"), 7200)
 
-    @mock.patch.dict(environ, {
-        ENV_PREFIX + "_SQLITE__PATH": "/custom/path/sessions.sqlite",
-        ENV_PREFIX + "_SQLITE__CLEANUP_INTERVAL": "1800"
-    })
+    @mock.patch.dict(
+        environ,
+        {
+            ENV_PREFIX + "_SQLITE__PATH": "/custom/path/sessions.sqlite",
+            ENV_PREFIX + "_SQLITE__CLEANUP_INTERVAL": "1800",
+        },
+    )
     def test_sqlite_multiple_env_overrides(self):
         """Test multiple SQLite environment variable overrides"""
         config = ConfigLoader()
@@ -670,7 +673,7 @@ class TestConfig(TestCase):
         self.assertIsNotNone(config.get("postgresql.host"))
         self.assertIsNotNone(config.get("postgresql.port"))
         self.assertIsNotNone(config.get("postgresql.name"))
-        
+
         # Test SQLite config exists separately
         self.assertIsNotNone(config.get("sqlite.path"))
         self.assertIsNotNone(config.get("sqlite.cleanup_interval"))
@@ -682,7 +685,7 @@ class TestConfig(TestCase):
         self.assertIsNotNone(config.get("redis.host"))
         self.assertIsNotNone(config.get("redis.port"))
         self.assertIsNotNone(config.get("redis.db"))
-        
+
         # Test SQLite config exists separately
         self.assertIsNotNone(config.get("sqlite.path"))
         self.assertIsNotNone(config.get("sqlite.cleanup_interval"))
@@ -700,9 +703,7 @@ class TestConfig(TestCase):
         file, file_name = mkstemp()
         write(file, b"/file/path/sessions.sqlite")
 
-        with mock.patch.dict(
-            environ, {ENV_PREFIX + "_SQLITE__PATH": f"file://{file_name}"}
-        ):
+        with mock.patch.dict(environ, {ENV_PREFIX + "_SQLITE__PATH": f"file://{file_name}"}):
             config = ConfigLoader()
             config.update_from_env()
             self.assertEqual(config.get("sqlite.path"), "/file/path/sessions.sqlite")
@@ -726,10 +727,10 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("sqlite.path", "/original/path/sessions.sqlite")
         self.assertEqual(config.get("sqlite.path"), "/original/path/sessions.sqlite")
-        
+
         with config.patch("sqlite.path", "/patched/path/sessions.sqlite"):
             self.assertEqual(config.get("sqlite.path"), "/patched/path/sessions.sqlite")
-        
+
         self.assertEqual(config.get("sqlite.path"), "/original/path/sessions.sqlite")
 
     def test_sqlite_config_with_patch_cleanup_interval(self):
@@ -737,8 +738,8 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("sqlite.cleanup_interval", 3600)
         self.assertEqual(config.get("sqlite.cleanup_interval"), 3600)
-        
+
         with config.patch("sqlite.cleanup_interval", 7200):
             self.assertEqual(config.get("sqlite.cleanup_interval"), 7200)
-        
+
         self.assertEqual(config.get("sqlite.cleanup_interval"), 3600)

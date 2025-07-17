@@ -29,7 +29,6 @@ from authentik.core.models import (
     TokenIntents,
     User,
     UserTypes,
-    ExpiringModel,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -489,6 +488,3 @@ class OutpostState:
         """Manually delete from cache, used on channel disconnect"""
         full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
         cache.delete(full_key)
-
-
-

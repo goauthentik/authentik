@@ -181,6 +181,7 @@ class ProxySessionManager(models.Manager):
     def cleanup_expired(self) -> int:
         """Delete expired sessions and return count of deleted sessions"""
         from django.utils import timezone
+
         result = self.filter(expires__lt=timezone.now()).delete()
         return result[0] if result else 0
 
@@ -189,22 +190,24 @@ class ProxySession(ExpiringModel):
     """Session for Proxy Outpost"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    
+
     provider_id = models.CharField(max_length=255, null=False, blank=False)
-    
+
     session_key = models.CharField(max_length=255, null=False, blank=False)
-    
+
     data = models.BinaryField()
-    
+
     claims = models.TextField(blank=True, default="")
-    
+
     redirect = models.TextField(blank=True, default="")
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
 
-    deleted_at = models.DateTimeField(null=True, blank=True, default=None) # used by gorm for soft delete
+    deleted_at = models.DateTimeField(
+        null=True, blank=True, default=None
+    )  # used by gorm for soft delete
 
     objects = ProxySessionManager()
 
@@ -219,10 +222,9 @@ class ProxySession(ExpiringModel):
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=["session_key", "provider_id"],
-                name="unique_session_key_provider_id"
+                fields=["session_key", "provider_id"], name="unique_session_key_provider_id"
             ),
         ]
-        
+
     def __str__(self):
         return f"Proxy Session {self.session_key} (Provider: {self.provider_id})"

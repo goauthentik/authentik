@@ -1,7 +1,5 @@
 """SAML Service Provider Metadata Processor"""
 
-from typing import Optional
-
 from django.http import HttpRequest
 from lxml.etree import Element, SubElement, tostring  # nosec
 
@@ -26,7 +24,7 @@ class MetadataProcessor:
         self.http_request = request
 
     # Using type unions doesn't work with cython types (which is what lxml is)
-    def get_signing_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
+    def get_signing_key_descriptor(self) -> Element | None:  # noqa: UP007
         """Get Signing KeyDescriptor, if enabled for the source"""
         if self.source.signing_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
@@ -40,7 +38,7 @@ class MetadataProcessor:
             return key_descriptor
         return None
 
-    def get_encryption_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
+    def get_encryption_key_descriptor(self) -> Element | None:  # noqa: UP007
         """Get Encryption KeyDescriptor, if enabled for the source"""
         if self.source.encryption_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")

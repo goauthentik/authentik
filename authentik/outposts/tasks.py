@@ -18,8 +18,6 @@ from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
-from celery.schedules import crontab
-from celery import Celery
 
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
@@ -37,11 +35,7 @@ from authentik.outposts.models import (
     OutpostServiceConnection,
     OutpostType,
     ServiceConnectionInvalid,
-    OutpostState,
-    Outpost,
-    OutpostServiceConnection,
 )
-from authentik.providers.proxy.models import ProxySession
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController

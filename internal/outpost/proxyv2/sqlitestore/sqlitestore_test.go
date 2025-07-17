@@ -296,7 +296,7 @@ func TestSQLiteStoreCleanup(t *testing.T) {
 	time.Sleep(2 * time.Second)
 
 	// Run cleanup
-	err = store.cleanup()
+	_, err = store.CleanupExpired(context.Background())
 	assert.NoError(t, err)
 
 	// Verify session was deleted
@@ -316,7 +316,7 @@ func TestSQLiteStoreCleanupExpiredNoSessions(t *testing.T) {
 	defer store.Close()
 
 	// Run cleanup with no sessions
-	err = store.cleanup()
+	_, err = store.CleanupExpired(context.Background())
 	assert.NoError(t, err)
 }
 
@@ -526,7 +526,7 @@ func TestSQLiteStoreCleanupExpired(t *testing.T) {
 	require.NoError(t, result.Error)
 
 	// Run cleanup
-	err = store.cleanup()
+	_, err = store.CleanupExpired(context.Background())
 	assert.NoError(t, err)
 
 	// Verify only expired session was deleted

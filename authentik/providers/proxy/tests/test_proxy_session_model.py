@@ -1,17 +1,15 @@
 """Test ProxySession model"""
 
 import uuid
-from datetime import datetime, timedelta
-from unittest.mock import patch
+from datetime import timedelta
 
-from django.core.exceptions import ValidationError
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
 from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.models import Outpost, OutpostType
-from authentik.providers.proxy.models import ProxyProvider, ProxySession, ProxySessionManager
+from authentik.providers.proxy.models import ProxyProvider, ProxySession
 
 
 class TestProxySessionModel(TestCase):
@@ -40,7 +38,7 @@ class TestProxySessionModel(TestCase):
             claims='{"sub": "user123"}',
             redirect="/redirect/path",
         )
-        
+
         self.assertIsNotNone(session.uuid)
         self.assertEqual(session.provider_id, str(self.provider.pk))
         self.assertEqual(session.session_key, "test-session-key")
@@ -57,8 +55,10 @@ class TestProxySessionModel(TestCase):
             session_key="test-session-key",
             data=b"test-data",
         )
-        
-        expected_str = f"ProxySession {session.uuid} (provider: {self.provider.pk}, key: test-session-key)"
+
+        expected_str = (
+            f"ProxySession {session.uuid} (provider: {self.provider.pk}, key: test-session-key)"
+        )
         self.assertEqual(str(session), expected_str)
 
     def test_proxy_session_required_fields(self):
@@ -68,7 +68,7 @@ class TestProxySessionModel(TestCase):
             session_key="minimal-session",
             data=b"minimal-data",
         )
-        
+
         self.assertEqual(session.claims, "")
         self.assertEqual(session.redirect, "")
         self.assertFalse(session.expiring)
@@ -80,7 +80,7 @@ class TestProxySessionModel(TestCase):
             session_key="uuid-test",
             data=b"test-data",
         )
-        
+
         self.assertIsInstance(session.uuid, uuid.UUID)
         self.assertIsNotNone(session.uuid)
 
@@ -92,7 +92,7 @@ class TestProxySessionModel(TestCase):
             session_key="duplicate-key",
             data=b"test-data",
         )
-        
+
         # Try to create duplicate - should fail
         with self.assertRaises(IntegrityError):
             ProxySession.objects.create(
@@ -110,20 +110,20 @@ class TestProxySessionModel(TestCase):
             external_host="http://localhost2",
             authorization_flow=create_test_flow(),
         )
-        
+
         # Create sessions with same key but different providers
         session1 = ProxySession.objects.create(
             provider_id=str(self.provider.pk),
             session_key="same-key",
             data=b"data1",
         )
-        
+
         session2 = ProxySession.objects.create(
             provider_id=str(provider2.pk),
             session_key="same-key",
             data=b"data2",
         )
-        
+
         self.assertEqual(session1.session_key, session2.session_key)
         self.assertNotEqual(session1.provider_id, session2.provider_id)
 
@@ -135,7 +135,7 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             expiring=True,
         )
-        
+
         self.assertTrue(session.expiring)
 
     def test_proxy_session_expires_field(self):
@@ -147,7 +147,7 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             expires=future_time,
         )
-        
+
         self.assertEqual(session.expires, future_time)
 
     def test_proxy_session_large_data(self):
@@ -158,7 +158,7 @@ class TestProxySessionModel(TestCase):
             session_key="large-data-test",
             data=large_data,
         )
-        
+
         self.assertEqual(session.data, large_data)
 
     def test_proxy_session_empty_data(self):
@@ -168,7 +168,7 @@ class TestProxySessionModel(TestCase):
             session_key="empty-data-test",
             data=b"",
         )
-        
+
         self.assertEqual(session.data, b"")
 
     def test_proxy_session_special_characters_in_key(self):
@@ -179,7 +179,7 @@ class TestProxySessionModel(TestCase):
             session_key=special_key,
             data=b"test-data",
         )
-        
+
         self.assertEqual(session.session_key, special_key)
 
     def test_proxy_session_long_session_key(self):
@@ -191,7 +191,7 @@ class TestProxySessionModel(TestCase):
             session_key=long_key,
             data=b"test-data",
         )
-        
+
         self.assertEqual(session.session_key, long_key)
 
     def test_proxy_session_json_claims(self):
@@ -203,19 +203,21 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             claims=claims_json,
         )
-        
+
         self.assertEqual(session.claims, claims_json)
 
     def test_proxy_session_long_redirect(self):
         """Test ProxySession with long redirect URL"""
-        long_redirect = "https://example.com/very/long/redirect/path/with/many/segments/" + "a" * 200
+        long_redirect = (
+            "https://example.com/very/long/redirect/path/with/many/segments/" + "a" * 200
+        )
         session = ProxySession.objects.create(
             provider_id=str(self.provider.pk),
             session_key="long-redirect-test",
             data=b"test-data",
             redirect=long_redirect,
         )
-        
+
         self.assertEqual(session.redirect, long_redirect)
 
     def test_proxy_session_update(self):
@@ -226,16 +228,16 @@ class TestProxySessionModel(TestCase):
             data=b"original-data",
             claims='{"sub": "original"}',
         )
-        
+
         # Update fields
         session.data = b"updated-data"
         session.claims = '{"sub": "updated"}'
         session.expiring = True
         session.save()
-        
+
         # Reload from database
         session.refresh_from_db()
-        
+
         self.assertEqual(session.data, b"updated-data")
         self.assertEqual(session.claims, '{"sub": "updated"}')
         self.assertTrue(session.expiring)
@@ -247,10 +249,10 @@ class TestProxySessionModel(TestCase):
             session_key="delete-test",
             data=b"test-data",
         )
-        
+
         session_id = session.uuid
         session.delete()
-        
+
         # Verify deletion
         with self.assertRaises(ProxySession.DoesNotExist):
             ProxySession.objects.get(uuid=session_id)
@@ -263,7 +265,7 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             expiring=True,  # This should be kept as True
         )
-        
+
         # The save method should ensure expiring defaults to False for new instances
         # but keep existing values for updates
         self.assertTrue(session.expiring)
@@ -277,10 +279,10 @@ class TestProxySessionModel(TestCase):
         """Test ProxySession has proper indexes"""
         # Get the model's indexes
         indexes = ProxySession._meta.indexes
-        
+
         # Check that expected indexes exist
         index_fields = [list(index.fields) for index in indexes]
-        
+
         # Should have index on session_key and provider_id
         self.assertIn(["session_key", "provider_id"], index_fields)
         # Should have index on provider_id alone
@@ -292,7 +294,7 @@ class TestProxySessionModel(TestCase):
         """Test ProxySession constraints"""
         # Get the model's constraints
         constraints = ProxySession._meta.constraints
-        
+
         # Should have a unique constraint on session_key and provider_id
         constraint_fields = [list(constraint.fields) for constraint in constraints]
         self.assertIn(["session_key", "provider_id"], constraint_fields)
@@ -301,6 +303,7 @@ class TestProxySessionModel(TestCase):
         """Test ProxySession inherits from ExpiringModel"""
         # ProxySession should inherit from ExpiringModel
         from authentik.core.models import ExpiringModel
+
         self.assertTrue(issubclass(ProxySession, ExpiringModel))
 
     def test_proxy_session_with_none_expires(self):
@@ -311,7 +314,7 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             expires=None,
         )
-        
+
         self.assertIsNone(session.expires)
 
     def test_proxy_session_bulk_create(self):
@@ -324,12 +327,14 @@ class TestProxySessionModel(TestCase):
             )
             for i in range(5)
         ]
-        
+
         created_sessions = ProxySession.objects.bulk_create(sessions)
         self.assertEqual(len(created_sessions), 5)
-        
+
         # Verify all were created
-        self.assertEqual(ProxySession.objects.filter(session_key__startswith="bulk-session-").count(), 5)
+        self.assertEqual(
+            ProxySession.objects.filter(session_key__startswith="bulk-session-").count(), 5
+        )
 
     def test_proxy_session_queryset_filter(self):
         """Test filtering ProxySession queryset"""
@@ -340,23 +345,23 @@ class TestProxySessionModel(TestCase):
             external_host="http://localhost2",
             authorization_flow=create_test_flow(),
         )
-        
+
         ProxySession.objects.create(
             provider_id=str(self.provider.pk),
             session_key="filter-test-1",
             data=b"data1",
         )
-        
+
         ProxySession.objects.create(
             provider_id=str(provider2.pk),
             session_key="filter-test-2",
             data=b"data2",
         )
-        
+
         # Filter by provider
         provider1_sessions = ProxySession.objects.filter(provider_id=str(self.provider.pk))
         provider2_sessions = ProxySession.objects.filter(provider_id=str(provider2.pk))
-        
+
         self.assertEqual(provider1_sessions.count(), 1)
         self.assertEqual(provider2_sessions.count(), 1)
         self.assertEqual(provider1_sessions.first().session_key, "filter-test-1")
@@ -370,17 +375,22 @@ class TestProxySessionModel(TestCase):
             session_key="order-test-1",
             data=b"data1",
         )
-        
+
         session2 = ProxySession.objects.create(
             provider_id=str(self.provider.pk),
             session_key="order-test-2",
             data=b"data2",
         )
-        
+
         # Get all sessions and check ordering
         sessions = list(ProxySession.objects.all())
         # Should be ordered by created_at (newest first, typically)
         self.assertGreaterEqual(sessions[0].created_at, sessions[1].created_at)
+
+        # Verify both sessions are in the result
+        session_keys = [s.session_key for s in sessions]
+        self.assertIn(session1.session_key, session_keys)
+        self.assertIn(session2.session_key, session_keys)
 
     def test_proxy_session_count_queries(self):
         """Test ProxySession count queries"""
@@ -391,11 +401,11 @@ class TestProxySessionModel(TestCase):
                 session_key=f"count-test-{i}",
                 data=f"data-{i}".encode(),
             )
-        
+
         # Test count
         count = ProxySession.objects.count()
         self.assertEqual(count, 3)
-        
+
         # Test filter count
         provider_count = ProxySession.objects.filter(provider_id=str(self.provider.pk)).count()
         self.assertEqual(provider_count, 3)
@@ -407,11 +417,15 @@ class TestProxySessionModel(TestCase):
             session_key="exists-test",
             data=b"test-data",
         )
-        
+
         # Test exists
         exists = ProxySession.objects.filter(session_key="exists-test").exists()
         self.assertTrue(exists)
-        
+
+        # Test exists by UUID
+        exists_by_uuid = ProxySession.objects.filter(uuid=session.uuid).exists()
+        self.assertTrue(exists_by_uuid)
+
         # Test non-existent
         not_exists = ProxySession.objects.filter(session_key="non-existent").exists()
         self.assertFalse(not_exists)
@@ -424,11 +438,15 @@ class TestProxySessionModel(TestCase):
             data=b"test-data",
             claims='{"sub": "user123"}',
         )
-        
+
         # Test values query
-        values = ProxySession.objects.values('session_key', 'provider_id').first()
-        self.assertEqual(values['session_key'], "values-test")
-        self.assertEqual(values['provider_id'], str(self.provider.pk))
+        values = ProxySession.objects.values("session_key", "provider_id").first()
+        self.assertEqual(values["session_key"], "values-test")
+        self.assertEqual(values["provider_id"], str(self.provider.pk))
+
+        # Test retrieving the session directly
+        retrieved = ProxySession.objects.get(uuid=session.uuid)
+        self.assertEqual(retrieved.claims, '{"sub": "user123"}')
 
     def test_proxy_session_values_list_queries(self):
         """Test ProxySession values_list queries"""
@@ -437,7 +455,11 @@ class TestProxySessionModel(TestCase):
             session_key="values-list-test",
             data=b"test-data",
         )
-        
+
         # Test values_list query
-        session_keys = ProxySession.objects.values_list('session_key', flat=True)
-        self.assertIn("values-list-test", list(session_keys)) 
+        session_keys = ProxySession.objects.values_list("session_key", flat=True)
+        self.assertIn("values-list-test", list(session_keys))
+
+        # Test values_list with UUID
+        uuids = ProxySession.objects.values_list("uuid", flat=True)
+        self.assertIn(str(session.uuid), [str(uuid) for uuid in uuids])

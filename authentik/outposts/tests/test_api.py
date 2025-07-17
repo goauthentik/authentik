@@ -1,6 +1,9 @@
 """Test outpost service connection API"""
 
+from datetime import timedelta
+
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import reconcile_app
@@ -11,9 +14,7 @@ from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
-from authentik.providers.proxy.models import ProxyProvider
-from django.utils import timezone
-from datetime import timedelta
+from authentik.providers.proxy.models import ProxyProvider, ProxySession
 
 
 class TestOutpostServiceConnectionsAPI(APITestCase):
