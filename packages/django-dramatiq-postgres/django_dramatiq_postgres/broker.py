@@ -385,7 +385,9 @@ class _PostgresConsumer(Consumer):
         # If we have some notifies, loop to find one to do
         while self.notifies:
             notify = self.notifies.pop(0)
-            task: TaskBase = self.query_set.get(message_id=notify.payload)
+            task: TaskBase | None = self.query_set.filter(message_id=notify.payload).first()
+            if task is None:
+                continue
             message = Message.decode(task.message)
             message.options["task"] = task
             if self._consume_one(message):
