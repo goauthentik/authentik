@@ -44550,11 +44550,11 @@ components:
         recovery_max_attempts:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         recovery_cache_timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
       required:
       - component
       - meta_model_name
@@ -44618,11 +44618,11 @@ components:
         recovery_max_attempts:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         recovery_cache_timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
       required:
       - name
     Endpoint:
@@ -53062,11 +53062,11 @@ components:
         recovery_max_attempts:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
         recovery_cache_timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
     PatchedEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices

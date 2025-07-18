@@ -14265,13 +14265,13 @@
                 },
                 "recovery_max_attempts": {
                     "type": "integer",
-                    "minimum": -2147483648,
+                    "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Recovery max attempts"
                 },
                 "recovery_cache_timeout": {
                     "type": "integer",
-                    "minimum": -2147483648,
+                    "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Recovery cache timeout"
                 }
