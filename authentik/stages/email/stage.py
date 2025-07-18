@@ -213,7 +213,7 @@ class EmailStageView(ChallengeStageView):
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         if minutes_left := self._is_rate_limited():
             error = _(
-                "Too many account recovery attempts. Please try again after {minutes} minutes."
+                "Too many account verification attempts. Please try again after {minutes} minutes."
             ).format(minutes=minutes_left)
             messages.error(self.request, error)
             return super().challenge_invalid(response)
