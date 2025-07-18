@@ -248,13 +248,6 @@ These settings affect where media files are stored. Those files include applicat
 - `AUTHENTIK_STORAGE__MEDIA__S3__CUSTOM_DOMAIN`: Domain to use to create URLs for users. Mainly useful for non-AWS providers. May include a port. Must include the bucket. Example: `s3.company:8080/authentik-media`.
 - `AUTHENTIK_STORAGE__MEDIA__S3__SECURE_URLS`: Whether URLs created use HTTPS (set to `true` by default) or HTTP.
 
-## Account Recovery Settings
-
-These settings define the default values for account recovery. If the Email Stage specifies its own values, those will take precedence.
-
-- `AUTHENTIK_EMAIL_RECOVERY__MAX_ATTEMPTS`: Maximum number of account recovery attempts allowed before rate limiting is applied.
-- `AUTHENTIK_EMAIL_RECOVERY__CACHE_TIMEOUT`: Duration (in seconds) before the rate limiting cache expires.
-
 ## authentik Settings
 
 ### `AUTHENTIK_SECRET_KEY`

@@ -16,8 +16,9 @@ from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
 
-EMAIL_RECOVERY_MAX_ATTEMPTS = CONFIG.get_int("email_recovery.max_attempts")
-EMAIL_RECOVERY_CACHE_TIMEOUT = CONFIG.get_int("email_recovery.cache_timeout")
+EMAIL_RECOVERY_MAX_ATTEMPTS = 5
+# 5 minutes
+EMAIL_RECOVERY_CACHE_TIMEOUT = 300
 
 LOGGER = get_logger()
 

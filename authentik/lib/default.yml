@@ -69,10 +69,6 @@ cache:
   timeout_flows: 300
   timeout_policies: 300
 
-email_recovery:
-  max_attempts: 5
-  cache_timeout: 300
-
 # channel:
 #   url: ""
 
