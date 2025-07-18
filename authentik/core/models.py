@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.handlers.wsgi import WSGIRequest
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
@@ -22,6 +23,7 @@ from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
+from rest_framework.request import Request
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -137,7 +139,7 @@ class AttributesMixin(models.Model):
 
 
 class GroupQuerySet(QuerySet):
-    def with_children_recursive(self):
+    def with_children_recursive(self) -> "GroupQuerySet":
         """Recursively get all groups that have the current queryset as parents
         or are indirectly related."""
 
@@ -210,7 +212,7 @@ class Group(SerializerModel, AttributesMixin):
             ("disable_group_superuser", _("Disable superuser status")),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Group {self.name}"
 
     @property
@@ -241,7 +243,7 @@ class Group(SerializerModel, AttributesMixin):
 class UserQuerySet(models.QuerySet):
     """User queryset"""
 
-    def exclude_anonymous(self):
+    def exclude_anonymous(self) -> "UserQuerySet":
         """Exclude anonymous user"""
         return self.exclude(**{User.USERNAME_FIELD: settings.ANONYMOUS_USER_NAME})
 
@@ -249,7 +251,7 @@ class UserQuerySet(models.QuerySet):
 class UserManager(DjangoUserManager):
     """User manager that doesn't assign is_superuser and is_staff"""
 
-    def get_queryset(self):
+    def get_queryset(self) -> UserQuerySet:
         """Create special user queryset"""
         return UserQuerySet(self.model, using=self._db)
 
@@ -295,7 +297,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             models.Index(fields=["type"]),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.username
 
     @staticmethod
@@ -360,7 +362,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
+    def set_password(
+        self,
+        raw_password: str,
+        signal: bool = True,
+        sender: None = None,
+        request: WSGIRequest | Request | None = None,
+    ) -> None:
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
@@ -479,7 +487,7 @@ class Provider(SerializerModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
 
@@ -611,7 +619,7 @@ class Application(SerializerModel, PolicyBindingModel):
         )
         return getattr(providers.first(), provider_type._meta.model_name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     class Meta:
@@ -631,7 +639,7 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
         verbose_name_plural = _("Application Entitlements")
         unique_together = (("app", "name"),)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Application Entitlement {self.name} for app {self.app_id}"
 
     @property
@@ -640,7 +648,7 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
 
         return ApplicationEntitlementSerializer
 
-    def supported_policy_binding_targets(self):
+    def supported_policy_binding_targets(self) -> list[str]:
         return ["group", "user"]
 
 
@@ -812,7 +820,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
             return {}
         raise NotImplementedError
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
     class Meta:
@@ -895,7 +903,7 @@ class ExpiringModel(models.Model):
             models.Index(fields=["expiring", "expires"]),
         ]
 
-    def expire_action(self, *args, **kwargs):
+    def expire_action(self, *args, **kwargs) -> tuple[int, dict[str, int]]:
         """Handler which is called when this object is expired. By
         default the object is deleted. This is less efficient compared
         to bulk deleting objects, but classes like Token() need to change
@@ -958,7 +966,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             ("set_token_key", _("Set a token's key")),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         description = f"{self.identifier}"
         if self.expiring:
             description += f" (expires={self.expires})"
@@ -1023,7 +1031,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         except Exception as exc:
             raise PropertyMappingExpressionException(exc, self) from exc
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Property Mapping {self.name}"
 
     class Meta:
@@ -1051,7 +1059,7 @@ class Session(ExpiringModel, AbstractBaseSession):
         ]
         default_permissions = []
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.session_key
 
     class Keys(StrEnum):
