@@ -8,7 +8,7 @@ from authentik.core.models import Application
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync_all
+from authentik.providers.scim.tasks import scim_sync
 
 
 class SCIMClientTests(TestCase):
@@ -85,6 +85,6 @@ class SCIMClientTests(TestCase):
             self.assertEqual(mock.call_count, 1)
             self.assertEqual(mock.request_history[0].method, "GET")
 
-    def test_scim_sync_all(self):
-        """test scim_sync_all task"""
-        scim_sync_all()
+    def test_scim_sync(self):
+        """test scim_sync task"""
+        scim_sync.send(self.provider.pk).get_result()
