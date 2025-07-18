@@ -458,6 +458,6 @@ class TestEmailStage(FlowTestCase):
             message_list = list(messages.get_messages(request))
             self.assertEqual(len(message_list), 2)
             self.assertEqual(
-                "Too many account recovery attempts. Please try again after 5 minutes.",
+                "Too many account verification attempts. Please try again after 5 minutes.",
                 message_list[-1].message,
             )
