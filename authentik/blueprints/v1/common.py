@@ -268,6 +268,29 @@ class Env(YAMLTag):
         return getenv(self.key) or self.default
 
 
+class File(YAMLTag):
+    """Lookup file with optional default"""
+
+    path: str
+    default: Any | None
+
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.default = None
+        if isinstance(node, ScalarNode):
+            self.path = node.value
+        if isinstance(node, SequenceNode):
+            self.path = loader.construct_object(node.value[0])
+            self.default = loader.construct_object(node.value[1])
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            with open(self.path, encoding="utf8") as _file:
+                return _file.read().strip()
+        except OSError as exc:
+            return self.default
+
+
 class Context(YAMLTag):
     """Lookup key from instance context"""
 
@@ -679,6 +702,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Condition", Condition)
         self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
+        self.add_constructor("!File", File)
         self.add_constructor("!Enumerate", Enumerate)
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
