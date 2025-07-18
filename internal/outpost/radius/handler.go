@@ -1,10 +1,12 @@
 package radius
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha512"
 	"encoding/hex"
+	"errors"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -16,6 +18,10 @@ import (
 	"goauthentik.io/internal/utils"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2869"
+)
+
+var (
+	ErrInvalidMessageAuthenticator = errors.New("invalid message authenticator")
 )
 
 type RadiusRequest struct {
@@ -36,6 +42,20 @@ func (r *RadiusRequest) RemoteAddr() string {
 
 func (r *RadiusRequest) ID() string {
 	return r.id
+}
+
+func (r *RadiusRequest) validateMessageAuthenticator() error {
+	mauth := rfc2869.MessageAuthenticator_Get(r.Packet)
+	hash := hmac.New(md5.New, r.Secret)
+	encode, err := r.MarshalBinary()
+	if err != nil {
+		return err
+	}
+	hash.Write(encode)
+	if bytes.Equal(mauth, hash.Sum(nil)) {
+		return ErrInvalidMessageAuthenticator
+	}
+	return nil
 }
 
 func (r *RadiusRequest) setMessageAuthenticator(rp *radius.Packet) error {
@@ -82,6 +102,11 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 	}
 
 	rl.Info("Radius Request")
+
+	if err := nr.validateMessageAuthenticator(); err != nil {
+		rl.WithError(err).Warning("Invalid message authenticator")
+		return
+	}
 
 	// Lookup provider by shared secret
 	var pi *ProviderInstance
