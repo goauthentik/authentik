@@ -26,7 +26,7 @@ import Tabs from "@theme/Tabs";
 
 ## Services Setup
 
-For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`.To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
+For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`. To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
 You can also use a native install, if you prefer.
 
 :::info
@@ -145,6 +145,18 @@ And now, authentik should now be accessible at `http://localhost:9000`.
 To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
 
 In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
+:::
+
+## End-to-end (e2e) Setup
+
+For e2e testing, you can use the `docker-compose.yml` file in `/tests/e2e`, by navigating to the directory and running `docker compose up -d`.
+
+Afterwards, you can view the Selenium Chrome in your browser on port `7900` using the password: `secret`.
+
+Alternatively, you can connect directly via VNC on port `5900` using the password: `secret`.
+
+:::note
+When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
 
 ## Submitting Pull Requests
