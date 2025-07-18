@@ -4,18 +4,18 @@ import { akEmptyState } from "../EmptyState.js";
 
 import { render } from "#elements/tests/utils";
 
-import { $, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
 describe("ak-empty-state", () => {
     afterEach(async () => {
-        await browser.execute(async () => {
-            await document.body.querySelector("ak-empty-state")?.remove();
-            if (document.body._$litPart$) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body._$litPart$;
+        browser.execute(async () => {
+            document.body.querySelector("ak-empty-state")?.remove();
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
         });
     });

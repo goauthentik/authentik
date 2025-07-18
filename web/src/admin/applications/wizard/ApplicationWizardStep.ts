@@ -28,13 +28,13 @@ export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardSt
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application and configure a provider for it.");
-    canCancel = true;
+    protected wizardTitle = msg("New application");
+    protected wizardDescription = msg("Create a new application and configure a provider for it.");
+    public cancelable = true;
 
     // This should be overridden in the children for more precise targeting.
     @query("form")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
     get formValues(): T {
         return serializeForm<T>([

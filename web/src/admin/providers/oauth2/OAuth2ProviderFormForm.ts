@@ -127,7 +127,9 @@ export function renderForm(
     showClientSecretCallback: ShowClientSecret = defaultShowClientSecret,
 ) {
     return html` <ak-text-input
+            autocomplete="on"
             name="name"
+            placeholder=${msg("Provider name")}
             label=${msg("Name")}
             value=${ifDefined(provider?.name)}
             required
@@ -139,6 +141,8 @@ export function renderForm(
             required
         >
             <ak-flow-search
+                label=${msg("Authorization flow")}
+                placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${provider?.authorizationFlow}
                 required
@@ -147,9 +151,8 @@ export function renderForm(
                 ${msg("Flow used when authorizing this provider.")}
             </p>
         </ak-form-element-horizontal>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-radio-input
                     name="clientType"
                     label=${msg("Client type")}
@@ -199,6 +202,8 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        label=${msg("Signing Key")}
+                        placeholder=${msg("Select a signing key...")}
                         certificate=${ifDefined(provider?.signingKey ?? undefined)}
                         singleton
                     ></ak-crypto-certificate-search>
@@ -207,6 +212,8 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
                     <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        label=${msg("Encryption Key")}
+                        placeholder=${msg("Select an encryption key...")}
                         certificate=${ifDefined(provider?.encryptionKey ?? undefined)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
@@ -214,14 +221,15 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label=${msg("Advanced flow settings")}>
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
                     label=${msg("Authentication flow")}
                 >
                     <ak-flow-search
+                        label=${msg("Authentication flow")}
+                        placeHolder=${msg("Select an authentication flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authenticationFlow}
                     ></ak-flow-search>
@@ -237,6 +245,8 @@ export function renderForm(
                     required
                 >
                     <ak-flow-search
+                        label=${msg("Invalidation flow")}
+                        placeHolder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
@@ -249,9 +259,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
@@ -334,9 +343,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"

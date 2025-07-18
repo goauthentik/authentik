@@ -14,7 +14,6 @@ declare module "module" {
          * const relativeDirname = dirname(fileURLToPath(import.meta.url));
          * ```
          */
-
         var __dirname: string;
     }
 }
