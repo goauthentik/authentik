@@ -4635,11 +4635,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Сопоставление</target>
         
       </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>Изменить данные, отправляемые пользовательскому провайдеру.</target>
-        
-      </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
         <source>Stage used to configure an SMS-based TOTP authenticator.</source>
         <target>Этап, используемый для настройки аутентификатора TOTP на основе SMS.</target>
@@ -9652,6 +9647,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
 </trans-unit>
     </body>
   </file>

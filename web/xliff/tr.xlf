@@ -4604,11 +4604,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Eşleme</target>
         
       </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>Özel sağlayıcıya gönderilen yükü değiştirin.</target>
-        
-      </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
         <source>Stage used to configure an SMS-based TOTP authenticator.</source>
         <target>Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için kullanılır.</target>
@@ -9624,6 +9619,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
 </trans-unit>
     </body>
   </file>
