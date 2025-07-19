@@ -1,19 +1,41 @@
 """Serializer for tenants models"""
 
+from typing import get_args
+
 from django_tenants.utils import get_public_schema_name
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type, build_object_type
 from rest_framework.fields import JSONField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 
 from authentik.core.api.utils import ModelSerializer
 from authentik.rbac.permissions import HasPermission
+from authentik.tenants.flags import Flag
 from authentik.tenants.models import Tenant
+
+
+class FlagJSONField(JSONField): ...
+
+
+class FlagsJSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.tenants.api.settings.FlagJSONField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        props = {}
+        for flag in Flag.available():
+            _flag = flag()
+            props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
+        return build_object_type(props, required=props.keys())
 
 
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
 
     footer_links = JSONField(required=False)
+    flags = FlagJSONField()
 
     class Meta:
         model = Tenant
@@ -31,6 +53,7 @@ class SettingsSerializer(ModelSerializer):
             "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
+            "flags",
         ]
 
 

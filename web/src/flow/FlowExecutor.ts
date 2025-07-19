@@ -13,6 +13,7 @@ import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constan
 import { pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
+import { ascii_letters, digits, randomString } from "#common/utils";
 import { WebsocketClient } from "#common/ws";
 
 import { Interface } from "#elements/Interface";
@@ -46,6 +47,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+export const LOCAL_STORAGE_TAB_ID = "goauthentik.io/flow/current-flow";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor
@@ -198,6 +201,11 @@ export class FlowExecutor
         configureSentry();
 
         super();
+
+        if (globalAK().brand.flags.policiesBufferedAccessView) {
+            this.checkBuffer();
+        }
+
         this.ws = new WebsocketClient();
 
         const inspector = new URL(window.location.toString()).searchParams.get("inspector");
@@ -229,11 +237,49 @@ export class FlowExecutor
         });
     }
 
+    skipFetch = false;
+
+    checkBuffer() {
+        const tabId = randomString(40, ascii_letters + digits);
+        if (localStorage.getItem(LOCAL_STORAGE_TAB_ID) === null) {
+            // Case of the firs tab, set the saved tab ID to our tab ID
+            localStorage.setItem(LOCAL_STORAGE_TAB_ID, tabId);
+        } else {
+            // Any other tab will wait
+            this.skipFetch = true;
+        }
+        window.addEventListener("storage", (ev) => {
+            console.debug(`${ev.key}, from ${ev.oldValue}, to ${ev.newValue}`);
+            if (ev.key !== LOCAL_STORAGE_TAB_ID) return;
+            // Another tab has unloaded and deleted their tab ID, so we set the tab ID
+            if (ev.newValue === null) {
+                console.debug("tab id to null");
+                localStorage.setItem(LOCAL_STORAGE_TAB_ID, tabId);
+                console.debug("tab id to our tab id");
+                const nextURL = new URL(window.location.toString()).searchParams.get("next");
+                if (!nextURL) {
+                    return;
+                }
+                setTimeout(
+                    () => {
+                        window.location.assign(nextURL);
+                        console.debug(`would've redirect to ${nextURL}`);
+                    },
+                    (Math.random() + 1) * 100,
+                );
+            }
+        });
+        window.addEventListener("beforeunload", () => {
+            localStorage.removeItem(LOCAL_STORAGE_TAB_ID);
+        });
+    }
+
     public async firstUpdated(): Promise<void> {
         if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
 
+        if (this.skipFetch) return;
         this.loading = true;
 
         return new FlowsApi(DEFAULT_CONFIG)
