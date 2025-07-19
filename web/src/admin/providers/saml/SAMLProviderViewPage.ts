@@ -71,10 +71,10 @@ export class SAMLProviderViewPage extends AKElement {
     metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier?: CertificateKeyPair;
+    verifier: CertificateKeyPair | null = null;
 
     @state()
     previewUser?: User;
@@ -97,7 +97,7 @@ export class SAMLProviderViewPage extends AKElement {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            this.providerID = this.provider?.pk;
+            this.fetchProvider(this.provider.pk);
         });
     }
 
@@ -117,20 +117,32 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchSigningCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.signer = kp;
+            this.requestUpdate("signer");
+        });
     }
 
     fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.verifier = kp;
+            this.requestUpdate("verifier");
+        });
     }
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
-            if (this.provider.signingKp) {
+            // Clear existing signing certificate if the provider has none
+            if (!this.provider.signingKp) {
+                this.signer = null;
+            } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
-            if (this.provider.verificationKp) {
+            // Clear existing verification certificate if the provider has none
+            if (!this.provider.verificationKp) {
+                this.verifier = null;
+            } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
