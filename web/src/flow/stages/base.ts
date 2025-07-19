@@ -23,12 +23,12 @@ export interface StageHost {
 }
 
 export function readFileAsync(file: Blob) {
-    return new Promise((resolve, reject) => {
+    return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            resolve(reader.result);
-        };
+
         reader.onerror = reject;
+        reader.onload = () => resolve(reader.result);
+
         reader.readAsDataURL(file);
     });
 }

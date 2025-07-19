@@ -12,7 +12,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -88,11 +88,11 @@ export class SyncStatusTable extends Table<SystemTask> {
     }
 
     renderToolbarContainer() {
-        return html``;
+        return nothing;
     }
 
     renderTablePagination() {
-        return html``;
+        return nothing;
     }
 }
 

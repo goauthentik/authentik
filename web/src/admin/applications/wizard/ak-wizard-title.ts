@@ -20,7 +20,7 @@ export class AkWizardTitle extends AKElement {
 
     render() {
         return html`<div class="ak-bottom-spacing pf-c-content">
-            <h3><slot></slot></h3>
+            <h3 data-test-id="wizard-heading"><slot></slot></h3>
         </div>`;
     }
 }
@@ -30,5 +30,13 @@ export default AkWizardTitle;
 declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard-title": AkWizardTitle;
+    }
+
+    interface WizardTestIDMap {
+        heading: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
     }
 }

@@ -1,6 +1,6 @@
 import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
-import { AkControlElement } from "#elements/AkControlElement";
+import { AkControlElement, formatFormElementAsJSON } from "#elements/AkControlElement";
 import { type Spread } from "#elements/types";
 
 import { MatchingModeEnum, RedirectURI } from "@goauthentik/api";
@@ -43,9 +43,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     controls?: HTMLInputElement[];
 
     json() {
-        return Object.fromEntries(
-            Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
-        ) as unknown as RedirectURI;
+        return formatFormElementAsJSON<RedirectURI>(this.controls);
     }
 
     get isValid() {

@@ -51,14 +51,32 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
             product += ` ${msg("Enterprise")}`;
         }
         return html`<button
+            role="contentinfo"
+            aria-label=${msg("Open about dialog")}
             class="pf-c-button pf-m-plain"
             @click=${() => {
                 const int = rootInterface<AdminInterface>();
-                int?.aboutModal?.onClick();
+                int?.aboutModal?.show();
             }}
         >
-            <p class="pf-c-title">${product}</p>
-            <p class="pf-c-title">${msg(str`Version ${this.version?.versionCurrent || ""}`)}</p>
+            <p
+                role="heading"
+                aria-level="1"
+                aria-label=${msg("Product name")}
+                id="sidebar-version-product"
+                class="pf-c-title"
+            >
+                ${product}
+            </p>
+            <p
+                role="heading"
+                aria-level="1"
+                aria-label=${msg("Product version")}
+                id="sidebar-version-product"
+                class="pf-c-title"
+            >
+                ${msg(str`Version ${this.version?.versionCurrent || ""}`)}
+            </p>
         </button>`;
     }
 }

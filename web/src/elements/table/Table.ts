@@ -12,13 +12,13 @@ import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam } from "#elements/router/RouteMatch";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Pagination } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -100,12 +100,29 @@ export class TableColumn {
     }
 }
 
-export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
+export abstract class Table<T extends object>
+    extends WithLicenseSummary(AKElement)
+    implements TableLike
+{
     abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): SlottedTemplateResult[];
 
-    private isLoading = false;
+    #loading = false;
+
+    /**
+     * Render a row for a given item.
+     *
+     * @param item The item to render.
+     * @abstract
+     */
+    protected rowLabel(item: T): string | typeof nothing {
+        if ("name" in item && typeof item.name === "string") {
+            return msg(str`${item.name}`);
+        }
+
+        return nothing;
+    }
 
     #pageParam = `${this.tagName.toLowerCase()}-page`;
     #searchParam = `${this.tagName.toLowerCase()}-search`;
@@ -124,6 +141,12 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
 
         return nothing;
     }
+
+    @property({ type: String })
+    toolbarLabel = msg("Table actions");
+
+    @property({ type: String })
+    label?: string;
 
     @property({ attribute: false })
     data?: PaginatedResponse<T>;
@@ -172,6 +195,12 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
 
     @property({ attribute: false })
     expandedElements: T[] = [];
+
+    @property({ attribute: false })
+    searchLabel?: string;
+
+    @property({ attribute: false })
+    searchPlaceholder?: string;
 
     @state()
     error?: APIError;
@@ -239,9 +268,9 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     public async fetch(): Promise<void> {
-        if (this.isLoading) return;
+        if (this.#loading) return;
 
-        this.isLoading = true;
+        this.#loading = true;
 
         return this.apiEndpoint()
             .then((data) => {
@@ -289,7 +318,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
-                this.isLoading = false;
+                this.#loading = false;
                 this.requestUpdate();
             });
     }
@@ -298,20 +327,22 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state default-label></ak-empty-state>
+                    <ak-empty-state loading
+                        ><span slot="header">${msg("Loading")}</span></ak-empty-state
+                    >
                 </div>
             </td>
         </tr>`;
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
-                            ><span>${msg("No objects found.")}</span>
+                            ><span slot="header">${msg("No objects found.")}</span> >
                             <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
@@ -320,15 +351,25 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </tbody>`;
     }
 
-    renderObjectCreate(): SlottedTemplateResult {
+    /**
+     * Render the create object button.
+     *
+     * @abstract
+     */
+    protected renderObjectCreate(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderError(): SlottedTemplateResult {
+    /**
+     * Render the error state.
+     *
+     * @abstract
+     */
+    protected renderError(): SlottedTemplateResult {
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
-            ><span>${msg("Failed to fetch objects.")}</span>
+            ><span slot="header">${msg("Failed to fetch objects.")}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }
@@ -337,7 +378,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
-        if (!this.data || this.isLoading) {
+        if (!this.data || this.#loading) {
             return [this.renderLoading()];
         }
         if (this.data.pagination.count === 0) {
@@ -358,6 +399,8 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     private renderRowGroup(items: T[]): TemplateResult[] {
+        const columns = this.columns();
+
         return items.map((item) => {
             const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
                 const target = ev.target as HTMLElement;
@@ -388,7 +431,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             };
 
             const renderCheckbox = () =>
-                html`<td class="pf-c-table__check" role="cell">
+                html`<td aria-label="${msg("Select row")}" class="pf-c-table__check" role="button">
                     <label class="ignore-click"
                         ><input
                             type="checkbox"
@@ -428,9 +471,9 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                 </td>`;
             };
 
-            return html`<tbody role="rowgroup" class="${classMap(expandedClass)}">
+            return html`<tbody class="${classMap(expandedClass)}">
                 <tr
-                    role="row"
+                    aria-label="${this.rowLabel(item)}"
                     class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
                     @click=${this.clickable
                         ? () => {
@@ -441,7 +484,13 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                     ${this.checkbox ? renderCheckbox() : nothing}
                     ${this.expandable ? renderExpansion() : nothing}
                     ${this.row(item).map((column, columnIndex) => {
-                        return html`<td data-column-index="${columnIndex}" role="cell">
+                        const columnLabel = columns[columnIndex]?.title;
+
+                        return html`<td
+                            aria-label=${ifDefined(columnLabel)}
+                            data-column-index="${columnIndex}"
+                            role="cell"
+                        >
                             ${column}
                         </td>`;
                     })}
@@ -454,7 +503,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         });
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html` ${this.renderObjectCreate()}
             <ak-spinner-button
                 .callAction=${() => {
@@ -466,58 +515,55 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             >`;
     }
 
-    renderToolbarSelected(): SlottedTemplateResult {
+    protected renderToolbarSelected(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderToolbarAfter(): SlottedTemplateResult {
+    protected renderToolbarAfter(): SlottedTemplateResult {
         return nothing;
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("page")) {
-            updateURLParams({
-                [this.#pageParam]: this.page,
-            });
-        }
-        if (changedProperties.has("search")) {
-            updateURLParams({
-                [this.#searchParam]: this.search,
-            });
-        }
-    }
+    #searchListener = (value: string) => {
+        this.search = value;
+        this.page = 1;
+        this.fetch();
+    };
 
-    renderSearch(): TemplateResult {
-        const runSearch = (value: string) => {
-            this.search = value;
-            this.page = 1;
-            this.fetch();
-        };
+    protected renderSearch(): SlottedTemplateResult {
+        if (!this.searchEnabled()) {
+            return nothing;
+        }
+
         const isQL = this.supportsQL && this.hasEnterpriseLicense;
-        return !this.searchEnabled()
-            ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
-                  <ak-table-search
-                      ?supportsQL=${this.supportsQL}
-                      class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
-                      value=${ifDefined(this.search)}
-                      .onSearch=${runSearch}
-                      .apiResponse=${this.data}
-                  >
-                  </ak-table-search>
-              </div>`;
+
+        return html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
+            <ak-table-search
+                class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+                value=${ifDefined(this.search)}
+                label=${ifDefined(this.searchLabel)}
+                placeholder=${ifDefined(this.searchPlaceholder)}
+                .onSearch=${this.#searchListener}
+            >
+            </ak-table-search>
+        </div>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html`<div class="pf-c-toolbar">
-            <div class="pf-c-toolbar__content">
+    protected renderToolbarContainer(): SlottedTemplateResult {
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${this.toolbarLabel}">
+            <div role="presentation" class="pf-c-toolbar__content">
                 ${this.renderSearch()}
-                <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
-                ${this.paginated ? this.renderTablePagination() : html``}
+                <div role="presentation" class="pf-c-toolbar__bulk-select">
+                    ${this.renderToolbar()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarAfter()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarSelected()}
+                </div>
+                ${this.paginated ? this.renderTablePagination() : nothing}
             </div>
-        </div>`;
+        </header>`;
     }
 
     firstUpdated(): void {
@@ -571,7 +617,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     /* A simple pagination display, shown at both the top and bottom of the page. */
-    renderTablePagination(): TemplateResult {
+    renderTablePagination(): SlottedTemplateResult {
         const handler = (page: number) => {
             this.page = page;
             this.fetch();

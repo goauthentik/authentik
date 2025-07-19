@@ -1,11 +1,13 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { SlottedTemplateResult } from "#elements/types";
+
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-admin-status-system")
@@ -82,12 +84,12 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    renderHeader(): TemplateResult {
-        return html`${msg("System status")}`;
+    renderHeader(): SlottedTemplateResult {
+        return msg("System status");
     }
 
-    renderValue(): TemplateResult {
-        return html`${this.statusSummary}`;
+    renderValue(): SlottedTemplateResult {
+        return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
 }
 

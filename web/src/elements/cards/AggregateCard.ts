@@ -1,6 +1,8 @@
+import { SlottedTemplateResult } from "../types";
+
 import { AKElement } from "#elements/Base";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -101,28 +103,34 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         `,
     ];
 
-    renderInner(): TemplateResult {
+    renderInner(): SlottedTemplateResult {
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): TemplateResult {
-        return html`${this.headerLink
-            ? html`<a href="${this.headerLink}">
-                  <i class="fa fa-link"> </i>
-              </a>`
-            : ""}`;
+    renderHeaderLink(): SlottedTemplateResult {
+        if (!this.headerLink) {
+            return nothing;
+        }
+
+        return html`<a href="${this.headerLink}">
+            <i aria-hidden="true" class="fa fa-link"> </i>
+        </a>`;
     }
 
-    renderHeader(): TemplateResult {
-        return html`${this.header ? this.header : ""}`;
+    renderHeader(): SlottedTemplateResult {
+        return this.header ?? nothing;
     }
 
-    render(): TemplateResult {
-        return html`<div class="pf-c-card pf-c-card-aggregate">
+    render(): SlottedTemplateResult {
+        return html`<div
+            aria-label="${ifDefined(this.header)}"
+            role="region"
+            class="pf-c-card pf-c-card-aggregate"
+        >
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__title">
                     ${this.icon
-                        ? html`<i class="${ifDefined(this.icon)}"></i>&nbsp;`
+                        ? html`<i aria-hidden="true" class="${this.icon}"></i>&nbsp;`
                         : nothing}${this.renderHeader()}
                 </div>
                 ${this.renderHeaderLink()}

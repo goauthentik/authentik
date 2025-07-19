@@ -144,7 +144,10 @@ type ContentValue = SlottedTemplateResult | undefined;
  * @returns TemplateResult for the ak-empty-state element
  *
  */
-export function akEmptyState(properties: IEmptyState = {}, content: IEmptyStateContent = {}) {
+export function akEmptyState(
+    properties: IEmptyState = {},
+    content: string | IEmptyStateContent | SlottedTemplateResult = {},
+) {
     // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete
     // slot-name.
     const stringToSlot = (name: string, c: ContentValue) =>

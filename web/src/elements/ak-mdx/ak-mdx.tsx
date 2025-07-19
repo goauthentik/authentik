@@ -57,20 +57,16 @@ export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
-    @property({
-        reflect: true,
-    })
-    url: string = "";
+    @property({ type: String })
+    public url?: string;
 
-    @property()
-    content: string = "";
+    @property({ type: String })
+    public content?: string;
 
     @property({ attribute: false })
-    replacers: Replacer[] = [];
+    public replacers: Replacer[] = [];
 
     #reactRoot: Root | null = null;
-
-    resolvedHTML = "";
 
     static styles = [
         PFBase,
@@ -179,10 +175,12 @@ export class AKMDX extends AKElement {
                 this.url.slice(this.url.indexOf("/assets"));
 
             nextMDXModule = await fetchMDXModule(pathname);
-        } else {
+        } else if (this.content) {
             nextMDXModule = {
                 content: this.content,
             };
+        } else {
+            throw new Error("Either `url` or `content` must be set.");
         }
 
         return this.delegateRender(nextMDXModule);
