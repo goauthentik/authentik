@@ -42,7 +42,7 @@ class JSONExtension(OpenApiSerializerFieldExtension):
 
     target_class = "authentik.core.api.utils.JSONDictField"
 
-    def map_serializer_field(self, auto_schema, direction):
+    def map_serializer_field(self, auto_schema, direction: str) -> dict[str, str]:
         return build_basic_type(OpenApiTypes.OBJECT)
 
 
@@ -52,7 +52,7 @@ class ModelSerializer(BaseModelSerializer):
     serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
     serializer_field_mapping[models.JSONField] = JSONDictField
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict[str, Any]):
         instance = super().create(validated_data)
 
         request = self.context.get("request")
@@ -61,7 +61,7 @@ class ModelSerializer(BaseModelSerializer):
 
         return instance
 
-    def update(self, instance: Model, validated_data):
+    def update(self, instance: Model, validated_data: dict[str, Any]):
         raise_errors_on_nested_writes("update", self, validated_data)
         info = model_meta.get_field_info(instance)
 

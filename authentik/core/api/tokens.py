@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
@@ -41,7 +42,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["key"] = CharField(required=False)
 
-    def validate_user(self, user: User):
+    def validate_user(self, user: User) -> User:
         """Ensure user of token cannot be changed"""
         if self.instance and self.instance.user_id:
             if user.pk != self.instance.user_id:
@@ -138,13 +139,13 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     owner_field = "user"
     rbac_allow_create_without_perm = True
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         user = self.request.user if self.request else get_anonymous_user()
         if user.is_superuser:
             return super().get_queryset()
         return super().get_queryset().filter(user=user.pk)
 
-    def perform_create(self, serializer: TokenSerializer):
+    def perform_create(self, serializer: TokenSerializer) -> Token:
         if not self.request.user.is_superuser:
             instance = serializer.save(
                 user=self.request.user,
