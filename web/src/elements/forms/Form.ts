@@ -285,6 +285,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     }),
                 );
 
+                this.dispatchEvent(
+                    new CustomEvent("ak-form-successful-submit", {
+                        bubbles: true,
+                        composed: true,
+                        detail: response,
+                    }),
+                );
+
                 return response;
             })
             .catch(async (error: unknown) => {
