@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://gitlab.com/gitlab-org/gitlab/-/raw/master/app/assets/javascripts/editor/schema/ci.json
+
+include:
+  - file: templates/docker.yml
+    project: senbax/gitlabci/docker
+    ref: v0.19.36
+  - file: templates/semantic-release.yml
+    project: senbax/gitlabci/semantic-release
+    ref: v0.11.36
