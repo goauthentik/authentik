@@ -39,6 +39,7 @@ class BaseSchema(DjangoQLSchema):
         return super().resolve_name(name)
 
 
+# Inherits from SearchFilter to keep the schema correctly
 class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 

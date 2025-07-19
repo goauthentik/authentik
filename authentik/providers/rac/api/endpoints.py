@@ -22,9 +22,9 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_endpoint_cache_key(user_pk: str) -> str:
+def user_endpoint_cache_key(user_pk: str, provider_pk: str) -> str:
     """Cache key where endpoint list for user is saved"""
-    return f"goauthentik.io/providers/rac/endpoint_access/{user_pk}"
+    return f"goauthentik.io/providers/rac/endpoint_access/{user_pk}/{provider_pk}"
 
 
 class EndpointSerializer(ModelSerializer):
@@ -65,11 +65,14 @@ class EndpointSerializer(ModelSerializer):
 class EndpointViewSet(UsedByMixin, ModelViewSet):
     """Endpoint Viewset"""
 
-    queryset = Endpoint.objects.all()
+    queryset = Endpoint.objects.none()
     serializer_class = EndpointSerializer
-    filterset_fields = ["name", "provider"]
+    filterset_fields = ["name"]
     search_fields = ["name", "protocol"]
     ordering = ["name", "protocol"]
+
+    def get_queryset(self):
+        return Endpoint.objects.filter(provider=self.kwargs["provider_pk"])
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
@@ -120,14 +123,11 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
         if not should_cache:
             allowed_endpoints = self._get_allowed_endpoints(queryset)
         if should_cache:
-            allowed_endpoints = cache.get(user_endpoint_cache_key(self.request.user.pk))
+            key = user_endpoint_cache_key(self.request.user.pk, self.kwargs["provider_pk"])
+            allowed_endpoints = cache.get(key)
             if not allowed_endpoints:
                 LOGGER.debug("Caching allowed endpoint list")
                 allowed_endpoints = self._get_allowed_endpoints(queryset)
-                cache.set(
-                    user_endpoint_cache_key(self.request.user.pk),
-                    allowed_endpoints,
-                    timeout=86400,
-                )
+                cache.set(key, allowed_endpoints, timeout=86400)
         serializer = self.get_serializer(allowed_endpoints, many=True)
         return self.get_paginated_response(serializer.data)
