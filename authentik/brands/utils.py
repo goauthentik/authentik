@@ -43,6 +43,6 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "brand": brand,
         "brand_css": brand_css,
         "footer_links": tenant.footer_links,
-        "html_meta": {**get_http_meta()},
+        "html_meta": get_http_meta(),
         "version": get_full_version(),
     }

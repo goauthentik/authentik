@@ -1,11 +1,9 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-http-utils/etag"
-	"github.com/gorilla/mux"
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
@@ -41,27 +39,6 @@ func (ws *WebServer) configureStatic() {
 		"static/authentik/",
 		config.Get().Web.Path,
 	))
-
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		pathStripper(
-			distFs,
-			"if/flow/"+vars["flow_slug"],
-			config.Get().Web.Path,
-		).ServeHTTP(rw, r)
-	})
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/user/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/user", config.Get().Web.Path), distFs))
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		pathStripper(
-			distFs,
-			"if/rac/"+vars["app_slug"],
-			config.Get().Web.Path,
-		).ServeHTTP(rw, r)
-	})
 
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {

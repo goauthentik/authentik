@@ -41,6 +41,14 @@ export class RouteMatch {
     }
 }
 
+export function createPathnameHash(
+    hashRoute?: string | null,
+    basePath = location.pathname,
+): string {
+    if (!hashRoute) return basePath;
+    return `${basePath}#${hashRoute}`;
+}
+
 export function getURLParam<T>(key: string, fallback: T): T {
     const params = getURLParams();
     if (key in params) {
@@ -64,13 +72,18 @@ export function getURLParams(): { [key: string]: unknown } {
 }
 
 export function setURLParams(params: { [key: string]: unknown }, replace = true): void {
-    const paramsString = JSON.stringify(params);
-    const currentUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
-    const newUrl = `#${currentUrl};${encodeURIComponent(paramsString)}`;
+    const serializedParams = JSON.stringify(params);
+
+    const [currentRoute] = window.location.hash.slice(1).split(ROUTE_SEPARATOR);
+
+    const nextPathname = createPathnameHash(
+        `${currentRoute};${encodeURIComponent(serializedParams)}`,
+    );
+
     if (replace) {
-        history.replaceState(undefined, "", newUrl);
+        history.replaceState(undefined, "", nextPathname);
     } else {
-        history.pushState(undefined, "", newUrl);
+        history.pushState(undefined, "", nextPathname);
     }
 }
 
@@ -79,5 +92,6 @@ export function updateURLParams(params: { [key: string]: unknown }, replace = tr
     for (const key in params) {
         currentParams[key] = params[key] as string;
     }
+
     setURLParams(currentParams, replace);
 }

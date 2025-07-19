@@ -1,6 +1,3 @@
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
-
 /**
  * @file MDX plugin for ESBuild.
  *
@@ -13,6 +10,10 @@ import * as path from "node:path";
  *   PluginBuild
  * } from "esbuild"
  */
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
 /**

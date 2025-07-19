@@ -1,6 +1,7 @@
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { createPathnameHash } from "#elements/router/RouteMatch";
 
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -76,9 +77,6 @@ export class SidebarItem extends AKElement {
 
     @property({ type: Boolean })
     isActive = false;
-
-    @property({ type: Boolean })
-    isAbsoluteLink = false;
 
     @property({ type: Boolean })
     highlight = false;
@@ -189,7 +187,7 @@ export class SidebarItem extends AKElement {
     renderWithPath() {
         return html`
             <a
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                href=${createPathnameHash(this.path)}
                 class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
             >
                 <slot name="label"></slot>
