@@ -7,6 +7,8 @@
         "!Enumerate sequence",
         "!Env scalar",
         "!Env sequence",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
         "!Format sequence",
         "!If sequence",

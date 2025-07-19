@@ -37,6 +37,8 @@ entries:
     - attrs:
           attributes:
               env_null: !Env [bar-baz, null]
+              file_content: !File '%(file_name)s'
+              file2_def: !File ['%(file2_name)s', 'def']
               json_parse: !ParseJSON '{"foo": "bar"}'
               policy_pk1:
                   !Format [
