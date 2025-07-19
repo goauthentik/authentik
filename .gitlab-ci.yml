@@ -9,5 +9,6 @@ include:
     ref: v0.11.36
 
 variables:
+  DOCKER_HADOLINT_DISABLED: "true"
   # see authentik Makefile
   DOCKER_PRE_BUILD_HOOK: "mkdir gen-ts-api"
