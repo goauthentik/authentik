@@ -435,6 +435,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
+        self.request._request.user = user
         try:
             plan = planner.plan(
                 self.request._request,
@@ -443,9 +444,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 },
             )
         except FlowNonApplicableException:
-            raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
-            ) from None
+            raise
+            # raise ValidationError(
+            #     {"non_field_errors": "Recovery flow not applicable to user"}
+            # ) from None
         _plan = FlowToken.pickle(plan)
         if for_email:
             _plan = pickle_flow_token_for_email(plan)
