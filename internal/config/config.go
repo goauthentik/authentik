@@ -3,12 +3,15 @@ package config
 import (
 	"context"
 	_ "embed"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 
 	env "github.com/sethvargo/go-envconfig"
@@ -21,6 +24,29 @@ import (
 var cfg *Config
 
 const defaultConfigPath = "./authentik/lib/default.yml"
+
+// GetDictFromB64JSON decodes a base64-encoded JSON string into a map[string]string
+func (c *Config) GetDictFromB64JSON(key string, default_ map[string]string) map[string]string {
+	value := os.Getenv(fmt.Sprintf("AUTHENTIK_%s", strings.ToUpper(strings.ReplaceAll(key, ".", "__"))))
+	if value == "" {
+		return default_
+	}
+
+	decoded, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		log.WithError(err).WithField("key", key).Warning("Failed to decode base64 value")
+		return default_
+	}
+
+	var result map[string]string
+	err = json.Unmarshal(decoded, &result)
+	if err != nil {
+		log.WithError(err).WithField("key", key).Warning("Failed to decode JSON value")
+		return default_
+	}
+
+	return result
+}
 
 func getConfigPaths() []string {
 	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
@@ -139,21 +165,23 @@ func (c *Config) walkScheme(v interface{}) {
 	t := rv.Type()
 	for i := 0; i < rv.NumField(); i++ {
 		valueField := rv.Field(i)
-		switch valueField.Kind() {
-		case reflect.Struct:
-			if !valueField.Addr().CanInterface() {
-				continue
-			}
-
-			iface := valueField.Addr().Interface()
-			c.walkScheme(iface)
-		}
-
 		typeField := t.Field(i)
-		if typeField.Type.Kind() != reflect.String {
-			continue
+
+		if valueField.Kind() == reflect.Struct {
+			if valueField.CanAddr() {
+				c.walkScheme(valueField.Addr().Interface())
+			}
 		}
-		valueField.SetString(c.parseScheme(valueField.String()))
+
+		switch typeField.Type.Kind() {
+		case reflect.String:
+			valueField.SetString(c.parseScheme(valueField.String()))
+		case reflect.Int:
+			val, err := strconv.Atoi(c.parseScheme(fmt.Sprintf("%d", valueField.Int())))
+			if err == nil {
+				valueField.SetInt(int64(val))
+			}
+		}
 	}
 }
 

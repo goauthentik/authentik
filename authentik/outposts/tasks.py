@@ -84,8 +84,8 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
 
 
 @CELERY_APP.task()
-def outpost_service_connection_state(connection_pk: Any):
-    """Update cached state of a service connection"""
+def outpost_service_connection_state(connection_pk: str):
+    """Update OutpostServiceConnection state"""
     connection: OutpostServiceConnection = (
         OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
     )
@@ -299,16 +299,22 @@ def outpost_connection_discovery(self: SystemTask):
 
 @CELERY_APP.task()
 def outpost_session_end(session_id: str):
-    """Update outpost instances connected to a single outpost"""
-    layer = get_channel_layer()
+    """End a session from an outpost, by sending a websocket message"""
+    channel_layer = get_channel_layer()
+    if not channel_layer:
+        return
     hashed_session_id = hash_session_key(session_id)
-    for outpost in Outpost.objects.all():
-        LOGGER.info("Sending session end signal to outpost", outpost=outpost)
-        group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
-        async_to_sync(layer.group_send)(
-            group,
-            {
-                "type": "event.session.end",
-                "session_id": hashed_session_id,
-            },
-        )
+    LOGGER.debug(
+        "Sending session end event",
+        hashed_session_id=hashed_session_id,
+    )
+    # The group name is the outpost token, this way we don't have to check
+    # that the outpost is actually connected, we just send into the void
+    # if nobody is listening
+    async_to_sync(channel_layer.group_send)(
+        OUTPOST_GROUP,
+        {
+            "type": "event.session.end",
+            "session_id": hashed_session_id,
+        },
+    )

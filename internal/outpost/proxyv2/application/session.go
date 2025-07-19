@@ -2,199 +2,154 @@ package application
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
-	"math"
 	"net/http"
 	"net/url"
-	"os"
-	"path"
+	"strconv"
 	"strings"
 
-	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
-	"github.com/redis/go-redis/v9"
+	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
-	"goauthentik.io/internal/config"
-	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
-	"goauthentik.io/internal/outpost/proxyv2/redisstore"
-	"goauthentik.io/internal/utils"
+	"goauthentik.io/internal/outpost/proxyv2/pgstore"
+	"goauthentik.io/internal/outpost/proxyv2/sqlitestore"
 )
 
-const RedisKeyPrefix = "authentik_proxy_session_"
+const SQLiteKeyPrefix = "authentik_proxy_"
+const PostgresKeyPrefix = "authentik_proxy_"
+const PostgresSchema = "public"
 
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) (sessions.Store, error) {
+	a.log.WithField("is_embedded", a.isEmbedded).Debug("Initializing session store")
+
 	maxAge := 0
 	if p.AccessTokenValidity.IsSet() {
 		t := p.AccessTokenValidity.Get()
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
+		a.log.WithField("max_age", maxAge).Debug("Setting session max age from access token validity")
+	} else {
+		a.log.Debug("No access token validity set, using default max age")
 	}
+
+	sessionOptions := sessions.Options{
+		HttpOnly: true,
+		Secure:   strings.ToLower(externalHost.Scheme) == "https",
+		Domain:   *p.CookieDomain,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   maxAge,
+		Path:     "/",
+	}
+
 	if a.isEmbedded {
-		var tls *tls.Config
-		if config.Get().Redis.TLS {
-			tls = utils.GetTLSConfig()
-			switch strings.ToLower(config.Get().Redis.TLSReqs) {
-			case "none":
-			case "false":
-				tls.InsecureSkipVerify = true
-			case "required":
-				break
-			}
-			ca := config.Get().Redis.TLSCaCert
-			if ca != "" {
-				// Get the SystemCertPool, continue with an empty pool on error
-				rootCAs, _ := x509.SystemCertPool()
-				if rootCAs == nil {
-					rootCAs = x509.NewCertPool()
-				}
-				certs, err := os.ReadFile(ca)
-				if err != nil {
-					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", ca)
-				}
-				// Append our cert to the system pool
-				if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
-					a.log.Println("No certs appended, using system certs only")
-				}
-				tls.RootCAs = rootCAs
-			}
-		}
-		client := redis.NewClient(&redis.Options{
-			Addr:      fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
-			Username:  config.Get().Redis.Username,
-			Password:  config.Get().Redis.Password,
-			DB:        config.Get().Redis.DB,
-			TLSConfig: tls,
-		})
-
-		// New default RedisStore
-		rs, err := redisstore.NewRedisStore(context.Background(), client)
-		if err != nil {
-			return nil, err
-		}
-
-		rs.KeyPrefix(RedisKeyPrefix)
-		rs.Options(sessions.Options{
-			HttpOnly: true,
-			Secure:   strings.ToLower(externalHost.Scheme) == "https",
-			Domain:   *p.CookieDomain,
-			SameSite: http.SameSiteLaxMode,
-			MaxAge:   maxAge,
-			Path:     "/",
-		})
-
-		a.log.Trace("using redis session backend")
-		return rs, nil
+		a.log.Debug("Using PostgreSQL for embedded outpost")
+		return a.createPostgreSQLStore(p, sessionOptions)
 	}
-	dir := os.TempDir()
-	cs := sessions.NewFilesystemStore(dir)
-	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
-	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
-	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
-	// securecookie: the value is too long
-	// when using OpenID Connect, since this can contain a large amount of extra information in the id_token
 
-	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-	cs.MaxLength(math.MaxInt)
-	cs.Options.HttpOnly = true
-	cs.Options.Secure = strings.ToLower(externalHost.Scheme) == "https"
-	cs.Options.Domain = *p.CookieDomain
-	cs.Options.SameSite = http.SameSiteLaxMode
-	cs.Options.MaxAge = maxAge
-	cs.Options.Path = "/"
-	a.log.WithField("dir", dir).Trace("using filesystem session backend")
-	return cs, nil
+	a.log.Debug("Using SQLite for non-embedded outpost")
+	return a.createSQLiteStore(p, sessionOptions)
 }
 
+func (a *Application) createPostgreSQLStore(p api.ProxyOutpostConfig, sessionOptions sessions.Options) (sessions.Store, error) {
+	providerID := strconv.Itoa(int(p.GetPk()))
+	a.log.WithField("provider_id", providerID).Debug("Using provider ID for PostgreSQL store")
+
+	store, err := pgstore.CreateStoreFromConfig(PostgresSchema, providerID, &sessionOptions, a.log)
+	if err != nil {
+		if pgstore.IsTableMissingError(err) {
+			a.log.WithError(err).Error("PostgreSQL session table is missing. Please run Django migrations.")
+			return nil, fmt.Errorf("PostgreSQL session table is missing: %w", err)
+		}
+		a.log.WithError(err).Error("Failed to create PostgreSQL store")
+		return nil, fmt.Errorf("failed to create PostgreSQL store: %w", err)
+	}
+
+	return store, nil
+}
+
+// createSQLiteStore creates a SQLite session store
+func (a *Application) createSQLiteStore(p api.ProxyOutpostConfig, sessionOptions sessions.Options) (sessions.Store, error) {
+	providerID := strconv.Itoa(int(p.GetPk()))
+	a.log.WithField("provider_id", providerID).Debug("Using provider ID for SQLite store")
+
+	a.log.Debug("Creating SQLite session store for standalone outpost")
+
+	store, err := sqlitestore.CreateStoreFromConfig(providerID, &sessionOptions, a.log)
+	if err != nil {
+		a.log.WithError(err).Error("Failed to create SQLite store")
+		return nil, fmt.Errorf("failed to create SQLite store: %w", err)
+	}
+
+	return store, nil
+}
+
+// SessionName returns the name of the session
 func (a *Application) SessionName() string {
+	a.log.WithField("session_name", a.sessionName).Debug("Getting session name")
 	return a.sessionName
 }
 
-func (a *Application) getAllCodecs() []securecookie.Codec {
-	apps := a.srv.Apps()
-	cs := []securecookie.Codec{}
-	for _, app := range apps {
-		cs = append(cs, codecs.CodecsFromPairs(0, []byte(*app.proxyConfig.CookieSecret))...)
+// Logout logs out from the session store
+func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) error {
+	a.log.Debug("Logging out user sessions")
+
+	// Both stores now implement the same interface
+	if store, ok := a.sessions.(sessionStoreWithDelete); ok {
+		a.log.Debug("Using session store for logout")
+		return a.logoutFromStore(ctx, store, filter)
 	}
-	return cs
+
+	a.log.Error("Session store does not support required operations")
+	return fmt.Errorf("session store does not support required operations")
 }
 
-func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) error {
-	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
-		files, err := os.ReadDir(os.TempDir())
-		if err != nil {
-			return err
+// sessionStoreWithDelete defines the interface needed for logout functionality
+type sessionStoreWithDelete interface {
+	GetAllSessions(ctx context.Context) ([]*sessions.Session, error)
+	Delete(ctx context.Context, session *sessions.Session) error
+}
+
+// logoutFromStore logs out from the session store
+func (a *Application) logoutFromStore(ctx context.Context, store sessionStoreWithDelete, filter func(c Claims) bool) error {
+	a.log.Debug("Getting all sessions for logout")
+	sessions, err := store.GetAllSessions(ctx)
+	if err != nil {
+		a.log.WithError(err).Error("Failed to get sessions for logout")
+		return fmt.Errorf("failed to get sessions: %w", err)
+	}
+
+	a.log.WithField("session_count", len(sessions)).Debug("Found sessions for potential logout")
+	deletedCount := 0
+
+	for _, session := range sessions {
+		rc, ok := session.Values[constants.SessionClaims]
+		if !ok || rc == nil {
+			a.log.WithField("session_id", session.ID).Debug("Session has no claims, skipping")
+			continue
 		}
-		for _, file := range files {
-			s := sessions.Session{}
-			if !strings.HasPrefix(file.Name(), "session_") {
-				continue
+		claims := rc.(Claims)
+		a.log.WithField("session_id", session.ID).WithField("claims_sid", claims.Sid).WithField("sub", claims.Sub).WithField("username", claims.PreferredUsername).Debug("Checking session for logout")
+
+		if filter(claims) {
+			a.log.WithFields(log.Fields{
+				"session_id": session.ID,
+				"sub":        claims.Sub,
+				"username":   claims.PreferredUsername,
+				"claims_sid": claims.Sid,
+			}).Info("Deleting session - filter matched")
+			if err := store.Delete(ctx, session); err != nil {
+				a.log.WithError(err).WithField("session_id", session.ID).Warning("Failed to delete session")
+			} else {
+				a.log.WithField("session_id", session.ID).Info("Successfully deleted session")
+				deletedCount++
 			}
-			fullPath := path.Join(os.TempDir(), file.Name())
-			data, err := os.ReadFile(fullPath)
-			if err != nil {
-				a.log.WithError(err).Warning("failed to read file")
-				continue
-			}
-			err = securecookie.DecodeMulti(
-				a.SessionName(), string(data),
-				&s.Values, a.getAllCodecs()...,
-			)
-			if err != nil {
-				a.log.WithError(err).Trace("failed to decode session")
-				continue
-			}
-			rc, ok := s.Values[constants.SessionClaims]
-			if !ok || rc == nil {
-				continue
-			}
-			claims := s.Values[constants.SessionClaims].(Claims)
-			if filter(claims) {
-				a.log.WithField("path", fullPath).Trace("deleting session")
-				err := os.Remove(fullPath)
-				if err != nil {
-					a.log.WithError(err).Warning("failed to delete session")
-					continue
-				}
-			}
+		} else {
+			a.log.WithField("session_id", session.ID).WithField("claims_sid", claims.Sid).Debug("Session does not match filter criteria, keeping")
 		}
 	}
-	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
-		client := rs.Client()
-		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
-		if err != nil {
-			return err
-		}
-		serializer := redisstore.GobSerializer{}
-		for _, key := range keys {
-			v, err := client.Get(ctx, key).Result()
-			if err != nil {
-				a.log.WithError(err).Warning("failed to get value")
-				continue
-			}
-			s := sessions.Session{}
-			err = serializer.Deserialize([]byte(v), &s)
-			if err != nil {
-				a.log.WithError(err).Warning("failed to deserialize")
-				continue
-			}
-			c := s.Values[constants.SessionClaims]
-			if c == nil {
-				continue
-			}
-			claims := c.(Claims)
-			if filter(claims) {
-				a.log.WithField("key", key).Trace("deleting session")
-				_, err := client.Del(ctx, key).Result()
-				if err != nil {
-					a.log.WithError(err).Warning("failed to delete key")
-					continue
-				}
-			}
-		}
-	}
+
+	a.log.WithField("deleted_count", deletedCount).Info("Completed logout process")
 	return nil
 }

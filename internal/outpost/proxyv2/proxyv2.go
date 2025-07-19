@@ -71,9 +71,8 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 }
 
 func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
-	// Always handle requests for outpost paths that should answer regardless of hostname
-	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") ||
-		strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/static") {
+	// revert me later
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/") {
 		ps.mux.ServeHTTP(rw, r)
 		return true
 	}
