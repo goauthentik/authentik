@@ -18,6 +18,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
 
 COPY ./package.json /work
 COPY ./web /work/web/
+# TODO: Update this after moving website to docs
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 

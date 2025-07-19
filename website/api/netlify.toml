@@ -11,12 +11,11 @@
   base    = "website"
   package = "api"
   command = "npm run build -w api"
-  publish = "api/build"
+  publish = "website/api/build"
 
 [dev]
   command    = "npm start"
   targetPort = 3000
-  publish    = "api/build"
 
 [context.production.environment]
   NODE_ENV = "production"

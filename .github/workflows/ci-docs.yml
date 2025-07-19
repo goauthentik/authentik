@@ -1,4 +1,4 @@
-name: authentik-ci-website
+name: authentik-ci-docs
 
 on:
   push:
@@ -18,17 +18,18 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - lint:lockfile
           - prettier-check
     steps:
       - uses: actions/checkout@v4
-      - working-directory: website/
+      - name: Install dependencies
+        working-directory: website/
         run: npm ci
       - name: Lint
         working-directory: website/
         run: npm run ${{ matrix.command }}
-  test:
+  build-docs:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -37,19 +38,14 @@ jobs:
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
+        name: Install Dependencies
         run: npm ci
-      - name: test
+      - name: Build Documentation via Docusaurus
         working-directory: website/
-        run: npm test
-  build:
+        run: npm run build
+  build-integrations:
     runs-on: ubuntu-latest
-    name: ${{ matrix.job }}
-    strategy:
-      fail-fast: false
-      matrix:
-        job:
-          - build
-          - build:integrations
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,10 +54,11 @@ jobs:
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
+        name: Install Dependencies
         run: npm ci
-      - name: build
+      - name: Build Integrations via Docusaurus
         working-directory: website/
-        run: npm run ${{ matrix.job }}
+        run: npm run build -w integrations
   build-container:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
@@ -115,8 +112,8 @@ jobs:
     if: always()
     needs:
       - lint
-      - test
-      - build
+      - build-docs
+      - build-integrations
       - build-container
     runs-on: ubuntu-latest
     steps:

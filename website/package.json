@@ -4,10 +4,8 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "run-s build:api build:docusaurus build:api:copy",
+        "build": "npm run build -w docs",
         "build:api": "npm run build -w api",
-        "build:api:copy": "cp -r ./api/build ./build/api",
-        "build:docusaurus": "npm run build -w docs",
         "build:integrations": "npm run build -w integrations",
         "check-types": "tsc -b",
         "docusaurus": "docusaurus",
