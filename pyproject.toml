@@ -32,6 +32,7 @@ dependencies = [
     "dumb-init==1.2.5.post1",
     "duo-client==5.5.0",
     "fido2==2.0.0",
+    "filprofiler>=2024.11.2",
     "flower==2.0.1",
     "geoip2==5.1.0",
     "geopy==2.4.1",
