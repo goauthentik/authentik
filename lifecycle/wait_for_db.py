@@ -13,23 +13,32 @@ from authentik.lib.config import CONFIG, redis_url
 CHECK_THRESHOLD = 30
 
 
+def get_postgres():
+    return connect(
+        dbname=CONFIG.get("postgresql.name"),
+        user=CONFIG.get("postgresql.user"),
+        password=CONFIG.get("postgresql.password"),
+        host=CONFIG.get("postgresql.host"),
+        port=CONFIG.get_int("postgresql.port"),
+        sslmode=CONFIG.get("postgresql.sslmode"),
+        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
+        sslcert=CONFIG.get("postgresql.sslcert"),
+        sslkey=CONFIG.get("postgresql.sslkey"),
+    )
+
+
+def get_redis():
+    url = CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db"))
+    return Redis.from_url(url)
+
+
 def check_postgres():
     attempt = 0
     while True:
         if attempt >= CHECK_THRESHOLD:
             sysexit(1)
         try:
-            conn = connect(
-                dbname=CONFIG.refresh("postgresql.name"),
-                user=CONFIG.refresh("postgresql.user"),
-                password=CONFIG.refresh("postgresql.password"),
-                host=CONFIG.refresh("postgresql.host"),
-                port=CONFIG.get_int("postgresql.port"),
-                sslmode=CONFIG.get("postgresql.sslmode"),
-                sslrootcert=CONFIG.get("postgresql.sslrootcert"),
-                sslcert=CONFIG.get("postgresql.sslcert"),
-                sslkey=CONFIG.get("postgresql.sslkey"),
-            )
+            conn = get_postgres()
             conn.cursor()
             break
         except OperationalError as exc:
@@ -41,13 +50,12 @@ def check_postgres():
 
 
 def check_redis():
-    url = CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db"))
     attempt = 0
     while True:
         if attempt >= CHECK_THRESHOLD:
             sysexit(1)
         try:
-            redis = Redis.from_url(url)
+            redis = get_redis()
             redis.ping()
             break
         except RedisError as exc:
