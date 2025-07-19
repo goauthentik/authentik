@@ -13,6 +13,7 @@ import { config, DEFAULT_CONFIG } from "#common/api/config";
 
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 
+import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -31,7 +32,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -39,6 +40,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
     @state()
     clearIcon = false;
+
+    @state()
+    hasSigningCert = false;
+
+    setHasSigningCert(ev: InputEvent): void {
+        const target = ev.target as AkCryptoCertificateSearch;
+        if (!target) return;
+        this.hasSigningCert = !!target.selectedKeypair;
+    }
 
     async loadInstance(pk: string): Promise<SAMLSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
@@ -79,6 +89,49 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             });
         }
         return source;
+    }
+
+    renderHasSigningCert(): TemplateResult {
+        return html`<ak-form-element-horizontal name="signedAssertion">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.signedAssertion ?? true}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"> ${msg("Verify Assertion Signature")} </span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, Authentik will look for a Signature inside of the Assertion element.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="signedResponse">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.signedResponse ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"> ${msg("Verify Response Signature")} </span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, Authentik will look for a Signature inside of the Response element.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>`;
     }
 
     renderForm(): TemplateResult {
@@ -311,6 +364,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.verificationKp}
+                            @input=${this.setHasSigningCert}
                             nokey
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
@@ -319,6 +373,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.hasSigningCert ? this.renderHasSigningCert() : nothing}
                 </div>
             </ak-form-group>
             <ak-form-group>
