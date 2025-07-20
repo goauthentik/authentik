@@ -1,0 +1,20 @@
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+
+providers:
+  docker:
+    exposedByDefault: false
+    network: "authentik_session-test"
+
+log:
+  level: DEBUG
+
+metrics:
+  prometheus:
+    addEntrypointsLabels: true
+    addServicesLabels: true 

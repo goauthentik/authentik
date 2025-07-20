@@ -579,3 +579,104 @@ class TestConfig(TestCase):
     #             }
     #         },
     #     )
+
+    # todo: make this match above
+    def test_sqlite_default_config(self):
+        """Test default SQLite configuration values"""
+        config = ConfigLoader()
+        # Test default cleanup interval is 3600 seconds
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 3600)
+
+    @mock.patch.dict(environ, {ENV_PREFIX + "_SQLITE__CLEANUP_INTERVAL": "7200"})
+    def test_sqlite_cleanup_interval_env_override(self):
+        """Test SQLite cleanup interval can be overridden via environment variable"""
+        config = ConfigLoader()
+        config.update_from_env()
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 7200)
+
+    @mock.patch.dict(
+        environ,
+        {
+            ENV_PREFIX + "_SQLITE__CLEANUP_INTERVAL": "1800",
+        },
+    )
+    def test_sqlite_multiple_env_overrides(self):
+        """Test multiple SQLite environment variable overrides"""
+        config = ConfigLoader()
+        config.update_from_env()
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 1800)
+
+    def test_sqlite_cleanup_interval_int(self):
+        """Test SQLite cleanup interval as integer"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", 5400)
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 5400)
+
+    def test_sqlite_cleanup_interval_string(self):
+        """Test SQLite cleanup interval as string"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", "9000")
+        self.assertEqual(config.get("sqlite.cleanup_interval"), "9000")
+
+    def test_sqlite_cleanup_interval_minimum(self):
+        """Test SQLite cleanup interval minimum value"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", 60)
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 60)
+
+    def test_sqlite_cleanup_interval_maximum(self):
+        """Test SQLite cleanup interval maximum value"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", 604800)  # 1 week
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 604800)
+
+    def test_sqlite_config_keys(self):
+        """Test SQLite configuration keys are accessible"""
+        config = ConfigLoader()
+        sqlite_keys = list(config.get_keys("sqlite"))
+        self.assertIn("cleanup_interval", sqlite_keys)
+
+    def test_sqlite_config_separation_from_postgresql(self):
+        """Test SQLite configuration is separate from PostgreSQL"""
+        config = ConfigLoader()
+        # Test PostgreSQL config exists
+        self.assertIsNotNone(config.get("postgresql.host"))
+        self.assertIsNotNone(config.get("postgresql.port"))
+        self.assertIsNotNone(config.get("postgresql.name"))
+
+        # Test SQLite config exists separately
+        self.assertIsNotNone(config.get("sqlite.cleanup_interval"))
+
+    def test_sqlite_config_separation_from_redis(self):
+        """Test SQLite configuration is separate from Redis"""
+        config = ConfigLoader()
+        # Test Redis config exists
+        self.assertIsNotNone(config.get("redis.host"))
+        self.assertIsNotNone(config.get("redis.port"))
+        self.assertIsNotNone(config.get("redis.db"))
+
+        # Test SQLite config exists separately
+        self.assertIsNotNone(config.get("sqlite.cleanup_interval"))
+
+    def test_sqlite_cleanup_interval_get_int(self):
+        """Test SQLite cleanup interval using get_int method"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", "7200")
+        self.assertEqual(config.get_int("sqlite.cleanup_interval"), 7200)
+
+    def test_sqlite_cleanup_interval_get_int_invalid(self):
+        """Test SQLite cleanup interval using get_int method with invalid value"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", "invalid")
+        self.assertEqual(config.get_int("sqlite.cleanup_interval", 3600), 3600)
+
+    def test_sqlite_config_with_patch_cleanup_interval(self):
+        """Test SQLite cleanup interval with patch decorator"""
+        config = ConfigLoader()
+        config.set("sqlite.cleanup_interval", 3600)
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 3600)
+
+        with config.patch("sqlite.cleanup_interval", 7200):
+            self.assertEqual(config.get("sqlite.cleanup_interval"), 7200)
+
+        self.assertEqual(config.get("sqlite.cleanup_interval"), 3600)
