@@ -14,12 +14,15 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import { printCodes, downloadCodes } from "#user/user-settings/authenticator_static/UserSettingsAuthenticatorStaticModal";
+
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
@@ -33,6 +36,7 @@ export class AuthenticatorStaticStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
+        PFFlex,
         css`
             /* Static OTP Tokens */
             ul {
@@ -47,8 +51,19 @@ export class AuthenticatorStaticStage extends BaseStage<
                 font-size: var(--pf-global--FontSize--2xl);
                 margin: 0 2rem;
             }
+            .pf-l-flex {
+                margin-bottom: var(--pf-global--spacer--md);
+            }
         `,
     ];
+
+    downloadCodes(): void {
+        downloadCodes(this.challenge.codes);
+    }
+
+    printCodes(): void {
+        printCodes(this.challenge.codes);
+    }
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -72,6 +87,27 @@ export class AuthenticatorStaticStage extends BaseStage<
                     </ul>
                 </ak-form-element>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
+
+                <div class="pf-l-flex pf-m-justify-content-center pf-m-align-items-center pf-m-gap-md pf-u-my-md">
+                    <button 
+                        type="button" 
+                        class="pf-c-button pf-m-primary pf-m-block"
+                        style="max-width: 200px;"
+                        @click=${this.downloadCodes}
+                    >
+                        <i class="fas fa-download pf-u-mr-xs" aria-hidden="true"></i>
+                        ${msg("Download codes")}
+                    </button>
+                    <button 
+                        type="button" 
+                        class="pf-c-button pf-m-secondary pf-m-block"
+                        style="max-width: 200px;"
+                        @click=${this.printCodes}
+                    >
+                        <i class="fas fa-print pf-u-mr-xs" aria-hidden="true"></i>
+                        ${msg("Print codes")}
+                    </button>
+                </div>
 
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">

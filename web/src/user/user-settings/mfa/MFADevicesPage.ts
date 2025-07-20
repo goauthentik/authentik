@@ -4,6 +4,7 @@ import "#elements/buttons/TokenCopyButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
+import "#user/user-settings/authenticator_static/index";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
@@ -149,17 +150,35 @@ export class MFADevicesPage extends Table<Device> {
                       <small>${item.lastUsed.toLocaleString()}</small>`
                 : html`-`}`,
             html`
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Update")}</span>
-                    <span slot="header">${msg("Update Device")}</span>
-                    <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
-                    </ak-user-mfa-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                <div class="pf-c-toolbar__item pf-m-align-right">
+                    <ak-forms-modal>
+                        <span slot="submit">${msg("Update")}</span>
+                        <span slot="header">${msg("Update Device")}</span>
+                        <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
+                        </ak-user-mfa-form>
+                        <button slot="trigger" class="pf-c-button pf-m-plain">
+                            <pf-tooltip position="top" content=${msg("Edit")}>
+                                <i class="fas fa-edit"></i>
+                            </pf-tooltip>
+                        </button>
+                    </ak-forms-modal>
+                    ${item.type === "authentik_stages_authenticator_static.StaticDevice"
+                        ? html`
+                            <ak-forms-modal .showSubmitButton=${false}>
+                                <span slot="header">${msg("Recovery Codes")}</span>
+                                <ak-user-settings-authenticator-static-modal
+                                    slot="form"
+                                    .device=${item}
+                                ></ak-user-settings-authenticator-static-modal>
+                                <button slot="trigger" class="pf-c-button pf-m-plain">
+                                    <pf-tooltip position="top" content=${msg("View recovery codes")}>
+                                        <i class="fas fa-eye"></i>
+                                    </pf-tooltip>
+                                </button>
+                            </ak-forms-modal>
+                        `
+                        : nothing}
+                </div>
             `,
         ];
     }
