@@ -64,7 +64,7 @@ func (rs *RadiusServer) Handle_AccessRequest_PAP_Auth(r *RadiusRequest, username
 	return res, nil
 }
 
-func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusRequest) {
+func (rs *RadiusServer) Handle_AccessRequest_PAP(w radius.ResponseWriter, r *RadiusRequest) {
 	username := rfc2865.UserName_GetString(r.Packet)
 	password := rfc2865.UserPassword_GetString(r.Packet)
 	res, err := rs.Handle_AccessRequest_PAP_Auth(r, username, password)
