@@ -26,8 +26,8 @@ import Tabs from "@theme/Tabs";
 
 ## Services Setup
 
-For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`.To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and run `docker compose up -d`.
-You can also use a native install, if you prefer.
+For PostgreSQL and Redis, you can use the `docker-compose.yml` file in `/scripts`. To use these pre-configured database instances, navigate to the `/scripts` directory in your local copy of the authentik git repo, and start the services by running `docker compose up -d`.
+Alternatively, you can also use a native install, if you prefer.
 
 :::info
 If you use locally installed databases, the PostgreSQL credentials given to authentik should have permissions for `CREATE DATABASE` and `DROP DATABASE`, because authentik creates a temporary database for tests.
@@ -145,6 +145,18 @@ And now, authentik should now be accessible at `http://localhost:9000`.
 To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
 
 In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
+:::
+
+## End-to-End (E2E) Setup
+
+To run E2E tests, navigate to the `/tests/e2e` directory in your local copy of the authentik git repo, and start the services by running `docker compose up -d`.
+
+You can then view the Selenium Chrome browser via [http://localhost:7900/](http://localhost:7900) using the password: `secret`.
+
+Alternatively, you can connect directly via VNC on port `5900` using the password: `secret`.
+
+:::note
+When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
 
 ## Submitting Pull Requests
