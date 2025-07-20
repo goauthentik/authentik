@@ -21,14 +21,9 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
     @property({ attribute: false, type: String })
     brandFlow?: string;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
-
-    selected(flow: Flow): boolean {
+    public selected = (flow: Flow): boolean => {
         return super.selected(flow) || flow.pk === this.brandFlow;
-    }
+    };
 }
 
 declare global {

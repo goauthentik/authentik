@@ -10,12 +10,11 @@ export type NavigableButton = Extract<WizardButton, { destination: string }>;
 
 export type ButtonKind = Extract<WizardButton["kind"], PropertyKey>;
 
-export type WizardStepLabel = {
+export interface WizardStepLabel {
     label: string;
     id: string;
-    active: boolean;
-    enabled: boolean;
-};
+    enabled?: boolean;
+}
 
 export type WizardStepState = {
     currentStep?: string;

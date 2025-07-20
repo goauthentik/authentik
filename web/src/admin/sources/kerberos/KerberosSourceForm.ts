@@ -121,9 +121,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
                 )}
             ></ak-switch-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Realm settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Realm settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="realm"
                         label=${msg("Realm")}
@@ -213,9 +212,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Sync connection settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Sync connection settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("KAdmin type")}
                         required
@@ -276,9 +274,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("SPNEGO settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("SPNEGO settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="spnegoServerName"
                         label=${msg("SPNEGO server name")}
@@ -305,9 +302,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Kerberos Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Kerberos Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -344,9 +340,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
@@ -377,9 +372,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Additional settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="userPathTemplate"
                         label=${msg("User path")}

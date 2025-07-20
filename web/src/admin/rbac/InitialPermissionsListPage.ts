@@ -68,7 +68,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

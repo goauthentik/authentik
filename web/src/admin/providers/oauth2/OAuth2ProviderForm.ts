@@ -23,16 +23,14 @@ export async function oauth2ProvidersProvider(page = 1, search = "") {
 
     return {
         pagination: oauthProviders.pagination,
-        options: oauthProviders.results.map((provider) => providerToSelect(provider)),
+        options: oauthProviders.results.map(providerToSelect),
     };
 }
 
 export function oauth2ProviderSelector(instanceProviders: number[] | undefined) {
     if (!instanceProviders) {
         return async (mappings: DualSelectPair<OAuth2Provider>[]) =>
-            mappings.filter(
-                ([_0, _1, _2, source]: DualSelectPair<OAuth2Provider>) => source !== undefined,
-            );
+            mappings.filter(([, , , source]: DualSelectPair<OAuth2Provider>) => !source);
     }
 
     return async () => {
@@ -59,9 +57,6 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
-    @state()
-    showClientSecret = true;
-
     static styles = [
         ...super.styles,
         css`
@@ -71,30 +66,37 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         `,
     ];
 
-    async loadInstance(pk: number): Promise<OAuth2Provider> {
+    @state()
+    protected showClientSecret = true;
+
+    override async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         });
+
         this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+
         return provider;
     }
 
-    async send(data: OAuth2Provider): Promise<OAuth2Provider> {
+    override async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
                 id: this.instance.pk,
                 oAuth2ProviderRequest: data,
             });
         }
+
         return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
             oAuth2ProviderRequest: data,
         });
     }
 
-    renderForm() {
+    override renderForm() {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
+
         return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
     }
 }

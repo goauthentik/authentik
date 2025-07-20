@@ -1,4 +1,8 @@
 version: 1
+metadata:
+    labels:
+        blueprints.goauthentik.io/system: "true"
+    name: Test - Admin User - Setup
 entries:
     - attrs:
           email: test-admin@goauthentik.io
