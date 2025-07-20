@@ -2,6 +2,11 @@ import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import {
+    downloadCodes,
+    printCodes,
+} from "#user/user-settings/authenticator_static/UserSettingsAuthenticatorStaticModal";
+
 import { BaseStage } from "#flow/stages/base";
 
 import {
@@ -14,15 +19,13 @@ import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { printCodes, downloadCodes } from "#user/user-settings/authenticator_static/UserSettingsAuthenticatorStaticModal";
-
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<
@@ -86,9 +89,9 @@ export class AuthenticatorStaticStage extends BaseStage<
                         })}
                     </ul>
                 </ak-form-element>
-                <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
+                <p class="pf-u-text-align-center">${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                <div class="pf-l-flex pf-m-justify-content-center pf-m-align-items-center pf-m-gap-md pf-u-my-md">
+                <div class="pf-l-flex pf-m-justify-content-center pf-m-align-items-center pf-m-gap-md pf-u-my-xl">
                     <button 
                         type="button" 
                         class="pf-c-button pf-m-primary pf-m-block"

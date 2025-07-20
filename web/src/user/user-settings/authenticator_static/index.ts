@@ -1,1 +1,1 @@
-export * from "./UserSettingsAuthenticatorStaticModal"; 
+export * from "./UserSettingsAuthenticatorStaticModal";

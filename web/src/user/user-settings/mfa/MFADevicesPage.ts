@@ -154,7 +154,11 @@ export class MFADevicesPage extends Table<Device> {
                     <ak-forms-modal>
                         <span slot="submit">${msg("Update")}</span>
                         <span slot="header">${msg("Update Device")}</span>
-                        <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
+                        <ak-user-mfa-form
+                            slot="form"
+                            deviceType=${item.type}
+                            .instancePk=${item.pk}
+                        >
                         </ak-user-mfa-form>
                         <button slot="trigger" class="pf-c-button pf-m-plain">
                             <pf-tooltip position="top" content=${msg("Edit")}>
@@ -164,19 +168,22 @@ export class MFADevicesPage extends Table<Device> {
                     </ak-forms-modal>
                     ${item.type === "authentik_stages_authenticator_static.StaticDevice"
                         ? html`
-                            <ak-forms-modal .showSubmitButton=${false}>
-                                <span slot="header">${msg("Recovery Codes")}</span>
-                                <ak-user-settings-authenticator-static-modal
-                                    slot="form"
-                                    .device=${item}
-                                ></ak-user-settings-authenticator-static-modal>
-                                <button slot="trigger" class="pf-c-button pf-m-plain">
-                                    <pf-tooltip position="top" content=${msg("View recovery codes")}>
-                                        <i class="fas fa-eye"></i>
-                                    </pf-tooltip>
-                                </button>
-                            </ak-forms-modal>
-                        `
+                              <ak-forms-modal .showSubmitButton=${false}>
+                                  <span slot="header">${msg("Recovery Codes")}</span>
+                                  <ak-user-settings-authenticator-static-modal
+                                      slot="form"
+                                      .device=${item}
+                                  ></ak-user-settings-authenticator-static-modal>
+                                  <button slot="trigger" class="pf-c-button pf-m-plain">
+                                      <pf-tooltip
+                                          position="top"
+                                          content=${msg("View recovery codes")}
+                                      >
+                                          <i class="fas fa-eye"></i>
+                                      </pf-tooltip>
+                                  </button>
+                              </ak-forms-modal>
+                          `
                         : nothing}
                 </div>
             `,
