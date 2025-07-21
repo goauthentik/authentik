@@ -173,6 +173,7 @@ class SAMLProviderSerializer(ProviderSerializer):
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
+            "sls_url",
             "audience",
             "issuer",
             "assertion_valid_not_before",
@@ -189,6 +190,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "sign_assertion",
             "sign_response",
             "sp_binding",
+            "sls_binding",
             "default_relay_state",
             "url_download_metadata",
             "url_sso_post",

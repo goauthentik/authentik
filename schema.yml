@@ -22559,6 +22559,20 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: sls_binding
+        schema:
+          type: string
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the logout response back to the Service Provider.
+
+      - in: query
+        name: sls_url
+        schema:
+          type: string
+      - in: query
         name: sp_binding
         schema:
           type: string
@@ -54955,6 +54969,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55029,6 +55048,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -58003,6 +58027,11 @@ components:
         acs_url:
           type: string
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58073,6 +58102,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -58171,6 +58205,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58245,6 +58284,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -59639,6 +59683,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SlsBindingEnum:
+      enum:
+      - redirect
+      - post
       type: string
     Source:
       type: object

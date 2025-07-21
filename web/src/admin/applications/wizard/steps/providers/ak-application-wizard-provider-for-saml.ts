@@ -19,11 +19,23 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     @state()
     hasSigningKp = false;
 
+    @state()
+    hasSlsUrl = false;
+
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
+        };
+
+        const setHasSlsUrl = (ev: Event) => {
+            const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+            if (!akTextInput) return;
+            
+            const value = akTextInput.value || "";
+            this.hasSlsUrl = !!value;
+            this.requestUpdate();
         };
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
@@ -33,6 +45,8 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
                     this.wizard.errors?.provider ?? {},
                     setHasSigningKp,
                     this.hasSigningKp,
+                    setHasSlsUrl,
+                    this.hasSlsUrl,
                 )}
             </form>`;
     }

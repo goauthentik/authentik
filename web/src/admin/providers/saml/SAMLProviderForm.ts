@@ -14,11 +14,15 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
     hasSigningKp = false;
 
+    @state()
+    hasSlsUrl = false;
+
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
         this.hasSigningKp = !!provider.signingKp;
+        this.hasSlsUrl = !!provider.slsUrl;
         return provider;
     }
 
@@ -41,7 +45,16 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             this.hasSigningKp = !!target.selectedKeypair;
         };
 
-        return renderForm(this.instance ?? {}, [], setHasSigningKp, this.hasSigningKp);
+        const setHasSlsUrl = (ev: Event) => {
+            const akTextInput = ev.currentTarget as HTMLElement & { value?: string };
+            if (!akTextInput) return;
+            
+            const value = akTextInput.value || "";
+            this.hasSlsUrl = !!value;
+            this.requestUpdate();
+        };
+
+        return renderForm(this.instance ?? {}, [], setHasSigningKp, this.hasSigningKp, setHasSlsUrl, this.hasSlsUrl);
     }
 }
 
