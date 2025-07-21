@@ -17,7 +17,7 @@ const metadata: Meta<AkHiddenTextAreaInputProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Hidden Textarea Input Component
 
 A textarea input field with a visibility control, so you can show/hide sensitive fields.
