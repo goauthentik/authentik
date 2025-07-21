@@ -6,7 +6,7 @@ toolchain go1.24.6
 
 require (
 	beryju.io/ldap v0.1.0
-	beryju.io/radius-eap v0.0.0-20250721222018-1b2af64e2889
+	beryju.io/radius-eap v0.1.0
 	github.com/avast/retry-go/v4 v4.6.1
 	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/getsentry/sentry-go v0.35.1

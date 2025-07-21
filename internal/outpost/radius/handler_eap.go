@@ -61,6 +61,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 	}
 
 	return protocol.Settings{
+		Logger:    &logrusAdapter{entry: pi.log},
 		Protocols: append(protocols, tls.Protocol, peap.Protocol),
 		ProtocolPriority: []protocol.Type{
 			identity.TypeIdentity,
@@ -92,32 +93,32 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 
 					passed, err := fe.Execute()
 					if err != nil {
-						ctx.Log().WithError(err).Warning("failed to execute flow")
+						ctx.Log().Warn("failed to execute flow", "error", err)
 						return protocol.StatusError
 					}
-					ctx.Log().WithField("passed", passed).Debug("Finished flow")
+					ctx.Log().Debug("Finished flow")
 					if !passed {
 						return protocol.StatusError
 					}
 					access, _, err := fe.ApiClient().OutpostsApi.OutpostsRadiusAccessCheck(context.Background(), pi.providerId).AppSlug(pi.appSlug).Execute()
 					if err != nil {
-						ctx.Log().WithField("username", ident).WithError(err).Warning("failed to check access")
+						ctx.Log().Warn("failed to check access: %v", err)
 						return protocol.StatusError
 					}
 					if !access.Access.Passing {
-						ctx.Log().WithField("username", ident).Info("Access denied for user")
+						ctx.Log().Info("Access denied for user")
 						return protocol.StatusError
 					}
 					if access.HasAttributes() {
 						ctx.AddResponseModifier(func(r, q *radius.Packet) error {
 							rawData, err := base64.StdEncoding.DecodeString(access.GetAttributes())
 							if err != nil {
-								ctx.Log().WithError(err).Warning("failed to decode attributes from core")
+								ctx.Log().Warn("failed to decode attributes from core: %v", err)
 								return errors.New("attribute_decode_failed")
 							}
 							p, err := radius.Parse(rawData, pi.SharedSecret)
 							if err != nil {
-								ctx.Log().WithError(err).Warning("failed to parse attributes from core")
+								ctx.Log().Warn("failed to parse attributes from core: %v", err)
 								return errors.New("attribute_parse_failed")
 							}
 							for _, attr := range p.Attributes {

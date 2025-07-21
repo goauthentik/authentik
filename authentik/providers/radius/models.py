@@ -45,7 +45,6 @@ class RadiusProvider(OutpostModel, Provider):
         CertificateKeyPair, on_delete=models.CASCADE, default=None, null=True
     )
 
-
     @property
     def launch_url(self) -> str | None:
         """Radius never has a launch URL"""

@@ -1,7 +1,7 @@
 beryju.io/ldap v0.1.0 h1:rPjGE3qR1Klbvn9N+iECWdzt/tK87XHgz8W5wZJg9B8=
 beryju.io/ldap v0.1.0/go.mod h1:sOrYV+ZlDTDu/IvIiEiuAaXzjcpMBE+XXr4V+NJ0pWI=
-beryju.io/radius-eap v0.0.0-20250721222018-1b2af64e2889 h1:kwyRLz8DKSxU9y+eleJ+pj2hMfQcCayT65Y2HxitvCc=
-beryju.io/radius-eap v0.0.0-20250721222018-1b2af64e2889/go.mod h1:umAgULVD87er11ki6E4WeVBNNlC3GboVw821dd5G1ag=
+beryju.io/radius-eap v0.1.0 h1:5M3HwkzH3nIEBcKDA2z5+sb4nCY3WdKL/SDDKTBvoqw=
+beryju.io/radius-eap v0.1.0/go.mod h1:yYtO59iyoLNEepdyp1gZ0i1tGdjPbrR2M/v5yOz7Fkc=
 github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 h1:mFRzDkZVAjdal+s7s0MwaRv9igoPqLRdzOLzw/8Xvq8=
 github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358/go.mod h1:chxPXzSsl7ZWRAuOIE23GDNzjWuZquvFlgA8xmpunjU=
 github.com/alexbrainman/sspi v0.0.0-20231016080023-1a75b4708caa h1:LHTHcTQiSGT7VVbI0o4wBRNQIgn917usHWOd6VAffYI=
