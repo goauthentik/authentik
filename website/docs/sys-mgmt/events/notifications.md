@@ -31,7 +31,7 @@ For simple event matching you can [create and configure](../../customize/policie
 
 Be aware that an event has to match all configured fields in the policy, otherwise the notification rule will not trigger.
 
-### Expression policy
+### Expression policy for events
 
 To match events with an **Expression Policy**, you can write code like so:
 
