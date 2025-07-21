@@ -2,6 +2,8 @@ import { OwnPropertyRecord, Writeable } from "#common/types";
 
 import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
 
+//#region HTML Helpers
+
 /**
  * Utility type to extract a record of tag names which correspond to a given type.
  *
@@ -13,10 +15,48 @@ export type HTMLElementTagNameMapOf<T> = {
         : never]: HTMLElementTagNameMap[K];
 };
 
+//#endregion
+
+//#region Element Properties
+
+/**
+ *
+ * Given an element and a base class, pluck the properties not defined on the base class.
+ */
 export type TemplatedProperties<
     T extends HTMLElement,
     Base extends Element = HTMLElement,
 > = Partial<OwnPropertyRecord<T, Base>>;
+
+/**
+ * Given a record-like object, prefixes each key with a dot, allowing it to be spread into a
+ * template literal.
+ *
+ * ```ts
+ * interface MyElementProperties {
+ *     foo: string;
+ *     bar: number;
+ * }
+ *
+ * const properties {} as LitPropertyRecord<MyElementProperties>
+ *
+ * console.log(properties) // { '.foo': string; '.bar': number }
+ * ```
+ */
+export type LitPropertyRecord<T extends object> = {
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]: T[K];
+};
+
+/**
+ * A type that represents a property key that can be used in a LitPropertyRecord.
+ *
+ * @see {@linkcode LitPropertyRecord}
+ */
+export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
+
+//#endregion
+
+//#region Host/Controller
 
 /**
  * A custom element which may be used as a host for a ReactiveController.
@@ -27,6 +67,10 @@ export type TemplatedProperties<
  */
 export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
 
+//#endregion
+
+//#region Constructors
+
 export type AbstractLitElementConstructor<T = unknown> = abstract new (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
@@ -34,6 +78,10 @@ export type AbstractLitElementConstructor<T = unknown> = abstract new (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
+
+//#endregion
+
+//#region Mixins
 
 /**
  * A constructor that has been extended with a mixin.
