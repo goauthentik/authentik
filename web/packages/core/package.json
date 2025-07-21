@@ -47,7 +47,7 @@
     "devDependencies": {
         "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
-        "@types/node": "^24.0.14",
+        "@types/node": "^24.0.15",
         "prettier": "^3.3.3",
         "typescript": "^5.6.3"
     },
