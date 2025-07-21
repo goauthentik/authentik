@@ -14,7 +14,7 @@ const metadata: Meta<Expand> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Expand
 
 Expand is an in-page element used to hide cluttering details that a user may wish to reveal, such as raw

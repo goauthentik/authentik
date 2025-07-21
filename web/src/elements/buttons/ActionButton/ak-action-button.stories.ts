@@ -14,7 +14,7 @@ const metadata: Meta<AKActionButton> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 An \`<ak-action-button>\` takes a zero-arity function (a function that takes no argument) that returns
 a promise. Pressing the button runs the function and the results of the promise drive the behavior
 of the button.

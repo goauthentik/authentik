@@ -18,7 +18,7 @@ const metadata: Meta<AppIcon> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Application Icon
 
 AppIcon displays an icon associated with an authentik application on the User Library page. It takes

@@ -16,7 +16,7 @@ const metadata: Meta<ILibraryPageApplicationEmptyList> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Application List Empty State Indicator
 
 A custom component for informing the user that they have no applications. If the user is

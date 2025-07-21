@@ -16,7 +16,7 @@ const metadata: Meta<Label> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Labels
 
 Labels are in-page elements that provide pointers or guidance. Frequently called "chips" in other

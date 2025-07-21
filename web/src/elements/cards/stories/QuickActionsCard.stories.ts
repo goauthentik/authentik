@@ -21,7 +21,7 @@ const metadata: Meta<QuickActionsCard> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Quick Action Cards
 
 A Quick Action Card displays a list of navigation links. It is used on our dashboards to provide

@@ -14,7 +14,7 @@ const metadata: Meta<AggregatePromiseCard> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Aggregate Promise Cards
 
 Aggregate Promise Cards are Aggregate Cards that take a promise from client code and either display

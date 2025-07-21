@@ -13,7 +13,7 @@ const metadata: Meta<Divider> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Divider
 
 Divider is a horizontal rule, an in-page element to separate displayed items.

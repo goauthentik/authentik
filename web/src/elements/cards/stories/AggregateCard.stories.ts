@@ -14,7 +14,7 @@ const metadata: Meta<AggregateCard> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Aggregate Cards
 
 Aggregate Cards are in-page elements to display isolated elements in a consistent, card-like format.

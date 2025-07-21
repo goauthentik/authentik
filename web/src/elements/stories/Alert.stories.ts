@@ -16,7 +16,7 @@ const metadata: Meta<Alert> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Alerts
 
 Alerts are in-page elements intended to draw the user's attention and alert them to important
