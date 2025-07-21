@@ -3,12 +3,14 @@
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
+
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
 } from "@goauthentik/docusaurus-theme/releases/utils";
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
