@@ -1,0 +1,47 @@
+{
+    "name": "@goauthentik/elements",
+    "version": "1.0.0",
+    "description": "authentik's web components, elements and utilities",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./elements/*": "./pout/elements/*",
+        "./common/*": "./out/common/*",
+        "./components/*": "./out/components/*",
+        "./flow/*": "./out/flow/*",
+        "./locales/*": "./out/locales/*",
+        "./user/*": "./out/user/*",
+        "./admin/*": "./out/admin/*",
+        "./css/*.css": "./css/*.css"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "^3.1.0",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "prettier": "^3.6.2",
+        "typescript": "^5.8.3"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "css/**/*",
+        "out/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public"
+    }
+}
