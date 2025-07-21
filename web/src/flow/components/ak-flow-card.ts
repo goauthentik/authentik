@@ -1,14 +1,15 @@
-import { AKElement } from "#elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
 
-import { CSSResult, css, html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { ChallengeTypes } from "@goauthentik/api";
+
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ChallengeTypes } from "@goauthentik/api";
 
 /**
  * @element ak-flow-card
@@ -27,31 +28,29 @@ export class FlowCard extends AKElement {
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFTitle,
-            css`
-                slot[name="footer"],
-                slot[name="footer-band"] {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    flex-basis: 100%;
-                }
-                slot[name="footer-band"] {
-                    text-align: center;
-                    background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
-                    padding: 0;
-                    margin-top: 1em;
-                }
-                .pf-c-login__main-body:last-child {
-                    padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFTitle,
+        css`
+            slot[name="footer"],
+            slot[name="footer-band"] {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                flex-basis: 100%;
+            }
+            slot[name="footer-band"] {
+                text-align: center;
+                background-color: var(--pf-c-login__main-footer-band--BackgroundColor);
+                padding: 0;
+                margin-top: 1em;
+            }
+            .pf-c-login__main-body:last-child {
+                padding-bottom: calc(var(--pf-c-login__main-header--PaddingTop) * 1.2);
+            }
+        `,
+    ];
 
     render() {
         let inner = html`<slot></slot>`;

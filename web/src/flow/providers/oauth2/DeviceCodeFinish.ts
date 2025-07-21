@@ -1,13 +1,14 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { BaseStage } from "#flow/stages/base";
 
 import { OAuthDeviceCodeFinishChallenge } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-flow-provider-oauth2-code-finish")
 export class DeviceCodeFinish extends BaseStage<

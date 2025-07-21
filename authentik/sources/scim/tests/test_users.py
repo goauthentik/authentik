@@ -10,6 +10,7 @@ from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
+from authentik.sources.scim.constants import SCIM_URN_USER_ENTERPRISE
 from authentik.sources.scim.models import SCIMSource, SCIMSourcePropertyMapping, SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIM_CONTENT_TYPE
 
@@ -81,7 +82,9 @@ class TestSCIMUsers(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertTrue(SCIMSourceUser.objects.filter(source=self.source, id=ext_id).exists())
+        self.assertTrue(
+            SCIMSourceUser.objects.filter(source=self.source, external_id=ext_id).exists()
+        )
         self.assertTrue(
             Event.objects.filter(
                 action=EventAction.MODEL_CREATED, user__username=self.source.token.user.username
@@ -174,14 +177,16 @@ class TestSCIMUsers(APITestCase):
         )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(
-            SCIMSourceUser.objects.get(source=self.source, id=ext_id).user.attributes["phone"],
+            SCIMSourceUser.objects.get(source=self.source, external_id=ext_id).user.attributes[
+                "phone"
+            ],
             "0123456789",
         )
 
     def test_user_update(self):
         """Test user update"""
         user = create_test_user()
-        existing = SCIMSourceUser.objects.create(source=self.source, user=user, id=uuid4())
+        existing = SCIMSourceUser.objects.create(source=self.source, user=user, external_id=uuid4())
         ext_id = generate_id()
         response = self.client.put(
             reverse(
@@ -209,10 +214,51 @@ class TestSCIMUsers(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_user_update_patch(self):
+        """Test user update (patch)"""
+        user = create_test_user()
+        existing = SCIMSourceUser.objects.create(
+            source=self.source,
+            user=user,
+            external_id=uuid4(),
+            attributes={
+                "userName": generate_id(),
+            },
+        )
+        response = self.client.patch(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            data=dumps(
+                {
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                    "Operations": [
+                        {
+                            "op": "Add",
+                            "path": f"{SCIM_URN_USER_ENTERPRISE}:manager",
+                            "value": "86b2ed3e-30cd-4881-bb58-c4e910821339",
+                        }
+                    ],
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        existing.refresh_from_db()
+        self.assertEqual(
+            existing.attributes[SCIM_URN_USER_ENTERPRISE],
+            {"manager": {"value": "86b2ed3e-30cd-4881-bb58-c4e910821339"}},
+        )
+
     def test_user_delete(self):
         """Test user delete"""
         user = create_test_user()
-        SCIMSourceUser.objects.create(source=self.source, user=user, id=uuid4())
+        SCIMSourceUser.objects.create(source=self.source, user=user, external_id=uuid4())
         response = self.client.delete(
             reverse(
                 "authentik_sources_scim:v2-users",

@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -4635,11 +4635,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Mappatura</target>
         
       </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>Modifica il payload inviato al provider personalizzato.</target>
-        
-      </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
         <source>Stage used to configure an SMS-based TOTP authenticator.</source>
         <target>Fase utilizzata per configurare un autenticatore TOTP basato su SMS.</target>
@@ -6555,11 +6550,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Riprova</target>
         
       </trans-unit>
-      <trans-unit id="sc1589121ae2f5f92">
-        <source>Enter the code shown on your device.</source>
-        <target>Inserisci il codice mostrato sul tuo dispositivo.</target>
-        
-      </trans-unit>
       <trans-unit id="s67664f8ee9aea98d">
         <source>Please enter your Code</source>
         <target>Per favore inserisci il tuo Codice</target>
@@ -8155,10 +8145,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s30d6ff9e15e0a40a">
   <source>Verifying...</source>
   <target>Verifica...</target>
-</trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
-  <target>Richiesta non riuscita. Per favore riprova più tardi.</target>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -9912,9 +9898,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
+  <target>Ricorda dispositivo</target>
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+  <target>Se impostato su una durata superiore a 0, un cookie verrà memorizzato per la durata specificata, consentendo ad authentik di sapere se l'utente sta effettuando l'accesso da un nuovo dispositivo.</target>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+  <target>L'elemento all'interno dello slot del modulo non è un modulo</target>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+  <target>Nuova password</target>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+  <target>Aggiorna <x id="0" equiv-text="${item.name || item.username}"/> password</target>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
 </trans-unit>
     </body>
   </file>

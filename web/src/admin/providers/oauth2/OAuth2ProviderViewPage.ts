@@ -1,20 +1,36 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import renderDescriptionList from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/oauth2/OAuth2ProviderForm";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    ClientTypeEnum,
+    CoreApi,
+    CoreUsersListRequest,
+    OAuth2Provider,
+    OAuth2ProviderSetupURLs,
+    PropertyMappingPreview,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    User,
+} from "@goauthentik/api";
+
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -28,18 +44,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ClientTypeEnum,
-    CoreApi,
-    CoreUsersListRequest,
-    OAuth2Provider,
-    OAuth2ProviderSetupURLs,
-    PropertyMappingPreview,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    User,
-} from "@goauthentik/api";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
@@ -78,21 +82,19 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-            PFDivider,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+        PFDivider,
+    ];
 
     constructor() {
         super();

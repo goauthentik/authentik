@@ -1,25 +1,17 @@
+import "#user/user-settings/details/stages/prompt/PromptStage";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
 import { refreshMe } from "#common/users";
+
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+
 import { StageHost } from "#flow/stages/base";
-import "#user/user-settings/details/stages/prompt/PromptStage";
-
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeTypes,
@@ -29,6 +21,17 @@ import {
     RedirectChallenge,
     ShellChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
@@ -53,9 +56,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFButton, PFContent];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();

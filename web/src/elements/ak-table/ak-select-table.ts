@@ -1,12 +1,12 @@
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { type ISimpleTable, SimpleTable } from "./ak-simple-table.js";
+import type { TableRow } from "./types.js";
+
+import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
-
-import { type ISimpleTable, SimpleTable } from "./ak-simple-table";
-import type { TableRow } from "./types";
 
 export interface ISelectTable extends ISimpleTable {
     value: string;

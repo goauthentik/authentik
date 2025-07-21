@@ -1,6 +1,6 @@
-import { $ } from "@wdio/globals";
-
 import Page from "../page.js";
+
+import { $ } from "@wdio/globals";
 
 export class ApplicationForm extends Page {
     async name() {

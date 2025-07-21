@@ -1,26 +1,28 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import {
-    IRedirectURIInput,
-    akOAuthRedirectURIInput,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-hidden-text-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-array-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-hidden-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/ak-array-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
+import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
+
+import { ascii_letters, digits, randomString } from "#common/utils";
+
+import {
+    akOAuthRedirectURIInput,
+    IRedirectURIInput,
+} from "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import {
     ClientTypeEnum,
@@ -33,9 +35,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
-import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
-import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export const clientTypeOptions = [
     {
@@ -169,6 +171,7 @@ export function renderForm(
                 </ak-text-input>
                 <ak-hidden-text-input
                     name="clientSecret"
+                    autocomplete="off"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     input-hint="code"

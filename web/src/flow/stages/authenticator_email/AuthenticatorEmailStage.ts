@@ -1,10 +1,16 @@
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+import "#flow/components/ak-flow-card";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    AuthenticatorEmailChallenge,
+    AuthenticatorEmailChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -16,28 +22,24 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    AuthenticatorEmailChallenge,
-    AuthenticatorEmailChallengeResponseRequest,
-} from "@goauthentik/api";
-
 @customElement("ak-stage-authenticator-email")
 export class AuthenticatorEmailStage extends BaseStage<
     AuthenticatorEmailChallenge,
     AuthenticatorEmailChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
                     class="pf-c-form__group"
                     userAvatar="${this.challenge.pendingUserAvatar}"
@@ -90,12 +92,7 @@ export class AuthenticatorEmailStage extends BaseStage<
             </ak-form-static>
             A verification token has been sent to your configured email address
             ${ifDefined(this.challenge.email)}
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-element
                     label="${msg("Code")}"
                     required

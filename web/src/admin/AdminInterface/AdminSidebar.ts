@@ -1,8 +1,9 @@
-import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
+import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was

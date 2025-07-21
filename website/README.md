@@ -1,6 +1,6 @@
 # authentik documentation source
 
-This directory contains the source files for the [authentik technical documentation](https://docs.goauthentik.io/docs?utm_source=github) and the [authentik integration guides](https://docs.goauthentik.io/integrations?utm_source=github).
+This directory contains the source files for the [authentik technical documentation](https://docs.goauthentik.io/docs?utm_source=github) and the [authentik integration guides](https://integrations.goauthentik.io?utm_source=github).
 
 Contributions are welcome! Please refer to our [contributor guidelines](https://docs.goauthentik.io/docs/developer-docs?utm_source=github) for details about contributing code or docs.
 

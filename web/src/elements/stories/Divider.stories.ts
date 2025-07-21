@@ -1,9 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/web-components";
-
-import { TemplateResult, html } from "lit";
+import "../Divider.js";
 
 import { Divider } from "../Divider.js";
-import "../Divider.js";
+
+import type { Meta, StoryObj } from "@storybook/web-components";
+
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<Divider> = {
     title: "Elements/<ak-divider>",
@@ -17,16 +18,15 @@ const metadata: Meta<Divider> = {
 
 export default metadata;
 
-const container = (content: TemplateResult) =>
-    html` <div style="background-color: #f0f0f0; padding: 1rem;">
-        <style>
-            ak-divider {
-                display: inline-block;
-                width: 32rem;
-                max-width: 32rem;
-            }</style
-        >${content}
-    </div>`;
+const container = (content: TemplateResult) => html`
+    <style>
+        ak-divider {
+            display: inline-block;
+            width: 32rem;
+            max-width: 32rem;
+        }</style
+    >${content}
+`;
 
 export const DefaultStory: StoryObj = {
     render: () => container(html` <ak-divider> </ak-divider> `),

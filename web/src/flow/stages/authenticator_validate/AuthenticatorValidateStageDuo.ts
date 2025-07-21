@@ -1,16 +1,17 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
@@ -51,12 +52,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
-        return html` <form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
+        return html` <form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fas fa-times"
                 ><span
