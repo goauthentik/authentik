@@ -147,9 +147,8 @@ export function renderForm(
                 ${msg("Flow used when authorizing this provider.")}
             </p>
         </ak-form-element-horizontal>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-radio-input
                     name="clientType"
                     label=${msg("Client type")}
@@ -214,9 +213,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label=${msg("Advanced flow settings")}>
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
                     label=${msg("Authentication flow")}
@@ -249,9 +247,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
@@ -334,9 +331,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"
