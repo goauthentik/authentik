@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "strict": true,
         "baseUrl": ".",
         "moduleResolution": "node",
         "module": "ESNext",
