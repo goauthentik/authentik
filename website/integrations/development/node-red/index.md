@@ -13,7 +13,7 @@ support_level: community
 > -- https://nodered.org/
 
 :::caution
-This requires modification of the Node-RED settings.js and installing additional Passport-js packages, see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
+This requires modification of the Node-RED `settings.js` file and installing additional Passport-js packages; see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
 :::
 
 ## Preparation
