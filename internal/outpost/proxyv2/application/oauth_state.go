@@ -60,8 +60,8 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 			return "", false
 		}
 	} else {
-		if !strings.HasSuffix(u.Host, *a.proxyConfig.CookieDomain) {
-			a.log.WithField("host", u.Host).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Host was not included in cookie domain")
+		if !strings.HasSuffix(u.Hostname, *a.proxyConfig.CookieDomain) {
+			a.log.WithField("host", u.Hostname).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Hostname was not included in cookie domain")
 			return "", false
 		}
 	}
