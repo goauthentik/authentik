@@ -10,9 +10,27 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const metadata: Meta<AggregateCard> = {
     title: "Elements/<ak-aggregate-card>",
     component: "ak-aggregate-card",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "A specialized card for displaying collections",
+            description: {
+                component: `
+# Aggregate Cards
+
+Aggregate Cards are in-page elements to display isolated elements in a consistent, card-like format.
+Cards are used in dashboards and as asides for specific information.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/cards/AggregateCard";
+\`\`\`
+
+\`\`\`html
+<ak-aggregate-card header="Some title"><p>This is the content of your card!</p></ak-aggregate-card>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
@@ -51,11 +69,10 @@ export const DefaultStory: StoryObj = {
                 ?left-justified=${leftJustified}
             >
                 <p>
-                    Form without content style without meaning quick-win, for that is a good problem
-                    to have, so this is our north star design. Can you champion this cross sabers
-                    run it up the flagpole, ping the boss and circle back race without a finish line
-                    in an ideal world. Price point innovation is hot right now, nor it's not hard
-                    guys, but race without a finish line, nor thought shower.
+                    Form without content style without meaning quick-win, for that is a good problem to have, so this is
+                    our north star design. Can you champion this cross sabers run it up the flagpole, ping the boss and
+                    circle back race without a finish line in an ideal world. Price point innovation is hot right now,
+                    nor it's not hard guys, but race without a finish line, nor thought shower.
                 </p>
             </ak-aggregate-card>
         `;

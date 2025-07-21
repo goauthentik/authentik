@@ -10,9 +10,32 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const metadata: Meta<AggregatePromiseCard> = {
     title: "Elements/<ak-aggregate-card-promise>",
     component: "ak-aggregate-card-promise",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "A specialized card for displaying information after a fetch",
+            description: {
+                component: `
+# Aggregate Promise Cards
+
+Aggregate Promise Cards are Aggregate Cards that take a promise from client code and either display
+the contents of that promise or a pre-configured failure notice. The contents must be compliant with
+and produce a meaningful result via the \`.toString()\` API. HTML in the string will currently be
+escaped.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/cards/AggregatePromiseCard";
+\`\`\`
+
+\`\`\`html
+<ak-aggregate-card-promise
+    header="Some title"
+    .promise="\${somePromise}"
+></ak-aggregate-card-promise>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
@@ -74,14 +97,7 @@ export const PromiseRejected: StoryObj = {
         leftJustified: false,
         failureMessage: undefined,
     },
-    render: ({
-        icon,
-        header,
-        headerLink,
-        subtext,
-        leftJustified,
-        failureMessage,
-    }: IAggregatePromiseCard) => {
+    render: ({ icon, header, headerLink, subtext, leftJustified, failureMessage }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 

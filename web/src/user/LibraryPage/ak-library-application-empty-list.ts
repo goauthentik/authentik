@@ -13,6 +13,10 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
+export interface ILibraryPageApplicationEmptyList {
+    isAdmin: boolean;
+}
+
 /**
  * Library Page Application List Empty
  *
@@ -21,7 +25,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  */
 
 @customElement("ak-library-application-empty-list")
-export class LibraryPageApplicationEmptyList extends AKElement {
+export class LibraryPageApplicationEmptyList extends AKElement implements ILibraryPageApplicationEmptyList {
     static styles = [
         PFBase,
         PFEmptyState,
@@ -37,9 +41,9 @@ export class LibraryPageApplicationEmptyList extends AKElement {
     ];
 
     @property({ attribute: "isadmin", type: Boolean })
-    isAdmin = false;
+    public isAdmin = false;
 
-    renderNewAppButton() {
+    #renderNewAppButton() {
         const href = paramURL("/core/applications", {
             createWizard: true,
         });
@@ -60,7 +64,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         `;
     }
 
-    render() {
+    public override render() {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
@@ -68,7 +72,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
-                ${this.isAdmin ? this.renderNewAppButton() : html``}
+                ${this.isAdmin ? this.#renderNewAppButton() : html``}
             </div>
         </div>`;
     }

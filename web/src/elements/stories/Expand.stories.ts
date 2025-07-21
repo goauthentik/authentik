@@ -10,9 +10,35 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const metadata: Meta<Expand> = {
     title: "Elements/<ak-expand>",
     component: "ak-expand",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "Our accordion component",
+            description: {
+                component: `
+# Expand
+
+Expand is an in-page element used to hide cluttering details that a user may wish to reveal, such as raw
+details of an alert or event.
+
+It has one unnamed slot for the content to be displayed.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/Expand";
+\`\`\`
+
+\`\`\`html
+<ak-expand><p>Your primary content goes here</p></ak-expand>
+\`\`\`
+
+To show the expanded content on initial render:
+
+\`\`\`html
+<ak-expand expanded><p>Your primary content goes here</p></ak-expand>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
@@ -44,15 +70,12 @@ export const DefaultStory: StoryObj = {
 
     render: ({ expanded, textOpen, textClosed }: IExpand) =>
         container(
-            html` <ak-expand
-                ?expanded=${expanded}
-                textOpen=${ifDefined(textOpen)}
-                textClosed=${ifDefined(textClosed)}
+            html` <ak-expand ?expanded=${expanded} textOpen=${ifDefined(textOpen)} textClosed=${ifDefined(textClosed)}
                 ><div>
                     <p>Μήτ᾽ ἔμοι μέλι μήτε μέλισσα</p>
                     <p>"Neither the bee nor the honey for me." - Sappho, 600 BC</p>
                 </div>
-            </ak-expand>`,
+            </ak-expand>`
         ),
 };
 export const Expanded = {
