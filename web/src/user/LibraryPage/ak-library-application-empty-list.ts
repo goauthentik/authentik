@@ -4,7 +4,7 @@ import { AKElement } from "#elements/Base";
 import { paramURL } from "#elements/router/RouterOutlet";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -75,7 +75,7 @@ export class LibraryPageApplicationEmptyList
                 <div class="pf-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
-                ${this.isAdmin ? this.#renderNewAppButton() : html``}
+                ${this.isAdmin ? this.#renderNewAppButton() : nothing}
             </div>
         </div>`;
     }
