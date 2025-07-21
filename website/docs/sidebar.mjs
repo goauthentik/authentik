@@ -3,14 +3,12 @@
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs/src/sidebars/types.js"
  */
-
-import * as path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
 } from "@goauthentik/docusaurus-theme/releases/utils";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -450,6 +448,7 @@ const items = [
                     "users-sources/user/user_basic_operations",
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
+                    "users-sources/user/password_reset_on_login",
                 ],
             },
             {
