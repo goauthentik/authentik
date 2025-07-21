@@ -8,6 +8,7 @@ import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
@@ -87,11 +88,11 @@ export class SyncStatusTable extends Table<SystemTask> {
         </td>`;
     }
 
-    renderToolbarContainer() {
+    protected override renderToolbarContainer(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderTablePagination() {
+    protected override renderTablePagination(): SlottedTemplateResult {
         return nothing;
     }
 }

@@ -1,9 +1,10 @@
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
 import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
