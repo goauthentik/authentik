@@ -25,7 +25,10 @@ export interface ILibraryPageApplicationEmptyList {
  */
 
 @customElement("ak-library-application-empty-list")
-export class LibraryPageApplicationEmptyList extends AKElement implements ILibraryPageApplicationEmptyList {
+export class LibraryPageApplicationEmptyList
+    extends AKElement
+    implements ILibraryPageApplicationEmptyList
+{
     static styles = [
         PFBase,
         PFEmptyState,

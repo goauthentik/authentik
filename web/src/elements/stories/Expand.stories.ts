@@ -70,12 +70,15 @@ export const DefaultStory: StoryObj = {
 
     render: ({ expanded, textOpen, textClosed }: IExpand) =>
         container(
-            html` <ak-expand ?expanded=${expanded} textOpen=${ifDefined(textOpen)} textClosed=${ifDefined(textClosed)}
+            html` <ak-expand
+                ?expanded=${expanded}
+                textOpen=${ifDefined(textOpen)}
+                textClosed=${ifDefined(textClosed)}
                 ><div>
                     <p>Μήτ᾽ ἔμοι μέλι μήτε μέλισσα</p>
                     <p>"Neither the bee nor the honey for me." - Sappho, 600 BC</p>
                 </div>
-            </ak-expand>`
+            </ak-expand>`,
         ),
 };
 export const Expanded = {

@@ -67,7 +67,13 @@ export const DefaultStory: StoryObj = {
         name: "Demo App",
     },
     render: ({ name, icon, size }) =>
-        container(html`<ak-app-icon size=${size} name=${ifDefined(name)} icon=${ifDefined(icon)}></ak-app-icon>`),
+        container(
+            html`<ak-app-icon
+                size=${size}
+                name=${ifDefined(name)}
+                icon=${ifDefined(icon)}
+            ></ak-app-icon>`,
+        ),
 };
 
 export const WithIcon: StoryObj = {
@@ -77,12 +83,22 @@ export const WithIcon: StoryObj = {
     },
     render: ({ name, icon, size }) =>
         container(
-            html`<ak-app-icon size=${size} name=${ifDefined(name)} icon=${ifDefined(icon || undefined)}></ak-app-icon>`
+            html`<ak-app-icon
+                size=${size}
+                name=${ifDefined(name)}
+                icon=${ifDefined(icon || undefined)}
+            ></ak-app-icon>`,
         ),
 };
 
 export const AllDataUndefined: StoryObj = {
     args: {},
     render: ({ name, icon, size }) =>
-        container(html`<ak-app-icon size=${size} name=${ifDefined(name)} icon=${ifDefined(icon)}></ak-app-icon>`),
+        container(
+            html`<ak-app-icon
+                size=${size}
+                name=${ifDefined(name)}
+                icon=${ifDefined(icon)}
+            ></ak-app-icon>`,
+        ),
 };

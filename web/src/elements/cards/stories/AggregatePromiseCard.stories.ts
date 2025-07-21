@@ -97,7 +97,14 @@ export const PromiseRejected: StoryObj = {
         leftJustified: false,
         failureMessage: undefined,
     },
-    render: ({ icon, header, headerLink, subtext, leftJustified, failureMessage }: IAggregatePromiseCard) => {
+    render: ({
+        icon,
+        header,
+        headerLink,
+        subtext,
+        leftJustified,
+        failureMessage,
+    }: IAggregatePromiseCard) => {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 

@@ -64,7 +64,7 @@ const container = (testItem: TemplateResult) =>
 const displayMessage = (result: any) => {
     const doc = new DOMParser().parseFromString(
         `<li><i>Event</i>: ${"result" in result.detail ? result.detail.result : result.detail.error}</li>`,
-        "text/xml"
+        "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
     target!.appendChild(doc.firstChild!);
@@ -81,7 +81,11 @@ export const ButtonWithSuccess = () => {
             }, 3000);
         });
 
-    return container(html`<ak-action-button class="pf-m-primary" .apiRequest=${run}>3 Seconds</ak-action-button>`);
+    return container(
+        html`<ak-action-button class="pf-m-primary" .apiRequest=${run}
+            >3 Seconds</ak-action-button
+        >`,
+    );
 };
 
 export const ButtonWithError = () => {
@@ -92,5 +96,9 @@ export const ButtonWithError = () => {
             }, 3000);
         });
 
-    return container(html` <ak-action-button class="pf-m-secondary" .apiRequest=${run}>3 Seconds</ak-action-button>`);
+    return container(
+        html` <ak-action-button class="pf-m-secondary" .apiRequest=${run}
+            >3 Seconds</ak-action-button
+        >`,
+    );
 };

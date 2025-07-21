@@ -41,7 +41,9 @@ export const OrdinaryUser: Story = {
     },
     render: ({ isAdmin }: ILibraryPageApplicationEmptyList) =>
         html`<div style="padding: 4em">
-            <ak-library-application-empty-list ?isadmin=${isAdmin}></ak-library-application-empty-list>
+            <ak-library-application-empty-list
+                ?isadmin=${isAdmin}
+            ></ak-library-application-empty-list>
         </div> `,
 };
 
