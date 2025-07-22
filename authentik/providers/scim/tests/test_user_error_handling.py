@@ -16,7 +16,7 @@ class SCIMUserErrorHandlingTests(TestCase):
 
     def setUp(self):
         self.provider = SCIMProvider.objects.create(
-            name="test", base_url="https://localhost", token="token"
+            name="test", base_url="https://localhost", token="token"  # nosec B106
         )
         self.client = SCIMUserClient(self.provider)
 

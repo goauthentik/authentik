@@ -15,7 +15,7 @@ class SCIMGroupErrorHandlingTests(TestCase):
 
     def setUp(self):
         self.provider = SCIMProvider.objects.create(
-            name="test", base_url="https://localhost", token="token"
+            name="test", base_url="https://localhost", token="token"  # nosec B106
         )
         self.client = SCIMGroupClient(self.provider)
 
