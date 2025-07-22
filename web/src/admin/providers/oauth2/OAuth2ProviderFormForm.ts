@@ -178,6 +178,7 @@ export function renderForm(
                 >
                 </ak-hidden-text-input>
                 <ak-form-element-horizontal
+                    flow-direction="row"
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"
                 >
