@@ -3,13 +3,13 @@
 from typing import Any
 
 
-def ensure_string_id(id_value: Any) -> str | None:
+def ensure_string_id(id_value: Any) -> Any:
     """
     Convert integer IDs to strings for SCIM 2.0 compatibility.
 
     SCIM 2.0 specification allows both string and integer IDs, but authentik's
     pydantic validation expects string values. This utility ensures consistent
-    string representation of IDs.
+    string representation of IDs while preserving non-integer types unchanged.
 
     Args:
         id_value: The ID value to convert (could be int, str, None, etc.)
