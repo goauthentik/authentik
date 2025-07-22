@@ -193,7 +193,7 @@ class SCIMGroupTests(TestCase):
 
     @Mocker()
     def test_group_member_integer_values(self, mock: Mocker):
-        """Test group sync with integer member values from SCIM provider (reproduces issue #15533)"""
+        """Test group sync with integer member values from SCIM provider (issue #15533)"""
         scim_group_id = "72"
         scim_user_ids = [53, 54, 55, 56, 57]  # Integer member values from provider
 
@@ -214,8 +214,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "id": scim_group_id,
                 "members": [
-                    {"value": user_id, "display": f"USER{user_id}"}
-                    for user_id in scim_user_ids
+                    {"value": user_id, "display": f"USER{user_id}"} for user_id in scim_user_ids
                 ],
                 "displayName": "GROUP1",
                 "externalId": "05c6f450-b1d2-4198-8e04-dad1c85c367e",
@@ -223,8 +222,8 @@ class SCIMGroupTests(TestCase):
                     "resourceType": "Group",
                     "created": "2025-07-13T05:58:06+00:00",
                     "lastModified": "2025-07-13T09:07:28+00:00",
-                    "location": f"https://localhost/Groups/{scim_group_id}"
-                }
+                    "location": f"https://localhost/Groups/{scim_group_id}",
+                },
             },
         )
 
@@ -238,11 +237,8 @@ class SCIMGroupTests(TestCase):
         client = SCIMGroupClient(self.provider)
 
         # Create the SCIM connection manually for this test
-        scim_group = SCIMProviderGroup.objects.create(
-            provider=self.provider,
-            group=group,
-            scim_id=scim_group_id,
-            attributes={}
+        SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
         )
 
         # This call should work without ValidationError

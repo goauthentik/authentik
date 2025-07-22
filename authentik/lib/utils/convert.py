@@ -1,8 +1,9 @@
 """Conversion utilities for data type normalization."""
-from typing import Any, Optional
+
+from typing import Any
 
 
-def ensure_string_id(id_value: Any) -> Optional[str]:
+def ensure_string_id(id_value: Any) -> str | None:
     """
     Convert integer IDs to strings for SCIM 2.0 compatibility.
 

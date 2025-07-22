@@ -46,7 +46,7 @@ class TestConvertUtils(TestCase):
                 {"value": 53, "display": "USER53"},
                 {"value": 54, "display": "USER54"},
                 {"value": 55, "display": "USER55"},
-            ]
+            ],
         }
 
         # Test group ID conversion

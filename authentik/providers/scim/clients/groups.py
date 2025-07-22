@@ -14,8 +14,8 @@ from authentik.lib.sync.outgoing.exceptions import (
     ObjectExistsSyncException,
     StopSync,
 )
-from authentik.policies.utils import delete_none_values
 from authentik.lib.utils.convert import ensure_string_id
+from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     SCIMRequestException,
