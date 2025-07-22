@@ -89,6 +89,13 @@ export abstract class TableModal<T extends object> extends Table<T> {
     /**
      * @abstract
      */
+    protected renderModalInner(): TemplateResult {
+        return this.renderTable();
+    }
+
+    /**
+     * @abstract
+     */
     protected renderModal(): SlottedTemplateResult {
         return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
@@ -101,7 +108,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    ${this.renderTable()}
+                    ${this.renderModalInner()}
                 </div>
             </div>
         </div>`;
