@@ -726,7 +726,11 @@ const items = [
                     {
                         type: "category",
                         label: "2025",
-                        items: ["security/cves/CVE-2025-52553", "security/cves/CVE-2025-29928"],
+                        items: [
+                            "security/cves/CVE-2025-53942",
+                            "security/cves/CVE-2025-52553",
+                            "security/cves/CVE-2025-29928",
+                        ],
                     },
                     {
                         type: "category",
