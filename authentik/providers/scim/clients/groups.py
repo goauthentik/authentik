@@ -15,6 +15,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
 )
 from authentik.policies.utils import delete_none_values
+from authentik.lib.utils.convert import ensure_string_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     SCIMRequestException,
@@ -103,12 +104,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_unset=True,
             ),
         )
-        scim_id = response.get("id")
+        scim_id = ensure_string_id(response.get("id"))
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
-        # Convert integer IDs to strings for SCIM 2.0 spec compatibility
-        if isinstance(scim_id, int):
-            scim_id = str(scim_id)
         connection = SCIMProviderGroup.objects.create(
             provider=self.provider, group=group, scim_id=scim_id, attributes=response
         )
@@ -246,8 +244,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         # that return integer IDs (SCIM 2.0 spec allows both strings and integers for ID values)
         if "members" in group_data and group_data["members"] is not None:
             for member in group_data["members"]:
-                if "value" in member and isinstance(member["value"], int):
-                    member["value"] = str(member["value"])
+                if "value" in member:
+                    member["value"] = ensure_string_id(member["value"])
         current_group = SCIMGroupSchema.model_validate(group_data)
         users_to_add = []
         users_to_remove = []

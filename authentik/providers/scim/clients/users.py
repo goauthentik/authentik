@@ -8,6 +8,7 @@ from authentik.core.models import User
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
+from authentik.lib.utils.convert import ensure_string_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
@@ -77,10 +78,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:
                     raise exc
-                # Convert integer IDs to strings for SCIM 2.0 spec compatibility
-                scim_id = users_res[0]["id"]
-                if isinstance(scim_id, int):
-                    scim_id = str(scim_id)
+                scim_id = ensure_string_id(users_res[0]["id"])
                 return SCIMProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
@@ -88,12 +86,9 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     attributes=users_res[0],
                 )
             else:
-                scim_id = response.get("id")
+                scim_id = ensure_string_id(response.get("id"))
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
-                # Convert integer IDs to strings for SCIM 2.0 spec compatibility
-                if isinstance(scim_id, int):
-                    scim_id = str(scim_id)
                 return SCIMProviderUser.objects.create(
                     provider=self.provider, user=user, scim_id=scim_id, attributes=response
                 )
