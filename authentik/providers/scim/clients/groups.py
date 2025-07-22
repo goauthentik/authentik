@@ -14,7 +14,6 @@ from authentik.lib.sync.outgoing.exceptions import (
     ObjectExistsSyncException,
     StopSync,
 )
-from authentik.lib.utils.convert import ensure_string_id
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
@@ -104,7 +103,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_unset=True,
             ),
         )
-        scim_id = ensure_string_id(response.get("id"))
+        # Validate response through Pydantic schema to ensure ID coercion
+        try:
+            scim_response = SCIMGroupSchema.model_validate(response)
+            scim_id = scim_response.id
+        except Exception:
+            # Fallback to raw response if validation fails
+            scim_id = response.get("id")
+
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
         connection = SCIMProviderGroup.objects.create(
@@ -250,52 +256,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             )
             return
 
-        # Validate response structure and convert integer member values to strings
-        # for compatibility with SCIM providers that return integer IDs
-        # (SCIM 2.0 spec allows both strings and integers for ID values)
-        if not isinstance(group_data, dict):
-            self.logger.warning(
-                "Invalid group data response from SCIM provider - expected dict",
-                group=group,
-                response_type=type(group_data),
-            )
-            return
-
-        if "members" in group_data and group_data["members"] is not None:
-            if not isinstance(group_data["members"], list):
-                self.logger.warning(
-                    "Invalid members data in SCIM response - expected list",
-                    group=group,
-                    members_type=type(group_data["members"]),
-                )
-                group_data["members"] = []
-            else:
-                for i, member in enumerate(group_data["members"]):
-                    if not isinstance(member, dict):
-                        self.logger.warning(
-                            "Invalid member data in SCIM response - expected dict",
-                            group=group,
-                            member_index=i,
-                            member_type=type(member),
-                        )
-                        continue
-                    if "value" in member:
-                        try:
-                            member["value"] = ensure_string_id(member["value"])
-                        except Exception as exc:
-                            self.logger.warning(
-                                "Failed to convert member value to string",
-                                group=group,
-                                member_index=i,
-                                member_value=member.get("value"),
-                                exc=exc,
-                            )
-
         try:
             current_group = SCIMGroupSchema.model_validate(group_data)
         except ValidationError as exc:
             self.logger.warning(
-                "Failed to validate SCIM group data after processing",
+                "Failed to validate SCIM group data",
                 group=group,
                 validation_error=str(exc),
             )

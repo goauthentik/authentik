@@ -7,7 +7,6 @@ from pydantic import ValidationError
 from authentik.core.models import User
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
-from authentik.lib.utils.convert import ensure_string_id
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
@@ -78,7 +77,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:
                     raise exc
-                scim_id = ensure_string_id(users_res[0]["id"])
+                # Validate response through Pydantic schema to ensure ID coercion
+                try:
+                    scim_response = SCIMUserSchema.model_validate(users_res[0])
+                    scim_id = scim_response.id
+                except Exception:
+                    # Fallback to raw response if validation fails
+                    scim_id = users_res[0]["id"]
                 return SCIMProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
@@ -86,7 +91,14 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     attributes=users_res[0],
                 )
             else:
-                scim_id = ensure_string_id(response.get("id"))
+                # Validate response through Pydantic schema to ensure ID coercion
+                try:
+                    scim_response = SCIMUserSchema.model_validate(response)
+                    scim_id = scim_response.id
+                except Exception:
+                    # Fallback to raw response if validation fails
+                    scim_id = response.get("id")
+
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
                 return SCIMProviderUser.objects.create(
