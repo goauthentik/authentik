@@ -131,3 +131,56 @@ class TestConvertUtils(TestCase):
         for original, expected_result in zip(id_batch, expected, strict=False):
             result = ensure_string_id(original)
             self.assertEqual(result, expected_result)
+
+    def test_comprehensive_edge_cases(self):
+        """Test comprehensive edge cases for maximum coverage"""
+        # Test various integer types
+        import sys
+
+        max_int = sys.maxsize
+        min_int = -sys.maxsize - 1
+
+        self.assertEqual(ensure_string_id(max_int), str(max_int))
+        self.assertEqual(ensure_string_id(min_int), str(min_int))
+
+        # Test subclasses of int (like bool)
+        class CustomInt(int):
+            pass
+
+        custom_int = CustomInt(42)
+        result = ensure_string_id(custom_int)
+        self.assertEqual(result, "42")
+        self.assertIsInstance(result, str)
+
+    def test_function_idempotency(self):
+        """Test that applying the function multiple times has the same result"""
+        test_values = [123, "456", None, True, 12.34]
+
+        for value in test_values:
+            first_result = ensure_string_id(value)
+            second_result = ensure_string_id(first_result)
+
+            # For integers, first call converts to string, second call should return same string
+            if isinstance(value, int):
+                self.assertEqual(first_result, str(value))
+                self.assertEqual(second_result, str(value))
+                self.assertEqual(first_result, second_result)
+            else:
+                # For non-integers, both calls should return the original value
+                self.assertEqual(first_result, value)
+                self.assertEqual(second_result, value)
+
+    def test_memory_efficiency(self):
+        """Test that the function doesn't create unnecessary objects for non-integers"""
+        # Test object identity preservation for non-integer types
+        original_list = [1, 2, 3]
+        result_list = ensure_string_id(original_list)
+        self.assertIs(original_list, result_list)  # Same object in memory
+
+        original_dict = {"key": "value"}
+        result_dict = ensure_string_id(original_dict)
+        self.assertIs(original_dict, result_dict)  # Same object in memory
+
+        original_string = "test"
+        result_string = ensure_string_id(original_string)
+        self.assertIs(original_string, result_string)  # Same object in memory

@@ -32,8 +32,6 @@ def ensure_string_id(id_value: Any) -> Any:
         >>> ensure_string_id([1, 2])
         [1, 2]
     """
-    if id_value is None:
-        return None
     if isinstance(id_value, int):
         return str(id_value)
     return id_value

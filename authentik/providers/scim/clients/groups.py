@@ -239,14 +239,67 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 group=group,
             )
         # Get current group status
-        group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
-        # Convert integer member values to strings for compatibility with SCIM providers
-        # that return integer IDs (SCIM 2.0 spec allows both strings and integers for ID values)
+        try:
+            group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
+        except Exception as exc:
+            self.logger.warning(
+                "Failed to retrieve group data from SCIM provider",
+                group=group,
+                scim_id=scim_group.scim_id,
+                exc=exc,
+            )
+            return
+
+        # Validate response structure and convert integer member values to strings
+        # for compatibility with SCIM providers that return integer IDs
+        # (SCIM 2.0 spec allows both strings and integers for ID values)
+        if not isinstance(group_data, dict):
+            self.logger.warning(
+                "Invalid group data response from SCIM provider - expected dict",
+                group=group,
+                response_type=type(group_data),
+            )
+            return
+
         if "members" in group_data and group_data["members"] is not None:
-            for member in group_data["members"]:
-                if "value" in member:
-                    member["value"] = ensure_string_id(member["value"])
-        current_group = SCIMGroupSchema.model_validate(group_data)
+            if not isinstance(group_data["members"], list):
+                self.logger.warning(
+                    "Invalid members data in SCIM response - expected list",
+                    group=group,
+                    members_type=type(group_data["members"]),
+                )
+                group_data["members"] = []
+            else:
+                for i, member in enumerate(group_data["members"]):
+                    if not isinstance(member, dict):
+                        self.logger.warning(
+                            "Invalid member data in SCIM response - expected dict",
+                            group=group,
+                            member_index=i,
+                            member_type=type(member),
+                        )
+                        continue
+                    if "value" in member:
+                        try:
+                            member["value"] = ensure_string_id(member["value"])
+                        except Exception as exc:
+                            self.logger.warning(
+                                "Failed to convert member value to string",
+                                group=group,
+                                member_index=i,
+                                member_value=member.get("value"),
+                                exc=exc,
+                            )
+
+        try:
+            current_group = SCIMGroupSchema.model_validate(group_data)
+        except ValidationError as exc:
+            self.logger.warning(
+                "Failed to validate SCIM group data after processing",
+                group=group,
+                validation_error=str(exc),
+            )
+            return
         users_to_add = []
         users_to_remove = []
         # Check users currently in group and if they shouldn't be in the group and remove them
