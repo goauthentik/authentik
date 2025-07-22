@@ -100,7 +100,7 @@ NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
 NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
 NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
 
-# needs disabling due to issue with IdP. Learn more [here](https://github.com/netbirdio/netbird/issues/3654)
+# needs disabling due to issue with IdP. Learn more at https://github.com/netbirdio/netbird/issues/3654
 NETBIRD_AUTH_PKCE_DISABLE_PROMPT_LOGIN=true
 ```
 
