@@ -4,58 +4,83 @@ title: Writing documentation
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
+The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (https://integrations.goauthentik.io/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+
+## Requirements
+
+- Node.js 24 (or later)
+
+## Guidelines
+
 Adhering to the following guidelines will help us get your PRs merged much easier and faster, with fewer edits needed.
 
-- Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
+- Ideally, when you are making contributions to the documentation, you should fork and clone our repo, then [build it locally](#set-up-your-local-build-tools), so that you can test the docs and run the required linting and spell checkers before pushing your PR. While you can do much of the writing and editing within the GitHub UI, you cannot run the required linters from the GitHub UI.
+
+- After submitting a PR, you can view the Netlify Deploy Preview for the PR on GitHub, to check that your content rendered correctly, links work, etc. This is especially useful when using Docusaurus-specific features in your content.
 
 - Please refer to our [Style Guide](./style-guide.mdx) for authentik documentation. Here you will learn important guidelines about not capitalizing authentik, how we format our titles and headers, and much more.
 
-- Remember to use our [docs templates](./templates/index.md) when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and keeps the documentation structure and headings consistent.
+- Remember to use our templates when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and they keep the documentation structure and headings consistent.
+    - [docs templates](./templates/index.md)
+    - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
-- To test how the documentation renders you can build locally and then use the Netlify Deploy Preview, especially when using Docusaurus-specific features. You can also run the `make website-watch` command on your local build, to see the rendered pages as you make changes.
-
-- Be sure to run the `make website` command on your local branch, before pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done.
-
-- For new entries, make sure to add any new pages to the appropriate `sidebar.js` file. Otherwise, the new page will not appear in the table of contents to the left.
-
-## Set up your local build
-
-Requirements:
-
-- Node.js 20 (or greater, we use Node.js 24)
-
-The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
-
-You can do local builds of the documentation to test your changes or review your new content, and to run the required `make website` command (which runs `prettier` and other linters) before pushing your PR.
-
-The documentation site is situated in the `/website` folder of the repo.
-
-The site is built using npm, below are some useful make commands:
-
-- **Installation**: `make website-install`
-
-    This command is required before running any of the following commands, and after upgrading any dependencies.
-
-- **Formatting**: `make website`, `make website-lint-fix`, or `npm run prettier`
-
-    Run the appropriate formatting command for your set up before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
-
-- **Live editing**: `make website-watch`
-
-    For real-time viewing of changes, as you make them.
-
-:::info
-Be sure to run a formatting command before committing changes.
+:::tip
+If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
 :::
 
-## Documentation for Integrations
+## Clone and fork the authentik repository
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines.
+The documentation, integration guides, API docs, and the code are in the same [GitHub repo](https://github.com/goauthentik/authentik), so if you have cloned and forked the repo, you already have the docs and integration guides.
 
-For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+## Set up your local build tools
+
+Run the following command to install the build tools for both the technical docs and integration guides.
+
+- **Install (or update) the build tools**: `make docs-install`
+
+    Installs the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+
+## Writing or modifying technical docs
+
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/docs/):
+
+- For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
+  Otherwise, the new page will not appear in the table of contents to the left.
+
+- Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
+
+For our technical documentation (https://docs.goauthentik.io/docs/), the following commands are used:
+
+- **Build locally**: `make docs`
+
+    This command is a combination of `make docs-lint-fix` and `make docs-build`. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+
+- **Live editing**: `make docs-watch`
+
+    Starts a development server for the documentation site. This command will automatically rebuild your local documentation site whenever you make changes to the Markdown files in the `website/docs` directory.
+
+## Writing or modifying integration guides
+
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
+
+- For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 - Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`. If this is not done the service will not appear in the table of contents to the left.
 
 - For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 
-- Try to order the documentation sections in an order that makes it easiest for the user to configure.
+- Make sure to create a directory for your service in a fitting category within [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations).
+
+:::tip Sidebars and categories
+You no longer need to modify the integrations sidebar file manually. This is now automatically generated from the categories in [`/website/integrations/categories.mjs`](https://github.com/goauthentik/authentik/blob/main/website/integrations/categories.mjs).
+:::
+
+When authoring integration guides, the following commands are used:
+
+- **Build locally**: `make integrations`
+
+    This command is a combination of `make docs-lint-fix` and `make integrations-build`. This command should always be run on your local branch before committing your changes to a pull request to the authentik repo. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+
+- **Live editing**: `make integrations-watch`
+
+    Starts a development server for the integrations guides. This command will automatically rebuild your local integrations site whenever you make changes to the Markdown files in the [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations) directory.
