@@ -157,7 +157,7 @@
         "@storybook/web-components": "^9.0.17",
         "@storybook/web-components-vite": "^9.0.17",
         "@types/chart.js": "^4.0.1",
-        "@types/codemirror": "^5.60.15",
+        "@types/codemirror": "^5.60.16",
         "@types/dompurify": "^3.2.0",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.3",
