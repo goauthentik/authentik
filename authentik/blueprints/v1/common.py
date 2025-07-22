@@ -18,11 +18,14 @@ from django.db.models import Model, Q
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
+
+LOGGER = get_logger()
 
 
 class UNSET:
@@ -266,6 +269,34 @@ class Env(YAMLTag):
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         return getenv(self.key) or self.default
+
+
+class File(YAMLTag):
+    """Lookup file with optional default"""
+
+    path: str
+    default: Any | None
+
+    def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
+        super().__init__()
+        self.default = None
+        if isinstance(node, ScalarNode):
+            self.path = node.value
+        if isinstance(node, SequenceNode):
+            self.path = loader.construct_object(node.value[0])
+            self.default = loader.construct_object(node.value[1])
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        try:
+            with open(self.path, encoding="utf8") as _file:
+                return _file.read().strip()
+        except OSError as exc:
+            LOGGER.warning(
+                "Failed to read file. Falling back to default value",
+                path=self.path,
+                exc=exc,
+            )
+            return self.default
 
 
 class Context(YAMLTag):
@@ -679,6 +710,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!Condition", Condition)
         self.add_constructor("!If", If)
         self.add_constructor("!Env", Env)
+        self.add_constructor("!File", File)
         self.add_constructor("!Enumerate", Enumerate)
         self.add_constructor("!Value", Value)
         self.add_constructor("!Index", Index)
