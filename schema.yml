@@ -54852,6 +54852,10 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
     PatchedRedirectStageRequest:
       type: object
       description: RedirectStage Serializer
@@ -57318,6 +57322,10 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - application_slug
       - auth_flow_slug
@@ -57404,6 +57412,10 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -57528,6 +57540,10 @@ components:
             should only be enabled if all users that will bind to this provider have
             a TOTP device configured, as otherwise a password may incorrectly be rejected
             if it contains a semicolon.
+        certificate:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - authorization_flow
       - invalidation_flow
