@@ -148,3 +148,105 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[3].method, "DELETE")
         self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
+
+    @Mocker()
+    def test_group_integer_ids(self, mock: Mocker):
+        """Test group creation with integer IDs from SCIM provider"""
+        scim_id = 123  # Integer ID from SCIM provider
+        user_scim_id = 456  # Integer user ID from SCIM provider
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,  # Integer ID
+            },
+        )
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": user_scim_id,  # Integer ID
+            },
+        )
+
+        # Create user first
+        user = User.objects.create(username="testuser", email="test@example.com")
+
+        # Create group
+        group = Group.objects.create(name="testgroup")
+        group.users.add(user)
+
+        # Verify that integer IDs are handled correctly
+        # The system should convert integer IDs to strings internally
+        from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
+
+        scim_group = SCIMProviderGroup.objects.filter(group=group).first()
+        scim_user = SCIMProviderUser.objects.filter(user=user).first()
+
+        # Verify IDs are stored as strings
+        self.assertIsInstance(scim_group.scim_id, str)
+        self.assertEqual(scim_group.scim_id, str(scim_id))
+        self.assertIsInstance(scim_user.scim_id, str)
+        self.assertEqual(scim_user.scim_id, str(user_scim_id))
+
+    @Mocker()
+    def test_group_member_integer_values(self, mock: Mocker):
+        """Test group sync with integer member values from SCIM provider (reproduces issue #15533)"""
+        scim_group_id = "72"
+        scim_user_ids = [53, 54, 55, 56, 57]  # Integer member values from provider
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+            },
+        )
+        # Mock the GET request that was failing in the original issue
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                "members": [
+                    {"value": user_id, "display": f"USER{user_id}"}
+                    for user_id in scim_user_ids
+                ],
+                "displayName": "GROUP1",
+                "externalId": "05c6f450-b1d2-4198-8e04-dad1c85c367e",
+                "meta": {
+                    "resourceType": "Group",
+                    "created": "2025-07-13T05:58:06+00:00",
+                    "lastModified": "2025-07-13T09:07:28+00:00",
+                    "location": f"https://localhost/Groups/{scim_group_id}"
+                }
+            },
+        )
+
+        # Create group and trigger sync
+        group = Group.objects.create(name="testgroup")
+
+        # This should not raise a ValidationError anymore
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection manually for this test
+        scim_group = SCIMProviderGroup.objects.create(
+            provider=self.provider,
+            group=group,
+            scim_id=scim_group_id,
+            attributes={}
+        )
+
+        # This call should work without ValidationError
+        try:
+            client.patch_compare_users(group)
+        except Exception as e:
+            self.fail(f"patch_compare_users raised {type(e).__name__} unexpectedly: {e}")

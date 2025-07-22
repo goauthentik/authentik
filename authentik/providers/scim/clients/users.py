@@ -77,16 +77,23 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:
                     raise exc
+                # Convert integer IDs to strings for SCIM 2.0 spec compatibility
+                scim_id = users_res[0]["id"]
+                if isinstance(scim_id, int):
+                    scim_id = str(scim_id)
                 return SCIMProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
-                    scim_id=users_res[0]["id"],
+                    scim_id=scim_id,
                     attributes=users_res[0],
                 )
             else:
                 scim_id = response.get("id")
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
+                # Convert integer IDs to strings for SCIM 2.0 spec compatibility
+                if isinstance(scim_id, int):
+                    scim_id = str(scim_id)
                 return SCIMProviderUser.objects.create(
                     provider=self.provider, user=user, scim_id=scim_id, attributes=response
                 )

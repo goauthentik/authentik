@@ -106,6 +106,9 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         scim_id = response.get("id")
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
+        # Convert integer IDs to strings for SCIM 2.0 spec compatibility
+        if isinstance(scim_id, int):
+            scim_id = str(scim_id)
         connection = SCIMProviderGroup.objects.create(
             provider=self.provider, group=group, scim_id=scim_id, attributes=response
         )
@@ -238,9 +241,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 group=group,
             )
         # Get current group status
-        current_group = SCIMGroupSchema.model_validate(
-            self._request("GET", f"/Groups/{scim_group.scim_id}")
-        )
+        group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
+        # Convert integer member values to strings for compatibility with SCIM providers
+        # that return integer IDs (SCIM 2.0 spec allows both strings and integers for ID values)
+        if "members" in group_data and group_data["members"] is not None:
+            for member in group_data["members"]:
+                if "value" in member and isinstance(member["value"], int):
+                    member["value"] = str(member["value"])
+        current_group = SCIMGroupSchema.model_validate(group_data)
         users_to_add = []
         users_to_remove = []
         # Check users currently in group and if they shouldn't be in the group and remove them
