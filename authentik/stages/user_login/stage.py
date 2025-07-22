@@ -91,6 +91,7 @@ class UserLoginStageView(ChallengeStageView):
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
+            return self.executor.stage_invalid()
         delta = self.set_session_duration(remember)
         self.set_session_ip()
         # the `user_logged_in` signal will update the user to write the `last_login` field

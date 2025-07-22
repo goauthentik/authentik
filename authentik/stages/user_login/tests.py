@@ -6,6 +6,7 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
@@ -174,6 +175,7 @@ class TestUserLoginStage(FlowTestCase):
             component="ak-stage-access-denied",
         )
 
+    @apply_blueprint("default/flow-default-user-settings-flow.yaml")
     def test_inactive_account(self):
         """Test with a valid pending user and backend"""
         self.user.is_active = False
@@ -187,8 +189,25 @@ class TestUserLoginStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
-
         self.assertEqual(response.status_code, 200)
-        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertStageResponse(
+            response, self.flow, component="ak-stage-access-denied", error_message="Unknown error"
+        )
+
+        # Check that API requests get rejected
         response = self.client.get(reverse("authentik_api:application-list"))
         self.assertEqual(response.status_code, 403)
+
+        # Check that flow requests requiring a user also get rejected
+        response = self.client.get(
+            reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": "default-user-settings-flow"},
+            )
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Flow does not apply to current user.",
+        )
