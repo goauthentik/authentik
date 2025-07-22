@@ -76,12 +76,14 @@ export function renderForm(
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-hidden-text-input>
-                    name="sharedSecret" label=${msg("Shared secret")}
+                <ak-hidden-text-input
+                    name="sharedSecret"
+                    label=${msg("Shared secret")}
                     .errorMessages=${errors?.sharedSecret ?? []}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
-                    required input-hint="code" ></ak-hidden-text-input
-                >
+                    required
+                    input-hint="code"
+                ></ak-hidden-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
