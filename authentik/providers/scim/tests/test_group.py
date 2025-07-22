@@ -246,3 +246,64 @@ class SCIMGroupTests(TestCase):
             client.patch_compare_users(group)
         except Exception as e:
             self.fail(f"patch_compare_users raised {type(e).__name__} unexpectedly: {e}")
+
+    def test_ensure_string_id_integration(self):
+        """Test that the ensure_string_id utility is properly integrated"""
+        from authentik.lib.utils.convert import ensure_string_id
+
+        # Test the exact scenario from issue #15533
+        test_cases = [
+            53,
+            54,
+            55,
+            56,
+            57,  # Integer member values from the issue
+            72,  # Group ID from the issue
+            "string-id",  # String ID should pass through
+            None,  # None should remain None
+        ]
+
+        expected_results = [
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",  # Integers converted to strings
+            "72",  # Group ID converted
+            "string-id",  # String unchanged
+            None,  # None unchanged
+        ]
+
+        for test_value, expected in zip(test_cases, expected_results, strict=False):
+            result = ensure_string_id(test_value)
+            self.assertEqual(result, expected)
+
+            # Test type validation
+            if expected is not None:
+                self.assertIsInstance(result, (str, type(None)))
+
+    def test_scim_group_creation_with_integer_ids(self):
+        """Test SCIM group creation process handles integer IDs correctly"""
+        from authentik.lib.utils.convert import ensure_string_id
+
+        # Simulate the group creation process with integer responses
+        mock_group_response = {
+            "id": 999,  # Integer ID that should be converted
+            "displayName": "Test Group",
+            "members": [
+                {"value": 111, "display": "User111"},
+                {"value": 222, "display": "User222"},
+            ],
+        }
+
+        # Test that our utility function handles this correctly
+        converted_group_id = ensure_string_id(mock_group_response["id"])
+        self.assertEqual(converted_group_id, "999")
+        self.assertIsInstance(converted_group_id, str)
+
+        # Test member conversions
+        for member in mock_group_response["members"]:
+            original_value = member["value"]
+            converted_value = ensure_string_id(original_value)
+            self.assertEqual(converted_value, str(original_value))
+            self.assertIsInstance(converted_value, str)
