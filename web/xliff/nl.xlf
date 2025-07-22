@@ -4505,12 +4505,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Duo Admin API (optioneel)</target>
         
       </trans-unit>
-      <trans-unit id="s7f13f4a2d0370cf6">
-        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.</source>
-        <target>Bij gebruik van een Duo MFA, Access of Beyond plan kan een Admin API-toepassing worden aangemaakt.
-            Dit stelt authentik in staat om apparaten automatisch te importeren.</target>
-      </trans-unit>
       <trans-unit id="s9a34d1520e320465">
         <source>Stage-specific settings</source>
         <target>Fase-specifieke instellingen</target>
@@ -8005,9 +7999,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="se3a34af2a05c5c98">
   <source>Internal Service account</source>
 </trans-unit>
-<trans-unit id="s681c086b8f7afcae">
-  <source>Global</source>
-</trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
 </trans-unit>
@@ -9136,6 +9127,48 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s3c619d54c995d4ab">
   <source>Modify the payload sent to the provider.</source>
+</trans-unit>
+<trans-unit id="s12d6dde9b30c3093">
+  <source>Dismiss</source>
+</trans-unit>
+<trans-unit id="sdea479482318489d">
+  <source>Status messages</source>
+</trans-unit>
+<trans-unit id="s05a4a4df6783d0cf">
+  <source>Provider name</source>
+</trans-unit>
+<trans-unit id="s19714b5520312d9a">
+  <source>Select an invalidation flow...</source>
+</trans-unit>
+<trans-unit id="sf1a3d030efd11f28">
+  <source>Open about dialog</source>
+</trans-unit>
+<trans-unit id="s95b96d7ead27527f">
+  <source>Product name</source>
+</trans-unit>
+<trans-unit id="s68b6d404c3349b18">
+  <source>Product version</source>
+</trans-unit>
+<trans-unit id="se0d7715f3211d220">
+  <source>Global navigation</source>
+</trans-unit>
+<trans-unit id="sd51d6a39208696cc">
+  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="scce64bcfb0a73ad7">
+  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sfe1fb536cab6c0f5">
+  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+</trans-unit>
+<trans-unit id="scbc2fd9f2bd26fdd">
+  <source>Main content</source>
+</trans-unit>
+<trans-unit id="sd2b106933823b754">
+  <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+</trans-unit>
+<trans-unit id="sd5e9b70ffb7a8b46">
+  <source>Skip to content</source>
 </trans-unit>
     </body>
   </file>
