@@ -91,7 +91,7 @@ oidc:
 
 ## Configuration verification
 
-To verify the integration with Headscale, log out and attempt to log back in using OIDC.
+To verify the integration with Headscale, log out and attempt to log back in using OIDC. When attempting to log in, you'll be redirected to your Headscale installation, which then forwards you to authentik before returning to Headscale, though the exact flow may vary slightly depending on the client platform.
 
 ## Resources
 
