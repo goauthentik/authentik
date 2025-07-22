@@ -44,7 +44,7 @@ export type TemplatedProperties<
  * ```
  */
 export type LitPropertyRecord<T extends object> = {
-    [K in keyof T as K extends string ? LitPropertyKey<K> : never]: T[K];
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]?: T[K];
 };
 
 /**
