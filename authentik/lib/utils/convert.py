@@ -15,7 +15,8 @@ def ensure_string_id(id_value: Any) -> Any:
         id_value: The ID value to convert (could be int, str, None, etc.)
 
     Returns:
-        String representation of the ID, or None if input is None/empty
+        - String representation if input is an integer
+        - Original value unchanged for all other types (including None)
 
     Examples:
         >>> ensure_string_id(123)
@@ -26,6 +27,10 @@ def ensure_string_id(id_value: Any) -> Any:
         None
         >>> ensure_string_id('')
         ''
+        >>> ensure_string_id(12.34)
+        12.34
+        >>> ensure_string_id([1, 2])
+        [1, 2]
     """
     if id_value is None:
         return None
