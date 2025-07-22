@@ -25,7 +25,6 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
-
 LOGGER = get_logger()
 
 
