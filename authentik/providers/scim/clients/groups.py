@@ -107,7 +107,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         try:
             scim_response = SCIMGroupSchema.model_validate(response)
             scim_id = scim_response.id
-        except Exception:
+        except ValidationError as exc:
+            self.logger.warning("Failed to validate response as SCIM group", exc=exc)
             # Fallback to raw response if validation fails
             scim_id = response.get("id")
 
@@ -262,7 +263,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             self.logger.warning(
                 "Failed to validate SCIM group data",
                 group=group,
-                validation_error=str(exc),
+                exc=exc,
             )
             return
         users_to_add = []

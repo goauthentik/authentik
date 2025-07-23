@@ -81,7 +81,8 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 try:
                     scim_response = SCIMUserSchema.model_validate(users_res[0])
                     scim_id = scim_response.id
-                except Exception:
+                except ValidationError as exc:
+                    self.logger.warning("Failed to validate response as SCIM user", exc=exc)
                     # Fallback to raw response if validation fails
                     scim_id = users_res[0]["id"]
                 return SCIMProviderUser.objects.create(
@@ -95,7 +96,8 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 try:
                     scim_response = SCIMUserSchema.model_validate(response)
                     scim_id = scim_response.id
-                except Exception:
+                except ValidationError as exc:
+                    self.logger.warning("Failed to validate response as SCIM user", exc=exc)
                     # Fallback to raw response if validation fails
                     scim_id = response.get("id")
 
