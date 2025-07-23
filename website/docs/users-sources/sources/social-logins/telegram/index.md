@@ -8,6 +8,7 @@ Allows users to authenticate using their Telegram account via Telegram applicati
 ## Telegram
 
 To use Telegram as a source, you need to register a Telegram bot first:
+
 1. Start a chat with `@BotFather` on Telegram.
 2. Use `/newbot` command to create a new bot. Pick a username for your new bot (e.g., `my_bot`).
    Note the username you've chosen - you'll need it when setting up the source in authentik.
@@ -19,14 +20,14 @@ Now as the bot is configured you can proceed to creating a source in authentik.
 
 ## authentik
 
-In authentik, go to *Directory* > *Federation & Social login* and click *Create*.
-Select *Telegram source* and configure your source:
+In authentik, go to _Directory_ > _Federation & Social login_ and click _Create_.
+Select _Telegram source_ and configure your source:
 
-- *Name:* Choose a name
-- *Slug:* Set a slug
-- *Bot username:* Set the username of your Telegram bot (e.g., `my_bot`)
-- *Bot token:* Set the token of your Telegram bot
-- *"Request access to send messages from your bot":* enable this if you need your bot to be able to
+- _Name:_ Choose a name
+- _Slug:_ Set a slug
+- _Bot username:_ Set the username of your Telegram bot (e.g., `my_bot`)
+- _Bot token:_ Set the token of your Telegram bot
+- _"Request access to send messages from your bot":_ enable this if you need your bot to be able to
   send messages to the users who logged in to authentik with it.
 
 Save, and you now have Telegram as a source.
@@ -44,8 +45,8 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 The following variables are available to OAuth source property mappings:
 
 - `info`: A Python dictionary containing Telegram user data:
-  - `id` - Telegram user ID
-  - `username` - Username of the user. May not be present
-  - `first_name` - First name of the user. May not be present
-  - `last_name` - Last name of the user. May not be present
-  - `photo_url` - URL of the user's profile photo. May not be present
+    - `id` - Telegram user ID
+    - `username` - Username of the user. May not be present
+    - `first_name` - First name of the user. May not be present
+    - `last_name` - Last name of the user. May not be present
+    - `photo_url` - URL of the user's profile photo. May not be present
