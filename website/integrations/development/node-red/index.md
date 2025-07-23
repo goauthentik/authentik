@@ -77,7 +77,7 @@ adminAuth: {
                         authorizationURL: 'https://authentik.company/application/o/authorize/',
                         tokenURL: 'https://authentik.company/application/o/token/',
                         userInfoURL: 'https://authentik.company/application/o/userinfo/',
-                        clientID: '<Client ID (Key): Step 2>',
+                        clientID: '<client_id>',
                         clientSecret: '<Client Secret: Step 2>',
                         callbackURL: 'https://nodered.company/auth/strategy/callback/',
                         scope: ['email', 'profile', 'openid'],
