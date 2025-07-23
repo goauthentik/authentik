@@ -63,6 +63,10 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-scim-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-scim-view>`;
+            case "ak-source-telegram-form":
+                return html`<ak-source-telegram-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-telegram-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }
