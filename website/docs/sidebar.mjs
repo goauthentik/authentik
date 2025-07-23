@@ -12,8 +12,6 @@ import {
     createReleaseSidebarEntries,
 } from "@goauthentik/docusaurus-theme/releases/utils";
 
-import apiReference from "./developer-docs/api/reference/sidebar.ts";
-
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const releases = collectReleaseFiles(path.join(__dirname));
@@ -452,6 +450,7 @@ const items = [
                     "users-sources/user/user_basic_operations",
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
+                    "users-sources/user/password_reset_on_login",
                 ],
             },
             {
@@ -639,32 +638,11 @@ const items = [
         },
         items: [
             {
-                type: "category",
-                label: "API",
-                link: {
-                    type: "doc",
-                    id: "developer-docs/api/api",
-                },
-                items: [
-                    "developer-docs/api/flow-executor",
-                    "developer-docs/api/making-schema-changes",
-                    "developer-docs/api/websocket",
-                    {
-                        type: "category",
-                        label: "Reference",
-                        items: apiReference,
-                    },
-                    "developer-docs/api/clients",
-                ],
+                type: "link",
+                href: "pathname:///api",
+                label: "API Overview",
+                className: "api-overview",
             },
-
-            // TODO: Enable when API docs are ready
-            // {
-            //     type: "link",
-            //     href: process.env.API_DOCS_URL || "https://api.goauthentik.io",
-            //     label: "API Overview",
-            //     className: "api-overview",
-            // },
 
             {
                 //#endregion
@@ -750,7 +728,11 @@ const items = [
                     {
                         type: "category",
                         label: "2025",
-                        items: ["security/cves/CVE-2025-52553", "security/cves/CVE-2025-29928"],
+                        items: [
+                            "security/cves/CVE-2025-53942",
+                            "security/cves/CVE-2025-52553",
+                            "security/cves/CVE-2025-29928",
+                        ],
                     },
                     {
                         type: "category",

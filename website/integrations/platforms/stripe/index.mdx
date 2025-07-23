@@ -32,7 +32,7 @@ To support the integration of Stripe with authentik, you need to create a group,
 4. In the **Attributes** field enter: `stripe_role: admin`. Other account types are also supported, see the [Stripe SSO Documentation](https://docs.stripe.com/get-started/account/sso/other#configuring-your-identity-provider)
 5. Click **Create**.
 6. Then, click the name of the newly created group and navigate to the **Users** tab.
-7. Click **Add existing user**, select the user that needs Wazuh admin access and click **Add**.
+7. Click **Add existing user**, select the user that needs Stripe admin access and click **Add**.
 
 ### Create a property mapping in authentik
 
@@ -40,7 +40,7 @@ To support the integration of Stripe with authentik, you need to create a group,
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Then, create a **SAML Provider Property Mapping** using the following settings:
 
         - **Name**: `Stripe Role`
-        - **SAML Attribute Name**: `Stripe-Role-acct-<stripe-account-id>`
+        - **SAML Attribute Name**: `Stripe-Role-<stripe-account-id>` Can be found [here](https://dashboard.stripe.com/settings/account)
         - **Friendly Name**: Leave blank
         - **Expression**:
 

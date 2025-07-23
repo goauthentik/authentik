@@ -1,9 +1,12 @@
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
+import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
+import { LitPropertyRecord } from "#elements/types";
 
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
@@ -11,7 +14,7 @@ import { repeat } from "lit/directives/repeat.js";
 type SidebarEntry = [
     path: string | null,
     label: string,
-    attributes?: Record<string, any> | string[] | null, // eslint-disable-line
+    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
     children?: SidebarEntry[],
 ];
 
@@ -32,8 +35,7 @@ export function renderSidebarItem([
         properties.path = path;
     }
 
-    return html`<ak-sidebar-item ${spread(properties)}>
-        ${label ? html`<span slot="label">${label}</span>` : nothing}
+    return html`<ak-sidebar-item label=${ifDefined(label)} ${spread(properties)}>
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
 }

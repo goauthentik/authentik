@@ -74,9 +74,8 @@ export function renderForm(
         >
         </ak-switch-input>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-hidden-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
@@ -107,15 +106,16 @@ export function renderForm(
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Invalidation flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
+                        label=${msg("Invalidation flow")}
+                        placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .errorMessages=${errors?.invalidationFlow ?? []}
