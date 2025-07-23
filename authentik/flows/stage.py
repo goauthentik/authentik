@@ -312,10 +312,7 @@ class SessionEndStage(ChallengeStageView):
                 ).first()
 
                 # Send back-channel logout notifications
-                if session:
-                    send_backchannel_logout_notification(session=session)
-                else:
-                    send_backchannel_logout_notification(user=self.request.user)
+                send_backchannel_logout_notification(session=session)
             except Exception as exc:
                 # Log the error but don't fail the logout process
                 self.logger.warning(
