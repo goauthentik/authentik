@@ -1,6 +1,7 @@
 """SCIM Group tests"""
 
 from json import loads
+from time import time
 
 from django.test import TestCase
 from jsonschema import validate
@@ -9,7 +10,15 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.clients.groups import SCIMGroupClient
+from authentik.providers.scim.clients.users import SCIMUserClient
+from authentik.providers.scim.models import (
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderGroup,
+    SCIMProviderUser,
+)
+from authentik.tenants.models import Tenant
 
 
 class SCIMGroupTests(TestCase):
@@ -17,6 +26,7 @@ class SCIMGroupTests(TestCase):
 
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self) -> None:
+        Tenant.objects.update(avatars="none")
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         User.objects.all().exclude_anonymous().delete()
@@ -152,10 +162,8 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_integer_ids(self, mock: Mocker):
         """Test group creation with integer IDs from SCIM provider"""
-        import time
-
         # Use timestamp-based IDs to ensure uniqueness across test runs
-        timestamp = int(time.time() * 1000)  # Microsecond precision for uniqueness
+        timestamp = int(time() * 1000)  # Microsecond precision for uniqueness
         scim_id = timestamp  # Integer ID from SCIM provider
         user_scim_id = timestamp + 1  # Integer user ID from SCIM provider
 
@@ -179,18 +187,6 @@ class SCIMGroupTests(TestCase):
                 "userName": "testuser",
             },
         )
-        # Mock gravatar requests to avoid network calls
-        import re
-
-        mock.head(
-            re.compile(r"https://www\.gravatar\.com/avatar/.*"),
-            status_code=404,
-        )
-
-        # Import the client classes
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-        from authentik.providers.scim.clients.users import SCIMUserClient
-        from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 
         # Create user with unique name and sync to SCIM
         unique_username = f"testuser-{user_scim_id}"
@@ -221,10 +217,8 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_member_integer_values(self, mock: Mocker):
         """Test group sync with integer member values from SCIM provider (issue #15533)"""
-        import time
-
         # Use timestamp-based IDs to ensure uniqueness across test runs
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)  # Convert to string for group ID
         # Integer member values from provider
         scim_user_ids = [timestamp + 100 + i for i in range(5)]
@@ -286,13 +280,9 @@ class SCIMGroupTests(TestCase):
         group = Group.objects.create(name=group_name)
 
         # Clean up any existing SCIM objects first
-        from authentik.providers.scim.models import SCIMProviderGroup
-
         SCIMProviderGroup.objects.filter(provider=self.provider, group=group).delete()
 
         # This should not raise a ValidationError anymore
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         client = SCIMGroupClient(self.provider)
 
         # Create the SCIM connection and test the problematic patch_compare_users method
@@ -313,9 +303,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_create_exception_fallback(self, mock: Mocker):
         """Test group creation with exception fallback for ID validation"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_id = timestamp
 
         mock.get(
@@ -334,13 +322,9 @@ class SCIMGroupTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup
-
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
         client = SCIMGroupClient(self.provider)
@@ -357,9 +341,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_patch_compare_users_request_exception(self, mock: Mocker):
         """Test patch_compare_users when GET request fails"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)
 
         mock.get(
@@ -381,13 +363,9 @@ class SCIMGroupTests(TestCase):
             json={"error": "Internal Server Error"},
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup
-
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
         client = SCIMGroupClient(self.provider)
@@ -408,9 +386,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_patch_compare_users_validation_exception(self, mock: Mocker):
         """Test patch_compare_users when validation fails"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)
 
         mock.get(
@@ -436,12 +412,9 @@ class SCIMGroupTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
-        # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup
+        # Clean up any existing SCIM entry
 
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
@@ -463,9 +436,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_patch_compare_users_no_changes(self, mock: Mocker):
         """Test patch_compare_users when no changes are needed"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)
 
         mock.get(
@@ -491,13 +462,9 @@ class SCIMGroupTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup
-
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
         client = SCIMGroupClient(self.provider)
@@ -518,9 +485,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_patch_compare_users_with_changes(self, mock: Mocker):
         """Test patch_compare_users when changes are needed"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)
 
         mock.get(
@@ -561,13 +526,9 @@ class SCIMGroupTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
-
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
         # Create a user and SCIM connection for it
@@ -598,9 +559,7 @@ class SCIMGroupTests(TestCase):
     @Mocker()
     def test_group_patch_compare_users_none_members(self, mock: Mocker):
         """Test patch_compare_users when current_group.members is None"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_group_id = str(timestamp)
 
         mock.get(
@@ -626,13 +585,9 @@ class SCIMGroupTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.groups import SCIMGroupClient
-
         group = Group.objects.create(name=f"testgroup-{timestamp}")
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderGroup
-
         SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
 
         client = SCIMGroupClient(self.provider)

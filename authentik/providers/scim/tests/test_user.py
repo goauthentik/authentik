@@ -1,6 +1,7 @@
 """SCIM User tests"""
 
 from json import loads
+from time import time
 
 from django.test import TestCase
 from django.utils.text import slugify
@@ -12,7 +13,9 @@ from authentik.core.models import Application, Group, User
 from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
+from authentik.providers.scim.clients.users import SCIMUserClient
+from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.models import Tenant
 
@@ -444,9 +447,7 @@ class SCIMUserTests(TestCase):
     @Mocker()
     def test_user_create_exception_fallback(self, mock: Mocker):
         """Test user creation with exception fallback for ID validation"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_id = timestamp
 
         mock.get(
@@ -465,8 +466,6 @@ class SCIMUserTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.users import SCIMUserClient
-
         user = User.objects.create(
             username=f"testuser-{timestamp}",
             name=f"testuser-{timestamp}",
@@ -474,8 +473,6 @@ class SCIMUserTests(TestCase):
         )
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderUser
-
         SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
 
         client = SCIMUserClient(self.provider)
@@ -492,9 +489,7 @@ class SCIMUserTests(TestCase):
     @Mocker()
     def test_user_create_object_exists_exception_fallback(self, mock: Mocker):
         """Test user creation with ObjectExistsSyncException and exception fallback"""
-        import time
-
-        timestamp = int(time.time() * 1000)
+        timestamp = int(time() * 1000)
         scim_id = timestamp
 
         mock.get(
@@ -523,8 +518,6 @@ class SCIMUserTests(TestCase):
             },
         )
 
-        from authentik.providers.scim.clients.users import SCIMUserClient
-
         user = User.objects.create(
             username="testuser",
             name="testuser",
@@ -532,8 +525,6 @@ class SCIMUserTests(TestCase):
         )
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderUser
-
         SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
 
         client = SCIMUserClient(self.provider)
@@ -566,9 +557,6 @@ class SCIMUserTests(TestCase):
             json={"Resources": []},
         )
 
-        from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException
-        from authentik.providers.scim.clients.users import SCIMUserClient
-
         user = User.objects.create(
             username="testuser",
             name="testuser",
@@ -576,8 +564,6 @@ class SCIMUserTests(TestCase):
         )
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderUser
-
         SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
 
         client = SCIMUserClient(self.provider)
@@ -606,9 +592,6 @@ class SCIMUserTests(TestCase):
             },
         )
 
-        from authentik.lib.sync.outgoing.exceptions import StopSync
-        from authentik.providers.scim.clients.users import SCIMUserClient
-
         user = User.objects.create(
             username="testuser",
             name="testuser",
@@ -616,8 +599,6 @@ class SCIMUserTests(TestCase):
         )
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderUser
-
         SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
 
         client = SCIMUserClient(self.provider)
@@ -646,9 +627,6 @@ class SCIMUserTests(TestCase):
             },
         )
 
-        from authentik.lib.sync.outgoing.exceptions import StopSync
-        from authentik.providers.scim.clients.users import SCIMUserClient
-
         user = User.objects.create(
             username="testuser",
             name="testuser",
@@ -656,8 +634,6 @@ class SCIMUserTests(TestCase):
         )
 
         # Clean up any existing SCIM entries
-        from authentik.providers.scim.models import SCIMProviderUser
-
         SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
 
         client = SCIMUserClient(self.provider)
