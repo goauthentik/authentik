@@ -309,3 +309,343 @@ class SCIMGroupTests(TestCase):
         # Cleanup
         scim_group_obj.delete()
         group.delete()
+
+    @Mocker()
+    def test_group_create_exception_fallback(self, mock: Mocker):
+        """Test group creation with exception fallback for ID validation"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_id = timestamp
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        # Mock a response that will cause validation to fail
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+                # Add invalid field to trigger validation error
+                "invalid_field": "invalid_value",
+            },
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        client = SCIMGroupClient(self.provider)
+        scim_group = client.create(group)
+
+        # Should fallback to raw response.get("id")
+        self.assertIsInstance(scim_group.scim_id, str)
+        self.assertEqual(scim_group.scim_id, str(scim_id))
+
+        # Cleanup
+        scim_group.delete()
+        group.delete()
+
+    @Mocker()
+    def test_group_patch_compare_users_request_exception(self, mock: Mocker):
+        """Test patch_compare_users when GET request fails"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_group_id = str(timestamp)
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock GET request to fail
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            status_code=500,
+            json={"error": "Internal Server Error"},
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection
+        scim_group_obj = SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
+        )
+
+        # Should handle the exception and return None
+        result = client.patch_compare_users(group)
+        self.assertIsNone(result)
+
+        # Cleanup
+        scim_group_obj.delete()
+        group.delete()
+
+    @Mocker()
+    def test_group_patch_compare_users_validation_exception(self, mock: Mocker):
+        """Test patch_compare_users when validation fails"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_group_id = str(timestamp)
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock GET request to return invalid data
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                # Missing required fields to trigger validation error
+                "invalid_field": "invalid_value",
+            },
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection
+        scim_group_obj = SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
+        )
+
+        # Should handle the validation exception and return None
+        result = client.patch_compare_users(group)
+        self.assertIsNone(result)
+
+        # Cleanup
+        scim_group_obj.delete()
+        group.delete()
+
+    @Mocker()
+    def test_group_patch_compare_users_no_changes(self, mock: Mocker):
+        """Test patch_compare_users when no changes are needed"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_group_id = str(timestamp)
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock GET request to return group with no members
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                "members": [],
+                "displayName": "testgroup",
+            },
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection
+        scim_group_obj = SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
+        )
+
+        # Should return None when no changes are needed
+        result = client.patch_compare_users(group)
+        self.assertIsNone(result)
+
+        # Cleanup
+        scim_group_obj.delete()
+        group.delete()
+
+    @Mocker()
+    def test_group_patch_compare_users_with_changes(self, mock: Mocker):
+        """Test patch_compare_users when changes are needed"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_group_id = str(timestamp)
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock GET request to return group with existing members
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                "members": [
+                    {"value": "existing_user_1", "display": "Existing User 1"},
+                    {"value": "existing_user_2", "display": "Existing User 2"},
+                ],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock PATCH request for group updates
+        mock.patch(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                "members": [
+                    {"value": "new_user_1", "display": "New User 1"},
+                ],
+                "displayName": "testgroup",
+            },
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        # Create a user and SCIM connection for it
+        user = User.objects.create(
+            username=f"new_user_1_{timestamp}", email=f"new_user_1_{timestamp}@example.com"
+        )
+        SCIMProviderUser.objects.create(
+            provider=self.provider, user=user, scim_id="new_user_1", attributes={}
+        )
+        group.users.add(user)
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection
+        scim_group_obj = SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
+        )
+
+        # Should return the PATCH response when changes are needed
+        result = client.patch_compare_users(group)
+        self.assertIsNotNone(result)
+
+        # Cleanup
+        scim_group_obj.delete()
+        group.delete()
+        user.delete()
+
+    @Mocker()
+    def test_group_patch_compare_users_none_members(self, mock: Mocker):
+        """Test patch_compare_users when current_group.members is None"""
+        import time
+
+        timestamp = int(time.time() * 1000)
+        scim_group_id = str(timestamp)
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_group_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "displayName": "testgroup",
+            },
+        )
+        # Mock GET request to return group with None members
+        mock.get(
+            f"https://localhost/Groups/{scim_group_id}",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "id": scim_group_id,
+                "members": None,
+                "displayName": "testgroup",
+            },
+        )
+
+        from authentik.providers.scim.clients.groups import SCIMGroupClient
+
+        group = Group.objects.create(name=f"testgroup-{timestamp}")
+
+        # Clean up any existing SCIM entries
+        from authentik.providers.scim.models import SCIMProviderGroup
+
+        SCIMProviderGroup.objects.filter(group=group, provider=self.provider).delete()
+
+        client = SCIMGroupClient(self.provider)
+
+        # Create the SCIM connection
+        scim_group_obj = SCIMProviderGroup.objects.create(
+            provider=self.provider, group=group, scim_id=scim_group_id, attributes={}
+        )
+
+        # Should handle None members gracefully
+        result = client.patch_compare_users(group)
+        self.assertIsNone(result)
+
+        # Cleanup
+        scim_group_obj.delete()
+        group.delete()
