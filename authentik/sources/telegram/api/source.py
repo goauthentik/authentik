@@ -12,6 +12,9 @@ class TelegramSourceSerializer(SourceSerializer):
             'bot_username',
             'bot_token',
             'request_access']
+        extra_kwargs = {
+            'bot_token': {'write_only': True},
+        }
 
 
 class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
