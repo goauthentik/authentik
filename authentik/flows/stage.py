@@ -14,7 +14,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.core.models import Application, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -30,7 +30,6 @@ from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
-from authentik.providers.oauth2.tasks import send_backchannel_logout_notification
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
@@ -302,24 +301,6 @@ class SessionEndStage(ChallengeStageView):
                     "flow_slug": self.request.brand.flow_invalidation.slug,
                 },
             )
-
-        # Trigger back-channel logout notifications if the user is authenticated
-        if self.request.user.is_authenticated:
-            try:
-                # Get the current session
-                session = AuthenticatedSession.objects.filter(
-                    session_id=self.request.session.session_key
-                ).first()
-
-                # Send back-channel logout notifications
-                send_backchannel_logout_notification(session=session)
-            except Exception as exc:
-                # Log the error but don't fail the logout process
-                self.logger.warning(
-                    "Failed to send back-channel logout notifications",
-                    user=self.request.user.username,
-                    error=str(exc),
-                )
 
         return SessionEndChallenge(data=data)
 
