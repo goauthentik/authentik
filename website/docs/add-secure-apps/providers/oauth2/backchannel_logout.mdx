@@ -1,0 +1,11 @@
+---
+title: OIDC Back-Channel Logout
+---
+
+## About OIDC Back-channel logout
+
+[OIDC Back-channel logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) is a mechanism where an identity provider notifies all connected applications directly via server-to-server communication when a user logs out, ensuring that the user is logged out everywhere without relying on their browser. This improves security and reliability by allowing applications to terminate user sessions even if the user is no longer active in their browser.
+
+## authentik OIDC Back-channel logout support
+
+authentik 2025.8 and onward, supports OIDC Back-Channel logout
