@@ -56617,6 +56617,7 @@ components:
           maxLength: 255
         bot_token:
           type: string
+          writeOnly: true
           minLength: 1
           description: Telegram bot token
           maxLength: 255
@@ -61685,15 +61686,10 @@ components:
           type: string
           description: Telegram bot username
           maxLength: 255
-        bot_token:
-          type: string
-          description: Telegram bot token
-          maxLength: 255
         request_access:
           type: boolean
           description: Request access to send messages from your bot.
       required:
-      - bot_token
       - bot_username
       - component
       - icon
@@ -61824,6 +61820,7 @@ components:
           maxLength: 255
         bot_token:
           type: string
+          writeOnly: true
           minLength: 1
           description: Telegram bot token
           maxLength: 255

@@ -12,6 +12,7 @@ import {
     FlowsInstancesListDesignationEnum,
     SourcesApi,
     TelegramSource,
+    TelegramSourceRequest,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
@@ -32,13 +33,13 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
     async send(data: TelegramSource): Promise<TelegramSource> {
         let source: TelegramSource;
         if (this.instance?.pk) {
-            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramUpdate({
+            source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramPartialUpdate({
                 slug: this.instance.slug,
-                telegramSourceRequest: data,
+                patchedTelegramSourceRequest: data,
             });
         } else {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesTelegramCreate({
-                telegramSourceRequest: data,
+                telegramSourceRequest: data as unknown as TelegramSourceRequest,
             });
         }
         return source;
@@ -129,14 +130,13 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Bot token")} required name="botToken">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.botToken)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-secret-text-input
+                label=${msg("Bot token")}
+                name="botToken"
+                input-hint="code"
+                ?required=${this.instance === undefined}
+                ?revealed=${this.instance === undefined}
+            ></ak-secret-text-input>
             <ak-form-element-horizontal required name="requestAccess">
                 <label class="pf-c-switch">
                     <input
