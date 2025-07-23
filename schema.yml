@@ -44552,9 +44552,10 @@ components:
           maximum: 2147483647
           minimum: 0
         recovery_cache_timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
+          type: string
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
       - meta_model_name
@@ -44620,9 +44621,11 @@ components:
           maximum: 2147483647
           minimum: 0
         recovery_cache_timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
     Endpoint:
@@ -53064,9 +53067,11 @@ components:
           maximum: 2147483647
           minimum: 0
         recovery_cache_timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
     PatchedEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices

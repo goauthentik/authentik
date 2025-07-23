@@ -14270,10 +14270,10 @@
                     "title": "Recovery max attempts"
                 },
                 "recovery_cache_timeout": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Recovery cache timeout"
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Recovery cache timeout",
+                    "description": "The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
             "required": []
