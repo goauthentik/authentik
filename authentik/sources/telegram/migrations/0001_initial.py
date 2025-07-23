@@ -115,4 +115,46 @@ class Migration(migrations.Migration):
             },
             bases=("authentik_core.source",),
         ),
+        migrations.CreateModel(
+            name="TelegramSourcePropertyMapping",
+            fields=[
+                (
+                    "propertymapping_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="authentik_core.propertymapping",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "Telegram Source Property Mapping",
+                "verbose_name_plural": "Telegram Source Property Mappings",
+            },
+            bases=("authentik_core.propertymapping",),
+        ),
+        migrations.CreateModel(
+            name="UserTelegramSourceConnection",
+            fields=[
+                (
+                    "usersourceconnection_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="authentik_core.usersourceconnection",
+                    ),
+                ),
+            ],
+            options={
+                "verbose_name": "User Telegram Source Connection",
+                "verbose_name_plural": "User Telegram Source Connections",
+            },
+            bases=("authentik_core.usersourceconnection",),
+        ),
     ]
