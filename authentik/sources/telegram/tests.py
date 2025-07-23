@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from django.test import TestCase
 from rest_framework.exceptions import ValidationError
 
-from authentik.sources.telegram.models import TelegramChallengeResponse
+from authentik.sources.telegram.stage import TelegramChallengeResponse
 
 
 class TestTelegramSource(TestCase):

@@ -7,8 +7,8 @@ from authentik.flows.models import in_memory_stage, Flow
 from authentik.flows.planner import FlowPlan, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.sources.telegram.models import TelegramLoginChallenge, TelegramSource, TelegramChallengeResponse, \
-    UserTelegramSourceConnection, GroupTelegramSourceConnection
+from authentik.sources.telegram.models import TelegramSource, UserTelegramSourceConnection, GroupTelegramSourceConnection
+from authentik.sources.telegram.stage import TelegramLoginChallenge, TelegramChallengeResponse
 
 
 class TelegramStartView(View):
