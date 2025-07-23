@@ -222,8 +222,8 @@ def create_logout_token(
     """
     import uuid
     from time import time
-    from authentik.providers.oauth2.id_token import hash_session_key
 
+    from authentik.providers.oauth2.id_token import hash_session_key
 
     # Create the logout token payload
     payload = {
