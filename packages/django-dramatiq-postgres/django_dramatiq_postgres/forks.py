@@ -12,6 +12,7 @@ def worker_metrics():
     from django_dramatiq_postgres.middleware import MetricsMiddleware
 
     MetricsMiddleware.run(
-        os.getenv("dramatiq_prom_host", "0.0.0.0"), int(os.getenv("dramatiq_prom_port", "9191"))
+        os.getenv("dramatiq_prom_host", "0.0.0.0"),  # nosec
+        int(os.getenv("dramatiq_prom_port", "9191")),
     )
     pause()

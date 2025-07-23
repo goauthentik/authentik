@@ -26,8 +26,8 @@ class HTTPServer(BaseHTTPServer):
         self.socket.close()
 
         host, port = self.server_address[:2]
-        if host == "0.0.0.0":
-            host = "::"
+        if host == "0.0.0.0":  # nosec
+            host = "::"  # nosec
 
         # Strip IPv6 brackets
         if host.startswith("[") and host.endswith("]"):
