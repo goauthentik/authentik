@@ -14,7 +14,7 @@ from rest_framework import serializers
 from rest_framework.fields import CharField, BooleanField
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Source, PropertyMapping
+from authentik.core.models import Source, PropertyMapping, UserSourceConnection, GroupSourceConnection
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import Challenge, ChallengeResponse, RedirectChallenge
 from authentik.stages.identification.stage import LoginChallengeMixin
@@ -130,3 +130,31 @@ class TelegramSource(Source):
     class Meta:
         verbose_name = _("Telegram Source")
         verbose_name_plural = _("Telegram Sources")
+
+
+class UserTelegramSourceConnection(UserSourceConnection):
+    """Connect user and Telegram source"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.source_connection import UserTelegramSourceConnectionSerializer
+
+        return UserTelegramSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User Telegram Source Connection")
+        verbose_name_plural = _("User Telegram Source Connections")
+
+
+class GroupTelegramSourceConnection(GroupSourceConnection):
+    """Group-source connection for Telegram"""
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.source_connection import GroupTelegramSourceConnectionSerializer
+
+        return GroupTelegramSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group Telegram Source Connection")
+        verbose_name_plural = _("Group Telegram Source Connections")
