@@ -246,16 +246,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 group=group,
             )
         # Get current group status
-        try:
-            group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
-        except Exception as exc:
-            self.logger.warning(
-                "Failed to retrieve group data from SCIM provider",
-                group=group,
-                scim_id=scim_group.scim_id,
-                exc=exc,
-            )
-            return
+        group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
 
         try:
             current_group = SCIMGroupSchema.model_validate(group_data)
