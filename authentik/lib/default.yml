@@ -8,9 +8,9 @@
 # make gen-dev-config
 # ```
 #
-# You may edit the generated file to override the configuration below.  
+# You may edit the generated file to override the configuration below.
 #
-# When making modifying the default configuration file, 
+# When making modifying the default configuration file,
 # ensure that the corresponding documentation is updated to match.
 #
 # @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.

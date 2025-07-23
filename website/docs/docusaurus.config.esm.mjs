@@ -1,7 +1,7 @@
 /**
  * @file Docusaurus Documentation config.
  *
- * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
+ * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { ReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  */
 
@@ -97,12 +97,15 @@ export default createDocusaurusConfig(
 
         themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
 
-        themeConfig: /** @type {UserThemeConfig} */ ({
+        themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
             algolia: createAlgoliaConfig({
                 externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
             }),
 
             image: "img/social.png",
+            navbarReplacements: {
+                DOCS_URL: "/docs",
+            },
             navbar: {
                 logo: {
                     alt: "authentik logo",
@@ -110,49 +113,6 @@ export default createDocusaurusConfig(
                     href: "https://goauthentik.io/",
                     target: "_self",
                 },
-                items: [
-                    {
-                        to: "https://goauthentik.io/features",
-                        label: "Features",
-                        position: "left",
-                        target: "_self",
-                    },
-                    {
-                        to: "https://integrations.goauthentik.io",
-                        label: "Integrations",
-                        position: "left",
-                        target: "_self",
-                    },
-                    {
-                        to: "docs/",
-                        label: "Documentation",
-                        position: "left",
-                    },
-                    {
-                        to: "https://goauthentik.io/pricing/",
-                        label: "Pricing",
-                        position: "left",
-                        target: "_self",
-                    },
-                    {
-                        to: "https://goauthentik.io/blog",
-                        label: "Blog",
-                        position: "left",
-                        target: "_self",
-                    },
-                    {
-                        "href": "https://github.com/goauthentik/authentik",
-                        "data-icon": "github",
-                        "aria-label": "GitHub",
-                        "position": "right",
-                    },
-                    {
-                        "href": "https://goauthentik.io/discord",
-                        "data-icon": "discord",
-                        "aria-label": "Discord",
-                        "position": "right",
-                    },
-                ],
             },
         }),
 

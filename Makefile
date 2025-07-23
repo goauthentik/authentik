@@ -121,7 +121,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
+gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/${GEN_API_TS}/
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
@@ -250,6 +250,16 @@ integrations-build:
 
 integrations-watch:  ## Build and watch the Integrations documentation
 	npm run start --prefix website -w integrations
+
+docs-api-build:
+	npm run build --prefix website -w api
+
+docs-api-watch:  ## Build and watch the API documentation
+	npm run build:api --prefix website -w api
+	npm run start --prefix website -w api
+
+docs-api-clean: ## Clean generated API documentation
+	npm run build:api:clean --prefix website -w api
 
 #########################
 ## Docker

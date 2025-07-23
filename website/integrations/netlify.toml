@@ -11,12 +11,11 @@
   base    = "website"
   package = "integrations"
   command = "npm run build -w integrations"
-  publish = "integrations/build"
+  publish = "website/integrations/build"
 
 [dev]
   command    = "npm start"
   targetPort = 3000
-  publish    = "integrations/build"
 
 [context.production.environment]
   NODE_ENV = "production"
