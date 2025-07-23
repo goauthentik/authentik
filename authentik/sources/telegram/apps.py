@@ -1,7 +1,7 @@
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class TelegramConfig(AppConfig):
+class TelegramConfig(ManagedAppConfig):
     name = "authentik.sources.telegram"
     label = "authentik_sources_telegram"
     verbose_name = "authentik Sources.Telegram"
