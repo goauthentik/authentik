@@ -637,7 +637,7 @@ const items = [
         items: [
             {
                 type: "link",
-                href: "pathname:///api",
+                href: "https://api.goauthentik.io",
                 label: "API Overview",
                 className: "api-overview",
             },
