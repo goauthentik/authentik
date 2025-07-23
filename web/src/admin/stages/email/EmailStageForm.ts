@@ -250,11 +250,17 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         name="recoveryCacheTimeout"
                     >
                         <input
-                            type="number"
-                            value="${this.instance?.recoveryCacheTimeout ?? 300}"
+                            type="text"
+                            value="${ifDefined(this.instance?.recoveryCacheTimeout || "minutes=5")}"
                             class="pf-c-form-control"
                             required
                         />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "The time window used to count recent account recovery attempts.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
