@@ -2,8 +2,9 @@
 
 from enum import Enum
 
-from pydantic import AnyUrl, BaseModel, ConfigDict, Field, field_validator
+from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.group import GroupMember as BaseGroupMember
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -103,6 +104,12 @@ class User(BaseUser):
     )
 
 
+class GroupMember(BaseGroupMember):
+    """Group member which allows for numerical IDs and coerces them to string"""
+
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
+
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
@@ -113,21 +120,7 @@ class Group(BaseGroup):
     externalId: str | None = None
     meta: dict | None = None
 
-    @field_validator("members", mode="before")
-    @classmethod
-    def convert_member_values_to_string(cls, v):
-        """Convert integer member values to strings for SCIM 2.0 compatibility"""
-        if v is None:
-            return v
-        if isinstance(v, list):
-            for member in v:
-                if (
-                    isinstance(member, dict)
-                    and "value" in member
-                    and isinstance(member["value"], int)
-                ):
-                    member["value"] = str(member["value"])
-        return v
+    members: list[GroupMember] | None = Field(None, description="A list of members of the Group.")
 
 
 class Bulk(BaseBulk):
