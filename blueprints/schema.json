@@ -3024,6 +3024,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_sources_telegram.grouptelegramsourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_sources_telegram.telegramsource"
                         },
                         "id": {
@@ -3093,6 +3133,46 @@
                         },
                         "identifiers": {
                             "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_telegram.usertelegramsourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
                         }
                     }
                 },
@@ -5351,14 +5431,22 @@
                             "authentik_sources_scim.view_scimsourcegroup",
                             "authentik_sources_scim.view_scimsourcepropertymapping",
                             "authentik_sources_scim.view_scimsourceuser",
+                            "authentik_sources_telegram.add_grouptelegramsourceconnection",
                             "authentik_sources_telegram.add_telegramsource",
                             "authentik_sources_telegram.add_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.add_usertelegramsourceconnection",
+                            "authentik_sources_telegram.change_grouptelegramsourceconnection",
                             "authentik_sources_telegram.change_telegramsource",
                             "authentik_sources_telegram.change_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.change_usertelegramsourceconnection",
+                            "authentik_sources_telegram.delete_grouptelegramsourceconnection",
                             "authentik_sources_telegram.delete_telegramsource",
                             "authentik_sources_telegram.delete_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.delete_usertelegramsourceconnection",
+                            "authentik_sources_telegram.view_grouptelegramsourceconnection",
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.view_usertelegramsourceconnection",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -7537,6 +7625,8 @@
                         "authentik_sources_scim.scimsourcepropertymapping",
                         "authentik_sources_telegram.telegramsourcepropertymapping",
                         "authentik_sources_telegram.telegramsource",
+                        "authentik_sources_telegram.usertelegramsourceconnection",
+                        "authentik_sources_telegram.grouptelegramsourceconnection",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
                         "authentik_stages_authenticator_email.authenticatoremailstage",
@@ -10061,14 +10151,22 @@
                             "authentik_sources_scim.view_scimsourcegroup",
                             "authentik_sources_scim.view_scimsourcepropertymapping",
                             "authentik_sources_scim.view_scimsourceuser",
+                            "authentik_sources_telegram.add_grouptelegramsourceconnection",
                             "authentik_sources_telegram.add_telegramsource",
                             "authentik_sources_telegram.add_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.add_usertelegramsourceconnection",
+                            "authentik_sources_telegram.change_grouptelegramsourceconnection",
                             "authentik_sources_telegram.change_telegramsource",
                             "authentik_sources_telegram.change_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.change_usertelegramsourceconnection",
+                            "authentik_sources_telegram.delete_grouptelegramsourceconnection",
                             "authentik_sources_telegram.delete_telegramsource",
                             "authentik_sources_telegram.delete_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.delete_usertelegramsourceconnection",
+                            "authentik_sources_telegram.view_grouptelegramsourceconnection",
                             "authentik_sources_telegram.view_telegramsource",
                             "authentik_sources_telegram.view_telegramsourcepropertymapping",
+                            "authentik_sources_telegram.view_usertelegramsourceconnection",
                             "authentik_stages_authenticator_duo.add_authenticatorduostage",
                             "authentik_stages_authenticator_duo.add_duodevice",
                             "authentik_stages_authenticator_duo.change_authenticatorduostage",
@@ -12153,6 +12251,57 @@
                 }
             }
         },
+        "model_authentik_sources_telegram.grouptelegramsourceconnection": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.grouptelegramsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_grouptelegramsourceconnection",
+                            "change_grouptelegramsourceconnection",
+                            "delete_grouptelegramsourceconnection",
+                            "view_grouptelegramsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_sources_telegram.telegramsource": {
             "type": "object",
             "properties": {
@@ -12320,6 +12469,56 @@
                             "change_telegramsourcepropertymapping",
                             "delete_telegramsourcepropertymapping",
                             "view_telegramsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_telegram.usertelegramsourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_telegram.usertelegramsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_usertelegramsourceconnection",
+                            "change_usertelegramsourceconnection",
+                            "delete_usertelegramsourceconnection",
+                            "view_usertelegramsourceconnection"
                         ]
                     },
                     "user": {
