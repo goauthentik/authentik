@@ -1,6 +1,9 @@
 import contextvars
 import os
-from signal import pause
+import socket
+from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer as BaseHTTPServer
+from ipaddress import IPv6Address, ip_address
 from typing import Any
 
 from django.db import (
@@ -16,6 +19,34 @@ from dramatiq.middleware.middleware import Middleware
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
+
+
+class HTTPServer(BaseHTTPServer):
+    def server_bind(self):
+        self.socket.close()
+
+        host, port = self.server_address[:2]
+        if host == "0.0.0.0":
+            host = "::"
+
+        # Strip IPv6 brackets
+        if host.startswith("[") and host.endswith("]"):
+            host = host[1:-1]
+
+        self.server_address = (host, port)
+
+        self.address_family = (
+            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+        )
+
+        self.socket = socket.create_server(
+            self.server_address,
+            family=self.address_family,
+            dualstack_ipv6=self.address_family == socket.AF_INET6,
+        )
+
+        self.server_name = socket.getfqdn(host)
+        self.server_port = port
 
 
 class DbConnectionMiddleware(Middleware):
@@ -122,6 +153,12 @@ class MetricsMiddleware(Middleware):
 
         os.makedirs(multiproc_dir, exist_ok=True)
         os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", multiproc_dir)
+
+    @property
+    def forks(self):
+        from django_dramatiq_postgres.forks import worker_metrics
+
+        return [worker_metrics]
 
     def before_worker_boot(self, broker: Broker, worker):
         if Conf().test:
@@ -241,16 +278,32 @@ class MetricsMiddleware(Middleware):
 
     @staticmethod
     def run(addr: str, port: int):
-        from prometheus_client import CollectorRegistry, multiprocess, start_http_server
-
         try:
-            port = int(port)
-
-            registry = CollectorRegistry()
-            multiprocess.MultiProcessCollector(registry)
-            start_http_server(port, addr, registry)
+            server = HTTPServer((addr, port), _MetricsHandler)
+            server.serve_forever()
         except OSError:
             get_logger(__name__, type(MetricsMiddleware)).warning(
                 "Port is already in use, not starting metrics server"
             )
-        pause()
+
+
+class _MetricsHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        from prometheus_client import (
+            CONTENT_TYPE_LATEST,
+            CollectorRegistry,
+            generate_latest,
+            multiprocess,
+        )
+
+        registry = CollectorRegistry()
+        multiprocess.MultiProcessCollector(registry)
+        output = generate_latest(registry)
+        self.send_response(200)
+        self.send_header("Content-Type", CONTENT_TYPE_LATEST)
+        self.end_headers()
+        self.wfile.write(output)
+
+    def log_message(self, format, *args):
+        logger = get_logger(__name__, type(self))
+        logger.debug(format, *args)

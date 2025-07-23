@@ -181,8 +181,6 @@ class WorkerHealthcheckMiddleware(Middleware):
 
     @staticmethod
     def run(addr: str, port: int):
-        if addr == "0.0.0.0":
-            addr = "::"
         try:
             httpd = HTTPServer((addr, port), _healthcheck_handler)
             httpd.serve_forever()

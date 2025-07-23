@@ -15,10 +15,11 @@ def worker_healthcheck():
 
     try:
         port = int(port)
-        WorkerHealthcheckMiddleware.run(host, port)
     except ValueError:
         LOGGER.error(f"Invalid port entered: {port}")
-        pause()
+
+    WorkerHealthcheckMiddleware.run(host, port)
+    pause()
 
 
 def worker_status():
@@ -36,7 +37,8 @@ def worker_metrics():
 
     try:
         port = int(port)
-        MetricsMiddleware.run(addr, port)
     except ValueError:
         LOGGER.error(f"Invalid port entered: {port}")
-        pause()
+
+    MetricsMiddleware.run(addr, port)
+    pause()
