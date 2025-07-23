@@ -1,13 +1,12 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "../../../stories/flow-interface.js";
+import "./CaptchaStage.js";
 
 import { CaptchaChallenge, UiThemeEnum } from "@goauthentik/api";
 
-import "../../../stories/flow-interface";
-import "./CaptchaStage";
+import type { StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 export default {
     title: "Flow / Stages / <ak-stage-captcha>",
@@ -41,6 +40,11 @@ export const ChallengeHCaptcha = captchaFactory({
     jsUrl: "https://js.hcaptcha.com/1/api.js",
     siteKey: "10000000-ffff-ffff-ffff-000000000001",
     interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
 });
 
 // https://developers.cloudflare.com/turnstile/troubleshooting/testing/
@@ -50,6 +54,11 @@ export const ChallengeTurnstileVisible = captchaFactory({
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "1x00000000000000000000AA",
     interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
 });
 export const ChallengeTurnstileInvisible = captchaFactory({
     pendingUser: "foo",
@@ -57,6 +66,11 @@ export const ChallengeTurnstileInvisible = captchaFactory({
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "1x00000000000000000000BB",
     interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
 });
 export const ChallengeTurnstileForce = captchaFactory({
     pendingUser: "foo",
@@ -64,4 +78,22 @@ export const ChallengeTurnstileForce = captchaFactory({
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "3x00000000000000000000FF",
     interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
+});
+
+export const ChallengeRecaptcha = captchaFactory({
+    pendingUser: "foo",
+    pendingUserAvatar: "https://picsum.photos/64",
+    jsUrl: "https://www.google.com/recaptcha/api.js",
+    siteKey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+    interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
 });

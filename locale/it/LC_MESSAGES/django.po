@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-25 00:10+0000\n"
+"POT-Creation-Date: 2025-07-05 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: albanobattistella <albanobattistella@gmail.com>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
@@ -372,6 +372,10 @@ msgstr "Tokens"
 #: authentik/core/models.py
 msgid "View token's key"
 msgstr "Visualizza la chiave token"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "Imposta la chiave di un token"
 
 #: authentik/core/models.py
 msgid "Property Mapping"
@@ -3867,6 +3871,16 @@ msgstr ""
 "Offset la sessione verrà estesa quando l'utente seleziona l'opzione "
 "ricordami. Il valore predefinito di 0 significa che l'opzione ricordami non "
 "verrà mostrata. (Formato: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Se impostato su un valore diverso da zero, authentik salverà un cookie con "
+"una scadenza più lunga, per ricordare il dispositivo da cui l'utente sta "
+"effettuando l'accesso. (Formato: ore=-1; minuti=-2; secondi=-3)"
 
 #: authentik/stages/user_login/models.py
 msgid "User Login Stage"

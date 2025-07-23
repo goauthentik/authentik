@@ -1,12 +1,12 @@
-import { ifNotEmpty } from "@goauthentik/elements/utils/ifNotEmpty.js";
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {

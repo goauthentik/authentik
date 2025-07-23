@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.6.3
+  version: 2025.6.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -55232,6 +55232,9 @@ components:
         id:
           type: string
           minLength: 1
+        external_id:
+          type: string
+          minLength: 1
         group:
           type: string
           format: uuid
@@ -55294,6 +55297,9 @@ components:
       description: SCIMSourceUser Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         user:
@@ -56713,6 +56719,7 @@ components:
       enum:
       - apple
       - openidconnect
+      - entraid
       - azuread
       - discord
       - facebook
@@ -58946,6 +58953,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         group:
           type: string
           format: uuid
@@ -58960,15 +58969,18 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
       - group_obj
-      - id
       - source
     SCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         group:
@@ -58981,8 +58993,8 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - external_id
       - group
-      - id
       - source
     SCIMSourcePropertyMapping:
       type: object
@@ -59089,6 +59101,8 @@ components:
       properties:
         id:
           type: string
+        external_id:
+          type: string
         user:
           type: integer
         user_obj:
@@ -59102,7 +59116,7 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
       - user_obj
@@ -59111,6 +59125,9 @@ components:
       description: SCIMSourceUser Serializer
       properties:
         id:
+          type: string
+          minLength: 1
+        external_id:
           type: string
           minLength: 1
         user:
@@ -59122,7 +59139,7 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - id
+      - external_id
       - source
       - user
     SMSDevice:

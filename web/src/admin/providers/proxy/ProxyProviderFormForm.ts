@@ -1,24 +1,22 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-toggle-group";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+} from "#admin/providers/oauth2/OAuth2ProviderForm";
 import {
     oauth2SourcesProvider,
     oauth2SourcesSelector,
-} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-import { match } from "ts-pattern";
-
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/oauth2/OAuth2Sources";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -27,7 +25,11 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export type ProxyModeValue = { value: ProxyMode };
 export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
@@ -228,9 +230,8 @@ export function renderForm(
             input-hint="code"
         ></ak-text-input>
 
-        <ak-form-group>
-            <span slot="header">${msg("Advanced protocol settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         .certificate=${provider?.certificate}
@@ -273,9 +274,8 @@ ${provider?.skipPathRegex}</textarea
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header">${msg("Authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Authentication settings")}">
+            <div class="pf-c-form">
                 <ak-switch-input
                     name="interceptHeaderAuth"
                     label=${msg("Intercept header authentication")}
@@ -333,9 +333,8 @@ ${provider?.skipPathRegex}</textarea
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     name="authenticationFlow"

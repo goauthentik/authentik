@@ -193,13 +193,21 @@ To set a password for the default admin user (**akadmin**):
 2. Follow the setup wizard to create your admin account.
 
 :::info
-If you encounter issues during setup, you can reset to a fresh state with:
+To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
 
-```shell
-make dev-reset
-```
+In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
+:::
 
-This drops and recreates the authentik PostgreSQL instance.
+## End-to-End (E2E) Setup
+
+To run E2E tests, navigate to the `/tests/e2e` directory in your local copy of the authentik git repo, and start the services by running `docker compose up -d`.
+
+You can then view the Selenium Chrome browser via http://localhost:7900/ using the password: `secret`.
+
+Alternatively, you can connect directly via VNC on port `5900` using the password: `secret`.
+
+:::note
+When using Docker Desktop, host networking needs to be enabled via **Docker Settings** > **Resources** > **Network** > **Enable host networking**.
 :::
 
 ## 6. Contributing code

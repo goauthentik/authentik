@@ -3,8 +3,8 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
+
 import postcssLit from "rollup-plugin-postcss-lit";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
@@ -28,11 +28,6 @@ const inlineCSSPlugin = {
 };
 
 /**
- * @satisfies {InlineConfig}
- */
-// const viteFinal = ;
-
-/**
  * @satisfies {StorybookConfig}
  */
 const config = {
@@ -42,18 +37,11 @@ const config = {
         { from: "../authentik", to: "/static/authentik" },
     ],
     addons: [
-        "@storybook/addon-controls",
+        // ---
         "@storybook/addon-links",
-        "@storybook/addon-essentials",
-        "storybook-addon-mock",
+        "@storybook/addon-docs",
     ],
-    framework: {
-        name: "@storybook/web-components-vite",
-        options: {},
-    },
-    docs: {
-        autodocs: "tag",
-    },
+    framework: "@storybook/web-components-vite",
     async viteFinal(config) {
         const [{ mergeConfig }, { createBundleDefinitions }] = await Promise.all([
             import("vite"),
@@ -65,10 +53,11 @@ const config = {
          */
         const overrides = {
             define: createBundleDefinitions(),
-            plugins: [inlineCSSPlugin, postcssLit(), tsconfigPaths()],
+            plugins: [inlineCSSPlugin, postcssLit()],
         };
 
         return mergeConfig(config, overrides);
     },
 };
+
 export default config;

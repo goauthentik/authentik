@@ -1,11 +1,8 @@
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/components/ak-flow-card.js";
-import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "#elements/forms/FormElement";
+import "#flow/components/ak-flow-card";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
+import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 
 import {
     AuthenticatorValidationChallenge,
@@ -13,13 +10,18 @@ import {
     DeviceClassesEnum,
 } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .icon-description {
                 display: flex;
             }
@@ -28,8 +30,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 padding: 0.25em;
                 padding-right: 0.5em;
             }
-        `);
-    }
+        `,
+    ];
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
@@ -66,12 +68,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     }
 
     render(): TemplateResult {
-        return html`<form
-            class="pf-c-form"
-            @submit=${(e: Event) => {
-                this.submitForm(e);
-            }}
-        >
+        return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">
                 <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>

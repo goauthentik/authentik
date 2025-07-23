@@ -1,20 +1,20 @@
 import { globalAK } from "#common/global";
-import { StyleRoot, createCSSResult, createStyleSheetUnsafe } from "#common/stylesheets";
+import { createCSSResult, createStyleSheetUnsafe, StyleRoot } from "#common/stylesheets";
 import {
     $AKBase,
-    CSSColorSchemeValue,
-    ResolvedUITheme,
     applyUITheme,
     createUIThemeEffect,
+    CSSColorSchemeValue,
     formatColorScheme,
+    ResolvedUITheme,
     resolveUITheme,
 } from "#common/theme";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 export interface AKElementProps {
     activeTheme: ResolvedUITheme;

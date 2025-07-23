@@ -124,12 +124,13 @@ const useLegacyCleanup = process.env.AK_FIX_LEGACY_IMPORTS === "true";
  * @param {ParserOptions} options
  */
 const preprocess = (input, { filepath, printWidth }) => {
+    if (input?.includes("ts-import-sorter: disable")) {
+        return input;
+    }
+
     let output = input;
 
-    console.log("Looking for JSDoc...");
     if (output.startsWith("/**\n")) {
-        console.log("JSDoc detected. Adding double newline if not present");
-
         output = output.replace(/(^\s\*\/\n)(import)/m, "$1\n$2");
     }
 
@@ -144,6 +145,7 @@ const preprocess = (input, { filepath, printWidth }) => {
         wrappingStyle: "prettier",
         groupRules: [
             "^node:",
+            "^[./]",
             ...webSubmodules.map((submodule) => `^(@goauthentik/|#)${submodule}.+`),
 
             "^#.+",
@@ -154,7 +156,6 @@ const preprocess = (input, { filepath, printWidth }) => {
             "^(@?)lit(.*)$",
             "\\.css$",
             "^@goauthentik/api$",
-            "^[./]",
         ],
     });
 

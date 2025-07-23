@@ -1,13 +1,12 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "../../../stories/flow-interface.js";
+import "./IdentificationStage.js";
 
 import { FlowDesignationEnum, IdentificationChallenge, UiThemeEnum } from "@goauthentik/api";
 
-import "../../../stories/flow-interface";
-import "./IdentificationStage";
+import type { StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 export default {
     title: "Flow / Stages / <ak-stage-identification>",
@@ -111,6 +110,8 @@ export const ChallengeEverything = identificationFactory({
     flowDesignation: FlowDesignationEnum.Authentication,
     primaryAction: "Login",
     showSourceLabels: false,
+    allowShowPassword: true,
+    passwordlessUrl: "qwer",
     flowInfo: {
         layout: "stacked",
         cancelUrl: "",

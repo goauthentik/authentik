@@ -1,8 +1,6 @@
-import type { StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
-
 import "@patternfly/patternfly/components/Login/login.css";
+import "../../../stories/flow-interface.js";
+import "./PromptStage.js";
 
 import {
     ContextualFlowInfoLayoutEnum,
@@ -11,8 +9,9 @@ import {
     UiThemeEnum,
 } from "@goauthentik/api";
 
-import "../../../stories/flow-interface";
-import "./PromptStage";
+import type { StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 export default {
     title: "Flow / Stages / <ak-stage-prompt>",

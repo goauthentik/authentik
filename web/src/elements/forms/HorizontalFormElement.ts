@@ -1,11 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { AKElement } from "#elements/Base";
+import { AKFormGroup } from "#elements/forms/FormGroup";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -49,33 +48,47 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFFormControl,
-            css`
-                .pf-c-form__group {
-                    display: grid;
-                    grid-template-columns:
-                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
-                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-                }
-                .pf-c-form__group-label {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFFormControl,
+        css`
+            .pf-c-form__group {
+                display: grid;
+                grid-template-columns:
+                    var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                    var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
 
-    @property()
-    label = "";
+                &[data-flow-direction="row"] {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .pf-c-form__group-label {
+                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+            }
+
+            .pf-c-form__label[aria-required] .pf-c-form__label-text::after {
+                content: "*";
+                user-select: none;
+                margin-left: var(--pf-c-form__label-required--MarginLeft);
+                font-size: var(--pf-c-form__label-required--FontSize);
+                color: var(--pf-c-form__label-required--Color);
+            }
+        `,
+    ];
+
+    @property({ type: String, reflect: false })
+    public fieldID?: string;
+
+    @property({ type: String })
+    public label = "";
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ attribute: false })
-    errorMessages: string[] | string[][] = [];
+    public errorMessages: string[] | string[][] = [];
 
     _invalid = false;
 
@@ -87,16 +100,23 @@ export class HorizontalFormElement extends AKElement {
         this._invalid = v;
         // check if we're in a form group, and expand that form group
         const parent = this.parentElement?.parentElement;
-        if (parent && "expanded" in parent) {
-            (parent as FormGroup).expanded = true;
+
+        if (parent instanceof AKFormGroup || parent instanceof HTMLDetailsElement) {
+            parent.open = true;
         }
     }
     get invalid(): boolean {
         return this._invalid;
     }
 
-    @property()
-    name = "";
+    @property({ type: String })
+    public name = "";
+
+    @property({
+        type: String,
+        attribute: "flow-direction",
+    })
+    public flowDirection: "row" | "column" = "column";
 
     firstUpdated(): void {
         this.updated();
@@ -122,13 +142,20 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group">
+        return html`<div
+            class="pf-c-form__group"
+            role="group"
+            aria-label="${this.label}"
+            data-flow-direction="${this.flowDirection}"
+        >
             <div class="pf-c-form__group-label">
-                <label class="pf-c-form__label">
+                <label
+                    id="group-label"
+                    class="pf-c-form__label"
+                    ?aria-required=${this.required}
+                    for="${ifDefined(this.fieldID)}"
+                >
                     <span class="pf-c-form__label-text">${this.label}</span>
-                    ${this.required
-                        ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
-                        : html``}
                 </label>
             </div>
             <div class="pf-c-form__group-control">

@@ -191,9 +191,10 @@ class ListPolicyEngine(PolicyEngine):
         self.use_cache = False
 
     def bindings(self):
-        for policy in self.__list:
+        for idx, policy in enumerate(self.__list):
             yield PolicyBinding(
                 policy=policy,
+                order=idx,
             )
 
 

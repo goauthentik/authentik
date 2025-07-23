@@ -1,12 +1,10 @@
-import { actionToColor } from "#elements/charts/EventChart";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
-import "@goauthentik/elements/forms/ConfirmationForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { ChartData, ChartOptions } from "chart.js";
+import "#elements/forms/ConfirmationForm";
 
-import { msg } from "@lit/localize";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
+import { actionToColor } from "#elements/charts/EventChart";
+import { PaginatedResponse } from "#elements/table/Table";
 
 import {
     EventActions,
@@ -15,6 +13,11 @@ import {
     SyncStatus,
     SystemTaskStatusEnum,
 } from "@goauthentik/api";
+
+import { ChartData, ChartOptions } from "chart.js";
+
+import { msg } from "@lit/localize";
+import { customElement } from "lit/decorators.js";
 
 export interface SummarizedSyncStatus {
     healthy: number;

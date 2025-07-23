@@ -1,10 +1,11 @@
+import "../LoadingOverlay.js";
+
+import { akLoadingOverlay, type ILoadingOverlay } from "../LoadingOverlay.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../LoadingOverlay.js";
-import { type ILoadingOverlay, LoadingOverlay, akLoadingOverlay } from "../LoadingOverlay.js";
 
 type StoryArgs = ILoadingOverlay & {
     headingText?: string;
@@ -19,7 +20,7 @@ const metadata: Meta<StoryArgs> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Loading Overlay Component
                 
 A full-screen overlay component that displays a loading state with optional heading and body content.

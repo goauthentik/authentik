@@ -1,24 +1,24 @@
+import "#elements/EmptyState";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/table/TablePagination";
+import "#elements/table/TableSearch";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { uiConfig } from "#common/ui/config";
+import { groupBy } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/table/TablePagination";
-import "@goauthentik/elements/table/TableSearch";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { Pagination } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -31,8 +31,6 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 export interface TableLike {
     order?: string;
@@ -178,44 +176,42 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     @state()
     error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFTable,
-            PFBullseye,
-            PFButton,
-            PFSwitch,
-            PFToolbar,
-            PFDropdown,
-            PFPagination,
-            css`
-                .pf-c-toolbar__group.pf-m-search-filter.ql {
-                    flex-grow: 1;
-                }
-                ak-table-search.ql {
-                    width: 100% !important;
-                }
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFTable,
+        PFBullseye,
+        PFButton,
+        PFSwitch,
+        PFToolbar,
+        PFDropdown,
+        PFPagination,
+        css`
+            .pf-c-toolbar__group.pf-m-search-filter.ql {
+                flex-grow: 1;
+            }
+            ak-table-search.ql {
+                width: 100% !important;
+            }
+            .pf-c-table thead .pf-c-table__check {
+                min-width: 3rem;
+            }
+            .pf-c-table tbody .pf-c-table__check input {
+                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+            }
+            .pf-c-toolbar__content {
+                row-gap: var(--pf-global--spacer--sm);
+            }
+            .pf-c-toolbar__item .pf-c-input-group {
+                padding: 0 var(--pf-global--spacer--sm);
+            }
 
-                .pf-c-table {
-                    --pf-c-table--m-striped__tr--BackgroundColor: var(
-                        --pf-global--BackgroundColor--dark-300
-                    );
-                }
-            `,
-        ];
-    }
+            .pf-c-table {
+                --pf-c-table--m-striped__tr--BackgroundColor: var(
+                    --pf-global--BackgroundColor--dark-300
+                );
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -308,7 +304,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </tr>`;
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
@@ -470,11 +466,11 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             >`;
     }
 
-    renderToolbarSelected(): SlottedTemplateResult {
+    protected renderToolbarSelected(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderToolbarAfter(): SlottedTemplateResult {
+    protected renderToolbarAfter(): SlottedTemplateResult {
         return nothing;
     }
 
@@ -497,8 +493,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             this.page = 1;
             this.fetch();
         };
-        const isQL =
-            this.supportsQL && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const isQL = this.supportsQL && this.hasEnterpriseLicense;
         return !this.searchEnabled()
             ? html``
             : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
@@ -513,7 +508,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
               </div>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected renderToolbarContainer(): SlottedTemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
                 ${this.renderSearch()}
@@ -567,7 +562,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return this.checkbox && this.checkboxChip;
     }
 
-    renderChipGroup(): TemplateResult {
+    protected renderChipGroup(): TemplateResult {
         return html`<ak-chip-group>
             ${this.selectedElements.map((el) => {
                 return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
@@ -576,7 +571,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     /* A simple pagination display, shown at both the top and bottom of the page. */
-    renderTablePagination(): TemplateResult {
+    protected renderTablePagination(): SlottedTemplateResult {
         const handler = (page: number) => {
             this.page = page;
             this.fetch();
@@ -592,7 +587,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         `;
     }
 
-    renderTable(): TemplateResult {
+    protected renderTable(): TemplateResult {
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 

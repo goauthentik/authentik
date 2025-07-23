@@ -1,16 +1,27 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/components/ak-flow-card";
-import "@goauthentik/flow/components/ak-flow-password-input.js";
-import { BaseStage } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/captcha/CaptchaStage";
-import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
+import "#elements/Divider";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
+import "#flow/components/ak-flow-card";
+import "#flow/components/ak-flow-password-input";
+import "#flow/stages/captcha/CaptchaStage";
+
+import { renderSourceIcon } from "#admin/sources/utils";
+
+import { BaseStage } from "#flow/stages/base";
+import { AkRememberMeController } from "#flow/stages/identification/RememberMeController";
+
+import {
+    FlowDesignationEnum,
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest,
+    LoginSource,
+    UserFieldsEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -21,21 +32,10 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    FlowDesignationEnum,
-    IdentificationChallenge,
-    IdentificationChallengeResponseRequest,
-    LoginSource,
-    UserFieldsEnum,
-} from "@goauthentik/api";
-
 export const PasswordManagerPrefill: {
-    password: string | undefined;
-    totp: string | undefined;
-} = {
-    password: undefined,
-    totp: undefined,
-};
+    password?: string;
+    totp?: string;
+} = {};
 
 export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
     style: "short",
@@ -47,75 +47,111 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    form?: HTMLFormElement;
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        PFInputGroup,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        ...AkRememberMeController.styles,
+        css`
+            /* login page's icons */
+            .pf-c-login__main-footer-links-item button {
+                background-color: transparent;
+                border: 0;
+                display: flex;
+                align-items: stretch;
+            }
+            .pf-c-login__main-footer-links-item img {
+                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                width: 100px;
+                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                height: 100%;
+                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+            }
 
-    rememberMe: AkRememberMeController;
+            .captcha-container {
+                position: relative;
+
+                .faux-input {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    opacity: 0;
+                    pointer-events: none;
+                }
+            }
+        `,
+    ];
+
+    #form?: HTMLFormElement;
+
+    #rememberMe = new AkRememberMeController(this);
+
+    //#region State
 
     @state()
-    captchaToken = "";
+    protected captchaToken = "";
+
     @state()
-    captchaRefreshedAt = new Date();
+    protected captchaRefreshedAt = new Date();
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlert,
-            PFInputGroup,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AkRememberMeController.styles,
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        ];
-    }
+    @state()
+    protected captchaLoaded = false;
 
-    constructor() {
-        super();
-        this.rememberMe = new AkRememberMeController(this);
-    }
+    #captchaInputRef = createRef<HTMLInputElement>();
 
-    updated(changedProperties: PropertyValues<this>) {
+    #tokenChangeListener = (token: string) => {
+        const input = this.#captchaInputRef.value;
+
+        if (!input) return;
+
+        input.value = token;
+    };
+
+    #captchaLoadListener = () => {
+        this.captchaLoaded = true;
+    };
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
-            this.autoRedirect();
-            this.createHelperForm();
+            this.#autoRedirect();
+            this.#createHelperForm();
         }
     }
 
-    autoRedirect(): void {
+    //#endregion
+
+    #autoRedirect(): void {
         if (!this.challenge) return;
-        // we only want to auto-redirect to a source if there's only one source
+        // We only want to auto-redirect to a source if there's only one source.
         if (this.challenge.sources?.length !== 1) return;
-        // and we also only do an auto-redirect if no user fields are select
+
+        // And we also only do an auto-redirect if no user fields are select
         // meaning that without the auto-redirect the user would only have the option
         // to manually click on the source button
         if ((this.challenge.userFields || []).length !== 0) return;
-        // we also don't want to auto-redirect if there's a passwordless URL configured
+
+        // We also don't want to auto-redirect if there's a passwordless URL configured
         if (this.challenge.passwordlessUrl) return;
+
         const source = this.challenge.sources[0];
         this.host.challenge = source.challenge;
     }
 
-    createHelperForm(): void {
+    //#region Helper Form
+
+    #createHelperForm(): void {
         const compatMode = "ShadyDOM" in window;
-        this.form = document.createElement("form");
-        document.documentElement.appendChild(this.form);
+        this.#form = document.createElement("form");
+        document.documentElement.appendChild(this.#form);
         // Only add the additional username input if we're in a shadow dom
         // otherwise it just confuses browsers
         if (!compatMode) {
@@ -136,7 +172,7 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(username);
+            this.#form.appendChild(username);
         }
         // Only add the password field when we don't already show a password field
         if (!compatMode && !this.challenge.passwordFields) {
@@ -144,11 +180,13 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("type", "password");
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
-            password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key === "Enter") {
-                    this.submitForm(ev);
+            password.onkeyup = (event: KeyboardEvent) => {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    this.submitForm();
                 }
-                const el = ev.target as HTMLInputElement;
+
+                const el = event.target as HTMLInputElement;
                 // Because the password field is not actually on this page,
                 // and we want to 'prefill' the password for the user,
                 // save it globally
@@ -163,17 +201,22 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
-            this.form.appendChild(password);
+
+            this.#form.appendChild(password);
         }
+
         const totp = document.createElement("input");
+
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
-        totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key === "Enter") {
-                this.submitForm(ev);
+        totp.onkeyup = (event: KeyboardEvent) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                this.submitForm();
             }
-            const el = ev.target as HTMLInputElement;
+
+            const el = event.target as HTMLInputElement;
             // Because the totp field is not actually on this page,
             // and we want to 'prefill' the totp for the user,
             // save it globally
@@ -188,18 +231,21 @@ export class IdentificationStage extends BaseStage<
                     input.focus();
                 });
         };
-        this.form.appendChild(totp);
+
+        this.#form.appendChild(totp);
     }
 
+    //#endregion
+
     onSubmitSuccess(): void {
-        if (this.form) {
-            this.form.remove();
-        }
+        this.#form?.remove();
     }
 
     onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
+
+    //#region Render
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
@@ -278,10 +324,10 @@ export class IdentificationStage extends BaseStage<
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
-                    value=${this.rememberMe?.username ?? ""}
+                    value=${this.#rememberMe?.username ?? ""}
                     required
                 />
-                ${this.rememberMe.render()}
+                ${this.#rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
@@ -299,19 +345,33 @@ export class IdentificationStage extends BaseStage<
             ${this.renderNonFieldErrors()}
             ${this.challenge.captchaStage
                 ? html`
-                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
-                      <ak-stage-captcha
-                          .challenge=${this.challenge.captchaStage}
-                          .onTokenChange=${(token: string) => {
-                              this.captchaToken = token;
-                          }}
-                          .refreshedAt=${this.captchaRefreshedAt}
-                          embedded
-                      ></ak-stage-captcha>
+                      <div class="captcha-container">
+                          <ak-stage-captcha
+                              .challenge=${this.challenge.captchaStage}
+                              .onTokenChange=${this.#tokenChangeListener}
+                              .onLoad=${this.#captchaLoadListener}
+                              .refreshedAt=${this.captchaRefreshedAt}
+                              embedded
+                          >
+                          </ak-stage-captcha>
+                          <input
+                              class="faux-input"
+                              ${ref(this.#captchaInputRef)}
+                              name="captchaToken"
+                              type="text"
+                              required
+                              value=""
+                          />
+                      </div>
                   `
                 : nothing}
-            <div class="pf-c-form__group pf-m-action">
-                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+
+            <div class="pf-c-form__group ${this.challenge.captchaStage ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${this.challenge.captchaStage && !this.captchaLoaded}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
                     ${this.challenge.primaryAction}
                 </button>
             </div>
@@ -322,12 +382,7 @@ export class IdentificationStage extends BaseStage<
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
+            <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre
                     ? html`<p>
                           ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
@@ -357,6 +412,8 @@ export class IdentificationStage extends BaseStage<
             ${this.renderFooter()}
         </ak-flow-card>`;
     }
+
+    //#endregion
 }
 
 declare global {
