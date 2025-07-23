@@ -1,8 +1,5 @@
 """Telegram source"""
 
-import hashlib
-import hmac
-from datetime import datetime, timedelta
 from typing import Any
 
 from django.templatetags.static import static
@@ -10,49 +7,11 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django.http import HttpRequest
-from rest_framework import serializers
-from rest_framework.fields import CharField, BooleanField
 from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.models import Source, PropertyMapping, UserSourceConnection, GroupSourceConnection
 from authentik.core.types import UILoginButton
-from authentik.flows.challenge import Challenge, ChallengeResponse, RedirectChallenge
-from authentik.stages.identification.stage import LoginChallengeMixin
-
-
-class TelegramLoginChallenge(LoginChallengeMixin, Challenge):
-    component = CharField(default="ak-source-telegram")
-    bot_username = CharField(help_text=_("Telegram bot username"))
-    request_access = BooleanField()
-
-
-class TelegramChallengeResponse(ChallengeResponse):
-    component = CharField(default="ak-source-telegram")
-
-    id = serializers.IntegerField()
-    first_name = serializers.CharField(max_length=255, required=False)
-    last_name = serializers.CharField(max_length=255, required=False)
-    username = serializers.CharField(max_length=255, required=False)
-    photo_url = serializers.URLField(required=False)
-    auth_date = serializers.IntegerField(required=True)
-    hash = serializers.CharField(max_length=64, required=True)
-
-    def validate_auth_date(self, auth_date):
-        if datetime.fromtimestamp(auth_date) < datetime.now() - timedelta(minutes=5):
-            raise serializers.ValidationError(_("Authentication date is too old"))
-        return auth_date
-
-    def validate(self, attrs):
-        attrs_to_check = attrs.copy()
-        attrs_to_check.pop("component")
-        attrs_to_check.pop("hash")
-        check_str = '\n'.join([f'{key}={value}' for key, value in sorted(attrs_to_check.items())])
-        digest = hmac.new(hashlib.sha256(self.stage.source.bot_token.encode('utf-8')).digest(),
-                          check_str.encode('utf-8'),
-                          'sha256').hexdigest()
-        if not hmac.compare_digest(digest, attrs['hash']):
-            raise serializers.ValidationError(_('Invalid hash'))
-        return attrs
+from authentik.flows.challenge import RedirectChallenge
 
 
 class TelegramSourcePropertyMapping(PropertyMapping):
