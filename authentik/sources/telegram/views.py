@@ -52,6 +52,7 @@ class TelegramLoginView(ChallengeStageView):
                 'info': raw_info
             },
             policy_context={
+                'telegram': raw_info
             },
         )
         return sfm.get_flow(
