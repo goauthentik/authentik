@@ -17,8 +17,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
 
 EMAIL_RECOVERY_MAX_ATTEMPTS = 5
-# 5 minutes
-EMAIL_RECOVERY_CACHE_TIMEOUT = 300
 
 LOGGER = get_logger()
 
@@ -75,7 +73,16 @@ class EmailStage(Stage):
     timeout = models.IntegerField(default=10)
     from_address = models.EmailField(default="system@authentik.local")
     recovery_max_attempts = models.PositiveIntegerField(default=EMAIL_RECOVERY_MAX_ATTEMPTS)
-    recovery_cache_timeout = models.PositiveIntegerField(default=EMAIL_RECOVERY_CACHE_TIMEOUT)
+    recovery_cache_timeout = models.TextField(
+        default="minutes=5",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "The time window used to count recent account recovery attempts. "
+            "If the number of attempts exceed recovery_max_attempts within "
+            "this period, further attempts will be rate-limited. "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
 
     activate_user_on_success = models.BooleanField(
         default=False, help_text=_("Activate users upon completion of stage.")
