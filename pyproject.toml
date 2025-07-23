@@ -8,7 +8,7 @@ dependencies = [
     "argon2-cffi==25.1.0",
     "celery==5.5.3",
     "channels==4.2.2",
-    "channels-redis==4.2.1",
+    "channels-redis==4.3.0",
     "cryptography==45.0.5",
     "dacite==1.9.2",
     "deepmerge==2.0",
