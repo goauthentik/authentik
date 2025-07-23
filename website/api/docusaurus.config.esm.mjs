@@ -47,8 +47,6 @@ await Promise.all(
 export default createDocusaurusConfig({
     url: "https://api.goauthentik.io",
 
-    baseUrl: "/api",
-
     staticDirectories: [
         // ---
         "static",
