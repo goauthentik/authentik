@@ -60,6 +60,22 @@ func checkServer() int {
 	return 0
 }
 
+func splitHostPort(address string) (host, port string) {
+	lastColon := strings.LastIndex(address, ":")
+	if lastColon == -1 {
+		return address, ""
+	}
+
+	host = address[:lastColon]
+	port = address[lastColon+1:]
+
+	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
+		host = host[1 : len(host)-1]
+	}
+
+	return host, port
+}
+
 func checkWorker() int {
 	pidB, err := os.ReadFile(workerPidFile)
 	if err != nil {
@@ -85,16 +101,38 @@ func checkWorker() int {
 	h := &http.Client{
 		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
 	}
-	url := fmt.Sprintf("http://%s/-/health/ready/", config.Get().Listen.HTTP)
-	res, err := h.Head(url)
-	if err != nil {
-		log.WithError(err).Warning("failed to send healthcheck request")
-		return 1
+
+	host, port := splitHostPort(config.Get().Listen.HTTP)
+
+	if host == "0.0.0.0" || host == "::" {
+		url := fmt.Sprintf("http://%s:%s/-/health/ready/", "::1", port)
+		_, err := h.Head(url)
+		if err != nil {
+			log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
+			url := fmt.Sprintf("http://%s:%s/-/health/ready/", "127.0.0.1", port)
+			res, err := h.Head(url)
+			if err != nil {
+				log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
+				return 1
+			}
+			if res.StatusCode >= 400 {
+				log.WithField("status", res.StatusCode).Warning("unhealthy status code")
+				return 1
+			}
+		}
+	} else {
+		url := fmt.Sprintf("http://%s:%s/-/health/ready/", host, port)
+		res, err := h.Head(url)
+		if err != nil {
+			log.WithError(err).Warning("failed to send healthcheck request")
+			return 1
+		}
+		if res.StatusCode >= 400 {
+			log.WithField("status", res.StatusCode).Warning("unhealthy status code")
+			return 1
+		}
 	}
-	if res.StatusCode >= 400 {
-		log.WithField("status", res.StatusCode).Warning("unhealthy status code")
-		return 1
-	}
+
 	log.Debug("successfully checked health")
 	return 0
 }

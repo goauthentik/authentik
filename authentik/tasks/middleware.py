@@ -1,12 +1,12 @@
 import socket
 from http.server import BaseHTTPRequestHandler
-from http.server import HTTPServer as BaseHTTPServer
 from time import sleep
 from typing import Any
 
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
 from django_redis import get_redis_connection
 from dramatiq.broker import Broker
@@ -143,14 +143,6 @@ class DescriptionMiddleware(Middleware):
     @property
     def actor_options(self):
         return {"description"}
-
-
-class HTTPServer(BaseHTTPServer):
-    address_family = socket.AF_INET6
-
-    def server_bind(self):
-        self.socket.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 0)
-        super().server_bind()
 
 
 class _healthcheck_handler(BaseHTTPRequestHandler):
