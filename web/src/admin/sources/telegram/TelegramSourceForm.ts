@@ -186,7 +186,7 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group open label="${msg("Plex Attribute mapping")}">
+            <ak-form-group open label="${msg("Telegram Attribute mapping")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
