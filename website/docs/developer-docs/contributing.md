@@ -69,7 +69,8 @@ authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
 │   ├── oauth - OAuth1 and OAuth2 Source
 │   ├── plex - Plex source
-│   └── saml - SAML2 Source
+│   ├── saml - SAML2 Source
+│   └── telegram - Telegram source
 ├── stages
 │   ├── authenticator_duo - Configure a DUO authenticator
 │   ├── authenticator_static - Configure TOTP backup keys
