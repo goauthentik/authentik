@@ -320,7 +320,7 @@ class TestEmailStage(FlowTestCase):
     def test_is_rate_limited_returns_none(self):
         """Test to ensure None is returned if the request shouldn't be rate limited."""
         self.stage.recovery_max_attempts = 2
-        self.stage.recovery_cache_timeout = 10
+        self.stage.recovery_cache_timeout = "minutes=10"
         self.stage.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -365,14 +365,14 @@ class TestEmailStage(FlowTestCase):
 
         test_cases = [
             # 2 attempts within 2 minutes
-            (2, 120, 2),
+            (2, "seconds=120", 2),
             # 4 attempts within 5 minutes
-            (4, 300, 5),
+            (4, "minutes=5", 5),
             # 6 attempts within 5 minutes. Although 299 seconds is less than
             # 5 minutes, the user is intentionally shown "5 minutes". This is
             # because an initial rate limiting message like "Try again after 4 minutes"
             # can be confusing.
-            (6, 299, 5),
+            (6, "seconds=299", 5),
         ]
         for test_case in test_cases:
             max_attempts, cache_timeout, minutes_remaining = test_case
@@ -396,7 +396,7 @@ class TestEmailStage(FlowTestCase):
     def _challenge_invalid_helper(self):
         """Helper to test the challenge_invalid() method."""
         self.stage.recovery_max_attempts = 1
-        self.stage.recovery_cache_timeout = 300
+        self.stage.recovery_cache_timeout = "seconds=300"
         self.stage.save()
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
