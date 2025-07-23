@@ -8,19 +8,16 @@ from authentik.sources.telegram.models import TelegramSource
 class TelegramSourceSerializer(SourceSerializer):
     class Meta:
         model = TelegramSource
-        fields = SourceSerializer.Meta.fields + [
-            'bot_username',
-            'bot_token',
-            'request_access']
+        fields = SourceSerializer.Meta.fields + ["bot_username", "bot_token", "request_access"]
         extra_kwargs = {
-            'bot_token': {'write_only': True},
+            "bot_token": {"write_only": True},
         }
 
 
 class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
     queryset = TelegramSource.objects.all()
     serializer_class = TelegramSourceSerializer
-    lookup_field = 'slug'
+    lookup_field = "slug"
 
     filterset_fields = [
         "pbm_uuid",

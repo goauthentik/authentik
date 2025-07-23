@@ -2,14 +2,19 @@
 
 from typing import Any
 
+from django.db import models
+from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.db import models
-from django.http import HttpRequest
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Source, PropertyMapping, UserSourceConnection, GroupSourceConnection
+from authentik.core.models import (
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.core.types import UILoginButton
 from authentik.flows.challenge import RedirectChallenge
 
@@ -23,7 +28,9 @@ class TelegramSourcePropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.telegram.api.property_mappings import TelegramSourcePropertyMappingSerializer
+        from authentik.sources.telegram.api.property_mappings import (
+            TelegramSourcePropertyMappingSerializer,
+        )
 
         return TelegramSourcePropertyMappingSerializer
 
@@ -37,12 +44,13 @@ class TelegramSource(Source):
 
     bot_username = models.CharField(max_length=255, help_text=_("Telegram bot username"))
     bot_token = models.CharField(max_length=255, help_text=_("Telegram bot token"))
-    request_access = models.BooleanField(default=False,
-                                         help_text=_("Request access to send messages from your bot."))
+    request_access = models.BooleanField(
+        default=False, help_text=_("Request access to send messages from your bot.")
+    )
 
     @property
     def component(self) -> str:
-        return 'ak-source-telegram-form'
+        return "ak-source-telegram-form"
 
     @property
     def icon_url(self) -> str | None:
@@ -54,6 +62,7 @@ class TelegramSource(Source):
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.sources.telegram.api.source import TelegramSourceSerializer
+
         return TelegramSourceSerializer
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
@@ -74,12 +83,18 @@ class TelegramSource(Source):
     def property_mapping_type(self) -> "type[PropertyMapping]":
         return TelegramSourcePropertyMapping
 
-    def get_base_user_properties(self, info: dict[str, Any]={}, **kwargs) -> dict[str, Any | dict[str, Any]]:
-        name = info.get('first_name', '')
-        if 'last_name' in info:
-            name += ' ' + info['last_name']
-        return {'username': info.get('username', None), 'email': None,
-                'name': name if name else None}
+    def get_base_user_properties(
+        self, info: dict[str, Any] | None = None, **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        info = info or {}
+        name = info.get("first_name", "")
+        if "last_name" in info:
+            name += " " + info["last_name"]
+        return {
+            "username": info.get("username", None),
+            "email": None,
+            "name": name if name else None,
+        }
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
@@ -96,7 +111,9 @@ class UserTelegramSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.telegram.api.source_connection import UserTelegramSourceConnectionSerializer
+        from authentik.sources.telegram.api.source_connection import (
+            UserTelegramSourceConnectionSerializer,
+        )
 
         return UserTelegramSourceConnectionSerializer
 
@@ -110,7 +127,9 @@ class GroupTelegramSourceConnection(GroupSourceConnection):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.telegram.api.source_connection import GroupTelegramSourceConnectionSerializer
+        from authentik.sources.telegram.api.source_connection import (
+            GroupTelegramSourceConnectionSerializer,
+        )
 
         return GroupTelegramSourceConnectionSerializer
 

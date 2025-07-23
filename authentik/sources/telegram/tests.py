@@ -1,4 +1,5 @@
 """Telegram source tests"""
+
 import hashlib
 import hmac
 from datetime import datetime, timedelta
@@ -15,6 +16,7 @@ class TestTelegramSource(TestCase):
 
     def setUp(self):
         from authentik.sources.telegram.models import TelegramSource
+
         self.source = TelegramSource.objects.create(
             name="test",
             slug="test",
@@ -33,13 +35,21 @@ class TestTelegramSource(TestCase):
         self.assertTrue(ui_login_button.challenge.is_valid(raise_exception=True))
 
     def _add_hash(self, response):
-        to_hash = '\n'.join([f'{key}={value}' for key, value in sorted(response.items())])
-        response["hash"] = hmac.new(hashlib.sha256(self.source.bot_token.encode('utf-8')).digest(),
-                                    to_hash.encode('utf-8'), 'sha256').hexdigest()
+        to_hash = "\n".join([f"{key}={value}" for key, value in sorted(response.items())])
+        response["hash"] = hmac.new(
+            hashlib.sha256(self.source.bot_token.encode("utf-8")).digest(),
+            to_hash.encode("utf-8"),
+            "sha256",
+        ).hexdigest()
 
     def _make_valid_response(self):
-        resp = {"id": "123456789", "first_name": "Test", "last_name": "User", "username": "testuser",
-                "auth_date": str(int(datetime.now().timestamp()))}
+        resp = {
+            "id": "123456789",
+            "first_name": "Test",
+            "last_name": "User",
+            "username": "testuser",
+            "auth_date": str(int(datetime.now().timestamp())),
+        }
         self._add_hash(resp)
         return resp
 
