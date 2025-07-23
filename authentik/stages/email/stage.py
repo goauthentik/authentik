@@ -1,8 +1,7 @@
 """authentik multi-stage authentication engine"""
 
 import math
-import time
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from uuid import uuid4
 
@@ -194,19 +193,33 @@ class EmailStageView(ChallengeStageView):
         stage = self.executor.current_stage
         stage.refresh_from_db()
         max_attempts = stage.recovery_max_attempts
-        cache_timeout = stage.recovery_cache_timeout
+        cache_timeout_delta = timedelta_from_string(stage.recovery_cache_timeout)
 
-        now = time.time()
-        start_window = now - cache_timeout
-        recent_attempts_in_window = [attempt for attempt in attempts if attempt > start_window]
+        _now = now()
+        start_window = _now - cache_timeout_delta
+
+        # Convert unix timestamps to datetime objects for comparison
+        recent_attempts_in_window = [
+            datetime.fromtimestamp(attempt, UTC)
+            for attempt in attempts
+            if datetime.fromtimestamp(attempt, UTC) > start_window
+        ]
 
         if len(recent_attempts_in_window) >= max_attempts:
-            retry_after = int(min(recent_attempts_in_window) + cache_timeout - now)
-            minutes_left = max(1, math.ceil(retry_after / 60))
+            retry_after = (min(recent_attempts_in_window) + cache_timeout_delta) - _now
+            minutes_left = max(1, math.ceil(retry_after.total_seconds() / 60))
             return minutes_left
 
-        recent_attempts_in_window.append(now)
-        cache.set(cache_key, recent_attempts_in_window, cache_timeout)
+        recent_attempts_in_window.append(_now)
+
+        # Convert datetime objects back to unix timestamps to update cache
+        recent_attempts_in_window = [attempt.timestamp() for attempt in recent_attempts_in_window]
+
+        cache.set(
+            cache_key,
+            recent_attempts_in_window,
+            int(cache_timeout_delta.total_seconds()),
+        )
 
         return None
 
