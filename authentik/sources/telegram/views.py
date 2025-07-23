@@ -3,12 +3,16 @@ from django.views import View
 
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.flows.challenge import Challenge
-from authentik.flows.models import in_memory_stage, Flow
-from authentik.flows.planner import FlowPlan, PLAN_CONTEXT_SOURCE
+from authentik.flows.models import Flow, in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.sources.telegram.models import TelegramSource, UserTelegramSourceConnection, GroupTelegramSourceConnection
-from authentik.sources.telegram.stage import TelegramLoginChallenge, TelegramChallengeResponse
+from authentik.sources.telegram.models import (
+    GroupTelegramSourceConnection,
+    TelegramSource,
+    UserTelegramSourceConnection,
+)
+from authentik.sources.telegram.stage import TelegramChallengeResponse, TelegramLoginChallenge
 
 
 class TelegramStartView(View):
@@ -48,23 +52,17 @@ class TelegramLoginView(ChallengeStageView):
 
     def challenge_valid(self, response: TelegramChallengeResponse) -> HttpResponse:
         raw_info = response.validated_data.copy()
-        raw_info.pop('component')
-        raw_info.pop('hash')
-        raw_info.pop('auth_date')
+        raw_info.pop("component")
+        raw_info.pop("hash")
+        raw_info.pop("auth_date")
         source = self.source
         sfm = TelegramSourceFlowManager(
             source=source,
             request=self.request,
-            identifier=raw_info['id'],
-            user_info={
-                'info': raw_info
-            },
-            policy_context={
-                'telegram': raw_info
-            },
+            identifier=raw_info["id"],
+            user_info={"info": raw_info},
+            policy_context={"telegram": raw_info},
         )
         return sfm.get_flow(
             raw_info=raw_info,
         )
-
-

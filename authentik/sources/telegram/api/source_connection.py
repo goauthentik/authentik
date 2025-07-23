@@ -6,7 +6,10 @@ from authentik.core.api.sources import (
     UserSourceConnectionSerializer,
     UserSourceConnectionViewSet,
 )
-from authentik.sources.telegram.models import GroupTelegramSourceConnection, UserTelegramSourceConnection
+from authentik.sources.telegram.models import (
+    GroupTelegramSourceConnection,
+    UserTelegramSourceConnection,
+)
 
 
 class UserTelegramSourceConnectionSerializer(UserSourceConnectionSerializer):

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from rest_framework.fields import CharField, BooleanField
+from rest_framework.fields import BooleanField, CharField
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.stages.identification.stage import LoginChallengeMixin
@@ -37,10 +37,12 @@ class TelegramChallengeResponse(ChallengeResponse):
         attrs_to_check = attrs.copy()
         attrs_to_check.pop("component")
         attrs_to_check.pop("hash")
-        check_str = '\n'.join([f'{key}={value}' for key, value in sorted(attrs_to_check.items())])
-        digest = hmac.new(hashlib.sha256(self.stage.source.bot_token.encode('utf-8')).digest(),
-                          check_str.encode('utf-8'),
-                          'sha256').hexdigest()
-        if not hmac.compare_digest(digest, attrs['hash']):
-            raise serializers.ValidationError(_('Invalid hash'))
+        check_str = "\n".join([f"{key}={value}" for key, value in sorted(attrs_to_check.items())])
+        digest = hmac.new(
+            hashlib.sha256(self.stage.source.bot_token.encode("utf-8")).digest(),
+            check_str.encode("utf-8"),
+            "sha256",
+        ).hexdigest()
+        if not hmac.compare_digest(digest, attrs["hash"]):
+            raise serializers.ValidationError(_("Invalid hash"))
         return attrs

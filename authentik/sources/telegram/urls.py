@@ -1,10 +1,13 @@
 """Telegram source API views"""
+
 from django.urls import path
 
 from authentik.sources.telegram.api.property_mappings import TelegramSourcePropertyMappingViewSet
 from authentik.sources.telegram.api.source import TelegramSourceViewSet
-from authentik.sources.telegram.api.source_connection import UserTelegramSourceConnectionViewSet, \
-    GroupTelegramSourceConnectionViewSet
+from authentik.sources.telegram.api.source_connection import (
+    GroupTelegramSourceConnectionViewSet,
+    UserTelegramSourceConnectionViewSet,
+)
 from authentik.sources.telegram.views import TelegramLoginView, TelegramStartView
 
 urlpatterns = [
