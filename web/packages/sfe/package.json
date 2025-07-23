@@ -12,7 +12,7 @@
     "dependencies": {
         "@goauthentik/api": "^2024.6.0-1719577139",
         "base64-js": "^1.5.1",
-        "bootstrap": "^4.6.1",
+        "bootstrap": "^5.3.7",
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
         "weakmap-polyfill": "^2.0.4"
@@ -23,7 +23,7 @@
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.7.8",
-        "@swc/core": "^1.12.14",
+        "@swc/core": "^1.13.2",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
         "rollup": "^4.45.1",

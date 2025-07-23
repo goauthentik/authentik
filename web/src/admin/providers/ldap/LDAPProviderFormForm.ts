@@ -48,6 +48,7 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
+            placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
             .errorMessages=${errors?.name ?? []}
@@ -80,10 +81,8 @@ export function renderForm(
         >
         </ak-switch-input>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Flow settings")} </span>
-
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Bind flow")}
                     required
@@ -91,6 +90,7 @@ export function renderForm(
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-branded-flow-search
+                        label=${msg("Bind flow")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
@@ -119,9 +119,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="baseDn"
                     label=${msg("Base DN")}

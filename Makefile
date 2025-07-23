@@ -243,10 +243,12 @@ docs-build:
 docs-watch:  ## Build and watch the topics documentation
 	npm run start --prefix website
 
-docs-integrations-build:
+integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+
+integrations-build:
 	npm run build --prefix website -w integrations
 
-docs-integrations-watch:  ## Build and watch the Integrations documentation
+integrations-watch:  ## Build and watch the Integrations documentation
 	npm run start --prefix website -w integrations
 
 #########################

@@ -11,6 +11,8 @@ For VS Code, for example, add these entries to your `settings.json`:
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
         "!Format sequence",
         "!If sequence",
@@ -43,6 +45,16 @@ password: !Env my_env_var
 ```
 
 Returns the value of the given environment variable. Can be used as a scalar with `!Env my_env_var, default` to return a default value.
+
+#### `!File`
+
+Example:
+
+```yaml
+password: !File /path/to/file
+```
+
+Returns the contents of the file at the given path. Can be used as a scalar with `!File /file/to/path, default` to return a default value.
 
 #### `!Find`
 

@@ -1,4 +1,6 @@
 /// <reference types="@docusaurus/plugin-content-docs" />
+import "./styles.css";
+
 import { VersionPicker } from "#components/VersionPicker/index.tsx";
 
 import {
@@ -7,7 +9,7 @@ import {
 } from "@docusaurus/plugin-content-docs/client";
 import DocSidebarItem from "@theme/DocSidebarItem";
 import type { Props as DocSidebarItemsProps } from "@theme/DocSidebarItems";
-import { memo } from "react";
+import { JSX, memo } from "react";
 
 const DocSidebarItems = ({ items, ...props }: DocSidebarItemsProps): JSX.Element => {
     const visibleItems = useVisibleSidebarItems(items, props.activePath);
