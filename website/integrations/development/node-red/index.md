@@ -78,7 +78,7 @@ adminAuth: {
                         tokenURL: 'https://authentik.company/application/o/token/',
                         userInfoURL: 'https://authentik.company/application/o/userinfo/',
                         clientID: '<client_id>',
-                        clientSecret: '<Client Secret: Step 2>',
+                        clientSecret: '<client_secret>',
                         callbackURL: 'https://nodered.company/auth/strategy/callback/',
                         scope: ['email', 'profile', 'openid'],
                         proxy: true,
