@@ -60,16 +60,16 @@ authentik
 │   ├── oauth2 - OIDC-compliant OAuth2 provider
 │   ├── proxy - Provides an identity-aware proxy using an outpost
 │   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 Provider
-│   └── scim - SCIM Provider
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
 │   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 Source
+│   ├── oauth - OAuth1 and OAuth2 source
 │   ├── plex - Plex source
-│   ├── saml - SAML2 Source
+│   ├── saml - SAML2 source
 │   └── telegram - Telegram source
 ├── stages
 │   ├── authenticator_duo - Configure a DUO authenticator
