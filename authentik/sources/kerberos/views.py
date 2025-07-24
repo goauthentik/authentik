@@ -151,7 +151,7 @@ class SPNEGOView(View):
             def name_to_str(n: gssapi.names.Name) -> str:
                 return n.display_as(n.name_type)
 
-            identifier = name_to_str(server_ctx.initiator_name)
+            principal = name_to_str(server_ctx.initiator_name)
             context = {
                 "spnego_info": {
                     "initiator_name": name_to_str(server_ctx.initiator_name),
@@ -164,9 +164,8 @@ class SPNEGOView(View):
         response = SPNEGOSourceFlowManager(
             source=self.source,
             request=request,
-            identifier=identifier,
             user_info={
-                "principal": identifier,
+                "principal": principal,
                 **context,
             },
             policy_context=context,
