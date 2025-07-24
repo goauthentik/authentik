@@ -7,7 +7,7 @@ Configuring Telegram as a source allows users to authenticate using their Telegr
 
 ## Telegram
 
-To use Telegram as a source, you need to register a Telegram bot first:
+To use Telegram as a source, you first need to register a Telegram bot:
 
 1. Start a chat with `@BotFather` on Telegram.
 2. Use `/newbot` command to create a new bot. Pick a username for your new bot (e.g., `my_bot`).
