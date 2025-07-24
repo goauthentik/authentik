@@ -11,6 +11,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import dummy_get_response
+from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.views import (
     QS_BUFFER_ID,
     SESSION_KEY_BUFFER,
@@ -18,6 +19,7 @@ from authentik.policies.views import (
     BufferView,
     PolicyAccessView,
 )
+from authentik.tenants.flags import patch_flag
 
 
 class TestPolicyViews(TestCase):
@@ -49,6 +51,7 @@ class TestPolicyViews(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.content, b"foo")
 
+    @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_pav_buffer(self):
         """Test simple policy access view"""
         provider = Provider.objects.create(
@@ -75,6 +78,7 @@ class TestPolicyViews(TestCase):
         self.assertEqual(res.status_code, 302)
         self.assertTrue(res.url.startswith(reverse("authentik_policies:buffer")))
 
+    @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_pav_buffer_skip(self):
         """Test simple policy access view (skip buffer)"""
         provider = Provider.objects.create(

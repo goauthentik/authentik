@@ -1,8 +1,11 @@
+from collections.abc import Callable
+from functools import wraps
 from typing import Any, Literal
 
 from django.db import DatabaseError, InternalError, ProgrammingError
 
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.tenants.utils import get_current_tenant
 
 
 class Flag[T]:
@@ -36,3 +39,21 @@ class Flag[T]:
     @staticmethod
     def available():
         return all_subclasses(Flag)
+
+
+def patch_flag[T](flag: Flag[T], value: T):
+    """Decorator for tests to set a flag to a value"""
+
+    def wrapper_outer(func: Callable):
+        """Set a flag for a test"""
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            tenant = get_current_tenant()
+            tenant.flags[flag().key] = value
+            tenant.save()
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return wrapper_outer
