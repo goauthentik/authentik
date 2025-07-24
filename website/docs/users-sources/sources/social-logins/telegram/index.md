@@ -27,7 +27,7 @@ Select **Telegram source** and configure your source:
 - **Slug**: Set a slug.
 - **Bot username**: Set the username of your Telegram bot (e.g., `my_bot`).
 - **Bot token**: Set the token of your Telegram bot.
-- _"Request access to send messages from your bot":_ enable this if you need your bot to be able to
+- **Request access to send messages from your bot**: enable this if you need your bot to be able to
   send messages to the users who logged in to authentik with it.
 
 Save, and you now have Telegram as a source.
