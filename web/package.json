@@ -171,7 +171,7 @@
         "@wdio/cli": "9.15",
         "@wdio/spec-reporter": "^9.15.0",
         "@web/test-runner": "^0.20.2",
-        "chromedriver": "^136.0.3",
+        "chromedriver": "^138.0.3",
         "esbuild": "^0.25.8",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
