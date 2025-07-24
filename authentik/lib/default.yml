@@ -149,8 +149,8 @@ web:
   path: /
 
 worker:
-  processes: 2
-  threads: 1
+  processes: 1
+  threads: 2
   consumer_listen_timeout: "seconds=30"
   task_max_retries: 20
   task_default_time_limit: "minutes=10"
