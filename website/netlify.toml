@@ -11,7 +11,7 @@
   base    = "website"
   package = "docs"
   command = "npm run build -w docs"
-  publish = "website/docs/build"
+  publish = "docs/build"
 
 [dev]
   command    = "npm start"
