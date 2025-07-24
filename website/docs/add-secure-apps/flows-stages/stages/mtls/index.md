@@ -101,7 +101,7 @@ When using authentik without a reverse proxy, select the certificate authorities
 2. Navigate to **System** > **Certificates**, and either generate or add the certificate you’ll use as a certificate authority.
 
 3. Then, from the authentik Admin interface, navigate to **Flows and Stages** > **Stages** and click **Create**. Select **Mutual TLS Stage**, click **Next**, and define the following fields:
-    - **Name**: define a descriptive name, such as "chrome-device-trust".
+    - **Name**: provide a descriptive name, such as "chrome-device-trust".
 
     - **Stage-specific settings**:
         - **Mode**: Configure the mode this stage operates in.
