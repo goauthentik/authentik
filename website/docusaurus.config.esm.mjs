@@ -96,7 +96,6 @@ const config = createDocusaurusConfig({
             "@docusaurus/preset-classic",
             /** @type {Preset.Options} */ ({
                 docs: {
-                    id: "docs",
                     routeBasePath: "docs",
                     sidebarPath: "./sidebars/docs.mjs",
                     showLastUpdateTime: false,
