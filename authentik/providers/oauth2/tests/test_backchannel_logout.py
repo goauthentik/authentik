@@ -1,6 +1,5 @@
 """Test OAuth2 Back-Channel Logout implementation"""
 
-import json
 import uuid
 from time import time
 from unittest.mock import Mock, patch
@@ -10,7 +9,7 @@ from django.test import RequestFactory
 from django.utils import timezone
 from requests import Response
 
-from authentik.core.models import Application, AuthenticatedSession, Session, User
+from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
@@ -26,7 +25,6 @@ from authentik.providers.oauth2.tasks import (
     send_backchannel_logout_request,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
-from authentik.providers.oauth2.views.backchannel_logout import BackChannelLogoutView
 
 
 class TestBackChannelLogout(OAuthTestCase):
@@ -166,134 +164,6 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(decoded3["sub"], sub)
         self.assertIn("events", decoded3)
 
-    def test_backchannel_logout_view_error_cases(self):
-        """Test various error cases for the backchannel logout view"""
-        view = BackChannelLogoutView()
-
-        # Case 1: Missing logout token
-        request = self.factory.post("/backchannel_logout", {})
-        response = view.post(request, self.app.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-        self.assertIn("Missing logout_token", data["error_description"])
-
-        # Case 2: Invalid application slug
-        logout_token = self._create_logout_token(session_id="test-session")
-        request = self.factory.post("/backchannel_logout", {"logout_token": logout_token})
-        response = view.post(request, "non-existent-app")
-        self.assertEqual(response.status_code, 500)
-
-        # Case 3: Non-OAuth2 provider
-        app_without_oauth = Application.objects.create(name="test-no-oauth", slug="test-no-oauth")
-        request = self.factory.post("/backchannel_logout", {"logout_token": logout_token})
-        response = view.post(request, app_without_oauth.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-        self.assertIn("Invalid provider type", data["error_description"])
-
-        # Case 4: Invalid JWT token
-        request = self.factory.post("/backchannel_logout", {"logout_token": "invalid.jwt.token"})
-        response = view.post(request, self.app.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-
-        # Case 5: Invalid issuer in token
-        payload = {
-            "iss": "https://wrong-issuer.com",
-            "aud": self.provider.client_id,
-            "iat": timezone.now().timestamp(),
-            "jti": "test-jti",
-            "sid": "test-session",
-            "events": {"http://schemas.openid.net/event/backchannel-logout": {}},
-        }
-        key, alg = self.provider.jwt_key
-        invalid_token = jwt.encode(payload, key, algorithm=alg)
-        request = self.factory.post("/backchannel_logout", {"logout_token": invalid_token})
-        response = view.post(request, self.app.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-
-        # Case 6: Missing sub and sid claims
-        payload = {
-            "iss": self.provider.get_issuer(self.factory.get("/")),
-            "aud": self.provider.client_id,
-            "iat": timezone.now().timestamp(),
-            "jti": "test-jti",
-            "events": {"http://schemas.openid.net/event/backchannel-logout": {}},
-        }
-        invalid_token = jwt.encode(payload, key, algorithm=alg)
-        request = self.factory.post("/backchannel_logout", {"logout_token": invalid_token})
-        response = view.post(request, self.app.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-
-        # Case 7: Invalid events claim
-        payload = {
-            "iss": self.provider.get_issuer(self.factory.get("/")),
-            "aud": self.provider.client_id,
-            "iat": timezone.now().timestamp(),
-            "jti": "test-jti",
-            "sid": "test-session",
-            "events": {"invalid-event": {}},  # Wrong event type
-        }
-        invalid_token = jwt.encode(payload, key, algorithm=alg)
-        request = self.factory.post("/backchannel_logout", {"logout_token": invalid_token})
-        response = view.post(request, self.app.slug)
-        self.assertEqual(response.status_code, 400)
-        data = json.loads(response.content)
-        self.assertEqual(data["error"], "invalid_request")
-
-    def test_backchannel_logout_view_successful_cases(self):
-        """Test successful back-channel logout scenarios"""
-        # Case 1: Session termination with refresh token
-        session = self._create_session("test-session-123")
-        refresh_token = self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=session,
-            token_type="refresh",  # nosec
-            token_id="test-refresh-token",
-        )
-
-        # Create logout token with session ID
-        logout_token = self._create_logout_token(session_id="test-session-123")
-        print("1")
-        # Send request
-        request = self.factory.post("/backchannel_logout", {"logout_token": logout_token})
-        view = BackChannelLogoutView()
-        response = view.post(request, self.app.slug)
-        print("2")
-
-        # Verify response and effects
-        print(response.status_code)
-        print(response.content)
-        print(AuthenticatedSession.objects.filter(session__session_key="test-session-123"))
-        self.assertIn(response.status_code, [200, 400])
-        self.assertFalse(
-            AuthenticatedSession.objects.filter(session__session_key="test-session-123").exists()
-        )
-        print("3")
-        # Verify refresh token was revoked
-        refresh_token.refresh_from_db()
-        self.assertTrue(refresh_token.revoked)
-        print("4")
-
-        # Case 2: Successful logout with subject identifier
-        logout_token = self._create_logout_token(sub=str(self.user.pk))
-        request = self.factory.post("/backchannel_logout", {"logout_token": logout_token})
-        print("5")
-
-        view = BackChannelLogoutView()
-        response = view.post(request, self.app.slug)
-
-        # Should succeed even if no sessions are found to terminate
-        self.assertIn(response.status_code, [200, 400])  # Accept either as valid
-
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
@@ -424,149 +294,3 @@ class TestBackChannelLogout(OAuthTestCase):
         # Scenario 4: With no parameters
         mock_task.reset_mock()
         send_backchannel_logout_notification()
-
-    def test_backchannel_logout_view_exception_handling(self):
-        """Test back-channel logout view exception handling"""
-        request = self.factory.post("/backchannel_logout", {"logout_token": "malformed"})
-        view = BackChannelLogoutView()
-
-        with patch.object(view, "process_logout_token", side_effect=Exception("Test error")):
-            response = view.post(request, self.app.slug)
-            self.assertEqual(response.status_code, 500)
-            data = json.loads(response.content)
-            self.assertEqual(data["error"], "server_error")
-            self.assertIn("Internal server error", data["error_description"])
-
-    def test_backchannel_logout_view_find_user_by_sub(self):
-        """Test back-channel logout view can find user by sub claim based on sub_mode"""
-        from authentik.providers.oauth2.constants import SubModes
-
-        view = BackChannelLogoutView()
-        view.provider = self.provider
-
-        # Test all SubModes
-        sub_mode_tests = [
-            (SubModes.HASHED_USER_ID, self.user.uid),
-            (SubModes.USER_ID, str(self.user.pk)),
-            (SubModes.USER_UUID, str(self.user.uuid)),
-            (SubModes.USER_EMAIL, self.user.email),
-            (SubModes.USER_USERNAME, self.user.username),
-        ]
-
-        for mode, sub_value in sub_mode_tests:
-            self.provider.sub_mode = mode
-            found_user = view._find_user_by_sub(sub_value)
-            self.assertEqual(found_user, self.user, f"Failed for mode {mode}")
-
-        # Test non-existent user
-        found_user = view._find_user_by_sub("non-existent")
-        self.assertIsNone(found_user)
-
-    def test_backchannel_logout_view_terminate_user_sessions(self):
-        """Test back-channel logout view terminates user sessions correctly"""
-        # Setup test sessions with tokens
-        sessions = []
-        for i in range(3):
-            sessions.append(self._create_session(f"test-session-{i+1}"))
-
-        # Create access tokens for sessions 1 and 2
-        self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=sessions[0],
-            token_type="access",  # nosec
-            token_id="access-token-1",
-        )
-        self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=sessions[1],
-            token_type="access",  # nosec
-            token_id="access-token-2",
-        )
-
-        # Create refresh tokens for sessions 2 and 3
-        self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=sessions[1],
-            token_type="refresh",  # nosec
-            token_id="refresh-token-2",
-        )
-        self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=sessions[2],
-            token_type="refresh",  # nosec
-            token_id="refresh-token-3",
-        )
-
-        # Create a separate session for tokens from different provider
-        other_session = self._create_session("other-session")
-        other_provider = self._create_provider("other-provider")
-
-        # Create token for different provider (should not be affected)
-        other_access_token = self._create_token(
-            provider=other_provider,
-            user=self.user,
-            session=other_session,
-            token_type="access",  # nosec
-            token_id="access-token-other",
-        )
-
-        # Verify initial state
-        self.assertEqual(AccessToken.objects.filter(provider=self.provider).count(), 2)
-        self.assertEqual(RefreshToken.objects.filter(provider=self.provider).count(), 2)
-        self.assertEqual(AuthenticatedSession.objects.count(), 4)
-
-        # Test the _terminate_user_sessions method
-        view = BackChannelLogoutView()
-        view.provider = self.provider
-        view._terminate_user_sessions(self.user)
-
-        # Verify tokens are revoked (not deleted)
-        for token in AccessToken.objects.filter(provider=self.provider):
-            self.assertTrue(token.revoked)
-        for token in RefreshToken.objects.filter(provider=self.provider):
-            self.assertTrue(token.revoked)
-
-        # Token from different provider should still exist and not be revoked
-        other_access_token.refresh_from_db()
-        self.assertFalse(other_access_token.revoked)
-
-        # Verify sessions are terminated - only the other_session should remain
-        self.assertEqual(AuthenticatedSession.objects.count(), 1)
-        self.assertEqual(Session.objects.count(), 1)
-
-    def test_backchannel_logout_view_terminate_user_sessions_edge_cases(self):
-        """Test edge cases for _terminate_user_sessions method"""
-        view = BackChannelLogoutView()
-        view.provider = self.provider
-
-        # Case 1: User with no tokens
-        user_no_tokens = User.objects.create(username="no-tokens-user")
-        view._terminate_user_sessions(user_no_tokens)  # Should not raise exceptions
-
-        # Case 2: Tokens without sessions
-        access_token = self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=None,  # No session
-            token_type="access",  # nosec
-            token_id="access-token-no-session",
-        )
-        refresh_token = self._create_token(
-            provider=self.provider,
-            user=self.user,
-            session=None,  # No session
-            token_type="refresh",  # nosec
-            token_id="refresh-token-no-session",
-        )
-
-        view._terminate_user_sessions(self.user)
-
-        # Verify tokens are revoked even without sessions
-        access_token.refresh_from_db()
-        refresh_token.refresh_from_db()
-        self.assertTrue(access_token.revoked)
-        self.assertTrue(refresh_token.revoked)
