@@ -136,25 +136,21 @@ skip = [
     "unittest.xml",
     "./blueprints/schema.json",
     "go.sum",
-    "locale",
-    "**/dist",
+    "locale", 
+    "**/web/src/locales", 
+    "**/dist", # Distributed build output
     "**/storybook-static",
-    "**/web/src/locales",
     "**/web/xliff",
-    "**/web/out",
-    "./web/storybook-static",
-    "./web/custom-elements.json",
-    # TODO: Remove this after moving website to docs
-    "./website/build",
-    "./website/api/build",
-    "./website/integrations/build",
-    "./docs/build",
-    "./docs/api/build",
-    "./docs/integrations/build",
+    "**/out", # TypeScript type-checking output 
+    "./web/custom-elements.json", # TypeScript custom element definitions
+    "./website/build", # TODO: Remove this after moving website to docs
+    "./website/**/build", # TODO: Remove this after moving website to docs
+    "./docs/build", # Docusaurus Topic docs build output
+    "./docs/**/build", # Docusaurus workspaces output
+    "*.api.mdx", # Generated API docs
     "./gen-ts-api",
     "./gen-py-api",
     "./gen-go-api",
-    "*.api.mdx",
     "./htmlcov",
     "./media",
 ]
