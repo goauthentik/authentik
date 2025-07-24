@@ -11,12 +11,11 @@
   base    = "website"
   package = "docs"
   command = "npm run build -w docs"
-  publish = "docs/build"
+  publish = "website/docs/build"
 
 [dev]
   command    = "npm start"
   targetPort = 3000
-  publish    = "docs/build"
 
 [context.production.environment]
   NODE_ENV = "production"
@@ -31,8 +30,8 @@
 
 # Migration from docs to separate directory
 [[redirects]]
-  from   = "/docs/core/applications"
-  to     = "/docs/applications"
+  from   = "/core/applications"
+  to     = "/applications"
   status = 302
 
 # Split integrations to separate deploy
@@ -41,983 +40,977 @@
   to     = "https://integrations.goauthentik.io/:splat"
   status = 302
 
+# Migration to root docs
 [[redirects]]
-  from   = "/docs/:firstPart/index"
-  to     = "/docs/:firstPart/"
+  from   = "/docs/*"
+  to     = "/:splat"
   status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/docs/:firstPart/:secondPart/index"
-  to     = "/docs/:firstPart/:secondPart/"
-  status = 302
-  force  = true
 
 # Split Property Mappings docs between Providers and Sources
 [[redirects]]
-  from   = "/docs/property-mappings/"
-  to     = "/docs/providers/property-mappings/"
+  from   = "/property-mappings/"
+  to     = "/providers/property-mappings/"
   status = 302
 
 [[redirects]]
-  from   = "/docs/property-mappings/expression"
-  to     = "/docs/providers/property-mappings/expression"
+  from   = "/property-mappings/expression"
+  to     = "/providers/property-mappings/expression"
   status = 302
 
 [[redirects]]
-  from   = "/docs/add-secure-apps/flows-stages/flow/layouts"
-  to     = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow"
+  from   = "/add-secure-apps/flows-stages/flow/layouts"
+  to     = "/add-secure-apps/flows-stages/flow/executors/if-flow"
   status = 302
 
 [[redirects]]
-  from   = "/docs/customize/brands"
-  to     = "/docs/customize/branding"
+  from   = "/customize/brands"
+  to     = "/customize/branding"
   status = 302
 
 [[redirects]]
-  from   = "/docs/customize/interfaces/admin/customization"
-  to     = "/docs/customize/interfaces/admin"
+  from   = "/customize/interfaces/admin/customization"
+  to     = "/customize/interfaces/admin"
   status = 302
 
 [[redirects]]
-  from   = "/docs/customize/interfaces/user/customization"
-  to     = "/docs/customize/interfaces/user"
+  from   = "/customize/interfaces/user/customization"
+  to     = "/customize/interfaces/user"
   status = 302
 
 [[redirects]]
-  from   = "/docs/customize/interfaces/flow/customization"
-  to     = "/docs/customize/interfaces/flow"
+  from   = "/customize/interfaces/flow/customization"
+  to     = "/customize/interfaces/flow"
   status = 302
 
 # Migration to new structure with script Sept 2025
 [[redirects]]
-  from   = "/docs/advanced/tenancy"
-  to     = "/docs/sys-mgmt/tenancy"
+  from   = "/advanced/tenancy"
+  to     = "/sys-mgmt/tenancy"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/applications/"
-  to     = "/docs/add-secure-apps/applications/"
+  from   = "/applications/"
+  to     = "/add-secure-apps/applications/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/applications/manage_apps"
-  to     = "/docs/add-secure-apps/applications/manage_apps"
+  from   = "/applications/manage_apps"
+  to     = "/add-secure-apps/applications/manage_apps"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/core/brands"
-  to     = "/docs/customize/brands"
+  from   = "/core/brands"
+  to     = "/customize/brands"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/core/certificates"
-  to     = "/docs/sys-mgmt/certificates"
+  from   = "/core/certificates"
+  to     = "/sys-mgmt/certificates"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/core/geoip"
-  to     = "/docs/install-config/geoip"
+  from   = "/core/geoip"
+  to     = "/install-config/geoip"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/core/settings"
-  to     = "/docs/sys-mgmt/settings"
+  from   = "/core/settings"
+  to     = "/sys-mgmt/settings"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/events/"
-  to     = "/docs/sys-mgmt/events/"
+  from   = "/events/"
+  to     = "/sys-mgmt/events/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/events/notifications"
-  to     = "/docs/sys-mgmt/events/notifications"
+  from   = "/events/notifications"
+  to     = "/sys-mgmt/events/notifications"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/events/transports"
-  to     = "/docs/sys-mgmt/events/transports"
+  from   = "/events/transports"
+  to     = "/sys-mgmt/events/transports"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/context/"
-  to     = "/docs/add-secure-apps/flows-stages/flow/context/"
+  from   = "/flow/context/"
+  to     = "/add-secure-apps/flows-stages/flow/context/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/examples/flows"
-  to     = "/docs/add-secure-apps/flows-stages/flow/examples/flows"
+  from   = "/flow/examples/flows"
+  to     = "/add-secure-apps/flows-stages/flow/examples/flows"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/examples/snippets"
-  to     = "/docs/add-secure-apps/flows-stages/flow/examples/snippets"
+  from   = "/flow/examples/snippets"
+  to     = "/add-secure-apps/flows-stages/flow/examples/snippets"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/executors/headless"
-  to     = "/docs/add-secure-apps/flows-stages/flow/executors/headless"
+  from   = "/flow/executors/headless"
+  to     = "/add-secure-apps/flows-stages/flow/executors/headless"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/executors/if-flow"
-  to     = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow"
+  from   = "/flow/executors/if-flow"
+  to     = "/add-secure-apps/flows-stages/flow/executors/if-flow"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/executors/sfe"
-  to     = "/docs/add-secure-apps/flows-stages/flow/executors/sfe"
+  from   = "/flow/executors/sfe"
+  to     = "/add-secure-apps/flows-stages/flow/executors/sfe"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/executors/user-settings"
-  to     = "/docs/add-secure-apps/flows-stages/flow/executors/user-settings"
+  from   = "/flow/executors/user-settings"
+  to     = "/add-secure-apps/flows-stages/flow/executors/user-settings"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/"
-  to     = "/docs/add-secure-apps/flows-stages/flow/"
+  from   = "/flow/"
+  to     = "/add-secure-apps/flows-stages/flow/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/inspector"
-  to     = "/docs/add-secure-apps/flows-stages/flow/inspector"
+  from   = "/flow/inspector"
+  to     = "/add-secure-apps/flows-stages/flow/inspector"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/layouts"
-  to     = "/docs/add-secure-apps/flows-stages/flow/layouts"
+  from   = "/flow/layouts"
+  to     = "/add-secure-apps/flows-stages/flow/layouts"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_duo/"
-  to     = "/docs/add-secure-apps/flows-stages/stages//authenticator_duo/"
+  from   = "/flow/stages/authenticator_duo/"
+  to     = "/add-secure-apps/flows-stages/stages//authenticator_duo/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_sms/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/authenticator_sms/"
+  from   = "/flow/stages/authenticator_sms/"
+  to     = "/add-secure-apps/flows-stages/stages/authenticator_sms/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_static/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/authenticator_static/"
+  from   = "/flow/stages/authenticator_static/"
+  to     = "/add-secure-apps/flows-stages/stages/authenticator_static/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_totp/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/authenticator_totp/"
+  from   = "/flow/stages/authenticator_totp/"
+  to     = "/add-secure-apps/flows-stages/stages/authenticator_totp/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_validate/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/authenticator_validate/"
+  from   = "/flow/stages/authenticator_validate/"
+  to     = "/add-secure-apps/flows-stages/stages/authenticator_validate/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/authenticator_webauthn/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/authenticator_webauthn/"
+  from   = "/flow/stages/authenticator_webauthn/"
+  to     = "/add-secure-apps/flows-stages/stages/authenticator_webauthn/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/captcha/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/captcha/"
+  from   = "/flow/stages/captcha/"
+  to     = "/add-secure-apps/flows-stages/stages/captcha/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/deny"
-  to     = "/docs/add-secure-apps/flows-stages/stages/deny"
+  from   = "/flow/stages/deny"
+  to     = "/add-secure-apps/flows-stages/stages/deny"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/email/x"
-  to     = "/docs/add-secure-apps/flows-stages/stages/email/x"
+  from   = "/flow/stages/email/x"
+  to     = "/add-secure-apps/flows-stages/stages/email/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/identification/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/identification/"
+  from   = "/flow/stages/identification/"
+  to     = "/add-secure-apps/flows-stages/stages/identification/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/"
+  from   = "/flow/stages/"
+  to     = "/add-secure-apps/flows-stages/stages/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/invitation/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/invitation/"
+  from   = "/flow/stages/invitation/"
+  to     = "/add-secure-apps/flows-stages/stages/invitation/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/password/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/password/"
+  from   = "/flow/stages/password/"
+  to     = "/add-secure-apps/flows-stages/stages/password/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/prompt/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/prompt/"
+  from   = "/flow/stages/prompt/"
+  to     = "/add-secure-apps/flows-stages/stages/prompt/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/source/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/source/"
+  from   = "/flow/stages/source/"
+  to     = "/add-secure-apps/flows-stages/stages/source/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/user_delete"
-  to     = "/docs/add-secure-apps/flows-stages/stages/user_delete"
+  from   = "/flow/stages/user_delete"
+  to     = "/add-secure-apps/flows-stages/stages/user_delete"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/user_login/"
-  to     = "/docs/add-secure-apps/flows-stages/stages/user_login/"
+  from   = "/flow/stages/user_login/"
+  to     = "/add-secure-apps/flows-stages/stages/user_login/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/user_logout"
-  to     = "/docs/add-secure-apps/flows-stages/stages/user_logout"
+  from   = "/flow/stages/user_logout"
+  to     = "/add-secure-apps/flows-stages/stages/user_logout"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/flow/stages/user_write"
-  to     = "/docs/add-secure-apps/flows-stages/stages/user_write"
+  from   = "/flow/stages/user_write"
+  to     = "/add-secure-apps/flows-stages/stages/user_write"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/air-gapped"
-  to     = "/docs/install-config/air-gapped"
+  from   = "/installation/air-gapped"
+  to     = "/install-config/air-gapped"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/automated-install"
-  to     = "/docs/install-config/automated-install"
+  from   = "/installation/automated-install"
+  to     = "/install-config/automated-install"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/beta"
-  to     = "/docs/install-config/beta"
+  from   = "/installation/beta"
+  to     = "/install-config/beta"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/configuration"
-  to     = "/docs/install-config/configuration/configuration"
+  from   = "/installation/configuration"
+  to     = "/install-config/configuration/configuration"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/docker-compose"
-  to     = "/docs/install-config/install/docker-compose"
+  from   = "/installation/docker-compose"
+  to     = "/install-config/install/docker-compose"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/x"
-  to     = "/docs/install-config/x"
+  from   = "/installation/x"
+  to     = "/install-config/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/kubernetes"
-  to     = "/docs/install-config/install/kubernetes"
+  from   = "/installation/kubernetes"
+  to     = "/install-config/install/kubernetes"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/monitoring"
-  to     = "/docs/sys-mgmt/ops/monitoring"
+  from   = "/installation/monitoring"
+  to     = "/sys-mgmt/ops/monitoring"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/reverse-proxy"
-  to     = "/docs/install-config/reverse-proxy"
+  from   = "/installation/reverse-proxy"
+  to     = "/install-config/reverse-proxy"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/storage-s3"
-  to     = "/docs/install-config/storage-s3"
+  from   = "/installation/storage-s3"
+  to     = "/install-config/storage-s3"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/installation/upgrade"
-  to     = "/docs/install-config/upgrade"
+  from   = "/installation/upgrade"
+  to     = "/install-config/upgrade"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/interfaces/_global/customcss"
-  to     = "/docs/customize/interfaces/_global/customcss"
+  from   = "/interfaces/_global/customcss"
+  to     = "/customize/interfaces/_global/customcss"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/interfaces/_global/global"
-  to     = "/docs/customize/interfaces/_global/global"
+  from   = "/interfaces/_global/global"
+  to     = "/customize/interfaces/_global/global"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/interfaces/admin/customization"
-  to     = "/docs/customize/interfaces/admin/customization"
+  from   = "/interfaces/admin/customization"
+  to     = "/customize/interfaces/admin/customization"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/interfaces/flow/customization"
-  to     = "/docs/customize/interfaces/flow/customization"
+  from   = "/interfaces/flow/customization"
+  to     = "/customize/interfaces/flow/customization"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/interfaces/user/customization"
-  to     = "/docs/customize/interfaces/user/customization"
+  from   = "/interfaces/user/customization"
+  to     = "/customize/interfaces/user/customization"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/_config"
-  to     = "/docs/add-secure-apps/outposts/_config"
+  from   = "/outposts/_config"
+  to     = "/add-secure-apps/outposts/_config"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/embedded/embedded"
-  to     = "/docs/add-secure-apps/outposts/embedded/embedded"
+  from   = "/outposts/embedded/embedded"
+  to     = "/add-secure-apps/outposts/embedded/embedded"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/x"
-  to     = "/docs/add-secure-apps/outposts/x"
+  from   = "/outposts/x"
+  to     = "/add-secure-apps/outposts/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/integrations/docker"
-  to     = "/docs/add-secure-apps/outposts/integrations/docker"
+  from   = "/outposts/integrations/docker"
+  to     = "/add-secure-apps/outposts/integrations/docker"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/integrations/kubernetes"
-  to     = "/docs/add-secure-apps/outposts/integrations/kubernetes"
+  from   = "/outposts/integrations/kubernetes"
+  to     = "/add-secure-apps/outposts/integrations/kubernetes"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/manual-deploy-docker-compose"
-  to     = "/docs/add-secure-apps/outposts/manual-deploy-docker-compose"
+  from   = "/outposts/manual-deploy-docker-compose"
+  to     = "/add-secure-apps/outposts/manual-deploy-docker-compose"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/manual-deploy-kubernetes"
-  to     = "/docs/add-secure-apps/outposts/manual-deploy-kubernetes"
+  from   = "/outposts/manual-deploy-kubernetes"
+  to     = "/add-secure-apps/outposts/manual-deploy-kubernetes"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/outposts/upgrading"
-  to     = "/docs/add-secure-apps/outposts/upgrading"
+  from   = "/outposts/upgrading"
+  to     = "/add-secure-apps/outposts/upgrading"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/policies/expression"
-  to     = "/docs/customize/policies/expression"
+  from   = "/policies/expression"
+  to     = "/customize/policies/expression"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/policies/"
-  to     = "/docs/customize/policies/"
+  from   = "/policies/"
+  to     = "/customize/policies/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/policies/working_with_policies/unique_email"
-  to     = "/docs/customize/policies/expression/unique_email"
+  from   = "/policies/working_with_policies/unique_email"
+  to     = "/customize/policies/expression/unique_email"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/customize/policies/working_with_policies/unique_email"
-  to     = "/docs/customize/policies/expression/unique_email"
+  from   = "/customize/policies/working_with_policies/unique_email"
+  to     = "/customize/policies/expression/unique_email"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/policies/working_with_policies/whitelist_email"
-  to     = "/docs/customize/policies/expression/whitelist_email"
+  from   = "/policies/working_with_policies/whitelist_email"
+  to     = "/customize/policies/expression/whitelist_email"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/customize/policies/working_with_policies/whitelist_email"
-  to     = "/docs/customize/policies/expression/whitelist_email"
+  from   = "/customize/policies/working_with_policies/whitelist_email"
+  to     = "/customize/policies/expression/whitelist_email"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/policies/working_with_policies/working_with_policies"
-  to     = "/docs/customize/policies/working_with_policies/working_with_policies"
+  from   = "/policies/working_with_policies/working_with_policies"
+  to     = "/customize/policies/working_with_policies/working_with_policies"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/entra/add-entra-provider"
-  to     = "/docs/add-secure-apps/providers/entra/add-entra-provider"
+  from   = "/providers/entra/add-entra-provider"
+  to     = "/add-secure-apps/providers/entra/add-entra-provider"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/entra/"
-  to     = "/docs/add-secure-apps/providers/entra/"
+  from   = "/providers/entra/"
+  to     = "/add-secure-apps/providers/entra/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/entra/setup-entra"
-  to     = "/docs/add-secure-apps/providers/entra/setup-entra"
+  from   = "/providers/entra/setup-entra"
+  to     = "/add-secure-apps/providers/entra/setup-entra"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/gws/add-gws-provider"
-  to     = "/docs/add-secure-apps/providers/gws/add-gws-provider"
+  from   = "/providers/gws/add-gws-provider"
+  to     = "/add-secure-apps/providers/gws/add-gws-provider"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/gws/"
-  to     = "/docs/add-secure-apps/providers/gws/"
+  from   = "/providers/gws/"
+  to     = "/add-secure-apps/providers/gws/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/gws/setup-gws"
-  to     = "/docs/add-secure-apps/providers/gws/setup-gws"
+  from   = "/providers/gws/setup-gws"
+  to     = "/add-secure-apps/providers/gws/setup-gws"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/x"
-  to     = "/docs/add-secure-apps/providers/x"
+  from   = "/providers/x"
+  to     = "/add-secure-apps/providers/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/ldap/generic_setup"
-  to     = "/docs/add-secure-apps/providers/ldap/generic_setup"
+  from   = "/providers/ldap/generic_setup"
+  to     = "/add-secure-apps/providers/ldap/generic_setup"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/ldap/"
-  to     = "/docs/add-secure-apps/providers/ldap/"
+  from   = "/providers/ldap/"
+  to     = "/add-secure-apps/providers/ldap/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/oauth2/client_credentials"
-  to     = "/docs/add-secure-apps/providers/oauth2/client_credentials"
+  from   = "/providers/oauth2/client_credentials"
+  to     = "/add-secure-apps/providers/oauth2/client_credentials"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/oauth2/device_code"
-  to     = "/docs/add-secure-apps/providers/oauth2/device_code"
+  from   = "/providers/oauth2/device_code"
+  to     = "/add-secure-apps/providers/oauth2/device_code"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/oauth2/"
-  to     = "/docs/add-secure-apps/providers/oauth2/"
+  from   = "/providers/oauth2/"
+  to     = "/add-secure-apps/providers/oauth2/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/property-mappings/expression"
-  to     = "/docs/add-secure-apps/providers/property-mappings/expression"
+  from   = "/providers/property-mappings/expression"
+  to     = "/add-secure-apps/providers/property-mappings/expression"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/property-mappings/"
-  to     = "/docs/add-secure-apps/providers/property-mappings/"
+  from   = "/providers/property-mappings/"
+  to     = "/add-secure-apps/providers/property-mappings/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/__placeholders"
-  to     = "/docs/add-secure-apps/providers/proxy/__placeholders"
+  from   = "/providers/proxy/__placeholders"
+  to     = "/add-secure-apps/providers/proxy/__placeholders"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_caddy_standalone"
-  to     = "/docs/add-secure-apps/providers/proxy/_caddy_standalone"
+  from   = "/providers/proxy/_caddy_standalone"
+  to     = "/add-secure-apps/providers/proxy/_caddy_standalone"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_envoy_istio"
-  to     = "/docs/add-secure-apps/providers/proxy/_envoy_istio"
+  from   = "/providers/proxy/_envoy_istio"
+  to     = "/add-secure-apps/providers/proxy/_envoy_istio"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_nginx_ingress"
-  to     = "/docs/add-secure-apps/providers/proxy/_nginx_ingress"
+  from   = "/providers/proxy/_nginx_ingress"
+  to     = "/add-secure-apps/providers/proxy/_nginx_ingress"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_nginx_proxy_manager"
-  to     = "/docs/add-secure-apps/providers/proxy/_nginx_proxy_manager"
+  from   = "/providers/proxy/_nginx_proxy_manager"
+  to     = "/add-secure-apps/providers/proxy/_nginx_proxy_manager"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_nginx_standalone"
-  to     = "/docs/add-secure-apps/providers/proxy/_nginx_standalone"
+  from   = "/providers/proxy/_nginx_standalone"
+  to     = "/add-secure-apps/providers/proxy/_nginx_standalone"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_traefik_compose"
-  to     = "/docs/add-secure-apps/providers/proxy/_traefik_compose"
+  from   = "/providers/proxy/_traefik_compose"
+  to     = "/add-secure-apps/providers/proxy/_traefik_compose"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_traefik_ingress"
-  to     = "/docs/add-secure-apps/providers/proxy/_traefik_ingress"
+  from   = "/providers/proxy/_traefik_ingress"
+  to     = "/add-secure-apps/providers/proxy/_traefik_ingress"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/_traefik_standalone"
-  to     = "/docs/add-secure-apps/providers/proxy/_traefik_standalone"
+  from   = "/providers/proxy/_traefik_standalone"
+  to     = "/add-secure-apps/providers/proxy/_traefik_standalone"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/custom_headers"
-  to     = "/docs/add-secure-apps/providers/proxy/custom_headers"
+  from   = "/providers/proxy/custom_headers"
+  to     = "/add-secure-apps/providers/proxy/custom_headers"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/forward_auth"
-  to     = "/docs/add-secure-apps/providers/proxy/forward_auth"
+  from   = "/providers/proxy/forward_auth"
+  to     = "/add-secure-apps/providers/proxy/forward_auth"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/header_authentication"
-  to     = "/docs/add-secure-apps/providers/proxy/header_authentication"
+  from   = "/providers/proxy/header_authentication"
+  to     = "/add-secure-apps/providers/proxy/header_authentication"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/"
-  to     = "/docs/add-secure-apps/providers/proxy/"
+  from   = "/providers/proxy/"
+  to     = "/add-secure-apps/providers/proxy/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/server_caddy"
-  to     = "/docs/add-secure-apps/providers/proxy/server_caddy"
+  from   = "/providers/proxy/server_caddy"
+  to     = "/add-secure-apps/providers/proxy/server_caddy"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/server_envoy"
-  to     = "/docs/add-secure-apps/providers/proxy/server_envoy"
+  from   = "/providers/proxy/server_envoy"
+  to     = "/add-secure-apps/providers/proxy/server_envoy"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/server_nginx"
-  to     = "/docs/add-secure-apps/providers/proxy/server_nginx"
+  from   = "/providers/proxy/server_nginx"
+  to     = "/add-secure-apps/providers/proxy/server_nginx"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/proxy/server_traefik"
-  to     = "/docs/add-secure-apps/providers/proxy/server_traefik"
+  from   = "/providers/proxy/server_traefik"
+  to     = "/add-secure-apps/providers/proxy/server_traefik"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/rac/how-to-rac"
-  to     = "/docs/add-secure-apps/providers/rac/how-to-rac"
+  from   = "/providers/rac/how-to-rac"
+  to     = "/add-secure-apps/providers/rac/how-to-rac"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/rac/"
-  to     = "/docs/add-secure-apps/providers/rac/"
+  from   = "/providers/rac/"
+  to     = "/add-secure-apps/providers/rac/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/radius/"
-  to     = "/docs/add-secure-apps/providers/radius/"
+  from   = "/providers/radius/"
+  to     = "/add-secure-apps/providers/radius/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/saml/"
-  to     = "/docs/add-secure-apps/providers/saml/"
+  from   = "/providers/saml/"
+  to     = "/add-secure-apps/providers/saml/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/providers/scim/"
-  to     = "/docs/add-secure-apps/providers/scim/"
+  from   = "/providers/scim/"
+  to     = "/add-secure-apps/providers/scim/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/2023-06-cure53"
-  to     = "/docs/security/audits-and-certs/2023-06-cure53"
+  from   = "/security/2023-06-cure53"
+  to     = "/security/audits-and-certs/2023-06-cure53"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2022-23555"
-  to     = "/docs/security/cves/CVE-2022-23555"
+  from   = "/security/CVE-2022-23555"
+  to     = "/security/cves/CVE-2022-23555"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2022-46145"
-  to     = "/docs/security/cves/CVE-2022-46145"
+  from   = "/security/CVE-2022-46145"
+  to     = "/security/cves/CVE-2022-46145"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2022-46172"
-  to     = "/docs/security/cves/CVE-2022-46172"
+  from   = "/security/CVE-2022-46172"
+  to     = "/security/cves/CVE-2022-46172"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2024-42490"
-  to     = "/docs/security/cves/CVE-2024-42490"
+  from   = "/security/CVE-2024-42490"
+  to     = "/security/cves/CVE-2024-42490"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2023-26481"
-  to     = "/docs/security/cves/CVE-2023-26481"
+  from   = "/security/CVE-2023-26481"
+  to     = "/security/cves/CVE-2023-26481"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2023-36456"
-  to     = "/docs/security/cves/CVE-2023-36456"
+  from   = "/security/CVE-2023-36456"
+  to     = "/security/cves/CVE-2023-36456"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2023-39522"
-  to     = "/docs/security/cves/CVE-2023-39522"
+  from   = "/security/CVE-2023-39522"
+  to     = "/security/cves/CVE-2023-39522"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2023-48228"
-  to     = "/docs/security/cves/CVE-2023-48228"
+  from   = "/security/CVE-2023-48228"
+  to     = "/security/cves/CVE-2023-48228"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2024-21637"
-  to     = "/docs/security/cves/CVE-2024-21637"
+  from   = "/security/CVE-2024-21637"
+  to     = "/security/cves/CVE-2024-21637"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2024-23647"
-  to     = "/docs/security/cves/CVE-2024-23647"
+  from   = "/security/CVE-2024-23647"
+  to     = "/security/cves/CVE-2024-23647"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2024-37905"
-  to     = "/docs/security/cves/CVE-2024-37905"
+  from   = "/security/CVE-2024-37905"
+  to     = "/security/cves/CVE-2024-37905"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/CVE-2024-38371"
-  to     = "/docs/security/cves/CVE-2024-38371"
+  from   = "/security/CVE-2024-38371"
+  to     = "/security/cves/CVE-2024-38371"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/security/GHSA-rjvp-29xq-f62w"
-  to     = "/docs/security/cves/GHSA-rjvp-29xq-f62w"
+  from   = "/security/GHSA-rjvp-29xq-f62w"
+  to     = "/security/cves/GHSA-rjvp-29xq-f62w"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/active-directory/"
-  to     = "/docs/users-sources/sources/directory-sync/active-directory/"
+  from   = "/sources/active-directory/"
+  to     = "/users-sources/sources/directory-sync/active-directory/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/apple/"
-  to     = "/docs/users-sources/sources/social-logins/apple/"
+  from   = "/sources/apple/"
+  to     = "/users-sources/sources/social-logins/apple/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/azure-ad/"
-  to     = "/docs/users-sources/sources/social-logins/azure-ad/"
+  from   = "/sources/azure-ad/"
+  to     = "/users-sources/sources/social-logins/azure-ad/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/discord/"
-  to     = "/docs/users-sources/sources/social-logins/discord/"
+  from   = "/sources/discord/"
+  to     = "/users-sources/sources/social-logins/discord/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/facebook/"
-  to     = "/docs/users-sources/sources/social-logins/facebook/"
+  from   = "/sources/facebook/"
+  to     = "/users-sources/sources/social-logins/facebook/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/freeipa/"
-  to     = "/docs/users-sources/sources/directory-sync/freeipa/"
+  from   = "/sources/freeipa/"
+  to     = "/users-sources/sources/directory-sync/freeipa/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/github/"
-  to     = "/docs/users-sources/sources/social-logins/github/"
+  from   = "/sources/github/"
+  to     = "/users-sources/sources/social-logins/github/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/google/"
-  to     = "/docs/users-sources/sources/social-logins/google/"
+  from   = "/sources/google/"
+  to     = "/users-sources/sources/social-logins/google/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/"
-  to     = "/docs/users-sources/sources/"
+  from   = "/sources/"
+  to     = "/users-sources/sources/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/ldap/"
-  to     = "/docs/users-sources/sources/protocols/ldap/"
+  from   = "/sources/ldap/"
+  to     = "/users-sources/sources/protocols/ldap/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/mailcow/"
-  to     = "/docs/users-sources/sources/social-logins/mailcow/"
+  from   = "/sources/mailcow/"
+  to     = "/users-sources/sources/social-logins/mailcow/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/oauth/"
-  to     = "/docs/users-sources/sources/protocols/oauth/"
+  from   = "/sources/oauth/"
+  to     = "/users-sources/sources/protocols/oauth/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/plex/"
-  to     = "/docs/users-sources/sources/social-logins/plex/"
+  from   = "/sources/plex/"
+  to     = "/users-sources/sources/social-logins/plex/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/property-mappings/expressions"
-  to     = "/docs/users-sources/sources/property-mappings/expressions"
+  from   = "/sources/property-mappings/expressions"
+  to     = "/users-sources/sources/property-mappings/expressions"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/property-mappings/"
-  to     = "/docs/users-sources/sources/property-mappings/"
+  from   = "/sources/property-mappings/"
+  to     = "/users-sources/sources/property-mappings/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/saml/"
-  to     = "/docs/users-sources/sources/protocols/saml/"
+  from   = "/sources/saml/"
+  to     = "/users-sources/sources/protocols/saml/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/scim/"
-  to     = "/docs/users-sources/sources/protocols/scim/"
+  from   = "/sources/scim/"
+  to     = "/users-sources/sources/protocols/scim/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/twitch/"
-  to     = "/docs/users-sources/sources/social-logins/twitch/"
+  from   = "/sources/twitch/"
+  to     = "/users-sources/sources/social-logins/twitch/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/sources/twitter/"
-  to     = "/docs/users-sources/sources/social-logins/twitter/"
+  from   = "/sources/twitter/"
+  to     = "/users-sources/sources/social-logins/twitter/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/access-control/x"
-  to     = "/docs/users-sources/access-control/x"
+  from   = "/user-group-role/access-control/x"
+  to     = "/users-sources/access-control/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/access-control/manage_permissions"
-  to     = "/docs/users-sources/access-control/manage_permissions"
+  from   = "/user-group-role/access-control/manage_permissions"
+  to     = "/users-sources/access-control/manage_permissions"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/access-control/permissions"
-  to     = "/docs/users-sources/access-control/permissions"
+  from   = "/user-group-role/access-control/permissions"
+  to     = "/users-sources/access-control/permissions"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/groups/group_ref"
-  to     = "/docs/users-sources/groups/group_ref"
+  from   = "/user-group-role/groups/group_ref"
+  to     = "/users-sources/groups/group_ref"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/groups/x"
-  to     = "/docs/users-sources/groups/x"
+  from   = "/user-group-role/groups/x"
+  to     = "/users-sources/groups/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/groups/manage_groups"
-  to     = "/docs/users-sources/groups/manage_groups"
+  from   = "/user-group-role/groups/manage_groups"
+  to     = "/users-sources/groups/manage_groups"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/roles/x"
-  to     = "/docs/users-sources/roles/"
+  from   = "/user-group-role/roles/x"
+  to     = "/users-sources/roles/"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/roles/manage_roles"
-  to     = "/docs/users-sources/roles/manage_roles"
+  from   = "/user-group-role/roles/manage_roles"
+  to     = "/users-sources/roles/manage_roles"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/user/x"
-  to     = "/docs/users-sources/user/x"
+  from   = "/user-group-role/user/x"
+  to     = "/users-sources/user/x"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/user/invitations"
-  to     = "/docs/users-sources/user/invitations"
+  from   = "/user-group-role/user/invitations"
+  to     = "/users-sources/user/invitations"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/user/user_basic_operations"
-  to     = "/docs/users-sources/user/user_basic_operations"
+  from   = "/user-group-role/user/user_basic_operations"
+  to     = "/users-sources/user/user_basic_operations"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/user-group-role/user/user_ref"
-  to     = "/docs/users-sources/user/user_ref"
+  from   = "/user-group-role/user/user_ref"
+  to     = "/users-sources/user/user_ref"
   status = 302
   force  = true
 
 # Manual redirects, moved Dev Docs into regular docs Sept 2024
 [[redirects]]
   from   = "/developer-docs/"
-  to     = "/docs/developer-docs/"
+  to     = "/developer-docs/"
   status = 302
   force  = true
 
 [[redirects]]
   from   = "/developer-docs/setup/full-dev-environment"
-  to     = "/docs/developer-docs/setup/full-dev-environment"
+  to     = "/developer-docs/setup/full-dev-environment"
   status = 302
   force  = true
 
 [[redirects]]
   from   = "/developer-docs/setup/frontend-dev-environment"
-  to     = "/docs/developer-docs/setup/frontend-dev-environment"
+  to     = "/developer-docs/setup/frontend-dev-environment"
   status = 302
   force  = true
 
 [[redirects]]
   from   = "/developer-docs/setup/website-dev-environment"
-  to     = "/docs/developer-docs/setup/website-dev-environment"
+  to     = "/developer-docs/setup/website-dev-environment"
   status = 302
   force  = true
 
@@ -1027,112 +1020,16 @@
   status = 302
   force  = true
 
-[[redirects]]
-  from   = "/developer-docs/api/api"
-  to     = "/docs/developer-docs/api/api"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/api/reference/*"
-  to     = "/docs/developer-docs/api/reference/:splat"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/api/flow-executor"
-  to     = "/docs/developer-docs/api/flow-executor"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/api/making-schema-changes"
-  to     = "/docs/developer-docs/api/making-schema-changes"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/api/websocket"
-  to     = "/docs/developer-docs/api/websocket"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/api/clients"
-  to     = "/docs/developer-docs/api/clients"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/blueprints"
-  to     = "/docs/customize/blueprints"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/writing-documentation"
-  to     = "/docs/developer-docs/docs/writing-documentation"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/style-guide"
-  to     = "/docs/developer-docs/docs/style-guide"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/templates/index"
-  to     = "/docs/developer-docs/docs/templates/index"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/templates/procedural"
-  to     = "/docs/developer-docs/docs/templates/procedural"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/templates/conceptual"
-  to     = "/docs/developer-docs/docs/templates/conceptual"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/templates/reference"
-  to     = "/docs/developer-docs/docs/templates/reference"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/docs/templates/combo"
-  to     = "/docs/developer-docs/docs/templates/combo"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/releases/index"
-  to     = "/docs/developer-docs/releases/index"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/translation"
-  to     = "/docs/developer-docs/translation"
-  status = 302
-  force  = true
-
   # Moved GeoIP and S3 under System Management/user_basic_operations
 
 [[redirects]]
-  from   = "/docs/install-config/storage-s3"
-  to     = "/docs/sys-mgmt/ops/storage-s3"
+  from   = "/install-config/storage-s3"
+  to     = "/sys-mgmt/ops/storage-s3"
   status = 302
   force  = true
 
 [[redirects]]
-  from   = "/docs/install-config/geoip"
-  to     = "/docs/sys-mgmt/ops/geoip"
+  from   = "/install-config/geoip"
+  to     = "/sys-mgmt/ops/geoip"
   status = 302
   force  = true

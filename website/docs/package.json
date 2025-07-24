@@ -5,11 +5,11 @@
     "private": true,
     "scripts": {
         "build": "run-s build:docusaurus",
-        "build:docusaurus": "docusaurus build --out-dir ../build",
+        "build:docusaurus": "docusaurus build",
         "check-types": "tsc -b .",
         "clear": "docusaurus clear",
         "docusaurus": "docusaurus",
-        "serve": "docusaurus serve --dir ../build",
+        "serve": "docusaurus serve",
         "start": "docusaurus start"
     },
     "dependencies": {
