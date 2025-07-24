@@ -41,6 +41,8 @@ const pluginName = "mdx-plugin";
  * @returns {Plugin}
  */
 export function mdxPlugin({ root }) {
+    const prefix = "~docs";
+
     // TODO: Replace with `resolvePackage` after NPM Workspaces support is added.
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
@@ -56,7 +58,8 @@ export function mdxPlugin({ root }) {
             if (!args.path.startsWith("~")) return args;
 
             return {
-                path: path.resolve(docsPackageRoot, args.path.slice(1)),
+                path: path.join(docsPackageRoot, "docs", args.path.slice(prefix.length)),
+
                 pluginName,
             };
         }
@@ -76,7 +79,7 @@ export function mdxPlugin({ root }) {
 
             const publicPath = path.resolve(
                 "/",
-                path.relative(path.join(root, "website"), data.path),
+                path.relative(path.join(root, "website", "docs"), data.path),
             );
             const publicDirectory = path.dirname(publicPath);
 

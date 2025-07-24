@@ -6,7 +6,7 @@ Installing authentik is exactly the same process for both Enterprise version and
 
 ## 1. Install Enterprise
 
-To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../releases) version or later.
+To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../../releases/) version or later.
 
 If this is a fresh install, refer to our [technical documentation](../install-config/index.mdx) for instructions to install and configure authentik.
 

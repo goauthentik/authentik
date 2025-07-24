@@ -14,7 +14,7 @@ const metadata: Meta<AkHiddenTextInputProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Hidden Text Input Component
 
 A text-input field with a visibility control, so you can show/hide sensitive fields.

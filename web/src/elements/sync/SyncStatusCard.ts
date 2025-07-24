@@ -8,11 +8,12 @@ import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -87,12 +88,12 @@ export class SyncStatusTable extends Table<SystemTask> {
         </td>`;
     }
 
-    renderToolbarContainer() {
-        return html``;
+    protected override renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    renderTablePagination() {
-        return html``;
+    protected override renderTablePagination(): SlottedTemplateResult {
+        return nothing;
     }
 }
 

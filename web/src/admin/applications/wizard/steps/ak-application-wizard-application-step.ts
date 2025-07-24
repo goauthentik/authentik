@@ -149,9 +149,8 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
-                <ak-form-group aria-label=${msg("UI Settings")}>
-                    <span slot="header"> ${msg("UI Settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group label=${msg("UI Settings")}>
+                    <div class="pf-c-form">
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
