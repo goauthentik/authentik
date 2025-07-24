@@ -24,7 +24,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-static/docker-compose.yml
-static/schema.yml
-static/releases.gen.json
+!integrations/**/media
+**/static/docker-compose.yml
+**/static/releases.gen.json
+**/static/schema.yml
+api/reference
 docs/developer-docs/api/reference/**
