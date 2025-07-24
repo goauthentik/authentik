@@ -28,22 +28,10 @@
 [headers.values]
   X-Frame-Options = "DENY"
 
-# Migration from docs to separate directory
-[[redirects]]
-  from   = "/core/applications"
-  to     = "/applications"
-  status = 302
-
 # Split integrations to separate deploy
 [[redirects]]
   from   = "/integrations/*"
   to     = "https://integrations.goauthentik.io/:splat"
-  status = 302
-
-# Migration to root docs
-[[redirects]]
-  from   = "/docs/*"
-  to     = "/:splat"
   status = 302
 
 # Split Property Mappings docs between Providers and Sources
@@ -88,6 +76,11 @@
   to     = "/sys-mgmt/tenancy"
   status = 302
   force  = true
+
+[[redirects]]
+  from   = "/core/applications"
+  to     = "/add-secure-apps/applications/"
+  status = 302
 
 [[redirects]]
   from   = "/applications/"

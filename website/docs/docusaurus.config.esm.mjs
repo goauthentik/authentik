@@ -3,6 +3,7 @@
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { ReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
 
 import { cp } from "node:fs/promises";
@@ -81,6 +82,15 @@ export default createDocusaurusConfig(
                 "@goauthentik/docusaurus-theme/releases/plugin",
                 /** @type {ReleasesPluginOptions} */ ({
                     docsDirectory: __dirname,
+                }),
+            ],
+            [
+                "@docusaurus/plugin-client-redirects",
+                /** @type {RedirectsPluginOptions} */ ({
+                    createRedirects(existingPath) {
+                        // Redirect to their respective path without the `docs/` prefix
+                        return `/docs${existingPath}`;
+                    },
                 }),
             ],
         ],
