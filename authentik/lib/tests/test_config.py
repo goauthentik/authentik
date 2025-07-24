@@ -180,7 +180,7 @@ class TestConfig(TestCase):
         self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
-        self.assertEqual(config.get("worker.processes"), 2)
+        self.assertEqual(config.get("worker.threads"), 2)
         self.assertEqual(config.get("cache.timeout"), "124s")
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
