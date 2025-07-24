@@ -562,6 +562,22 @@ class TestProviderSAML(SeleniumTestCase):
         client_window = self.driver.current_window_handle
         # We need to access the SP on the same host as the IdP for SameSite cookies
         self.driver.get(f"http://{self.host}:9009")
+        self.driver.switch_to.new_window("tab")
+        client_window = self.driver.current_window_handle
+        # We need to access the SP on the same host as the IdP for SameSite cookies
+        self.driver.get(f"http://{self.host}:9009")
+        self.driver.switch_to.new_window("tab")
+        client_window = self.driver.current_window_handle
+        # We need to access the SP on the same host as the IdP for SameSite cookies
+        self.driver.get(f"http://{self.host}:9009")
+        self.driver.switch_to.new_window("tab")
+        client_window = self.driver.current_window_handle
+        # We need to access the SP on the same host as the IdP for SameSite cookies
+        self.driver.get(f"http://{self.host}:9009")
+        self.driver.switch_to.new_window("tab")
+        client_window = self.driver.current_window_handle
+        # We need to access the SP on the same host as the IdP for SameSite cookies
+        self.driver.get(f"http://{self.host}:9009")
 
         self.driver.switch_to.window(login_window)
         self.login()
