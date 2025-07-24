@@ -3,7 +3,7 @@ title: Telegram
 support_level: community
 ---
 
-Allows users to authenticate using their Telegram account via Telegram application
+Configuring Telegram as a source allows users to authenticate using their Telegram account credentials within authentik.
 
 ## Telegram
 
