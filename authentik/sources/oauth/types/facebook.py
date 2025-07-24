@@ -32,6 +32,7 @@ class FacebookType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("id"),
             "username": info.get("name"),
             "email": info.get("email"),
             "name": info.get("name"),

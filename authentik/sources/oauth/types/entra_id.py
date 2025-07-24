@@ -53,11 +53,6 @@ class EntraIDOAuthCallback(OpenIDConnectOAuth2Callback):
 
     client_class = EntraIDClient
 
-    def get_user_id(self, info: dict[str, str]) -> str:
-        # Default try to get `id` for the Graph API endpoint
-        # fallback to OpenID logic in case the profile URL was changed
-        return info.get("id", super().get_user_id(info))
-
 
 @registry.register()
 class EntraIDType(SourceType):
@@ -89,6 +84,7 @@ class EntraIDType(SourceType):
             group_id_dict[group["id"]] = group
         info["raw_groups"] = group_id_dict
         return {
+            "id": info.get("id", info.get("sub")),
             "username": info.get("userPrincipalName"),
             "email": mail,
             "name": info.get("displayName"),

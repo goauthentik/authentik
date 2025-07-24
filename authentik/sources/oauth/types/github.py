@@ -83,6 +83,7 @@ class GitHubType(SourceType):
                 if email.get("primary", False):
                     chosen_email = email.get("email", None)
         return {
+            "id": info.get("id"),
             "username": info.get("login"),
             "email": chosen_email,
             "name": info.get("name"),

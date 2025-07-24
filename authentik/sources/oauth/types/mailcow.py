@@ -64,6 +64,7 @@ class MailcowType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("id"),
             "username": info.get("full_name"),
             "email": info.get("email"),
             "name": info.get("full_name"),

@@ -39,6 +39,7 @@ class RedditType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("id"),
             "username": info.get("name"),
             "email": None,
             "name": info.get("name"),
