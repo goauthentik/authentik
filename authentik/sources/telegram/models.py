@@ -15,7 +15,7 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
-from authentik.core.types import UILoginButton
+from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
 
 
@@ -77,6 +77,15 @@ class TelegramSource(Source):
             ),
             name=self.name,
             icon_url=self.icon_url,
+        )
+
+    def ui_user_settings(self) -> UserSettingSerializer | None:
+        return UserSettingSerializer(
+            data={
+                "title": self.name,
+                "component": "ak-user-settings-source-telegram",
+                "icon_url": self.icon_url,
+            }
         )
 
     @property
