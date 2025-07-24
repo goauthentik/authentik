@@ -13,6 +13,7 @@ import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import {
     Endpoint,
     RacApi,
+    ProvidersApi,
     RACProvider,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
@@ -42,9 +43,9 @@ export class EndpointListPage extends Table<Endpoint> {
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsList({
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsList({
             ...(await this.defaultEndpointConfig()),
-            provider: this.provider?.pk,
+            providerPk: this.provider!.pk,
             superuserFullList: true,
         });
     }
@@ -69,12 +70,14 @@ export class EndpointListPage extends Table<Endpoint> {
                 ];
             }}
             .usedBy=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsUsedByList({
+                return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsUsedByList({
+                    providerPk: this.provider!.pk,
                     pbmUuid: item.pk,
                 });
             }}
             .delete=${(item: Endpoint) => {
-                return new RacApi(DEFAULT_CONFIG).racEndpointsDestroy({
+                return new ProvidersApi(DEFAULT_CONFIG).providersRacEndpointsDestroy({
+                    providerPk: this.provider!.pk,
                     pbmUuid: item.pk,
                 });
             }}
