@@ -129,7 +129,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     constructor() {
         super();
         const defaultPath = new DefaultUIConfig().defaults.userPath;
-        this.activePath = getURLParam<string>("path", defaultPath);
+        this.activePath = getURLParam("path", defaultPath);
+
         uiConfig().then((c) => {
             if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;

@@ -1,159 +1,135 @@
 import "#elements/router/Router404";
 
-import { ROUTE_SEPARATOR } from "#common/constants";
-
 import { AKElement } from "#elements/Base";
 import { Route } from "#elements/router/Route";
-import { RouteMatch } from "#elements/router/RouteMatch";
+import { matchRoute, pluckRoute } from "#elements/router/RouteMatch";
 
-import {
-    BrowserClient,
-    getClient,
-    SEMANTIC_ATTRIBUTE_SENTRY_SOURCE,
-    Span,
-    startBrowserTracingNavigationSpan,
-    startBrowserTracingPageLoadSpan,
-} from "@sentry/browser";
-
-import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
 window.addEventListener("load", () => {
-    if (!window.HashChangeEvent)
-        (function () {
-            let lastURL = document.URL;
-            window.addEventListener("hashchange", function (event) {
-                Object.defineProperty(event, "oldURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: lastURL,
-                });
-                Object.defineProperty(event, "newURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: document.URL,
-                });
-                lastURL = document.URL;
-            });
-        })();
-});
+    if (window.HashChangeEvent) return;
 
-export function paramURL(url: string, params?: { [key: string]: unknown }): string {
-    let finalUrl = "#";
-    finalUrl += url;
-    if (params) {
-        finalUrl += ";";
-        finalUrl += encodeURIComponent(JSON.stringify(params));
-    }
-    return finalUrl;
-}
-export function navigate(url: string, params?: { [key: string]: unknown }): void {
-    window.location.assign(paramURL(url, params));
-}
+    console.debug("authentik/router: polyfilling hashchange event");
+
+    let lastURL = document.URL;
+
+    window.addEventListener("hashchange", function (event) {
+        Object.defineProperty(event, "oldURL", {
+            enumerable: true,
+            configurable: true,
+            value: lastURL,
+        });
+
+        Object.defineProperty(event, "newURL", {
+            enumerable: true,
+            configurable: true,
+            value: document.URL,
+        });
+
+        lastURL = document.URL;
+    });
+});
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
-    @property({ attribute: false })
-    current?: RouteMatch;
+    @state()
+    private currentPathname: string | null = null;
 
     @property()
-    defaultUrl?: string;
+    public defaultURL?: string;
 
     @property({ attribute: false })
-    routes: Route[] = [];
+    public routes: Route[] = [];
 
-    private sentryClient?: BrowserClient;
-    private pageLoadSpan?: Span;
+    static get styles(): CSSResult[] {
+        return [
+            css`
+                :host {
+                    background-color: transparent !important;
+                }
 
-    static styles: CSSResult[] = [
-        css`
-            :host {
-                background-color: transparent !important;
-            }
-            *:first-child {
-                flex-direction: column;
-            }
-        `,
-    ];
+                *:first-child {
+                    flex-direction: column;
+                }
+            `,
+        ];
+    }
 
-    constructor() {
-        super();
-        window.addEventListener("hashchange", (ev: HashChangeEvent) => this.navigate(ev));
-        this.sentryClient = getClient();
-        if (this.sentryClient) {
-            this.pageLoadSpan = startBrowserTracingPageLoadSpan(this.sentryClient, {
-                name: window.location.pathname,
-                attributes: {
-                    [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "url",
-                },
+    connectedCallback(): void {
+        super.connectedCallback();
+
+        window.addEventListener("hashchange", this.#refreshLocation);
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        window.removeEventListener("hashchange", this.#refreshLocation);
+    }
+
+    protected firstUpdated(): void {
+        const currentPathname = pluckRoute(window.location).pathname;
+
+        if (currentPathname) return;
+
+        console.debug("authentik/router: defaulted route to empty pathname");
+
+        this.#redirectToDefault();
+    }
+
+    #redirectToDefault(): void {
+        const nextPathname = this.defaultURL || "/";
+
+        window.location.hash = "#" + nextPathname;
+    }
+
+    #refreshLocation = (event: HashChangeEvent): void => {
+        console.debug("authentik/router: hashchange event", event);
+        const nextPathname = pluckRoute(event.newURL).pathname;
+        const previousPathname = pluckRoute(event.oldURL).pathname;
+
+        if (previousPathname === nextPathname) {
+            console.debug("authentik/router: hashchange event, but no change in path", event, {
+                currentPathname: nextPathname,
+                previousPathname,
             });
-        }
-    }
 
-    firstUpdated(): void {
-        this.navigate();
-    }
-
-    navigate(ev?: HashChangeEvent): void {
-        let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
-        if (ev) {
-            // Check if we've actually changed paths
-            const oldPath = new URL(ev.oldURL).hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
-            if (oldPath === activeUrl) return;
-        }
-        if (activeUrl === "") {
-            activeUrl = this.defaultUrl || "/";
-            window.location.hash = `#${activeUrl}`;
-            console.debug(`authentik/router: defaulted URL to ${window.location.hash}`);
             return;
         }
-        let matchedRoute: RouteMatch | null = null;
-        this.routes.some((route) => {
-            const match = route.url.exec(activeUrl);
-            if (match !== null) {
-                matchedRoute = new RouteMatch(route, activeUrl);
-                matchedRoute.arguments = match.groups || {};
-                console.debug("authentik/router: found match ", matchedRoute);
-                return true;
-            }
-            return false;
-        });
-        if (!matchedRoute) {
-            console.debug(`authentik/router: route "${activeUrl}" not defined`);
-            const route = new Route(RegExp(""), async () => {
-                return html`<div class="pf-c-page__main">
-                    <ak-router-404 url=${activeUrl}></ak-router-404>
-                </div>`;
-            });
-            matchedRoute = new RouteMatch(route, activeUrl);
-            matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
-        }
-        this.current = matchedRoute;
-    }
 
-    updated(changedProperties: PropertyValues<this>): void {
-        if (!changedProperties.has("current") || !this.current) return;
-        if (!this.sentryClient) return;
-        // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-        if (this.pageLoadSpan) {
-            this.pageLoadSpan.updateName(this.current.sanitizedURL());
-            this.pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
-            this.pageLoadSpan = undefined;
-        } else {
-            startBrowserTracingNavigationSpan(this.sentryClient, {
-                op: "navigation",
-                name: this.current.sanitizedURL(),
-                attributes: {
-                    [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "route",
-                },
-            });
+        if (!nextPathname) {
+            console.debug(`authentik/router: defaulted route to ${nextPathname}`);
+
+            this.#redirectToDefault();
+            return;
         }
-    }
+
+        this.currentPathname = nextPathname;
+    };
 
     render(): TemplateResult | undefined {
-        return this.current?.render();
+        let currentPathname = this.currentPathname;
+
+        if (!currentPathname) {
+            currentPathname = pluckRoute(window.location).pathname;
+        }
+
+        const match = matchRoute(currentPathname, this.routes);
+
+        if (!match) {
+            return html`<div class="pf-c-page__main">
+                <ak-router-404 pathname=${currentPathname}></ak-router-404>
+            </div>`;
+        }
+
+        console.debug("authentik/router: found match", match);
+
+        const { parameters, route } = match;
+
+        return route.render(parameters);
     }
 }
 

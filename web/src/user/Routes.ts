@@ -4,13 +4,13 @@ import { Route } from "#elements/router/Route";
 
 import { html } from "lit";
 
-export const ROUTES: Route[] = [
+export const ROUTES = [
     // Prevent infinite Shell loops
-    new Route(new RegExp("^/$")).redirect("/library"),
-    new Route(new RegExp("^#.*")).redirect("/library"),
-    new Route(new RegExp("^/library$"), async () => html`<ak-library></ak-library>`),
-    new Route(new RegExp("^/settings$"), async () => {
+    Route.redirect("^/$", "/library"),
+    Route.redirect("^#.*", "/library"),
+    new Route("^/library$", async () => html`<ak-library></ak-library>`),
+    new Route("^/settings$", async () => {
         await import("#user/user-settings/UserSettingsPage");
         return html`<ak-user-settings></ak-user-settings>`;
     }),
-];
+] satisfies Route<never>[];
