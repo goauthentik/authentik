@@ -22,7 +22,7 @@ Note that due to the Python debugger for VS Code, when a Python file in authenti
 
 #### Debug the server or the worker
 
-Whichever process is started first will listen on port `9901`. Additional processes started after that will then try to listen on the same port, which will fail, and will simply not start the debugger in that case.
+Whichever process is first started listens on port `9901`. Additional processes started after that will then try to listen on the same port, which will fail, and will simply not start the debugger in that case.
 
 #### Debugging in containers
 

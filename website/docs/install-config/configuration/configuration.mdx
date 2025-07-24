@@ -196,7 +196,7 @@ When your PostgreSQL databases are running behind a connection pooler (like PgBo
 
 ##### `AUTHENTIK_WORKER__PROCESSES`
 
-Configure how many Dramatiq worker processes should be started.
+Configure how many worker processes should be started for Dramatiq to use.
 
 Defaults to 2. A value below 2 workers is not recommended. In environments where scaling with multiple replicas of the authentik server is not possible, this number can be increased to handle higher loads.
 

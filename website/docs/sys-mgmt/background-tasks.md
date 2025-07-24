@@ -65,7 +65,7 @@ Schedules can also be _paused_ to prevent new tasks to be created from them. The
 
 ### Failed tasks
 
-When a task fails, i.e. when the code throws an exception, the task will be retried up to the value configured in [`AUTHENTIK_WORKER__TASK_MAX_RETRIES`](../install-config/configuration/configuration.mdx#authentik_worker__task_max_retries). Tasks that self-reported an error or a warning will not be retried.
+When a task fails, i.e. when the code throws an exception, the task will be retried as many times as the value configured in [`AUTHENTIK_WORKER__TASK_MAX_RETRIES`](../install-config/configuration/configuration.mdx#authentik_worker__task_max_retries). Tasks that self-reported an error or a warning will not be retried.
 
 Failed tasks will be displayed like any other tasks. Each task can be expanded to show its logs. The logs are split into two parts: "Current execution logs" for the current execution, and "Previous execution logs" for logs from previous executions that happened before a retry was initiated. The information contained in the logs indicate either a transient error (a network connection failed for example), a mis-configuration (wrong password set in the LDAP source for example), or a bug in authentik.
 
@@ -74,5 +74,5 @@ Failed tasks will be displayed like any other tasks. Each task can be expanded t
 To restart a task, click the retry arrow next to the task. It will be queued again and picked up by a worker.
 
 :::info
-To retry tasks created from a schedule, we recommend manually triggering the schedule instead of restarting one of its tasks.
+To retry tasks created from a schedule, we recommend manually triggering the schedule (click the Run arrow beside the schedule) instead of restarting one of its tasks.
 :::
