@@ -1,10 +1,11 @@
-import { RadioOption } from "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/Radio";
+import "#elements/forms/Radio";
+
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
+import { RadioOption } from "#elements/forms/Radio";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends HorizontalLightComponent<T> {

@@ -1,5 +1,3 @@
-import { $ } from "@wdio/globals";
-
 import AdminPage from "./admin.page.js";
 import ApplicationForm from "./forms/application.form.js";
 import ForwardProxyForm from "./forms/forward-proxy.form.js";
@@ -9,6 +7,8 @@ import RadiusForm from "./forms/radius.form.js";
 import SamlForm from "./forms/saml.form.js";
 import ScimForm from "./forms/scim.form.js";
 import TransparentProxyForm from "./forms/transparent-proxy.form.js";
+
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page

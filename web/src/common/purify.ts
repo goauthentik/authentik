@@ -102,6 +102,7 @@ export const DOM_PURIFY_STRICT = {
  */
 export function renderStaticHTMLUnsafe(untrustedHTML: unknown): string {
     const container = document.createElement("html");
+
     render(untrustedHTML, container);
 
     const result = container.innerHTML;

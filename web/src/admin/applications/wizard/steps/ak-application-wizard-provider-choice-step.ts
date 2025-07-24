@@ -1,27 +1,30 @@
-import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
-import "@goauthentik/elements/EmptyState.js";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/elements/forms/FormGroup.js";
-import "@goauthentik/elements/forms/HorizontalFormElement.js";
-import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
-import "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#elements/EmptyState";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/wizard/TypeCreateWizardPage";
+
+import { applicationWizardProvidersContext } from "../ContextIdentity.js";
+import { type LocalTypeCreate } from "./ProviderChoices.js";
+
+import { bound } from "#elements/decorators/bound";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+
+import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+
+import { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { TypeCreate } from "@goauthentik/api";
-
-import { applicationWizardProvidersContext } from "../ContextIdentity";
-import { type LocalTypeCreate } from "./ProviderChoices.js";
-
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose A Provider");
+    label = msg("Choose a Provider");
 
     @state()
     failureMessage = "";
@@ -83,7 +86,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
                           }}
                       ></ak-wizard-page-type-create>
                   </form>`
-            : html`<ak-empty-state loading header=${msg("Loading")}></ak-empty-state>`;
+            : html`<ak-empty-state default-label></ak-empty-state>`;
     }
 }
 

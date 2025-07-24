@@ -1,13 +1,16 @@
-import { TITLE_DEFAULT } from "@goauthentik/common/constants";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/LoadingOverlay";
+import "#elements/LoadingOverlay";
+
+import AKGlobal from "#common/styles/authentik.css";
+
+import { Interface } from "#elements/Interface";
+import { WithBrandConfig } from "#elements/mixins/branding";
+
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -43,34 +46,32 @@ const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
-export class RacInterface extends Interface {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFContent,
-            AKGlobal,
-            css`
-                :host {
-                    cursor: none;
-                }
-                canvas {
-                    z-index: unset !important;
-                }
-                .container {
-                    overflow: hidden;
-                    height: 100vh;
-                    background-color: black;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                ak-loading-overlay {
-                    z-index: 5;
-                }
-            `,
-        ];
-    }
+export class RacInterface extends WithBrandConfig(Interface) {
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFContent,
+        AKGlobal,
+        css`
+            :host {
+                cursor: none;
+            }
+            canvas {
+                z-index: unset !important;
+            }
+            .container {
+                overflow: hidden;
+                height: 100vh;
+                background-color: black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            ak-loading-overlay {
+                z-index: 5;
+            }
+        `,
+    ];
 
     client?: Guacamole.Client;
     tunnel?: Guacamole.Tunnel;
@@ -215,13 +216,11 @@ export class RacInterface extends Interface {
                 );
                 return;
             }
-        } else {
-            if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
-                this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
-                );
-                return;
-            }
+        } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+            this.reconnectingMessage = msg(
+                str`Connection failed after ${this.connectionAttempt} attempts.`,
+            );
+            return;
         }
         const delay = 500 * this.connectionAttempt;
         this.reconnectingMessage = msg(
@@ -233,10 +232,12 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brandingTitle;
+
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
         }
+
         document.title = `${title}`;
     }
 
@@ -337,11 +338,11 @@ export class RacInterface extends Interface {
     }
 
     renderOverlay() {
-        if (!this.clientState || this.clientState == GuacClientState.CONNECTED) {
+        if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
         let message = html`${GuacStateToString(this.clientState)}`;
-        if (this.clientState == GuacClientState.WAITING) {
+        if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
         if (this.hasConnected) {
@@ -356,8 +357,8 @@ export class RacInterface extends Interface {
             GuacClientState.WAITING,
         ].includes(this.clientState);
         return html`
-            <ak-loading-overlay ?loading=${isLoading} icon="fa fa-times">
-                <span> ${message} </span>
+            <ak-loading-overlay ?no-spinner=${!isLoading} icon="fa fa-times">
+                <span>${message}</span>
             </ak-loading-overlay>
         `;
     }

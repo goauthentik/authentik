@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-dual-select-controls.js";
+
+import { AkDualSelectControls } from "../components/ak-dual-select-controls.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-dual-select-controls";
-import { AkDualSelectControls } from "../components/ak-dual-select-controls";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkDualSelectControls> = {
     title: "Elements / Dual Select / Control Panel",
@@ -37,7 +38,7 @@ const metadata: Meta<AkDualSelectControls> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

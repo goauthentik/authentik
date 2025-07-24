@@ -1,0 +1,11 @@
+.theme-doc-sidebar-item-link.theme-doc-sidebar-item-link-level-1.menu__list-item,
+.theme-doc-sidebar-item-category-level-1 .menu__list-item-collapsible {
+    font-weight: 600;
+}
+
+.theme-doc-sidebar-item-category-level-1 .menu__list-item-collapsible {
+    border-top: 0.5px solid;
+    border-top-color: var(--ifm-category-color, var(--ifm-menu-color-background-active));
+    border-radius: 0;
+    padding-block: 0.25em;
+}

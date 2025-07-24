@@ -52,6 +52,27 @@ class TestBrands(APITestCase):
             },
         )
 
+    def test_brand_subdomain_same_suffix(self):
+        """Test Current brand API"""
+        Brand.objects.all().delete()
+        Brand.objects.create(domain="bar.baz", branding_title="custom")
+        Brand.objects.create(domain="foo.bar.baz", branding_title="custom")
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom",
+                "branding_custom_css": "",
+                "matched_domain": "foo.bar.baz",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+            },
+        )
+
     def test_fallback(self):
         """Test fallback brand"""
         Brand.objects.all().delete()
@@ -148,3 +169,14 @@ class TestBrands(APITestCase):
                 "default_locale": "",
             },
         )
+
+    def test_custom_css(self):
+        """Test custom_css"""
+        brand = create_test_brand()
+        brand.branding_custom_css = """* {
+            font-family: "Foo bar";
+        }"""
+        brand.save()
+        res = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(brand.branding_custom_css, res.content.decode())

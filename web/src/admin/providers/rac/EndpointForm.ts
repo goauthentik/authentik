@@ -1,20 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import YAML from "yaml";
+import "#components/ak-radio-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+import YAML from "yaml";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
@@ -45,16 +48,15 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
-        } else {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
-                endpointRequest: data,
-            });
         }
+        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+            endpointRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
+            <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -62,7 +64,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Protocol")} ?required=${true} name="protocol">
+            <ak-form-element-horizontal label=${msg("Protocol")} required name="protocol">
                 <ak-radio
                     .options=${[
                         {
@@ -82,7 +84,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Host")} name="host" ?required=${true}>
+            <ak-form-element-horizontal label=${msg("Host")} name="host" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.host)}"
@@ -94,7 +96,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             <ak-form-element-horizontal
                 label=${msg("Maximum concurrent connections")}
                 name="maximumConnections"
-                ?required=${true}
+                required
             >
                 <input
                     type="number"
@@ -116,9 +118,8 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     selected-label="${msg("Selected User Property Mappings")}"
                 ></ak-dual-select-dynamic-selected>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"

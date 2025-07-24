@@ -1,14 +1,15 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { renderForm } from "@goauthentik/admin/providers/scim/SCIMProviderFormForm.js";
-import "@goauthentik/elements/forms/FormGroup";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#elements/forms/FormGroup";
+
+import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
+
+import { renderForm } from "#admin/providers/scim/SCIMProviderFormForm";
+
+import { PaginatedSCIMMappingList, type SCIMProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
-
-import { PaginatedSCIMMappingList, type SCIMProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm";
 
 @customElement("ak-application-wizard-provider-for-scim")
 export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm<SCIMProvider> {

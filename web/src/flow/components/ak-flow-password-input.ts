@@ -1,14 +1,15 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import "@goauthentik/elements/forms/FormElement";
-import { isActiveElement } from "@goauthentik/elements/utils/focus";
+import "#elements/forms/FormElement";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import { isActiveElement } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { Ref, createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -39,9 +40,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static get styles() {
-        return [PFBase, PFInputGroup, PFFormControl, PFButton];
-    }
+    static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 

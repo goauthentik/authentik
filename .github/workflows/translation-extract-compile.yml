@@ -16,6 +16,7 @@ env:
 
 jobs:
   compile:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
@@ -52,3 +53,6 @@ jobs:
           body: "core, web: update translations"
           delete-branch: true
           signoff: true
+          labels: dependencies
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>

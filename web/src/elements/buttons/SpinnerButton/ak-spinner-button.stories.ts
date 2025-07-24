@@ -1,9 +1,10 @@
+import "./ak-spinner-button.js";
+
+import AKSpinnerButton from "./ak-spinner-button.js";
+
 import { Meta } from "@storybook/web-components";
 
 import { html } from "lit";
-
-import "./ak-spinner-button";
-import AKSpinnerButton from "./ak-spinner-button";
 
 const metadata: Meta<AKSpinnerButton> = {
     title: "Elements / Spinner Button",
@@ -34,7 +35,7 @@ export const ButtonWithSuccess = () => {
             }, 3000);
         });
 
-    return html`<div style="background: #fff; padding: 4em">
+    return html`<div style="padding: 4em">
         <ak-spinner-button class="pf-m-primary" .callAction=${run}>3 Seconds</ak-spinner-button>
     </div>`;
 };
@@ -47,7 +48,7 @@ export const ButtonWithReject = () => {
             }, 3000);
         });
 
-    return html`<div style="background: #fff; padding: 4em">
+    return html`<div style="padding: 4em">
         <ak-spinner-button class="pf-m-secondary" .callAction=${run}>3 Seconds</ak-spinner-button>
     </div>`;
 };

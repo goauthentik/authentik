@@ -2,7 +2,7 @@
 title: Debugging authentik
 ---
 
-This page describes how to debug different components of an authentik instance, running either in production or in a development setup. To learn more about the structure of authentik, refer to our [architecture documentation](../../core/architecture).
+This page describes how to debug different components of an authentik instance, running either in production or in a development setup. To learn more about the structure of authentik, refer to our [architecture documentation](../../core/architecture.md).
 
 ## authentik Server & Worker (Python)
 

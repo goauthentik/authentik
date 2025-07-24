@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/web-components";
-
-import { html } from "lit";
+import "./SyncStatusCard.js";
 
 import { LogLevelEnum, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
 
-import "./SyncStatusCard";
+import type { Meta, StoryObj } from "@storybook/web-components";
+
+import { html } from "lit";
 
 const metadata: Meta<SyncStatus> = {
     title: "Elements/<ak-sync-status-card>",
@@ -63,13 +63,13 @@ export const SingleTask: StoryObj = {
     },
     // @ts-ignore
     render: ({ status }: SyncStatus) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <ak-sync-status-card
                 .fetch=${async () => {
                     return status;
                 }}
             ></ak-sync-status-card>
-        </div>`;
+        `;
     },
 };
 
@@ -146,12 +146,12 @@ export const MultipleTasks: StoryObj = {
     },
     // @ts-ignore
     render: ({ status }: SyncStatus) => {
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <ak-sync-status-card
                 .fetch=${async () => {
                     return status;
                 }}
             ></ak-sync-status-card>
-        </div>`;
+        `;
     },
 };

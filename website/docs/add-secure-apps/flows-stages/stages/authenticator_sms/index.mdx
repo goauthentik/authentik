@@ -6,7 +6,7 @@ This stage configures an SMS-based authenticator using either Twilio, or a gener
 
 ## Providers
 
-#### Twilio
+### Twilio
 
 Navigate to https://console.twilio.com/, and log in to your existing account, or create a new one.
 
@@ -22,7 +22,23 @@ The other two steps can be skipped using the _Skip setup_ button.
 
 Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik. Copy the value of **Account SID**. This is the value for the _Twilio Account SID_ field in authentik.
 
-#### Generic
+#### Custom SMS message :ak-version[2025.8]
+
+Using a property mapping, it is possible to customize the SMS message sent via Twilio. The mapping should return a dictionary with the `message` key, which will be sent to the user. For example:
+
+```python
+return {
+    "message": f"This is a custom message for {request.http_request.brand.branding_title} SMS authentication. The code is {token}".
+}
+```
+
+Variables related to different objects can be used within the message:
+
+    - The end user device, for example: `device.phone_number`
+    - The stage sending the message, for example: `stage.from_number`
+    - The request this verification code is being sent from, for example: `request.http_request.brand`
+
+### Generic
 
 For the generic provider, a POST request will be sent to the URL you have specified in the _External API URL_ field. The request payload looks like this
 
@@ -36,7 +52,9 @@ For the generic provider, a POST request will be sent to the URL you have specif
 
 Authentication can either be done as HTTP Basic, or via a Bearer Token. Any response with status 400 or above is counted as failed, and will prevent the user from proceeding.
 
-Starting with authentik 2022.10, a custom webhook mapping can be specified to freely customize the payload of the request. For example:
+#### Custom SMS message
+
+A custom webhook mapping can be used to customize the SMS message sent to users. For example:
 
 ```python
 return {

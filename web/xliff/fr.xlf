@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>Au nom de
         <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></target>
         
@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -660,12 +660,6 @@
       <trans-unit id="s6e09a19aa3952509">
         <source>Apps with most usage</source>
         <target>Apps les plus utilisées</target>
-        
-      </trans-unit>
-      <trans-unit id="sda5e1499f93146ad">
-        <source><x id="0" equiv-text="${ago}"/> days ago</source>
-        <target>
-       il y a <x id="0" equiv-text="${ago}"/>jours</target>
         
       </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
@@ -2817,19 +2811,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Chemin utilisateur</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>Préfixe DN utilisateurs</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>DN à préfixer au DN de base pour les utilisateurs</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>Préfixe DN groupes</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -3025,11 +3009,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s91f389c796720a81">
         <source>Load servers</source>
         <target>Charger les serveurs</target>
-        
-      </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Se ré-authentifier avec Plex</target>
         
       </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
@@ -4569,12 +4548,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>API Administrateur Duo (optionnel)</target>
         
       </trans-unit>
-      <trans-unit id="s7f13f4a2d0370cf6">
-        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.</source>
-        <target>Lors de l'utilisation d'un abonnement Duo MFA, Access ou Beyond, une application pour l'Admin API peut être créée.
-            Cela permettra à authentik d'importer les appareils automatiquement.</target>
-      </trans-unit>
       <trans-unit id="s9a34d1520e320465">
         <source>Stage-specific settings</source>
         <target>Paramètres propres à l'étape</target>
@@ -4653,11 +4626,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sa92398dba8b12d85">
         <source>Mapping</source>
         <target>Mappage</target>
-        
-      </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>Modifier le contenu envoyé aux fournisseurs personnalisés.</target>
         
       </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
@@ -5723,11 +5691,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Règle créée avec succès</target>
         
       </trans-unit>
-      <trans-unit id="sa55ee64c5c51df0f">
-        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-        <target>Sélectionner le groupe d'utilisateurs à qui les alertes seront envoyées. Si aucun groupe n'est sélectionné, cette règle est désactivée.</target>
-        
-      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>Transports</target>
@@ -5761,11 +5724,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>Règle(s) de notification</target>
-        
-      </trans-unit>
-      <trans-unit id="s5140d157642d7362">
-        <source>None (rule disabled)</source>
-        <target>Aucun (règle désactivée)</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -6128,19 +6086,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Télécharger la clé privée</target>
         
       </trans-unit>
-      <trans-unit id="s3a5fec3d73ac9edc">
-        <source>Create Certificate-Key Pair</source>
-        <target>Créer une paire clé/certificat</target>
-        
-      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>Générer</target>
-        
-      </trans-unit>
-      <trans-unit id="sf9bddaf910f4eea5">
-        <source>Generate Certificate-Key Pair</source>
-        <target>Générer une paire clé/certificat</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -6593,11 +6541,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       <trans-unit id="s2c8189544e3ea679">
         <source>Retry</source>
         <target>Recommencer</target>
-        
-      </trans-unit>
-      <trans-unit id="sc1589121ae2f5f92">
-        <source>Enter the code shown on your device.</source>
-        <target>Saisissez le code indiqué sur votre appareil.</target>
         
       </trans-unit>
       <trans-unit id="s67664f8ee9aea98d">
@@ -7542,10 +7485,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Configure SCIM Provider</source>
   <target>Configurer le fournisseur SCIM</target>
 </trans-unit>
-<trans-unit id="s7513372fe60f6387">
-  <source>Event volume</source>
-  <target>Volume d'événements</target>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
   <target>Paramètres de connexion.</target>
@@ -8200,10 +8139,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Verifying...</source>
   <target>Vérification...</target>
 </trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
-  <target>La requête a échoué. Veuillez réessayer plus tard. </target>
-</trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
   <target>Rôles disponibles</target>
@@ -8467,10 +8402,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="se3a34af2a05c5c98">
   <source>Internal Service account</source>
   <target>Compte de service interne</target>
-</trans-unit>
-<trans-unit id="s681c086b8f7afcae">
-  <source>Global</source>
-  <target>Global</target>
 </trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
@@ -9009,8 +8940,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Cette option configure les liens affichés en bas de page sur l’exécuteur de flux. L'URL est limitée à des addresses web et courriel. Si le nom est laissé vide, l'URL sera affichée.</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brandingTitle}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9180,10 +9111,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Create a Policy/User/Group Binding</source>
   <target>Créer une liaison vers politique/utilisateur/groupe</target>
 </trans-unit>
-<trans-unit id="s10ba15343fe64890">
-  <source>Choose A Provider</source>
-  <target>Choisir un fournisseur</target>
-</trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
   <target>Veuillez choisir un type de fournisseur avant de continuer.</target>
@@ -9279,10 +9206,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s05849efeac672dc7">
   <source>No app entitlements created.</source>
   <target>Aucun droit applicatif créé.</target>
-</trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-  <target>Cette application n'a actuellement pas de droit applicatif défini.</target>
 </trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
@@ -9694,10 +9617,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Failed to preview prompt</source>
   <target>Échec de la prévisualisation de l'invite</target>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-  <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'. Lorsque "Recherche avec un attribut utilisateur" est sélectionné, cet attribut doit être un attribut utilisateur, sinon un attribut de groupe.</target>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
   <target>Recherche avec un attribut utilisateur</target>
@@ -9808,6 +9727,202 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sdd66c5a2e706fb81">
   <source>Toggle sidebar</source>
+  <target>Afficher/masquer la barre latérale</target>
+</trans-unit>
+<trans-unit id="s7d4ec232535a36f0">
+  <source>Choose a Provider</source>
+  <target>Choisir un fournisseur</target>
+</trans-unit>
+<trans-unit id="sa30ba280de276758">
+  <source>When enabled, the SAML response will be signed.</source>
+  <target>Si activé, la réponse SAML sera signée.</target>
+</trans-unit>
+<trans-unit id="s2c42bb3c6f5420d2">
+  <source>Client Certificates</source>
+  <target>Certificats clients</target>
+</trans-unit>
+<trans-unit id="s95901716c0629274">
+  <source>Available Certificates</source>
+  <target>Certificats disponibles</target>
+</trans-unit>
+<trans-unit id="sdbf6b484fa1436b0">
+  <source>Selected Certificates</source>
+  <target>Certificats sélectionnés</target>
+</trans-unit>
+<trans-unit id="s9300147e327fd8f6">
+  <source>Client-certificate/mTLS authentication/enrollment.</source>
+  <target>Authentification/inscription par certificat client/mTLS.</target>
+</trans-unit>
+<trans-unit id="sbf990ec848470f5c">
+  <source>Certificate optional</source>
+  <target>Certificat facultatif</target>
+</trans-unit>
+<trans-unit id="s72e2876e9409b9eb">
+  <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Si aucun certificat n'a été fourni, cette étape réussira et passera à l'étape suivante.</target>
+</trans-unit>
+<trans-unit id="se07d973901a6e6b9">
+  <source>Certificate required</source>
+  <target>Certificat requis</target>
+</trans-unit>
+<trans-unit id="s664c47df020ee414">
+  <source>If no certificate was provided, this stage will stop flow execution.</source>
+  <target>Si aucun certificat n'a été fourni, cette étape arrêtera l'exécution du flux.</target>
+</trans-unit>
+<trans-unit id="sbe9da6dad795aa39">
+  <source>Certificate authorities</source>
+  <target>Autorités de certification</target>
+</trans-unit>
+<trans-unit id="se3a6aa4f0ab7568e">
+  <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+  <target>Configurez l'autorité de certification par rapport à laquelle les certificats clients sont validés. L'autorité de certification peut également être configurée sur une marque, ce qui permet d'utiliser différentes autorités de certification pour différents domaines.</target>
+</trans-unit>
+<trans-unit id="sb8fdf5a09a969870">
+  <source>Certificate attribute</source>
+  <target>Attribut du certificat</target>
+</trans-unit>
+<trans-unit id="s8069037a865037c9">
+  <source>Configure the attribute of the certificate used to look for a user.</source>
+  <target>Configurez l'attribut du certificat utilisé pour rechercher un utilisateur.</target>
+</trans-unit>
+<trans-unit id="sc185a8ad96f8eaa2">
+  <source>User attribute</source>
+  <target>Attribut utilisateur</target>
+</trans-unit>
+<trans-unit id="s4f9860fefb8fbe01">
+  <source>Configure the attribute of the user used to look for a user.</source>
+  <target>Configurez l'attribut utilisateur utilisé pour rechercher un utilisateur.</target>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+  <target>Supprimer les objets introuvables</target>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>Supprimer les utilisateurs et les groupes authentik qui étaient auparavant fournis par cette source, mais qui en sont maintenant absents.</target>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+</trans-unit>
+<trans-unit id="sb7af25ce6e30d61a">
+  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+</trans-unit>
+<trans-unit id="se1d2545eda4b1600">
+  <source>Import Existing Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sb3d5c0a0501669df">
+  <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="sbd65aeeb8a3b9bbc">
+  <source>Maximum registration attempts</source>
+</trans-unit>
+<trans-unit id="s8495753cb15e8d8e">
+  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+</trans-unit>
+<trans-unit id="sa3ff409b84679db8">
+  <source>Remember device</source>
+</trans-unit>
+<trans-unit id="s3b123cba0bf03f29">
+  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
+</trans-unit>
+<trans-unit id="s12d6dde9b30c3093">
+  <source>Dismiss</source>
+</trans-unit>
+<trans-unit id="sdea479482318489d">
+  <source>Status messages</source>
+</trans-unit>
+<trans-unit id="s05a4a4df6783d0cf">
+  <source>Provider name</source>
+</trans-unit>
+<trans-unit id="s19714b5520312d9a">
+  <source>Select an invalidation flow...</source>
+</trans-unit>
+<trans-unit id="sf1a3d030efd11f28">
+  <source>Open about dialog</source>
+</trans-unit>
+<trans-unit id="s95b96d7ead27527f">
+  <source>Product name</source>
+</trans-unit>
+<trans-unit id="s68b6d404c3349b18">
+  <source>Product version</source>
+</trans-unit>
+<trans-unit id="se0d7715f3211d220">
+  <source>Global navigation</source>
+</trans-unit>
+<trans-unit id="sd51d6a39208696cc">
+  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="scce64bcfb0a73ad7">
+  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sfe1fb536cab6c0f5">
+  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+</trans-unit>
+<trans-unit id="scbc2fd9f2bd26fdd">
+  <source>Main content</source>
+</trans-unit>
+<trans-unit id="sd2b106933823b754">
+  <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+</trans-unit>
+<trans-unit id="sd5e9b70ffb7a8b46">
+  <source>Skip to content</source>
 </trans-unit>
     </body>
   </file>

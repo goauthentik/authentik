@@ -1,5 +1,62 @@
-import { type LitElement, type ReactiveControllerHost, type TemplateResult, nothing } from "lit";
-import "lit";
+import { OwnPropertyRecord, Writeable } from "#common/types";
+
+import type { LitElement, nothing, ReactiveControllerHost, TemplateResult } from "lit";
+
+//#region HTML Helpers
+
+/**
+ * Utility type to extract a record of tag names which correspond to a given type.
+ *
+ * This is useful when selecting a subset of elements that share a common base class.
+ */
+export type HTMLElementTagNameMapOf<T> = {
+    [K in keyof HTMLElementTagNameMap as HTMLElementTagNameMap[K] extends T
+        ? K
+        : never]: HTMLElementTagNameMap[K];
+};
+
+//#endregion
+
+//#region Element Properties
+
+/**
+ *
+ * Given an element and a base class, pluck the properties not defined on the base class.
+ */
+export type TemplatedProperties<
+    T extends HTMLElement,
+    Base extends Element = HTMLElement,
+> = Partial<OwnPropertyRecord<T, Base>>;
+
+/**
+ * Given a record-like object, prefixes each key with a dot, allowing it to be spread into a
+ * template literal.
+ *
+ * ```ts
+ * interface MyElementProperties {
+ *     foo: string;
+ *     bar: number;
+ * }
+ *
+ * const properties {} as LitPropertyRecord<MyElementProperties>
+ *
+ * console.log(properties) // { '.foo': string; '.bar': number }
+ * ```
+ */
+export type LitPropertyRecord<T extends object> = {
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]?: T[K];
+};
+
+/**
+ * A type that represents a property key that can be used in a LitPropertyRecord.
+ *
+ * @see {@linkcode LitPropertyRecord}
+ */
+export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
+
+//#endregion
+
+//#region Host/Controller
 
 /**
  * A custom element which may be used as a host for a ReactiveController.
@@ -8,11 +65,23 @@ import "lit";
  *
  * This type is derived from an internal type in Lit.
  */
-export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & T> & HTMLElement;
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
 
-export type AbstractLitElementConstructor = abstract new (...args: never[]) => LitElement;
+//#endregion
 
-export type LitElementConstructor = new (...args: never[]) => LitElement;
+//#region Constructors
+
+export type AbstractLitElementConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => LitElement & T;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
+
+//#endregion
+
+//#region Mixins
 
 /**
  * A constructor that has been extended with a mixin.
@@ -31,11 +100,11 @@ export type ConstructorWithMixin<SuperClass, Mixin> =
 /**
  * The init object passed to the `createMixin` callback.
  */
-export interface CreateMixinInit<T extends LitElementConstructor = LitElementConstructor> {
+export interface CreateMixinInit<C = unknown> {
     /**
      * The superclass constructor to extend.
      */
-    SuperClass: T;
+    SuperClass: LitElementConstructor<C>;
     /**
      * Whether or not to subscribe to the context.
      *
@@ -52,7 +121,9 @@ export interface CreateMixinInit<T extends LitElementConstructor = LitElementCon
  * @param mixinCallback The callback that will be called to create the mixin.
  * @template Mixin The mixin class to union with the superclass.
  */
-export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unknown) {
+export function createMixin<Mixin, C = unknown>(
+    mixinCallback: (init: CreateMixinInit<C>) => unknown,
+) {
     return <T extends LitElementConstructor | AbstractLitElementConstructor>(
         /**
          * The superclass constructor to extend.
@@ -67,7 +138,7 @@ export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unk
         subscribe?: boolean,
     ) => {
         const MixinClass = mixinCallback({
-            SuperClass: SuperClass as LitElementConstructor,
+            SuperClass: SuperClass as LitElementConstructor<C>,
             subscribe,
         });
 

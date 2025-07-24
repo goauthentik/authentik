@@ -31,8 +31,6 @@ func (ws *WebServer) configureStatic() {
 		return h
 	}
 
-	helpHandler := http.FileServer(http.Dir("./website/help/"))
-
 	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
 		distFs,
 		"static/dist/",
@@ -67,19 +65,16 @@ func (ws *WebServer) configureStatic() {
 
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {
-		fsMedia := http.StripPrefix("/media", http.FileServer(http.Dir(config.Get().Storage.Media.File.Path)))
-		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
-			fsMedia.ServeHTTP(w, r)
-		})
+		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
+		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+				fsMedia.ServeHTTP(w, r)
+			}),
+			"media/",
+			config.Get().Web.Path,
+		))
 	}
-
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/help/").Handler(pathStripper(
-		helpHandler,
-		config.Get().Web.Path,
-		"/if/help/",
-	))
-	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/help").Handler(http.RedirectHandler(fmt.Sprintf("%sif/help/", config.Get().Web.Path), http.StatusMovedPermanently))
 
 	staticRouter.PathPrefix(config.Get().Web.Path).Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}

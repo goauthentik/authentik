@@ -87,3 +87,22 @@ class TestRACViews(APITestCase):
         )
         body = loads(flow_response.content)
         self.assertEqual(body["component"], "ak-stage-access-denied")
+
+    def test_different_session(self):
+        """Test request"""
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse(
+                "authentik_providers_rac:start",
+                kwargs={"app": self.app.slug, "endpoint": str(self.endpoint.pk)},
+            )
+        )
+        self.assertEqual(response.status_code, 302)
+        flow_response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        body = loads(flow_response.content)
+        next_url = body["to"]
+        self.client.logout()
+        final_response = self.client.get(next_url)
+        self.assertEqual(final_response.url, reverse("authentik_core:if-user"))

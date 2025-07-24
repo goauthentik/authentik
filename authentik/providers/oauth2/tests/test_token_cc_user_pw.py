@@ -68,7 +68,11 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_wrong_token(self):
@@ -86,7 +90,11 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_no_provider(self):
@@ -106,7 +114,11 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_permission_denied(self):
@@ -130,7 +142,11 @@ class TestTokenClientCredentialsUserNamePassword(OAuthTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"error": "invalid_grant", "error_description": TokenError.errors["invalid_grant"]},
+            {
+                "error": "invalid_grant",
+                "error_description": TokenError.errors["invalid_grant"],
+                "request_id": response.headers["X-authentik-id"],
+            },
         )
 
     def test_successful(self):

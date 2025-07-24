@@ -1,14 +1,15 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-switch-input.js";
+
+import AkSwitchInput from "../ak-switch-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 
 // Necessary because we're NOT supplying the CSS for the interiors
 // in our "light" dom.
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
-
-import "../ak-switch-input";
-import AkSwitchInput from "../ak-switch-input";
 
 const metadata: Meta<AkSwitchInput> = {
     title: "Components / Switch Input",
@@ -24,22 +25,21 @@ const metadata: Meta<AkSwitchInput> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
-        <style>
-                        li {
+const container = (testItem: TemplateResult) => html`
+    <style>
+        li {
             display: block;
-            }
-            p {
+        }
+        p {
             margin-top: 1em;
-            }
-                        ${PFSwitch};
-        </style>
+        }
+        ${PFSwitch};
+    </style>
 
-        ${testItem}
+    ${testItem}
 
-        <ul id="switch-message-pad" style="margin-top: 1em"></ul>
-    </div>`;
+    <ul id="switch-message-pad" style="margin-top: 1em"></ul>
+`;
 
 export const SwitchInput = () => {
     const result = "";

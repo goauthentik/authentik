@@ -1,9 +1,9 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {

@@ -1,7 +1,16 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import Fuse from "fuse.js";
-import { FuseResult } from "fuse.js";
+import {
+    LibraryPageSearchEmpty,
+    LibraryPageSearchReset,
+    LibraryPageSearchSelected,
+    LibraryPageSearchUpdated,
+} from "./events.js";
+
+import { AKElement } from "#elements/Base";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+
+import type { Application } from "@goauthentik/api";
+
+import Fuse, { FuseResult } from "fuse.js";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -10,15 +19,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import type { Application } from "@goauthentik/api";
-
-import {
-    LibraryPageSearchEmpty,
-    LibraryPageSearchReset,
-    LibraryPageSearchSelected,
-    LibraryPageSearchUpdated,
-} from "./events.js";
 
 /**
  * @element ak-library-list-search
@@ -37,29 +37,27 @@ import {
  */
 @customElement("ak-library-application-search")
 export class LibraryPageApplicationSearch extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFDisplay,
-            css`
-                input {
-                    width: 30ch;
-                    box-sizing: border-box;
-                    border: 0;
-                    border-bottom: 1px solid;
-                    border-bottom-color: var(--ak-accent);
-                    background-color: transparent;
-                    font-size: 1.5rem;
-                }
-                input:focus {
-                    outline: 0;
-                }
-                :host([theme="dark"]) input {
-                    color: var(--ak-dark-foreground) !important;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFDisplay,
+        css`
+            input {
+                width: 30ch;
+                box-sizing: border-box;
+                border: 0;
+                border-bottom: 1px solid;
+                border-bottom-color: var(--ak-accent);
+                background-color: transparent;
+                font-size: 1.5rem;
+            }
+            input:focus {
+                outline: 0;
+            }
+            :host([theme="dark"]) input {
+                color: var(--ak-dark-foreground) !important;
+            }
+        `,
+    ];
 
     @property({ attribute: false })
     set apps(value: Application[]) {

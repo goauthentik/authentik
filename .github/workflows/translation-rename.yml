@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
     steps:
+      - uses: actions/checkout@v4
       - id: generate_token
         uses: tibdex/github-app-token@v2
         with:
@@ -25,23 +26,13 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          title=$(curl -q -L \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }} | jq -r .title)
+          title=$(gh pr view ${{ github.event.pull_request.number }} --json  "title" -q ".title")
           echo "title=${title}" >> "$GITHUB_OUTPUT"
       - name: Rename
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          curl -L \
-            -X PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }} \
-            -d "{\"title\":\"translate: ${{ steps.title.outputs.title }}\"}"
+          gh pr edit ${{ github.event.pull_request.number }} -t "translate: ${{ steps.title.outputs.title }}" --add-label dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}

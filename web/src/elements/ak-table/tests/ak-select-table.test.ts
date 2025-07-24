@@ -1,12 +1,14 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../ak-select-table.js";
+
+import { nutritionDbUSDA as unsortedNutritionDbUSDA } from "../stories/sample_nutrition_db.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, browser } from "@wdio/globals";
 import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
 import { html } from "lit";
-
-import "../ak-select-table.js";
-import { nutritionDbUSDA as unsortedNutritionDbUSDA } from "../stories/sample_nutrition_db.js";
 
 type SortableRecord = Record<string, string | number>;
 
@@ -65,9 +67,9 @@ describe("Select Table", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });
@@ -138,9 +140,9 @@ describe("Multiselect Table", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });

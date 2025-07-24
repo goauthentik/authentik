@@ -1,13 +1,15 @@
-import { docLink } from "@goauthentik/common/global";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
+import "#elements/buttons/TokenCopyButton/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { docLink } from "#common/global";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
 
 import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-deployment-modal")
 export class OutpostDeploymentModal extends ModalButton {
@@ -65,7 +67,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
-                    ${this.outpost?.type == OutpostTypeEnum.Proxy
+                    ${this.outpost?.type === OutpostTypeEnum.Proxy
                         ? html`
                               <h3>
                                   ${msg(

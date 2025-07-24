@@ -4,8 +4,10 @@ from unittest.mock import MagicMock, PropertyMock, patch
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse
+from django.test import override_settings
 from django.test.client import RequestFactory
 from django.urls import reverse
+from rest_framework.exceptions import ParseError
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
@@ -648,3 +650,25 @@ class TestFlowExecutor(FlowTestCase):
             self.assertStageResponse(response, flow, component="ak-stage-identification")
             response = self.client.post(exec_url, {"uid_field": user_other.username}, follow=True)
             self.assertStageResponse(response, flow, component="ak-stage-access-denied")
+
+    @patch(
+        "authentik.flows.views.executor.to_stage_response",
+        TO_STAGE_RESPONSE_MOCK,
+    )
+    def test_invalid_json(self):
+        """Test invalid JSON body"""
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
+
+        with override_settings(TEST=False, DEBUG=False):
+            self.client.logout()
+            response = self.client.post(url, data="{", content_type="application/json")
+            self.assertEqual(response.status_code, 200)
+
+        with self.assertRaises(ParseError):
+            self.client.logout()
+            response = self.client.post(url, data="{", content_type="application/json")
+            self.assertEqual(response.status_code, 200)

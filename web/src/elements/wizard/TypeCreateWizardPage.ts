@@ -1,19 +1,20 @@
-import "@goauthentik/admin/common/ak-license-notice";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import "#admin/common/ak-license-notice";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { WizardPage } from "#elements/wizard/WizardPage";
+
+import { TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { Ref, createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { TypeCreate } from "@goauthentik/api";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",
@@ -35,24 +36,22 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFGrid,
-            PFRadio,
-            PFCard,
-            css`
-                .pf-c-card__header-main img {
-                    max-height: 2em;
-                    min-height: 2em;
-                }
-                :host([theme="dark"]) .pf-c-card__header-main img {
-                    filter: invert(1);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFGrid,
+        PFRadio,
+        PFCard,
+        css`
+            .pf-c-card__header-main img {
+                max-height: 2em;
+                min-height: 2em;
+            }
+            :host([theme="dark"]) .pf-c-card__header-main img {
+                filter: invert(1);
+            }
+        `,
+    ];
 
     //#region Refs
 
@@ -105,7 +104,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"} ${this.selectedType == type
+                        : "pf-m-selectable-raised"} ${this.selectedType === type
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}

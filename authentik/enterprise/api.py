@@ -12,6 +12,7 @@ from rest_framework.fields import CharField, IntegerField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -53,6 +54,7 @@ class LicenseSerializer(ModelSerializer):
             "external_users",
         ]
         extra_kwargs = {
+            "key": {"validators": [UniqueValidator(queryset=License.objects.all())]},
             "name": {"read_only": True},
             "expiry": {"read_only": True},
             "internal_users": {"read_only": True},

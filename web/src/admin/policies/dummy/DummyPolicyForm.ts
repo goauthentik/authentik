@@ -1,14 +1,16 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { DummyPolicy, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-dummy-form")
 export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
@@ -24,11 +26,10 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                 policyUuid: this.instance.pk || "",
                 dummyPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-                dummyPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
+            dummyPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -37,7 +38,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -65,9 +66,8 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="result">
                         <label class="pf-c-switch">
                             <input
@@ -83,11 +83,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             <span class="pf-c-switch__label">${msg("Pass policy?")}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (min)")}
-                        ?required=${true}
-                        name="waitMin"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (min)")} required name="waitMin">
                         <input
                             type="number"
                             value="${this.instance?.waitMin ?? 1}"
@@ -100,11 +96,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (max)")}
-                        ?required=${true}
-                        name="waitMax"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (max)")} required name="waitMax">
                         <input
                             type="number"
                             value="${this.instance?.waitMax ?? 5}"

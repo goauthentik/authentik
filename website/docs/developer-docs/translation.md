@@ -7,7 +7,7 @@ Translation in authentik is done in two places. Most of the text is defined in t
 The frontend uses [@lit/localize](https://lit.dev/docs/localization/overview/), and the backend uses the built-in django translation tools.
 
 :::info
-Please review the [Writing documentation](./docs/writing-documentation) guidelines as they apply to documentation too.
+Please review the [Writing documentation](./docs/writing-documentation.md) guidelines as they apply to documentation too.
 :::
 
 ## Online translation

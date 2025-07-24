@@ -120,7 +120,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.prefetch_related("scimprovideruser_set").all().exclude_anonymous()
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -144,7 +144,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             base = Group.objects.all()
             if self.group_filters.exists():
                 base = base.filter(pk__in=self.group_filters.all())
-            return base.order_by("pk")
+            return base.order_by("pk").prefetch_related("scimprovidergroup_set")
         raise ValueError(f"Invalid type {type}")
 
     @property

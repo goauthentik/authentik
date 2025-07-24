@@ -1,11 +1,13 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { OAuthSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-oauth-form")
 export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
@@ -25,11 +27,10 @@ export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAut
                 pmUuid: this.instance.pk,
                 oAuthSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
-                oAuthSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
+            oAuthSourcePropertyMappingRequest: data,
+        });
     }
 }
 

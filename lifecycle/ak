@@ -83,7 +83,8 @@ if [[ "$1" == "server" ]]; then
     run_authentik
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
-    check_if_root "python -m manage worker"
+    shift
+    check_if_root "python -m manage worker $@"
 elif [[ "$1" == "worker-status" ]]; then
     wait_for_db
     celery -A authentik.root.celery flower \

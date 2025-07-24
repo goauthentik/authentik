@@ -16,7 +16,7 @@ The User object has the following properties:
 - `password_change_date`: Date password was last changed. Read-only.
 - `path`: User's path, see [Path](#path)
 - `attributes`: Dynamic attributes, see [Attributes](#attributes)
-- `group_attributes()`: Merged attributes of all groups the user is member of and the user's own attributes. Ready-only.
+- `group_attributes()`: Merged attributes of all groups the user is a member of and the user's own attributes. Read-only.
 - `ak_groups`: This is a queryset of all the user's groups.
 
 ## Examples
@@ -25,7 +25,7 @@ These are examples of how User objects can be used within Policies and Property 
 
 ### List a user's group memberships
 
-Use the following example to list all groups that a User object is a member of:
+Use the following example to list all groups that a user object is a member of:
 
 ```python
 for group in user.ak_groups.all():
@@ -34,10 +34,18 @@ for group in user.ak_groups.all():
 
 ### List a user's group memberships and filter based on group name
 
-Use the following example to list groups that a User object is a member of, but filter based on group name:
+Use the following example to list groups that a user object is a member of, but filter based on group name:
 
 ```python
 user.ak_groups.filter(name__startswith='test')
+```
+
+### List a user's group memberships including parent groups
+
+Use the following example to list all groups that a user object is a member of, including parent groups:
+
+```python
+groups = [group.name for group in request.user.all_groups()]
 ```
 
 :::info

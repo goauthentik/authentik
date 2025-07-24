@@ -60,18 +60,16 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         user_count = 0
         for user in page_data:
-            if "attributes" not in user:
+            if (attributes := self.get_attributes(user)) is None:
                 continue
-            attributes = user.get("attributes", {})
             user_dn = flatten(user.get("entryDN", user.get("dn")))
-            if not attributes.get(self._source.object_uniqueness_field):
+            if not (uniq := self.get_identifier(attributes)):
                 self.message(
                     f"Uniqueness field not found/not set in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
                     dn=user_dn,
                 )
                 continue
-            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = {
                     k: flatten(v)

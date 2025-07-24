@@ -1,5 +1,5 @@
-import { Form } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form } from "#elements/forms/Form";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
@@ -26,7 +26,7 @@ export class FormWizardPage extends WizardPage {
             return Promise.reject(msg("No form found"));
         }
 
-        const formPromise = form.submit(new Event("submit"));
+        const formPromise = form.submit(new SubmitEvent("submit"));
 
         if (!formPromise) {
             return Promise.reject(msg("Form didn't return a promise for submitting"));

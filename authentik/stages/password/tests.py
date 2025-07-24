@@ -89,6 +89,29 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
 
+    def test_valid_password_inactive(self):
+        """Test with a valid pending user and valid password"""
+        self.user.is_active = False
+        self.user.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            # Form data
+            {"password": self.user.username},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+
     def test_invalid_password(self):
         """Test with a valid pending user and invalid password"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])

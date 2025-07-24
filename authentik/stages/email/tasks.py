@@ -100,9 +100,11 @@ def send_mail(
         # Because we use the Message-ID as UID for the task, manually assign it
         message_object.extra_headers["Message-ID"] = message_id
 
-        # Add the logo (we can't add it in the previous message since MIMEImage
-        # can't be converted to json)
-        message_object.attach(logo_data())
+        # Add the logo if it is used in the email body (we can't add it in the
+        # previous message since MIMEImage can't be converted to json)
+        body = get_email_body(message_object)
+        if "cid:logo" in body:
+            message_object.attach(logo_data())
 
         if (
             message_object.to

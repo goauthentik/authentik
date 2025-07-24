@@ -59,6 +59,7 @@ class BrandSerializer(ModelSerializer):
             "flow_device_code",
             "default_application",
             "web_certificate",
+            "client_certificates",
             "attributes",
         ]
         extra_kwargs = {
@@ -120,6 +121,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "domain",
         "branding_title",
         "web_certificate__name",
+        "client_certificates__name",
     ]
     filterset_fields = [
         "brand_uuid",
@@ -136,6 +138,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_user_settings",
         "flow_device_code",
         "web_certificate",
+        "client_certificates",
     ]
     ordering = ["domain"]
 

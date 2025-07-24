@@ -1,3 +1,12 @@
+/**
+ * @file authentik base UI theme.
+ */
+
+/* Defined to better identify the base theme when debugging constructed stylesheets. */
+.__AK_UI_BASE__ {
+    --__AK_UI_BASE__: 1;
+}
+
 /* #region Global */
 
 :root {
@@ -24,6 +33,11 @@
      * ensuring they share the same height.
      */
     --ak-navbar--height: 7rem;
+}
+
+.pf-c-form__group {
+    --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: minmax(max-content, 9.375rem);
+    column-gap: var(--pf-global--spacer--md);
 }
 
 @supports selector(::-webkit-scrollbar) {

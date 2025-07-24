@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-hidden-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { CompatibilityModeEnum, SCIMProvider, ValidationError } from "@goauthentik/api";
 
@@ -17,6 +17,9 @@ import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "./SCIMProviderFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
     return html`
@@ -28,9 +31,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             required
             help=${msg("Method's display Name.")}
         ></ak-text-input>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
@@ -38,7 +40,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     .errorMessages=${errors?.url ?? []}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-switch-input
@@ -48,7 +50,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 >
                 </ak-switch-input>
 
-                <ak-text-input
+                <ak-hidden-text-input
                     name="token"
                     label=${msg("Token")}
                     value="${provider?.token ?? ""}"
@@ -57,8 +59,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     help=${msg(
                         "Token to authenticate with. Currently only bearer authentication is supported.",
                     )}
-                    inputHint="code"
-                ></ak-text-input>
+                    input-hint="code"
+                ></ak-hidden-text-input>
                 <ak-radio-input
                     name="compatibilityMode"
                     label=${msg("Compatibility Mode")}
@@ -110,9 +112,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group expanded>
-            <span slot="header">${msg("Filtering")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Filtering")}">
+            <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
@@ -134,9 +135,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             </div>
         </ak-form-group>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Attribute mapping")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Attribute mapping")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("User Property Mappings")}
                     name="propertyMappings"

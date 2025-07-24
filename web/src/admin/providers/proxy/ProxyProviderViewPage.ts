@@ -1,30 +1,40 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import MDCaddyStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
-import MDNginxIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_compose.md";
-import MDTraefikIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.mdx";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import type { Replacer } from "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/proxy/ProxyProviderForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import type { Replacer } from "#elements/ak-mdx/index";
+import { AKElement } from "#elements/Base";
+import { getURLParam } from "#elements/router/RouteMatch";
+import { formatSlug } from "#elements/router/utils";
+
+import {
+    ProvidersApi,
+    ProxyMode,
+    ProxyProvider,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
+
+import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
+import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
+import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
+import MDNginxStandalone from "~docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
+import MDTraefikCompose from "~docs/add-secure-apps/providers/proxy/_traefik_compose.md";
+import MDTraefikIngress from "~docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
+import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
+import MDHeaderAuthentication from "~docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -38,13 +48,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
@@ -80,26 +83,24 @@ export class ProxyProviderViewPage extends AKElement {
     @state()
     provider?: ProxyProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFList,
-            PFForm,
-            PFFormControl,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-            css`
-                :host(:not([theme="dark"])) .ak-markdown-section {
-                    background-color: var(--pf-c-card--BackgroundColor);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFList,
+        PFForm,
+        PFFormControl,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+        css`
+            :host(:not([theme="dark"])) .ak-markdown-section {
+                background-color: var(--pf-c-card--BackgroundColor);
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -170,7 +171,7 @@ export class ProxyProviderViewPage extends AKElement {
                         .replaceAll("outpost.company:9000", window.location.hostname)
                         .replaceAll("https://app.company", extHost.toString())
                         .replaceAll("app.company", extHost.hostname);
-                } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
+                } else if (this.provider?.mode === ProxyMode.ForwardDomain) {
                     return input
                         .replaceAll("authentik.company", window.location.hostname)
                         .replaceAll("outpost.company:9000", extHost.toString())

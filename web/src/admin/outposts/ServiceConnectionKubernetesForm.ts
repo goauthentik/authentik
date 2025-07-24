@@ -1,16 +1,19 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { KubernetesServiceConnection, OutpostsApi } from "@goauthentik/api";
 
 @customElement("ak-service-connection-kubernetes-form")
 export class ServiceConnectionKubernetesForm extends ModelForm<
@@ -35,15 +38,14 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-                kubernetesServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+            kubernetesServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

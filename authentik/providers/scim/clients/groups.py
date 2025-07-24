@@ -5,7 +5,6 @@ from itertools import batched
 from django.db import transaction
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
-from pydanticscim.responses import PatchOp
 
 from authentik.core.models import Group
 from authentik.lib.sync.mapper import PropertyMappingManager
@@ -20,7 +19,12 @@ from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     SCIMRequestException,
 )
-from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA, PatchOperation, PatchRequest
+from authentik.providers.scim.clients.schema import (
+    SCIM_GROUP_SCHEMA,
+    PatchOp,
+    PatchOperation,
+    PatchRequest,
+)
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import (
     SCIMMapping,
@@ -34,7 +38,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
     connection_type = SCIMProviderGroup
-    connection_type_query = "group"
+    connection_attr = "scimprovidergroup_set"
     mapper: PropertyMappingManager
 
     def __init__(self, provider: SCIMProvider):
@@ -47,15 +51,16 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
 
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_group = super().to_schema(
-            obj,
-            connection,
-            schemas=(SCIM_GROUP_SCHEMA,),
-        )
+        raw_scim_group = super().to_schema(obj, connection)
         try:
             scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
+        if SCIM_GROUP_SCHEMA not in scim_group.schemas:
+            scim_group.schemas.insert(0, SCIM_GROUP_SCHEMA)
+        # As this might be unset, we need to tell pydantic it's set so ensure the schemas
+        # are included, even if its just the defaults
+        scim_group.schemas = list(scim_group.schemas)
         if not scim_group.externalId:
             scim_group.externalId = str(obj.pk)
 

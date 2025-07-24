@@ -1,16 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
@@ -104,8 +105,11 @@ export class UserDeviceTable extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}
-            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
+            html`<div>
+                    ${deviceTypeName(item)}
+                    ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
+                </div>
+                ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
             html`${item.created.getTime() > 0
                 ? html`<div>${formatElapsedTime(item.created)}</div>

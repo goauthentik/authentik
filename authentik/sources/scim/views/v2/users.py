@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import Http404, QueryDict
+from django.http import QueryDict
 from django.urls import reverse
 from pydanticscim.user import Email, EmailKind, Name
 from rest_framework.exceptions import ValidationError
@@ -15,7 +15,9 @@ from authentik.core.models import User
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
 from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
+from authentik.sources.scim.patch.processor import SCIMPatchProcessor
 from authentik.sources.scim.views.v2.base import SCIMObjectView
+from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
 
 
 class UsersView(SCIMObjectView):
@@ -28,7 +30,7 @@ class UsersView(SCIMObjectView):
         payload = SCIMUserModel(
             schemas=[SCIM_USER_SCHEMA],
             id=str(scim_user.user.uuid),
-            externalId=scim_user.id,
+            externalId=scim_user.external_id,
             userName=scim_user.user.username,
             name=Name(
                 formatted=scim_user.user.name,
@@ -43,8 +45,7 @@ class UsersView(SCIMObjectView):
             meta={
                 "resourceType": "User",
                 "created": scim_user.user.date_joined,
-                # TODO: use events to find last edit?
-                "lastModified": scim_user.user.date_joined,
+                "lastModified": scim_user.last_update,
                 "location": self.request.build_absolute_uri(
                     reverse(
                         "authentik_sources_scim:v2-users",
@@ -58,7 +59,9 @@ class UsersView(SCIMObjectView):
         )
         final_payload = payload.model_dump(mode="json", exclude_unset=True)
         final_payload.update(scim_user.attributes)
-        return final_payload
+        return self.remove_excluded_attributes(
+            SCIMUserModel.model_validate(final_payload).model_dump(mode="json", exclude_unset=True)
+        )
 
     def get(self, request: Request, user_id: str | None = None, **kwargs) -> Response:
         """List User handler"""
@@ -69,7 +72,7 @@ class UsersView(SCIMObjectView):
                 .first()
             )
             if not connection:
-                raise Http404
+                raise SCIMNotFoundError("User not found.")
             return Response(self.user_to_scim(connection))
         connections = (
             SCIMSourceUser.objects.filter(source=self.source).select_related("user").order_by("pk")
@@ -100,13 +103,16 @@ class UsersView(SCIMObjectView):
         user.update_attributes(properties)
 
         if not connection:
-            connection, _ = SCIMSourceUser.objects.get_or_create(
+            connection, _ = SCIMSourceUser.objects.update_or_create(
+                external_id=data.get("externalId") or str(uuid4()),
                 source=self.source,
                 user=user,
-                attributes=data,
-                id=data.get("externalId") or str(uuid4()),
+                defaults={
+                    "attributes": data,
+                },
             )
         else:
+            connection.external_id = data.get("externalId", connection.external_id)
             connection.attributes = data
             connection.save()
         return connection
@@ -122,15 +128,27 @@ class UsersView(SCIMObjectView):
         ).first()
         if connection:
             self.logger.debug("Found existing user")
-            return Response(status=409)
+            raise SCIMConflictError("Group with ID exists already.")
         connection = self.update_user(None, request.data)
         return Response(self.user_to_scim(connection), status=201)
+
+    def patch(self, request: Request, user_id: str, **kwargs):
+        connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
+        if not connection:
+            raise SCIMNotFoundError("User not found.")
+        patcher = SCIMPatchProcessor()
+        patched_data = patcher.apply_patches(
+            connection.attributes, request.data.get("Operations", [])
+        )
+        if patched_data != connection.attributes:
+            self.update_user(connection, patched_data)
+        return Response(self.user_to_scim(connection), status=200)
 
     def put(self, request: Request, user_id: str, **kwargs) -> Response:
         """Update user handler"""
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("User not found.")
         self.update_user(connection, request.data)
         return Response(self.user_to_scim(connection), status=200)
 
@@ -139,7 +157,7 @@ class UsersView(SCIMObjectView):
         """Delete user handler"""
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("User not found.")
         connection.user.delete()
         connection.delete()
         return Response(status=204)

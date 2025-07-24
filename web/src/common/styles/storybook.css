@@ -1,0 +1,58 @@
+html {
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        color-scheme: dark light;
+    }
+}
+
+.sbdocs.sbdocs-wrapper,
+.sb-preparing-story,
+.sb-preparing-docs {
+    background: var(--ak-base-background, hsl(9 88% 99%)) !important;
+}
+
+.sbdocs,
+.container.sidebar-container {
+    transition: background 100ms;
+}
+
+.sbdocs.sbdocs-preview {
+    background: var(--ak-docs-preview-background, #fff) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ak-base-background: hsl(260 26% 5%);
+        --ak-docs-preview-background: #18191a;
+    }
+
+    .sb-preparing-docs {
+        .sb-argstableBlock,
+        .sb-previewBlock {
+            filter: invert(1);
+        }
+    }
+}
+
+.sbdocs > h1,
+.sbdocs-title {
+    border-bottom: 1px solid;
+    margin: 2rem -1rem 1rem;
+    padding-bottom: 0.25rem;
+    padding-left: 1rem;
+
+    code {
+        background: #f5f5f5;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        padding: 0.1rem 0.25rem;
+    }
+}
+
+.sbdocs-preview .hljs {
+    color: #fff !important;
+    white-space: pre-line;
+}

@@ -1,15 +1,15 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { randomId } from "../utils/randomId.js";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
+
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { randomId } from "../utils/randomId";
 
 export interface RadioOption<T> {
     label: string;
@@ -32,24 +32,22 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     internalId: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFRadio,
-            PFForm,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-                .pf-c-radio label,
-                .pf-c-radio span {
-                    user-select: none;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFRadio,
+        PFForm,
+        css`
+            .pf-c-form__group-control {
+                padding-top: calc(
+                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                );
+            }
+            .pf-c-radio label,
+            .pf-c-radio span {
+                user-select: none;
+            }
+        `,
+    ];
 
     constructor() {
         super();

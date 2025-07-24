@@ -1,15 +1,16 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { type AkCryptoCertificateSearch } from "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { renderForm } from "@goauthentik/admin/providers/saml/SAMLProviderFormForm.js";
-import "@goauthentik/elements/forms/FormGroup";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#elements/forms/FormGroup";
+
+import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
+
+import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import { renderForm } from "#admin/providers/saml/SAMLProviderFormForm";
+
+import { SAMLProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
-
-import { SAMLProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm";
 
 @customElement("ak-application-wizard-provider-for-saml")
 export class ApplicationWizardProviderSamlForm extends ApplicationWizardProviderForm<SAMLProvider> {

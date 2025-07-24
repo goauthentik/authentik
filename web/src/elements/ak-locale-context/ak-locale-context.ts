@@ -1,14 +1,15 @@
-import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { customEvent } from "@goauthentik/elements/utils/customEvents";
+import { WithBrandConfig } from "../mixins/branding.js";
+import type { LocaleGetter, LocaleSetter } from "./configureLocale.js";
+import { initializeLocalization } from "./configureLocale.js";
+import { autoDetectLanguage, DEFAULT_LOCALE, getBestMatchLocale } from "./helpers.js";
+
+import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { customEvent } from "#elements/utils/customEvents";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { WithBrandConfig } from "../Interface/brandProvider";
-import { initializeLocalization } from "./configureLocale";
-import type { LocaleGetter, LocaleSetter } from "./configureLocale";
-import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
 
 /**
  * A component to manage your locale settings.
@@ -70,7 +71,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
     }
 
     updateLocale(requestedLocale: string | undefined = undefined) {
-        const localeRequest = autoDetectLanguage(requestedLocale, this.brand?.defaultLocale);
+        const localeRequest = autoDetectLanguage(requestedLocale, this.brand.defaultLocale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
             console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);
