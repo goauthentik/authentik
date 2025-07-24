@@ -20,7 +20,7 @@ With this setup in place, you can set Breakpoints in VS Code. To connect to the 
 Note that due to the Python debugger for VS Code, when a Python file in authentik is saved and the Django process restarts, you must manually reconnect the Debug session. Automatic re-connection is not supported for the Python debugger (see [here](https://github.com/microsoft/vscode-python/issues/19998) and [here](https://github.com/microsoft/vscode-python/issues/1182)).
 :::
 
-#### Debugging the server or the worker
+#### Debug the server or the worker
 
 Whichever process is started first will listen on port `9901`. Additional processes started after that will then try to listen on the same port, which will fail, and will simply not start the debugger in that case.
 
