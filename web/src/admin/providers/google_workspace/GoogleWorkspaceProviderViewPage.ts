@@ -1,22 +1,30 @@
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#elements/sync/SyncStatusCard";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    GoogleWorkspaceProvider,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SyncStatus,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -29,13 +37,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    GoogleWorkspaceProvider,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SyncStatus,
-} from "@goauthentik/api";
-
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
     @property({ type: Number })
@@ -47,22 +48,19 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     @state()
     syncState?: SyncStatus;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFBanner,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            PFList,
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();
@@ -147,7 +145,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -157,11 +155,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("Google Workspace Provider is in preview.")}
-                <a href="mailto:hello+feature/gws@goauthentik.io">${msg("Send us feedback!")}</a>
-            </div>
-            ${!this.provider?.assignedBackchannelApplicationName
+        return html`${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
@@ -179,6 +173,23 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         ${this.provider.name}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Dry-run")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ak-status-label
+                                            ?good=${!this.provider.dryRun}
+                                            type="info"
+                                            good-label=${msg("No")}
+                                            bad-label=${msg("Yes")}
+                                        ></ak-status-label>
                                     </div>
                                 </dd>
                             </div>

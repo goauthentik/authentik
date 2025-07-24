@@ -1,12 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import {
     ProvidersApi,
@@ -14,6 +12,10 @@ import {
     SCIMProviderGroup,
     SyncObjectModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
@@ -24,6 +26,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         return true;
     }
 
+    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -33,7 +36,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
                         return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
                     }}
@@ -80,6 +83,13 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             </a>`,
             html`${item.id}`,
         ];
+    }
+    renderExpanded(item: SCIMProviderGroup): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }
 

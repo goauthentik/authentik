@@ -10,11 +10,12 @@ schemas/                        @goauthentik/backend
 scripts/                        @goauthentik/backend
 tests/                          @goauthentik/backend
 pyproject.toml                  @goauthentik/backend
-poetry.lock                     @goauthentik/backend
+uv.lock                         @goauthentik/backend
 go.mod                          @goauthentik/backend
 go.sum                          @goauthentik/backend
 # Infrastructure
 .github/                        @goauthentik/infrastructure
+lifecycle/aws/                  @goauthentik/infrastructure
 Dockerfile                      @goauthentik/infrastructure
 *Dockerfile                     @goauthentik/infrastructure
 .dockerignore                   @goauthentik/infrastructure
@@ -22,6 +23,8 @@ docker-compose.yml              @goauthentik/infrastructure
 Makefile                        @goauthentik/infrastructure
 .editorconfig                   @goauthentik/infrastructure
 CODEOWNERS                      @goauthentik/infrastructure
+# Web packages
+packages/                       @goauthentik/frontend
 # Web
 web/                            @goauthentik/frontend
 tests/wdio/                     @goauthentik/frontend
@@ -29,8 +32,12 @@ tests/wdio/                     @goauthentik/frontend
 locale/                         @goauthentik/backend @goauthentik/frontend
 web/xliff/                      @goauthentik/backend @goauthentik/frontend
 # Docs & Website
+docs/                           @goauthentik/docs
+# TODO Remove after moving website to docs
 website/                        @goauthentik/docs
 CODE_OF_CONDUCT.md              @goauthentik/docs
 # Security
 SECURITY.md                     @goauthentik/security @goauthentik/docs
-website/docs/security/          @goauthentik/security @goauthentik/docs
+# TODO Remove after moving website to docs
+website/security/               @goauthentik/security @goauthentik/docs
+docs/security/                  @goauthentik/security @goauthentik/docs

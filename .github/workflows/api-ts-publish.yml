@@ -27,8 +27,8 @@ jobs:
       - name: Publish package
         working-directory: gen-ts-api/
         run: |
-          npm ci
-          npm publish
+          npm i
+          npm publish --tag generated
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web
@@ -53,6 +53,7 @@ jobs:
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
+          labels: dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}

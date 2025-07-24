@@ -1,23 +1,23 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
-import { groupBy } from "@goauthentik/common/utils";
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import "./ak-search-select-loading-indicator.js";
+import "./ak-search-select-view.js";
+
+import { SearchSelectView } from "./ak-search-select-view.js";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { groupBy } from "#common/utils";
+
+import { AkControlElement } from "#elements/AkControlElement";
+import { PreventFormSubmit } from "#elements/forms/helpers";
+import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
+import { html, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ResponseError } from "@goauthentik/api";
-
-import "./ak-search-select-loading-indicator.js";
-import "./ak-search-select-view.js";
-import { SearchSelectView } from "./ak-search-select-view.js";
 
 type Group<T> = [string, T[]];
 
@@ -32,9 +32,7 @@ export interface ISearchSelectBase<T> {
 }
 
 export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
-    static get styles() {
-        return [PFBase];
-    }
+    static styles = [PFBase];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
@@ -99,7 +97,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     isFetchingData = false;
 
     @state()
-    error?: APIErrorTypes;
+    error?: APIError;
 
     public toForm(): string {
         if (!this.objects) {
@@ -128,23 +126,26 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         }
         this.isFetchingData = true;
         this.dispatchEvent(new Event("loading"));
+
         return this.fetchObjects(this.query)
-            .then((objects) => {
-                objects.forEach((obj) => {
-                    if (this.selected && this.selected(obj, objects || [])) {
+            .then((nextObjects) => {
+                nextObjects.forEach((obj) => {
+                    if (this.selected && this.selected(obj, nextObjects || [])) {
                         this.selectedObject = obj;
                         this.dispatchChangeEvent(this.selectedObject);
                     }
                 });
-                this.objects = objects;
+
+                this.objects = nextObjects;
                 this.isFetchingData = false;
             })
-            .catch((exc: ResponseError) => {
+            .catch(async (error: unknown) => {
                 this.isFetchingData = false;
                 this.objects = undefined;
-                parseAPIError(exc).then((err) => {
-                    this.error = err;
-                });
+
+                const parsedError = await parseAPIResponseError(error);
+
+                this.error = parsedError;
             });
     }
 
@@ -233,7 +234,9 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     public override render() {
         if (this.error) {
-            return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
+            return html`<em
+                >${msg("Failed to fetch objects: ")} ${pluckErrorDetail(this.error)}</em
+            >`;
         }
 
         // `this.objects` is both a container and a sigil; if it is in the `undefined` state, it's a

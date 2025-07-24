@@ -3,10 +3,10 @@ title: "Conceptual topic"
 ---
 
 :::info
-**How to use this template**: start with the markdown version of the template, either by copying the [`conceptual.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+**How to use this template**: start with the markdown version of the template, either by copying the [`conceptual.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
 
-```
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/conceptual.tmpl.md
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/conceptual.tmpl.md
 ```
 
 Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [Style Guide](../style-guide.mdx) for writing tips and authentik-specific rules.
@@ -24,7 +24,7 @@ In this optional section, provide some example use cases for the feature. Who wo
 
 Dive deeper into explaining the concepts behind the feature/component.
 
-Write about the feature/functionalilty from the user's perspective. What is this feature used for, why should they use it, are there situations where they should **_not_** use it?
+Write about the feature/functionality from the user's perspective. What is this feature used for, why should they use it, are there situations where they should **_not_** use it?
 
 > Pro Tip: If you were writing the related procedural topic, and you found that you had a lot to say about the topic, this is exactly where that info would go (not crowded up at the top of the procedural topic!).
 

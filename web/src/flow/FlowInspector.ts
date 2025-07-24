@@ -1,10 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Expand";
+import "#elements/EmptyState";
+import "#elements/Expand";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+
+import { AKElement } from "#elements/Base";
+
+import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -15,8 +21,6 @@ import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { FlowInspection, FlowsApi, ResponseError, Stage } from "@goauthentik/api";
-
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
     @property()
@@ -26,33 +30,31 @@ export class FlowInspector extends AKElement {
     state?: FlowInspection;
 
     @property({ attribute: false })
-    error?: ResponseError;
+    error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFStack,
-            PFCard,
-            PFNotificationDrawer,
-            PFDescriptionList,
-            PFProgressStepper,
-            css`
-                .pf-c-drawer__body {
-                    min-height: 100vh;
-                    max-height: 100vh;
-                }
-                code.break {
-                    word-break: break-all;
-                }
-                pre {
-                    word-break: break-all;
-                    overflow-x: hidden;
-                    white-space: break-spaces;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFStack,
+        PFCard,
+        PFNotificationDrawer,
+        PFDescriptionList,
+        PFProgressStepper,
+        css`
+            .pf-c-drawer__body {
+                min-height: 100vh;
+                max-height: 100vh;
+            }
+            code.break {
+                word-break: break-all;
+            }
+            pre {
+                word-break: break-all;
+                overflow-x: hidden;
+                white-space: break-spaces;
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -73,8 +75,10 @@ export class FlowInspector extends AKElement {
                 this.error = undefined;
                 this.state = state;
             })
-            .catch((exc) => {
-                this.error = exc;
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.error = parsedError;
             });
     };
 
@@ -87,21 +91,42 @@ export class FlowInspector extends AKElement {
         return stage;
     }
 
+    renderHeader() {
+        return html` <div class="pf-c-notification-drawer__header">
+            <div class="text">
+                <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
+            </div>
+            <div class="pf-c-notification-drawer__header-action">
+                <div class="pf-c-notification-drawer__header-action-close">
+                    <button
+                        @click=${() => {
+                            this.dispatchEvent(
+                                new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
+                                    bubbles: true,
+                                    composed: true,
+                                }),
+                            );
+                        }}
+                        class="pf-c-button pf-m-plain"
+                        type="button"
+                        aria-label=${msg("Close")}
+                    >
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }
+
     renderAccessDenied(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
-                    <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
-                            ${msg("Flow inspector")}
-                        </h1>
-                    </div>
-                </div>
+                ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
-                                <div class="pf-c-card__body">${this.error?.message}</div>
+                                <div class="pf-c-card__body">${pluckErrorDetail(this.error)}</div>
                             </div>
                         </div>
                     </div>
@@ -116,36 +141,17 @@ export class FlowInspector extends AKElement {
         }
         if (!this.state) {
             this.advanceHandler();
-            return html`<ak-empty-state loading> </ak-empty-state>`;
+            return html`<div class="pf-c-drawer__body pf-m-no-padding">
+                <div class="pf-c-notification-drawer">
+                    ${this.renderHeader()}
+                    <div class="pf-c-notification-drawer__body"></div>
+                    <ak-empty-state loading> </ak-empty-state>
+                </div>
+            </div>`;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
-                    <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
-                            ${msg("Flow inspector")}
-                        </h1>
-                    </div>
-                    <div class="pf-c-notification-drawer__header-action">
-                        <div class="pf-c-notification-drawer__header-action-close">
-                            <button
-                                @click=${() => {
-                                    this.dispatchEvent(
-                                        new CustomEvent(EVENT_FLOW_INSPECTOR_TOGGLE, {
-                                            bubbles: true,
-                                            composed: true,
-                                        }),
-                                    );
-                                }}
-                                class="pf-c-button pf-m-plain"
-                                type="button"
-                                aria-label=${msg("Close")}
-                            >
-                                <i class="fas fa-times" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                ${this.renderHeader()}
                 <div class="pf-c-notification-drawer__body">
                     <div class="pf-l-stack pf-m-gutter">
                         <div class="pf-l-stack__item">

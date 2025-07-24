@@ -1,26 +1,4 @@
 {
-    "cSpell.words": [
-        "akadmin",
-        "asgi",
-        "authentik",
-        "authn",
-        "entra",
-        "goauthentik",
-        "jwe",
-        "jwks",
-        "kubernetes",
-        "oidc",
-        "openid",
-        "passwordless",
-        "plex",
-        "saml",
-        "scim",
-        "slo",
-        "sso",
-        "totp",
-        "traefik",
-        "webauthn"
-    ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
@@ -28,6 +6,9 @@
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
+        "!Env sequence",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
         "!FindObject sequence",
         "!Format sequence",
@@ -35,11 +16,12 @@
         "!Index scalar",
         "!KeyOf scalar",
         "!Value scalar",
-        "!AtIndex scalar"
+        "!AtIndex scalar",
+        "!ParseJSON scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
-    "typescript.tsdk": "./web/node_modules/typescript/lib",
+    "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "yaml.schemas": {
         "./blueprints/schema.json": "blueprints/**/*.yaml"

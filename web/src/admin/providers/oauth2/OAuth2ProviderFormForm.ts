@@ -1,25 +1,24 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import {
-    IRedirectURIInput,
-    akOAuthRedirectURIInput,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-array-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-hidden-text-input";
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/ak-array-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
+import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
+import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
+
+import { ascii_letters, digits, randomString } from "#common/utils";
 
 import {
     ClientTypeEnum,
@@ -32,9 +31,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
-import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
-import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export const clientTypeOptions = [
     {
@@ -133,7 +132,7 @@ export function renderForm(
         <ak-form-element-horizontal
             name="authorizationFlow"
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -144,9 +143,8 @@ export function renderForm(
                 ${msg("Flow used when authorizing this provider.")}
             </p>
         </ak-form-element-horizontal>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-radio-input
                     name="clientType"
                     label=${msg("Client type")}
@@ -161,34 +159,36 @@ export function renderForm(
                 <ak-text-input
                     name="clientId"
                     label=${msg("Client ID")}
-                    value="${first(provider?.clientId, randomString(40, ascii_letters + digits))}"
+                    value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
+                    input-hint="code"
                 >
                 </ak-text-input>
-                <ak-text-input
+                <ak-hidden-text-input
                     name="clientSecret"
+                    autocomplete="off"
                     label=${msg("Client Secret")}
-                    value="${first(
-                        provider?.clientSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}"
+                    value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
+                    input-hint="code"
                     ?hidden=${!showClientSecret}
                 >
-                </ak-text-input>
+                </ak-hidden-text-input>
                 <ak-form-element-horizontal
+                    flow-direction="row"
                     label=${msg("Redirect URIs/Origins (RegEx)")}
-                    required
                     name="redirectUris"
                 >
                     <ak-array-input
                         .items=${provider?.redirectUris ?? []}
                         .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
-                        .row=${(f?: RedirectURI) =>
-                            akOAuthRedirectURIInput({
-                                ".redirectURI": f,
-                                "style": "width: 100%",
-                                "name": "oauth2-redirect-uri",
-                            } as unknown as IRedirectURIInput)}
+                        .row=${(redirectURI: RedirectURI, idx: number) => {
+                            return html`<ak-provider-oauth2-redirect-uri
+                                .redirectURI=${redirectURI}
+                                name="oauth2-redirect-uri"
+                                style="width: 100%"
+                                inputID="redirect-uri-${idx}"
+                            ></ak-provider-oauth2-redirect-uri>`;
+                        }}
                     >
                     </ak-array-input>
                     ${redirectUriHelp}
@@ -212,9 +212,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label=${msg("Advanced flow settings")}>
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
                     label=${msg("Authentication flow")}
@@ -247,14 +246,14 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
+                    input-hint="code"
                     required
-                    value="${first(provider?.accessCodeValidity, "minutes=1")}"
+                    value="${provider?.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
                             ${msg("Configure how long access codes are valid for.")}
                         </p>
@@ -264,7 +263,8 @@ export function renderForm(
                 <ak-text-input
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
-                    value="${first(provider?.accessTokenValidity, "minutes=5")}"
+                    value="${provider?.accessTokenValidity ?? "minutes=5"}"
+                    input-hint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
@@ -276,8 +276,9 @@ export function renderForm(
                 <ak-text-input
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
-                    value="${first(provider?.refreshTokenValidity, "days=30")}"
-                    ?required=${true}
+                    value="${provider?.refreshTokenValidity ?? "days=30"}"
+                    input-hint="code"
+                    required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
                         </p>
@@ -312,7 +313,7 @@ export function renderForm(
                 <ak-switch-input
                     name="includeClaimsInIdToken"
                     label=${msg("Include claims in id_token")}
-                    ?checked=${first(provider?.includeClaimsInIdToken, true)}
+                    ?checked=${provider?.includeClaimsInIdToken ?? true}
                     help=${msg(
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}
@@ -329,9 +330,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"

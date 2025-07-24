@@ -1,23 +1,23 @@
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
 
+import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
+import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
+
+import { camelToSnake } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { serializeForm } from "#elements/forms/Form";
+
+import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css.js";
-import { type ApplicationWizardState, type OneOfProvider } from "../../types";
-
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    static get styles() {
-        return AwadStyles;
-    }
+    static styles: CSSResult[] = [...AwadStyles];
 
     label = "";
 
@@ -25,29 +25,26 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     wizard!: ApplicationWizardState;
 
     @property({ type: Object, attribute: false })
-    errors: Map<string | number | symbol, string> = new Map();
+    errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues() {
+        return serializeForm([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     get valid() {
-        this.errors = new Map();
+        this.errors = {};
         return this.form.checkValidity();
     }
 
     errorMessages(name: string) {
-        return this.errors.has(name)
-            ? [this.errors.get(name)]
+        return name in this.errors
+            ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
                   this.wizard.errors?.provider?.[camelToSnake(name)] ??
                   []);
@@ -56,7 +53,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     isValid(name: keyof T) {
         return !(
             (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
-            this.errors.has(name)
+            this.errors?.[name] !== undefined
         );
     }
 }

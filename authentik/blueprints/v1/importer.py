@@ -36,6 +36,7 @@ from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
     Provider,
+    Session,
     Source,
     User,
     UserSourceConnection,
@@ -50,7 +51,7 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.providers.ssf.models import StreamEvent
 from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDevice,
     EndpointDeviceConnection,
@@ -71,6 +72,7 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     RefreshToken,
 )
+from authentik.providers.rac.models import ConnectionToken
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
@@ -107,6 +109,7 @@ def excluded_models() -> list[type[Model]]:
         Policy,
         PolicyBindingModel,
         # Classes that have other dependencies
+        Session,
         AuthenticatedSession,
         # Classes which are only internally managed
         # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
@@ -131,6 +134,7 @@ def excluded_models() -> list[type[Model]]:
         EndpointDevice,
         EndpointDeviceConnection,
         DeviceToken,
+        StreamEvent,
     )
 
 
@@ -380,7 +384,7 @@ class Importer:
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
-        for entry in self._import.entries:
+        for entry in self._import.iter_entries():
             model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)

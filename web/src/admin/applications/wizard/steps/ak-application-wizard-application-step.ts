@@ -1,29 +1,32 @@
-import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
-import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { isSlug } from "@goauthentik/common/utils.js";
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-slug-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#admin/applications/wizard/ak-wizard-title";
+import "#components/ak-radio-input";
+import "#components/ak-slug-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
+
+import { camelToSnake } from "#common/utils";
+
+import { isSlug } from "#elements/router/utils";
+
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+
+import { type ApplicationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { type ApplicationRequest } from "@goauthentik/api";
-
-import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
-
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
-const trimMany = (o: KeyUnknown, vs: string[]) =>
+const trimMany = (o: Record<string, unknown>, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,18 +64,18 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         this.errors = new Map();
         const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 
-        if (values["name"] === "") {
+        if (values.name === "") {
             this.errors.set("name", msg("An application name is required"));
         }
         if (
             !(
-                isStr(values["metaLaunchUrl"]) &&
-                (values["metaLaunchUrl"] === "" || URL.canParse(values["metaLaunchUrl"]))
+                isStr(values.metaLaunchUrl) &&
+                (values.metaLaunchUrl === "" || URL.canParse(values.metaLaunchUrl))
             )
         ) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
-        if (!(isStr(values["slug"]) && values["slug"] !== "" && isSlug(values["slug"]))) {
+        if (!(isStr(values.slug) && values.slug !== "" && isSlug(values.slug))) {
             this.errors.set("slug", msg("Not a valid slug"));
         }
         return this.errors.size === 0;
@@ -117,17 +120,16 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("Application's display Name.")}
-                    id="ak-application-wizard-details-name"
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
                     value=${ifDefined(app.slug)}
                     label=${msg("Slug")}
-                    source="#ak-application-wizard-details-name"
                     required
                     ?invalid=${errors.slug ?? this.errors.has("slug")}
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
+                    input-hint="code"
                 ></ak-slug-input>
                 <ak-text-input
                     name="group"
@@ -137,18 +139,18 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     help=${msg(
                         "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                     )}
+                    input-hint="code"
                 ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Policy engine mode")}
                     required
                     name="policyEngineMode"
-                    .options=${policyOptions}
+                    .options=${policyEngineModes}
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
-                <ak-form-group aria-label=${msg("UI Settings")}>
-                    <span slot="header"> ${msg("UI Settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group label=${msg("UI Settings")}>
+                    <div class="pf-c-form">
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
@@ -159,6 +161,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                             )}
+                            input-hint="code"
                         ></ak-text-input>
                         <ak-switch-input
                             name="openInNewTab"

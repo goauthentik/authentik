@@ -35,7 +35,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
 OUR_VERSION = parse(__version__)
@@ -74,6 +73,8 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
+    kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
@@ -324,9 +325,8 @@ class Outpost(SerializerModel, ManagedModel):
                                 "While setting the permissions for the service-account, a "
                                 "permission was not found: Check "
                                 "https://goauthentik.io/docs/troubleshooting/missing_permission"
-                            )
-                            + exception_to_string(exc),
-                        ).set_user(user).save()
+                            ),
+                        ).with_exception(exc).set_user(user).save()
                 else:
                     app_label, perm = model_or_perm.split(".")
                     permission = Permission.objects.filter(

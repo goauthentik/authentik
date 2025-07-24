@@ -1,12 +1,13 @@
-import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
-import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, expect } from "@wdio/globals";
+import "#admin/admin-settings/AdminSettingsFooterLinks";
+import "../ak-array-input.js";
 
-import { html } from "lit";
+import { render } from "#elements/tests/utils";
 
 import { FooterLink } from "@goauthentik/api";
 
-import "../ak-array-input.js";
+import { $, expect } from "@wdio/globals";
+
+import { html } from "lit";
 
 const sampleItems: FooterLink[] = [
     { name: "authentik", href: "https://goauthentik.io" },
@@ -17,9 +18,9 @@ describe("ak-array-input", () => {
     afterEach(async () => {
         await browser.execute(async () => {
             await document.body.querySelector("ak-array-input")?.remove();
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body["_$litPart$"];
+                await delete document.body._$litPart$;
             }
         });
     });

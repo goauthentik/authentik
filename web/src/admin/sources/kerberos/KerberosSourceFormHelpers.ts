@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { KerberosSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
@@ -25,7 +26,7 @@ export function propertyMappingsSelector(object: string, instanceMappings?: stri
         return async (mappings: DualSelectPair<KerberosSourcePropertyMapping>[]) =>
             mappings.filter(
                 ([_0, _1, _2, mapping]: DualSelectPair<KerberosSourcePropertyMapping>) =>
-                    object == "user" &&
+                    object === "user" &&
                     mapping?.managed?.startsWith("goauthentik.io/sources/kerberos/user/default/"),
             );
     }

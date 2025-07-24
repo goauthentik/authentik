@@ -1,14 +1,11 @@
-import "@goauthentik/admin/rbac/RoleObjectPermissionForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/rbac/RoleObjectPermissionForm";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import {
     PaginatedPermissionList,
@@ -16,6 +13,11 @@ import {
     RbacPermissionsAssignedByRolesListModelEnum,
     RoleAssignedObjectPermission,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
@@ -35,7 +37,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
-            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.CoreUser,
+            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");
@@ -45,7 +47,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             ordering: "codename",
         });
         modelPermissions.results = modelPermissions.results.filter((value) => {
-            return !value.codename.startsWith("add_");
+            return value.codename !== `add_${this.model?.split(".")[1]}`;
         });
         this.modelPermissions = modelPermissions;
         return perms;

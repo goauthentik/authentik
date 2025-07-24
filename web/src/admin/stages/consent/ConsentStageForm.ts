@@ -1,15 +1,17 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {
@@ -33,11 +35,10 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                 stageUuid: this.instance.pk || "",
                 consentStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
-                consentStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
+            consentStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -46,7 +47,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -54,10 +55,9 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                         <select
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
@@ -96,7 +96,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                     <ak-form-element-horizontal
                         ?hidden=${!this.showExpiresIn}
                         label=${msg("Consent expires in")}
-                        ?required=${true}
+                        required
                         name="consentExpireIn"
                     >
                         <input

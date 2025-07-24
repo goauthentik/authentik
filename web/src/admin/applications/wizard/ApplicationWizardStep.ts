@@ -1,28 +1,27 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
-import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
-    NavigationUpdate,
+    ApplicationTransactionValidationError,
+    type ApplicationWizardState,
+    type ApplicationWizardStateUpdate,
+} from "./types.js";
+
+import { serializeForm } from "#elements/forms/Form";
+
+import {
+    NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
-} from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+} from "#components/ak-wizard/events";
+import { WizardStep } from "#components/ak-wizard/WizardStep";
+
+import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles.styles";
+
+import { ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
-import { ValidationError } from "@goauthentik/api";
-
-import {
-    type ApplicationWizardState,
-    type ApplicationWizardStateUpdate,
-    ExtendedValidationError,
-} from "./types";
-
-export class ApplicationWizardStep extends WizardStep {
-    static get styles() {
-        return [...WizardStep.styles, ...styles];
-    }
+export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardStep {
+    static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;
@@ -30,25 +29,22 @@ export class ApplicationWizardStep extends WizardStep {
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
     wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application");
+    wizardDescription = msg("Create a new application and configure a provider for it.");
     canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
     @query("form")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
-        const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
-        ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+    get formValues(): T {
+        return serializeForm<T>([
+            ...this.form.querySelectorAll("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll("[data-ak-control]"),
+        ]);
     }
 
     protected removeErrors(
-        keyToDelete: keyof ExtendedValidationError,
+        keyToDelete: keyof ApplicationTransactionValidationError,
     ): ValidationError | undefined {
         if (!this.wizard.errors) {
             return undefined;
@@ -71,7 +67,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationUpdate,
+        enable?: NavigationEventInit,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

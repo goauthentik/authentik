@@ -1,22 +1,29 @@
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/sources/scim/SCIMSourceForm";
-import "@goauthentik/admin/sources/scim/SCIMSourceGroups";
-import "@goauthentik/admin/sources/scim/SCIMSourceUsers";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/sources/scim/SCIMSourceForm";
+import "#admin/sources/scim/SCIMSourceGroups";
+import "#admin/sources/scim/SCIMSourceUsers";
+import "#components/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/buttons/TokenCopyButton/index";
+import "#elements/forms/ModalForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SCIMSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -26,12 +33,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SCIMSource,
-    SourcesApi,
-} from "@goauthentik/api";
 
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
@@ -49,20 +50,17 @@ export class SCIMSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: SCIMSource;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFForm,
-            PFFormControl,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFForm,
+        PFFormControl,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
 
     constructor() {
         super();
@@ -78,12 +76,6 @@ export class SCIMSourceViewPage extends AKElement {
         }
         return html`<ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                <div slot="header" class="pf-c-banner pf-m-info">
-                    ${msg("SCIM Source is in preview.")}
-                    <a href="mailto:hello+feature/scim-source@goauthentik.io"
-                        >${msg("Send us feedback!")}</a
-                    >
-                </div>
                 <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
@@ -207,7 +199,7 @@ export class SCIMSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesScimScimsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

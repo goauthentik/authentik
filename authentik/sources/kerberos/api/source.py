@@ -66,6 +66,7 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = KerberosSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",

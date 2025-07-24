@@ -1,18 +1,24 @@
-import "@goauthentik/admin/flows/BoundStagesList";
-import "@goauthentik/admin/flows/FlowDiagram";
-import "@goauthentik/admin/flows/FlowForm";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/flows/BoundStagesList";
+import "#admin/flows/FlowDiagram";
+import "#admin/flows/FlowForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { isResponseErrorLike } from "#common/errors/network";
+
+import { AKElement } from "#elements/Base";
+
+import { DesignationToLabel } from "#admin/flows/utils";
+
+import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -23,13 +29,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    Flow,
-    FlowsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    ResponseError,
-} from "@goauthentik/api";
-
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
     @property({ type: String })
@@ -38,16 +37,23 @@ export class FlowViewPage extends AKElement {
     @state()
     flow!: Flow;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFDescriptionList,
+        PFButton,
+        PFCard,
+        PFContent,
+        PFGrid,
+        css`
             img.pf-icon {
                 max-height: 24px;
             }
             ak-tabs {
                 height: 100%;
             }
-        `);
-    }
+        `,
+    ];
 
     fetchFlow(slug: string) {
         new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
@@ -191,17 +197,19 @@ export class FlowViewPage extends AKElement {
                                                                 const finalURL = `${
                                                                     link.link
                                                                 }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                    `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
-                                                            .catch((exc: ResponseError) => {
-                                                                // This request can return a HTTP 400 when a flow
-                                                                // is not applicable.
-                                                                window.open(
-                                                                    exc.response.url,
-                                                                    "_blank",
-                                                                );
+                                                            .catch(async (error: unknown) => {
+                                                                if (isResponseErrorLike(error)) {
+                                                                    // This request can return a HTTP 400 when a flow
+                                                                    // is not applicable.
+                                                                    window.open(
+                                                                        error.response.url,
+                                                                        "_blank",
+                                                                    );
+                                                                }
                                                             });
                                                     }}
                                                 >
@@ -272,7 +280,10 @@ export class FlowViewPage extends AKElement {
                             ${msg("These bindings control which users can access this flow.")}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>
+                            <ak-bound-policies-list
+                                .target=${this.flow.policybindingmodelPtrId}
+                                .policyEngineMode=${this.flow.policyEngineMode}
+                            >
                             </ak-bound-policies-list>
                         </div>
                     </div>
@@ -280,7 +291,7 @@ export class FlowViewPage extends AKElement {
                 <ak-rbac-object-permission-page
                     slot="page-permissions"
                     data-tab-title="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;

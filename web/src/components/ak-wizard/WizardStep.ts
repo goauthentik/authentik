@@ -1,6 +1,17 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import { P, match } from "ts-pattern";
+import { NavigationEventInit, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
+import {
+    type ButtonKind,
+    type NavigableButton,
+    type WizardButton,
+    WizardStepLabel,
+    WizardStepState,
+} from "./types.js";
+import { wizardStepContext } from "./WizardContexts.js";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+
+import { match, P } from "ts-pattern";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
@@ -12,11 +23,6 @@ import { map } from "lit/directives/map.js";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
-
-import { wizardStepContext } from "./WizardContexts.js";
-import { NavigationUpdate, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
-import { WizardStepLabel, WizardStepState } from "./types";
-import { type ButtonKind, type NavigableButton, type WizardButton } from "./types";
 
 const isNavigable = (b: WizardButton): b is NavigableButton =>
     "destination" in b && typeof b.destination === "string" && b.destination.length > 0;
@@ -57,23 +63,21 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
 export class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
-    static get styles() {
-        return [
-            PFWizard,
-            PFContent,
-            PFTitle,
-            css`
-                .ak-wizard-box {
-                    height: 75%;
-                    height: 75vh;
-                    display: flex;
-                    flex-direction: column;
-                    position: relative;
-                    z-index: 500;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFWizard,
+        PFContent,
+        PFTitle,
+        css`
+            .ak-wizard-box {
+                height: 75%;
+                height: 75vh;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                z-index: 500;
+            }
+        `,
+    ];
 
     @property({ type: Boolean, attribute: true, reflect: true })
     enabled = false;
@@ -139,7 +143,7 @@ export class WizardStep extends AKElement {
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
-    public handleButton(button: WizardButton, details?: NavigationUpdate) {
+    public handleButton(button: WizardButton, details?: NavigationEventInit) {
         if (["close", "cancel"].includes(button.kind)) {
             this.dispatchEvent(new WizardCloseEvent());
             return;
@@ -153,7 +157,7 @@ export class WizardStep extends AKElement {
         throw new Error(`Incoherent button passed: ${JSON.stringify(button, null, 2)}`);
     }
 
-    public handleEnabling(details: NavigationUpdate) {
+    public handleEnabling(details: NavigationEventInit) {
         this.dispatchEvent(new WizardNavigationEvent(undefined, details));
     }
 
@@ -183,13 +187,6 @@ export class WizardStep extends AKElement {
     onWizardCloseEvent(ev: Event) {
         ev.stopPropagation();
         this.dispatchEvent(new WizardCloseEvent());
-    }
-
-    @bound
-    onSidebarNav(ev: PointerEvent) {
-        ev.stopPropagation();
-        const target = (ev.target as HTMLButtonElement).value;
-        this.dispatchEvent(new WizardNavigationEvent(target));
     }
 
     getButtonLabel(button: WizardButton) {
@@ -269,7 +266,7 @@ export class WizardStep extends AKElement {
                     <button
                         class=${classMap(buttonClasses)}
                         ?disabled=${!step.enabled}
-                        @click=${this.onSidebarNav}
+                        @click=${WizardNavigationEvent.toListener(this, step.id)}
                         value=${step.id}
                     >
                         ${step.label}

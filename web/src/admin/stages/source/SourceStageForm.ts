@@ -1,21 +1,23 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect/index";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     Source,
-    SourceStage,
     SourcesAllListRequest,
     SourcesApi,
+    SourceStage,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-source-form")
 export class SourceStageForm extends BaseStageForm<SourceStage> {
@@ -31,11 +33,10 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 stageUuid: this.instance.pk || "",
                 sourceStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
-                sourceStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
+            sourceStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -45,7 +46,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     "Inject an OAuth or SAML Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).",
                 )}</span
             >
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -53,7 +54,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Source")} ?required=${true} name="source">
+            <ak-form-element-horizontal label=${msg("Source")} required name="source">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Source[]> => {
                         const args: SourcesAllListRequest = {
@@ -82,7 +83,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Resume timeout")}
-                ?required=${true}
+                required
                 name="resumeTimeout"
             >
                 <input

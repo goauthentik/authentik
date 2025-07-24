@@ -1,19 +1,35 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import { AKElement } from "#elements/Base";
+import { Wizard } from "#elements/wizard/Wizard";
 
-import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyDeclaration, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+/**
+ * Callback for when the page is brought into view.
+ */
+export type WizardPageActiveCallback = () => void | Promise<void>;
+
+/**
+ * Callback for when the next button is pressed.
+ *
+ * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
+ */
+export type WizardPageNextCallback = () => boolean | Promise<boolean>;
+
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase];
-    }
+    static styles: CSSResult[] = [PFBase];
 
+    /**
+     * The label to display in the sidebar for this page.
+     *
+     * Override this to provide a custom label.
+     * @todo: Should this be a getter or static property?
+     */
     @property()
-    sidebarLabel: () => string = () => {
+    sidebarLabel = (): string => {
         return "UNNAMED";
     };
 
@@ -22,9 +38,18 @@ export class WizardPage extends AKElement {
     }
 
     /**
-     * Called when this is the page brought into view
+     * Reset the page to its initial state.
+     *
+     * @abstract
      */
-    activeCallback: () => Promise<void> = async () => {
+    public reset(): void | Promise<void> {
+        console.debug(`authentik/wizard ${this.localName}: reset)`);
+    }
+
+    /**
+     * Called when this is the page brought into view.
+     */
+    activeCallback: WizardPageActiveCallback = () => {
         this.host.isValid = false;
     };
 
@@ -32,9 +57,11 @@ export class WizardPage extends AKElement {
      * Called when the `next` button on the wizard is pressed. For forms, results in the submission
      * of the current form to the back-end before being allowed to proceed to the next page. This is
      * sub-optimal if we want to collect multiple bits of data before finishing the whole course.
+     *
+     * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
      */
-    nextCallback: () => Promise<boolean> = async () => {
-        return true;
+    nextCallback: WizardPageNextCallback = () => {
+        return Promise.resolve(true);
     };
 
     requestUpdate(

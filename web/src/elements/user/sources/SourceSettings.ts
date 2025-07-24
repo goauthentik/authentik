@@ -1,19 +1,22 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/user/sources/SourceSettingsOAuth";
-import "@goauthentik/elements/user/sources/SourceSettingsPlex";
-import "@goauthentik/elements/user/sources/SourceSettingsSAML";
+import "#elements/EmptyState";
+import "#elements/user/sources/SourceSettingsOAuth";
+import "#elements/user/sources/SourceSettingsPlex";
+import "#elements/user/sources/SourceSettingsSAML";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import { renderSourceIcon } from "#admin/sources/utils";
+
+import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
-
-import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
@@ -29,28 +32,26 @@ export class UserSourceSettingsPage extends AKElement {
     @property({ type: Boolean })
     canConnect = true;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFDataList,
-            css`
-                .pf-c-data-list__cell {
-                    display: flex;
-                    align-items: center;
-                }
-                .pf-c-data-list__cell img {
-                    max-width: 48px;
-                    width: 48px;
-                    margin-right: 16px;
-                }
-                :host([theme="dark"]) .pf-c-data-list__cell img {
-                    filter: invert(1);
-                }
-                .pf-c-data-list__item {
-                    background-color: transparent;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFDataList,
+        css`
+            .pf-c-data-list__cell {
+                display: flex;
+                align-items: center;
+            }
+            .pf-c-data-list__cell img {
+                max-width: 48px;
+                width: 48px;
+                margin-right: 16px;
+            }
+            :host([theme="dark"]) .pf-c-data-list__cell img {
+                filter: invert(1);
+            }
+            .pf-c-data-list__item {
+                background-color: transparent;
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -115,9 +116,9 @@ export class UserSourceSettingsPage extends AKElement {
             ${this.sourceSettings
                 ? html`
                       ${this.sourceSettings.length < 1
-                          ? html`<ak-empty-state
-                                header=${msg("No services available.")}
-                            ></ak-empty-state>`
+                          ? html`<ak-empty-state>
+                                <span>${msg("No services available.")}</span></ak-empty-state
+                            >`
                           : html`
                                 ${this.sourceSettings.map((source) => {
                                     return html`<li class="pf-c-data-list__item">
@@ -139,8 +140,7 @@ export class UserSourceSettingsPage extends AKElement {
                                 })}
                             `}
                   `
-                : html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-                  </ak-empty-state>`}
+                : html`<ak-empty-state default-label></ak-empty-state>`}
         </ul>`;
     }
 }

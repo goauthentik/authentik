@@ -1,6 +1,7 @@
 """Test blueprints v1"""
 
-from os import environ
+from os import chmod, environ, unlink, write
+from tempfile import mkstemp
 
 from django.test import TransactionTestCase
 
@@ -133,7 +134,18 @@ class TestBlueprintsV1(TransactionTestCase):
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
         environ["foo"] = generate_id()
-        importer = Importer.from_string(load_fixture("fixtures/tags.yaml"), {"bar": "baz"})
+        file, file_name = mkstemp()
+        write(file, b"foo")
+        _, file_default_name = mkstemp()
+        chmod(file_default_name, 0o000)  # Remove all permissions so we can't read the file
+        importer = Importer.from_string(
+            load_fixture(
+                "fixtures/tags.yaml",
+                file_name=file_name,
+                file_default_name=file_default_name,
+            ),
+            {"bar": "baz"},
+        )
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
@@ -219,6 +231,10 @@ class TestBlueprintsV1(TransactionTestCase):
                 },
                 "nested_context": "context-nested-value",
                 "env_null": None,
+                "file_content": "foo",
+                "file_default": "default",
+                "file_non_existent": None,
+                "json_parse": {"foo": "bar"},
                 "at_index_sequence": "foo",
                 "at_index_sequence_default": "non existent",
                 "at_index_mapping": 2,
@@ -232,6 +248,8 @@ class TestBlueprintsV1(TransactionTestCase):
                 consumer_key=environ["foo"],
             )
         )
+        unlink(file_name)
+        unlink(file_default_name)
 
     def test_export_validate_import_policies(self):
         """Test export and validate it"""

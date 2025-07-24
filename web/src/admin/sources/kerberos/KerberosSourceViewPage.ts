@@ -1,21 +1,31 @@
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/sources/kerberos/KerberosSourceConnectivity";
-import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import MDSourceKerberosBrowser from "@goauthentik/docs/users-sources/sources/protocols/kerberos/browser.md";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/sources/kerberos/KerberosSourceConnectivity";
+import "#admin/sources/kerberos/KerberosSourceForm";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncStatusCard";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    KerberosSource,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+    SyncStatus,
+} from "@goauthentik/api";
+
+import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -27,13 +37,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    KerberosSource,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SourcesApi,
-    SyncStatus,
-} from "@goauthentik/api";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
@@ -54,19 +57,17 @@ export class KerberosSourceViewPage extends AKElement {
     @state()
     syncState?: SyncStatus;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFBanner,
-            PFList,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFBanner,
+        PFList,
+    ];
 
     constructor() {
         super();
@@ -186,11 +187,7 @@ export class KerberosSourceViewPage extends AKElement {
                     ${this.renderSyncCards()}
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
-                            <ak-markdown
-                                .md=${MDSourceKerberosBrowser}
-                                meta="users-sources/protocols/kerberos/browser.md"
-                                ;
-                            ></ak-markdown>
+                            <ak-mdx .url=${MDSourceKerberosBrowser}></ak-mdx>
                         </div>
                     </div>
                 </div>
@@ -216,7 +213,7 @@ export class KerberosSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesKerberosKerberossource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesKerberosKerberossource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

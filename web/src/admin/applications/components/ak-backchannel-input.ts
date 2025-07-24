@@ -1,14 +1,15 @@
-import "@goauthentik/admin/applications/ProviderSelectModal";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
+import "#admin/applications/ProviderSelectModal";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
 
-import { TemplateResult, html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { Provider } from "@goauthentik/api";
+
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { map } from "lit/directives/map.js";
-
-import { Provider } from "@goauthentik/api";
 
 @customElement("ak-backchannel-providers-input")
 export class AkBackchannelProvidersInput extends AKElement {
@@ -57,7 +58,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
-                .removable=${true}
+                removable
                 value=${ifDefined(provider.pk)}
                 @remove=${this.remover(provider)}
                 >${provider.name}</ak-chip
@@ -66,7 +67,7 @@ export class AkBackchannelProvidersInput extends AKElement {
         return html`
             <ak-form-element-horizontal label=${this.label} name=${this.name}>
                 <div class="pf-c-input-group">
-                    <ak-provider-select-table ?backchannel=${true} .confirm=${this.confirm}>
+                    <ak-provider-select-table backchannel .confirm=${this.confirm}>
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
                             ${this.tooltip ? this.tooltip : nothing}
                             <i class="fas fa-plus" aria-hidden="true"></i>

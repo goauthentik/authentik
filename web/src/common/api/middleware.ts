@@ -1,5 +1,5 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
+import { EVENT_REQUEST_POST } from "#common/constants";
+import { getCookie } from "#common/utils";
 
 import {
     CurrentBrand,
@@ -12,6 +12,7 @@ import {
 export const CSRFHeaderName = "X-authentik-CSRF";
 
 export interface RequestInfo {
+    time: number;
     method: string;
     path: string;
     status: number;
@@ -38,8 +39,11 @@ export class LoggingMiddleware implements Middleware {
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
+        context.init.headers = {
+            ...context.init.headers,
+            [CSRFHeaderName]: getCookie("authentik_csrf"),
+        };
+
         return Promise.resolve(context);
     }
 }
@@ -47,6 +51,7 @@ export class CSRFMiddleware implements Middleware {
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {
+            time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
             status: context.response.status,

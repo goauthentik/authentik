@@ -1,15 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { PoliciesApi, Reputation } from "@goauthentik/api";
+
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { PoliciesApi, Reputation } from "@goauthentik/api";
 
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
@@ -73,7 +75,7 @@ export class UserReputationList extends Table<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${getRelativeTime(item.updated)}</div>
+            html`<div>${formatElapsedTime(item.updated)}</div>
                 <small>${item.updated.toLocaleString()}</small>`,
         ];
     }

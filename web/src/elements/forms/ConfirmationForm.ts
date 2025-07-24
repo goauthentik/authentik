@@ -1,11 +1,14 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/buttons/SpinnerButton/index";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { showMessage } from "#elements/messages/MessageContainer";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-forms-confirm")
@@ -33,9 +36,9 @@ export class ConfirmationForm extends ModalButton {
                     }),
                 );
             })
-            .catch((e) => {
-                this.onError(e);
-                throw e;
+            .catch(async (error: unknown) => {
+                await this.onError(error);
+                throw error;
             });
     }
 
@@ -46,10 +49,12 @@ export class ConfirmationForm extends ModalButton {
         });
     }
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`${this.errorMessage}: ${e.toString()}`),
-            level: MessageLevel.error,
+    onError(error: unknown): Promise<void> {
+        return parseAPIResponseError(error).then((parsedError) => {
+            showMessage({
+                message: msg(str`${this.errorMessage}: ${pluckErrorDetail(parsedError)}`),
+                level: MessageLevel.error,
+            });
         });
     }
 

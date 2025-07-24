@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/traefik-v2.json
+# yaml-language-server: $schema=https://json.schemastore.org/traefik-v3.json
 api:
   insecure: true
   debug: true
@@ -12,7 +12,7 @@ entryPoints:
   web:
     address: ":80"
 
-# Re-use the same config file to define everything
+# Reuse the same config file to define everything
 providers:
   file:
     filename: /etc/traefik/traefik.yml

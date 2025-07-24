@@ -65,13 +65,17 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             data[field.name] = deepcopy(field_value)
         return cleanse_dict(data)
 
-    def diff(self, before: dict, after: dict) -> dict:
+    def diff(self, before: dict, after: dict, update_fields: list[str] | None = None) -> dict:
         """Generate diff between dicts"""
         diff = {}
         for key, value in before.items():
+            if update_fields and key not in update_fields:
+                continue
             if after.get(key) != value:
                 diff[key] = {"previous_value": value, "new_value": after.get(key)}
         for key, value in after.items():
+            if update_fields and key not in update_fields:
+                continue
             if key not in before and key not in diff and before.get(key) != value:
                 diff[key] = {"previous_value": before.get(key), "new_value": value}
         return sanitize_item(diff)
@@ -95,8 +99,11 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
         instance: Model,
         created: bool,
         thread_kwargs: dict | None = None,
+        update_fields: list[str] | None = None,
         **_,
     ):
+        if not self.enabled:
+            return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
         if not should_log_model(instance):
             return None
         thread_kwargs = {}
@@ -106,7 +113,7 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
                 prev_state = {}
             # Get current state
             new_state = self.serialize_simple(instance)
-            diff = self.diff(prev_state, new_state)
+            diff = self.diff(prev_state, new_state, update_fields)
             thread_kwargs["diff"] = diff
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
 
@@ -122,6 +129,8 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
     ):
         thread_kwargs = {}
         m2m_field = None
+        if not self.enabled:
+            return super().m2m_changed_handler(request, sender, instance, action, thread_kwargs)
         # For the audit log we don't care about `pre_` or `post_` so we trim that part off
         _, _, action_direction = action.partition("_")
         # resolve the "through" model to an actual field

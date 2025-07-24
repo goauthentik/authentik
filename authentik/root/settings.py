@@ -7,7 +7,6 @@ from pathlib import Path
 
 import orjson
 from celery.schedules import crontab
-from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -16,6 +15,7 @@ from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
@@ -42,7 +42,6 @@ SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     BACKEND_INBUILT,
     BACKEND_APP_PASSWORD,
     BACKEND_LDAP,
@@ -87,6 +86,7 @@ TENANT_APPS = [
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
+    "authentik.providers.rac",
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
@@ -100,6 +100,7 @@ TENANT_APPS = [
     "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
+    "authentik.stages.authenticator_email",
     "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
@@ -129,8 +130,9 @@ TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
 TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
+PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH = False
+GUARDIAN_MONKEY_PATCH_USER = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -154,16 +156,17 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "CountryCodeEnum": "django_countries.countries",
+        "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
-        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
-        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
-        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
-        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
-        "UserTypeEnum": "authentik.core.models.UserTypes",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "UserTypeEnum": "authentik.core.models.UserTypes",
+        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -225,20 +228,13 @@ CACHES = {
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-match CONFIG.get("session_storage", "cache"):
-    case "cache":
-        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-    case "db":
-        SESSION_ENGINE = "django.contrib.sessions.backends.db"
-    case _:
-        raise ImproperlyConfigured(
-            "Invalid session_storage setting, allowed values are db and cache"
-        )
-SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.unauthenticated_age", "days=1")
+).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
@@ -249,7 +245,7 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
@@ -429,7 +425,7 @@ else:
         "BACKEND": "authentik.root.storages.FileStorage",
         "OPTIONS": {
             "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": "/media/",
+            "base_url": CONFIG.get("web.path", "/") + "media/",
         },
     }
     # Compatibility for apps not supporting top-level STORAGES
@@ -451,6 +447,8 @@ _DISALLOWED_ITEMS = [
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+    "SPECTACULAR_SETTINGS",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -473,6 +471,8 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:

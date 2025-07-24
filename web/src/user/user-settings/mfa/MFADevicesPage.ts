@@ -1,22 +1,25 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/TokenCopyButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
-import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/TokenCopyButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { globalAK } from "#common/global";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export const stageToAuthenticatorName = (stage: UserSetting) =>
     stage.title ?? `Invalid stage component ${stage.component}`;
@@ -73,7 +76,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `/if/user/#/settings;${JSON.stringify({
+                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"
@@ -94,6 +97,8 @@ export class MFADevicesPage extends Table<Device> {
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsEmailDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":
@@ -127,14 +132,20 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}
-            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
+            html`<div>${deviceTypeName(item)}</div>
+                ${item.extraDescription
+                    ? html`
+                          <pf-tooltip position="top" content=${item.externalId || ""}>
+                              <small>${item.extraDescription}</small>
+                          </pf-tooltip>
+                      `
+                    : nothing} `,
             html`${item.created.getTime() > 0
-                ? html`<div>${getRelativeTime(item.created)}</div>
+                ? html`<div>${formatElapsedTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`
                 : html`-`}`,
             html`${item.lastUsed
-                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`
                 : html`-`}`,
             html`

@@ -11,7 +11,6 @@ from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.types import PolicyRequest
 
 PROPERTY_MAPPING_TIME = Histogram(
@@ -58,6 +57,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
             self._context["user"] = user
         if request:
             req.http_request = request
+            self._context["http_request"] = request
         req.context.update(**kwargs)
         self._context["request"] = req
         self._context.update(**kwargs)
@@ -68,12 +68,11 @@ class PropertyMappingEvaluator(BaseEvaluator):
         # For dry-run requests we don't save exceptions
         if self.dry_run:
             return
-        error_string = exception_to_string(exc)
         event = Event.new(
             EventAction.PROPERTY_MAPPING_EXCEPTION,
             expression=expression_source,
-            message=error_string,
-        )
+            message="Failed to execute property mapping",
+        ).with_exception(exc)
         if "request" in self._context:
             req: PolicyRequest = self._context["request"]
             if req.http_request:

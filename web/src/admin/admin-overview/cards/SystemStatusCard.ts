@@ -1,14 +1,14 @@
-import {
-    AdminStatus,
-    AdminStatusCard,
-} from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-admin-status-system")
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
@@ -46,7 +46,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return;
         }
         const outpost = outposts.results[0];
-        outpost.config["authentik_host"] = window.location.origin;
+        outpost.config.authentik_host = window.location.origin;
         await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
             uuid: outpost.pk,
             outpostRequest: outpost,
@@ -84,12 +84,12 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    renderHeader(): TemplateResult {
-        return html`${msg("System status")}`;
+    renderHeader(): SlottedTemplateResult {
+        return msg("System status");
     }
 
-    renderValue(): TemplateResult {
-        return html`${this.statusSummary}`;
+    renderValue(): SlottedTemplateResult {
+        return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
 }
 

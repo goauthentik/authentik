@@ -1,13 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-toggle-group";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import {
     ModelEnum,
@@ -16,6 +14,10 @@ import {
     RbacRolesListRequest,
     Role,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 interface RoleAssignData {
     role: string;
@@ -89,19 +91,24 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.modelPermissions?.results.map((perm) => {
-                return html` <ak-form-element-horizontal name="permissions.${perm.codename}">
-                    <label class="pf-c-switch">
-                        <input class="pf-c-switch__input" type="checkbox" />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
+            ${this.modelPermissions?.results
+                .filter((perm) => {
+                    const [_app, model] = this.model?.split(".") || "";
+                    return perm.codename !== `add_${model}`;
+                })
+                .map((perm) => {
+                    return html` <ak-form-element-horizontal name="permissions.${perm.codename}">
+                        <label class="pf-c-switch">
+                            <input class="pf-c-switch__input" type="checkbox" />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
                             </span>
-                        </span>
-                        <span class="pf-c-switch__label">${perm.name}</span>
-                    </label>
-                </ak-form-element-horizontal>`;
-            })}
+                            <span class="pf-c-switch__label">${perm.name}</span>
+                        </label>
+                    </ak-form-element-horizontal>`;
+                })}
         </form>`;
     }
 }

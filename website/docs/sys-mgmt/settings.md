@@ -16,7 +16,6 @@ Default: `gravatar,initials`
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
-
     - `%(username)s`: The user's username
     - `%(mail_hash)s`: The email address, md5 hashed
     - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
@@ -56,6 +55,10 @@ When enabled, all the events caused by a user will be deleted upon the user's de
 ### Impersonation
 
 Globally enable/disable impersonation. Defaults to `true`.
+
+### Require reason for impersonation
+
+Require administrators to provide a reason for impersonating a user. Defaults to `true`.
 
 ### Default token duration
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """System Migration handler"""
+
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from os import environ, system
@@ -9,7 +10,7 @@ from typing import Any
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, django_db_config
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -112,10 +113,15 @@ def run_migrations():
                 "forget to activate a virtual environment?"
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
-        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
-        execute_from_command_line(
-            ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
-        )
+        if CONFIG.get_bool("tenants.enabled", False):
+            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        # Run django system checks for all databases
+        check_args = ["", "check"]
+        for label in django_db_config(CONFIG).keys():
+            check_args.append(f"--database={label}")
+        if not CONFIG.get_bool("debug"):
+            check_args.append("--deploy")
+        execute_from_command_line(check_args)
     finally:
         release_lock(curr)
         curr.close()

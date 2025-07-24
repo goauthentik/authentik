@@ -1,30 +1,31 @@
-import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/user/LibraryApplication";
-
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import styles from "./LibraryPageImpl.css";
-
-import type { Application } from "@goauthentik/api";
-
-import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
+import "#elements/EmptyState";
+import "#user/LibraryApplication/index";
 import "./ak-library-application-empty-list.js";
 import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
 import "./ak-library-application-search.js";
+
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,
     LibraryPageSearchSelected,
     LibraryPageSearchUpdated,
 } from "./events.js";
+import styles from "./LibraryPageImpl.styles.js";
+import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import type { PageUIConfig } from "./types.js";
+
+import { groupBy } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+
+import type { Application } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
  * List of Applications available
@@ -40,9 +41,7 @@ import type { PageUIConfig } from "./types.js";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static get styles() {
-        return styles;
-    }
+    static styles = styles;
 
     /**
      * Controls showing the "Switch to Admin" button.
@@ -116,8 +115,13 @@ export class LibraryPage extends AKElement {
     @bound
     launchRequest(event: LibraryPageSearchSelected) {
         event.stopPropagation();
-        if (this.selectedApp?.launchUrl) {
+        if (!this.selectedApp?.launchUrl) {
+            return;
+        }
+        if (!this.selectedApp.openInNewTab) {
             window.location.assign(this.selectedApp?.launchUrl);
+        } else {
+            window.open(this.selectedApp.launchUrl);
         }
     }
 

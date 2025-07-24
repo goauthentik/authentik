@@ -1,20 +1,21 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/buttons/SpinnerButton/index";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
+import { MessageLevel } from "#common/messages";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-
-import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 type BulkDeleteMetadata = { key: string; value: string }[];
 
@@ -34,9 +35,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
     @state()
     usedByData: Map<T, UsedBy[]> = new Map();
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFList];
 
     async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
@@ -167,13 +166,13 @@ export class DeleteBulkForm<T> extends ModalButton {
                 }),
             );
             this.onSuccess();
-            this.open = false;
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+            this.open = false;
         } catch (e) {
             this.onError(e as Error);
             throw e;

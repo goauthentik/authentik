@@ -1,18 +1,20 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/forms/SearchSelect";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import "#elements/forms/SearchSelect/index";
 
-import { html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
     CertificateKeyPair,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
 } from "@goauthentik/api";
+
+import { html } from "lit";
+import { customElement, property, query } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
@@ -120,7 +122,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
                 .value=${renderValue}
                 .selected=${this.selected}
                 @ak-change=${this.handleSearchUpdate}
-                ?blankable=${true}
+                blankable
             >
             </ak-search-select>
         `;

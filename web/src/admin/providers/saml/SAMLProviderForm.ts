@@ -1,12 +1,13 @@
-import { type AkCryptoCertificateSearch } from "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { renderForm } from "./SAMLProviderFormForm.js";
 
-import { customElement, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
 
-import { renderForm } from "./SAMLProviderFormForm.js";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
@@ -27,11 +28,10 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                sAMLProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
+            sAMLProviderRequest: data,
+        });
     }
 
     renderForm() {

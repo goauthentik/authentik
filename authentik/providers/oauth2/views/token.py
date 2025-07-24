@@ -598,9 +598,9 @@ class TokenView(View):
                     return TokenResponse(self.create_device_code_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
-            return TokenResponse(error.create_dict(), status=400)
+            return TokenResponse(error.create_dict(request), status=400)
         except UserAuthError as error:
-            return TokenResponse(error.create_dict(), status=403)
+            return TokenResponse(error.create_dict(request), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
@@ -627,6 +627,7 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -710,6 +711,7 @@ class TokenView(View):
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -736,6 +738,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -767,6 +770,7 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),

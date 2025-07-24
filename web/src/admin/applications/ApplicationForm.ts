@@ -1,35 +1,35 @@
-import "@goauthentik/admin/applications/ProviderSelectModal";
-import { iconHelperText } from "@goauthentik/admin/helperText";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-file-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/applications/ProviderSelectModal";
+import "#components/ak-file-input";
+import "#components/ak-radio-input";
+import "#components/ak-slug-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/Alert";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "./components/ak-backchannel-input.js";
+import "./components/ak-provider-search-input.js";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { iconHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { Application, CoreApi, Provider } from "@goauthentik/api";
 
-import { policyOptions } from "./PolicyOptions.js";
-import "./components/ak-backchannel-input";
-import "./components/ak-provider-search-input";
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
@@ -78,7 +78,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             });
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["metaIcon"];
+            const icon = this.files().get("metaIcon");
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
@@ -120,7 +120,12 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     renderForm(): TemplateResult {
+        const alertMsg = msg(
+            "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
+        );
+
         return html`<form class="pf-c-form pf-m-horizontal">
+            ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 value=${ifDefined(this.instance?.name)}
@@ -128,13 +133,14 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 required
                 help=${msg("Application's display Name.")}
             ></ak-text-input>
-            <ak-text-input
+            <ak-slug-input
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
-            ></ak-text-input>
+                input-hint="code"
+            ></ak-slug-input>
             <ak-text-input
                 name="group"
                 value=${ifDefined(this.instance?.group)}
@@ -142,6 +148,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
+                input-hint="code"
             ></ak-text-input>
             <ak-provider-search-input
                 name="provider"
@@ -169,12 +176,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Policy engine mode")}
                 required
                 name="policyEngineMode"
-                .options=${policyOptions}
+                .options=${policyEngineModes}
                 .value=${this.instance?.policyEngineMode}
             ></ak-radio-input>
-            <ak-form-group>
-                <span slot="header"> ${msg("UI settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("UI settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="metaLaunchUrl"
                         label=${msg("Launch URL")}
@@ -182,10 +188,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
+                        input-hint="code"
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"
-                        ?checked=${first(this.instance?.openInNewTab, false)}
+                        ?checked=${this.instance?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
                             "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
@@ -212,7 +219,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         : html` <ak-text-input
                               label=${msg("Icon")}
                               name="metaIcon"
-                              value=${first(this.instance?.metaIcon, "")}
+                              value=${this.instance?.metaIcon ?? ""}
                               help=${iconHelperText}
                           >
                           </ak-text-input>`}

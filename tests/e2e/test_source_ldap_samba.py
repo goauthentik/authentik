@@ -150,7 +150,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         # Ensure user has an unusable password directly after sync
         self.assertFalse(user.has_usable_password())
         # Auth (which will fallback to bind)
-        LDAPBackend().auth_user(source, password, username=username)
+        LDAPBackend().auth_user(None, source, password, username=username)
         user.refresh_from_db()
         # User should now have a usable password in the database
         self.assertTrue(user.has_usable_password())

@@ -1,33 +1,33 @@
-import { getRelativeTime } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
+import "#elements/Spinner";
+
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+import { PFColor } from "#elements/Label";
+
+import { OutpostHealth } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { OutpostHealth } from "@goauthentik/api";
 
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
     outpostHealth?: OutpostHealth;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFDescriptionList,
-            css`
-                li {
-                    margin: 5px 0;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFDescriptionList,
+        css`
+            li {
+                margin: 5px 0;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         if (!this.outpostHealth) {
@@ -49,9 +49,9 @@ export class OutpostHealthElement extends AKElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-label color=${PFColor.Green} ?compact=${true}>
+                        <ak-label color=${PFColor.Green} compact>
                             ${msg(
-                                str`${getRelativeTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
+                                str`${formatElapsedTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
                             )}
                         </ak-label>
                     </div>
@@ -64,12 +64,12 @@ export class OutpostHealthElement extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${this.outpostHealth.versionOutdated
-                            ? html`<ak-label color=${PFColor.Red} ?compact=${true}
+                            ? html`<ak-label color=${PFColor.Red} compact
                                   >${msg(
                                       str`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`,
                                   )}
                               </ak-label>`
-                            : html`<ak-label color=${PFColor.Green} ?compact=${true}
+                            : html`<ak-label color=${PFColor.Green} compact
                                   >${versionString}
                               </ak-label>`}
                     </div>

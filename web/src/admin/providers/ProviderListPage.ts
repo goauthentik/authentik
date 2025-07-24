@@ -1,29 +1,31 @@
-import "@goauthentik/admin/applications/ApplicationWizardHint";
-import "@goauthentik/admin/providers/ProviderWizard";
-import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderForm";
-import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
-import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/admin/providers/rac/RACProviderForm";
-import "@goauthentik/admin/providers/radius/RadiusProviderForm";
-import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/admin/providers/scim/SCIMProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/applications/ApplicationWizardHint";
+import "#admin/providers/ProviderWizard";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderForm";
+import "#admin/providers/ldap/LDAPProviderForm";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderForm";
+import "#admin/providers/oauth2/OAuth2ProviderForm";
+import "#admin/providers/proxy/ProxyProviderForm";
+import "#admin/providers/rac/RACProviderForm";
+import "#admin/providers/radius/RadiusProviderForm";
+import "#admin/providers/saml/SAMLProviderForm";
+import "#admin/providers/scim/SCIMProviderForm";
+import "#admin/providers/ssf/SSFProviderFormPage";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {

@@ -1,6 +1,4 @@
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-
-import { CSSResult, css } from "lit";
+import { css, CSSResult } from "lit";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -16,19 +14,6 @@ export function getCookie(name: string): string {
         }
     }
     return cookieValue;
-}
-
-export function convertToSlug(text: string): string {
-    return text
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-}
-
-export function isSlug(text: string): boolean {
-    const lowered = text.toLowerCase();
-    const forbidden = /([^\w-]|\s)/.test(lowered);
-    return lowered === text && !forbidden;
 }
 
 /**
@@ -74,16 +59,6 @@ export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[s
     return Array.from(m).sort();
 }
 
-export function first<T>(...args: Array<T | undefined | null>): T {
-    for (let index = 0; index < args.length; index++) {
-        const element = args[index];
-        if (element !== undefined && element !== null) {
-            return element;
-        }
-    }
-    throw new SentryIgnoredError(`No compatible arg given: ${args}`);
-}
-
 // Taken from python's string module
 export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -96,40 +71,13 @@ export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 export function randomString(len: number, charset: string): string {
     const chars = [];
     const array = new Uint8Array(len);
-    self.crypto.getRandomValues(array);
+
+    crypto.getRandomValues(array);
+
     for (let index = 0; index < len; index++) {
         chars.push(charset[Math.floor(charset.length * (array[index] / Math.pow(2, 8)))]);
     }
     return chars.join("");
-}
-
-export function dateTimeLocal(date: Date): string {
-    // So for some reason, the datetime-local input field requires ISO Datetime as value
-    // But the standard javascript date.toISOString() returns everything with seconds and
-    // milliseconds, which the input field doesn't like (on chrome, on firefox its fine)
-    // On chrome, setting .valueAsNumber works, but that causes an error on firefox, so go
-    // figure.
-    // Additionally, toISOString always returns the date without timezone, which we would like
-    // to include for better usability
-    const tzOffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
-    const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, -1);
-    const parts = localISOTime.split(":");
-    return `${parts[0]}:${parts[1]}`;
-}
-
-export function dateToUTC(date: Date): Date {
-    // Sigh...so our API is UTC/can take TZ info in the ISO format as it should.
-    // datetime-local fields (which is almost the only date-time input we use)
-    // can return its value as a UTC timestamp...however the generated API client
-    // _requires_ a Date object, only to then convert it to an ISO string anyways
-    // JS Dates don't include timezone info in the ISO string, so that just sends
-    // the local time as UTC...which is wrong
-    // Instead we have to do this, convert the given date to a UTC timestamp,
-    // then subtract the timezone offset to create an "invalid" date (correct time&date)
-    // but it still "thinks" it's in local TZ
-    const timestamp = date.getTime();
-    const offset = -1 * (new Date().getTimezoneOffset() * 60000);
-    return new Date(timestamp - offset);
 }
 
 // Lit is extremely well-typed with regard to CSS, and Storybook's `build` does not currently have a
@@ -155,26 +103,4 @@ export function adaptCSS(sheet: AdaptableStylesheet): CSSStyleSheet;
 export function adaptCSS(sheet: AdaptableStylesheet[]): CSSStyleSheet[];
 export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): AdaptedStylesheets {
     return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
-}
-
-const _timeUnits = new Map<Intl.RelativeTimeFormatUnit, number>([
-    ["year", 24 * 60 * 60 * 1000 * 365],
-    ["month", (24 * 60 * 60 * 1000 * 365) / 12],
-    ["day", 24 * 60 * 60 * 1000],
-    ["hour", 60 * 60 * 1000],
-    ["minute", 60 * 1000],
-    ["second", 1000],
-]);
-
-export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
-    const rtf = new Intl.RelativeTimeFormat("default", { numeric: "auto" });
-    const elapsed = d1.getTime() - d2.getTime();
-
-    // "Math.abs" accounts for both "past" & "future" scenarios
-    for (const [key, value] of _timeUnits) {
-        if (Math.abs(elapsed) > value || key == "second") {
-            return rtf.format(Math.round(elapsed / value), key);
-        }
-    }
-    return rtf.format(Math.round(elapsed / 1000), "second");
 }

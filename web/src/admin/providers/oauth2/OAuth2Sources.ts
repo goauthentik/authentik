@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { OAuthSource, SourcesApi } from "@goauthentik/api";
 
@@ -37,13 +38,15 @@ export function oauth2SourcesSelector(instanceMappings?: string[]) {
         const oauthSources = new SourcesApi(DEFAULT_CONFIG);
         const mappings = await Promise.allSettled(
             instanceMappings.map((instanceId) =>
-                oauthSources.sourcesOauthRetrieve({ slug: instanceId }),
+                oauthSources.sourcesOauthList({ pbmUuid: instanceId }),
             ),
         );
 
         return mappings
             .filter((s) => s.status === "fulfilled")
             .map((s) => s.value)
+            .filter((s) => s.pagination.count > 0)
+            .map((s) => s.results[0])
             .map(sourceToSelect);
     };
 }

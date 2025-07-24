@@ -1,6 +1,6 @@
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
 
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { until } from "lit/directives/until.js";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
@@ -51,7 +51,7 @@ export class Route {
         if (this.callback) {
             return html`${until(
                 this.callback(args),
-                html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
+                html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
         if (this.element) {
