@@ -24,7 +24,7 @@ In authentik, open the Admin interface and go to **Directory** > **Federation & 
 Select **Telegram source** and configure your source:
 
 - **Name**: Define a name.
-- _Slug:_ Set a slug
+- **Slug**: Set a slug.
 - _Bot username:_ Set the username of your Telegram bot (e.g., `my_bot`)
 - _Bot token:_ Set the token of your Telegram bot
 - _"Request access to send messages from your bot":_ enable this if you need your bot to be able to
