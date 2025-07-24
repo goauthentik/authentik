@@ -216,9 +216,7 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertFalse(result)
 
         # Scenario 5: Non-existent provider
-        result = send_backchannel_logout_request(
-            99999, "http://testserver", sub="test-user-uid"
-        )
+        result = send_backchannel_logout_request(99999, "http://testserver", sub="test-user-uid")
         self.assertFalse(result)
 
         # Scenario 6: Request timeout
@@ -241,9 +239,7 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_session.post.return_value = mock_response
 
         initial_event_count = Event.objects.count()
-        send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", sub="test-user-uid"
-        )
+        send_backchannel_logout_request(self.provider.pk, "http://testserver", sub="test-user-uid")
 
         self.assertEqual(Event.objects.count(), initial_event_count + 1)
         event = Event.objects.latest("created")

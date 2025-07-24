@@ -13,9 +13,7 @@ LOGGER = get_logger()
 
 
 @CELERY_APP.task()
-def send_backchannel_logout_request(
-    provider_pk: int, iss: str, sub: str = None
-) -> bool:
+def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None) -> bool:
     """Send a back-channel logout request to the registered client
 
     Args:
@@ -25,6 +23,7 @@ def send_backchannel_logout_request(
     Returns:
         bool: True if the request was sent successfully, False otherwise
     """
+    LOGGER.debug("Sending back-channel logout request", provider_pk=provider_pk, sub=sub)
     if not sub:
         LOGGER.warning("No sub provided for back-channel logout")
         return False
@@ -114,6 +113,7 @@ def send_backchannel_logout_notification(session: AuthenticatedSession = None) -
     Args:
         session: The authenticated session that was terminated
     """
+    LOGGER.debug("Sending back-channel logout notifications for session", session=session)
     if not session:
         LOGGER.warning("No session provided for back-channel logout notification")
         return
@@ -129,7 +129,15 @@ def send_backchannel_logout_notification(session: AuthenticatedSession = None) -
 
     # Get all OAuth2 providers that have issued tokens for this session
     access_tokens = AccessToken.objects.select_related("provider").filter(session=session)
+    LOGGER.debug(
+        "back-channel: Found access tokens for session",
+        session=session,
+        access_tokens=access_tokens,
+    )
     for token in access_tokens:
+        LOGGER.debug(
+            "back-channel: Sending back-channel logout notification for token", token=token
+        )
         # Send back-channel logout notifications to all tokens
         send_backchannel_logout_request.delay(
             provider_pk=token.provider.pk,

@@ -12,15 +12,7 @@ LOGGER = get_logger()
 @receiver(pre_delete, sender=AuthenticatedSession)
 def user_session_deleted_oauth_tokens_removal(sender, instance: AuthenticatedSession, **_):
     """Revoke tokens upon user logout"""
-    AccessToken.objects.filter(
-        user=instance.user,
-        session__session__session_key=instance.session.session_key,
-    ).delete()
-
-
-@receiver(pre_delete, sender=AuthenticatedSession)
-def user_session_deleted_backchannel_logout(sender, instance: AuthenticatedSession, **_):
-    """Send back-channel logout notifications upon session deletion"""
+    LOGGER.debug("Sending back-channel logout notifications signal!", session=instance)
     try:
         send_backchannel_logout_notification(session=instance)
     except Exception as exc:
@@ -31,6 +23,11 @@ def user_session_deleted_backchannel_logout(sender, instance: AuthenticatedSessi
             session_key=instance.session.session_key,
             error=str(exc),
         )
+
+    AccessToken.objects.filter(
+        user=instance.user,
+        session__session__session_key=instance.session.session_key,
+    ).delete()
 
 
 @receiver(post_save, sender=User)

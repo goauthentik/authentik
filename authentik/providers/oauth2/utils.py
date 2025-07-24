@@ -225,6 +225,8 @@ def create_logout_token(
 
     from authentik.providers.oauth2.id_token import hash_session_key
 
+    LOGGER.debug("Creating logout token", provider=provider, session_key=session_key, sub=sub)
+
     # Create the logout token payload
     payload = {
         "iss": str(iss),
