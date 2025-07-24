@@ -41,6 +41,7 @@ class TestPropertyMappings(TestCase):
         self.assertEqual(
             properties,
             {
+                "id": "jens@goauthentik.io",
                 "email": "foo@bar.baz",
                 "name": "foo",
                 "sn": "bar",
@@ -55,6 +56,28 @@ class TestPropertyMappings(TestCase):
         for group_id in ["group 1", "group 2"]:
             properties = self.source.get_base_group_properties(root=ROOT, group_id=group_id)
             self.assertEqual(properties, {"name": group_id})
+
+    def test_identifier(self):
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+        parser.parse()
+        sfm = parser.prepare_flow_manager()
+        self.assertEqual(
+            sfm.identifier,
+            "jens@goauthentik.io",
+        )
 
     def test_user_property_mappings(self):
         """Test user property mappings"""
