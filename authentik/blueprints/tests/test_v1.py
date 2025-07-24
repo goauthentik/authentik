@@ -5,6 +5,7 @@ from tempfile import mkstemp
 
 from django.test import TransactionTestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
@@ -127,6 +128,7 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
 
+    @apply_blueprint("system/providers-oauth2.yaml")
     def test_import_yaml_tags(self):
         """Test some yaml tags"""
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
@@ -237,6 +239,7 @@ class TestBlueprintsV1(TransactionTestCase):
                 "at_index_sequence_default": "non existent",
                 "at_index_mapping": 2,
                 "at_index_mapping_default": "non existent",
+                "find_object": "goauthentik.io/providers/oauth2/scope-openid",
             },
         )
         self.assertTrue(
