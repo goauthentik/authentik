@@ -11,34 +11,32 @@ The following placeholders are used in this guide:
 
 ## Entra ID configuration
 
-1. Log in to [Entra ID](https://entra.microsoft.com) using a global administrator account.
+1. Log in to [Entra ID](https://entra.microsoft.com) using a [global administrator](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/permissions-reference#global-administrator) account.
 2. Navigate to **Applications** > **App registrations**.
-3. Click **New registration** and select the following required configurations:
+3. Click **New registration** and set the following required configurations:
     - **Name**: provide a descriptive name (e.g. `authentik`).
     - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
     - Under **Redirect URI**:
         - **Platform**: `Web`
         - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
 
-4. Click **Register**.
-    - The **Overview** tab of the newly created authentik app registration opens. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be required in authentik.
-5. In the sidebar, navigate to **Certificates & secrets**.
-6. Select the **Client secrets** tab and click **New Secret**. Provide the following required configurations:
+4. Click **Register**. Once the registration is complete, the **Overview** tab of the newly created authentik app will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be needed later when configuring authentik.
+5. In the leftmost sidebar, navigate to **Certificates & secrets**.
+6. Select the **Client secrets** tab and click **New Secret**. Configure the following required settings:
     - **Description**: provide a description for the secret (e.g. `authentik secret`.
-    - **Expires**: select an expiry duration. Currently the secret in authentik has to be rotated manually or via API, so it is recommended to choose at least 12 months.
+    - **Expires**: choose an expiration period. As authentik does not yet support automatic secret rotation, either manual rotation or API-based updates are required. As a result, a duration of at least 12 months is recommended.
 7. Copy the secret's value from the **Value** column.
 
 :::note
-The secret value must be copied immediately after its creation. It is not possible to view the secret value later.
+The secret value is only displayed once at the time of creation. Make sure to copy and store it securely, as it cannot be retrieved later.
 :::
 
-9. In the sidebar, navigate to **API Permissions**.
-10. Click **Add a permission** and select **Microsoft Graph** as the API.
-11. Select **Delegated permissions** as the permission type and assign the following permissions:
+8. In the sidebar, navigate to **API Permissions**, then click **Add a permission** and select **Microsoft Graph** as the API.
+9. Select **Delegated permissions** as the permission type and assign the following permissions:
     - Under **OpenID Permissions**: select `email`, `profile`, and `openid`.
     - Under **Group Member** _(optional)_: if you need authentik to sync group membership information from Entra ID, select the `GroupMember.Read.All` permission.
-12. Click **Add permissions**.
-13. _(optional)_ If the `GroupMember.Read.All` permission has been selected, under **Configured permissions**, click **Grant admin consent for default directory**.
+10. Click **Add permissions**.
+11. _(optional)_ If the `GroupMember.Read.All` permission has been selected, under **Configured permissions**, click **Grant admin consent for default directory**.
 
 ## authentik configuration
 
@@ -72,7 +70,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of.
 :::
 
-### Machine-to-machine authentication:ak-version[2024.12]
+### Machine-to-machine authentication :ak-version[2024.12]
 
 If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
 
