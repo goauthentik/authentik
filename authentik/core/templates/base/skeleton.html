@@ -10,6 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred colour-scheme #}
         <meta name="darkreader-lock">
+        <base href="{{ base_url_rel }}" />
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
         <link rel="icon" href="{{ brand.branding_favicon_url }}">
         <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
