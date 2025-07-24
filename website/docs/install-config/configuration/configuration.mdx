@@ -84,6 +84,7 @@ The `AUTHENTIK_POSTGRESQL__HOST`, `AUTHENTIK_POSTGRESQL__PORT`, `AUTHENTIK_POSTG
 Configure SSL/TLS to secure the connection to your PostgreSQL server.
 
 - `AUTHENTIK_POSTGRESQL__SSLMODE`: Controls the SSL verification mode. Defaults to `verify-ca`.
+
     - `disable`: No SSL is used.
     - `allow`: Use SSL if available, but don't perform verification.
     - `prefer`: Attempt an SSL connection first, fall back to non-SSL if it fails.
@@ -104,6 +105,7 @@ For more details, see [Django's PostgreSQL documentation](https://docs.djangopro
 These settings control connection persistence and behavior, which is particularly important when using a connection pooler like PgBouncer.
 
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: The maximum age of a database connection in seconds.
+
     - `0` (default): Connections are closed after each request.
     - greater than `0`: Enables persistent connections, with the value defining the maximum lifetime.
     - `None`: Unlimited persistence. Use with caution, especially with connection poolers.
@@ -123,9 +125,10 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS). 
-    - Parameters passed with this setting will override those passed with other settings. 
-    - These parameters are not applied to read replicas. 
+    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+
+    - Parameters passed with this setting will override those passed with other settings.
+    - These parameters are not applied to read replicas.
     - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
 ### Read Replicas
@@ -155,6 +158,7 @@ Additionally, you can set arbitrary connection parameters on all read replicas w
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
 
     Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+
     - Parameters passed with this setting will override those passed with other settings.
     - Parameter key words should be formatted as a base64-encoded JSON dictionary.
 
@@ -361,6 +365,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 - `AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE`
 
     Placeholders:
+
     - `%(type)s`: Outpost type; proxy, ldap, etc
     - `%(version)s`: Current version; 2021.4.1
     - `%(build_hash)s`: Build hash if you're running a beta version
@@ -372,6 +377,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
     Configure the automatic discovery of integrations. Defaults to `true`.
 
     By default, the following is discovered:
+
     - Kubernetes in-cluster config
     - Kubeconfig
     - Existence of a docker socket
