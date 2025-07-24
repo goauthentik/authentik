@@ -20,7 +20,7 @@ Now that the bot is configured you can proceed to creating a source in authentik
 
 ## authentik
 
-In authentik, go to _Directory_ > _Federation & Social login_ and click _Create_.
+In authentik, open the Admin interface and go to **Directory** > **Federation & Social login** and click **Create**.
 Select _Telegram source_ and configure your source:
 
 - _Name:_ Choose a name
