@@ -46,7 +46,7 @@ The following variables are available to OAuth source property mappings:
 
 - `info`: A Python dictionary containing Telegram user data:
     - `id` - Telegram user ID
-    - `username` - Username of the user. May not be present
+    - `username` - Username of the user. Might not be present.
     - `first_name` - First name of the user. May not be present
     - `last_name` - Last name of the user. May not be present
     - `photo_url` - URL of the user's profile photo. May not be present
