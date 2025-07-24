@@ -4,7 +4,8 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "run-s build:docusaurus",
+        "build": "run-s build:docusaurus build:copy",
+        "build:copy": "cp -r ./build ../build",
         "build:docusaurus": "docusaurus build",
         "check-types": "tsc -b .",
         "clear": "docusaurus clear",
