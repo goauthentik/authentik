@@ -72,12 +72,6 @@ class ProviderInfoView(View):
             "device_authorization_endpoint": self.request.build_absolute_uri(
                 reverse("authentik_providers_oauth2:device")
             ),
-            "backchannel_logout_uri": self.request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_oauth2:backchannel-logout",
-                    kwargs={"application_slug": provider.application.slug},
-                )
-            ),
             "backchannel_logout_supported": True,
             "backchannel_logout_session_supported": True,
             "response_types_supported": [
