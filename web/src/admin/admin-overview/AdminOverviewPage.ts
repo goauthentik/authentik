@@ -17,7 +17,7 @@ import { me } from "#common/users";
 import { AKElement } from "#elements/Base";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { paramURL } from "#elements/router/RouteMatch";
 
 import { SessionUser } from "@goauthentik/api";
 import { createReleaseNotesURL } from "@goauthentik/core/version";

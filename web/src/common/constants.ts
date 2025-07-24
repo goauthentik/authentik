@@ -16,17 +16,6 @@ export const CURRENT_CLASS = "pf-m-current";
 
 //#endregion
 
-//#region Application
-
-/**
- * The delimiter used to parse the URL for the current route.
- *
- * @todo Move this to the ak-router.
- */
-export const ROUTE_SEPARATOR = ";";
-
-//#endregion
-
 //#region Events
 
 export const EVENT_REFRESH = "ak-refresh";

@@ -1,7 +1,7 @@
 import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { paramURL } from "#elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";

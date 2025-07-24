@@ -6,13 +6,16 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 import { formatElapsedTime } from "#common/temporal";
 
+import { formatInterfaceRoute } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { createNextSearchParams } from "#admin/flows/utils";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -73,13 +76,17 @@ export class MFADevicesPage extends Table<Device> {
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
                     ${settings.map((stage) => {
+                        // TODO: The use `ifDefined` below seems odd. Is it necessary?
+                        const searchParams = createNextSearchParams(
+                            globalAK().api.relBase +
+                                formatInterfaceRoute("user", "settings", {
+                                    page: "mfa",
+                                }),
+                        );
+
                         return html`<li>
                             <a
-                                href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
-                                    })}`,
-                                )}"
+                                href="${ifDefined(stage.configureUrl)}?${searchParams.toString()}"
                                 class="pf-c-dropdown__menu-item"
                             >
                                 ${stageToAuthenticatorName(stage)}

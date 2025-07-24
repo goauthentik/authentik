@@ -227,7 +227,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
-                                            defaultUrl="/library"
+                                            defaultURL="/library"
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
