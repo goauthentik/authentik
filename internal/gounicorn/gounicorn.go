@@ -66,8 +66,8 @@ func (g *GoUnicorn) initCmd() {
 			panic(fmt.Errorf("failed to create temporary pid file: %v", err))
 		}
 		g.pidFile = pidFile.Name()
-		command = "gunicorn"
-		args = []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
+		command = "memray"
+		args = []string{"run", "--follow-fork", "-m", "gunicorn", "-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
 		if g.pidFile != "" {
 			args = append(args, "--pid", g.pidFile)
 		}
