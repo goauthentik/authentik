@@ -298,7 +298,7 @@ requires-dist = [
     { name = "flower", specifier = "==2.0.1" },
     { name = "geoip2", specifier = "==5.1.0" },
     { name = "geopy", specifier = "==2.4.1" },
-    { name = "google-api-python-client", specifier = "==2.176.0" },
+    { name = "google-api-python-client", specifier = "==2.177.0" },
     { name = "gssapi", specifier = "==1.9.0" },
     { name = "gunicorn", specifier = "==23.0.0" },
     { name = "jsonpatch", specifier = "==1.33" },
@@ -1403,7 +1403,7 @@ wheels = [
 
 [[package]]
 name = "google-api-python-client"
-version = "2.176.0"
+version = "2.177.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-api-core" },
@@ -1412,9 +1412,9 @@ dependencies = [
     { name = "httplib2" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3e/38/daf70faf6d05556d382bac640bc6765f09fcfb9dfb51ac4a595d3453a2a9/google_api_python_client-2.176.0.tar.gz", hash = "sha256:2b451cdd7fd10faeb5dd20f7d992f185e1e8f4124c35f2cdcc77c843139a4cf1", size = 13154773, upload-time = "2025-07-08T18:07:10.354Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/75/a89cad519fa8910132e3b08571d0e682ae1163643da6f963f1930f3dc788/google_api_python_client-2.177.0.tar.gz", hash = "sha256:9ffd2b57d68f5afa7e6ac64e2c440534eaa056cbb394812a62ff94723c31b50e", size = 13184405, upload-time = "2025-07-23T16:22:46.321Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/2c/758f415a19a12c3c6d06902794b0dd4c521d912a59b98ab752bba48812df/google_api_python_client-2.176.0-py3-none-any.whl", hash = "sha256:e22239797f1d085341e12cd924591fc65c56d08e0af02549d7606092e6296510", size = 13678445, upload-time = "2025-07-08T18:07:07.799Z" },
+    { url = "https://files.pythonhosted.org/packages/47/f5/121248e18ca605a11720c81ae1b52a5a8cb690af9f01887c56de23cd9a5a/google_api_python_client-2.177.0-py3-none-any.whl", hash = "sha256:f2f50f11105ab883eb9b6cf38ec54ea5fd4b429249f76444bec90deba5be79b3", size = 13709470, upload-time = "2025-07-23T16:22:44.081Z" },
 ]
 
 [[package]]

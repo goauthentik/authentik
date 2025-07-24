@@ -36,7 +36,7 @@ dependencies = [
     "flower==2.0.1",
     "geoip2==5.1.0",
     "geopy==2.4.1",
-    "google-api-python-client==2.176.0",
+    "google-api-python-client==2.177.0",
     "gssapi==1.9.0",
     "gunicorn==23.0.0",
     "jsonpatch==1.33",
