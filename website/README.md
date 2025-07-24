@@ -12,7 +12,7 @@ To ensure a smooth review process, we encourage you to build the documentation l
 
 ## Package structure
 
-At the root of the `website` directory is a `package.json` file that defines an [NPM Workspace](https://docs.npmjs.com/cli/v11/using-npm/workspaces). This allows us to have multiple packages in the same repository, and to install their dependencies together in a single command: `make docs-install`
+At the root of the `website` directory is a `package.json` file that defines an [NPM Workspace](https://docs.npmjs.com/cli/v11/using-npm/workspaces). This allows us to have multiple packages in the same repository, and to install their dependencies via a single command: `make docs-install`
 
 ```mermaid
 ---
@@ -35,7 +35,7 @@ flowchart TD
     style HoistedDependencies text-align:left
 ```
 
-NPM packages which are in a _parent workspace_ share a common `node_modules` directory. _Sibling packages_ define their dependencies in their own `package.json` files. The dependencies which they share in common are "hoisted" to the parent `node_modules` directory.
+NPM packages which are in a _parent workspace_ share a common `node_modules` directory. _Sibling packages_ define their dependencies in their own `package.json` files. The dependencies which they share in common are lifted or "hoisted" to the parent `node_modules` directory.
 
 ### Topics (AKA "The Docs")
 
@@ -51,7 +51,7 @@ The [`website/api`](./api/) directory contains documentation on the authentik AP
 
 ### Deployment
 
-Deployment is handled with a combination of [Netlify](https://www.netlify.com/) and [GitHub Action workflows](../.github/workflows/).
+Deployment is handled by a combination of [Netlify](https://www.netlify.com/) and [GitHub Action workflows](../.github/workflows/).
 
 ## Additional Resources
 
