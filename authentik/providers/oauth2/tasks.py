@@ -14,20 +14,19 @@ LOGGER = get_logger()
 
 @CELERY_APP.task()
 def send_backchannel_logout_request(
-    provider_pk: int, iss: str, session_id: str = None, sub: str = None
+    provider_pk: int, iss: str, sub: str = None
 ) -> bool:
     """Send a back-channel logout request to the registered client
 
     Args:
         provider_pk: The OAuth2 provider's primary key
-        session_id: The session ID to include in the logout token
         sub: The subject identifier to include in the logout token
 
     Returns:
-        bool: True if the request was successful, False otherwise
+        bool: True if the request was sent successfully, False otherwise
     """
-    if not session_id and not sub:
-        LOGGER.warning("No session_id or sub provided for back-channel logout")
+    if not sub:
+        LOGGER.warning("No sub provided for back-channel logout")
         return False
 
     try:
@@ -38,7 +37,7 @@ def send_backchannel_logout_request(
 
     # Generate the logout token
     try:
-        logout_token = create_logout_token(iss, provider, session_id, sub)
+        logout_token = create_logout_token(iss, provider, None, sub)
     except Exception as exc:
         LOGGER.warning("Failed to create logout token", exc=exc)
         return False
@@ -78,7 +77,6 @@ def send_backchannel_logout_request(
                 "Back-channel logout successful",
                 provider=provider.name,
                 client_id=provider.client_id,
-                session_id=session_id,
                 sub=sub,
             )
             Event.new(
@@ -86,7 +84,6 @@ def send_backchannel_logout_request(
                 message="Back-channel logout notification sent",
                 provider=provider,
                 client_id=provider.client_id,
-                session_id=session_id,
                 sub=sub,
             ).save()
             return True
@@ -121,23 +118,21 @@ def send_backchannel_logout_notification(session: AuthenticatedSession = None) -
         LOGGER.warning("No session provided for back-channel logout notification")
         return
 
-    # Get all OAuth2 providers that have issued tokens for this user
     # Per OpenID Connect Back-Channel Logout 1.0 spec section 2.3:
     # "OPs supporting back-channel logout need to keep track of the set of logged-in RPs"
-    # This includes ALL flows: authorization code, implicit, hybrid - not just refresh tokens
+    # We track all OAuth2 providers that have active sessions with the user,
+    # regardless of token type or flow (authorization code, implicit, hybrid)
     # Refresh tokens issued without the offline_access property to a session being logged out
     # SHOULD be revoked. Refresh tokens issued with the offline_access property
     # normally SHOULD NOT be revoked.
     from authentik.providers.oauth2.models import AccessToken
 
-    # Get providers from access tokens (covers all OAuth2 flows)
+    # Get all OAuth2 providers that have issued tokens for this session
     access_tokens = AccessToken.objects.select_related("provider").filter(session=session)
     for token in access_tokens:
         # Send back-channel logout notifications to all tokens
-        # for provider_pk in provider_pks:
         send_backchannel_logout_request.delay(
             provider_pk=token.provider.pk,
             iss=token.id_token.iss,
-            session_id=session.session.session_key,
             sub=session.user.uid,
         )

@@ -182,7 +182,7 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_session.post.return_value = mock_response
 
         result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", session_id="test-session-123"
+            self.provider.pk, "http://testserver", sub="test-user-uid"
         )
 
         self.assertTrue(result)
@@ -197,7 +197,7 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_session.post.reset_mock()
         mock_response.status_code = 400
         result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", session_id="test-session-123"
+            self.provider.pk, "http://testserver", sub="test-user-uid"
         )
         self.assertFalse(result)
 
@@ -206,18 +206,18 @@ class TestBackChannelLogout(OAuthTestCase):
         self.provider.backchannel_logout_uris = []
         self.provider.save()
         result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", session_id="test-session-123"
+            self.provider.pk, "http://testserver", sub="test-user-uid"
         )
         self.assertFalse(result)
         mock_session.post.assert_not_called()
 
-        # Scenario 4: No session ID or subject
+        # Scenario 4: No subject provided
         result = send_backchannel_logout_request(self.provider.pk, "http://testserver")
         self.assertFalse(result)
 
         # Scenario 5: Non-existent provider
         result = send_backchannel_logout_request(
-            99999, "http://testserver", session_id="test-session-123"
+            99999, "http://testserver", sub="test-user-uid"
         )
         self.assertFalse(result)
 
@@ -230,7 +230,7 @@ class TestBackChannelLogout(OAuthTestCase):
         ]
         self.provider.save()
         result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", session_id="test-session-123"
+            self.provider.pk, "http://testserver", sub="test-user-uid"
         )
         self.assertFalse(result)
 
@@ -242,7 +242,7 @@ class TestBackChannelLogout(OAuthTestCase):
 
         initial_event_count = Event.objects.count()
         send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", session_id="test-session-123"
+            self.provider.pk, "http://testserver", sub="test-user-uid"
         )
 
         self.assertEqual(Event.objects.count(), initial_event_count + 1)
