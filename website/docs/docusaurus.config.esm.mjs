@@ -52,11 +52,8 @@ export default createDocusaurusConfig(
 
         presets: [
             createClassicPreset({
-                pages: {
-                    path: "pages",
-                },
                 docs: {
-                    routeBasePath: "/docs",
+                    routeBasePath: "/",
                     path: ".",
 
                     sidebarPath: "./sidebar.mjs",
@@ -67,9 +64,6 @@ export default createDocusaurusConfig(
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            // ---
-                            // TODO: Enable after base path is set to '/'
-                            // ["/docs", ""],
                             ["/api", "https://api.goauthentik.io"],
                             ["/integrations", "https://integrations.goauthentik.io"],
                         ]),
@@ -104,7 +98,7 @@ export default createDocusaurusConfig(
 
             image: "img/social.png",
             navbarReplacements: {
-                DOCS_URL: "/docs",
+                DOCS_URL: "/",
             },
             navbar: {
                 logo: {
