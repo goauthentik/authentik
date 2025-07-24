@@ -8,7 +8,7 @@ import { cwd } from "node:process";
 
 import { addCommands } from "../commands.mjs";
 
-import litCSS from "vite-plugin-lit-css";
+import litCSS from "#bundler/vite-plugin-lit-css/node";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;
