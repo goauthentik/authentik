@@ -204,7 +204,7 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
         host = self.request.build_absolute_uri("/")
         return Response({"config": default_outpost_config(host)})
 
-    @permission_required(None, ["authentik_outposts.refresh_outpost"])
+    @permission_required("authentik_outposts.refresh_outpost")
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
@@ -212,9 +212,9 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=["POST"], permission_classes=[])
     def force_refresh(self, request: Request, pk: int) -> Response:
         """Force an outpost to refresh its configuration. Will also clear its cache."""
         outpost: Outpost = self.get_object()
-        outpost_send_update(outpost)
+        outpost_send_update.delay(outpost)
         return Response(status=204)
