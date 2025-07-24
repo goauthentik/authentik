@@ -42,7 +42,7 @@ export class TelegramLogin extends BaseStage<
         widgetScript.type = "text/javascript";
         widgetScript.setAttribute("data-radius", "0");
         widgetScript.setAttribute("data-telegram-login", this.challenge.botUsername);
-        if (this.challenge.requestAccess) {
+        if (this.challenge.requestMessageAccess) {
             widgetScript.setAttribute("data-request-access", "write");
         }
         const callbackName =

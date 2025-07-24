@@ -13,7 +13,7 @@ from authentik.stages.identification.stage import LoginChallengeMixin
 class TelegramLoginChallenge(LoginChallengeMixin, Challenge):
     component = CharField(default="ak-source-telegram")
     bot_username = CharField(help_text=_("Telegram bot username"))
-    request_access = BooleanField()
+    request_message_access = BooleanField()
 
 
 class TelegramChallengeResponse(ChallengeResponse):

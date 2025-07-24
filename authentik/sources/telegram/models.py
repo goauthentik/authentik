@@ -19,32 +19,12 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
 
 
-class TelegramSourcePropertyMapping(PropertyMapping):
-    """Map Telegram properties to User or Group object attributes"""
-
-    @property
-    def component(self) -> str:
-        return "ak-property-mapping-source-telegram-form"
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.sources.telegram.api.property_mappings import (
-            TelegramSourcePropertyMappingSerializer,
-        )
-
-        return TelegramSourcePropertyMappingSerializer
-
-    class Meta:
-        verbose_name = _("Telegram Source Property Mapping")
-        verbose_name_plural = _("Telegram Source Property Mappings")
-
-
 class TelegramSource(Source):
     """Log in with Telegram."""
 
-    bot_username = models.CharField(max_length=255, help_text=_("Telegram bot username"))
-    bot_token = models.CharField(max_length=255, help_text=_("Telegram bot token"))
-    request_access = models.BooleanField(
+    bot_username = models.TextField(help_text=_("Telegram bot username"))
+    bot_token = models.TextField(help_text=_("Telegram bot token"))
+    request_message_access = models.BooleanField(
         default=False, help_text=_("Request access to send messages from your bot.")
     )
 
@@ -113,6 +93,26 @@ class TelegramSource(Source):
     class Meta:
         verbose_name = _("Telegram Source")
         verbose_name_plural = _("Telegram Sources")
+
+
+class TelegramSourcePropertyMapping(PropertyMapping):
+    """Map Telegram properties to User or Group object attributes"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-source-telegram-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.telegram.api.property_mappings import (
+            TelegramSourcePropertyMappingSerializer,
+        )
+
+        return TelegramSourcePropertyMappingSerializer
+
+    class Meta:
+        verbose_name = _("Telegram Source Property Mapping")
+        verbose_name_plural = _("Telegram Source Property Mappings")
 
 
 class UserTelegramSourceConnection(UserSourceConnection):
