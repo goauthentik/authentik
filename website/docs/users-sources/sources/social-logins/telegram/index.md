@@ -16,7 +16,7 @@ To use Telegram as a source, you first need to register a Telegram bot:
 4. Link the bot to your authentik domain name using `/setdomain` command.
    Please note that **the domain name must exactly match the FQDN of the authentik installation**.
 
-Now as the bot is configured you can proceed to creating a source in authentik.
+Now that the bot is configured you can proceed to creating a source in authentik.
 
 ## authentik
 
