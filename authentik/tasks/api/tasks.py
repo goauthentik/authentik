@@ -112,8 +112,10 @@ class TaskViewSet(
     ordering = ("-mtime",)
 
     def get_queryset(self):
-        return Task.objects.select_related("rel_obj_content_type").filter(
-            tenant=get_current_tenant()
+        return (
+            Task.objects.select_related("rel_obj_content_type")
+            .defer("message", "result")
+            .filter(tenant=get_current_tenant())
         )
 
     @permission_required(None, ["authentik_tasks.retry_task"])

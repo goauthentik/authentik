@@ -66,7 +66,7 @@ class ScheduleSerializer(ModelSerializer):
         return actor.options["description"]
 
     def get_last_task_status(self, instance: Schedule) -> TaskStatus | None:
-        last_task: Task = instance.tasks.order_by("-mtime").first()
+        last_task: Task = instance.tasks.defer("message", "result").order_by("-mtime").first()
         if last_task:
             return last_task.aggregated_status
         return None
@@ -94,7 +94,9 @@ class ScheduleViewSet(
     GenericViewSet,
 ):
     queryset = (
-        Schedule.objects.select_related("rel_obj_content_type").prefetch_related("tasks").all()
+        Schedule.objects.select_related("rel_obj_content_type")
+        .defer("args", "kwargs", "options")
+        .all()
     )
     serializer_class = ScheduleSerializer
     search_fields = (
