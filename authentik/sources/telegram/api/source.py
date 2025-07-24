@@ -8,7 +8,11 @@ from authentik.sources.telegram.models import TelegramSource
 class TelegramSourceSerializer(SourceSerializer):
     class Meta:
         model = TelegramSource
-        fields = SourceSerializer.Meta.fields + ["bot_username", "bot_token", "request_access"]
+        fields = SourceSerializer.Meta.fields + [
+            "bot_username",
+            "bot_token",
+            "request_message_access",
+        ]
         extra_kwargs = {
             "bot_token": {"write_only": True},
         }
@@ -30,7 +34,7 @@ class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
         "user_matching_mode",
         "group_matching_mode",
         "bot_username",
-        "request_access",
+        "request_message_access",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]

@@ -137,12 +137,12 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
                 ?required=${this.instance === undefined}
                 ?revealed=${this.instance === undefined}
             ></ak-secret-text-input>
-            <ak-form-element-horizontal required name="requestAccess">
+            <ak-form-element-horizontal required name="requestMessageAccess">
                 <label class="pf-c-switch">
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.requestAccess ?? true}
+                        ?checked=${this.instance?.requestMessageAccess ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

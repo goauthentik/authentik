@@ -22,7 +22,7 @@ class TestTelegramSource(TestCase):
             slug="test",
             bot_username="test_bot",
             bot_token="modern_token",  # nosec
-            request_access=True,
+            request_message_access=True,
         )
         self.mock_stage = Mock()
         self.mock_stage.source = self.source

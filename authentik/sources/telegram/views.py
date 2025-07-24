@@ -46,7 +46,7 @@ class TelegramLoginView(ChallengeStageView):
         return TelegramLoginChallenge(
             data={
                 "bot_username": self.source.bot_username,
-                "request_access": self.source.request_access,
+                "request_message_access": self.source.request_message_access,
             },
         )
 
