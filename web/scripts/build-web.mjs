@@ -1,13 +1,11 @@
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 /**
  * @file ESBuild script for building the authentik web UI.
  *
  * @import { BuildOptions } from "esbuild";
  */
-
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
-
-import { cssAssetPlugin } from "#bundler/css-assets-plugin/node";
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
@@ -42,8 +40,11 @@ const BASE_ESBUILD_OPTIONS = {
     legalComments: "external",
     splitting: true,
     treeShaking: true,
-
+    external: ["*.woff", "*.woff2"],
     tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
+    loader: {
+        ".css": "text",
+    },
     plugins: [
         copy({
             assets: [
@@ -74,7 +75,6 @@ const BASE_ESBUILD_OPTIONS = {
                 path: true,
             },
         }),
-        cssAssetPlugin(),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
