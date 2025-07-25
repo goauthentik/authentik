@@ -9,7 +9,7 @@
         "build:api": "docusaurus gen-api-docs all",
         "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
         "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build:integrations": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build --config integrations/docusaurus.config.cjs",
+        "build:integrations": "docusaurus build --config integrations/docusaurus.config.cjs --out-dir integrations/build",
         "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
@@ -28,34 +28,20 @@
     "dependencies": {
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/faster": "^3.7.0",
+        "@docusaurus/module-type-aliases": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
         "@docusaurus/plugin-content-docs": "^3.7.0",
         "@docusaurus/preset-classic": "^3.7.0",
         "@docusaurus/theme-common": "^3.7.0",
         "@docusaurus/theme-mermaid": "^3.7.0",
-        "@goauthentik/docusaurus-config": "^1.1.0",
-        "@goauthentik/tsconfig": "^1.0.4",
-        "@mdx-js/react": "^3.1.0",
-        "clsx": "^2.1.1",
-        "docusaurus-plugin-openapi-docs": "^4.4.0",
-        "docusaurus-theme-openapi-docs": "^4.4.0",
-        "postcss": "^8.5.3",
-        "prism-react-renderer": "^2.4.1",
-        "react": "^18.3.1",
-        "react-before-after-slider-component": "^1.1.8",
-        "react-dom": "^18.3.1",
-        "remark-directive": "^4.0.0",
-        "remark-github": "^12.0.0",
-        "semver": "^7.7.2"
-    },
-    "devDependencies": {
-        "@docusaurus/module-type-aliases": "^3.7.0",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.7.0",
         "@eslint/js": "^9.27.0",
+        "@goauthentik/docusaurus-config": "^1.1.0",
         "@goauthentik/eslint-config": "^1.0.5",
         "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
+        "@mdx-js/react": "^3.1.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/lodash": "^4.17.17",
         "@types/node": "^22.15.21",
@@ -64,12 +50,23 @@
         "@types/semver": "^7.7.0",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
+        "clsx": "^2.1.1",
         "cross-env": "^7.0.3",
+        "docusaurus-plugin-openapi-docs": "^4.4.0",
+        "docusaurus-theme-openapi-docs": "^4.4.0",
         "eslint": "^9.11.1",
         "fast-glob": "^3.3.3",
         "npm-run-all": "^4.1.5",
+        "postcss": "^8.5.3",
         "prettier": "^3.5.3",
         "prettier-plugin-packagejson": "^2.5.14",
+        "prism-react-renderer": "^2.4.1",
+        "react": "^18.3.1",
+        "react-before-after-slider-component": "^1.1.8",
+        "react-dom": "^18.3.1",
+        "remark-directive": "^4.0.0",
+        "remark-github": "^12.0.0",
+        "semver": "^7.7.2",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.32.1"
     },
@@ -104,14 +101,8 @@
     },
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
-        "fork-ts-checker-webpack-plugin": {
-            "glob": "^11.0.1"
-        },
         "postman-collection": {
             "@faker-js/faker": "^6.3.1"
-        },
-        "webpack-dev-server": {
-            "rimraf": "6.0.1"
         }
     }
 }
