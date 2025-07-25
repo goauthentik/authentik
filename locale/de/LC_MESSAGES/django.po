@@ -40,7 +40,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-05 00:10+0000\n"
+"POT-Creation-Date: 2025-07-15 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Fabian, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
@@ -407,7 +407,7 @@ msgstr "Eigenschaft"
 
 #: authentik/core/models.py
 msgid "Property Mappings"
-msgstr "Eigenschaften"
+msgstr "Property Mappings"
 
 #: authentik/core/models.py
 msgid "session data"
@@ -593,7 +593,7 @@ msgstr "Google Workspace Provider Gruppen"
 #: authentik/providers/scim/models.py
 msgid "Property mappings used for group creation/updating."
 msgstr ""
-"Eigenschaft, die für die Erstellung/Aktualisierung von Gruppen verwendet "
+"Eigenschaften, die für die Erstellung/Aktualisierung von Gruppen verwendet "
 "werden."
 
 #: authentik/enterprise/providers/google_workspace/models.py
@@ -2753,6 +2753,14 @@ msgstr "Azure AD OAuth Quelle"
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
 msgstr "Azure AD OAuth Quellen"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr "Entra ID OAuth-Quelle"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr "Entra ID OAuth-Quellen"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"

@@ -19,7 +19,7 @@ import type { Props } from "@theme/DocItem/Content";
 import Heading from "@theme/Heading";
 import MDXContent from "@theme/MDXContent";
 import clsx from "clsx";
-import React, { useEffect } from "react";
+import React, { JSX, useEffect } from "react";
 
 class MarkdownLintError extends Error {
     constructor(message: string) {

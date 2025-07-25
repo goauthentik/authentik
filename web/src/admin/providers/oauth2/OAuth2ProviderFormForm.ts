@@ -12,17 +12,13 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
+import "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";
 import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js";
 
 import { ascii_letters, digits, randomString } from "#common/utils";
-
-import {
-    akOAuthRedirectURIInput,
-    IRedirectURIInput,
-} from "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import {
     ClientTypeEnum,
@@ -147,9 +143,8 @@ export function renderForm(
                 ${msg("Flow used when authorizing this provider.")}
             </p>
         </ak-form-element-horizontal>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-radio-input
                     name="clientType"
                     label=${msg("Client type")}
@@ -171,6 +166,7 @@ export function renderForm(
                 </ak-text-input>
                 <ak-hidden-text-input
                     name="clientSecret"
+                    autocomplete="off"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     input-hint="code"
@@ -178,18 +174,21 @@ export function renderForm(
                 >
                 </ak-hidden-text-input>
                 <ak-form-element-horizontal
+                    flow-direction="row"
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"
                 >
                     <ak-array-input
                         .items=${provider?.redirectUris ?? []}
                         .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
-                        .row=${(f?: RedirectURI) =>
-                            akOAuthRedirectURIInput({
-                                ".redirectURI": f,
-                                "style": "width: 100%",
-                                "name": "oauth2-redirect-uri",
-                            } as unknown as IRedirectURIInput)}
+                        .row=${(redirectURI: RedirectURI, idx: number) => {
+                            return html`<ak-provider-oauth2-redirect-uri
+                                .redirectURI=${redirectURI}
+                                name="oauth2-redirect-uri"
+                                style="width: 100%"
+                                inputID="redirect-uri-${idx}"
+                            ></ak-provider-oauth2-redirect-uri>`;
+                        }}
                     >
                     </ak-array-input>
                     ${redirectUriHelp}
@@ -213,9 +212,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label=${msg("Advanced flow settings")}>
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     name="authenticationFlow"
                     label=${msg("Authentication flow")}
@@ -248,9 +246,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
@@ -333,9 +330,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Machine-to-Machine authentication settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"

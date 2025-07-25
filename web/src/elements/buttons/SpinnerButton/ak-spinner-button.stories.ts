@@ -35,7 +35,7 @@ export const ButtonWithSuccess = () => {
             }, 3000);
         });
 
-    return html`<div style="background: #fff; padding: 4em">
+    return html`<div style="padding: 4em">
         <ak-spinner-button class="pf-m-primary" .callAction=${run}>3 Seconds</ak-spinner-button>
     </div>`;
 };
@@ -48,7 +48,7 @@ export const ButtonWithReject = () => {
             }, 3000);
         });
 
-    return html`<div style="background: #fff; padding: 4em">
+    return html`<div style="padding: 4em">
         <ak-spinner-button class="pf-m-secondary" .callAction=${run}>3 Seconds</ak-spinner-button>
     </div>`;
 };

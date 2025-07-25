@@ -10,7 +10,18 @@
     "files": [],
     "references": [
         {
-            "path": "docusaurus-theme"
+            "path": "./docusaurus-theme"
+        },
+
+        {
+            "path": "./api"
+        },
+
+        {
+            "path": "./integrations"
+        },
+        {
+            "path": "./docs"
         }
     ]
 }
