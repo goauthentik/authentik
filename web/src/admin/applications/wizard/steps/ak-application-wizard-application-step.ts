@@ -8,8 +8,6 @@ import "#elements/forms/HorizontalFormElement";
 
 import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
 
-import { camelToSnake } from "#common/utils";
-
 import { isSlug } from "#elements/router/utils";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
@@ -18,6 +16,8 @@ import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWiz
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import { type ApplicationRequest } from "@goauthentik/api";
+
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -29,8 +29,7 @@ const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 const trimMany = (o: Record<string, unknown>, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isStr = (v: any): v is string => typeof v === "string";
+const isStr = (v: unknown): v is string => typeof v === "string";
 
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
@@ -51,9 +50,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     errorMessages(name: string) {
         return this.errors.has(name)
             ? [this.errors.get(name)]
-            : (this.wizard.errors?.app?.[name] ??
-                  this.wizard.errors?.app?.[camelToSnake(name)] ??
-                  []);
+            : (this.wizard.errors?.app?.[name] ?? this.wizard.errors?.app?.[snakeCase(name)] ?? []);
     }
 
     get buttons(): WizardButton[] {

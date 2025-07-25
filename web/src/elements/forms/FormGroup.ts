@@ -15,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
+ * @todo Can we use `<details>` element to make this more a11y friendly?
  * @todo Listen for custom events from its children about 'invalidation' events, and
  * trigger the `expanded` property as needed.
  */

@@ -10,7 +10,7 @@ import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/type
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -70,7 +70,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
@@ -125,12 +125,20 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     caseSensitive = false;
 
     /**
-     * The name of the input, for forms
+     * The name of the input, for forms.
      *
      * @attr
      */
     @property({ type: String })
     name?: string;
+
+    /**
+     * The label of the input, for forms.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public label?: string;
 
     /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
@@ -363,6 +371,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             type="text"
                             ${ref(this.inputRef)}
                             placeholder=${this.placeholder}
+                            aria-label=${ifDefined(this.label)}
+                            name=${ifDefined(this.name)}
                             spellcheck="false"
                             @input=${this.onInput}
                             @click=${this.onClick}

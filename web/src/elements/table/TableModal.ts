@@ -49,10 +49,11 @@ export abstract class TableModal<T extends object> extends Table<T> {
         MODAL_BUTTON_STYLES,
     ];
 
-    public async fetch(): Promise<void> {
+    public override async fetch(): Promise<void> {
         if (!this.open) {
             return;
         }
+
         return super.fetch();
     }
 

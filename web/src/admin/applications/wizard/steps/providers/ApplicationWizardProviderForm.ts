@@ -8,10 +8,10 @@ import "#elements/forms/HorizontalFormElement";
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
 import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
 
-import { camelToSnake } from "#common/utils";
-
 import { AKElement } from "#elements/Base";
 import { serializeForm } from "#elements/forms/Form";
+
+import { snakeCase } from "change-case";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
@@ -46,7 +46,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
         return name in this.errors
             ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
-                  this.wizard.errors?.provider?.[camelToSnake(name)] ??
+                  this.wizard.errors?.provider?.[snakeCase(name)] ??
                   []);
     }
 
