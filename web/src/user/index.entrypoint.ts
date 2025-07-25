@@ -14,6 +14,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_REFRESH,
     EVENT_WS_MESSAGE,
 } from "#common/constants";
 import { globalAK } from "#common/global";
@@ -209,7 +210,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                             />
                         </a>
                     </div>
-                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}
+                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me} .notificationCount=${this.notificationsCount}
                         >${this.renderAdminInterfaceLink()}</ak-nav-buttons
                     >
                 </header>
@@ -297,6 +298,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+        window.addEventListener(EVENT_REFRESH, this.fetchConfigurationDetails);
     }
 
     disconnectedCallback() {
@@ -305,6 +307,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+        window.removeEventListener(EVENT_REFRESH, this.fetchConfigurationDetails);
 
         WebsocketClient.close();
     }
