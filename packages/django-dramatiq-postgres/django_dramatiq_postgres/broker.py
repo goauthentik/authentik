@@ -268,7 +268,7 @@ class _PostgresConsumer(Consumer):
 
     @raise_connection_error
     def ack(self, message: Message):
-        task = message.options.pop("task")
+        task = message.options.pop("task", None)
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -283,7 +283,7 @@ class _PostgresConsumer(Consumer):
 
     @raise_connection_error
     def nack(self, message: Message):
-        task = message.options.pop("task")
+        task = message.options.pop("task", None)
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
