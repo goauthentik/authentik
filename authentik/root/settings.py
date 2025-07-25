@@ -120,6 +120,8 @@ TENANT_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
+    "authentik.stages.saml_logout",
+    "authentik.stages.saml_logout_iframe",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",

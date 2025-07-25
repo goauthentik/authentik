@@ -52,10 +52,10 @@ class TestLogoutRequest(TestCase):
         """Test static LogoutRequest"""
         request = LogoutRequestParser(self.provider).parse_detached(GET_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-2ea1b01f69363ac95e3da4a15409b9d8ec525944")
-        self.assertIsNone(request.issuer)
+        self.assertEqual(request.issuer, "saml-test-sp")
 
     def test_static_post(self):
         """Test static LogoutRequest"""
         request = LogoutRequestParser(self.provider).parse(POST_LOGOUT_REQUEST)
         self.assertEqual(request.id, "id-b8f4fd51ed4106f1e782b95d51d9ad3f385e5816")
-        self.assertIsNone(request.issuer)
+        self.assertEqual(request.issuer, "saml-test-sp")
