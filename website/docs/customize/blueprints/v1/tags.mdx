@@ -79,6 +79,25 @@ configure_flow:
 Looks up any model and resolves to the the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
 
+#### `!FindObject` <span class="badge badge--version">authentik 2025.8+</span>
+
+Examples:
+
+{/* prettier-ignore-start */}
+
+```yaml
+flow_designation:
+    !AtIndex [
+        !FindObject [authentik_flows.flow, [slug, default-password-change]],
+        designation,
+    ]
+```
+
+{/* prettier-ignore-end */}
+
+Looks up any model and resolves to the matches' serialized data.
+First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
+
 #### `!Context`
 
 Example:
