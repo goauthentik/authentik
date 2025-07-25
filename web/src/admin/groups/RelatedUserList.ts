@@ -23,9 +23,11 @@ import { Form } from "#elements/forms/Form";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "#elements/router/navigation";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { UserOption } from "#elements/user/utils";
+
+import { toIdentityUser } from "#admin/navigation";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
 
@@ -119,7 +121,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    hideServiceAccounts = !!(getURLParam("hideServiceAccounts") ?? true);
 
     @state()
     me?: SessionUser;
@@ -184,7 +186,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<a href="${toIdentityUser(item.pk)}">
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,

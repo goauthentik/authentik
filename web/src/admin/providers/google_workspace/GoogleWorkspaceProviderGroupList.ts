@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityGroup } from "#admin/navigation";
+
 import {
     GoogleWorkspaceProviderGroup,
     ProvidersApi,
@@ -81,7 +83,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href="${toIdentityGroup(item.groupObj.pk)}">
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.id}`,

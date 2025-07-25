@@ -1,7 +1,8 @@
-import { AndNext } from "#common/api/config";
-import { globalAK } from "#common/global";
-
 import { AKElement } from "#elements/Base";
+
+import { toUserSettings } from "#user/navigation";
+
+import { createNextSearchParams } from "#admin/flows/utils";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -22,17 +23,20 @@ export class UserSettingsPassword extends AKElement {
     static styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
 
     render(): TemplateResult {
+        const searchParams = createNextSearchParams(
+            toUserSettings({
+                page: "details",
+            }),
+        );
+
+        const href = `${this.configureUrl || ""}?${searchParams}`;
+
         // For this stage we don't need to check for a configureFlow,
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Change your password")}</div>
             <div class="pf-c-card__body">
-                <a
-                    href="${ifDefined(this.configureUrl)}${AndNext(
-                        `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
-                    )}"
-                    class="pf-c-button pf-m-primary"
-                >
+                <a href=${ifDefined(href)} class="pf-c-button pf-m-primary">
                     ${msg("Change password")}
                 </a>
             </div>

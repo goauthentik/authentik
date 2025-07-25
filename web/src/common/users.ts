@@ -2,6 +2,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_LOCALE_REQUEST } from "#common/constants";
 import { isResponseErrorLike } from "#common/errors/network";
 
+import { navigate } from "#elements/router/navigation";
+
 import { CoreApi, SessionUser } from "@goauthentik/api";
 
 /**
@@ -74,14 +76,13 @@ export async function me(): Promise<SessionUser> {
                 if (response.status === 401 || response.status === 403) {
                     const { pathname, search, hash } = window.location;
 
-                    const authFlowRedirectURL = new URL(
-                        `/flows/-/default/authentication/`,
-                        window.location.origin,
-                    );
-
-                    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
-
-                    window.location.assign(authFlowRedirectURL);
+                    navigate({
+                        interfaceName: "flow",
+                        pathname: "/-/default/authentication/",
+                        search: {
+                            next: `${pathname}${search}${hash}`,
+                        },
+                    });
                 }
             }
 

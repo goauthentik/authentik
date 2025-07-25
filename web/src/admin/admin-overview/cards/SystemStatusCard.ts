@@ -3,6 +3,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
+import { toOutposts } from "#admin/navigation";
 
 import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
@@ -59,7 +60,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("Embedded outpost is not configured correctly.")}
-                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
+                    <a href="${toOutposts()}">${msg("Check outposts.")}</a>`,
             });
         }
         if (!value.httpIsSecure && document.location.protocol === "https:") {

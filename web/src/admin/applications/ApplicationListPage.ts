@@ -10,9 +10,11 @@ import "./ApplicationWizardHint.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam } from "#elements/router/RouteMatch";
+import { getURLParam } from "#elements/router/navigation";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+
+import { toApplication } from "#admin/navigation";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
@@ -122,7 +124,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 name=${item.name}
                 icon=${ifDefined(item.metaIcon || undefined)}
             ></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href="${toApplication(item.slug)}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
@@ -155,7 +157,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+        return html` <ak-application-wizard .open=${!!getURLParam("createWizard")}>
                 <button
                     slot="trigger"
                     class="pf-c-button pf-m-primary"
@@ -164,7 +166,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     ${msg("Create with Provider")}
                 </button>
             </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
+            <ak-forms-modal .open=${!!getURLParam("createForm")}>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Application")} </span>
                 <ak-application-form slot="form"> </ak-application-form>

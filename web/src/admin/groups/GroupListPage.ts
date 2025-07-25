@@ -10,6 +10,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toIdentityGroup } from "#admin/navigation";
+
 import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -77,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
 
     row(item: Group): TemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href="${toIdentityGroup(item.pk)}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,

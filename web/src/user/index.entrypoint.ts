@@ -25,7 +25,7 @@ import { WebsocketClient } from "#common/ws";
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, toUserRoute, updateURLParams } from "#elements/router/navigation";
 import { themeImage } from "#elements/utils/images";
 
 import { ROUTES } from "#user/Routes";
@@ -201,7 +201,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                 </div>
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
-                        <a href="#/" class="pf-c-page__header-brand-link">
+                        <a href="${toUserRoute("/")}" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
                                 src="${themeImage(this.brandingLogo)}"
@@ -264,10 +264,10 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
 @customElement("ak-interface-user")
 export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    notificationDrawerOpen = !!getURLParam("notificationDrawerOpen");
 
     @state()
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    apiDrawerOpen = !!getURLParam("apiDrawerOpen");
 
     @state()
     notificationsCount = 0;

@@ -15,6 +15,8 @@ import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toProvider } from "#admin/navigation";
+
 import {
     Outpost,
     OutpostHealth,
@@ -121,7 +123,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<ul>
                 ${item.providersObj?.map((p) => {
                     return html`<li>
-                        <a href="#/core/providers/${p.pk}">${p.name}</a>
+                        <a href="${toProvider(p.pk)}">${p.name}</a>
                     </li>`;
                 })}
             </ul>`,

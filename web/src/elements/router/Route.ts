@@ -1,56 +1,61 @@
 import "#elements/EmptyState";
 
-import { html, TemplateResult } from "lit";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { html, nothing, TemplateResult } from "lit";
 import { until } from "lit/directives/until.js";
 
 export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
 export const ID_REGEX = "\\d+";
 export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 
-export interface RouteArgs {
-    [key: string]: string;
-}
+export type URLParameterRecord = Record<string, string>;
 
-export class Route {
-    url: RegExp;
+export type RouteCallback<P extends URLParameterRecord> = (
+    args: P,
+) => Promise<SlottedTemplateResult>;
+
+export class Route<P extends URLParameterRecord = URLParameterRecord> {
+    public readonly url: RegExp;
 
     private element?: TemplateResult;
-    private callback?: (args: RouteArgs) => Promise<TemplateResult>;
+    #callback?: RouteCallback<P>;
 
-    constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
+    constructor(url: RegExp, callback?: RouteCallback<P>) {
         this.url = url;
-        this.callback = callback;
+        this.#callback = callback;
     }
 
-    redirect(to: string, raw = false): Route {
-        this.callback = async () => {
+    redirect(to: string, raw = false): Route<P> {
+        this.#callback = async () => {
             console.debug(`authentik/router: redirecting ${to}`);
             if (!raw) {
                 window.location.hash = `#${to}`;
             } else {
                 window.location.hash = to;
             }
-            return html``;
+
+            return nothing;
         };
         return this;
     }
 
-    then(render: (args: RouteArgs) => TemplateResult): Route {
-        this.callback = async (args) => {
+    then(render: (args: P) => TemplateResult): Route<P> {
+        this.#callback = async (args) => {
             return render(args);
         };
         return this;
     }
 
-    thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
-        this.callback = render;
+    thenAsync(render: (args: P) => Promise<TemplateResult>): Route<P> {
+        this.#callback = render;
         return this;
     }
 
-    render(args: RouteArgs): TemplateResult {
-        if (this.callback) {
+    render(args: P): TemplateResult {
+        if (this.#callback) {
             return html`${until(
-                this.callback(args),
+                this.#callback(args),
                 html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
@@ -61,6 +66,6 @@ export class Route {
     }
 
     toString(): string {
-        return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
+        return `<Route url=${this.url} callback=${this.#callback ? "true" : "false"}>`;
     }
 }

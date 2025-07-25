@@ -6,6 +6,7 @@ import { parseAPIResponseError } from "#common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "#common/helpers/plex";
 
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { navigate } from "#elements/router/navigation";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -59,14 +60,18 @@ export class PlexLoginInit extends BaseStage<
                     slug: this.challenge?.slug || "",
                 })
                 .then((redirectChallenge) => {
-                    window.location.assign(redirectChallenge.to);
+                    navigate(redirectChallenge.to, {
+                        mode: "assign",
+                    });
                 })
-                .catch(async (error: unknown) => {
+                .catch((error: unknown) => {
                     return parseAPIResponseError(error)
                         .then(showAPIErrorMessage)
                         .then(() => {
                             setTimeout(() => {
-                                window.location.assign("/");
+                                navigate("/", {
+                                    mode: "assign",
+                                });
                             }, 5000);
                         });
                 });

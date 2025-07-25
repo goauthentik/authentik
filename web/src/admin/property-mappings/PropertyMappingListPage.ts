@@ -22,7 +22,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "#elements/router/navigation";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
@@ -55,7 +55,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    hideManaged = !!(getURLParam("hideManaged") ?? true);
 
     async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({

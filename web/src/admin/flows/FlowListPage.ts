@@ -6,13 +6,14 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
-import { DesignationToLabel } from "#admin/flows/utils";
+import { DesignationToLabel, formatFlowURL } from "#admin/flows/utils";
+import { toFlow } from "#admin/navigation";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
@@ -88,7 +89,7 @@ export class FlowListPage extends TablePage<Flow> {
     row(item: Flow): TemplateResult[] {
         return [
             html`<div>
-                    <a href="#/flow/flows/${item.slug}">
+                    <a href="${toFlow(item.slug)}">
                         <code>${item.slug}</code>
                     </a>
                 </div>
@@ -109,10 +110,9 @@ export class FlowListPage extends TablePage<Flow> {
                 <button
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
-                            `${window.location.pathname}#${window.location.hash}`,
-                        )}`;
-                        window.open(finalURL, "_blank");
+                        const url = formatFlowURL(item);
+
+                        window.open(url, "_blank");
                     }}
                 >
                     <pf-tooltip position="top" content=${msg("Execute")}>

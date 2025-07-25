@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { navigate } from "#elements/router/navigation";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
 
@@ -23,7 +24,9 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         if (this.app?.openInNewTab) {
             window.open(item.launchUrl);
         } else {
-            window.location.assign(item.launchUrl);
+            navigate(item.launchUrl, {
+                mode: "assign",
+            });
         }
     };
 

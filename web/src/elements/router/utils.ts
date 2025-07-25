@@ -2,14 +2,9 @@
  * @file Utilities for working with the client-side page router.
  */
 
-import { kebabCase } from "change-case";
+import { RouteInterfaceName } from "#elements/router/constants";
 
-/**
- * The name identifier for the current interface.
- *
- * @category Routing
- */
-export type RouteInterfaceName = "user" | "admin" | "flow" | "unknown";
+import { kebabCase } from "change-case";
 
 /**
  * Read the current interface route parameter from the URL.

@@ -16,6 +16,8 @@ import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
 
+import { toProvider } from "#admin/navigation";
+
 import {
     Application,
     CoreApi,
@@ -167,7 +169,9 @@ export class ApplicationViewPage extends AKElement {
                                                               return html`
                                                                   <li>
                                                                       <a
-                                                                          href="#/core/providers/${provider.pk}"
+                                                                          href="${toProvider(
+                                                                              provider.pk,
+                                                                          )}"
                                                                       >
                                                                           ${provider.name}
                                                                           (${provider.verboseName})

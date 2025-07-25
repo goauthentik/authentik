@@ -9,6 +9,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toIdentityRole } from "#admin/navigation";
+
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -80,7 +82,7 @@ export class RoleListPage extends TablePage<Role> {
 
     row(item: Role): TemplateResult[] {
         return [
-            html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
+            html`<a href="${toIdentityRole(item.pk)}">${item.name}</a>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Role")} </span>

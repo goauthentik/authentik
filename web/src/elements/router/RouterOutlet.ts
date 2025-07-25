@@ -1,8 +1,7 @@
 import "#elements/router/Router404";
 
-import { ROUTE_SEPARATOR } from "#common/constants";
-
 import { AKElement } from "#elements/Base";
+import { ROUTE_SEPARATOR } from "#elements/router/constants";
 import { Route } from "#elements/router/Route";
 import { RouteMatch } from "#elements/router/RouteMatch";
 
@@ -17,41 +16,6 @@ import {
 
 import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-// Poliyfill for hashchange.newURL,
-// https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
-window.addEventListener("load", () => {
-    if (!window.HashChangeEvent)
-        (function () {
-            let lastURL = document.URL;
-            window.addEventListener("hashchange", function (event) {
-                Object.defineProperty(event, "oldURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: lastURL,
-                });
-                Object.defineProperty(event, "newURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: document.URL,
-                });
-                lastURL = document.URL;
-            });
-        })();
-});
-
-export function paramURL(url: string, params?: { [key: string]: unknown }): string {
-    let finalUrl = "#";
-    finalUrl += url;
-    if (params) {
-        finalUrl += ";";
-        finalUrl += encodeURIComponent(JSON.stringify(params));
-    }
-    return finalUrl;
-}
-export function navigate(url: string, params?: { [key: string]: unknown }): void {
-    window.location.assign(paramURL(url, params));
-}
 
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {

@@ -13,6 +13,8 @@ import { severityToLabel } from "#common/labels";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toIdentityGroup } from "#admin/navigation";
+
 import {
     EventsApi,
     NotificationRule,
@@ -90,7 +92,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
             html`${item.destinationGroupObj
-                ? html`<a href="#/identity/groups/${item.destinationGroupObj.pk}"
+                ? html`<a href="${toIdentityGroup(item.destinationGroupObj.pk)}"
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,

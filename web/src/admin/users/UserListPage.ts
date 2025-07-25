@@ -24,12 +24,13 @@ import { me } from "#common/users";
 import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "#elements/router/navigation";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
+import { toIdentityUser } from "#admin/navigation";
 
 import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
@@ -110,7 +111,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     activePath;
 
     @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    hideDeactivated = !!getURLParam("hideDeactivated");
 
     @state()
     userPaths?: UserPath;
@@ -129,7 +130,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     constructor() {
         super();
         const defaultPath = new DefaultUIConfig().defaults.userPath;
-        this.activePath = getURLParam<string>("path", defaultPath);
+        this.activePath = getURLParam<string>("path") ?? defaultPath;
+
         uiConfig().then((c) => {
             if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
@@ -243,7 +245,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<a href="${toIdentityUser(item.pk)}">
                 <div>${item.username}</div>
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,

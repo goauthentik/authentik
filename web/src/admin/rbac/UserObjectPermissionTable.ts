@@ -7,6 +7,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityUser } from "#admin/navigation";
+
 import {
     PaginatedPermissionList,
     RbacApi,
@@ -113,7 +115,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     }
 
     row(item: UserAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
+        const baseRow = [html`<a href="${toIdentityUser(item.pk)}">${item.username}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             let cell = html`<i class="fas fa-times pf-m-danger"></i>`;
             if (item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0) {

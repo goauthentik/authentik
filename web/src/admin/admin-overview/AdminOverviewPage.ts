@@ -17,7 +17,8 @@ import { me } from "#common/users";
 import { AKElement } from "#elements/Base";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { paramURL } from "#elements/router/RouterOutlet";
+
+import { toApplications, toEventLogs, toIdentityUsers } from "#admin/navigation";
 
 import { SessionUser } from "@goauthentik/api";
 import { createReleaseNotesURL } from "@goauthentik/core/version";
@@ -64,10 +65,10 @@ export class AdminOverviewPage extends AdminOverviewBase {
     ];
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
-        [msg("Check the logs"), paramURL("/events/log")],
+        [msg("Create a new application"), toApplications({ createWizard: true })],
+        [msg("Check the logs"), toEventLogs()],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
-        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Manage users"), toIdentityUsers()],
         [
             msg("Check the release notes"),
             createReleaseNotesURL(import.meta.env.AK_VERSION).href,

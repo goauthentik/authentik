@@ -12,6 +12,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityGroup } from "#admin/navigation";
+
 import { CoreApi, Group, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -142,7 +144,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): TemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href="${toIdentityGroup(item.pk)}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
             html`<ak-label type="info" ?good=${item.isSuperuser}></ak-label>`,
             html` <ak-forms-modal>

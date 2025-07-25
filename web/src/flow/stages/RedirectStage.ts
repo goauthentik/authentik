@@ -1,5 +1,7 @@
 import "#flow/components/ak-flow-card";
 
+import { navigate } from "#elements/router/navigation";
+
 import { BaseStage } from "#flow/stages/base";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
@@ -58,7 +60,11 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,
         );
-        window.location.assign(this.challenge.to);
+
+        navigate(this.challenge.to, {
+            mode: "assign",
+        });
+
         this.startedRedirect = true;
     }
 

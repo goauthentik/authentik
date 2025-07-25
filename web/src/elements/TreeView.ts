@@ -1,7 +1,7 @@
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { setURLParams } from "#elements/router/RouteMatch";
+import { navigate } from "#elements/router/navigation";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -85,7 +85,13 @@ export class TreeViewNode extends AKElement {
                             if (this.host) {
                                 this.host.activeNode = this;
                             }
-                            setURLParams({ path: this.fullPath });
+
+                            navigate((route) => ({
+                                ...route,
+                                params: {
+                                    path: this.fullPath,
+                                },
+                            }));
                             this.dispatchEvent(
                                 new CustomEvent(EVENT_REFRESH, {
                                     bubbles: true,

@@ -4,6 +4,8 @@ import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";
 
+import { toApplication } from "#admin/navigation";
+
 import { Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -25,13 +27,13 @@ export class RelatedApplicationButton extends AKElement {
 
     render(): TemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
-            return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
+            return html`<a href="${toApplication(this.provider.assignedApplicationSlug)}">
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
-                href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
+                href="${toApplication(this.provider.assignedBackchannelApplicationSlug)}"
             >
                 ${this.provider.assignedBackchannelApplicationName}
             </a>`;

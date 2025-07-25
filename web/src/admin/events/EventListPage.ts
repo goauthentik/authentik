@@ -15,6 +15,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
+import { toEventLog } from "#admin/navigation";
 
 import { Event, EventsApi } from "@goauthentik/api";
 
@@ -114,7 +115,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
-            html`<a href="#/events/log/${item.pk}">
+            html`<a href="${toEventLog(item.pk)}">
                 <pf-tooltip position="top" content=${msg("Show details")}>
                     <i class="fas fa-share-square"></i>
                 </pf-tooltip>
