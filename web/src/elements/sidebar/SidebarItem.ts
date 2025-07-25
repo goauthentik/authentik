@@ -1,7 +1,6 @@
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { createPathnameHash } from "#elements/router/RouteMatch";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -90,7 +89,10 @@ export class SidebarItem extends AKElement {
     public current?: boolean;
 
     @property({ type: Boolean })
-    public highlight = false;
+    public isAbsoluteLink = false;
+
+    @property({ type: Boolean })
+    public highlight?: boolean;
 
     public parent?: SidebarItem;
 
@@ -215,8 +217,8 @@ export class SidebarItem extends AKElement {
     renderWithPath() {
         return html`
             <a
-                href=${createPathnameHash(this.path)}
                 id="sidebar-nav-link-${this.path}"
+                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifDefined(this.current ? "page" : undefined)}
             >

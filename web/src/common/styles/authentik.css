@@ -35,31 +35,6 @@
     --ak-navbar--height: 7rem;
 }
 
-/* #region Fonts */
-
-body {
-    --pf-global--FontFamily--sans-serif:
-        RedHatVF, "RedHatText", "Overpass", overpass, helvetica, arial, sans-serif;
-
-    --pf-global--FontFamily--heading--sans-serif:
-        RedHatDisplayVF, "RedHatDisplay", "Overpass", overpass, helvetica, arial, sans-serif;
-
-    --pf-global--FontFamily--monospace:
-        RedHatMonoVF, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
-        monospace;
-}
-
-code,
-pre {
-    /*
-        The variable weight is a bit too thin compared to the fixed weight.
-        So we'll use a slightly larger value here to compensate.
-     */
-    font-weight: 500;
-}
-
-/* #endregion */
-
 .pf-c-form__group {
     --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: minmax(max-content, 9.375rem);
     column-gap: var(--pf-global--spacer--md);
