@@ -255,9 +255,9 @@ class _PostgresConsumer(Consumer):
 
     @property
     def listen_connection(self) -> DatabaseWrapper:
-        if self._listen_connection is not None and self._listen_connection.connection is not None:
+        if self._listen_connection is not None and self._listen_connection.is_usable():
             return self._listen_connection
-        self._listen_connection = connections[self.db_alias]
+        self._listen_connection = connections.create_connection(self.db_alias)
         # Required for notifications
         # See https://www.psycopg.org/psycopg3/docs/advanced/async.html#asynchronous-notifications
         # Should be set to True by Django by default
@@ -358,7 +358,7 @@ class _PostgresConsumer(Consumer):
         return result == 1
 
     @raise_connection_error
-    def __next__(self):
+    def __next__(self) -> MessageProxy | None:
         # This method is called every second
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
@@ -405,6 +405,8 @@ class _PostgresConsumer(Consumer):
         self._auto_purge()
         self._scheduler()
 
+        return None
+
     def _purge_locks(self):
         while True:
             try:
@@ -435,3 +437,13 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.scheduler_last_run < self.scheduler_interval:
             return
         self.scheduler.run()
+
+    @raise_connection_error
+    def close(self):
+        try:
+            self._purge_locks()
+        finally:
+            self.connection.close()
+            if self._listen_connection is not None:
+                self._listen_connection.close()
+                self._listen_connection = None
