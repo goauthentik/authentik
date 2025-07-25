@@ -1,6 +1,6 @@
 import "#components/ak-page-header";
 
-import { updateURLParams } from "#elements/router/RouteMatch";
+import { updateURLParams } from "#elements/router/navigation";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 

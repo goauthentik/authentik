@@ -21,6 +21,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toApplication, toProvider } from "#admin/navigation";
+
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -89,14 +91,14 @@ export class ProviderListPage extends TablePage<Provider> {
         if (item.assignedApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                 ${msg("Assigned to application ")}
-                <a href="#/core/applications/${item.assignedApplicationSlug}"
+                <a href="${toApplication(item.assignedApplicationSlug)}"
                     >${item.assignedApplicationName}</a
                 >`;
         }
         if (item.assignedBackchannelApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                 ${msg("Assigned to application (backchannel) ")}
-                <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
+                <a href="${toApplication(item.assignedBackchannelApplicationSlug)}"
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
@@ -107,7 +109,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     row(item: Provider): TemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
+            html`<a href=${toProvider(item.pk)}>${item.name}</a>`,
             this.rowApp(item),
             html`${item.verboseName}`,
             html`<ak-forms-modal>

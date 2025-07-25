@@ -1,7 +1,7 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants";
+import { CURRENT_CLASS, EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
-import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "#elements/router/navigation";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -14,13 +14,13 @@ import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
     @property()
-    pageIdentifier = "page";
+    public pageIdentifier = "page";
 
-    @property()
-    currentPage?: string;
+    @property({ type: Number })
+    public currentPage: string | null = null;
 
     @property({ type: Boolean })
-    vertical = false;
+    public vertical = false;
 
     static styles: CSSResult[] = [
         PFGlobal,
@@ -67,19 +67,23 @@ export class Tabs extends AKElement {
         super.disconnectedCallback();
     }
 
-    onClick(slot?: string): void {
+    onClick(slot: string | null): void {
         this.currentPage = slot;
-        const params: { [key: string]: string | undefined } = {};
-        params[this.pageIdentifier] = slot;
-        updateURLParams(params);
+
+        updateURLParams({
+            [this.pageIdentifier]: slot,
+        });
+
         const page = this.querySelector(`[slot='${this.currentPage}']`);
         if (!page) return;
+
         page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
         page.dispatchEvent(new CustomEvent("activate"));
     }
 
     renderTab(page: Element): TemplateResult {
-        const slot = page.attributes.getNamedItem("slot")?.value;
+        const slot = page.attributes.getNamedItem("slot")?.value || null;
+
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
             <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
                 <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
@@ -89,24 +93,26 @@ export class Tabs extends AKElement {
 
     render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
-        if (window.location.hash.includes(ROUTE_SEPARATOR)) {
-            const params = getURLParams();
-            if (
-                this.pageIdentifier in params &&
-                !this.currentPage &&
-                this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null
-            ) {
-                // To update the URL to match with the current slot
-                this.onClick(params[this.pageIdentifier] as string);
-            }
+        const pageParam = getURLParam<string>(this.pageIdentifier);
+
+        if (
+            pageParam &&
+            !this.currentPage &&
+            this.querySelector(`[slot='${pageParam}']`) !== null
+        ) {
+            // To update the URL to match with the current slot
+            this.onClick(pageParam);
         }
+
         if (!this.currentPage) {
             if (pages.length < 1) {
                 return html`<h1>${msg("no tabs defined")}</h1>`;
             }
-            const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
+
+            const wantedPage = pages[0].attributes.getNamedItem("slot")?.value || null;
             this.onClick(wantedPage);
         }
+
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
                 <ul class="pf-c-tabs__list">
                     ${pages.map((page) => this.renderTab(page))}

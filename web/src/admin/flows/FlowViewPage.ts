@@ -8,12 +8,12 @@ import "#components/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
-import { DesignationToLabel } from "#admin/flows/utils";
+import { applyNextParam, DesignationToLabel, formatFlowURL } from "#admin/flows/utils";
 
 import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
@@ -66,6 +66,47 @@ export class FlowViewPage extends AKElement {
             this.fetchFlow(this.flowSlug);
         }
     }
+
+    #executeFlow = () => {
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsInstancesExecuteRetrieve({
+                slug: this.flow.slug,
+            })
+            .then(({ link }) => {
+                const finalURL = URL.canParse(link)
+                    ? new URL(link)
+                    : new URL(link, window.location.origin);
+
+                applyNextParam(finalURL);
+
+                window.open(finalURL, "_blank");
+            });
+    };
+
+    #executeFlowInspector = () => {
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsInstancesExecuteRetrieve({
+                slug: this.flow.slug,
+            })
+            .then(({ link }) => {
+                const finalURL = URL.canParse(link)
+                    ? new URL(link)
+                    : new URL(link, window.location.origin);
+
+                applyNextParam(finalURL);
+
+                finalURL.searchParams.set("inspector", "open");
+
+                window.open(finalURL, "_blank");
+            })
+            .catch(async (error: unknown) => {
+                if (isResponseErrorLike(error)) {
+                    // This request can return a HTTP 400 when a flow
+                    // is not applicable.
+                    window.open(error.response.url, "_blank");
+                }
+            });
+    };
 
     render(): TemplateResult {
         if (!this.flow) {
@@ -157,61 +198,22 @@ export class FlowViewPage extends AKElement {
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
-                                                        const finalURL = `${
-                                                            window.location.origin
-                                                        }/if/flow/${this.flow.slug}/${AndNext(
-                                                            `${window.location.pathname}#${window.location.hash}`,
-                                                        )}`;
-                                                        window.open(finalURL, "_blank");
+                                                        const url = formatFlowURL(this.flow);
+
+                                                        window.open(url, "_blank");
                                                     }}
                                                 >
                                                     ${msg("Normal")}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-secondary"
-                                                    @click=${() => {
-                                                        new FlowsApi(DEFAULT_CONFIG)
-                                                            .flowsInstancesExecuteRetrieve({
-                                                                slug: this.flow.slug,
-                                                            })
-                                                            .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }${AndNext(
-                                                                    `${window.location.pathname}#${window.location.hash}`,
-                                                                )}`;
-                                                                window.open(finalURL, "_blank");
-                                                            });
-                                                    }}
+                                                    @click=${this.#executeFlow}
                                                 >
                                                     ${msg("with current user")}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-secondary"
-                                                    @click=${() => {
-                                                        new FlowsApi(DEFAULT_CONFIG)
-                                                            .flowsInstancesExecuteRetrieve({
-                                                                slug: this.flow.slug,
-                                                            })
-                                                            .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }?${encodeURI(
-                                                                    `inspector=open&next=/#${window.location.hash}`,
-                                                                )}`;
-                                                                window.open(finalURL, "_blank");
-                                                            })
-                                                            .catch(async (error: unknown) => {
-                                                                if (isResponseErrorLike(error)) {
-                                                                    // This request can return a HTTP 400 when a flow
-                                                                    // is not applicable.
-                                                                    window.open(
-                                                                        error.response.url,
-                                                                        "_blank",
-                                                                    );
-                                                                }
-                                                            });
-                                                    }}
+                                                    @click=${this.#executeFlowInspector}
                                                 >
                                                     ${msg("with inspector")}
                                                 </button>

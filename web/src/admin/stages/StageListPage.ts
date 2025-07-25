@@ -35,6 +35,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toFlow } from "#admin/navigation";
+
 import { Stage, StagesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -125,7 +127,7 @@ export class StageListPage extends TablePage<Stage> {
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>
-                        <a href="#/flow/flows/${flow.slug}">
+                        <a href="${toFlow(flow.slug)}">
                             <code>${flow.slug}</code>
                         </a>
                     </li>`;

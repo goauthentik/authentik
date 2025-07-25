@@ -1,12 +1,16 @@
 import "#elements/Spinner";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
 import { BaseUserSettings } from "#elements/user/sources/BaseUserSettings";
+
+import { toUserSettings } from "#user/navigation";
+
+import { applyNextParam } from "#admin/flows/utils";
 
 import { SourcesApi } from "@goauthentik/api";
 
@@ -64,12 +68,13 @@ export class SourceSettingsOAuth extends BaseUserSettings {
             </button>`;
         }
         if (this.configureUrl) {
-            return html`<a
-                class="pf-c-button pf-m-primary"
-                href="${this.configureUrl}${AndNext(
-                    `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-                )}"
-            >
+            const target = new URL(this.configureUrl);
+
+            const destination = toUserSettings();
+
+            applyNextParam(target, destination);
+
+            return html`<a class="pf-c-button pf-m-primary" href="${target}">
                 ${msg("Connect")}
             </a>`;
         }

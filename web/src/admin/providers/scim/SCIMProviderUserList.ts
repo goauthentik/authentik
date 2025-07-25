@@ -6,6 +6,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityUser } from "#admin/navigation";
+
 import {
     ProvidersApi,
     ProvidersScimSyncObjectCreateRequest,
@@ -78,7 +80,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     row(item: SCIMProviderUser): TemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href="${toIdentityUser(item.userObj.pk)}">
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

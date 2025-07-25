@@ -6,13 +6,16 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
-import { globalAK } from "#common/global";
+import { DEFAULT_CONFIG } from "#common/api/config";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 import { formatElapsedTime } from "#common/temporal";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { toUserSettings } from "#user/navigation";
+
+import { createNextSearchParams } from "#admin/flows/utils";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -73,15 +76,16 @@ export class MFADevicesPage extends Table<Device> {
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
                     ${settings.map((stage) => {
+                        const searchParams = createNextSearchParams(
+                            toUserSettings({
+                                page: "mfa",
+                            }),
+                        );
+
+                        const href = `${stage.configureUrl || ""}?${searchParams}`;
+
                         return html`<li>
-                            <a
-                                href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
-                                    })}`,
-                                )}"
-                                class="pf-c-dropdown__menu-item"
-                            >
+                            <a href=${ifDefined(href)} class="pf-c-dropdown__menu-item">
                                 ${stageToAuthenticatorName(stage)}
                             </a>
                         </li>`;

@@ -19,6 +19,7 @@ import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
+import { navigate } from "#elements/router/navigation";
 
 import type { Application } from "@goauthentik/api";
 
@@ -119,7 +120,9 @@ export class LibraryPage extends AKElement {
             return;
         }
         if (!this.selectedApp.openInNewTab) {
-            window.location.assign(this.selectedApp?.launchUrl);
+            navigate(this.selectedApp?.launchUrl, {
+                mode: "assign",
+            });
         } else {
             window.open(this.selectedApp.launchUrl);
         }

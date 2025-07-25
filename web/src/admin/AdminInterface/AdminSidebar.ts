@@ -2,6 +2,37 @@ import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "#elements/router/Route";
 import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { LitPropertyRecord } from "#elements/types";
 
+import {
+    toAdministrationDashboardUsers,
+    toAdministrationOverview,
+    toAdministrationSystemTasks,
+    toAdminSettings,
+    toApplications,
+    toBlueprintsInstances,
+    toBrands,
+    toCryptoCertificates,
+    toEnterpriseLicenses,
+    toEventLogs,
+    toEventsRules,
+    toEventsTransports,
+    toFlows,
+    toFlowStages,
+    toFlowStagesInvitations,
+    toFlowStagesPrompts,
+    toIdentityGroups,
+    toIdentityInitialPermissions,
+    toIdentityRoles,
+    toIdentityUsers,
+    toOutpostIntegrations,
+    toOutposts,
+    toPolicyPolicies,
+    toPolicyReputation,
+    toPropertyMappings,
+    toProviders,
+    toSources,
+    toTokens,
+} from "#admin/navigation";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
@@ -50,51 +81,51 @@ export function renderSidebarItems(entries: readonly SidebarEntry[]) {
 // prettier-ignore
 export const AdminSidebarEntries: readonly SidebarEntry[] = [
     [null, msg("Dashboards"), { "?expanded": true }, [
-        ["/administration/overview", msg("Overview")],
-        ["/administration/dashboard/users", msg("User Statistics")],
-        ["/administration/system-tasks", msg("System Tasks")]]
+        [toAdministrationOverview() , msg("Overview")],
+        [toAdministrationDashboardUsers() , msg("User Statistics")],
+        [toAdministrationSystemTasks() , msg("System Tasks")]]
     ],
     [null, msg("Applications"), null, [
-        ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
-        ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
-        ["/outpost/outposts", msg("Outposts")]]
+        [toApplications(), msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
+        [toProviders(), msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
+        [toOutposts(), msg("Outposts")]]
     ],
     [null, msg("Events"), null, [
-        ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
-        ["/events/rules", msg("Notification Rules")],
-        ["/events/transports", msg("Notification Transports")]]
+        [toEventLogs(), msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
+        [toEventsRules() , msg("Notification Rules")],
+        [toEventsTransports() , msg("Notification Transports")]]
     ],
     [null, msg("Customization"), null, [
-        ["/policy/policies", msg("Policies")],
-        ["/core/property-mappings", msg("Property Mappings")],
-        ["/blueprints/instances", msg("Blueprints")],
-        ["/policy/reputation", msg("Reputation scores")]]
+        [toPolicyPolicies() , msg("Policies")],
+        [toPropertyMappings() , msg("Property Mappings")],
+        [toBlueprintsInstances() , msg("Blueprints")],
+        [toPolicyReputation() , msg("Reputation scores")]]
     ],
     [null, msg("Flows and Stages"), null, [
-        ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
-        ["/flow/stages", msg("Stages")],
-        ["/flow/stages/prompts", msg("Prompts")]]
+        [toFlows() , msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
+        [toFlowStages() , msg("Stages")],
+        [toFlowStagesPrompts() , msg("Prompts")]]
     ],
     [null, msg("Directory"), null, [
-        ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
-        ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
-        ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
-        ["/identity/initial-permissions", msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_REGEX})$`]],
-        ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
-        ["/core/tokens", msg("Tokens and App passwords")],
-        ["/flow/stages/invitations", msg("Invitations")]]
+        [toIdentityUsers() , msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
+        [toIdentityGroups() , msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
+        [toIdentityRoles() , msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
+        [toIdentityInitialPermissions() , msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_REGEX})$`]],
+        [toSources() , msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
+        [toTokens() , msg("Tokens and App passwords")],
+        [toFlowStagesInvitations() , msg("Invitations")]]
     ],
     [null, msg("System"), null, [
-        ["/core/brands", msg("Brands")],
-        ["/crypto/certificates", msg("Certificates")],
-        ["/outpost/integrations", msg("Outpost Integrations")],
-        ["/admin/settings", msg("Settings")]]
+        [toBrands() , msg("Brands")],
+        [toCryptoCertificates() , msg("Certificates")],
+        [toOutpostIntegrations() , msg("Outpost Integrations")],
+        [toAdminSettings() , msg("Settings")]]
     ],
 ];
 
 // prettier-ignore
 export const AdminSidebarEnterpriseEntries: readonly SidebarEntry[] = [
     [null, msg("Enterprise"), null, [
-        ["/enterprise/licenses", msg("Licenses"), null]
+        [toEnterpriseLicenses(), msg("Licenses"), null]
     ],
 ]]

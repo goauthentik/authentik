@@ -15,6 +15,8 @@ import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
+import { toSource } from "#admin/navigation";
+
 import { Source, SourcesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
@@ -87,7 +89,7 @@ export class SourceListPage extends TablePage<Source> {
             return this.rowInbuilt(item);
         }
         return [
-            html`<a href="#/core/sources/${item.slug}">
+            html`<a href="${toSource(item.slug)}">
                 <div>${item.name}</div>
                 ${item.enabled
                     ? html``

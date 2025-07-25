@@ -22,7 +22,7 @@ import { WebsocketClient } from "#common/ws";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, navigate, toUserRoute, updateURLParams } from "#elements/router/navigation";
 
 import { SidebarToggleEventDetail } from "#components/ak-page-header";
 
@@ -51,10 +51,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     //#region Properties
 
     @property({ type: Boolean })
-    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public notificationDrawerOpen = !!getURLParam("notificationDrawerOpen");
 
     @property({ type: Boolean })
-    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    public apiDrawerOpen = !!getURLParam("apiDrawerOpen");
 
     @property({ type: Object, attribute: false })
     public user?: SessionUser;
@@ -176,7 +176,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                 this.user.user.systemPermissions.includes("access_admin_interface");
 
             if (!canAccessAdmin && this.user.user.pk > 0) {
-                window.location.assign("/if/user/");
+                navigate(toUserRoute("/"), { mode: "assign" });
             }
         });
     }

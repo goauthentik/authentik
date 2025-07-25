@@ -1,7 +1,5 @@
-import { ROUTE_SEPARATOR } from "#common/constants";
-
 import { AKElement } from "#elements/Base";
-import { createPathnameHash } from "#elements/router/RouteMatch";
+import { ROUTE_SEPARATOR } from "#elements/router/constants";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -215,7 +213,7 @@ export class SidebarItem extends AKElement {
     renderWithPath() {
         return html`
             <a
-                href=${createPathnameHash(this.path)}
+                href=${this.path}
                 id="sidebar-nav-link-${this.path}"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifDefined(this.current ? "page" : undefined)}

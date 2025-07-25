@@ -7,6 +7,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityRole } from "#admin/navigation";
+
 import {
     PaginatedPermissionList,
     RbacApi,
@@ -108,7 +110,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     row(item: RoleAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
+        const baseRow = [html` <a href="${toIdentityRole(item.rolePk)}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =
                 item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;

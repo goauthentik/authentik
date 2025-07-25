@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { applicationListStyle } from "#admin/applications/ApplicationListPage";
+import { toApplication } from "#admin/navigation";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
 
@@ -45,7 +46,7 @@ export class UserApplicationTable extends Table<Application> {
                 name=${item.name}
                 icon=${ifDefined(item.metaIcon || undefined)}
             ></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href="${toApplication(item.slug)}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,

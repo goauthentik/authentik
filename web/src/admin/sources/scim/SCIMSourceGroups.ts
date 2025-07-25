@@ -2,6 +2,8 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
+import { toIdentityGroup } from "#admin/navigation";
+
 import { SCIMSourceGroup, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -39,7 +41,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
 
     row(item: SCIMSourceGroup): TemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href="${toIdentityGroup(item.groupObj.pk)}">
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.externalId}`,

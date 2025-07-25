@@ -5,6 +5,8 @@ import { $PFBase } from "#common/theme";
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
 
+import { toEnterpriseLicenses } from "#admin/navigation";
+
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -21,7 +23,7 @@ export class AkLicenceNotice extends WithLicenseSummary(AKElement) {
             ? nothing
             : html`
                   <ak-alert class="pf-c-radio__description" inline plain>
-                      <a href="#/enterprise/licenses">${this.notice}</a>
+                      <a href="${toEnterpriseLicenses()}">${this.notice}</a>
                   </ak-alert>
               `;
     }

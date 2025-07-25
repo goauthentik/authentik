@@ -12,7 +12,7 @@ import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "#elements/router/navigation";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { Pagination } from "@goauthentik/api";
@@ -129,7 +129,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam(this.#pageParam, 1);
+    page = getURLParam<number>(this.#pageParam) ?? 1;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -219,7 +219,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             await this.fetch();
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam(this.#searchParam, "");
+            this.search = getURLParam(this.#searchParam) ?? "";
         }
     }
 

@@ -6,7 +6,7 @@ import {
 } from "./events.js";
 
 import { AKElement } from "#elements/Base";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getURLParam, navigate, updateURLParams } from "#elements/router/navigation";
 
 import type { Application } from "@goauthentik/api";
 
@@ -65,7 +65,7 @@ export class LibraryPageApplicationSearch extends AKElement {
     }
 
     @property()
-    query = getURLParam<string | undefined>("search", undefined);
+    query: string | null = getURLParam("search");
 
     @query("input")
     searchInput?: HTMLInputElement;
@@ -112,9 +112,12 @@ export class LibraryPageApplicationSearch extends AKElement {
             this.searchInput.value = "";
         }
         this.query = "";
-        updateURLParams({
-            search: this.query,
-        });
+        navigate((path) => ({
+            ...path,
+            params: {
+                search: this.query,
+            },
+        }));
         this.dispatchEvent(new LibraryPageSearchReset());
     }
 

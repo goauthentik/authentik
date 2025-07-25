@@ -3,6 +3,8 @@ import { truncate } from "#common/utils";
 
 import { SlottedTemplateResult } from "#elements/types";
 
+import { toIdentityUser } from "#admin/navigation";
+
 import { msg, str } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 
@@ -27,7 +29,7 @@ export function renderEventUser(
 
     const linkOrSpan = (inner: TemplateResult, evu: EventUser) => {
         return html`${evu.pk && !evu.is_anonymous
-            ? html`<a href="#/identity/users/${evu.pk}">${inner}</a>`
+            ? html`<a href="${toIdentityUser(evu.pk)}">${inner}</a>`
             : html`<span>${inner}</span>`}`;
     };
 

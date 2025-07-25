@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
+import { toOutposts } from "#admin/navigation";
 
 import { AdminApi, Version } from "@goauthentik/api";
 
@@ -33,7 +34,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${msg("An outpost is on an incorrect version!")}
-                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
+                    <a href="${toOutposts()}">${msg("Check outposts.")}</a>`,
             });
         }
         if (value.versionLatestValid) {
