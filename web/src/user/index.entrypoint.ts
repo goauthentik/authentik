@@ -210,7 +210,10 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                             />
                         </a>
                     </div>
-                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me} .notificationCount=${this.notificationsCount}
+                    <ak-nav-buttons
+                        .uiConfig=${this.uiConfig}
+                        .me=${this.me}
+                        .notificationCount=${this.notificationsCount}
                         >${this.renderAdminInterfaceLink()}</ak-nav-buttons
                     >
                 </header>
