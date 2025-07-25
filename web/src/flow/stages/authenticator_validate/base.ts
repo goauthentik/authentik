@@ -37,7 +37,7 @@ export class BaseDeviceStage<
                     display: flex;
                     gap: 16px;
                     margin-top: 0;
-                    margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
+                    margin-bottom: var(--pf-c-form__group--m-action--MarginTop);
                     flex-direction: column;
                 }
             `,

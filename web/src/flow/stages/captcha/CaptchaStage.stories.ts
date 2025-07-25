@@ -81,4 +81,22 @@ export const ChallengeTurnstileForce = captchaFactory({
     jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
     siteKey: "3x00000000000000000000FF",
     interactive: true,
-} as CaptchaChallenge);
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
+});
+
+export const ChallengeRecaptcha = captchaFactory({
+    pendingUser: "foo",
+    pendingUserAvatar: "https://picsum.photos/64",
+    jsUrl: "https://www.google.com/recaptcha/api.js",
+    siteKey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI",
+    interactive: true,
+    flowInfo: {
+        layout: "stacked",
+        cancelUrl: "",
+        title: "Foo",
+    },
+});

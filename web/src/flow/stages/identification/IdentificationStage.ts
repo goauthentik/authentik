@@ -10,6 +10,7 @@ import { AkRememberMeController } from "@goauthentik/flow/stages/identification/
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -54,6 +55,8 @@ export class IdentificationStage extends BaseStage<
     captchaToken = "";
     @state()
     captchaRefreshedAt = new Date();
+    @state()
+    captchaLoaded = false;
 
     static get styles(): CSSResult[] {
         return [
@@ -81,16 +84,42 @@ export class IdentificationStage extends BaseStage<
                     height: 100%;
                     max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
                 }
+
+                .captcha-container {
+                    position: relative;
+
+                    .faux-input {
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+                }
             `,
         ];
     }
+
+    #captchaInputRef = createRef<HTMLInputElement>();
+
+    #tokenChangeListener = (token: string) => {
+        const input = this.#captchaInputRef.value;
+
+        if (!input) return;
+
+        input.value = token;
+    };
+
+    #captchaLoadListener = () => {
+        this.captchaLoaded = true;
+    };
 
     constructor() {
         super();
         this.rememberMe = new AkRememberMeController(this);
     }
 
-    updated(changedProperties: PropertyValues<this>) {
+    public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.autoRedirect();
             this.createHelperForm();
@@ -162,9 +191,12 @@ export class IdentificationStage extends BaseStage<
                         input.focus();
                     });
             };
+
             this.form.appendChild(password);
         }
+
         const totp = document.createElement("input");
+
         totp.setAttribute("type", "text");
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
@@ -298,19 +330,33 @@ export class IdentificationStage extends BaseStage<
             ${this.renderNonFieldErrors()}
             ${this.challenge.captchaStage
                 ? html`
-                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
-                      <ak-stage-captcha
-                          .challenge=${this.challenge.captchaStage}
-                          .onTokenChange=${(token: string) => {
-                              this.captchaToken = token;
-                          }}
-                          .refreshedAt=${this.captchaRefreshedAt}
-                          embedded
-                      ></ak-stage-captcha>
+                      <div class="captcha-container">
+                          <ak-stage-captcha
+                              .challenge=${this.challenge.captchaStage}
+                              .onTokenChange=${this.#tokenChangeListener}
+                              .onLoad=${this.#captchaLoadListener}
+                              .refreshedAt=${this.captchaRefreshedAt}
+                              embedded
+                          >
+                          </ak-stage-captcha>
+                          <input
+                              class="faux-input"
+                              ${ref(this.#captchaInputRef)}
+                              name="captchaToken"
+                              type="text"
+                              required
+                              value=""
+                          />
+                      </div>
                   `
                 : nothing}
-            <div class="pf-c-form__group pf-m-action">
-                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+
+            <div class="pf-c-form__group ${this.challenge.captchaStage ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${this.challenge.captchaStage && !this.captchaLoaded}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
                     ${this.challenge.primaryAction}
                 </button>
             </div>
