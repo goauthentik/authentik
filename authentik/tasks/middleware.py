@@ -44,9 +44,7 @@ class RelObjMiddleware(Middleware):
         return {"rel_obj"}
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
-        if rel_obj := message.options.get("rel_obj"):
-            del message.options["rel_obj"]
-        message.options["model_defaults"]["rel_obj"] = rel_obj
+        message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
 
 
 class MessagesMiddleware(Middleware):

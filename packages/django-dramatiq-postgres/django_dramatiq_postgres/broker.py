@@ -115,7 +115,6 @@ class PostgresBroker(Broker):
             "queue_name": message.queue_name,
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
-            "message": message.encode(),
         }
 
     @tenacity.retry(
@@ -158,6 +157,7 @@ class PostgresBroker(Broker):
             }
             defaults = message.options["model_defaults"]
             del message.options["model_defaults"]
+            defaults["message"] = message.encode()
             create_defaults = {
                 **query,
                 **defaults,
@@ -268,6 +268,7 @@ class _PostgresConsumer(Consumer):
 
     @raise_connection_error
     def ack(self, message: Message):
+        task = message.options.pop("task")
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -276,11 +277,13 @@ class _PostgresConsumer(Consumer):
             state=TaskState.DONE,
             message=message.encode(),
         )
+        message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
         self.in_processing.remove(message.message_id)
 
     @raise_connection_error
     def nack(self, message: Message):
+        task = message.options.pop("task")
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
@@ -290,6 +293,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.REJECTED,
             message=message.encode(),
         )
+        message.options["task"] = task
         self.unlock_queue.put_nowait(message.message_id)
         self.in_processing.remove(message.message_id)
 
