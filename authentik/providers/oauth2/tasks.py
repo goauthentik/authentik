@@ -41,16 +41,10 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
         LOGGER.warning("Failed to create logout token", exc=exc)
         return False
 
-    # Get the back-channel logout URI from the provider's dedicated backchannel_logout_uris field
+    # Get the back-channel logout URI from the provider's dedicated backchannel_logout_uri field
     # Back-channel logout requires explicit configuration - no fallback to redirect URIs
 
-    backchannel_logout_uri = None
-
-    # Check if provider has dedicated backchannel logout URIs configured
-    if provider.backchannel_logout_uris:
-        # Use the first configured backchannel logout URI
-        # In the future, we could implement logic to select based on criteria
-        backchannel_logout_uri = provider.backchannel_logout_uris[0].url
+    backchannel_logout_uri = provider.backchannel_logout_uri
 
     if not backchannel_logout_uri:
         LOGGER.warning(

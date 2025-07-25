@@ -42,7 +42,7 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
@@ -199,9 +199,10 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=list,
         verbose_name=_("Redirect URIs"),
     )
-    _backchannel_logout_uris = models.JSONField(
-        default=list,
-        verbose_name=_("Back-Channel Logout URIs"),
+    backchannel_logout_uri = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Back-Channel Logout URI"),
+        blank=True,
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -327,28 +328,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
         for entry in value:
             cleansed.append(asdict(entry))
         self._redirect_uris = cleansed
-
-    @property
-    def backchannel_logout_uris(self) -> list[RedirectURI]:
-        """Get back-channel logout URIs"""
-        uris = []
-        for entry in self._backchannel_logout_uris:
-            uris.append(
-                from_dict(
-                    RedirectURI,
-                    entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
-                )
-            )
-        return uris
-
-    @backchannel_logout_uris.setter
-    def backchannel_logout_uris(self, value: list[RedirectURI]):
-        """Set back-channel logout URIs"""
-        cleansed = []
-        for entry in value:
-            cleansed.append(asdict(entry))
-        self._backchannel_logout_uris = cleansed
 
     @property
     def launch_url(self) -> str | None:

@@ -21,11 +21,6 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import {
-    akOAuthBackchannelLogoutURIInput,
-    IBackchannelLogoutURIInput,
-} from "#admin/providers/oauth2/OAuth2ProviderBackchannelLogoutURI";
-
-import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
@@ -212,20 +207,13 @@ export function renderForm(
                     ${redirectUriHelp}
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Back-Channel Logout URIs")}
-                    name="backchannelLogoutUris"
+                    label=${msg("Back-Channel Logout URI")}
+                    name="backchannelLogoutUri"
                 >
-                    <ak-array-input
-                        .items=${provider?.backchannelLogoutUris ?? []}
-                        .newItem=${() => ({ matchingMode: MatchingModeEnum.Strict, url: "" })}
-                        .row=${(f?: RedirectURI) =>
-                            akOAuthBackchannelLogoutURIInput({
-                                ".backchannelLogoutURI": f,
-                                "style": "width: 100%",
-                                "name": "oauth2-backchannel-logout-uri",
-                            } as unknown as IBackchannelLogoutURIInput)}
-                    >
-                    </ak-array-input>
+                    <ak-text-input
+                        value=${provider?.backchannelLogoutUri ?? ""}
+                        placeholder="https://example.com/backchannel_logout"
+                    ></ak-text-input>
                     ${backchannelLogoutUriHelp}
                 </ak-form-element-horizontal>
 
