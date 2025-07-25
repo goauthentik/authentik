@@ -4,6 +4,7 @@ import "#flow/components/ak-brand-footer";
 import "#flow/components/ak-flow-card";
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
+import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
@@ -490,6 +491,11 @@ export class FlowExecutor
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-source-oauth-apple>`;
+            case "ak-source-telegram":
+                return html`<ak-flow-source-telegram
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-flow-source-telegram>`;
             // Providers
             case "ak-provider-oauth2-device-code":
                 await import("#flow/providers/oauth2/DeviceCode");
