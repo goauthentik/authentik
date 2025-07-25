@@ -33,11 +33,21 @@ def register_signals(
 
     post_save.connect(post_save_provider, provider_type, dispatch_uid=uid, weak=False)
 
-    def model_post_save(sender: type[Model], instance: User | Group, created: bool, **_):
+    def model_post_save(
+        sender: type[Model],
+        instance: User | Group,
+        created: bool,
+        update_fields: list[str] | None = None,
+        **_,
+    ):
         """Post save handler"""
         if not provider_type.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ).exists():
+            return
+        # Special case for user object; don't start sync task when we've only updated `last_login`
+        # This primarily happens during user login
+        if sender == User and update_fields == ["last_login"]:
             return
         task_sync_direct.delay(class_to_path(instance.__class__), instance.pk, Direction.add.value)
 
