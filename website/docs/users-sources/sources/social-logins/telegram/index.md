@@ -57,7 +57,6 @@ The dictionary contains the following fields:
 - `last_name` - Last name of the user. Might not be present.
 - `photo_url` - URL of the user's profile photo. Might not be present.
 
-
 :::note
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
