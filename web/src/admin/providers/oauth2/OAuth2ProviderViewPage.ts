@@ -253,10 +253,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ul>
-                                            ${this.provider.backchannelLogoutUri}
-                                        </ul>
+                                    <div class="pf-c-description-list__text pf-m-monospace">
+                                        ${this.provider.backchannelLogoutUri}
                                     </div>
                                 </dd>
                             </div>

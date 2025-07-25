@@ -207,12 +207,13 @@ export function renderForm(
                     ${redirectUriHelp}
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
+                    flow-direction="row"
                     label=${msg("Back-Channel Logout URI")}
-                    name="backchannelLogoutUri"
                 >
                     <ak-text-input
-                        value=${provider?.backchannelLogoutUri ?? ""}
-                        placeholder="https://example.com/backchannel_logout"
+                        name="backchannelLogoutUri"
+                        value="${provider?.backchannelLogoutUri ?? ""}"
+                        placeholder=${msg("URL")}
                     ></ak-text-input>
                     ${backchannelLogoutUriHelp}
                 </ak-form-element-horizontal>

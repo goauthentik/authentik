@@ -10,7 +10,9 @@ LOGGER = get_logger()
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
-def user_session_deleted_oauth_tokens_removal(sender, instance: AuthenticatedSession, **_):
+def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
+    sender, instance: AuthenticatedSession, **_
+):
     """Revoke tokens upon user logout"""
     LOGGER.debug("Sending back-channel logout notifications signal!", session=instance)
     try:
