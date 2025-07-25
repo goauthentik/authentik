@@ -123,9 +123,9 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
-    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS). 
-    - Parameters passed with this setting will override those passed with other settings. 
-    - These parameters are not applied to read replicas. 
+    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    - Parameters passed with this setting will override those passed with other settings.
+    - These parameters are not applied to read replicas.
     - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
 
 ### Read Replicas
