@@ -3,6 +3,7 @@
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { ReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
 
 import { cp } from "node:fs/promises";
@@ -52,11 +53,8 @@ export default createDocusaurusConfig(
 
         presets: [
             createClassicPreset({
-                pages: {
-                    path: "pages",
-                },
                 docs: {
-                    routeBasePath: "/docs",
+                    routeBasePath: "/",
                     path: ".",
 
                     sidebarPath: "./sidebar.mjs",
@@ -67,9 +65,6 @@ export default createDocusaurusConfig(
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            // ---
-                            // TODO: Enable after base path is set to '/'
-                            // ["/docs", ""],
                             ["/api", "https://api.goauthentik.io"],
                             ["/integrations", "https://integrations.goauthentik.io"],
                         ]),
@@ -89,6 +84,15 @@ export default createDocusaurusConfig(
                     docsDirectory: __dirname,
                 }),
             ],
+            [
+                "@docusaurus/plugin-client-redirects",
+                /** @type {RedirectsPluginOptions} */ ({
+                    createRedirects(existingPath) {
+                        // Redirect to their respective path without the `docs/` prefix
+                        return `/docs${existingPath}`;
+                    },
+                }),
+            ],
         ],
 
         //#endregion
@@ -104,7 +108,7 @@ export default createDocusaurusConfig(
 
             image: "img/social.png",
             navbarReplacements: {
-                DOCS_URL: "/docs",
+                DOCS_URL: "/",
             },
             navbar: {
                 logo: {
