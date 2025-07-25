@@ -211,3 +211,37 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
     ) -> None:
         self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
         super().__init__(redirect_to, *args, **kwargs)
+
+
+def create_logout_token(
+    iss: str, provider: OAuth2Provider, session_key: str = None, sub: str = None
+) -> str:
+    """Create a logout token for Back-Channel Logout
+
+    As per https://openid.net/specs/openid-connect-backchannel-1_0.html
+    """
+    import uuid
+    from time import time
+
+    from authentik.providers.oauth2.id_token import hash_session_key
+
+    LOGGER.debug("Creating logout token", provider=provider, session_key=session_key, sub=sub)
+
+    # Create the logout token payload
+    payload = {
+        "iss": str(iss),
+        "aud": provider.client_id,
+        "iat": int(time()),
+        "jti": str(uuid.uuid4()),
+        "events": {
+            "http://schemas.openid.net/event/backchannel-logout": {},
+        },
+    }
+
+    # Add either sub or sid (or both)
+    if sub:
+        payload["sub"] = sub
+    if session_key:
+        payload["sid"] = hash_session_key(session_key)
+    # Encode the token
+    return provider.encode(payload)

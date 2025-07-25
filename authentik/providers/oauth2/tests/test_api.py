@@ -81,4 +81,46 @@ class TestAPI(APITestCase):
             },
         )
         self.assertJSONEqual(response.content, {"redirect_uris": ["Invalid Regex Pattern: **"]})
+
+    def test_backchannel_logout_uri_validation(self):
+        """Test backchannel_logout_uri API validation"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io"},
+                ],
+                "backchannel_logout_uri": "invalid-url",
+            },
+        )
         self.assertEqual(response.status_code, 400)
+
+    def test_backchannel_logout_uri_create_and_retrieve(self):
+        """Test creating and retrieving backchannel logout URI"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "redirect_uris": [
+                    {"matching_mode": "strict", "url": "http://goauthentik.io"},
+                ],
+                "backchannel_logout_uri": "http://goauthentik.io/logout",
+            },
+        )
+        self.assertEqual(response.status_code, 201)
+        provider_data = response.json()
+        self.assertEqual(provider_data["backchannel_logout_uri"], "http://goauthentik.io/logout")
+
+        # Test retrieving the provider
+        provider_pk = provider_data["pk"]
+        response = self.client.get(
+            reverse("authentik_api:oauth2provider-detail", kwargs={"pk": provider_pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        retrieved_data = response.json()
+        self.assertEqual(retrieved_data["backchannel_logout_uri"], "http://goauthentik.io/logout")
