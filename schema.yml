@@ -22926,10 +22926,14 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: group_filters
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: name
         schema:
@@ -55217,10 +55221,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -58716,10 +58722,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -58816,10 +58824,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
