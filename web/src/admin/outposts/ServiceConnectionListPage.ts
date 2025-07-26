@@ -8,6 +8,8 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#elements/forms/ProxyForm";
+import "#elements/tasks/ScheduleList";
+import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -41,6 +43,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     checkbox = true;
+    expandable = true;
     clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
@@ -108,6 +111,46 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 </ak-rbac-object-permission-modal>
             `,
         ];
+    }
+
+    renderExpanded(item: ServiceConnection): TemplateResult {
+        const [appLabel, modelName] = item.metaModelName.split(".");
+        return html` <td role="cell" colspan="5">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-schedule-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-schedule-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>`;
     }
 
     renderToolbarSelected(): TemplateResult {

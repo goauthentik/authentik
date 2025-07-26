@@ -11,7 +11,7 @@ import {
     ProvidersApi,
     SourcesApi,
     SyncStatus,
-    SystemTaskStatusEnum,
+    TaskAggregatedStatusEnum,
 } from "@goauthentik/api";
 
 import { ChartData, ChartOptions } from "chart.js";
@@ -61,16 +61,22 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 let objectKey = "healthy";
                 try {
                     const status = await fetchSyncStatus(element);
-                    status.tasks.forEach((task) => {
-                        if (task.status !== SystemTaskStatusEnum.Successful) {
-                            objectKey = "failed";
-                        }
-                        const now = new Date().getTime();
-                        const maxDelta = 3600000; // 1 hour
-                        if (!status || now - task.finishTimestamp.getTime() > maxDelta) {
-                            objectKey = "unsynced";
-                        }
-                    });
+
+                    const now = new Date().getTime();
+                    const maxDelta = 3600000; // 1 hour
+
+                    if (
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Error ||
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Rejected ||
+                        status.lastSyncStatus === TaskAggregatedStatusEnum.Warning
+                    ) {
+                        objectKey = "failed";
+                    } else if (
+                        !status.lastSuccessfulSync ||
+                        now - status.lastSuccessfulSync.getTime() > maxDelta
+                    ) {
+                        objectKey = "unsynced";
+                    }
                 } catch {
                     objectKey = "unsynced";
                 }
@@ -135,6 +141,17 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                     });
                 },
                 msg("LDAP Source"),
+            ),
+            await this.fetchStatus(
+                () => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosList();
+                },
+                (element) => {
+                    return new SourcesApi(DEFAULT_CONFIG).sourcesKerberosSyncStatusRetrieve({
+                        slug: element.slug,
+                    });
+                },
+                msg("Kerberos Source"),
             ),
         ];
         this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();

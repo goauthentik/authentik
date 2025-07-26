@@ -57,10 +57,6 @@ redis:
   tls_reqs: "none"
   tls_ca_cert: null
 
-# broker:
-#   url: ""
-#   transport_options: ""
-
 http_timeout: 30
 
 cache:
@@ -71,10 +67,6 @@ cache:
 
 # channel:
 #   url: ""
-
-# result_backend:
-#   url: ""
-#   transport_options: ""
 
 debug: false
 debugger: false
@@ -157,7 +149,14 @@ web:
   path: /
 
 worker:
-  concurrency: 2
+  processes: 1
+  threads: 2
+  consumer_listen_timeout: "seconds=30"
+  task_max_retries: 20
+  task_default_time_limit: "minutes=10"
+  task_purge_interval: "days=1"
+  task_expiration: "days=30"
+  scheduler_interval: "seconds=60"
 
 storage:
   media:

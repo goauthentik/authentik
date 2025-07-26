@@ -6,7 +6,7 @@ This page describes how to debug different components of an authentik instance, 
 
 ## authentik Server & Worker (Python)
 
-The majority of the authentik codebase is in Python, running in Gunicorn for the server and Celery for the worker. These instructions show how this code can be debugged/inspected. The local debugging setup requires a setup as described in [Full development environment](./full-dev-environment.mdx)
+The majority of the authentik codebase is in Python, running in Gunicorn for the server and Dramatiq for the worker. These instructions show how this code can be debugged/inspected. The local debugging setup requires a setup as described in [Full development environment](./full-dev-environment.mdx)
 
 Note that authentik uses [debugpy](https://github.com/microsoft/debugpy), which relies on the "Debug Adapter Protocol" (DAP). These instructions demonstrate debugging using [Visual Studio Code](https://code.visualstudio.com/), however they should be adaptable to other editors that support DAP.
 
@@ -19,6 +19,10 @@ With this setup in place, you can set Breakpoints in VS Code. To connect to the 
 :::info
 Note that due to the Python debugger for VS Code, when a Python file in authentik is saved and the Django process restarts, you must manually reconnect the Debug session. Automatic re-connection is not supported for the Python debugger (see [here](https://github.com/microsoft/vscode-python/issues/19998) and [here](https://github.com/microsoft/vscode-python/issues/1182)).
 :::
+
+#### Debug the server or the worker
+
+Whichever process is first started listens on port `9901`. Additional processes started after that will then try to listen on the same port, which will fail, and will simply not start the debugger in that case.
 
 #### Debugging in containers
 
