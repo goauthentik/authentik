@@ -4,6 +4,7 @@ from enum import Enum
 
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.group import GroupMember as BaseGroupMember
 from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
@@ -83,9 +84,9 @@ class EnterpriseUser(BaseModel):
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    model_config = ConfigDict(serialize_by_alias=True)
+    model_config = ConfigDict(serialize_by_alias=True, coerce_numbers_to_str=True)
 
-    id: str | int | None = None
+    id: str | None = None
     schemas: list[str] = [SCIM_USER_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
@@ -103,13 +104,23 @@ class User(BaseUser):
     )
 
 
+class GroupMember(BaseGroupMember):
+    """Group member which allows for numerical IDs and coerces them to string"""
+
+    model_config = ConfigDict(coerce_numbers_to_str=True)
+
+
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
-    id: str | int | None = None
+    model_config = ConfigDict(serialize_by_alias=True, coerce_numbers_to_str=True)
+
+    id: str | None = None
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
+
+    members: list[GroupMember] | None = Field(None, description="A list of members of the Group.")
 
 
 class Bulk(BaseBulk):

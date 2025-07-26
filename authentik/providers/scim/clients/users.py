@@ -77,14 +77,30 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 users_res = users.get("Resources", [])
                 if len(users_res) < 1:
                     raise exc
+                # Validate response through Pydantic schema to ensure ID coercion
+                try:
+                    scim_response = SCIMUserSchema.model_validate(users_res[0])
+                    scim_id = scim_response.id
+                except ValidationError as exc:
+                    self.logger.warning("Failed to validate response as SCIM user", exc=exc)
+                    # Fallback to raw response if validation fails
+                    scim_id = users_res[0]["id"]
                 return SCIMProviderUser.objects.create(
                     provider=self.provider,
                     user=user,
-                    scim_id=users_res[0]["id"],
+                    scim_id=scim_id,
                     attributes=users_res[0],
                 )
             else:
-                scim_id = response.get("id")
+                # Validate response through Pydantic schema to ensure ID coercion
+                try:
+                    scim_response = SCIMUserSchema.model_validate(response)
+                    scim_id = scim_response.id
+                except ValidationError as exc:
+                    self.logger.warning("Failed to validate response as SCIM user", exc=exc)
+                    # Fallback to raw response if validation fails
+                    scim_id = response.get("id")
+
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
                 return SCIMProviderUser.objects.create(

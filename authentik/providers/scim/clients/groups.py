@@ -103,7 +103,15 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_unset=True,
             ),
         )
-        scim_id = response.get("id")
+        # Validate response through Pydantic schema to ensure ID coercion
+        try:
+            scim_response = SCIMGroupSchema.model_validate(response)
+            scim_id = scim_response.id
+        except ValidationError as exc:
+            self.logger.warning("Failed to validate response as SCIM group", exc=exc)
+            # Fallback to raw response if validation fails
+            scim_id = response.get("id")
+
         if not scim_id or scim_id == "":
             raise StopSync("SCIM Response with missing or invalid `id`")
         connection = SCIMProviderGroup.objects.create(
@@ -238,9 +246,17 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 group=group,
             )
         # Get current group status
-        current_group = SCIMGroupSchema.model_validate(
-            self._request("GET", f"/Groups/{scim_group.scim_id}")
-        )
+        group_data = self._request("GET", f"/Groups/{scim_group.scim_id}")
+
+        try:
+            current_group = SCIMGroupSchema.model_validate(group_data)
+        except ValidationError as exc:
+            self.logger.warning(
+                "Failed to validate SCIM group data",
+                group=group,
+                exc=exc,
+            )
+            return
         users_to_add = []
         users_to_remove = []
         # Check users currently in group and if they shouldn't be in the group and remove them

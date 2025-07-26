@@ -1,6 +1,7 @@
 """SCIM User tests"""
 
 from json import loads
+from time import time
 
 from django.test import TestCase
 from django.utils.text import slugify
@@ -12,7 +13,9 @@ from authentik.core.models import Application, Group, User
 from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
+from authentik.providers.scim.clients.users import SCIMUserClient
+from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.models import Tenant
 
@@ -440,3 +443,204 @@ class SCIMUserTests(TestCase):
         self.assertIsNotNone(drop_msg["attributes"]["url"])
         self.assertIsNotNone(drop_msg["attributes"]["body"])
         self.assertIsNotNone(drop_msg["attributes"]["method"])
+
+    @Mocker()
+    def test_user_create_exception_fallback(self, mock: Mocker):
+        """Test user creation with exception fallback for ID validation"""
+        timestamp = int(time() * 1000)
+        scim_id = timestamp
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        # Mock a response that will cause validation to fail
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "userName": "testuser",
+                # Add invalid field to trigger validation error
+                "invalid_field": "invalid_value",
+            },
+        )
+
+        user = User.objects.create(
+            username=f"testuser-{timestamp}",
+            name=f"testuser-{timestamp}",
+            email=f"testuser-{timestamp}@example.com",
+        )
+
+        # Clean up any existing SCIM entries
+        SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
+
+        client = SCIMUserClient(self.provider)
+        scim_user = client.create(user)
+
+        # Should fallback to raw response.get("id")
+        self.assertIsInstance(scim_user.scim_id, str)
+        self.assertEqual(scim_user.scim_id, str(scim_id))
+
+        # Cleanup
+        scim_user.delete()
+        user.delete()
+
+    @Mocker()
+    def test_user_create_object_exists_exception_fallback(self, mock: Mocker):
+        """Test user creation with ObjectExistsSyncException and exception fallback"""
+        timestamp = int(time() * 1000)
+        scim_id = timestamp
+
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={"filter": {"supported": True}},
+        )
+        # Mock POST to fail with ObjectExistsSyncException
+        mock.post(
+            "https://localhost/Users",
+            status_code=409,
+            json={"error": "User already exists"},
+        )
+        # Mock GET filter request
+        mock.get(
+            "https://localhost/Users?filter=userName%20eq%20testuser",
+            json={
+                "Resources": [
+                    {
+                        "id": scim_id,
+                        "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                        "userName": "testuser",
+                        # Add invalid field to trigger validation error
+                        "invalid_field": "invalid_value",
+                    }
+                ]
+            },
+        )
+
+        user = User.objects.create(
+            username="testuser",
+            name="testuser",
+            email="testuser@example.com",
+        )
+
+        # Clean up any existing SCIM entries
+        SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
+
+        client = SCIMUserClient(self.provider)
+        scim_user = client.create(user)
+
+        # Should fallback to raw response["id"]
+        self.assertIsInstance(scim_user.scim_id, str)
+        self.assertEqual(scim_user.scim_id, str(scim_id))
+
+        # Cleanup
+        scim_user.delete()
+        user.delete()
+
+    @Mocker()
+    def test_user_create_object_exists_no_resources(self, mock: Mocker):
+        """Test user creation with ObjectExistsSyncException but no resources found"""
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={"filter": {"supported": True}},
+        )
+        # Mock POST to fail with ObjectExistsSyncException
+        mock.post(
+            "https://localhost/Users",
+            status_code=409,
+            json={"error": "User already exists"},
+        )
+        # Mock GET filter request with no resources
+        mock.get(
+            "https://localhost/Users?filter=userName%20eq%20testuser",
+            json={"Resources": []},
+        )
+
+        user = User.objects.create(
+            username="testuser",
+            name="testuser",
+            email="testuser@example.com",
+        )
+
+        # Clean up any existing SCIM entries
+        SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
+
+        client = SCIMUserClient(self.provider)
+
+        # Should re-raise the ObjectExistsSyncException
+        with self.assertRaises(ObjectExistsSyncException):
+            client.create(user)
+
+        # Cleanup
+        user.delete()
+
+    @Mocker()
+    def test_user_create_missing_id(self, mock: Mocker):
+        """Test user creation with missing ID in response"""
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        # Mock response without ID
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "userName": "testuser",
+                # Missing "id" field
+            },
+        )
+
+        user = User.objects.create(
+            username="testuser",
+            name="testuser",
+            email="testuser@example.com",
+        )
+
+        # Clean up any existing SCIM entries
+        SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
+
+        client = SCIMUserClient(self.provider)
+
+        # Should raise StopSync for missing ID
+        with self.assertRaises(StopSync):
+            client.create(user)
+
+        # Cleanup
+        user.delete()
+
+    @Mocker()
+    def test_user_create_empty_id(self, mock: Mocker):
+        """Test user creation with empty ID in response"""
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        # Mock response with empty ID
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": "",
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "userName": "testuser",
+            },
+        )
+
+        user = User.objects.create(
+            username="testuser",
+            name="testuser",
+            email="testuser@example.com",
+        )
+
+        # Clean up any existing SCIM entries
+        SCIMProviderUser.objects.filter(user=user, provider=self.provider).delete()
+
+        client = SCIMUserClient(self.provider)
+
+        # Should raise StopSync for empty ID
+        with self.assertRaises(StopSync):
+            client.create(user)
+
+        # Cleanup
+        user.delete()
