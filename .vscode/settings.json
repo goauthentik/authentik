@@ -7,7 +7,10 @@
         "!Enumerate sequence",
         "!Env scalar",
         "!Env sequence",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
+        "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
@@ -31,6 +34,10 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": ["-count=1"],
-    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
+    "go.testFlags": [
+        "-count=1"
+    ],
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/ci-main.yml"
+    ]
 }

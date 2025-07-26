@@ -20,7 +20,7 @@ const metadata: Meta<StoryArgs> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Loading Overlay Component
                 
 A full-screen overlay component that displays a loading state with optional heading and body content.

@@ -13,7 +13,7 @@ support_level: community
 > -- https://nodered.org/
 
 :::caution
-This requires modification of the Node-RED settings.js and installing additional Passport-js packages, see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
+This requires modification of the Node-RED `settings.js` file and installing additional Passport-js packages; see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
 :::
 
 ## Preparation
@@ -66,29 +66,29 @@ Edit the node-red settings.js file `/data/settings.js` to use the external authe
 
 ```js
 adminAuth: {
-type:"strategy",
-strategy: {
-        name: "openidconnect",
-        label: 'Sign in with authentik',
-        icon:"fa-cloud",
-        strategy: require("passport-openidconnect").Strategy,
-        options: {
-                issuer: 'https://authentik.company/application/o/<application_slug>/',
-                authorizationURL: 'https://authentik.company/application/o/authorize/',
-                tokenURL: 'https://authentik.company/application/o/token/',
-                userInfoURL: 'https://authentik.company/application/o/userinfo/',
-                clientID: '<Client ID (Key): Step 2>',
-                clientSecret: '<Client Secret: Step 2>',
-                callbackURL: 'https://nodered.company/auth/strategy/callback/',
-                scope: ['email', 'profile', 'openid'],
-                proxy: true,
-        verify: function(issuer, profile, done) {
-                done(null, profile)
+        type:"strategy",
+        strategy: {
+                name: "openidconnect",
+                label: 'Sign in with authentik',
+                icon:"fa-cloud",
+                strategy: require("passport-openidconnect").Strategy,
+                options: {
+                        issuer: 'https://authentik.company/application/o/<application_slug>/',
+                        authorizationURL: 'https://authentik.company/application/o/authorize/',
+                        tokenURL: 'https://authentik.company/application/o/token/',
+                        userInfoURL: 'https://authentik.company/application/o/userinfo/',
+                        clientID: '<client_id>',
+                        clientSecret: '<client_secret>',
+                        callbackURL: 'https://nodered.company/auth/strategy/callback/',
+                        scope: ['email', 'profile', 'openid'],
+                        proxy: true,
+                        verify: function(context, issuer, profile, done) {
+                                return done(null, profile);
+                        },
+                }
+        },
+        users: function(user) {
+                return Promise.resolve({ username: user, permissions: "*" });
         }
-      }
-    },
-    users: function(user) {
-        return Promise.resolve({ username: user, permissions: "*" });
-    }
 },
 ```

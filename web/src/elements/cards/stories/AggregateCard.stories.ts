@@ -10,9 +10,27 @@ import { ifDefined } from "lit/directives/if-defined.js";
 const metadata: Meta<AggregateCard> = {
     title: "Elements/<ak-aggregate-card>",
     component: "ak-aggregate-card",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "A specialized card for displaying collections",
+            description: {
+                component: /* md */ `
+# Aggregate Cards
+
+Aggregate Cards are in-page elements to display isolated elements in a consistent, card-like format.
+Cards are used in dashboards and as asides for specific information.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/cards/AggregateCard";
+\`\`\`
+
+\`\`\`html
+<ak-aggregate-card header="Some title"><p>This is the content of your card!</p></ak-aggregate-card>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {

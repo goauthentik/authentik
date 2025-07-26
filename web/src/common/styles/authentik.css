@@ -35,6 +35,11 @@
     --ak-navbar--height: 7rem;
 }
 
+.pf-c-form__group {
+    --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: minmax(max-content, 9.375rem);
+    column-gap: var(--pf-global--spacer--md);
+}
+
 @supports selector(::-webkit-scrollbar) {
     ::-webkit-scrollbar {
         width: 5px;

@@ -22,9 +22,9 @@ from authentik.rbac.filters import ObjectFilter
 LOGGER = get_logger()
 
 
-def user_endpoint_cache_key(user_pk: str) -> str:
+def user_endpoint_cache_key(user_pk: str, provider_pk: str) -> str:
     """Cache key where endpoint list for user is saved"""
-    return f"goauthentik.io/providers/rac/endpoint_access/{user_pk}"
+    return f"goauthentik.io/providers/rac/endpoint_access/{user_pk}/{provider_pk}"
 
 
 class EndpointSerializer(ModelSerializer):
@@ -107,7 +107,7 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
     )
     def list(self, request: Request, *args, **kwargs) -> Response:
         """List accessible endpoints"""
-        should_cache = request.GET.get("search", "") == ""
+        should_cache = request.GET.get("search", "") == "" and "provider" in request.query_params
 
         superuser_full_list = str(request.GET.get("superuser_full_list", "false")).lower() == "true"
         if superuser_full_list and request.user.is_superuser:
@@ -120,12 +120,13 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
         if not should_cache:
             allowed_endpoints = self._get_allowed_endpoints(queryset)
         if should_cache:
-            allowed_endpoints = cache.get(user_endpoint_cache_key(self.request.user.pk))
+            provider = request.query_params.get("provider")
+            allowed_endpoints = cache.get(user_endpoint_cache_key(self.request.user.pk, provider))
             if not allowed_endpoints:
                 LOGGER.debug("Caching allowed endpoint list")
                 allowed_endpoints = self._get_allowed_endpoints(queryset)
                 cache.set(
-                    user_endpoint_cache_key(self.request.user.pk),
+                    user_endpoint_cache_key(self.request.user.pk, provider),
                     allowed_endpoints,
                     timeout=86400,
                 )

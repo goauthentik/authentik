@@ -92,13 +92,16 @@ NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
-NETBIRD_AUTH_AUDIENCE="<Your Client Secret>"
+NETBIRD_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE="<Your Client ID>"
 NETBIRD_MGMT_IDP="authentik"
 NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
 NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
 NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
+
+# needs disabling due to issue with IdP. Learn more at https://github.com/netbirdio/netbird/issues/3654
+NETBIRD_AUTH_PKCE_DISABLE_PROMPT_LOGIN=true
 ```
 
 Restart the NetBird service for the changes to take effect. If using Docker, redeploy the NetBird container for the changes to take effect.

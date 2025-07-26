@@ -1,6 +1,6 @@
 import "../Alert.js";
 
-import { Alert, type IAlert } from "../Alert.js";
+import { AKAlert, type IAlert } from "../Alert.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -9,12 +9,33 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 type IAlertForTesting = IAlert & { message: string };
 
-const metadata: Meta<Alert> = {
+const metadata: Meta<AKAlert> = {
     title: "Elements/<ak-alert>",
     component: "ak-alert",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "An alert",
+            description: {
+                component: /* md */ `
+# Alerts
+
+Alerts are in-page elements intended to draw the user's attention and alert them to important
+details. Alerts are used alongside form elements to warn users of potential mistakes they can
+make, as well as in in-line documentation.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/Alert";
+\`\`\`
+
+Note that the content of an alert _must_ be a valid HTML component; plain text does not work here.
+
+\`\`\`html
+<ak-alert><p>This is the content of your alert!</p></ak-alert>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {

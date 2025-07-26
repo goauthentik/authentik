@@ -450,6 +450,7 @@ const items = [
                     "users-sources/user/user_basic_operations",
                     "users-sources/user/user_ref",
                     "users-sources/user/invitations",
+                    "users-sources/user/password_reset_on_login",
                 ],
             },
             {
@@ -636,7 +637,7 @@ const items = [
         items: [
             {
                 type: "link",
-                href: "pathname:///api",
+                href: "https://api.goauthentik.io",
                 label: "API Overview",
                 className: "api-overview",
             },
@@ -725,7 +726,11 @@ const items = [
                     {
                         type: "category",
                         label: "2025",
-                        items: ["security/cves/CVE-2025-52553", "security/cves/CVE-2025-29928"],
+                        items: [
+                            "security/cves/CVE-2025-53942",
+                            "security/cves/CVE-2025-52553",
+                            "security/cves/CVE-2025-29928",
+                        ],
                     },
                     {
                         type: "category",
