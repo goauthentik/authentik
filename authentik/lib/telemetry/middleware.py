@@ -1,9 +1,9 @@
 """OpenTelemetry middleware for Django"""
 
+import logging
 import re
 import time
-import logging
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
@@ -11,6 +11,13 @@ from django.utils.deprecation import MiddlewareMixin
 from authentik.lib.telemetry import provider
 
 logger = logging.getLogger(__name__)
+
+# HTTP status code constants
+HTTP_CLIENT_ERROR = 400
+HTTP_SERVER_ERROR = 500
+
+# API path constants
+API_PATH_MIN_PARTS = 4
 
 
 class OpenTelemetryMiddleware(MiddlewareMixin):
@@ -88,7 +95,7 @@ class OpenTelemetryMiddleware(MiddlewareMixin):
         if path.startswith("/api/v3/"):
             # Extract API endpoint
             parts = path.split("/")
-            if len(parts) >= 4:
+            if len(parts) >= API_PATH_MIN_PARTS:
                 return f"{method} /api/v3/{parts[3]}"
 
         return f"{method} {path}"
@@ -126,7 +133,7 @@ class OpenTelemetryMiddleware(MiddlewareMixin):
             span.set_attribute("http.status_code", response.status_code)
 
             # Set status based on HTTP status code
-            if response.status_code >= 400:
+            if response.status_code >= HTTP_CLIENT_ERROR:
                 span.set_status(self._get_error_status_from_code(response.status_code))
 
             # Content type
@@ -137,7 +144,7 @@ class OpenTelemetryMiddleware(MiddlewareMixin):
         except Exception as exc:
             logger.warning("Failed to set response attributes", exc_info=exc)
 
-    def _get_client_ip(self, request: HttpRequest) -> Optional[str]:
+    def _get_client_ip(self, request: HttpRequest) -> str | None:
         """Extract client IP from request"""
         # Check X-Forwarded-For header
         x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
@@ -166,9 +173,9 @@ class OpenTelemetryMiddleware(MiddlewareMixin):
         try:
             from opentelemetry.trace import Status, StatusCode
 
-            if status_code >= 500:
+            if status_code >= HTTP_SERVER_ERROR:
                 return Status(StatusCode.ERROR, f"HTTP {status_code}")
-            elif status_code >= 400:
+            elif status_code >= HTTP_CLIENT_ERROR:
                 return Status(StatusCode.ERROR, f"HTTP {status_code}")
             return Status(StatusCode.OK)
         except ImportError:

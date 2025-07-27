@@ -1,7 +1,6 @@
 """OpenTelemetry provider implementation"""
 
 import logging
-from typing import Optional
 import re
 
 from authentik.lib.config import CONFIG
@@ -9,24 +8,24 @@ from authentik.lib.config import CONFIG
 logger = logging.getLogger(__name__)
 
 try:
-    from opentelemetry import trace, metrics
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor
-    from opentelemetry.sdk.metrics import MeterProvider
-    from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
-    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+    from opentelemetry import metrics, trace
     from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-        OTLPSpanExporter as HTTPSpanExporter,
-    )
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
     from opentelemetry.exporter.otlp.proto.http.metric_exporter import (
         OTLPMetricExporter as HTTPMetricExporter,
     )
-    from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+        OTLPSpanExporter as HTTPSpanExporter,
+    )
     from opentelemetry.instrumentation.django import DjangoInstrumentor
-    from opentelemetry.instrumentation.requests import RequestsInstrumentor
     from opentelemetry.instrumentation.psycopg2 import Psycopg2Instrumentor
     from opentelemetry.instrumentation.redis import RedisInstrumentor
+    from opentelemetry.instrumentation.requests import RequestsInstrumentor
+    from opentelemetry.sdk.metrics import MeterProvider
+    from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+    from opentelemetry.sdk.resources import SERVICE_NAME, SERVICE_VERSION, Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
     OPENTELEMETRY_AVAILABLE = True
 except ImportError:
@@ -115,8 +114,8 @@ class TelemetryProvider:
 
     def __init__(self):
         self._initialized = False
-        self._tracer_provider: Optional[TracerProvider] = None
-        self._meter_provider: Optional[MeterProvider] = None
+        self._tracer_provider: TracerProvider | None = None
+        self._meter_provider: MeterProvider | None = None
         self._tracer = None
         self._meter = None
         self._sampler = AdaptiveSampler()

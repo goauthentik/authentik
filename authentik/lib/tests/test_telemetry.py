@@ -2,7 +2,7 @@
 
 import os
 from unittest import TestCase
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, patch
 
 from django.test import override_settings
 
@@ -369,7 +369,7 @@ class TestOTLPIntegration(TestCase):
             with mock_tracer.start_as_current_span(
                 "flow.execute",
                 attributes=flow_attributes,
-            ) as span:
+            ) as _span:
                 # Simulate flow stages
                 for i in range(3):
                     stage_attributes = {

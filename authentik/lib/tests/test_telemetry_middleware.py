@@ -1,10 +1,13 @@
 """Test OpenTelemetry middleware"""
 
 from unittest import TestCase
-from unittest.mock import MagicMock, patch, call
+from unittest.mock import MagicMock, call, patch
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.test import RequestFactory
+
+# HTTP status code constants
+HTTP_CLIENT_ERROR = 400
 
 
 class TestOpenTelemetryMiddleware(TestCase):
@@ -58,7 +61,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
                 def _set_response_attributes(self, response, span):
                     span.set_attribute("http.status_code", response.status_code)
-                    if response.status_code >= 400:
+                    if response.status_code >= HTTP_CLIENT_ERROR:
                         span.set_status(MagicMock())
 
             return MockOpenTelemetryMiddleware(self.get_response)
@@ -162,7 +165,7 @@ class TestOpenTelemetryMiddleware(TestCase):
         request = self.factory.get("/api/v3/core/users/")
         self.mock_tracer.start_as_current_span.return_value.__enter__.return_value = self.mock_span
 
-        response = middleware(request)
+        middleware(request)
 
         # Verify error status was set
         self.mock_span.set_attribute.assert_any_call("http.status_code", 500)
@@ -177,7 +180,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
         self.mock_tracer.start_as_current_span.return_value.__enter__.return_value = self.mock_span
 
-        response = middleware(request)
+        middleware(request)
 
         # Should not set user attributes
         user_calls = [
@@ -189,7 +192,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
     def test_middleware_records_client_info(self):
         """Test middleware records client information"""
-        middleware = self._create_middleware()
+        self._create_middleware()
         request = self.factory.get(
             "/api/v3/flows/",
             HTTP_USER_AGENT="Mozilla/5.0 Test Browser",
@@ -215,7 +218,7 @@ class TestOpenTelemetryMiddleware(TestCase):
         enhanced_middleware = EnhancedMiddleware(self.get_response)
         self.mock_tracer.start_as_current_span.return_value.__enter__.return_value = self.mock_span
 
-        response = enhanced_middleware(request)
+        enhanced_middleware(request)
 
         # Verify client info was recorded
         self.mock_span.set_attribute.assert_any_call("http.user_agent", "Mozilla/5.0 Test Browser")
@@ -223,7 +226,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
     def test_middleware_handles_exceptions(self):
         """Test middleware properly handles and records exceptions"""
-        middleware = self._create_middleware()
+        self._create_middleware()
 
         # Configure get_response to raise exception
         self.get_response.side_effect = ValueError("Test exception")
@@ -277,7 +280,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
     def test_middleware_custom_span_name(self):
         """Test middleware can use custom span names based on route"""
-        middleware = self._create_middleware()
+        self._create_middleware()
 
         # Enhanced middleware with custom span naming
         mock_tracer = self.mock_tracer  # Capture from outer scope
@@ -290,7 +293,7 @@ class TestOpenTelemetryMiddleware(TestCase):
             def __call__(self, request):
                 # Custom span name based on path
                 span_name = self._get_span_name(request)
-                with self.tracer.start_as_current_span(span_name) as span:
+                with self.tracer.start_as_current_span(span_name) as _span:
                     return self.get_response(request)
 
             def _get_span_name(self, request):
@@ -305,7 +308,7 @@ class TestOpenTelemetryMiddleware(TestCase):
 
         self.mock_tracer.start_as_current_span.return_value.__enter__.return_value = self.mock_span
 
-        response = custom_middleware(request)
+        custom_middleware(request)
 
         # Verify custom span name was used
         self.mock_tracer.start_as_current_span.assert_called_once_with("flows.api")
