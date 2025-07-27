@@ -300,6 +300,14 @@ class ConfigLoader:
             return default
         return str(self.get(path)).lower() == "true"
 
+    def get_float(self, path: str, default=0.0) -> float:
+        """Wrapper for get that converts value into float"""
+        try:
+            return float(self.get(path, default))
+        except (ValueError, TypeError) as exc:
+            self.log("warning", "Failed to parse config as float", path=path, exc=str(exc))
+            return default
+
     def get_keys(self, path: str, sep=".") -> list[str]:
         """List attribute keys by using yaml path"""
         root = self.raw
