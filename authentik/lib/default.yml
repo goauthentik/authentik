@@ -175,3 +175,14 @@ storage:
       # How to render file URLs
       # custom_domain: null
       secure_urls: True
+
+telemetry:
+  otlp:
+    enabled: false
+    endpoint: ""
+    protocol: "grpc"  # grpc or http
+    headers: {}
+    traces_sample_rate: 0.1
+    service_name: "authentik"
+    service_version: ""
+    resource_attributes: {}
