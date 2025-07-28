@@ -5,16 +5,15 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
-
-import { CompatibilityModeEnum, SCIMProvider, ValidationError } from "@goauthentik/api";
-
 import {
     groupsProvider,
     groupsSelector,
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "./SCIMProviderFormHelpers.js";
+
+import { CompatibilityModeEnum, SCIMProvider, ValidationError } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
