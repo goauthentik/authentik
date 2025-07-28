@@ -5,10 +5,6 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
-
-import { DEFAULT_CONFIG } from "#common/api/config";
-
 import { CompatibilityModeEnum, SCIMProvider, ValidationError } from "@goauthentik/api";
 
 import {
