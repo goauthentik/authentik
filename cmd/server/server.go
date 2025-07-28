@@ -68,7 +68,12 @@ var rootCmd = &cobra.Command{
 			w := gounicorn.NewWorker(func() bool {
 				return true
 			})
-			go w.Start()
+			go func() {
+				err := w.Start()
+				if err != nil {
+					l.WithError(err).Warning("failed to start worker")
+				}
+			}()
 		}
 		ws.Start()
 		<-ex
