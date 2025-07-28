@@ -17,8 +17,8 @@ from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.providers.scim.clients.auth import SCIMTokenAuth
 from authentik.policies.engine import PolicyEngine
+from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 LOGGER = get_logger()
 
