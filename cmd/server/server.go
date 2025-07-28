@@ -14,6 +14,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
+	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
@@ -63,6 +64,12 @@ var rootCmd = &cobra.Command{
 			}
 			go attemptProxyStart(ws, u)
 		})
+		if config.Get().Debug {
+			w := gounicorn.NewWorker(func() bool {
+				return true
+			})
+			go w.Start()
+		}
 		ws.Start()
 		<-ex
 		l.Info("shutting down webserver")
