@@ -261,7 +261,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "argon2-cffi", specifier = "==25.1.0" },
-    { name = "channels", specifier = "==4.2.2" },
+    { name = "channels", specifier = "==4.3.0" },
     { name = "channels-redis", specifier = "==4.3.0" },
     { name = "cryptography", specifier = "==45.0.5" },
     { name = "dacite", specifier = "==1.9.2" },
@@ -335,7 +335,7 @@ dev = [
     { name = "bandit", specifier = "==1.8.3" },
     { name = "black", specifier = "==25.1.0" },
     { name = "bump2version", specifier = "==1.0.1" },
-    { name = "channels", extras = ["daphne"], specifier = "==4.2.2" },
+    { name = "channels", extras = ["daphne"], specifier = "==4.3.0" },
     { name = "codespell", specifier = "==2.4.1" },
     { name = "colorama", specifier = "==0.4.6" },
     { name = "constructs", specifier = "==10.4.2" },
@@ -662,15 +662,15 @@ wheels = [
 
 [[package]]
 name = "channels"
-version = "4.2.2"
+version = "4.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/16/d6/049f93c3c96a88265a52f85da91d2635279261bbd4a924b45caa43b8822e/channels-4.2.2.tar.gz", hash = "sha256:8d7208e48ab8fdb972aaeae8311ce920637d97656ffc7ae5eca4f93f84bcd9a0", size = 26647, upload-time = "2025-03-30T14:59:20.35Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/04/6768c7a887f9c593c4d49f99130c8aec4ea06e750bc17c306b689f6caf3b/channels-4.3.0.tar.gz", hash = "sha256:7db32c61dcd88eada1647e6c6f6ad2eb724b75d4852eeff26ad1c51ccd1a37f7", size = 26816, upload-time = "2025-07-28T13:52:50.334Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/bf/4799809715225d19928147d59fda0d3a4129da055b59a9b3e35aa6223f52/channels-4.2.2-py3-none-any.whl", hash = "sha256:ff36a6e1576cacf40bcdc615fa7aece7a709fc4fdd2dc87f2971f4061ffdaa81", size = 31048, upload-time = "2025-03-30T14:59:18.969Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/59/0866202ee593e1b0dab0b472ebb8169e1b2b7886ad3008d193da2bbe10cb/channels-4.3.0-py3-none-any.whl", hash = "sha256:0497f3affb95e621b37d6bae1b6a5d9e8e1e1221007a2566f280091cf30ffcce", size = 31238, upload-time = "2025-07-28T13:52:49.117Z" },
 ]
 
 [package.optional-dependencies]
