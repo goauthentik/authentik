@@ -131,7 +131,7 @@ class SyncTasks:
         if not provider:
             task.warning("No provider found. Is it assigned to an application?")
             return
-        task.set_uid(slugify(provider.name))
+        task.set_uid(f"{slugify(provider.name)}:{_object_type._meta.model_name}:{page}")
         # Override dry run mode if requested, however don't save the provider
         # so that scheduled sync tasks still run in dry_run mode
         if override_dry_run:
