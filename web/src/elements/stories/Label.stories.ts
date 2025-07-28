@@ -12,9 +12,31 @@ type ILabelForTesting = ILabel & { message: string };
 const metadata: Meta<Label> = {
     title: "Elements/<ak-label>",
     component: "ak-label",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "An alert",
+            description: {
+                component: /* md */ `
+# Labels
+
+Labels are in-page elements that provide pointers or guidance. Frequently called "chips" in other
+design systems. Labels are used alongside other elements to warn users of conditions or status that
+they might want to be aware of
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/Label";
+\`\`\`
+
+Note that the content of a label _must_ be a valid HTML component; plain text does not work here. The
+default label is informational:
+
+\`\`\`html
+<ak-label><p>This is the content of your label!</p></ak-label>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
@@ -36,7 +58,7 @@ export const DefaultStory: StoryObj = {
 
     // @ts-ignore
     render: ({ compact, color, icon, message }: ILabelForTesting) => {
-        return html`>
+        return html`
             <style>
                 ak-label {
                     display: inline-block;
@@ -46,7 +68,8 @@ export const DefaultStory: StoryObj = {
             </style>
             <ak-label color=${ifDefined(color)} ?compact=${compact} icon=${ifDefined(icon)}>
                 <p>${message}</p>
-            </ak-label> `;
+            </ak-label>
+        `;
     },
 };
 

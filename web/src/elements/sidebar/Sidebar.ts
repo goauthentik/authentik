@@ -6,7 +6,7 @@ import { UiThemeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -23,11 +23,25 @@ export class Sidebar extends AKElement {
                 z-index: 100;
                 --pf-c-page__sidebar--Transition: 0 !important;
             }
+
+            .pf-c-nav {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                overflow-y: hidden;
+                --pf-c-nav__link--hover--before--BorderBottomWidth: 1px;
+            }
+
+            .pf-c-nav__link:hover::before {
+                --pf-c-nav__link--before--BorderColor: transparent;
+            }
+
             .pf-c-nav__link.pf-m-current::after,
             .pf-c-nav__link.pf-m-current:hover::after,
             .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
                 --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
             }
+
             :host([theme="light"]) {
                 border-right-color: transparent !important;
             }
@@ -36,12 +50,6 @@ export class Sidebar extends AKElement {
                 --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
             }
 
-            nav {
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-                overflow-y: hidden;
-            }
             .pf-c-nav__list {
                 flex-grow: 1;
                 overflow-y: auto;
@@ -61,16 +69,25 @@ export class Sidebar extends AKElement {
         `,
     ];
 
+    @property({ type: Boolean })
+    hidden = false;
+
     render(): TemplateResult {
-        return html`<nav
+        return html`<div
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
-            aria-label=${msg("Global")}
+            role="presentation"
         >
-            <ul class="pf-c-nav__list">
+            <ul
+                id="global-nav"
+                ?hidden=${this.hidden}
+                aria-label=${msg("Global navigation")}
+                role="navigation"
+                class="pf-c-nav__list"
+            >
                 <slot></slot>
             </ul>
             <ak-sidebar-version></ak-sidebar-version>
-        </nav>`;
+        </div>`;
     }
 }
 

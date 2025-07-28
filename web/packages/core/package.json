@@ -44,15 +44,15 @@
             "import": "./*/index.js"
         }
     },
-    "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.5",
+    "dependencies": {
+        "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
-        "@types/node": "^24.0.15",
-        "prettier": "^3.3.3",
-        "typescript": "^5.6.3"
+        "@types/node": "^24.1.0",
+        "prettier": "^3.6.2",
+        "typescript": "^5.8.3"
     },
     "engines": {
-        "node": ">=20.11"
+        "node": ">=24"
     },
     "types": "./out/index.d.ts",
     "prettier": "@goauthentik/prettier-config"

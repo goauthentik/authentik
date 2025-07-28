@@ -6,7 +6,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.generate_semver)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = gen-ts-api
@@ -59,8 +59,11 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm run aws-cfn
 
-run:  ## Run the main authentik server process
+run-server:  ## Run the main authentik server process
 	uv run ak server
+
+run-worker:  ## Run the main authentik worker process
+	uv run ak worker
 
 core-i18n-extract:
 	uv run ak makemessages \
@@ -121,7 +124,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
+gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/${GEN_API_TS}/
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
@@ -243,11 +246,23 @@ docs-build:
 docs-watch:  ## Build and watch the topics documentation
 	npm run start --prefix website
 
-docs-integrations-build:
+integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+
+integrations-build:
 	npm run build --prefix website -w integrations
 
-docs-integrations-watch:  ## Build and watch the Integrations documentation
+integrations-watch:  ## Build and watch the Integrations documentation
 	npm run start --prefix website -w integrations
+
+docs-api-build:
+	npm run build --prefix website -w api
+
+docs-api-watch:  ## Build and watch the API documentation
+	npm run build:api --prefix website -w api
+	npm run start --prefix website -w api
+
+docs-api-clean: ## Clean generated API documentation
+	npm run build:api:clean --prefix website -w api
 
 #########################
 ## Docker

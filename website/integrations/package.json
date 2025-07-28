@@ -5,28 +5,28 @@
     "private": true,
     "scripts": {
         "build": "run-s build:docusaurus",
-        "build:docusaurus": "docusaurus build --out-dir ../build",
+        "build:docusaurus": "docusaurus build",
         "clear": "docusaurus clear",
         "docusaurus": "docusaurus",
-        "serve": "docusaurus serve --dir ../build",
+        "serve": "docusaurus serve",
         "start": "docusaurus start"
     },
     "dependencies": {
-        "@docusaurus/core": "3.7.0",
-        "@docusaurus/module-type-aliases": "3.7.0",
-        "@docusaurus/plugin-client-redirects": "3.7.0",
-        "@docusaurus/preset-classic": "3.7.0",
-        "@docusaurus/theme-mermaid": "3.7.0",
-        "@docusaurus/tsconfig": "3.7.0",
-        "@docusaurus/types": "3.7.0",
-        "@goauthentik/docusaurus-config": "1.1.0",
+        "@docusaurus/core": "^3.8.1",
+        "@docusaurus/module-type-aliases": "^3.8.1",
+        "@docusaurus/plugin-client-redirects": "^3.8.1",
+        "@docusaurus/preset-classic": "^3.8.1",
+        "@docusaurus/theme-mermaid": "^3.8.1",
+        "@docusaurus/tsconfig": "^3.8.1",
+        "@docusaurus/types": "^3.8.1",
+        "@goauthentik/docusaurus-config": "^2.1.1",
         "@goauthentik/docusaurus-theme": "*",
         "@mdx-js/react": "^3.0.0",
-        "@types/react": "^18.3.22",
-        "@types/react-dom": "^18.3.0",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
         "prism-react-renderer": "^2.3.0",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1"
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
     },
     "engines": {
         "node": ">=24"

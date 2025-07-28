@@ -17,6 +17,7 @@ from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.outposts.models import OutpostModel
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -37,7 +38,7 @@ class AuthenticationMode(models.TextChoices):
     PROMPT = "prompt"
 
 
-class RACProvider(Provider):
+class RACProvider(OutpostModel, Provider):
     """Remotely access computers/servers via RDP/SSH/VNC."""
 
     settings = models.JSONField(default=dict)

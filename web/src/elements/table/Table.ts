@@ -304,7 +304,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </tr>`;
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
@@ -466,11 +466,11 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             >`;
     }
 
-    renderToolbarSelected(): SlottedTemplateResult {
+    protected renderToolbarSelected(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderToolbarAfter(): SlottedTemplateResult {
+    protected renderToolbarAfter(): SlottedTemplateResult {
         return nothing;
     }
 
@@ -508,7 +508,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
               </div>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected renderToolbarContainer(): SlottedTemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
                 ${this.renderSearch()}
@@ -562,7 +562,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return this.checkbox && this.checkboxChip;
     }
 
-    renderChipGroup(): TemplateResult {
+    protected renderChipGroup(): TemplateResult {
         return html`<ak-chip-group>
             ${this.selectedElements.map((el) => {
                 return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
@@ -571,7 +571,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
     }
 
     /* A simple pagination display, shown at both the top and bottom of the page. */
-    renderTablePagination(): TemplateResult {
+    protected renderTablePagination(): SlottedTemplateResult {
         const handler = (page: number) => {
             this.page = page;
             this.fetch();
@@ -587,7 +587,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         `;
     }
 
-    renderTable(): TemplateResult {
+    protected renderTable(): TemplateResult {
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 

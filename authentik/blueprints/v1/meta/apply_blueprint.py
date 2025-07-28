@@ -44,7 +44,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
             return MetaResult()
         LOGGER.debug("Applying blueprint from meta model", blueprint=self.blueprint_instance)
 
-        apply_blueprint(str(self.blueprint_instance.pk))
+        apply_blueprint(self.blueprint_instance.pk)
         return MetaResult()
 
 

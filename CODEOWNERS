@@ -32,8 +32,12 @@ tests/wdio/                     @goauthentik/frontend
 locale/                         @goauthentik/backend @goauthentik/frontend
 web/xliff/                      @goauthentik/backend @goauthentik/frontend
 # Docs & Website
+docs/                           @goauthentik/docs
+# TODO Remove after moving website to docs
 website/                        @goauthentik/docs
 CODE_OF_CONDUCT.md              @goauthentik/docs
 # Security
 SECURITY.md                     @goauthentik/security @goauthentik/docs
-website/docs/security/          @goauthentik/security @goauthentik/docs
+# TODO Remove after moving website to docs
+website/security/               @goauthentik/security @goauthentik/docs
+docs/security/                  @goauthentik/security @goauthentik/docs

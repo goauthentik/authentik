@@ -35,7 +35,7 @@ class TestOAuthSourceTasks(TestCase):
             },
         )
         mock.get("http://foo/jwks", json={"foo": "bar"})
-        update_well_known_jwks()
+        update_well_known_jwks.send()
         self.source.refresh_from_db()
         self.assertEqual(self.source.authorization_url, "foo")
         self.assertEqual(self.source.access_token_url, "foo")
