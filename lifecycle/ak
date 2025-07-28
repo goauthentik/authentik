@@ -78,6 +78,12 @@ if [[ "$1" == "server" ]]; then
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
     shift
+    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
+    # sync, so that we can sure the first start actually has working bootstrap
+    # credentials
+    if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage apply_blueprint system/bootstrap.yaml || true
+    fi
     check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
