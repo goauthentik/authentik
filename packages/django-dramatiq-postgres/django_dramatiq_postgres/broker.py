@@ -447,6 +447,8 @@ class _PostgresConsumer(Consumer):
         finally:
             try:
                 self.connection.close()
+            except DatabaseError:
+                pass
             finally:
                 if self._listen_connection is not None:
                     conn = self._listen_connection
