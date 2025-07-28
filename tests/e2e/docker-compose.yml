@@ -7,7 +7,7 @@ services:
     network_mode: host
     restart: always
   mailpit:
-    image: docker.io/axllent/mailpit:v1.27.1
+    image: docker.io/axllent/mailpit:v1.27.2
     ports:
       - 1025:1025
       - 8025:8025

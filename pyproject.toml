@@ -36,7 +36,7 @@ dependencies = [
     "flower==2.0.1",
     "geoip2==5.1.0",
     "geopy==2.4.1",
-    "google-api-python-client==2.176.0",
+    "google-api-python-client==2.177.0",
     "gssapi==1.9.0",
     "gunicorn==23.0.0",
     "jsonpatch==1.33",
@@ -63,7 +63,7 @@ dependencies = [
     "structlog==25.4.0",
     "swagger-spec-validator==3.0.4",
     "tenant-schemas-celery==3.0.0",
-    "twilio==9.6.5",
+    "twilio==9.7.0",
     "ua-parser==1.0.1",
     "unidecode==1.4.0",
     "urllib3<3",
@@ -136,25 +136,21 @@ skip = [
     "unittest.xml",
     "./blueprints/schema.json",
     "go.sum",
-    "locale",
-    "**/dist",
+    "locale", 
+    "**/web/src/locales", 
+    "**/dist", # Distributed build output
     "**/storybook-static",
-    "**/web/src/locales",
     "**/web/xliff",
-    "**/web/out",
-    "./web/storybook-static",
-    "./web/custom-elements.json",
-    # TODO: Remove this after moving website to docs
-    "./website/build",
-    "./website/api/build",
-    "./website/integrations/build",
-    "./docs/build",
-    "./docs/api/build",
-    "./docs/integrations/build",
+    "**/out", # TypeScript type-checking output 
+    "./web/custom-elements.json", # TypeScript custom element definitions
+    "./website/build", # TODO: Remove this after moving website to docs
+    "./website/**/build", # TODO: Remove this after moving website to docs
+    "./docs/build", # Docusaurus Topic docs build output
+    "./docs/**/build", # Docusaurus workspaces output
+    "*.api.mdx", # Generated API docs
     "./gen-ts-api",
     "./gen-py-api",
     "./gen-go-api",
-    "*.api.mdx",
     "./htmlcov",
     "./media",
 ]

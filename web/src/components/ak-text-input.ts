@@ -10,6 +10,9 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     value = "";
 
+    @property({ type: String })
+    placeholder?: string;
+
     renderControl() {
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;
@@ -27,6 +30,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             })}"
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
+            placeholder=${ifDefined(this.placeholder)}
             ?required=${this.required}
         />`;
     }
