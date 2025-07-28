@@ -445,7 +445,10 @@ class _PostgresConsumer(Consumer):
         try:
             self._purge_locks()
         finally:
-            self.connection.close()
-            if self._listen_connection is not None:
-                self._listen_connection.close()
-                self._listen_connection = None
+            try:
+                self.connection.close()
+            finally:
+                if self._listen_connection is not None:
+                    conn = self._listen_connection
+                    self._listen_connection = None
+                    conn.close()
