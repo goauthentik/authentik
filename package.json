@@ -3,13 +3,21 @@
     "version": "2025.6.4",
     "private": true,
     "type": "module",
-    "devDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "prettier": "^3.3.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.10",
-        "typescript": "^5.6.2"
+    "dependencies": {
+        "@eslint/js": "^9.31.0",
+        "@typescript-eslint/eslint-plugin": "^8.38.0",
+        "@typescript-eslint/parser": "^8.38.0",
+        "eslint": "^9.31.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.38.0"
     },
     "workspaces": [],
-    "prettier": "./packages/prettier-config/index.js"
+    "prettier": "./packages/prettier-config/index.js",
+    "overrides": {
+        "format-imports": {
+            "eslint": "$eslint"
+        }
+    }
 }

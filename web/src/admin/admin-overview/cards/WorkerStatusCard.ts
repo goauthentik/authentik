@@ -2,7 +2,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
-import { AdminApi, Worker } from "@goauthentik/api";
+import { TasksApi, Worker } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -13,7 +13,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
     icon = "pf-icon pf-icon-server";
 
     getPrimaryValue(): Promise<Worker[]> {
-        return new AdminApi(DEFAULT_CONFIG).adminWorkersList();
+        return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
     }
 
     renderHeader(): TemplateResult {

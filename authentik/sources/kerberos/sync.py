@@ -23,12 +23,14 @@ from authentik.sources.kerberos.models import (
     Krb5ConfContext,
     UserKerberosSourceConnection,
 )
+from authentik.tasks.models import Task
 
 
 class KerberosSync:
     """Sync Kerberos users into authentik"""
 
     _source: KerberosSource
+    _task: Task
     _logger: BoundLogger
     _connection: KAdmin
     mapper: SourceMapper
@@ -36,11 +38,11 @@ class KerberosSync:
     group_manager: PropertyMappingManager
     matcher: SourceMatcher
 
-    def __init__(self, source: KerberosSource):
+    def __init__(self, source: KerberosSource, task: Task):
         self._source = source
+        self._task = task
         with Krb5ConfContext(self._source):
             self._connection = self._source.connection()
-        self._messages = []
         self._logger = get_logger().bind(source=self._source, syncer=self.__class__.__name__)
         self.mapper = SourceMapper(self._source)
         self.user_manager = self.mapper.get_manager(User, ["principal", "principal_obj"])
@@ -55,17 +57,6 @@ class KerberosSync:
     def name() -> str:
         """UI name for the type of object this class synchronizes"""
         return "users"
-
-    @property
-    def messages(self) -> list[str]:
-        """Get all UI messages"""
-        return self._messages
-
-    def message(self, *args, **kwargs):
-        """Add message that is later added to the System Task and shown to the user"""
-        formatted_message = " ".join(args)
-        self._messages.append(formatted_message)
-        self._logger.warning(*args, **kwargs)
 
     def _handle_principal(self, principal: str) -> bool:
         try:
@@ -163,7 +154,7 @@ class KerberosSync:
     def sync(self) -> int:
         """Iterate over all Kerberos users and create authentik_core.User instances"""
         if not self._source.enabled or not self._source.sync_users:
-            self.message("Source is disabled or user syncing is disabled for this Source")
+            self._task.info("Source is disabled or user syncing is disabled for this Source")
             return -1
 
         user_count = 0

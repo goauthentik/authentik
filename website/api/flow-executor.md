@@ -65,7 +65,7 @@ Depending on the flow, you'll either get a 200 Response with another challenge, 
 
 Depending also on the stage, a response might take longer to be returned (especially with the Duo Authenticator validation).
 
-To see the data layout for every stage possible, see the [API Browser](/api/reference/flows-executor-get)
+To see the data layout for every stage possible, see the [API Browser](/reference/flows-executor-get)
 
 ## Result
 

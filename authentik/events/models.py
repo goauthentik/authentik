@@ -5,12 +5,11 @@ from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
-from smtplib import SMTPException
 from typing import Any
 from uuid import uuid4
 
 from django.apps import apps
-from django.db import connection, models
+from django.db import models
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -27,7 +26,6 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.apps import GAUGE_TASKS, SYSTEM_TASK_STATUS, SYSTEM_TASK_TIME
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -44,6 +42,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -274,7 +273,8 @@ class Event(SerializerModel, ExpiringModel):
             models.Index(fields=["created"]),
             models.Index(fields=["client_ip"]),
             models.Index(
-                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+                models.F("context__authorized_application"),
+                name="authentik_e_ctx_app__idx",
             ),
         ]
 
@@ -288,7 +288,7 @@ class TransportMode(models.TextChoices):
     EMAIL = "email", _("Email")
 
 
-class NotificationTransport(SerializerModel):
+class NotificationTransport(TasksModel, SerializerModel):
     """Action which is executed when a Rule matches"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -453,6 +453,8 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        from authentik.stages.email.tasks import send_mail
+
         if notification.user.email.strip() == "":
             LOGGER.info(
                 "Discarding notification as user has no email address",
@@ -494,17 +496,14 @@ class NotificationTransport(SerializerModel):
             template_name="email/event_notification.html",
             template_context=context,
         )
-        # Email is sent directly here, as the call to send() should have been from a task.
-        try:
-            from authentik.stages.email.tasks import send_mail
-
-            return send_mail(mail.__dict__)
-        except (SMTPException, ConnectionError, OSError) as exc:
-            raise NotificationTransportError(exc) from exc
+        send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
+        return []
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.events.api.notification_transports import NotificationTransportSerializer
+        from authentik.events.api.notification_transports import (
+            NotificationTransportSerializer,
+        )
 
         return NotificationTransportSerializer
 
@@ -554,7 +553,7 @@ class Notification(SerializerModel):
         verbose_name_plural = _("Notifications")
 
 
-class NotificationRule(SerializerModel, PolicyBindingModel):
+class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
@@ -618,7 +617,9 @@ class NotificationWebhookMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[type[Serializer]]:
-        from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
+        from authentik.events.api.notification_mappings import (
+            NotificationWebhookMappingSerializer,
+        )
 
         return NotificationWebhookMappingSerializer
 
@@ -631,7 +632,7 @@ class NotificationWebhookMapping(PropertyMapping):
 
 
 class TaskStatus(models.TextChoices):
-    """Possible states of tasks"""
+    """DEPRECATED do not use"""
 
     UNKNOWN = "unknown"
     SUCCESSFUL = "successful"
@@ -639,8 +640,8 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class SystemTask(SerializerModel, ExpiringModel):
-    """Info about a system task running in the background along with details to restart the task"""
+class SystemTask(ExpiringModel):
+    """DEPRECATED do not use"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField()
@@ -660,41 +661,13 @@ class SystemTask(SerializerModel, ExpiringModel):
     task_call_args = models.JSONField(default=list)
     task_call_kwargs = models.JSONField(default=dict)
 
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.events.api.tasks import SystemTaskSerializer
-
-        return SystemTaskSerializer
-
-    def update_metrics(self):
-        """Update prometheus metrics"""
-        # TODO: Deprecated metric - remove in 2024.2 or later
-        GAUGE_TASKS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).set(self.duration)
-        SYSTEM_TASK_TIME.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-        ).observe(self.duration)
-        SYSTEM_TASK_STATUS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).inc()
-
     def __str__(self) -> str:
         return f"System Task {self.name}"
 
     class Meta:
         unique_together = (("name", "uid"),)
-        # Remove "add", "change" and "delete" permissions as those are not used
-        default_permissions = ["view"]
-        permissions = [("run_task", _("Run task"))]
+        default_permissions = ()
+        permissions = ()
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")
         indexes = ExpiringModel.Meta.indexes

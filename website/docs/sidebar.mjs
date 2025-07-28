@@ -585,6 +585,7 @@ const items = [
         label: "System Management",
         collapsed: true,
         items: [
+            "sys-mgmt/background-tasks",
             "sys-mgmt/brands",
             {
                 //#endregion
@@ -595,6 +596,7 @@ const items = [
                 collapsed: true,
                 items: [
                     "sys-mgmt/ops/monitoring",
+                    "sys-mgmt/ops/worker",
                     "sys-mgmt/ops/storage-s3",
                     "sys-mgmt/ops/geoip",
                     "sys-mgmt/ops/backup-restore",
@@ -637,7 +639,7 @@ const items = [
         items: [
             {
                 type: "link",
-                href: "pathname:///api",
+                href: "https://api.goauthentik.io",
                 label: "API Overview",
                 className: "api-overview",
             },

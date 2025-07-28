@@ -31,7 +31,7 @@ Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost
 
 - `/media` is used to store icons and such, but not required, and if not mounted, authentik will allow you to set a URL to icons in place of a file upload
 
-### Background Worker
+### Worker
 
 This container executes background tasks, such as sending emails, the event notification system, and everything you can see on the _System Tasks_ page in the frontend.
 

@@ -23,7 +23,7 @@ class TestProxyKubernetes(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_connection_discovery()
+        outpost_connection_discovery.send()
         self.controller = None
 
     @pytest.mark.timeout(120)
