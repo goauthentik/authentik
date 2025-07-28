@@ -1,5 +1,8 @@
 """OAuth2 Provider Tasks"""
 
+from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.middleware import CurrentTask
+from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession
@@ -7,17 +10,18 @@ from authentik.events.models import Event
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.utils import create_logout_token
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
+@actor(description=_("Send a back-channel logout request to the registered client"))
 def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None) -> bool:
     """Send a back-channel logout request to the registered client
 
     Args:
         provider_pk: The OAuth2 provider's primary key
+        iss: The issuer URL for the logout token
         sub: The subject identifier to include in the logout token
 
     Returns:
@@ -45,7 +49,6 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
     # Back-channel logout requires explicit configuration - no fallback to redirect URIs
 
     backchannel_logout_uri = provider.backchannel_logout_uri
-
     if not backchannel_logout_uri:
         LOGGER.warning(
             "No back-channel logout URI found for provider",
@@ -133,7 +136,7 @@ def send_backchannel_logout_notification(session: AuthenticatedSession = None) -
             "back-channel: Sending back-channel logout notification for token", token=token
         )
         # Send back-channel logout notifications to all tokens
-        send_backchannel_logout_request.delay(
+        send_backchannel_logout_request.send(
             provider_pk=token.provider.pk,
             iss=token.id_token.iss,
             sub=session.user.uid,

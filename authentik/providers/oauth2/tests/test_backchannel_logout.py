@@ -242,7 +242,7 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(event.action, "custom_backchannel_logout")
         self.assertIn("Back-channel logout notification sent", event.context.get("message", ""))
 
-    @patch("authentik.providers.oauth2.tasks.send_backchannel_logout_request.delay")
+    @patch("authentik.providers.oauth2.tasks.send_backchannel_logout_request.send")
     def test_send_backchannel_logout_notification_scenarios(self, mock_task):
         """Test various scenarios for backchannel logout notification task"""
         # Scenario 1: With session and both access and refresh tokens
