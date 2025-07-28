@@ -18,8 +18,8 @@ export const ROUTES: Route[] = [
         return html`<ak-admin-dashboard-users></ak-admin-dashboard-users>`;
     }),
     new Route(new RegExp("^/administration/system-tasks$"), async () => {
-        await import("#admin/system-tasks/SystemTaskListPage");
-        return html`<ak-system-task-list></ak-system-task-list>`;
+        await import("#admin/admin-overview/SystemTasksPage");
+        return html`<ak-system-tasks></ak-system-tasks>`;
     }),
     new Route(new RegExp("^/core/providers$"), async () => {
         await import("#admin/providers/ProviderListPage");

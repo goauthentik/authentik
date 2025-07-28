@@ -3,8 +3,6 @@
 from asyncio.exceptions import CancelledError
 from typing import Any
 
-from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
-from celery.exceptions import CeleryError
 from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
@@ -22,7 +20,6 @@ from sentry_sdk import HttpTransport, get_current_scope
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
-from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
@@ -71,10 +68,6 @@ ignored_classes = (
     LocalProtocolError,
     # rest_framework error
     APIException,
-    # celery errors
-    WorkerLostError,
-    CeleryError,
-    SoftTimeLimitExceeded,
     # custom baseclass
     SentryIgnoredException,
     # ldap errors
@@ -115,7 +108,6 @@ def sentry_init(**sentry_init_kwargs):
             ArgvIntegration(),
             StdlibIntegration(),
             DjangoIntegration(transaction_style="function_name", cache_spans=True),
-            CeleryIntegration(),
             RedisIntegration(),
             ThreadingIntegration(propagate_hub=True),
             SocketIntegration(),
@@ -160,14 +152,11 @@ def before_send(event: dict, hint: dict) -> dict | None:
             return None
     if "logger" in event:
         if event["logger"] in [
-            "kombu",
             "asyncio",
             "multiprocessing",
             "django_redis",
             "django.security.DisallowedHost",
             "django_redis.cache",
-            "celery.backends.redis",
-            "celery.worker",
             "paramiko.transport",
         ]:
             return None

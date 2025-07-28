@@ -1,0 +1,50 @@
+[project]
+name = "django-dramatiq-postgres"
+version = "0.1.0"
+description = "Django and Dramatiq integration with postgres-specific features"
+requires-python = ">=3.9,<3.14"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Authentik Security Inc.", email = "hello@goauthentik.io" }]
+keywords = ["django", "dramatiq", "postgres"]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.0",
+  "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+  "cron-converter >=1,<2",
+  "django >=4.2,<6.0",
+  "django-pgtrigger >=4,<5",
+  "dramatiq[watch] >=1.17,<1.18",
+  "tenacity >=9,<10",
+]
+
+[project.urls]
+Homepage = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
+Documentation = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
+Repository = "https://github.com/goauthentik/authentik/tree/main/packages/django-dramatiq-postgres"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools.packages]
+find = {}
