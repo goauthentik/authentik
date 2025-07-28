@@ -121,6 +121,13 @@ These settings control connection persistence and behavior, which is particularl
 
     This can only be set before authentik is started for the first time. If you specify a custom schema, it must already exist in the database, and the user that authentik connects with must have permissions to access it. The `search_path` for the database user must also be configured to include this schema.
 
+- `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
+
+    Arbitrary `libpq` parameter key words for the database connection. A list of parameter key words can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    - Parameters passed with this setting will override those passed with other settings.
+    - These parameters are not applied to read replicas.
+    - Parameter keywords should be formatted as a base64-encoded JSON dictionary.
+
 ### Read Replicas
 
 You can configure additional read replica databases to distribute database load and improve performance. When read replicas are configured, authentik automatically routes query operations between the primary database (for writes) and read replica databases (for queries). By default, the primary database won't be used for queries when read replicas are available. If you want the primary database to also handle queries, add it as a read replica.
@@ -141,6 +148,15 @@ The same PostgreSQL settings as described above are used for each read replica. 
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS`
+
+Additionally, you can set arbitrary connection parameters on all read replicas with:
+
+- `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
+
+    Arbitrary `libpq` parameter key words for all read replicas database connections. A list of options can be found [in the PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
+    - Parameters passed with this setting will override those passed with other settings.
+    - Parameter key words should be formatted as a base64-encoded JSON dictionary.
 
 ### Using a PostgreSQL Connection Pooler
 

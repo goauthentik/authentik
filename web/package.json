@@ -113,7 +113,7 @@
         "@openlayers-elements/maps": "^0.4.0",
         "@patternfly/elements": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^9.41.0",
+        "@sentry/browser": "^9.42.0",
         "@spotlightjs/spotlight": "^3.0.1",
         "@storybook/addon-docs": "^9.0.18",
         "@storybook/addon-links": "^9.0.18",
@@ -149,7 +149,7 @@
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.1",
-        "eslint": "^9.31.0",
+        "eslint": "^9.32.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "fuse.js": "^7.1.0",
@@ -179,7 +179,7 @@
         "storybook": "^9.0.16",
         "style-mod": "^4.1.2",
         "trusted-types": "^2.0.0",
-        "ts-pattern": "^5.7.1",
+        "ts-pattern": "^5.8.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.8.3",
         "typescript-eslint": "^8.38.0",
@@ -192,9 +192,9 @@
         "@esbuild/darwin-arm64": "^0.25.4",
         "@esbuild/linux-arm64": "^0.25.4",
         "@esbuild/linux-x64": "^0.25.4",
-        "@rollup/rollup-darwin-arm64": "^4.45.1",
-        "@rollup/rollup-linux-arm64-gnu": "^4.45.1",
-        "@rollup/rollup-linux-x64-gnu": "^4.45.1"
+        "@rollup/rollup-darwin-arm64": "^4.46.0",
+        "@rollup/rollup-linux-arm64-gnu": "^4.46.0",
+        "@rollup/rollup-linux-x64-gnu": "^4.46.0"
     },
     "wireit": {
         "build": {
