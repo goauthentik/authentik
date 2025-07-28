@@ -23,7 +23,7 @@
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",
-        "rollup": "^4.45.1",
+        "rollup": "^4.46.0",
         "rollup-plugin-copy": "^3.5.0",
         "weakmap-polyfill": "^2.0.4"
     },
