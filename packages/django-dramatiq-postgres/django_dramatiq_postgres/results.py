@@ -21,7 +21,7 @@ class PostgresBackend(ResultBackend):
 
     @property
     def query_set(self) -> QuerySet:
-        return self.model.objects.using(self.db_alias)
+        return self.model.objects.using(self.db_alias).defer("message")
 
     def build_message_key(self, message: Message) -> str:
         return str(message.message_id)

@@ -87,7 +87,7 @@ class PostgresBroker(Broker):
 
     @property
     def query_set(self) -> QuerySet:
-        return self.model.objects.using(self.db_alias)
+        return self.model.objects.using(self.db_alias).defer("message", "result")
 
     def consume(self, queue_name: str, prefetch: int = 1, timeout: int = 30000) -> Consumer:
         self.declare_queue(queue_name)
@@ -178,7 +178,7 @@ class PostgresBroker(Broker):
         return self.queues.copy()
 
     def flush(self, queue_name: str):
-        self.query_set.defer("message", "result").filter(
+        self.query_set.filter(
             queue_name__in=(queue_name, dq_name(queue_name), xq_name(queue_name))
         ).delete()
 
@@ -269,7 +269,7 @@ class _PostgresConsumer(Consumer):
     @raise_connection_error
     def ack(self, message: Message):
         task = message.options.pop("task", None)
-        self.query_set.defer("message", "result").filter(
+        self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
             state=TaskState.CONSUMED,
@@ -284,7 +284,7 @@ class _PostgresConsumer(Consumer):
     @raise_connection_error
     def nack(self, message: Message):
         task = message.options.pop("task", None)
-        self.query_set.defer("message", "result").filter(
+        self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
         ).exclude(
@@ -299,7 +299,7 @@ class _PostgresConsumer(Consumer):
 
     @raise_connection_error
     def requeue(self, messages: Iterable[Message]):
-        self.query_set.defer("message", "result").filter(
+        self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
         ).update(
             state=TaskState.QUEUED,
@@ -312,8 +312,7 @@ class _PostgresConsumer(Consumer):
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")
         notifies = (
-            self.query_set.defer("message", "result")
-            .filter(
+            self.query_set.filter(
                 state__in=(TaskState.QUEUED, TaskState.CONSUMED),
                 queue_name=self.queue_name,
             )
@@ -343,8 +342,7 @@ class _PostgresConsumer(Consumer):
             return False
 
         result = (
-            self.query_set.defer("message", "result")
-            .filter(
+            self.query_set.filter(
                 message_id=message.message_id,
                 state__in=(TaskState.QUEUED, TaskState.CONSUMED),
             )
@@ -391,7 +389,9 @@ class _PostgresConsumer(Consumer):
         # If we have some notifies, loop to find one to do
         while self.notifies:
             notify = self.notifies.pop(0)
-            task: TaskBase | None = self.query_set.filter(message_id=notify.payload).first()
+            task: TaskBase | None = (
+                self.query_set.defer(None).defer("result").filter(message_id=notify.payload).first()
+            )
             if task is None:
                 continue
             message = Message.decode(task.message)
@@ -426,15 +426,11 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
         self.logger.debug("Running garbage collector")
-        count = (
-            self.query_set.defer("message", "result")
-            .filter(
-                state__in=(TaskState.DONE, TaskState.REJECTED),
-                mtime__lte=timezone.now() - timezone.timedelta(seconds=Conf().task_purge_interval),
-                result_expiry__lte=timezone.now(),
-            )
-            .delete()
-        )
+        count = self.query_set.filter(
+            state__in=(TaskState.DONE, TaskState.REJECTED),
+            mtime__lte=timezone.now() - timezone.timedelta(seconds=Conf().task_purge_interval),
+            result_expiry__lte=timezone.now(),
+        ).delete()
         self.logger.info(f"Purged {count} messages in all queues")
 
     def _scheduler(self):
