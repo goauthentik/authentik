@@ -1,8 +1,7 @@
-"""SLO Views"""
+"""SP-initiated SAML Single Logout Views"""
 
-from django.http import Http404, HttpRequest
-from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.http import Http404, HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
@@ -21,15 +20,15 @@ from authentik.providers.saml.processors.logout_request_parser import LogoutRequ
 from authentik.providers.saml.views.flows import (
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
+    REQUEST_KEY_SAML_RESPONSE,
     SESSION_KEY_LOGOUT_REQUEST,
 )
 
 LOGGER = get_logger()
 
 
-class SAMLSLOView(PolicyAccessView):
-    """ "SAML SLO Base View, which plans a flow and injects our final stage.
-    Calls get/post handler."""
+class SPInitiatedSLOView(PolicyAccessView):
+    """Handle SP-initiated SAML Single Logout requests"""
 
     flow: Flow
 
@@ -48,6 +47,7 @@ class SAMLSLOView(PolicyAccessView):
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """Verify the SAML Request, and if valid initiate the FlowPlanner for the application"""
+
         # Call the method handler, which checks the SAML
         # Request and returns a HTTP Response on error
         method_response = self.check_saml_request()
@@ -70,10 +70,17 @@ class SAMLSLOView(PolicyAccessView):
         return self.get(request, application_slug)
 
 
-class SAMLSLOBindingRedirectView(SAMLSLOView):
-    """SAML Handler for SLO/Redirect bindings, which are sent via GET"""
+class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
+    """SAML Handler for SP initiated SLO/Redirect bindings, which are sent via GET"""
 
     def check_saml_request(self) -> HttpRequest | None:
+        # Check if this is a LogoutResponse
+        if REQUEST_KEY_SAML_RESPONSE in self.request.GET:
+            relay_state = self.request.GET.get(REQUEST_KEY_RELAY_STATE, "")
+            if relay_state:
+                return redirect(relay_state)
+            return redirect("authentik_core:root-redirect")
+
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
@@ -97,11 +104,19 @@ class SAMLSLOBindingRedirectView(SAMLSLOView):
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 @method_decorator(csrf_exempt, name="dispatch")
-class SAMLSLOBindingPOSTView(SAMLSLOView):
-    """SAML Handler for SLO/POST bindings"""
+class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
+    """SAML Handler for SP-initiated SLO with POST binding"""
 
     def check_saml_request(self) -> HttpRequest | None:
         payload = self.request.POST
+
+        # Check if this is a LogoutResponse
+        if REQUEST_KEY_SAML_RESPONSE in payload:
+            relay_state = payload.get(REQUEST_KEY_RELAY_STATE, "")
+            if relay_state:
+                return redirect(relay_state)
+            return redirect("authentik_core:root-redirect")
+
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")

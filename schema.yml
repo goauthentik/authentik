@@ -22559,6 +22559,20 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: sls_binding
+        schema:
+          type: string
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the logout response back to the Service Provider.
+
+      - in: query
+        name: sls_url
+        schema:
+          type: string
+      - in: query
         name: sp_binding
         schema:
           type: string
@@ -43307,6 +43321,7 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/SAMLIframeLogoutChallenge'
       - $ref: '#/components/schemas/SessionEndChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
@@ -43336,6 +43351,7 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallenge'
           ak-stage-session-end: '#/components/schemas/SessionEndChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
@@ -45329,6 +45345,7 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
       - $ref: '#/components/schemas/RedirectChallengeResponseRequest'
+      - $ref: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
       discriminator:
         propertyName: component
@@ -45354,6 +45371,7 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
           xak-flow-redirect: '#/components/schemas/RedirectChallengeResponseRequest'
+          ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
           ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -54955,6 +54973,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55029,6 +55052,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -55417,6 +55445,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -57846,6 +57877,39 @@ components:
           maxLength: 150
       required:
       - name
+    SAMLIframeLogoutChallenge:
+      type: object
+      description: Challenge for SAML iframe logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-saml-iframe-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        logout_urls:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        timeout:
+          type: integer
+      required:
+      - logout_urls
+      - timeout
+    SAMLIframeLogoutChallengeResponseRequest:
+      type: object
+      description: Response for SAML iframe logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-saml-iframe-logout
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -58003,6 +58067,11 @@ components:
         acs_url:
           type: string
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58073,6 +58142,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -58171,6 +58245,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58245,6 +58324,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -59550,6 +59634,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -59603,6 +59690,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     SeverityEnum:
       enum:
       - notice
@@ -59639,6 +59729,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SlsBindingEnum:
+      enum:
+      - redirect
+      - post
       type: string
     Source:
       type: object

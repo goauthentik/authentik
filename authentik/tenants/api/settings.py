@@ -31,6 +31,7 @@ class SettingsSerializer(ModelSerializer):
             "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
+            "enable_iframe_saml_logout",
         ]
 
 
