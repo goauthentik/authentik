@@ -13,7 +13,7 @@ Back-channel logout is a security feature defined in the [OpenID Connect Back-Ch
 Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to handle back-channel logout requests. Not all OAuth applications support this feature.
 :::
 
-## How Back-Channel Logout Works
+## How back-channel logout works
 
 When a user logs out *or* their session is terminated in authentik, the following events occur:
 
@@ -24,13 +24,13 @@ When a user logs out *or* their session is terminated in authentik, the followin
 
 ## Configuration
 
-### Setting Up Back-Channel Logout
+### Set up back-channel logout
 
-1. Navigate to **Applications** > **Providers**.
+1. In the Admin interface, navigate to **Applications** > **Providers**.
 2. Edit or create an OAuth2 provider.
 3. Enter the back-channel logout endpoint URL provided by your Relying Party in the **Back-channel Logout URI** field.
 
-### Back-Channel Logout URI Format
+### Back-channel logout URI format
 
 The back-channel logout URI should be a **single URL** provided by your Relying Party application. Examples:
 
@@ -40,9 +40,9 @@ The back-channel logout URI should be a **single URL** provided by your Relying 
 
 ### Requirements
 
-- **HTTPS**: The URI must use HTTPS in production
-- **Accessible**: Must be reachable from authentik
-- **POST Support**: Must accept POST requests with form data
+- **HTTPS**: The URI must use HTTPS in production.
+- **Accessible**: Must be reachable from authentik.
+- **POST Support**: Must accept POST requests with form data.
 
 ## Logout Token
 
