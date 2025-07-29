@@ -18,7 +18,7 @@ from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
 )
-from authentik.enterprise.providers.ssf.tasks import send_ssf_event
+from authentik.enterprise.providers.ssf.tasks import send_ssf_events
 from authentik.events.middleware import audit_ignore
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import DuoDevice
@@ -66,7 +66,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 
     As this signal is also triggered with a regular logout, we can't be sure
     if the session has been deleted by an admin or by the user themselves."""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_SESSION_REVOKED,
         {
             "initiating_entity": "user",
@@ -88,7 +88,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 @receiver(password_changed)
 def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
     """Credential change trigger (password changed)"""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
@@ -126,7 +126,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={
@@ -153,7 +153,7 @@ def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={

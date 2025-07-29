@@ -1,7 +1,7 @@
 """Sync constants"""
 
 PAGE_SIZE = 100
-PAGE_TIMEOUT = 60 * 60 * 0.5  # Half an hour
+PAGE_TIMEOUT_MS = 60 * 60 * 0.5 * 1000  # Half an hour
 HTTP_CONFLICT = 409
 HTTP_NO_CONTENT = 204
 HTTP_SERVICE_UNAVAILABLE = 503

@@ -320,35 +320,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /admin/workers/:
-    get:
-      operationId: admin_workers_list
-      description: Get currently connected worker count.
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Worker'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /authenticators/admin/all/:
     get:
       operationId: authenticators_admin_all_list
@@ -8053,145 +8024,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /events/system_tasks/:
-    get:
-      operationId: events_system_tasks_list
-      description: Read-only view set that returns all background tasks
-      parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: status
-        schema:
-          type: string
-          enum:
-          - error
-          - successful
-          - unknown
-          - warning
-      - in: query
-        name: uid
-        schema:
-          type: string
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedSystemTaskList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /events/system_tasks/{uuid}/:
-    get:
-      operationId: events_system_tasks_retrieve
-      description: Read-only view set that returns all background tasks
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this System Task.
-        required: true
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SystemTask'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /events/system_tasks/{uuid}/run/:
-    post:
-      operationId: events_system_tasks_run_create
-      description: Run task
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this System Task.
-        required: true
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: Task retried successfully
-        '404':
-          description: Task not found
-        '500':
-          description: Failed to retry task
         '400':
           content:
             application/json:
@@ -19641,8 +19473,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/SyncStatus'
           description: ''
-        '404':
-          description: Task not found
         '400':
           content:
             application/json:
@@ -20684,8 +20514,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/SyncStatus'
           description: ''
-        '404':
-          description: Task not found
         '400':
           content:
             application/json:
@@ -23219,8 +23047,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/SyncStatus'
           description: ''
-        '404':
-          description: Task not found
         '400':
           content:
             application/json:
@@ -24939,6 +24765,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
       - in: query
@@ -25188,6 +25015,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
       - in: query
@@ -28322,7 +28150,7 @@ paths:
   /sources/kerberos/{slug}/sync/status/:
     get:
       operationId: sources_kerberos_sync_status_retrieve
-      description: Get source's sync status
+      description: Get provider's sync status
       parameters:
       - in: path
         name: slug
@@ -28339,7 +28167,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/KerberosSyncStatus'
+                $ref: '#/components/schemas/SyncStatus'
           description: ''
         '400':
           content:
@@ -28772,7 +28600,7 @@ paths:
   /sources/ldap/{slug}/sync/status/:
     get:
       operationId: sources_ldap_sync_status_retrieve
-      description: Get source's sync status
+      description: Get provider's sync status
       parameters:
       - in: path
         name: slug
@@ -40617,6 +40445,422 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/schedules/:
+    get:
+      operationId: tasks_schedules_list
+      parameters:
+      - in: query
+        name: actor_name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: paused
+        schema:
+          type: boolean
+      - in: query
+        name: rel_obj_content_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_content_type__model
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id__isnull
+        schema:
+          type: boolean
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScheduleList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/schedules/{id}/:
+    get:
+      operationId: tasks_schedules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: tasks_schedules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: tasks_schedules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScheduleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/schedules/{id}/send/:
+    post:
+      operationId: tasks_schedules_send_create
+      description: Trigger this schedule now
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Schedule sent successfully
+        '404':
+          description: Schedule not found
+        '500':
+          description: Failed to send schedule
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/tasks/:
+    get:
+      operationId: tasks_tasks_list
+      parameters:
+      - in: query
+        name: actor_name
+        schema:
+          type: string
+      - in: query
+        name: aggregated_status
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - consumed
+            - done
+            - error
+            - info
+            - queued
+            - rejected
+            - warning
+        explode: true
+        style: form
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: queue_name
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_content_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_content_type__model
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id__isnull
+        schema:
+          type: boolean
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: state
+        schema:
+          type: string
+          enum:
+          - consumed
+          - done
+          - queued
+          - rejected
+        description: |+
+          Task status
+
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/tasks/{message_id}/:
+    get:
+      operationId: tasks_tasks_retrieve
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/tasks/{message_id}/retry/:
+    post:
+      operationId: tasks_tasks_retry_create
+      description: Retry task
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Task retried successfully
+        '400':
+          description: Task is not in a retryable state
+        '404':
+          description: Task not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/workers:
+    get:
+      operationId: tasks_workers_list
+      description: Get currently connected worker count.
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Worker'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tenants/domains/:
     get:
       operationId: tenants_domains_list
@@ -41160,9 +41404,11 @@ components:
     AppEnum:
       enum:
       - authentik.tenants
+      - authentik.tasks
       - authentik.admin
       - authentik.api
       - authentik.crypto
+      - authentik.events
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -41210,6 +41456,7 @@ components:
       - authentik.stages.user_login
       - authentik.stages.user_logout
       - authentik.stages.user_write
+      - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
       - authentik.core
@@ -41223,7 +41470,6 @@ components:
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
-      - authentik.events
       type: string
     AppleChallengeResponseRequest:
       type: object
@@ -47431,21 +47677,6 @@ components:
       - name
       - realm
       - slug
-    KerberosSyncStatus:
-      type: object
-      description: Kerberos Source sync status
-      properties:
-        is_running:
-          type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
-      required:
-      - is_running
-      - tasks
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -48167,6 +48398,16 @@ components:
       - name
       - server_uri
       - slug
+    LastTaskStatusEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
     License:
       type: object
       description: License Serializer
@@ -48628,6 +48869,11 @@ components:
       enum:
       - authentik_tenants.domain
       - authentik_crypto.certificatekeypair
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -48708,6 +48954,7 @@ components:
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
       - authentik_stages_user_write.userwritestage
+      - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_core.group
@@ -48725,11 +48972,6 @@ components:
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
-      - authentik_events.event
-      - authentik_events.notificationtransport
-      - authentik_events.notification
-      - authentik_events.notificationrule
-      - authentik_events.notificationwebhookmapping
       type: string
     MutualTLSStage:
       type: object
@@ -51583,6 +51825,21 @@ components:
       - pagination
       - results
       - autocomplete
+    PaginatedScheduleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedScopeMappingList:
       type: object
       properties:
@@ -51673,21 +51930,6 @@ components:
       - pagination
       - results
       - autocomplete
-    PaginatedSystemTaskList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - pagination
-      - results
-      - autocomplete
     PaginatedTOTPDeviceList:
       type: object
       properties:
@@ -51697,6 +51939,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TOTPDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -55337,6 +55594,20 @@ components:
         event_retention:
           type: string
           minLength: 1
+    PatchedScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type: string
+          nullable: true
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -59291,6 +59562,81 @@ components:
       - pk
       - provider
       - provider_obj
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        identifier:
+          type: string
+          readOnly: true
+          nullable: true
+          description: Unique schedule identifier
+        uid:
+          type: string
+          readOnly: true
+        actor_name:
+          type: string
+          readOnly: true
+          description: Dramatiq actor to call
+        rel_obj_app_label:
+          type: string
+          readOnly: true
+        rel_obj_model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        rel_obj_id:
+          type: string
+          nullable: true
+        crontab:
+          type: string
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+        next_run:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          type: string
+          nullable: true
+          readOnly: true
+        last_task_status:
+          allOf:
+          - $ref: '#/components/schemas/LastTaskStatusEnum'
+          nullable: true
+          readOnly: true
+      required:
+      - actor_name
+      - crontab
+      - description
+      - id
+      - identifier
+      - last_task_status
+      - next_run
+      - rel_obj_app_label
+      - rel_obj_model
+      - uid
+    ScheduleRequest:
+      type: object
+      properties:
+        rel_obj_id:
+          type: string
+          nullable: true
+          minLength: 1
+        crontab:
+          type: string
+          minLength: 1
+          description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
+      required:
+      - crontab
     ScopeMapping:
       type: object
       description: ScopeMapping Serializer
@@ -59982,6 +60328,13 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
+    StateEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      type: string
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -60080,19 +60433,17 @@ components:
       - messages
     SyncStatus:
       type: object
-      description: Provider sync status
+      description: Provider/source sync status
       properties:
         is_running:
           type: boolean
-          readOnly: true
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/SystemTask'
-          readOnly: true
+        last_successful_sync:
+          type: string
+          format: date-time
+        last_sync_status:
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
       required:
       - is_running
-      - tasks
     SystemInfo:
       type: object
       description: Get system information.
@@ -60168,65 +60519,6 @@ components:
       - http_is_secure
       - runtime
       - server_time
-    SystemTask:
-      type: object
-      description: Serialize TaskInfo and TaskResult
-      properties:
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        name:
-          type: string
-        full_name:
-          type: string
-          description: Get full name with UID
-          readOnly: true
-        uid:
-          type: string
-        description:
-          type: string
-        start_timestamp:
-          type: string
-          format: date-time
-          readOnly: true
-        finish_timestamp:
-          type: string
-          format: date-time
-          readOnly: true
-        duration:
-          type: number
-          format: double
-          readOnly: true
-        status:
-          $ref: '#/components/schemas/SystemTaskStatusEnum'
-        messages:
-          type: array
-          items:
-            $ref: '#/components/schemas/LogEvent'
-        expires:
-          type: string
-          format: date-time
-          nullable: true
-        expiring:
-          type: boolean
-      required:
-      - description
-      - duration
-      - finish_timestamp
-      - full_name
-      - messages
-      - name
-      - start_timestamp
-      - status
-      - uuid
-    SystemTaskStatusEnum:
-      enum:
-      - unknown
-      - successful
-      - warning
-      - error
-      type: string
     TOTPDevice:
       type: object
       description: Serializer for totp authenticator devices
@@ -60258,6 +60550,72 @@ components:
           maxLength: 64
       required:
       - name
+    Task:
+      type: object
+      properties:
+        message_id:
+          type: string
+          format: uuid
+        queue_name:
+          type: string
+          description: Queue name
+        actor_name:
+          type: string
+          description: Dramatiq actor name
+        state:
+          allOf:
+          - $ref: '#/components/schemas/StateEnum'
+          description: Task status
+        mtime:
+          type: string
+          format: date-time
+          description: Task last modified time
+        rel_obj_app_label:
+          type: string
+          readOnly: true
+        rel_obj_model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        rel_obj_id:
+          type: string
+          nullable: true
+        uid:
+          type: string
+          readOnly: true
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+        previous_messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
+        aggregated_status:
+          $ref: '#/components/schemas/TaskAggregatedStatusEnum'
+        description:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - actor_name
+      - aggregated_status
+      - description
+      - messages
+      - previous_messages
+      - rel_obj_app_label
+      - rel_obj_model
+      - uid
+    TaskAggregatedStatusEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      - info
+      - warning
+      - error
+      type: string
     Tenant:
       type: object
       description: Tenant Serializer

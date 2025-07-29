@@ -707,11 +707,6 @@
         <target>Descrizione</target>
         
       </trans-unit>
-      <trans-unit id="sa9b2a245441557dc">
-        <source>Last run</source>
-        <target>Ultima esecuzione</target>
-        
-      </trans-unit>
       <trans-unit id="sad3e3c8146fc920f">
         <source>Status</source>
         <target>Stato</target>
@@ -735,17 +730,6 @@
       <trans-unit id="sc592307ea80f16b9">
         <source>Unknown</source>
         <target>Sconosciuto</target>
-        
-      </trans-unit>
-      <trans-unit id="s92921878e886e36d">
-        <source>Duration</source>
-        <target>Durata</target>
-        
-      </trans-unit>
-      <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
-        <target>
-        <x id="0" equiv-text="${item.duration.toFixed(2)}"/>secondi</target>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -2123,11 +2107,6 @@
         <target>Aggiorna il provider SCIM</target>
         
       </trans-unit>
-      <trans-unit id="sbecf8dc03c978d15">
-        <source>Run sync again</source>
-        <target>Esegui di nuovo la sincronizzazione</target>
-        
-      </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
         <source>LDAP</source>
         <target>LDAP</target>
@@ -3180,11 +3159,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s52b500138a2d2b8a">
         <source>Update LDAP Source</source>
         <target>Aggiorna sorgente LDAP</target>
-        
-      </trans-unit>
-      <trans-unit id="s31a2d43bc1cf1790">
-        <source>Not synced yet.</source>
-        <target>Non ancora sincronizzato</target>
         
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
@@ -6973,10 +6947,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Open Notification drawer</source>
   <target>Cassetto di notifica aperta</target>
 </trans-unit>
-<trans-unit id="s14bf17e2a1a2c381">
-  <source>Restart task</source>
-  <target>Riavvia attività</target>
-</trans-unit>
 <trans-unit id="s19409e8712ddd369">
   <source>Add provider</source>
   <target>Aggiungi provider</target>
@@ -7397,14 +7367,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd21a971eea208533">
   <source>Vendor</source>
   <target>Vendor</target>
-</trans-unit>
-<trans-unit id="sadadfe9dfa06d7dd">
-  <source>No sync status.</source>
-  <target>Nessuno stato di sincronizzazione.</target>
-</trans-unit>
-<trans-unit id="s2b1c81130a65a55b">
-  <source>Sync currently running.</source>
-  <target>Sync attualmente in esecuzione.</target>
 </trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
@@ -8275,18 +8237,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s79dd6df244c05ae9">
   <source>Update Microsoft Entra Provider</source>
   <target>Aggiorna Frontiore Microsoft Entra</target>
-</trans-unit>
-<trans-unit id="saf4b498d81141878">
-  <source>Finished successfully</source>
-  <target>Finito con successo</target>
-</trans-unit>
-<trans-unit id="s46f1d86ffec6223c">
-  <source>Finished with errors</source>
-  <target>Finito con errori</target>
-</trans-unit>
-<trans-unit id="sc3c334d642866997">
-  <source>Sync currently running</source>
-  <target>Sincronizzazione attualmente in esecuzione</target>
 </trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
@@ -9602,10 +9552,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Task</source>
   <target>Compito</target>
 </trans-unit>
-<trans-unit id="sbb99d4ec27fbb263">
-  <source>Finished</source>
-  <target>Finito</target>
-</trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
   <target>Mappatura Corpo Webhook</target>
@@ -9950,6 +9896,90 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
   <source>Skip to content</source>
+</trans-unit>
+<trans-unit id="s334b3924d2bd5d55">
+  <source>Kerberos Source</source>
+</trans-unit>
+<trans-unit id="sbcdf61483337948a">
+  <source>Successfully updated schedule.</source>
+</trans-unit>
+<trans-unit id="sd372fe5b712f6b30">
+  <source>Crontab</source>
+</trans-unit>
+<trans-unit id="s95bc8722b2708f8b">
+  <source>Paused</source>
+</trans-unit>
+<trans-unit id="se41af830054194bc">
+  <source>Pause this schedule</source>
+</trans-unit>
+<trans-unit id="sd091e43d5e99dea4">
+  <source>Waiting to run</source>
+</trans-unit>
+<trans-unit id="s85994a70cd39166c">
+  <source>Running</source>
+</trans-unit>
+<trans-unit id="sc7637275f670c938">
+  <source>Queue</source>
+</trans-unit>
+<trans-unit id="sb91d1be10eb2c7da">
+  <source>Last updated</source>
+</trans-unit>
+<trans-unit id="s911c2c952e64b223">
+  <source>Show only standalone tasks</source>
+</trans-unit>
+<trans-unit id="s14053a4609676b8b">
+  <source>Exclude successful tasks</source>
+</trans-unit>
+<trans-unit id="s8ff646d0515aab2a">
+  <source>Retry task</source>
+</trans-unit>
+<trans-unit id="s9b8dccb514a0e34c">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="sf92789320708efed">
+  <source>Next run</source>
+</trans-unit>
+<trans-unit id="s1aecc6c0d6cbf4ed">
+  <source>Last status</source>
+</trans-unit>
+<trans-unit id="s6089c283e28012fb">
+  <source>Show only standalone schedules</source>
+</trans-unit>
+<trans-unit id="s48006fb6e0b1860a">
+  <source>Run scheduled task now</source>
+</trans-unit>
+<trans-unit id="s6492593d534108e1">
+  <source>Update Schedule</source>
+</trans-unit>
+<trans-unit id="sf2d616b20d62240d">
+  <source>Schedules</source>
+</trans-unit>
+<trans-unit id="sc797fd9076cc136d">
+  <source>Tasks</source>
+</trans-unit>
+<trans-unit id="s3f63421908094590">
+  <source>Current status</source>
+</trans-unit>
+<trans-unit id="s4412853e1655ebb3">
+  <source>Sync is currently running.</source>
+</trans-unit>
+<trans-unit id="s08661004803c26b0">
+  <source>Sync is not currently running.</source>
+</trans-unit>
+<trans-unit id="s81d16aa9ec62262c">
+  <source>Last successful sync</source>
+</trans-unit>
+<trans-unit id="sd1eb8f8acdbcd1d3">
+  <source>No successful sync found.</source>
+</trans-unit>
+<trans-unit id="s6b0eeb3de1789c6e">
+  <source>Last sync status</source>
+</trans-unit>
+<trans-unit id="sac44b0f4dc14c227">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="s5e13dff03b580216">
+  <source>Previous executions logs</source>
 </trans-unit>
     </body>
   </file>
