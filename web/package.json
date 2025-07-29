@@ -166,7 +166,7 @@
         "prettier": "^3.6.2",
         "pseudolocale": "^2.1.0",
         "rapidoc": "^9.3.8",
-        "react": "^19.1.0",
+        "react": "^19.1.1",
         "react-dom": "^19.1.0",
         "rehype-highlight": "^7.0.2",
         "rehype-mermaid": "^3.0.0",
