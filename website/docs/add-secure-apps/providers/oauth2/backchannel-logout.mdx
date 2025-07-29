@@ -1,0 +1,63 @@
+---
+title: OAuth2 Back-Channel Logout
+description: Configure back-channel logout for OAuth2/OpenID Connect providers
+authentik_version: "2025.8.0"
+authentik_preview: true
+---
+
+## Overview
+
+Back-channel logout is a security feature defined in the [OpenID Connect Back-Channel Logout 1.0 specification](https://openid.net/specs/openid-connect-backchannel-1_0.html). It allows an OpenID Provider (OP) like authentik to notify Relying Parties (RPs) when a user session ends, ensuring that all connected applications properly terminate the user's session.
+
+:::info
+**Important**: Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to handle back-channel logout requests. Not all OAuth applications support this feature.
+:::
+
+## How Back-Channel Logout Works
+
+When a user logs out or their session is terminated in authentik:
+
+1. **Session Termination**: The user's session is ended (via logout flow, admin action, or token revocation)
+2. **Provider Notification**: authentik identifies all OAuth2 providers that have active sessions with the user
+3. **Back-Channel Request**: HTTP POST requests are sent to each provider's configured back-channel logout URI
+4. **RP Processing**: Each Relying Party validates the logout token and terminates the user's local session
+
+## Configuration
+
+### Setting Up Back-Channel Logout
+
+1. **Navigate to Applications → Providers → OAuth2/OpenID Provider**
+2. **Edit or create an OAuth2 provider**
+3. **Find the "Back-channel Logout URI" field**
+4. **Enter the back-channel logout endpoint URL** provided by your Relying Party
+
+### Back-Channel Logout URI Format
+
+The back-channel logout URI should be a **single URL** provided by your Relying Party application. Examples:
+
+- `https://app.example.com/oauth/backchannel-logout`
+- `https://api.service.com/logout/backchannel`
+- `https://client.example.org/backchannel-logout`
+
+### Requirements
+
+- **HTTPS**: The URI must use HTTPS in production
+- **Accessible**: Must be reachable from authentik
+- **POST Support**: Must accept POST requests with form data
+
+## Logout Token
+
+The back-channel logout request includes a **logout token** as form data:
+
+```http
+POST /backchannel-logout HTTP/1.1
+Host: client.example.org
+Content-Type: application/x-www-form-urlencoded
+
+logout_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+## Related Documentation
+
+- [OAuth2 Provider Configuration](./index.mdx)
+- [OpenID Connect Back-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-backchannel-1_0.html)
