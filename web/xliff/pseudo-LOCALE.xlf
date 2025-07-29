@@ -9625,4 +9625,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6b0eeb3de1789c6e">
   <source>Last sync status</source>
 </trans-unit>
+<trans-unit id="sac44b0f4dc14c227">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="s5e13dff03b580216">
+  <source>Previous executions logs</source>
+</trans-unit>
 </body></file></xliff>
