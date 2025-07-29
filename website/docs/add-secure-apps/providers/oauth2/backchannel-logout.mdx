@@ -1,5 +1,5 @@
 ---
-title: OAuth2 Back-Channel Logout
+title: OAuth2 back-channel logout
 description: Configure back-channel logout for OAuth2/OpenID Connect providers
 authentik_version: "2025.8.0"
 authentik_preview: true
@@ -9,27 +9,26 @@ authentik_preview: true
 
 Back-channel logout is a security feature defined in the [OpenID Connect Back-Channel Logout 1.0 specification](https://openid.net/specs/openid-connect-backchannel-1_0.html). It allows an OpenID Provider (OP) like authentik to notify Relying Parties (RPs) when a user session ends, ensuring that all connected applications properly terminate the user's session.
 
-:::info
-**Important**: Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to handle back-channel logout requests. Not all OAuth applications support this feature.
+:::warning
+Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to handle back-channel logout requests. Not all OAuth applications support this feature.
 :::
 
 ## How Back-Channel Logout Works
 
-When a user logs out or their session is terminated in authentik:
+When a user logs out *or* their session is terminated in authentik, the following events occur:
 
-1. **Session Termination**: The user's session is ended (via logout flow, admin action, or token revocation)
-2. **Provider Notification**: authentik identifies all OAuth2 providers that have active sessions with the user
-3. **Back-Channel Request**: HTTP POST requests are sent to each provider's configured back-channel logout URI
-4. **RP Processing**: Each Relying Party validates the logout token and terminates the user's local session
+1. **Session Termination**: The user's session is ended (via logout flow, admin action, or token revocation).
+2. **Provider Notification**: authentik identifies all OAuth2 providers that have active sessions with the user.
+3. **Back-Channel Request**: HTTP POST requests are sent to each provider's configured back-channel logout URI.
+4. **RP Processing**: Each Relying Party validates the logout token and terminates the user's local session.
 
 ## Configuration
 
 ### Setting Up Back-Channel Logout
 
-1. **Navigate to Applications → Providers → OAuth2/OpenID Provider**
-2. **Edit or create an OAuth2 provider**
-3. **Find the "Back-channel Logout URI" field**
-4. **Enter the back-channel logout endpoint URL** provided by your Relying Party
+1. Navigate to **Applications** > **Providers**.
+2. Edit or create an OAuth2 provider.
+3. Enter the back-channel logout endpoint URL provided by your Relying Party in the **Back-channel Logout URI** field.
 
 ### Back-Channel Logout URI Format
 
