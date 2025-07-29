@@ -22,6 +22,12 @@ When a user logs out _or_ their session is terminated in authentik, the followin
 3. **Back-Channel Request**: HTTP POST requests are sent to each provider's configured back-channel logout URI.
 4. **RP Processing**: Each Relying Party validates the logout token and terminates the user's local session.
 
+### Requirements
+
+- **HTTPS**: The URI must use HTTPS in production.
+- **Accessible**: Must be reachable from authentik.
+- **POST Support**: Must accept POST requests with form data.
+
 ## Configuration
 
 ### Set up back-channel logout
@@ -37,12 +43,6 @@ The back-channel logout URI should be a **single URL** provided by your Relying 
 - `https://app.example.com/oauth/backchannel-logout`
 - `https://api.service.com/logout/backchannel`
 - `https://client.example.org/backchannel-logout`
-
-### Requirements
-
-- **HTTPS**: The URI must use HTTPS in production.
-- **Accessible**: Must be reachable from authentik.
-- **POST Support**: Must accept POST requests with form data.
 
 ## Logout token
 
