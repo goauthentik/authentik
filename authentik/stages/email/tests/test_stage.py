@@ -17,6 +17,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
+from authentik.stages.consent.stage import SESSION_KEY_CONSENT_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
@@ -35,6 +36,10 @@ class TestEmailStage(FlowTestCase):
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_rendering(self):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -160,6 +165,17 @@ class TestEmailStage(FlowTestCase):
                     kwargs={"flow_slug": self.flow.slug},
                 )
             )
+            self.assertStageResponse(response, self.flow, component="ak-stage-consent")
+            response = self.client.post(
+                reverse(
+                    "authentik_api:flow-executor",
+                    kwargs={"flow_slug": self.flow.slug},
+                ),
+                data={
+                    "token": self.client.session[SESSION_KEY_CONSENT_TOKEN],
+                },
+                follow=True,
+            )
 
             self.assertEqual(response.status_code, 200)
             self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
@@ -182,6 +198,7 @@ class TestEmailStage(FlowTestCase):
         # Set flow token user to a different user
         token: FlowToken = FlowToken.objects.get(user=self.user)
         token.user = create_test_admin_user()
+        token.revoke_on_execution = True
         token.save()
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):

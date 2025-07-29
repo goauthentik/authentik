@@ -1,21 +1,19 @@
-import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { DefaultBrand } from "#common/ui/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 
 import {
     Application,
@@ -24,6 +22,12 @@ import {
     CoreApplicationsListRequest,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
+
+import YAML from "yaml";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -87,9 +91,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("Branding settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Branding settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Title")} required name="brandingTitle">
                         <input
                             type="text"
@@ -134,7 +137,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default flow background")}
-                        ?required=${true}
+                        required
                         name="brandingDefaultFlowBackground"
                     >
                         <input
@@ -170,9 +173,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("External user settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("External user settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Default application")}
                         name="defaultApplication"
@@ -215,9 +217,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("Default flows")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Default flows")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="flowAuthentication"
@@ -295,9 +296,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Other global settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Other global settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Web Certificate")}
                         name="webCertificate"

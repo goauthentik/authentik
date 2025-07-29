@@ -1,22 +1,24 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#components/ak-event-info";
+import "#elements/Tabs";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, PropertyValues, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
@@ -72,11 +74,10 @@ export class ObjectChangelog extends Table<Event> {
     row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
-            EventUser(item),
+            renderEventUser(item),
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-
                 <small>${EventGeo(item)}</small>`,
         ];
     }
@@ -94,7 +95,8 @@ export class ObjectChangelog extends Table<Event> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Events found.")}>
+            html`<ak-empty-state
+                ><span>${msg("No Events found.")}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

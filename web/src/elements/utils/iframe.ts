@@ -2,54 +2,31 @@
  * @file IFrame Utilities
  */
 
-interface IFrameLoadResult {
-    contentWindow: Window;
-    contentDocument: Document;
-}
+import { renderStaticHTMLUnsafe } from "#common/purify";
 
-export function pluckIFrameContent(iframe: HTMLIFrameElement) {
-    const contentWindow = iframe.contentWindow;
-    const contentDocument = iframe.contentDocument;
+import { MaybeCompiledTemplateResult } from "lit";
 
-    if (!contentWindow) {
-        throw new Error("Iframe contentWindow is not accessible");
-    }
-
-    if (!contentDocument) {
-        throw new Error("Iframe contentDocument is not accessible");
-    }
-
-    return {
-        contentWindow,
-        contentDocument,
-    };
-}
-
-export function resolveIFrameContent(iframe: HTMLIFrameElement): Promise<IFrameLoadResult> {
-    if (iframe.contentDocument?.readyState === "complete") {
-        return Promise.resolve(pluckIFrameContent(iframe));
-    }
-
-    return new Promise((resolve) => {
-        iframe.addEventListener("load", () => resolve(pluckIFrameContent(iframe)), { once: true });
-    });
+export interface CreateHTMLObjectInit {
+    body: string | MaybeCompiledTemplateResult;
+    head?: string | MaybeCompiledTemplateResult;
 }
 
 /**
- * Creates a minimal HTML wrapper for an iframe.
+ * Render untrusted HTML to a string without escaping it.
  *
- * @deprecated Use the `contentDocument.body` directly instead.
+ * @returns {string} The rendered HTML string.
  */
-export function createIFrameHTMLWrapper(bodyContent: string): string {
-    const html = String.raw;
+export function createDocumentTemplate(init: CreateHTMLObjectInit): string {
+    const body = renderStaticHTMLUnsafe(init.body);
+    const head = init.head ? renderStaticHTMLUnsafe(init.head) : "";
 
-    return html`<!doctype html>
+    return `<!DOCTYPE html>
         <html>
             <head>
-                <meta charset="utf-8" />
+                ${head}
             </head>
-            <body style="display:flex;flex-direction:row;justify-content:center;">
-                ${bodyContent}
+            <body>
+                ${body}
             </body>
         </html>`;
 }

@@ -1,24 +1,29 @@
-import { globalAK } from "#common/global";
 import "#elements/Alert";
-import { AKElement } from "#elements/Base";
-import { MDXModuleContext, fetchMDXModule } from "#elements/ak-mdx/MDXModuleContext";
+
+import { globalAK } from "#common/global";
+import OneDark from "#common/styles/one-dark.css";
+
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
 import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
+import { fetchMDXModule, MDXModuleContext } from "#elements/ak-mdx/MDXModuleContext";
 import { remarkAdmonition } from "#elements/ak-mdx/remark/remark-admonition";
 import { remarkHeadings } from "#elements/ak-mdx/remark/remark-headings";
 import { remarkLists } from "#elements/ak-mdx/remark/remark-lists";
-import { WithAuthentikConfig } from "#elements/mixins/config";
+import { AKElement } from "#elements/Base";
+
 import { DistDirectoryName, StaticDirectoryName } from "#paths";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import { compile as compileMDX, run as runMDX } from "@mdx-js/mdx";
 import apacheGrammar from "highlight.js/lib/languages/apache";
 import diffGrammar from "highlight.js/lib/languages/diff";
 import confGrammar from "highlight.js/lib/languages/ini";
 import nginxGrammar from "highlight.js/lib/languages/nginx";
 import { common } from "lowlight";
-import { Root, createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import * as runtime from "react/jsx-runtime";
-import rehypeHighlight from "rehype-highlight";
-import { Options as HighlightOptions } from "rehype-highlight";
+import rehypeHighlight, { Options as HighlightOptions } from "rehype-highlight";
 import rehypeMermaid, { RehypeMermaidOptions } from "rehype-mermaid";
 import remarkDirective from "remark-directive";
 import remarkFrontmatter from "remark-frontmatter";
@@ -30,13 +35,10 @@ import type { MDXModule } from "~docs/types";
 import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import OneDark from "#common/styles/one-dark.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -54,7 +56,7 @@ const highlightThemeOptions: HighlightOptions = {
 export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
-export class AKMDX extends WithAuthentikConfig(AKElement) {
+export class AKMDX extends AKElement {
     @property({
         reflect: true,
     })

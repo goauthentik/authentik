@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-pagination.js";
+
+import { AkPagination } from "../components/ak-pagination.js";
+import { DualSelectEventType } from "../types.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../components/ak-pagination";
-import { AkPagination } from "../components/ak-pagination";
-import { DualSelectEventType } from "../types";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkPagination> = {
     title: "Elements / Dual Select / Pagination Control",
@@ -28,7 +29,7 @@ const metadata: Meta<AkPagination> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

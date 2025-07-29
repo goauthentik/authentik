@@ -14,7 +14,7 @@ The following placeholders are used in this guide:
 
 ## Mailcow
 
-1. Log into mailcow as an admin and navigate to the OAuth2 Apps settings
+1. Log in to mailcow as an admin and navigate to the OAuth2 Apps settings
 
 ![OAuth2 Apps menu](./mailcow1.png)
 
@@ -49,5 +49,5 @@ Here is an example of a complete authentik Mailcow OAuth Source
 Save, and you now have Mailcow as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-number-input.js";
+
+import AkNumberInput from "../ak-number-input.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-number-input";
-import AkNumberInput from "../ak-number-input";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkNumberInput> = {
     title: "Components / Number Input",
@@ -21,7 +22,7 @@ const metadata: Meta<AkNumberInput> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #000; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

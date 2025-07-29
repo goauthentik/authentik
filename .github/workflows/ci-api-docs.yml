@@ -1,0 +1,94 @@
+name: authentik-ci-api-docs
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - prettier-check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Dependencies
+        working-directory: website/
+        run: npm ci
+      - name: Lint
+        working-directory: website/
+        run: npm run ${{ matrix.command }}
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        name: Install Dependencies
+        run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/website/api/.docusaurus
+            ${{ github.workspace }}/website/api/**/.cache
+          key: |
+            ${{ runner.os }}-docusaurus-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          restore-keys: |
+            ${{ runner.os }}-docusaurus-${{ hashFiles('**/package-lock.json') }}
+      - name: Build API Docs via Docusaurus
+        working-directory: website
+        env:
+          NODE_ENV: production
+        run: npm run build -w api
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api-docs
+          path: website/api/build
+          retention-days: 7
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: api-docs
+          path: website/api/build
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - name: Deploy Netlify (Production)
+        working-directory: website/api
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          NETLIFY_SITE_ID: authentik-api-docs.netlify.app
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: npx netlify deploy --no-build --prod
+      - name: Deploy Netlify (Preview)
+        if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
+        working-directory: website/api
+        env:
+          NETLIFY_SITE_ID: authentik-api-docs.netlify.app
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          if [ -n "${VAR}" ]; then
+            npx netlify deploy --no-build --alias=deploy-preview-${{ github.event.number }}
+          fi

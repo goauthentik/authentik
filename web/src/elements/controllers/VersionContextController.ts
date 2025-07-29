@@ -1,20 +1,21 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
+import { isCausedByAbortError } from "#common/errors/network";
+
 import { VersionContext, VersionMixin } from "#elements/mixins/version";
 import type { ReactiveElementHost } from "#elements/types";
 
-import { Context, ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
-
 import { AdminApi, Version } from "@goauthentik/api";
+
+import { ContextProvider } from "@lit/context";
+import type { ReactiveController } from "lit";
 
 export class VersionContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/version`);
     #abortController: null | AbortController = null;
 
     #host: ReactiveElementHost<VersionMixin>;
-    #context: ContextProvider<Context<unknown, Version>>;
+    #context: ContextProvider<VersionContext>;
 
     constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
         this.#host = host;
@@ -41,7 +42,7 @@ export class VersionContextController implements ReactiveController {
             })
 
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching license summary");
                     return;
                 }

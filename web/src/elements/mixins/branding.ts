@@ -1,9 +1,10 @@
 import { DefaultBrand } from "#common/ui/config";
+
 import { createMixin } from "#elements/types";
 
-import { consume, createContext } from "@lit/context";
-
 import type { CurrentBrand, FooterLink } from "@goauthentik/api";
+
+import { consume, Context, createContext } from "@lit/context";
 
 /**
  * The Lit context for application branding.
@@ -16,6 +17,8 @@ export const BrandingContext = createContext<CurrentBrand>(
     Symbol.for("authentik-branding-context"),
 );
 
+export type BrandingContext = Context<symbol, CurrentBrand>;
+
 /**
  * A mixin that provides the current brand to the element.
  *
@@ -27,9 +30,30 @@ export interface BrandingMixin {
      */
     readonly brand: Readonly<CurrentBrand>;
 
+    /**
+     * The application title.
+     *
+     * @see {@linkcode DefaultBrand.brandingTitle}
+     */
     readonly brandingTitle: string;
+
+    /**
+     * The application logo.
+     *
+     * @see {@linkcode DefaultBrand.brandingLogo}
+     */
     readonly brandingLogo: string;
+
+    /**
+     * The application favicon.
+     *
+     * @see {@linkcode DefaultBrand.brandingFavicon}
+     */
     readonly brandingFavicon: string;
+
+    /**
+     * Footer links provided by the brand configuration.
+     */
     readonly brandingFooterLinks: FooterLink[];
 }
 
@@ -37,18 +61,11 @@ export interface BrandingMixin {
  * A mixin that provides the current brand to the element.
  *
  * @category Mixin
- *
- * @see {@link https://lit.dev/docs/composition/mixins/#mixins-in-typescript | Lit Mixins}
  */
 export const WithBrandConfig = createMixin<BrandingMixin>(
     ({
-        /**
-         * The superclass constructor to extend.
-         */
+        // ---
         SuperClass,
-        /**
-         * Whether or not to subscribe to the context.
-         */
         subscribe = true,
     }) => {
         abstract class BrandingProvider extends SuperClass implements BrandingMixin {

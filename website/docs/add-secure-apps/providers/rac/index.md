@@ -36,19 +36,20 @@ The _Endpoint_ object specifies the hostname/IP of the machine to connect to, as
 
 Configuration details such as credentials can be specified through _settings_, which can be specified on different levels and are all merged together when connecting:
 
-1. Provider settings
-2. Endpoint settings
-3. Connection settings
+1. Default settings
+2. Provider settings
+3. Endpoint settings
 4. Provider property mapping settings
 5. Endpoint property mapping settings
+6. Connection settings
 
 ### Connection settings
 
-Each connection is authorized through authentik Policy objects that are bound to the application and the endpoint. Additional verification can be done with the authorization flow.
+Each connection is authorized through authentik policy objects that are bound to the application and the endpoint. Additional verification can be done with the authorization flow.
 
-A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user/customization.mdx). Once the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually.
+A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user). After the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
 
-Additionally it is possible to modify the connection settings through the authorization flow. Configuration set in `connection_settings` in the flow plan context will be merged with other settings as shown above.
+Additionally, it is possible to modify the connection settings through the authorization flow. Configuration set in `connection_settings` in the flow plan context will be merged with other settings as shown above.
 
 The RAC provider utilises [Apache Guacamole](https://guacamole.apache.org/) for establishing SSH, RDP and VNC connections. RAC supports the use of Apache Guacamole connection configurations.
 

@@ -11,23 +11,21 @@
     },
     "dependencies": {
         "@goauthentik/api": "^2024.6.0-1719577139",
-        "base64-js": "^1.5.1",
-        "bootstrap": "^4.6.1",
-        "formdata-polyfill": "^4.0.10",
-        "jquery": "^3.7.1",
-        "weakmap-polyfill": "^2.0.4"
-    },
-    "devDependencies": {
         "@goauthentik/core": "^1.0.0",
-        "@rollup/plugin-commonjs": "^28.0.0",
+        "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-swc": "^0.4.0",
-        "@swc/cli": "^0.7.7",
-        "@swc/core": "^1.7.28",
+        "@swc/cli": "^0.7.8",
+        "@swc/core": "^1.13.2",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "base64-js": "^1.5.1",
+        "bootstrap": "^5.3.7",
+        "formdata-polyfill": "^4.0.10",
+        "jquery": "^3.7.1",
         "prettier": "^3.5.3",
-        "rollup": "^4.41.1",
-        "rollup-plugin-copy": "^3.5.0"
+        "rollup": "^4.46.0",
+        "rollup-plugin-copy": "^3.5.0",
+        "weakmap-polyfill": "^2.0.4"
     },
     "optionalDependencies": {
         "@swc/core-darwin-arm64": "^1.6.13",

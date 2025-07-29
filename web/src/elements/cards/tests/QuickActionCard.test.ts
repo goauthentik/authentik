@@ -1,10 +1,12 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../QuickActionsCard.js";
+
+import { QuickAction } from "../QuickActionsCard.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import { QuickAction } from "../QuickActionsCard.js";
-import "../QuickActionsCard.js";
 
 const ACTIONS: QuickAction[] = [
     ["Create a new application", "/core/applications"],

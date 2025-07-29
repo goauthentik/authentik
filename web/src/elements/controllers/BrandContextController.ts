@@ -1,20 +1,21 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
+import { isCausedByAbortError } from "#common/errors/network";
+
 import { BrandingContext, BrandingMixin } from "#elements/mixins/branding";
 import type { ReactiveElementHost } from "#elements/types";
 
-import { Context, ContextProvider } from "@lit/context";
-import type { ReactiveController } from "lit";
-
 import { CoreApi, CurrentBrand } from "@goauthentik/api";
+
+import { ContextProvider } from "@lit/context";
+import type { ReactiveController } from "lit";
 
 export class BrandingContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/branding`);
     #abortController: null | AbortController = null;
 
     #host: ReactiveElementHost<BrandingMixin>;
-    #context: ContextProvider<Context<unknown, CurrentBrand>>;
+    #context: ContextProvider<BrandingContext>;
 
     constructor(host: ReactiveElementHost<BrandingMixin>, initialValue: CurrentBrand) {
         this.#host = host;
@@ -42,7 +43,7 @@ export class BrandingContextController implements ReactiveController {
             })
 
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching brand");
                     return;
                 }

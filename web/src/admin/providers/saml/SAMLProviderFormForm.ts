@@ -1,16 +1,16 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
+import { digestAlgorithmOptions, signatureAlgorithmOptions } from "./SAMLProviderOptions.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -22,8 +22,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLProviderFormHelpers.js";
-import { digestAlgorithmOptions, signatureAlgorithmOptions } from "./SAMLProviderOptions";
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const serviceProviderBindingOptions = [
     {
@@ -84,9 +85,8 @@ export function renderForm(
             </p>
         </ak-form-element-horizontal>
 
-        <ak-form-group .expanded=${true}>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
@@ -122,12 +122,10 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
-                    ?required=${false}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -158,9 +156,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
                     <ak-crypto-certificate-search
                         .certificate=${provider?.signingKp}
@@ -236,7 +233,7 @@ export function renderForm(
                         .selected=${(item: SAMLPropertyMapping): boolean => {
                             return provider?.nameIdMapping === item.pk;
                         }}
-                        ?blankable=${true}
+                        blankable
                     >
                     </ak-search-select>
                     <p class="pf-c-form__helper-text">
@@ -271,7 +268,7 @@ export function renderForm(
                         .selected=${(item: SAMLPropertyMapping): boolean => {
                             return provider?.authnContextClassRefMapping === item.pk;
                         }}
-                        ?blankable=${true}
+                        blankable
                     >
                     </ak-search-select>
                     <p class="pf-c-form__helper-text">

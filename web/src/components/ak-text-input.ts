@@ -1,14 +1,17 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
-
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     value = "";
+
+    @property({ type: String })
+    placeholder?: string;
 
     renderControl() {
         const setValue = (ev: InputEvent) => {
@@ -27,6 +30,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             })}"
             autocomplete=${ifDefined(code ? "off" : undefined)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
+            placeholder=${ifDefined(this.placeholder)}
             ?required=${this.required}
         />`;
     }

@@ -9,6 +9,7 @@ from ldap3 import SUBTREE
 from authentik.core.models import Group, User
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
+from authentik.tasks.models import Task
 
 
 class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
@@ -16,8 +17,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     group_cache: dict[str, Group]
 
-    def __init__(self, source: LDAPSource):
-        super().__init__(source)
+    def __init__(self, source: LDAPSource, task: Task):
+        super().__init__(source, task)
         self.group_cache: dict[str, Group] = {}
 
     @staticmethod
@@ -26,7 +27,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return iter(())
 
         # If we are looking up groups from users, we don't need to fetch the group membership field
@@ -45,7 +46,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self, page_data: list) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
         for group in page_data:
@@ -63,25 +64,19 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     group_member_dn = group_member.get("dn", {})
                     members.append(group_member_dn)
             else:
-                if "attributes" not in group:
+                if (attributes := self.get_attributes(group)) is None:
                     continue
-                members = group.get("attributes", {}).get(self._source.group_membership_field, [])
+                members = attributes.get(self._source.group_membership_field, [])
 
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
 
-            membership_mapping_attribute = LDAP_DISTINGUISHED_NAME
-            if self._source.group_membership_field == "memberUid":
-                # If memberships are based on the posixGroup's 'memberUid'
-                # attribute we use the RDN instead of the FDN to lookup members.
-                membership_mapping_attribute = LDAP_UNIQUENESS
-
             users = User.objects.filter(
-                Q(**{f"attributes__{membership_mapping_attribute}__in": members})
+                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
                 | Q(
                     **{
-                        f"attributes__{membership_mapping_attribute}__isnull": True,
+                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
                         "ak_groups__in": [ak_group],
                     }
                 )
@@ -100,7 +95,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:
-                self.message(
+                self._task.info(
                     f"Group does not have a uniqueness attribute: '{group_dn}'",
                     group=group_dn,
                 )
@@ -110,7 +105,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
             if not groups.exists():
                 if self._source.sync_groups:
-                    self.message(
+                    self._task.info(
                         f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
                         group=group_dn,
                     )

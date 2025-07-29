@@ -21,8 +21,8 @@ from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -86,7 +86,8 @@ class EmailStageView(ChallengeStageView):
                 user=pending_user,
                 identifier=identifier,
                 flow=self.executor.flow,
-                _plan=FlowToken.pickle(self.executor.plan),
+                _plan=pickle_flow_token_for_email(self.executor.plan),
+                revoke_on_execution=False,
             )
         token = tokens.first()
         # Check if token is expired and rotate key if so
@@ -127,9 +128,8 @@ class EmailStageView(ChallengeStageView):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message=_("Exception occurred while rendering E-mail template"),
-                error=exception_to_string(exc),
                 template=current_stage.template,
-            ).from_http(self.request)
+            ).with_exception(exc).from_http(self.request)
             raise StageInvalidException from exc
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -143,7 +143,7 @@ class EmailStageView(ChallengeStageView):
             messages.success(request, _("Successfully verified Email."))
             if self.executor.current_stage.activate_user_on_success:
                 user.is_active = True
-                user.save()
+                user.save(update_fields=["is_active"])
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             self.logger.debug("No pending user")
