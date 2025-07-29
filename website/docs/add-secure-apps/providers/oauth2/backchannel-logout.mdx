@@ -15,7 +15,7 @@ Your OAuth application (Relying Party) must explicitly support the OpenID Connec
 
 ## How back-channel logout works
 
-When a user logs out *or* their session is terminated in authentik, the following events occur:
+When a user logs out _or_ their session is terminated in authentik, the following events occur:
 
 1. **Session Termination**: The user's session is ended (via logout flow, admin action, or token revocation).
 2. **Provider Notification**: authentik identifies all OAuth2 providers that have active sessions with the user.
@@ -27,7 +27,7 @@ When a user logs out *or* their session is terminated in authentik, the followin
 ### Set up back-channel logout
 
 1. In the Admin interface, navigate to **Applications** > **Providers**.
-2. Edit or create an OAuth2 provider.
+2. Edit or [create an OAuth2 provider](./create-oauth2-provider.md).
 3. Enter the back-channel logout endpoint URL provided by your Relying Party in the **Back-channel Logout URI** field.
 
 ### Back-channel logout URI format
