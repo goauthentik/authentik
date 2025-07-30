@@ -2,12 +2,9 @@
 title: SAML Provider
 ---
 
-This provider allows you to integrate enterprise software using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields.
-Default fields are exposed through auto-generated Property Mappings, which are prefixed with "authentik default".
+This provider allows you to integrate enterprise software using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields. Default fields are exposed through auto-generated property pappings, which are prefixed with "authentik default".
 
-## authentik and SAML
-
-words here.......
+To create a new SAML provider in authentik, refer to our [documentation](./create-saml-provider.md).
 
 ## SAML Bindings
 
@@ -19,32 +16,44 @@ In authentik, you can define two communication protocols: `HTTP Redirect` or `HT
 
 | Endpoint                  | URL                                                          |
 | ------------------------- | ------------------------------------------------------------ |
-| SSO (Redirect binding)    | `/application/saml/<application slug>/sso/binding/redirect/` |
-| SSO (POST binding)        | `/application/saml/<application slug>/sso/binding/post/`     |
-| SSO (IdP-initiated login) | `/application/saml/<application slug>/sso/binding/init/`     |
-| SLO (Redirect binding)    | `/application/saml/<application slug>/slo/binding/redirect/` |
-| SLO (POST binding)        | `/application/saml/<application slug>/slo/binding/post/`     |
-| Metadata Download         | `/application/saml/<application slug>/metadata/`             |
+| SSO (Redirect binding)    | `/application/saml/<application_slug>/sso/binding/redirect/` |
+| SSO (POST binding)        | `/application/saml/<application_slug>/sso/binding/post/`     |
+| SSO (IdP-initiated login) | `/application/saml/<application_slug>/sso/binding/init/`     |
+| SLO (Redirect binding)    | `/application/saml/<application_slug>/slo/binding/redirect/` |
+| SLO (POST binding)        | `/application/saml/<application_slug>/slo/binding/post/`     |
+| Metadata Download         | `/application/saml/<application_slug>/metadata/`             |
 
-You can download the metadata through the Web interface; this link might be handy if your software wants to download the metadata directly.
+(TODO be more specific here, where in which interface, and do we mean the SP metadata or the IdP?) You can download the metadata through the Web interface; this link might be handy if your software wants to download the metadata directly.
 
 The metadata download link can also be copied with a button on the provider overview page.
 
-## Attributes for SAML provider
+## Property mappings in SAML
 
-Words in here about what attributes are and how used...."attributes are used to convey information about a user to a service provider during a SAML-based single sign-on (SSO) process"...
+Attributes are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, email address, a username, or even a custom attribute.
 
-Talk about how the attributes are what are used in property mappings... how custom attributes can be created and mapped .... List our default attributes... talk about the fist name and last name thing (just use `Name`)...
+During the sign on and authentication process, communication between the SP (say the application that the user is attempting to log in to) and the IdP (the identity provider software managing the SSO work) replies on property mappings to align, or "map" the attributes' values between the SP and IdP.
+
+... talk about the fist name and last name thing (just use `Name`)...
 
 ### Default property mappings
 
-The following attributes are available as property mappings through the Admin interface when you are creating a new SAML provider.
+The following attributes are available as property mappings through the Admin interface when you create a new SAML provider.
 
-###
+#### User ID
+
+#### User name
+
+#### WindowsAccountname
+
+#### Groups
+
+#### Email
+
+#### Name
 
 ### Custom property mappings
 
-Some useful custom property mappings include:
+If there is not already a property mapping that works for what you need, you can create a custom property mapping. Some useful custom property mappings include:
 
 #### `surname`
 
@@ -58,9 +67,13 @@ Some useful custom property mappings include:
 
 - Expression: `return request.user.name.split(" ", 1)[0]`
 
-#### Name ID
+### `Name ID` property mapping
 
-The Name_ID element is another, special, type of attribute, a unique identifier for that user. o while the other attributes might change (givenname, email address, etc) the Name_ID needs to never change.
+The Name_ID element is an important type of attribute, a unique identifier for that user. While the other attributes might change (givenname, email address, etc) the Name_ID is persistent and should never change.
+
+When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
+
+The SP also tells the IdP what format the IdP should use when creating the assertion. Under certain circumstances, the SP cannot tell us what format they want, like if the user is already in authentik and click the app to log in to it… but by making it a property mapping we do not get stopped on this snag. We default to the unspecified format, but of course the value is already set in the property mapping, so authn carries on.
 
 You can select a custom SAML property mapping after which the NameID field will be generated. If left default, the following checks are done:
 
@@ -70,22 +83,14 @@ You can select a custom SAML property mapping after which the NameID field will 
 - When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`, the NameID will be set based on the user's session ID.
 - When the request asks for `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, the NameID will be set to the user's email address.
 
-#### Custom property mappings
-
-Some useful custom property mappings include:
-
-#### `surname`
-
-- SAML Attribute Name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
-
-- Expression: `return request.user.name.rsplit(" ", 1)[-1]`
-
-#### `givenname`
-
-- SAML Attribute Name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
-
-- Expression: `return request.user.name.split(" ", 1)[0]`
-
 :::warning
-Keep in mind that with the default settings, users are free to change their email addresses. As such it is recommended to use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, as this cannot be changed.
+Keep in mind that with the default settings, users are free to change their email addresses. - Therefore, it is recommended to either: - disallow users to change their email addresses - use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the Name ID format in the SP (if possible), because this this cannot be changed.
 :::
+
+### `AuthnContextClassRef` property mapping
+
+Another special type of attribute is `AuthnContextClassRef`, used in SAML authentication requests from SPs to specify the required or preferred authentication contexts from the IdP. The authentication context specifies the desired or required level of authentication for a user. For example, Microsoft Entra ID uses the `AuthnContextClassRef` element to enforce specific authentication requirements for any applications accessing Entra ID.
+
+In authentik, you can use a property mapping to configure how the `AuthnContextClassRef` value is created. When left empty, the AuthnContextClassRef will be set based on the authentication method that the user used to authenticate.
+
+... ensure that the AuthnContextClassRef element in the SAML message is a URI.

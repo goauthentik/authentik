@@ -13,3 +13,5 @@ To add a provider (and the application that uses the provider for authentication
 4. Select the **Provider Type** of **SAML**, and then click **Next**.
 
 5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Submit** to create and save both the application and the provider.
+
+TODO describe each field....
