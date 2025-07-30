@@ -5,12 +5,11 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -70,7 +69,9 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFSelect];
+
+    //#region Properties
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
@@ -79,16 +80,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    set options(options: SelectOptions) {
-        this._options = groupOptions(options);
-        this.flatOptions = optionsToFlat(this._options);
+    public set options(options: SelectOptions) {
+        this.#options = groupOptions(options);
+        this.#flatOptions = optionsToFlat(this.#options);
     }
 
-    get options() {
-        return this._options;
+    public get options() {
+        return this.#options;
     }
 
-    _options!: GroupedOptions;
+    #options!: GroupedOptions;
 
     /**
      * The current value.  Must be one of the keys in the options group above.
@@ -96,7 +97,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: String, reflect: true })
-    value?: string;
+    public value?: string;
 
     /**
      * Whether or not the dropdown is open
@@ -104,7 +105,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * If set to true, this object MAY return undefined in no value is passed in and none is set
@@ -113,7 +114,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     /**
      * If not managed, make the matcher case-sensitive during interaction.  If managed,
@@ -122,15 +123,23 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, attribute: "case-sensitive" })
-    caseSensitive = false;
+    public caseSensitive = false;
 
     /**
-     * The name of the input, for forms
+     * The name of the input, for forms.
      *
      * @attr
      */
     @property({ type: String })
-    name?: string;
+    public name?: string;
+
+    /**
+     * The label of the input, for forms.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public label?: string;
 
     /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
@@ -139,7 +148,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object.");
+
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    protected fieldID?: string;
 
     /**
      * If true, the component only sends an input message up to a parent component. If false, the
@@ -149,7 +165,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *@attr
      */
     @property({ type: Boolean })
-    managed = false;
+    public managed = false;
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -158,36 +174,50 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property()
-    emptyOption = "---------";
+    public emptyOption = "---------";
 
-    // Handle the behavior of the drop-down when the :host scrolls off the page.
-    scrollHandler?: () => void;
+    //#endregion
 
-    // observer: IntersectionObserver;
+    //#region State
 
     @state()
-    displayValue = "";
+    protected displayValue = "";
 
     // Tracks when the inputRef is populated, so we can safely reschedule the
     // render of the dropdown with respect to it.
     @state()
-    inputRefIsAvailable = false;
+    protected inputRefIsAvailable = false;
 
     /**
      * Permanent identity with the portal so focus events can be checked.
      */
-    menuRef: Ref<ListSelect> = createRef();
+    #menuRef: Ref<ListSelect> = createRef();
 
     /**
      * Permanent identify for the input object, so the floating portal can find where to anchor
      * itself.
      */
-    inputRef: Ref<HTMLInputElement> = createRef();
+    #inputRef: Ref<HTMLInputElement> = createRef();
 
     /**
-     *  Maps a value from the portal to labels to be put into the <input> field>
+     * Maps a value from the portal to labels to be put into the <input> field>
      */
-    flatOptions: [string, SelectOption][] = [];
+    #flatOptions: [label: string, option: SelectOption][] = [];
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override updated() {
+        this.setAttribute("data-ouia-component-safe", "true");
+    }
+
+    public override firstUpdated() {
+        // Route around Lit's scheduling algorithm complaining about re-renders
+        window.setTimeout(() => {
+            this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
+        }, 0);
+    }
 
     connectedCallback() {
         super.connectedCallback();
@@ -203,73 +233,90 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         // TODO
     }
 
-    @bound
-    onClick(_ev: Event) {
+    //#endregion
+
+    //#region Event Listeners
+
+    #clickListener = (_ev: Event) => {
         this.open = !this.open;
-        this.inputRef.value?.focus();
+        this.#inputRef.value?.focus();
+    };
+
+    setFromMatchList(value?: string) {
+        if (!value) return;
+
+        const probableValue = this.#flatOptions.find(([label]) => label === this.value);
+
+        if (probableValue && this.#inputRef.value) {
+            this.#inputRef.value.value = probableValue[1][1];
+        }
     }
 
-    setFromMatchList(value: string | undefined) {
-        if (value === undefined) {
-            return;
-        }
-        const probableValue = this.flatOptions.find((option) => option[0] === this.value);
-        if (probableValue && this.inputRef.value) {
-            this.inputRef.value.value = probableValue[1][1];
-        }
-    }
-
-    @bound
-    onKeydown(event: KeyboardEvent) {
-        if (event.code === "Escape") {
+    #searchKeyupListener = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
             event.stopPropagation();
+            event.preventDefault();
             this.open = false;
         }
-        if (event.code === "ArrowDown" || event.code === "ArrowUp") {
+
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            this.#menuRef.value?.currentElement?.focus();
             this.open = true;
         }
-        if (event.code === "Tab" && this.open) {
-            event.preventDefault();
-            this.setFromMatchList(this.value);
-            this.menuRef.value?.currentElement?.focus();
-        }
-    }
+    };
 
-    @bound
-    onListBlur(event: FocusEvent) {
+    #searchKeydownListener = (event: KeyboardEvent) => {
+        if (!this.open) return;
+
+        switch (event.key) {
+            case "ArrowDown":
+            case "ArrowUp":
+                event.preventDefault();
+                this.setFromMatchList(this.value);
+                break;
+            case "Tab":
+                event.preventDefault();
+                this.setFromMatchList(this.value);
+
+                this.#menuRef.value?.currentElement?.focus();
+        }
+    };
+
+    #blurListener = (event: FocusEvent) => {
         // If we lost focus but the menu got it, don't do anything;
         const relatedTarget = event.relatedTarget as HTMLElement | undefined;
         if (
             relatedTarget &&
             (this.contains(relatedTarget) ||
                 this.renderRoot.contains(relatedTarget) ||
-                this.menuRef.value?.contains(relatedTarget) ||
-                this.menuRef.value?.renderRoot.contains(relatedTarget))
+                this.#menuRef.value?.contains(relatedTarget) ||
+                this.#menuRef.value?.renderRoot.contains(relatedTarget))
         ) {
             return;
         }
         this.open = false;
-        if (this.value === undefined) {
-            if (this.inputRef.value) {
-                this.inputRef.value.value = "";
+        if (!this.value) {
+            if (this.#inputRef.value) {
+                this.#inputRef.value.value = "";
             }
             this.setValue(undefined);
         }
-    }
+    };
 
     setValue(newValue: string | undefined) {
         this.value = newValue;
-        this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
+        this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
     }
 
     findValueForInput() {
-        const value = this.inputRef.value?.value;
+        const value = this.#inputRef.value?.value;
         if (value === undefined || value.trim() === "") {
             this.setValue(undefined);
             return;
         }
 
-        const matchesFound = findFlatOptions(this.flatOptions, value);
+        const matchesFound = findFlatOptions(this.#flatOptions, value);
         if (matchesFound.length > 0) {
             const newValue = matchesFound[0][0];
             if (newValue === value) {
@@ -281,47 +328,52 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    @bound
-    onInput(_ev: InputEvent) {
+    #inputListener = (_ev: InputEvent) => {
         if (!this.managed) {
             this.findValueForInput();
             this.requestUpdate();
         }
         this.open = true;
-    }
+    };
 
-    @bound
-    onListKeydown(event: KeyboardEvent) {
+    #listKeyupListener = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
+            event.preventDefault();
+
             this.open = false;
-            this.inputRef.value?.focus();
+            this.#inputRef.value?.focus();
         }
+    };
+
+    #listKeydownListener = (event: KeyboardEvent) => {
         if (event.key === "Tab" && event.shiftKey) {
             event.preventDefault();
-            this.inputRef.value?.focus();
-        }
-    }
 
-    @bound
-    onListChange(event: InputEvent) {
+            this.#inputRef.value?.focus();
+        }
+    };
+
+    #changeListener = (event: InputEvent) => {
         if (!event.target) {
             return;
         }
         const value = (event.target as HTMLInputElement).value;
-        if (value !== undefined) {
+        if (value) {
             const newDisplayValue = this.findDisplayForValue(value);
-            if (this.inputRef.value) {
-                this.inputRef.value.value = newDisplayValue ?? "";
+            if (this.#inputRef.value) {
+                this.#inputRef.value.value = newDisplayValue ?? "";
             }
-        } else if (this.inputRef.value) {
-            this.inputRef.value.value = "";
+        } else if (this.#inputRef.value) {
+            this.#inputRef.value.value = "";
         }
         this.open = false;
         this.setValue(value);
-    }
+    };
+
+    //#endregion
 
     findDisplayForValue(value: string) {
-        const newDisplayValue = this.flatOptions.find((option) => option[0] === value);
+        const newDisplayValue = this.#flatOptions.find((option) => option[0] === value);
         return newDisplayValue ? newDisplayValue[1][1] : undefined;
     }
 
@@ -340,14 +392,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     get rawValue() {
-        return this.inputRef.value?.value ?? "";
+        return this.#inputRef.value?.value ?? "";
     }
 
     get managedOptions() {
         return this.managed
-            ? this._options
-            : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
+            ? this.#options
+            : findOptionsSubset(this.#options, this.rawValue, this.caseSensitive);
     }
+
+    //#region Render
 
     public override render() {
         const emptyOption = this.blankable ? this.emptyOption : undefined;
@@ -357,17 +411,22 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
                     <div class="pf-c-select__toggle-wrapper" part="ak-search-select-wrapper">
                         <input
+                            ?required=${!this.blankable}
                             part="ak-search-select-toggle-typeahead"
                             autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"
                             type="text"
-                            ${ref(this.inputRef)}
+                            id=${ifDefined(this.fieldID)}
+                            ${ref(this.#inputRef)}
                             placeholder=${this.placeholder}
+                            aria-label=${ifDefined(this.label)}
+                            name=${ifDefined(this.name)}
                             spellcheck="false"
-                            @input=${this.onInput}
-                            @click=${this.onClick}
-                            @blur=${this.onListBlur}
-                            @keydown=${this.onKeydown}
+                            @input=${this.#inputListener}
+                            @click=${this.#clickListener}
+                            @blur=${this.#blurListener}
+                            @keyup=${this.#searchKeyupListener}
+                            @keydown=${this.#searchKeydownListener}
                             value=${this.displayValue}
                         />
                     </div>
@@ -377,34 +436,26 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 ? html`
                       <ak-portal
                           name=${ifDefined(this.name)}
-                          .anchor=${this.inputRef.value}
+                          .anchor=${this.#inputRef.value}
                           ?open=${open}
                       >
                           <ak-list-select
                               id="menu-${this.getAttribute("data-ouia-component-id")}"
-                              ${ref(this.menuRef)}
+                              ${ref(this.#menuRef)}
                               .options=${this.managedOptions}
                               value=${ifDefined(this.value)}
-                              @change=${this.onListChange}
-                              @blur=${this.onListBlur}
+                              @change=${this.#changeListener}
+                              @blur=${this.#blurListener}
                               emptyOption=${ifDefined(emptyOption)}
-                              @keydown=${this.onListKeydown}
+                              @keydown=${this.#listKeydownListener}
+                              @keyup=${this.#listKeyupListener}
                           ></ak-list-select>
                       </ak-portal>
                   `
                 : nothing}`;
     }
 
-    public override updated() {
-        this.setAttribute("data-ouia-component-safe", "true");
-    }
-
-    public override firstUpdated() {
-        // Route around Lit's scheduling algorithm complaining about re-renders
-        window.setTimeout(() => {
-            this.inputRefIsAvailable = Boolean(this.inputRef?.value);
-        }, 0);
-    }
+    //#endregion
 }
 
 declare global {

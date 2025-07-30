@@ -140,6 +140,8 @@ export function renderForm(
                     .errorMessages=${errors?.certificate}
                 >
                     <ak-crypto-certificate-search
+                        label=${msg("Certificate")}
+                        placeholder=${msg("Select a certificate...")}
                         certificate=${ifDefined(provider?.certificate ?? nothing)}
                         name="certificate"
                     >
