@@ -1,4 +1,3 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
@@ -64,13 +63,13 @@ export class AuthenticatorStaticStage extends BaseStage<
                         >
                     </div>
                 </ak-form-static>
-                <ak-form-element label="" class="pf-c-form__group">
+                <div class="pf-c-form__group">
                     <ul>
                         ${this.challenge.codes.map((token) => {
                             return html`<li class="pf-m-monospace">${token}</li>`;
                         })}
                     </ul>
-                </ak-form-element>
+                </div>
                 <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
                 <div class="pf-c-form__group pf-m-action">
