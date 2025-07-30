@@ -19,14 +19,9 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ attribute: false, type: String })
-    brandFlow?: string;
+    public brandFlow?: string;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
-
-    selected(flow: Flow): boolean {
+    protected override selected(flow: Flow): boolean {
         return super.selected(flow) || flow.pk === this.brandFlow;
     }
 }
