@@ -44,44 +44,28 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  *   consequence of the user typing or when selecting from the list.
  *
  */
-
 @customElement("ak-search-select")
 export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
     static styles = [...SearchSelectBase.styles];
 
-    // A function which takes the query state object (accepting that it may be empty) and returns a
-    // new collection of objects.
     @property({ attribute: false })
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    public fetchObjects!: (query?: string) => Promise<T[]>;
 
-    // A function passed to this object that extracts a string representation of items of the
-    // collection under search.
     @property({ attribute: false })
-    renderElement!: (element: T) => string;
+    public renderElement!: (element: T) => string;
 
-    // A function passed to this object that extracts an HTML representation of additional
-    // information for items of the collection under search.
     @property({ attribute: false })
-    renderDescription?: (element: T) => string | TemplateResult;
+    public renderDescription?: (element: T) => string | TemplateResult;
 
-    // A function which returns the currently selected object's primary key, used for serialization
-    // into forms.
     @property({ attribute: false })
-    value!: (element: T | undefined) => string;
+    public value!: (element?: T) => string;
 
-    // A function passed to this object that determines an object in the collection under search
-    // should be automatically selected. Only used when the search itself is responsible for
-    // fetching the data; sets an initial default value.
     @property({ attribute: false })
-    selected?: (element: T, elements: T[]) => boolean;
+    public selected?: (element: T, elements: T[]) => boolean;
 
-    // A function passed to this object (or using the default below) that groups objects in the
-    // collection under search into categories.
     @property({ attribute: false })
-    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
-        return groupBy(items, () => {
-            return "";
-        });
+    public groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
+        return groupBy(items, () => "");
     };
 }
 

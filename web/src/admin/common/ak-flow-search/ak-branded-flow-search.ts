@@ -1,4 +1,4 @@
-import FlowSearch from "./FlowSearch.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
@@ -19,16 +19,11 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ attribute: false, type: String })
-    brandFlow?: string;
+    public brandFlow?: string;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
-
-    selected(flow: Flow): boolean {
-        return super.selected(flow) || flow.pk === this.brandFlow;
-    }
+    protected override selected = (flow: Flow): boolean => {
+        return this.match(flow) || flow.pk === this.brandFlow;
+    };
 }
 
 declare global {

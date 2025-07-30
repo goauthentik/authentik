@@ -124,6 +124,7 @@ export function renderForm(
 ) {
     return html` <ak-text-input
             name="name"
+            placeholder=${msg("Provider name")}
             label=${msg("Name")}
             value=${ifDefined(provider?.name)}
             required
@@ -135,6 +136,8 @@ export function renderForm(
             required
         >
             <ak-flow-search
+                label=${msg("Authorization flow")}
+                placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${provider?.authorizationFlow}
                 required
@@ -197,6 +200,8 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        label=${msg("Signing Key")}
+                        placeholder=${msg("Select a signing key...")}
                         certificate=${ifDefined(provider?.signingKey ?? undefined)}
                         singleton
                     ></ak-crypto-certificate-search>
@@ -205,6 +210,8 @@ export function renderForm(
                 <ak-form-element-horizontal label=${msg("Encryption Key")} name="encryptionKey">
                     <!-- NOTE: 'null' cast to 'undefined' on encryptionKey to satisfy Lit requirements -->
                     <ak-crypto-certificate-search
+                        label=${msg("Encryption Key")}
+                        placeholder=${msg("Select an encryption key...")}
                         certificate=${ifDefined(provider?.encryptionKey ?? undefined)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
@@ -219,6 +226,8 @@ export function renderForm(
                     label=${msg("Authentication flow")}
                 >
                     <ak-flow-search
+                        label=${msg("Authentication flow")}
+                        placeholder=${msg("Select an authentication flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authenticationFlow}
                     ></ak-flow-search>
@@ -234,6 +243,8 @@ export function renderForm(
                     required
                 >
                     <ak-flow-search
+                        label=${msg("Invalidation flow")}
+                        placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"

@@ -1,4 +1,4 @@
-import FlowSearch from "./FlowSearch.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
@@ -18,5 +18,3 @@ declare global {
         "ak-flow-search": AkFlowSearch<Flow>;
     }
 }
-
-export default AkFlowSearch;

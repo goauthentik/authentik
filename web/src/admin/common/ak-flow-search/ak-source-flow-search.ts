@@ -1,4 +1,4 @@
-import FlowSearch from "./FlowSearch.js";
+import { FlowSearch } from "./FlowSearch.js";
 
 import type { Flow } from "@goauthentik/api";
 
@@ -18,9 +18,8 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
      *
      * @attr
      */
-
     @property({ type: String })
-    fallback: string | undefined;
+    public fallback?: string;
 
     /**
      * The primary key of the Source (not the Flow). Mostly the instancePk itself, used to affirm
@@ -29,21 +28,16 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ type: String })
-    instanceId: string | undefined;
-
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
+    public instanceId?: string;
 
     // If there's no instance or no currentFlowId for it and the flow resembles the fallback,
     // otherwise defer to the parent class.
-    selected(flow: Flow): boolean {
+    protected override selected = (flow: Flow): boolean => {
         return (
             (!this.instanceId && !this.currentFlow && flow.slug === this.fallback) ||
-            super.selected(flow)
+            this.match(flow)
         );
-    }
+    };
 }
 
 declare global {
