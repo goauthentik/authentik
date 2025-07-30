@@ -31,56 +31,85 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
+export abstract class SearchSelectBase<T>
+    extends AkControlElement<string>
+    implements ISearchSelectBase<T>
+{
     static styles = [PFBase];
 
-    // A function which takes the query state object (accepting that it may be empty) and returns a
-    // new collection of objects.
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    //#region Properties
 
-    // A function passed to this object that extracts a string representation of items of the
-    // collection under search.
-    renderElement!: (element: T) => string;
+    /**
+     * A function which takes the query state object (accepting that it may be empty)
+     * and returns a
+     * new collection of objects.
+     */
+    public abstract fetchObjects: (query?: string) => Promise<T[]>;
 
-    // A function passed to this object that extracts an HTML representation of additional
-    // information for items of the collection under search.
-    renderDescription?: (element: T) => string | TemplateResult;
+    /**
+     * A function passed to this object that extracts a string representation of items of the
+     * collection under search.
+     */
+    public abstract renderElement: (element: T) => string;
 
-    // A function which returns the currently selected object's primary key, used for serialization
-    // into forms.
-    value!: (element: T | undefined) => string;
+    /**
+     * A function passed to this object that extracts an HTML representation of additional
+     * information for items of the collection under search.
+     */
+    public abstract renderDescription?: (element: T) => string | TemplateResult;
 
-    // A function passed to this object that determines an object in the collection under search
-    // should be automatically selected. Only used when the search itself is responsible for
-    // fetching the data; sets an initial default value.
-    selected?: (element: T, elements: T[]) => boolean;
+    /**
+     * A function which returns the currently selected object's primary key, used for serialization
+     * into forms.
+     */
+    public abstract value: (element?: T) => string;
 
-    // A function passed to this object (or using the default below) that groups objects in the
-    // collection under search into categories.
-    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
-        return groupBy(items, () => {
-            return "";
-        });
+    /**
+     * A function passed to this object that determines an object in the collection under search
+     * should be automatically selected. Only used when the search itself is responsible for
+     * fetching the data; sets an initial default value.
+     */
+    public abstract selected?: (element: T, elements: T[]) => boolean;
+
+    /**
+     * A function passed to this object (or using the default below) that groups objects in the
+     * collection under search into categories.
+     */
+    public groupBy: (items: T[]) => [string, T[]][] = (items) => {
+        return groupBy(items, () => "");
     };
 
-    // Whether or not the dropdown component can be left blank
+    /**
+     * Whether or not the dropdown component can be left blank
+     * @property
+     * @attr
+     */
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
-    // An initial string to filter the search contents, and the value of the input which further
-    // serves to restrict the search
-    @property()
-    query?: string;
+    /**
+     * An initial string to filter the search contents,
+     * and the value of the input which further serves to restrict the search.
+     * @property
+     */
+    @property({ type: String })
+    public query?: string;
 
     // The objects currently available under search
     @property({ attribute: false })
-    objects?: T[];
+    public objects?: T[];
 
-    // The currently selected object
+    /**
+     * The currently selected object.
+     * @property
+     */
     @property({ attribute: false })
-    selectedObject?: T;
+    public selectedObject?: T;
 
-    // Used to inform the form of the name of the object
+    /**
+     * Used to inform the form of the name of the object
+     * @property
+     */
     @property()
     public name?: string;
 
@@ -91,24 +120,42 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     @property({ type: String, reflect: false })
     public fieldID?: string;
 
-    // Used to inform the form of the input label.
+    /**
+     * Used to inform the form of the input label.
+     * @property
+     */
     @property()
     public label?: string;
 
-    // The textual placeholder for the search's <input> object, if currently empty. Used as the
-    // native <input> object's `placeholder` field.
-    @property()
-    placeholder: string = msg("Select an object.");
+    /**
+     * The textual placeholder for the search's <input> object, if currently empty.
+     *
+     * Used as the native <input> object's `placeholder` field.
+     * @property
+     * @attr
+     */
+    @property({ type: String })
+    public placeholder: string = msg("Select an object.");
 
-    // A textual string representing "The user has affirmed they want to leave the selection blank."
-    // Only used if `blankable` above is true.
-    @property()
-    emptyOption = "---------";
+    /**
+     * A textual string representing "The user has affirmed they want to leave the selection blank."
+     * Only used if `blankable` above is true.
+     *
+     * @property
+     */
+    @property({ type: String })
+    public emptyOption = "---------";
 
-    isFetchingData = false;
+    //#endregion
+
+    //#region State
+
+    #loading = false;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
+
+    //#endregion
 
     public toForm(): string {
         if (!this.objects) {
@@ -132,26 +179,27 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     }
 
     public async updateData() {
-        if (this.isFetchingData) {
+        if (this.#loading) {
             return Promise.resolve();
         }
-        this.isFetchingData = true;
+
+        this.#loading = true;
         this.dispatchEvent(new Event("loading"));
 
         return this.fetchObjects(this.query)
             .then((nextObjects) => {
-                nextObjects.forEach((obj) => {
-                    if (this.selected && this.selected(obj, nextObjects || [])) {
-                        this.selectedObject = obj;
-                        this.dispatchChangeEvent(this.selectedObject);
-                    }
-                });
+                const selectedObject = nextObjects.find((obj) => this.selected?.(obj, nextObjects));
+
+                if (selectedObject) {
+                    this.selectedObject = selectedObject;
+                    this.dispatchChangeEvent(this.selectedObject);
+                }
 
                 this.objects = nextObjects;
-                this.isFetchingData = false;
+                this.#loading = false;
             })
             .catch(async (error: unknown) => {
-                this.isFetchingData = false;
+                this.#loading = false;
                 this.objects = undefined;
 
                 const parsedError = await parseAPIResponseError(error);
@@ -174,9 +222,10 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    private onSearch(event: InputEvent) {
+    #searchListener = (event: InputEvent) => {
         const value = (event.target as SearchSelectView).rawValue;
-        if (value === undefined) {
+
+        if (!value) {
             this.selectedObject = undefined;
             return;
         }
@@ -185,7 +234,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.updateData()?.then(() => {
             this.dispatchChangeEvent(this.selectedObject);
         });
-    }
+    };
 
     private onSelect(event: InputEvent) {
         const value = (event.target as SearchSelectView).value;
@@ -270,21 +319,22 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
             .options=${options}
             value=${ifDefined(value)}
             ?blankable=${this.blankable}
+            label=${ifDefined(this.label)}
             name=${ifDefined(this.name)}
             placeholder=${this.placeholder}
             emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
-            @input=${this.onSearch}
+            @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;
     }
 
     public override updated(changed: PropertyValues<this>) {
-        if (!this.isFetchingData && changed.has("objects")) {
+        if (!this.#loading && changed.has("objects")) {
             this.dispatchEvent(new Event("ready"));
         }
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
-        if (!this.isFetchingData) {
+        if (!this.#loading) {
             this.setAttribute("data-ouia-component-safe", "true");
         }
     }

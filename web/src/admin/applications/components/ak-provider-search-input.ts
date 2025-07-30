@@ -54,18 +54,14 @@ export class AkProviderInput extends AKElement {
     value?: number;
 
     @property({ type: Boolean })
-    required = false;
+    required?: boolean;
 
     @property({ type: Boolean })
-    blankable = false;
+    blankable?: boolean;
 
     @property({ type: String })
-    help = "";
+    help?: string;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
     /**
      * A unique ID to associate with the input and label.
      * @property
@@ -73,10 +69,11 @@ export class AkProviderInput extends AKElement {
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
-    selected(item: Provider) {
-        return this.value !== undefined && this.value === item.pk;
-    }
     //#endregion
+
+    #selected = (item: Provider) => {
+        return typeof this.value === "number" && this.value === item.pk;
+    };
 
     render() {
         return html` <ak-form-element-horizontal name=${this.name}>
@@ -86,12 +83,12 @@ export class AkProviderInput extends AKElement {
 
             <ak-search-select
                 .fieldID=${this.fieldID}
-                .selected=${this.selected}
+                .selected=${this.#selected}
                 .fetchObjects=${fetch}
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .groupBy=${doGroupBy}
-                ?blankable=${this.blankable}
+                ?blankable=${!!this.blankable}
             >
             </ak-search-select>
             ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
