@@ -116,8 +116,8 @@ export abstract class ModalButton extends AKElement {
      * @abstract
      */
     protected renderModal(): SlottedTemplateResult {
-        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
-            <div class="pf-l-bullseye">
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
+            <div class="pf-l-bullseye" role="presentation">
                 <div
                     class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
