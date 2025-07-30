@@ -11,6 +11,9 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     value = "";
 
     @property({ type: String })
+    autocomplete?: string;
+
+    @property({ type: String })
     placeholder?: string;
 
     renderControl() {
@@ -22,14 +25,17 @@ export class AkTextInput extends HorizontalLightComponent<string> {
 
         return html` <input
             type="text"
+            role="textbox"
+            id=${ifDefined(this.fieldID)}
             @input=${setValue}
             value=${ifDefined(this.value)}
             class="${classMap({
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,
             })}"
-            autocomplete=${ifDefined(code ? "off" : undefined)}
+            autocomplete=${ifDefined(code ? "off" : this.autocomplete)}
             spellcheck=${ifDefined(code ? "false" : undefined)}
+            aria-label=${ifDefined(this.placeholder || this.label)}
             placeholder=${ifDefined(this.placeholder)}
             ?required=${this.required}
         />`;
