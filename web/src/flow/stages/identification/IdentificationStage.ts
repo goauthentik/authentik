@@ -1,9 +1,11 @@
 import "#elements/Divider";
 import "#elements/EmptyState";
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
 import "#flow/components/ak-flow-password-input";
 import "#flow/stages/captcha/CaptchaStage";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { renderSourceIcon } from "#admin/sources/utils";
 
@@ -20,7 +22,7 @@ import {
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -86,6 +88,14 @@ export class IdentificationStage extends BaseStage<
             }
         `,
     ];
+
+    /**
+     * The ID of the input field.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "input-id" })
+    public inputID = "ak-identifier-input";
 
     #form?: HTMLFormElement;
 
@@ -301,6 +311,7 @@ export class IdentificationStage extends BaseStage<
             [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
+
         return html`${this.challenge.flowDesignation === FlowDesignationEnum.Recovery
                 ? html`
                       <p>
@@ -310,13 +321,10 @@ export class IdentificationStage extends BaseStage<
                       </p>
                   `
                 : nothing}
-            <ak-form-element
-                label=${label}
-                required
-                class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {}).uid_field}
-            >
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: this.inputID }, label)}
                 <input
+                    id=${this.inputID}
                     type=${type}
                     name="uidField"
                     placeholder=${label}
@@ -328,12 +336,13 @@ export class IdentificationStage extends BaseStage<
                     required
                 />
                 ${this.#rememberMe.render()}
-            </ak-form-element>
+                ${AKFormErrors({ errors: this.challenge.responseErrors?.uid_field })}
+            </div>
             ${this.challenge.passwordFields
                 ? html`
                       <ak-flow-input-password
                           label=${msg("Password")}
-                          inputId="ak-stage-identification-password"
+                          input-idd="ak-stage-identification-password"
                           required
                           class="pf-c-form__group"
                           .errors=${(this.challenge?.responseErrors || {}).password}

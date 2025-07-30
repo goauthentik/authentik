@@ -1,8 +1,8 @@
-import "#elements/forms/FormElement";
-
 import { AKElement } from "#elements/Base";
 import { bound } from "#elements/decorators/bound";
 import { isActiveElement } from "#elements/utils/focus";
+
+import { AKLabel } from "#components/ak-label";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -12,6 +12,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -40,7 +41,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
+    static styles = [PFBase, PFForm, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 
@@ -50,7 +51,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "input-id" })
-    inputId = "ak-stage-password-input";
+    public inputID = "ak-stage-password-input";
 
     /**
      * The name of the input field.
@@ -58,7 +59,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    name = "password";
+    public name = "password";
 
     /**
      * The label for the input field.
@@ -66,7 +67,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    label = msg("Password");
+    public label = msg("Password");
 
     /**
      * The placeholder text for the input field.
@@ -74,7 +75,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    placeholder = msg("Please enter your password");
+    public placeholder = msg("Please enter your password");
 
     /**
      * The initial value of the input field.
@@ -82,20 +83,20 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "prefill" })
-    initialValue = "";
+    public initialValue = "";
 
     /**
      * The errors for the input field.
      */
     @property({ type: Object })
-    errors: Record<string, string> = {};
+    public errors: Record<string, string> = {};
 
     /**
      * Forwarded to the input tag's aria-invalid attribute, if set
      * @attr
      */
     @property({ type: String })
-    invalid?: string;
+    public invalid?: string;
 
     /**
      * Whether to allow the user to toggle the visibility of the password.
@@ -103,7 +104,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "allow-show-password" })
-    allowShowPassword = false;
+    public allowShowPassword = false;
 
     /**
      * Whether the password is currently visible.
@@ -111,7 +112,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "password-visible" })
-    passwordVisible = false;
+    public passwordVisible = false;
 
     /**
      * Automatically grab focus after rendering.
@@ -119,15 +120,15 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "grab-focus" })
-    grabFocus = false;
+    public grabFocus = false;
 
     //#endregion
 
     //#region Refs
 
-    inputRef: Ref<HTMLInputElement> = createRef();
+    public inputRef: Ref<HTMLInputElement> = createRef();
 
-    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+    public toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
 
     //#endregion
 
@@ -137,7 +138,7 @@ export class InputPassword extends AKElement {
      * Whether the caps lock key is enabled.
      */
     @state()
-    capsLock = false;
+    public capsLock = false;
 
     //#endregion
 
@@ -314,37 +315,33 @@ export class InputPassword extends AKElement {
     }
 
     render() {
-        return html` <ak-form-element
-            label="${this.label}"
-            required
-            class="pf-c-form__group"
-            .errors=${this.errors}
-        >
-            <div class="pf-c-form__group-control">
-                <div class="pf-c-input-group">
-                    <input
-                        type=${this.passwordVisible ? "text" : "password"}
-                        id=${this.inputId}
-                        name=${this.name}
-                        placeholder=${this.placeholder}
-                        autocomplete="current-password"
-                        class="${classMap({
-                            "pf-c-form-control": true,
-                            "pf-m-icon": true,
-                            "pf-m-caps-lock": this.capsLock,
-                        })}"
-                        required
-                        aria-invalid=${ifDefined(this.invalid)}
-                        value=${this.initialValue}
-                        ${ref(this.inputRef)}
-                    />
+        return html` ${AKLabel({ required: true, htmlFor: this.inputID }, this.label)}
+            <div class="pf-c-form__group">
+                <div class="pf-c-form__group-control">
+                    <div class="pf-c-input-group">
+                        <input
+                            type=${this.passwordVisible ? "text" : "password"}
+                            id=${this.inputID}
+                            name=${this.name}
+                            placeholder=${this.placeholder}
+                            autocomplete="current-password"
+                            class="${classMap({
+                                "pf-c-form-control": true,
+                                "pf-m-icon": true,
+                                "pf-m-caps-lock": this.capsLock,
+                            })}"
+                            required
+                            aria-invalid=${ifDefined(this.invalid)}
+                            value=${this.initialValue}
+                            ${ref(this.inputRef)}
+                        />
 
-                    ${this.renderVisibilityToggle()}
+                        ${this.renderVisibilityToggle()}
+                    </div>
+
+                    ${this.renderHelperText()}
                 </div>
-
-                ${this.renderHelperText()}
-            </div>
-        </ak-form-element>`;
+            </div>`;
     }
 
     //#endregion
