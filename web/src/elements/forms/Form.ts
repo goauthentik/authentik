@@ -2,7 +2,6 @@ import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
-import { camelToSnake } from "#common/utils";
 
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
@@ -13,6 +12,8 @@ import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 import { instanceOfValidationError } from "@goauthentik/api";
+
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -303,13 +304,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                             "ak-form-element-horizontal",
                         ) || [];
 
-                    elements.forEach((element) => {
+                    for (const element of elements) {
                         element.requestUpdate();
 
                         const elementName = element.name;
-                        if (!elementName) return;
 
-                        const snakeProperty = camelToSnake(elementName);
+                        if (!elementName) continue;
+
+                        const snakeProperty = snakeCase(elementName);
 
                         if (snakeProperty in parsedError) {
                             element.errorMessages = parsedError[snakeProperty];
@@ -318,7 +320,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                             element.errorMessages = [];
                             element.invalid = false;
                         }
-                    });
+                    }
 
                     if (parsedError.nonFieldErrors) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
