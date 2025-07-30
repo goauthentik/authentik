@@ -106,7 +106,6 @@ class SAMLLogoutStageView(StageView):
             # Provider deleted? Skip and continue
             return self.get(request, *args, **kwargs)
 
-
 class SAMLIframeLogoutChallenge(Challenge):
     """Challenge for SAML iframe logout"""
 
@@ -140,13 +139,47 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
         logout_urls = []
         for provider in providers:
             try:
-                # For now, simple URL - will enhance later for POST binding
-                logout_url = provider.sls_url
+                # Determine NameID
+                user = self.request.user
+                name_id = user.email
+                name_id_format = SAML_NAME_ID_FORMAT_EMAIL
+
+                if provider.name_id_mapping:
+                    try:
+                        value = provider.name_id_mapping.evaluate(
+                            user=user,
+                            request=self.request,
+                            provider=provider,
+                        )
+                        if value is not None:
+                            name_id = str(value)
+                    except Exception as exc:
+                        LOGGER.warning("Failed to evaluate name_id_mapping", exc=exc, provider=provider)
+
+                # Create SAML logout request
+                processor = LogoutRequestProcessor(
+                    provider=provider,
+                    user=user,
+                    destination=provider.sls_url,
+                    name_id=name_id,
+                    name_id_format=name_id_format,
+                )
+
+                # Build redirect URL with proper SAML parameters
+                encoded_request = processor.encode_redirect()
+                params = {"SAMLRequest": encoded_request}
+
+                # Check if the SLS URL already has query parameters
+                if "?" in provider.sls_url:
+                    logout_url = f"{provider.sls_url}&{urlencode(params)}"
+                else:
+                    logout_url = f"{provider.sls_url}?{urlencode(params)}"
+
+
                 logout_urls.append(
                     {
                         "url": logout_url,
                         "provider_name": provider.name,
-                        "binding": "REDIRECT",  # Will use provider.sls_binding later
                     }
                 )
             except Exception as exc:
