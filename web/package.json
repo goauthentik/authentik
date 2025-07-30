@@ -192,9 +192,9 @@
         "@esbuild/darwin-arm64": "^0.25.4",
         "@esbuild/linux-arm64": "^0.25.4",
         "@esbuild/linux-x64": "^0.25.4",
-        "@rollup/rollup-darwin-arm64": "^4.46.1",
-        "@rollup/rollup-linux-arm64-gnu": "^4.46.1",
-        "@rollup/rollup-linux-x64-gnu": "^4.46.1"
+        "@rollup/rollup-darwin-arm64": "^4.46.2",
+        "@rollup/rollup-linux-arm64-gnu": "^4.46.2",
+        "@rollup/rollup-linux-x64-gnu": "^4.46.2"
     },
     "wireit": {
         "build": {
