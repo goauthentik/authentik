@@ -23,4 +23,4 @@ RUN npm run build
 
 FROM docker.io/library/nginx:1.29.0
 
-COPY --from=docs-builder /work/website/build /usr/share/nginx/html
+COPY --from=docs-builder /work/website/docs/build /usr/share/nginx/html
