@@ -21,6 +21,7 @@ import diffGrammar from "highlight.js/lib/languages/diff";
 import confGrammar from "highlight.js/lib/languages/ini";
 import nginxGrammar from "highlight.js/lib/languages/nginx";
 import { common } from "lowlight";
+import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import * as runtime from "react/jsx-runtime";
 import rehypeHighlight, { Options as HighlightOptions } from "rehype-highlight";
@@ -225,15 +226,17 @@ export class AKMDX extends AKElement {
         const { frontmatter = {} } = mdxExports;
 
         this.#reactRoot.render(
-            <MDXModuleContext.Provider value={mdxModule}>
-                <Content
-                    frontmatter={frontmatter}
-                    components={{
+            React.createElement(
+                MDXModuleContext.Provider,
+                { value: mdxModule },
+                React.createElement(Content, {
+                    frontmatter,
+                    components: {
                         wrapper: MDXWrapper,
                         a: MDXAnchor,
-                    }}
-                />
-            </MDXModuleContext.Provider>,
+                    },
+                }),
+            ),
         );
     }
 }

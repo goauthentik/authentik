@@ -14,6 +14,8 @@
         "module": "esnext",
         "moduleResolution": "bundler",
         "baseUrl": ".",
+        "jsx": "react-jsx",
+        "jsxImportSource": "@goauthentik/lit-jsx",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,

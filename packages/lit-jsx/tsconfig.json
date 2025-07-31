@@ -1,0 +1,15 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "checkJs": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    },
+    "exclude": [
+        // ---
+        "**/out/**/*",
+        "**/dist/**/*",
+        "storybook-static"
+    ]
+}

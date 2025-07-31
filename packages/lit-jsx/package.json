@@ -1,0 +1,75 @@
+{
+    "name": "@goauthentik/lit-jsx",
+    "version": "1.0.0",
+    "description": "JSX Runtime for Lit",
+    "license": "MIT",
+    "scripts": {
+        "compile": "tsc -b",
+        "lint": "run-s lint:prettier:check lint:eslint:check",
+        "lint:eslint:check": "eslint .",
+        "lint:eslint:fix": "eslint --fix .",
+        "lint:fix": "run-s lint:prettier:fix lint:eslint:fix",
+        "lint:prettier": "eslint .",
+        "lint:prettier:check": "prettier --cache --check -u .",
+        "lint:prettier:fix": "prettier --cache --write -u .",
+        "test": "vitest"
+    },
+    "main": "tsconfig.json",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./lib/types/lit-jsx.d.ts"
+        },
+        "./jsx-runtime": {
+            "import": "./out/lib/jsx-runtime.js",
+            "types": "./types/jsx-runtime.d.ts"
+        },
+        "./jsx-dev-runtime": {
+            "import": "./out/lib/jsx-runtime.js",
+            "types": "./types/jsx-runtime.d.ts"
+        },
+        "./types/*": {
+            "types": "./types/*"
+        }
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.33.0",
+        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^3.1.0",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@lit-labs/ssr": "^3.3.1",
+        "@open-wc/lit-helpers": "^0.7.0",
+        "@types/jsdom": "^21.1.7",
+        "@types/node": "^24.3.0",
+        "@typescript-eslint/eslint-plugin": "^8.39.1",
+        "@typescript-eslint/parser": "^8.39.1",
+        "dompurify": "^3.2.6",
+        "eslint": "^9.33.0",
+        "jsdom": "^26.1.0",
+        "lit": "^3.3.1",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.6.2",
+        "prettier-plugin-packagejson": "^2.5.19",
+        "trusted-types": "^2.0.0",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.39.1",
+        "vite": "^7.1.2",
+        "vitest": "^3.2.4"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.1"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "format-imports": {
+            "eslint": "^9.31.0"
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}
