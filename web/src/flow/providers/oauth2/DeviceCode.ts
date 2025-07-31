@@ -42,7 +42,11 @@ export class OAuth2DeviceCode extends BaseStage<
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
+                    ${AKLabel({
+                        required: true,
+                        htmlFor: "device-code-input",
+                        children: msg("Device Code"),
+                    })}
 
                     <input
                         id="device-code-input"

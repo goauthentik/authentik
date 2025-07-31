@@ -322,7 +322,7 @@ export class IdentificationStage extends BaseStage<
                   `
                 : nothing}
             <div class="pf-c-form__group">
-                ${AKLabel({ required: true, htmlFor: this.inputID }, label)}
+                ${AKLabel({ required: true, htmlFor: this.inputID, children: label })}
                 <input
                     id=${this.inputID}
                     type=${type}

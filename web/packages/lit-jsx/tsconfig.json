@@ -1,0 +1,9 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "checkJs": true,
+        "emitDeclarationOnly": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"]
+    }
+}

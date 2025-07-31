@@ -1,0 +1,32 @@
+{
+    "name": "@goauthentik/lit-jsx",
+    "version": "1.0.0",
+    "description": "JSX Runtime for Lit",
+    "license": "MIT",
+    "main": "tsconfig.json",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./index.d.ts"
+        },
+        "./jsx-runtime": "./jsx-runtime.js"
+    },
+    "devDependencies": {
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "lit": "^3.3.1",
+        "typescript": "^5.8.3"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.1"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

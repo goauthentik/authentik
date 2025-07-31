@@ -279,13 +279,11 @@ ${prompt.initialValue}</textarea
             const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
 
             return html`<div class="pf-c-form__group">
-                ${AKLabel(
-                    {
-                        required: prompt.required,
-                        htmlFor: `field-${prompt.fieldKey}`,
-                    },
-                    prompt.label,
-                )}
+                ${AKLabel({
+                    required: prompt.required,
+                    htmlFor: `field-${prompt.fieldKey}`,
+                    children: prompt.label,
+                })}
                 ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 ${AKFormErrors({ errors })}
             </div>`;

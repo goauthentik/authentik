@@ -56,10 +56,11 @@ export class AuthenticatorEmailStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 <div class="pf-c-form__group">
-                    ${AKLabel(
-                        { required: true, htmlFor: "email-input" },
-                        msg("Configure your email"),
-                    )}
+                    ${AKLabel({
+                        required: true,
+                        htmlFor: "email-input",
+                        children: msg("Configure your email"),
+                    })}
                     <input
                         id="email-input"
                         type="email"
@@ -99,7 +100,7 @@ export class AuthenticatorEmailStage extends BaseStage<
             ${ifDefined(this.challenge.email)}
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "code-input" }, msg("Code"))}
+                    ${AKLabel({ required: true, htmlFor: "code-input", children: msg("Code") })}
                     <input
                         id="code-input"
                         type="text"
