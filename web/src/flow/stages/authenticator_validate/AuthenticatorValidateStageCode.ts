@@ -77,12 +77,14 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 <p>${this.deviceMessage()}</p>
             </div>
             <div class="pf-c-form__group">
-                ${AKLabel(
-                    { required: true, htmlFor: "validation-code-input" },
-                    this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                        ? msg("Static token")
-                        : msg("Authentication code"),
-                )}
+                ${AKLabel({
+                    required: true,
+                    htmlFor: "validation-code-input",
+                    children:
+                        this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                            ? msg("Static token")
+                            : msg("Authentication code"),
+                })}
                 <input
                     id="validation-code-input"
                     type="text"

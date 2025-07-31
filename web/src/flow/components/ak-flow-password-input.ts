@@ -315,7 +315,7 @@ export class InputPassword extends AKElement {
     }
 
     render() {
-        return html` ${AKLabel({ required: true, htmlFor: this.inputID }, this.label)}
+        return html` ${AKLabel({ required: true, htmlFor: this.inputID, children: this.label })}
             <div class="pf-c-form__group">
                 <div class="pf-c-form__group-control">
                     <div class="pf-c-input-group">

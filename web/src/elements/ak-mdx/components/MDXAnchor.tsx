@@ -49,15 +49,15 @@ export const MDXAnchor = ({
         });
     };
 
-    return (
-        <a
-            href={href}
-            onClick={interceptHeadingLinks}
-            rel="noopener noreferrer"
-            target="_blank"
-            {...props}
-        >
-            {children}
-        </a>
+    return React.createElement(
+        "a",
+        {
+            href,
+            onClick: interceptHeadingLinks,
+            rel: "noopener noreferrer",
+            target: "_blank",
+            ...props,
+        },
+        children,
     );
 };

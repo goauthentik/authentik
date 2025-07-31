@@ -104,7 +104,11 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     )}
                 </p>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "totp-code-input" }, msg("Code"))}
+                    ${AKLabel({
+                        required: true,
+                        htmlFor: "totp-code-input",
+                        children: msg("Code"),
+                    })}
                     <input
                         id="totp-code-input"
                         type="text"

@@ -56,10 +56,11 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 <div class="pf-c-form__group">
-                    ${AKLabel(
-                        { required: true, htmlFor: "phone-number-input" },
-                        msg("Phone number"),
-                    )}
+                    ${AKLabel({
+                        required: true,
+                        htmlFor: "phone-number-input",
+                        children: msg("Phone number"),
+                    })}
 
                     <input
                         type="tel"
@@ -97,7 +98,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 <div class="pf-c-form__group">
-                    ${AKLabel({ required: true, htmlFor: "sms-code-input" }, msg("Code"))}
+                    ${AKLabel({ required: true, htmlFor: "sms-code-input", children: msg("Code") })}
                     <input
                         id="sms-code-input"
                         type="text"
