@@ -4,10 +4,12 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.brands.api import Themes
-from authentik.brands.models import Brand
+from authentik.brands.models import Brand, BrandPolicy
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
 
@@ -180,3 +182,62 @@ class TestBrands(APITestCase):
         res = self.client.get(reverse("authentik_core:if-user"))
         self.assertEqual(res.status_code, 200)
         self.assertIn(brand.branding_custom_css, res.content.decode())
+
+
+class TestBrandPolicy(APITestCase):
+    def setUp(self):
+        self.admin = create_test_admin_user()
+        self.client.force_login(self.admin)
+
+        self.response_code = 400
+        self.brand: Brand = create_test_brand()
+        self.brand_policy: BrandPolicy = BrandPolicy.objects.create(
+            name=generate_id(),
+            brand=self.brand,
+            path="/api/v3/rbac/permissions/",
+            failure_http_status_code=self.response_code,
+        )
+        self.true_policy: DummyPolicy = DummyPolicy.objects.create(
+            name=generate_id(), result=True, wait_min=1, wait_max=2
+        )
+        self.false_policy: DummyPolicy = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=1, wait_max=2
+        )
+
+    def test_brand_policy_success(self):
+        """Test BrandPolicy success"""
+        PolicyBinding.objects.create(target=self.brand_policy, policy=self.true_policy, order=0)
+
+        response = self.client.get(reverse("authentik_api:permission-list"))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_brand_policy_failure(self):
+        """Test BrandPolicy failure"""
+        response_code = 451
+        response_text = "The temperature at which book-paper catches fire and burns..."
+        self.brand_policy.failure_http_status_code = response_code
+        self.brand_policy.failure_response = response_text
+        self.brand_policy.save()
+        PolicyBinding.objects.create(target=self.brand_policy, policy=self.false_policy, order=0)
+
+        response = self.client.get(reverse("authentik_api:permission-list"))
+
+        self.assertEqual(response.status_code, response_code)
+        self.assertEqual(response.content.decode(), response_text)
+
+    def test_brand_policy_failure_json(self):
+        """Test BrandPolicy failure JSON"""
+        response_code = 451
+        response_text = (
+            '{ "Fahrenheit 451": "The temperature at which book-paper catches fire and burns..." }'
+        )
+        self.brand_policy.failure_http_status_code = response_code
+        self.brand_policy.failure_response = response_text
+        self.brand_policy.save()
+        PolicyBinding.objects.create(target=self.brand_policy, policy=self.false_policy, order=0)
+
+        response = self.client.get(reverse("authentik_api:permission-list"))
+
+        self.assertEqual(response.status_code, response_code)
+        self.assertJSONEqual(response.content, response_text)
