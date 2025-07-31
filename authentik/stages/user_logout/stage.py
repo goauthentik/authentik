@@ -6,6 +6,7 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
 from authentik.flows.stage import StageView
+from authentik.stages.user_logout.models import UserLogoutStage
 
 LOGGER = get_logger()
 
@@ -36,39 +37,33 @@ class UserLogoutStageView(StageView):
             SAMLLogoutStageView,
         )
 
-        # Check tenant preference
-        tenant = self.request.tenant
+        stage: UserLogoutStage = self.executor.current_stage
 
-        # Create the appropriate stage based on tenant setting
-        if hasattr(tenant, "enable_iframe_saml_logout") and tenant.enable_iframe_saml_logout:
+        if stage.saml_redirect_logout:
+            saml_stage = in_memory_stage(
+                SAMLLogoutStageView,
+            )
+        else:
             saml_stage = in_memory_stage(
                 SAMLIframeLogoutStageView,
                 iframe_timeout=5000,  # Hardcoded 5 second timeout
             )
-        else:
-            # Default to redirect
-            saml_stage = in_memory_stage(
-                SAMLLogoutStageView,
-            )
 
-        # Insert the stage into the plan
+        self.executor.plan.insert_stage(self.executor.current_stage)
         self.executor.plan.insert_stage(saml_stage)
-        self.executor.plan.append_stage(self.executor.current_stage)
         return self.executor.stage_ok()
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Check if we need to inject SAML logout before proceeding"""
-        # Check if we need to inject SAML logout
+
         if self.should_inject_saml_logout():
             # Check if we've already injected (to avoid infinite loop)
             if not self.request.session.get("saml_logout_injected", False):
                 self.request.session["saml_logout_injected"] = True
                 return self.inject_saml_logout_stage()
 
-        # Clean up the flag
         self.request.session.pop("saml_logout_injected", None)
 
-        # Continue with normal logout
         LOGGER.debug(
             "Logged out",
             user=request.user,

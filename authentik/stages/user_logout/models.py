@@ -1,5 +1,6 @@
 """logout stage models"""
 
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
@@ -9,6 +10,8 @@ from authentik.flows.models import Stage
 
 class UserLogoutStage(Stage):
     """Resets the users current session."""
+
+    saml_redirect_logout = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

@@ -40080,6 +40080,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: saml_redirect_logout
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
@@ -55635,6 +55639,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        saml_redirect_logout:
+          type: boolean
     PatchedUserOAuthSourceConnectionRequest:
       type: object
       description: User source connection
@@ -61300,6 +61306,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+        saml_redirect_logout:
+          type: boolean
       required:
       - component
       - meta_model_name
@@ -61318,6 +61326,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        saml_redirect_logout:
+          type: boolean
       required:
       - name
     UserMatchingModeEnum:

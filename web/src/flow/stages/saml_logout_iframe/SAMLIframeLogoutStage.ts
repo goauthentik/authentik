@@ -123,7 +123,7 @@ export class SAMLIframeLogoutStage extends BaseStage<
     }
 
     createLogoutIframe(logoutData: LogoutURLData, index: number, timeout: number): void {
-        
+
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
         iframe.name = `saml-logout-${index}`;
@@ -147,7 +147,7 @@ export class SAMLIframeLogoutStage extends BaseStage<
         });
 
         // Handle based on binding type
-        if (logoutData.binding === "REDIRECT" || !logoutData.saml_request) {
+        if (logoutData.binding === "redirect" || !logoutData.saml_request) {
             // For REDIRECT binding, just navigate the iframe to the URL
             iframe.src = logoutData.url;
         } else {
@@ -167,7 +167,7 @@ export class SAMLIframeLogoutStage extends BaseStage<
             // Add to document and submit
             document.body.appendChild(form);
             form.submit();
-            
+
             // Clean up form after submission
             setTimeout(() => {
                 form.remove();
