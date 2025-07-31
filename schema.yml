@@ -43326,6 +43326,7 @@ components:
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/SAMLIframeLogoutChallenge'
+      - $ref: '#/components/schemas/SAMLLogoutChallenge'
       - $ref: '#/components/schemas/SessionEndChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
@@ -43356,6 +43357,7 @@ components:
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallenge'
+          ak-stage-saml-logout: '#/components/schemas/SAMLLogoutChallenge'
           ak-stage-session-end: '#/components/schemas/SessionEndChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
@@ -45350,6 +45352,7 @@ components:
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
       - $ref: '#/components/schemas/RedirectChallengeResponseRequest'
       - $ref: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
+      - $ref: '#/components/schemas/SAMLLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
       discriminator:
         propertyName: component
@@ -45376,6 +45379,7 @@ components:
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
           xak-flow-redirect: '#/components/schemas/RedirectChallengeResponseRequest'
           ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
+          ak-stage-saml-logout: '#/components/schemas/SAMLLogoutChallengeResponseRequest'
           ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -57916,6 +57920,44 @@ components:
           type: string
           minLength: 1
           default: ak-stage-saml-iframe-logout
+    SAMLLogoutChallenge:
+      type: object
+      description: Challenge for SAML logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-saml-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        url:
+          type: string
+        saml_request:
+          type: string
+        relay_state:
+          type: string
+        provider_name:
+          type: string
+        binding:
+          type: string
+        redirect_url:
+          type: string
+        is_complete:
+          type: string
+          default: 'false'
+    SAMLLogoutChallengeResponseRequest:
+      type: object
+      description: Response for SAML logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-saml-logout
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
