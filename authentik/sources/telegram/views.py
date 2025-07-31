@@ -1,4 +1,5 @@
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views import View
 
 from authentik.core.sources.flow_manager import SourceFlowManager
@@ -17,7 +18,7 @@ from authentik.sources.telegram.stage import TelegramChallengeResponse, Telegram
 
 class TelegramStartView(View):
     def get(self, request: HttpRequest, source_slug: str) -> HttpResponse:
-        source = TelegramSource.objects.get(slug=source_slug)
+        source = get_object_or_404(TelegramSource, slug=source_slug, enabled=True)
         plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
 
         plan.insert_stage(in_memory_stage(TelegramLoginView), index=0)
