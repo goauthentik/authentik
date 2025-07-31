@@ -4,7 +4,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.providers.oauth2.models import AccessToken, DeviceToken, RefreshToken
-from authentik.providers.oauth2.tasks import send_backchannel_logout_notification
+from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
 
 LOGGER = get_logger()
 
@@ -15,21 +15,21 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
 ):
     """Revoke tokens upon user logout"""
     LOGGER.debug("Sending back-channel logout notifications signal!", session=instance)
-    try:
-        send_backchannel_logout_notification(session=instance)
-    except Exception as exc:
-        # Log the error but don't fail the session deletion process
-        LOGGER.warning(
-            "Failed to send back-channel logout notifications",
-            user=instance.user.username,
-            session_key=instance.session.session_key,
-            error=str(exc),
-        )
 
-    AccessToken.objects.filter(
+    access_tokens = AccessToken.objects.filter(
         user=instance.user,
         session__session__session_key=instance.session.session_key,
-    ).delete()
+    )
+
+    backchannel_logout_notification_dispatch.send(
+        sender=None,
+        revocations=[
+            (token.provider_id, token.id_token.iss, token.session.user.uid)
+            for token in access_tokens
+        ],
+    )
+
+    access_tokens.delete()
 
 
 @receiver(post_save, sender=User)

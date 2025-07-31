@@ -100,6 +100,18 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
         return False
 
 
+@actor()
+def backchannel_logout_notification_dispatch(revocations: list, **kwargs):
+    """Handle backchannel logout notifications dispatched via signal"""
+    for revocation in revocations:
+        provider_pk, iss, sub = revocation
+        provider = OAuth2Provider.objects.filter(pk=provider_pk).first()
+        send_backchannel_logout_request.send_with_options(
+            args=(provider_pk, iss, sub),
+            rel_obj=provider,
+        )
+
+
 def send_backchannel_logout_notification(session: AuthenticatedSession = None) -> None:
     """Send back-channel logout notifications to all relevant OAuth2 providers
 
@@ -137,5 +149,5 @@ def send_backchannel_logout_notification(session: AuthenticatedSession = None) -
         send_backchannel_logout_request.send(
             provider_pk=token.provider.pk,
             iss=token.id_token.iss,
-            sub=session.user.uid,
+            sub=token.id_token.sub,
         )
