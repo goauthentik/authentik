@@ -64,10 +64,17 @@ export class SAMLLogoutStage extends BaseStage<
     }
 
     render(): TemplateResult {
+
+        let providerName = "SAML Provider"
+        const prefix = "Provider for ";
+        if (this.challenge.providerName && this.challenge.providerName.startsWith(prefix)) {
+            providerName = this.challenge.providerName.slice(prefix.length) || this.challenge.providerName
+        }
+
         // For complete state, just show loading (will auto-submit)
         if (this.challenge.isComplete === "true") {
             return html`<ak-flow-card .challenge=${this.challenge} loading>
-                <span slot="title">${msg("Logout complete")}</span>
+                <span slot="title">${msg("SAML logout complete")}</span>
             </ak-flow-card>`;
         }
 
@@ -76,7 +83,7 @@ export class SAMLLogoutStage extends BaseStage<
         if (this.challenge.binding === "redirect" && this.challenge.redirectUrl) {
             window.location.href = this.challenge.redirectUrl;
             return html`<ak-flow-card .challenge=${this.challenge} loading>
-                <span slot="title">${msg("Redirecting to SAML provider...")}</span>
+                <span slot="title">${msg("Redirecting to SAML provider " + providerName)}</span>
             </ak-flow-card>`;
         }
 
@@ -104,30 +111,13 @@ export class SAMLLogoutStage extends BaseStage<
                     <div class="pf-c-form__group">
                         <p>
                             ${msg(
-                                `Please wait while we log you out from ${
-                                    this.challenge.providerName || "SAML provider"
-                                }...`,
+                                `Please wait while we log you out from ${providerName}`,
                             )}
                         </p>
-                        <noscript>
-                            <p>
-                                ${msg(
-                                    "JavaScript is disabled. Please click the button below to continue.",
-                                )}
-                            </p>
-                            <button type="submit" class="pf-c-button pf-m-primary">
-                                ${msg("Continue")}
-                            </button>
-                        </noscript>
                     </div>
                 </form>
             </ak-flow-card>`;
         }
-
-        // Fallback for unknown binding
-        return html`<ak-flow-card .challenge=${this.challenge} loading>
-            <span slot="title">${msg("Processing logout...")}</span>
-        </ak-flow-card>`;
     }
 }
 
