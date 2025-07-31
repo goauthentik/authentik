@@ -137,7 +137,7 @@
         "change-case": "^5.4.4",
         "chart.js": "^4.5.0",
         "chartjs-adapter-date-fns": "^3.0.0",
-        "chromedriver": "^138.0.4",
+        "chromedriver": "^138.0.5",
         "codemirror": "^6.0.2",
         "construct-style-sheets-polyfill": "^3.1.0",
         "core-js": "^3.44.0",
