@@ -4342,6 +4342,275 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/brand_policies/:
+    get:
+      operationId: core_brand_policies_list
+      description: BrandPolicy viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBrandPolicyList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: core_brand_policies_create
+      description: BrandPolicy viewset
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/brand_policies/{pbm_uuid}/:
+    get:
+      operationId: core_brand_policies_retrieve
+      description: BrandPolicy viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this brand policy.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: core_brand_policies_update
+      description: BrandPolicy viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this brand policy.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BrandPolicyRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: core_brand_policies_partial_update
+      description: BrandPolicy viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this brand policy.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBrandPolicyRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandPolicy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: core_brand_policies_destroy
+      description: BrandPolicy viewset
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this brand policy.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/brand_policies/{pbm_uuid}/used_by/:
+    get:
+      operationId: core_brand_policies_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this brand policy.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/brands/:
     get:
       operationId: core_brands_list
@@ -24664,6 +24933,7 @@ paths:
           enum:
           - authentik_blueprints.blueprintinstance
           - authentik_brands.brand
+          - authentik_brands.brandpolicy
           - authentik_core.application
           - authentik_core.applicationentitlement
           - authentik_core.group
@@ -24914,6 +25184,7 @@ paths:
           enum:
           - authentik_blueprints.blueprintinstance
           - authentik_brands.brand
+          - authentik_brands.brandpolicy
           - authentik_core.application
           - authentik_core.applicationentitlement
           - authentik_core.group
@@ -43168,6 +43439,68 @@ components:
       required:
       - brand_uuid
       - domain
+    BrandPolicy:
+      type: object
+      description: BrandPolicy serializer
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        policybindingmodel_ptr_id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        brand:
+          type: string
+          format: uuid
+        path:
+          type: string
+          description: Regex. If any request's path matches this, the policies bound
+            to this instance will run. E.g. ^/api/v[\d+]/rbac/
+        failure_http_status_code:
+          type: integer
+          maximum: 599
+          minimum: 100
+        failure_response:
+          type: string
+      required:
+      - brand
+      - failure_http_status_code
+      - name
+      - pbm_uuid
+      - policybindingmodel_ptr_id
+    BrandPolicyRequest:
+      type: object
+      description: BrandPolicy serializer
+      properties:
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        brand:
+          type: string
+          format: uuid
+        path:
+          type: string
+          minLength: 1
+          description: Regex. If any request's path matches this, the policies bound
+            to this instance will run. E.g. ^/api/v[\d+]/rbac/
+        failure_http_status_code:
+          type: integer
+          maximum: 599
+          minimum: 100
+        failure_response:
+          type: string
+      required:
+      - brand
+      - failure_http_status_code
+      - name
     BrandRequest:
       type: object
       description: Brand Serializer
@@ -48956,6 +49289,7 @@ components:
       - authentik_stages_user_write.userwritestage
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
+      - authentik_brands.brandpolicy
       - authentik_blueprints.blueprintinstance
       - authentik_core.group
       - authentik_core.user
@@ -50355,6 +50689,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Brand'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedBrandPolicyList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BrandPolicy'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -52982,6 +53331,29 @@ components:
         enabled:
           type: boolean
         content:
+          type: string
+    PatchedBrandPolicyRequest:
+      type: object
+      description: BrandPolicy serializer
+      properties:
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        brand:
+          type: string
+          format: uuid
+        path:
+          type: string
+          minLength: 1
+          description: Regex. If any request's path matches this, the policies bound
+            to this instance will run. E.g. ^/api/v[\d+]/rbac/
+        failure_http_status_code:
+          type: integer
+          maximum: 599
+          minimum: 100
+        failure_response:
           type: string
     PatchedBrandRequest:
       type: object

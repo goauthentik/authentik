@@ -86,6 +86,7 @@ export const AdminSidebarEntries: readonly SidebarEntry[] = [
     ],
     [null, msg("System"), null, [
         ["/core/brands", msg("Brands")],
+        ["/core/brand_policies", msg("Brand Policies")],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
         ["/admin/settings", msg("Settings")]]

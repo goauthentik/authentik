@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.brands.models import Brand
+from authentik.brands.models import Brand, BrandPolicy
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.rbac.filters import SecretKeyFilter
@@ -112,6 +112,23 @@ class CurrentBrandSerializer(PassiveSerializer):
     default_locale = CharField(read_only=True)
 
 
+class BrandPolicySerializer(ModelSerializer):
+    """BrandPolicy serializer"""
+
+    class Meta:
+        model = BrandPolicy
+        fields = [
+            "pbm_uuid",
+            "policy_engine_mode",
+            "policybindingmodel_ptr_id",
+            "name",
+            "brand",
+            "path",
+            "failure_http_status_code",
+            "failure_response",
+        ]
+
+
 class BrandViewSet(UsedByMixin, ModelViewSet):
     """Brand Viewset"""
 
@@ -152,3 +169,13 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         """Get current brand"""
         brand: Brand = request._request.brand
         return Response(CurrentBrandSerializer(brand).data)
+
+
+class BrandPolicyViewSet(UsedByMixin, ModelViewSet):
+    """BrandPolicy viewset"""
+
+    queryset = BrandPolicy.objects.all()
+    serializer_class = BrandPolicySerializer
+    filterset_fields = ["name"]
+    ordering = ["name"]
+    search_fields = ["name"]

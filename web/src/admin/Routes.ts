@@ -57,6 +57,10 @@ export const ROUTES: Route[] = [
         await import("#admin/brands/BrandListPage");
         return html`<ak-brand-list></ak-brand-list>`;
     }),
+    new Route(new RegExp("^/core/brand_policies"), async () => {
+        await import("#admin/brands/BrandPolicyListPage");
+        return html`<ak-brand-policy-list></ak-brand-policy-list>`;
+    }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("#admin/policies/PolicyListPage");
         return html`<ak-policy-list></ak-policy-list>`;

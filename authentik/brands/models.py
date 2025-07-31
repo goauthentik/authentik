@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +13,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
+from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
 
@@ -129,6 +131,33 @@ class Brand(SerializerModel):
             models.Index(fields=["domain"]),
             models.Index(fields=["default"]),
         ]
+
+
+class BrandPolicy(SerializerModel, PolicyBindingModel):
+    """Policies bound to an instance of this class are ran on every matching request."""
+
+    name = models.TextField(unique=True)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    path = models.TextField(
+        default="^$",
+        help_text=_(
+            "Regex. If any request's path matches this, the policies bound to this instance will "
+            "run. E.g. ^/api/v[\d+]/rbac/"
+        ),
+    )
+    failure_http_status_code = models.IntegerField(
+        validators=[MinValueValidator(100), MaxValueValidator(599)],
+    )
+    failure_response = models.TextField(default="", blank=True)
+
+    def __str__(self) -> str:
+        return f"BrandPolicy {self.name} {self.pbm_uuid}"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.brands.api import BrandPolicySerializer
+
+        return BrandPolicySerializer
 
 
 class WebfingerProvider(models.Model):

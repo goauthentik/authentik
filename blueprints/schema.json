@@ -184,6 +184,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_brands.brandpolicy"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_brands.brandpolicy_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_brands.brandpolicy"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_brands.brandpolicy"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_core.application"
                         },
                         "id": {
@@ -4515,6 +4555,72 @@
                 }
             }
         },
+        "model_authentik_brands.brandpolicy": {
+            "type": "object",
+            "properties": {
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "brand": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Brand"
+                },
+                "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Path",
+                    "description": "Regex. If any request's path matches this, the policies bound to this instance will run. E.g. ^/api/v[\\d+]/rbac/"
+                },
+                "failure_http_status_code": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 599,
+                    "title": "Failure http status code"
+                },
+                "failure_response": {
+                    "type": "string",
+                    "title": "Failure response"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_brands.brandpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_brandpolicy",
+                            "change_brandpolicy",
+                            "delete_brandpolicy",
+                            "view_brandpolicy"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_core.application": {
             "type": "object",
             "properties": {
@@ -4887,9 +4993,13 @@
                             "authentik_blueprints.delete_blueprintinstance",
                             "authentik_blueprints.view_blueprintinstance",
                             "authentik_brands.add_brand",
+                            "authentik_brands.add_brandpolicy",
                             "authentik_brands.change_brand",
+                            "authentik_brands.change_brandpolicy",
                             "authentik_brands.delete_brand",
+                            "authentik_brands.delete_brandpolicy",
                             "authentik_brands.view_brand",
+                            "authentik_brands.view_brandpolicy",
                             "authentik_core.add_application",
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",
@@ -7497,6 +7607,7 @@
                         "authentik_stages_user_write.userwritestage",
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
+                        "authentik_brands.brandpolicy",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
                         "authentik_core.user",
@@ -9540,9 +9651,13 @@
                             "authentik_blueprints.delete_blueprintinstance",
                             "authentik_blueprints.view_blueprintinstance",
                             "authentik_brands.add_brand",
+                            "authentik_brands.add_brandpolicy",
                             "authentik_brands.change_brand",
+                            "authentik_brands.change_brandpolicy",
                             "authentik_brands.delete_brand",
+                            "authentik_brands.delete_brandpolicy",
                             "authentik_brands.view_brand",
+                            "authentik_brands.view_brandpolicy",
                             "authentik_core.add_application",
                             "authentik_core.add_applicationentitlement",
                             "authentik_core.add_authenticatedsession",

@@ -261,6 +261,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.brands.middleware.BrandPolicyMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
