@@ -27,12 +27,12 @@ class TelegramChallengeResponse(ChallengeResponse):
     auth_date = IntegerField(required=True)
     hash = CharField(max_length=64, required=True)
 
-    def validate_auth_date(self, auth_date):
+    def validate_auth_date(self, auth_date: int) -> int:
         if datetime.fromtimestamp(auth_date) < datetime.now() - timedelta(minutes=5):
             raise ValidationError(_("Authentication date is too old"))
         return auth_date
 
-    def validate(self, attrs):
+    def validate(self, attrs: dict) -> dict:
         # Check the response as defined in https://core.telegram.org/widgets/login
         attrs_to_check = attrs.copy()
         attrs_to_check.pop("component")
