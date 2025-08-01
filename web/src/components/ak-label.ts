@@ -19,11 +19,9 @@ export const AKLabel: LitFC<FormLabelProps> = (
     return html`<label
         class="pf-c-form__label"
         for=${ifDefined(htmlFor)}
+        ?aria-required=${required}
         ${spread(labelAttributes)}
     >
         <span class="pf-c-form__label-text">${children}</span>
-        ${required
-            ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
-            : nothing}
     </label>`;
 };
