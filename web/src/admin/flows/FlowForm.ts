@@ -74,6 +74,13 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 },
             });
         }
+        this.dispatchEvent(
+            new CustomEvent("ak-form-successful-submit", {
+                detail: { slug: flow.slug },
+                bubbles: true,
+                composed: true,
+            }),
+        );
         return flow;
     }
 
