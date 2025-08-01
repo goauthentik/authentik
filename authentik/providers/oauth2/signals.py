@@ -10,7 +10,7 @@ def user_session_deleted_oauth_tokens_removal(sender, instance: AuthenticatedSes
     """Revoke tokens upon user logout"""
     AccessToken.objects.filter(
         user=instance.user,
-        session__session__session_key=instance.session.session_key,
+        session__session__session_key=instance.pk,
     ).delete()
 
 
