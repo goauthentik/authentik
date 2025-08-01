@@ -113,6 +113,7 @@ class Tenant(TenantMixin, SerializerModel):
         default=DEFAULT_TOKEN_LENGTH,
         validators=[MinValueValidator(1)],
     )
+    flags = models.JSONField(default=dict)
 
     def save(self, *args, **kwargs):
         if self.schema_name == get_tenant_base_schema() and not settings.TEST:
