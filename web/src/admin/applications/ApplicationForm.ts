@@ -20,6 +20,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { navigate } from "#elements/router/RouterOutlet";
 
 import { iconHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -33,83 +34,90 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
-    constructor() {
-        super();
-        this.handleConfirmBackchannelProviders = this.handleConfirmBackchannelProviders.bind(this);
-        this.makeRemoveBackchannelProviderHandler =
-            this.makeRemoveBackchannelProviderHandler.bind(this);
-    }
+    #api = new CoreApi(DEFAULT_CONFIG);
 
-    async loadInstance(pk: string): Promise<Application> {
-        const app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
+    protected override async loadInstance(pk: string): Promise<Application> {
+        const app = await this.#api.coreApplicationsRetrieve({
             slug: pk,
         });
+
         this.clearIcon = false;
         this.backchannelProviders = app.backchannelProvidersObj || [];
+
         return app;
     }
 
     @property({ attribute: false })
-    provider?: number;
+    public provider?: number;
 
     @state()
-    backchannelProviders: Provider[] = [];
+    protected backchannelProviders: Provider[] = [];
 
     @property({ type: Boolean })
-    clearIcon = false;
+    public clearIcon = false;
 
-    getSuccessMessage(): string {
+    protected override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")
             : msg("Successfully created application.");
     }
 
-    async send(data: Application): Promise<Application | void> {
-        let app: Application;
-        data.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
-        if (this.instance) {
-            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
-                slug: this.instance.slug,
-                applicationRequest: data,
-            });
-        } else {
-            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
-                applicationRequest: data,
-            });
-        }
+    public override async send(applicationRequest: Application): Promise<Application | void> {
+        applicationRequest.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
+
+        const currentSlug = this.instance?.slug;
+
+        const app = await (currentSlug
+            ? this.#api.coreApplicationsUpdate({
+                  applicationRequest,
+                  slug: currentSlug,
+              })
+            : this.#api.coreApplicationsCreate({ applicationRequest }));
+
+        const nextSlug = app.slug;
+
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.files().get("metaIcon");
+
             if (icon || this.clearIcon) {
-                await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                    slug: app.slug,
+                await this.#api.coreApplicationsSetIconCreate({
+                    slug: nextSlug,
                     file: icon,
                     clear: this.clearIcon,
                 });
             }
         } else {
-            await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                slug: app.slug,
+            await this.#api.coreApplicationsSetIconUrlCreate({
+                slug: nextSlug,
                 filePathRequest: {
-                    url: data.metaIcon || "",
+                    url: applicationRequest.metaIcon || "",
                 },
             });
         }
+
+        if (currentSlug && currentSlug !== nextSlug) {
+            // TODO: This needs refining.
+            this.instancePk = nextSlug;
+            navigate(`/core/applications/${nextSlug}`);
+        }
+
         return app;
     }
 
-    handleConfirmBackchannelProviders(items: Provider[]) {
+    #handleConfirmBackchannelProviders = (items: Provider[]) => {
         this.backchannelProviders = items;
         this.requestUpdate();
-        return Promise.resolve();
-    }
 
-    makeRemoveBackchannelProviderHandler(provider: Provider) {
+        return Promise.resolve();
+    };
+
+    #makeRemoveBackchannelProviderHandler = (provider: Provider) => {
         return () => {
             const idx = this.backchannelProviders.indexOf(provider);
             this.backchannelProviders.splice(idx, 1);
             this.requestUpdate();
         };
-    }
+    };
 
     handleClearIcon(ev: Event) {
         ev.stopPropagation();
@@ -119,22 +127,25 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         this.clearIcon = !!(ev.target as HTMLInputElement).checked;
     }
 
-    renderForm(): TemplateResult {
+    public override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );
 
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`
             ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
+                autocomplete="off"
+                placeholder=${msg("Application name")}
                 value=${ifDefined(this.instance?.name)}
                 label=${msg("Name")}
                 required
-                help=${msg("Application's display Name.")}
+                help=${msg("The name displayed in the application library.")}
             ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                autocomplete="off"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
@@ -145,6 +156,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 name="group"
                 value=${ifDefined(this.instance?.group)}
                 label=${msg("Group")}
+                placeholder=${msg("e.g. Collaboration, Communication, Internal, etc.")}
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
@@ -164,8 +176,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     "Select backchannel providers which augment the functionality of the main provider.",
                 )}
                 .providers=${this.backchannelProviders}
-                .confirm=${this.handleConfirmBackchannelProviders}
-                .remover=${this.makeRemoveBackchannelProviderHandler}
+                .confirm=${this.#handleConfirmBackchannelProviders}
+                .remover=${this.#makeRemoveBackchannelProviderHandler}
                 .tooltip=${html`<pf-tooltip
                     position="top"
                     content=${msg("Add provider")}
@@ -184,6 +196,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     <ak-text-input
                         name="metaLaunchUrl"
                         label=${msg("Launch URL")}
+                        placeholder="https://..."
                         value=${ifDefined(this.instance?.metaLaunchUrl)}
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
@@ -235,7 +248,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     ></ak-textarea-input>
                 </div>
             </ak-form-group>
-        </form>`;
+        `;
     }
 }
 

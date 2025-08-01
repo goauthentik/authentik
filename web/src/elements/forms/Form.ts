@@ -220,7 +220,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return rect.x + rect.y + rect.width + rect.height !== 0;
     }
 
-    public getSuccessMessage(): string {
+    /**
+     * An overridable method for returning a success message after a successful submission.
+     */
+    protected getSuccessMessage(): string {
         return this.successMessage;
     }
 
@@ -365,6 +368,9 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         </form>`;
     }
 
+    /**
+     * An overridable method for rendering the form content.
+     */
     public renderForm(): SlottedTemplateResult | null {
         return null;
     }

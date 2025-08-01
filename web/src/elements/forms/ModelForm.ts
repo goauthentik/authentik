@@ -9,15 +9,24 @@ import { html, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
- * Model form
- *
  * A base form that automatically tracks the server-side object (instance)
  * that we're interested in.  Handles loading and tracking of the instance.
  */
-
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
-    abstract loadInstance(pk: PKT): Promise<T>;
+    /**
+     * An overridable method for loading an instance.
+     *
+     * @param pk The primary key of the instance to load.
+     * @returns A promise that resolves to the loaded instance.
+     */
+    protected abstract loadInstance(pk: PKT): Promise<T>;
 
+    /**
+     * An overridable method for loading any data, beyond the instance.
+     *
+     * @see {@linkcode loadInstance}
+     * @returns A promise that resolves when the data has been loaded.
+     */
     async load(): Promise<void> {
         return Promise.resolve();
     }
