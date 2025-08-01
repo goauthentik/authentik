@@ -52,6 +52,13 @@ class SAMLProvider(Provider):
             "no audience restriction will be added."
         ),
     )
+    sls_url = models.TextField(
+        default="",
+        blank=True,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("SLS URL"),
+        help_text=_("Single Logout Service URL where the logout response should be sent."),
+    )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
@@ -59,6 +66,15 @@ class SAMLProvider(Provider):
         verbose_name=_("Service Provider Binding"),
         help_text=_(
             "This determines how authentik sends the response back to the Service Provider."
+        ),
+    )
+    sls_binding = models.TextField(
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        blank=True,
+        verbose_name=_("SLS Binding"),
+        help_text=_(
+            "This determines how authentik sends the logout response back to the Service Provider."
         ),
     )
 
