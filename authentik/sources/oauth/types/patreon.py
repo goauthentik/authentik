@@ -24,9 +24,6 @@ class PatreonOAuthCallback(OAuthCallback):
 
     client_class: UserprofileHeaderAuthClient
 
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("data", {}).get("id")
-
 
 @registry.register()
 class PatreonType(SourceType):
@@ -45,6 +42,7 @@ class PatreonType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("data", {}).get("id"),
             "username": info.get("data", {}).get("attributes", {}).get("vanity"),
             "email": info.get("data", {}).get("attributes", {}).get("email"),
             "name": info.get("data", {}).get("attributes", {}).get("full_name"),

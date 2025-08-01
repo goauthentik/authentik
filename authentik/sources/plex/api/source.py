@@ -111,13 +111,13 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
             sfm = PlexSourceFlowManager(
                 source=source,
                 request=request,
-                identifier=str(identifier),
                 user_info={
                     "info": user_info,
                     "auth_api": auth_api,
                 },
                 policy_context={},
             )
+            sfm.identifier = str(identifier)
             return to_stage_response(request, sfm.get_flow(plex_token=plex_token))
         LOGGER.warning(
             "Denying plex auth because no server overlay and no friends and not owner",

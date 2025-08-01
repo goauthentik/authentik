@@ -72,10 +72,15 @@ class KerberosSync:
                 principal_obj=principal_obj,
             )
             self._logger.debug("Writing user with attributes", **defaults)
+
+            identifier = defaults.pop("id")
+            if identifier is None:
+                raise IntegrityError("Identifier was not set by propertymappings")
+
             if "username" not in defaults:
                 raise IntegrityError("Username was not set by propertymappings")
 
-            action, connection = self.matcher.get_user_action(principal, defaults)
+            action, connection = self.matcher.get_user_action(identifier, defaults)
             self._logger.debug("Action returned", action=action, connection=connection)
             if action == Action.DENY:
                 return False
