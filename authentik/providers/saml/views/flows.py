@@ -57,7 +57,7 @@ class SAMLFlowFinalView(ChallengeStageView):
         try:
             processor = AssertionProcessor(provider, request, auth_n_request)
             response = processor.build_response()
-            
+
             # Create SAMLSession to track this login
             auth_session = AuthenticatedSession.from_request(request, request.user)
             if auth_session:
@@ -70,7 +70,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                         "name_id": processor.name_id,
                         "name_id_format": processor.name_id_format,
                         "session_not_on_or_after": processor.session_not_on_or_after_datetime,
-                    }
+                    },
                 )
         except SAMLException as exc:
             Event.new(

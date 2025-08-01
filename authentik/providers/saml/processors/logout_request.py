@@ -3,6 +3,7 @@
 import base64
 
 import xmlsec
+from lxml import etree  # nosec
 from lxml.etree import Element
 from structlog.stdlib import get_logger
 
@@ -81,7 +82,7 @@ class LogoutRequestProcessor:
 
         logout_request.append(self.get_issuer())
         logout_request.append(self.get_name_id())
-        
+
         # Add SessionIndex if provided
         if self.session_index:
             session_index_element = Element(f"{{{NS_SAML_PROTOCOL}}}SessionIndex")
@@ -89,10 +90,10 @@ class LogoutRequestProcessor:
             logout_request.append(session_index_element)
 
         LOGGER.debug(
-            "Built LogoutRequest", 
-            request_id=self._request_id, 
+            "Built LogoutRequest",
+            request_id=self._request_id,
             destination=self.destination,
-            session_index=self.session_index
+            session_index=self.session_index,
         )
         return logout_request
 
@@ -101,16 +102,12 @@ class LogoutRequestProcessor:
         logout_request = self.build()
         if self.provider.signing_kp:
             self._sign_logout_request(logout_request)
-        from lxml import etree  # nosec
-
         return base64.b64encode(etree.tostring(logout_request)).decode()
 
     def encode_redirect(self) -> str:
         """Encode LogoutRequest for Redirect binding"""
         logout_request = self.build()
         # Note: For redirect binding, signatures are added as query parameters, not in XML
-        from lxml import etree  # nosec
-
         # Ensure proper XML serialization with encoding declaration
         xml_str = etree.tostring(logout_request, encoding="UTF-8", xml_declaration=True)
         return deflate_and_base64_encode(xml_str.decode("UTF-8"))

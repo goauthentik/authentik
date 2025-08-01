@@ -6,10 +6,11 @@ from urllib.parse import urlencode
 
 from django.http import HttpResponse
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.fields import CharField, DictField, ListField
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import Challenge, ChallengeResponse, HttpChallengeResponse
 from authentik.flows.stage import ChallengeStageView
 from authentik.providers.saml.models import SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
@@ -41,25 +42,22 @@ class SAMLLogoutStageView(ChallengeStageView):
     """SAML Logout stage that handles redirect chain logout"""
 
     response_class = SAMLLogoutChallengeResponse
-    
+
     def encode_relay_state(self, pending_sessions: list[dict], return_url: str) -> str:
         """Encode pending sessions and return URL into RelayState"""
-        relay_data = {
-            'return_url': return_url,
-            'pending': pending_sessions
-        }
+        relay_data = {"return_url": return_url, "pending": pending_sessions}
         json_data = json.dumps(relay_data)
         return base64.urlsafe_b64encode(json_data.encode()).decode()
-    
+
     def decode_relay_state(self, relay_state: str) -> tuple[str, list[dict]]:
         """Decode RelayState to get return URL and pending sessions"""
         try:
             json_data = base64.urlsafe_b64decode(relay_state.encode()).decode()
             data = json.loads(json_data)
-            return data.get('return_url', ''), data.get('pending', [])
+            return data.get("return_url", ""), data.get("pending", [])
         except Exception as exc:
             LOGGER.warning("Failed to decode relay state", exc=exc)
-            return '', []
+            return "", []
 
     def get_pending_providers(self) -> list[dict]:
         """Get list of SAML providers that need logout"""
@@ -69,32 +67,32 @@ class SAMLLogoutStageView(ChallengeStageView):
             _, pending = self.decode_relay_state(relay_state)
             if pending:
                 return pending
-                
+
         # Then check session
         pending = self.request.session.get("saml_logout_pending", None)
         if pending is None:
             # Query active SAML sessions for current user
-            from django.utils import timezone
-            
             # Check if user is authenticated
             if not self.request.user or not self.request.user.is_authenticated:
                 return []
-                
+
             sessions = SAMLSession.objects.filter(
                 user=self.request.user,
-                session_not_on_or_after__gt=timezone.now()  # Only non-expired
-            ).select_related('provider')
+                session_not_on_or_after__gt=timezone.now(),  # Only non-expired
+            ).select_related("provider")
 
             # Filter for providers with logout URLs
             pending = []
             for session in sessions:
                 if session.provider.sls_url:
-                    pending.append({
-                        'provider_pk': str(session.provider.pk),
-                        'session_index': session.session_index,
-                        'name_id': session.name_id,
-                        'name_id_format': session.name_id_format,
-                    })
+                    pending.append(
+                        {
+                            "provider_pk": str(session.provider.pk),
+                            "session_index": session.session_index,
+                            "name_id": session.name_id,
+                            "name_id_format": session.name_id_format,
+                        }
+                    )
             self.request.session["saml_logout_pending"] = pending
         return pending
 
@@ -118,13 +116,13 @@ class SAMLLogoutStageView(ChallengeStageView):
 
         # Get next provider
         session_data = pending.pop(0)
-        
+
         # Update session only if we have a session
         if self.request.session.session_key:
             self.request.session["saml_logout_pending"] = pending
 
         try:
-            provider = SAMLProvider.objects.get(pk=session_data['provider_pk'])
+            provider = SAMLProvider.objects.get(pk=session_data["provider_pk"])
             # Generate return URL back to this stage using the interface URL
             return_url = self.request.build_absolute_uri(
                 reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
@@ -132,9 +130,9 @@ class SAMLLogoutStageView(ChallengeStageView):
 
             # Use stored session data
             user = self.request.user if self.request.user.is_authenticated else None
-            name_id = session_data['name_id']
-            name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
-            session_index = session_data['session_index']
+            name_id = session_data["name_id"]
+            name_id_format = session_data["name_id_format"] or SAML_NAME_ID_FORMAT_EMAIL
+            session_index = session_data["session_index"]
 
             # Encode remaining sessions in relay state
             relay_state = self.encode_relay_state(pending, return_url)
@@ -179,7 +177,6 @@ class SAMLLogoutStageView(ChallengeStageView):
                     provider=provider.name,
                     logout_url=logout_url,
                 )
-                print("SAML LOGOUT CHALLENGE====================")
                 return SAMLLogoutChallenge(
                     data={
                         "component": "ak-stage-saml-logout",
@@ -197,8 +194,6 @@ class SAMLLogoutStageView(ChallengeStageView):
         # When we get here, it means the frontend has processed a challenge
         # If it was the "complete" binding, we're done
         # Otherwise, we need to get the next challenge
-        from authentik.flows.challenge import HttpChallengeResponse
-
         # Get the next challenge
         challenge = self.get_challenge()
 
@@ -240,11 +235,9 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         """Generate iframe logout challenge"""
-        from django.utils import timezone
-
         return_url = self.request.build_absolute_uri(
-                reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
-            )
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
+        )
 
         logout_urls = []
 
@@ -254,13 +247,13 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
             # Use pre-stored session data
             for session_data in pending:
                 try:
-                    provider = SAMLProvider.objects.get(pk=session_data['provider_pk'])
+                    provider = SAMLProvider.objects.get(pk=session_data["provider_pk"])
                     if not provider.sls_url:
                         continue
 
-                    name_id = session_data['name_id']
-                    name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
-                    session_index = session_data['session_index']
+                    name_id = session_data["name_id"]
+                    name_id_format = session_data["name_id_format"] or SAML_NAME_ID_FORMAT_EMAIL
+                    session_index = session_data["session_index"]
 
                     # Create SAML logout request (user is None since they're logged out)
                     processor = LogoutRequestProcessor(
@@ -270,13 +263,13 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                         name_id=name_id,
                         name_id_format=name_id_format,
                         session_index=session_index,
-                        relay_state=return_url
+                        relay_state=return_url,
                     )
 
                     # Build redirect URL with proper SAML parameters
                     if provider.sls_binding == "redirect":
                         encoded_request = processor.encode_redirect()
-                        params = {"SAMLRequest": encoded_request, "relayState": return_url}
+                        params = {"SAMLRequest": encoded_request, "RelayState": return_url}
                         # Check if the SLS URL already has query parameters
                         if "?" in provider.sls_url:
                             logout_url = f"{provider.sls_url}&{urlencode(params)}"
@@ -286,7 +279,7 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                             {
                                 "url": logout_url,
                                 "provider_name": provider.name,
-                                "binding": "redirect"
+                                "binding": "redirect",
                             }
                         )
                     elif provider.sls_binding == "post":
@@ -296,17 +289,21 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                                 "url": provider.sls_url,
                                 "saml_request": encoded_request,
                                 "provider_name": provider.name,
-                                "binding": "post"
+                                "binding": "post",
                             }
                         )
                 except Exception as exc:
-                    LOGGER.warning("Failed to generate logout URL", provider_pk=session_data.get('provider_pk'), exc=exc)
+                    LOGGER.warning(
+                        "Failed to generate logout URL",
+                        provider_pk=session_data.get("provider_pk"),
+                        exc=exc,
+                    )
         else:
             # Fallback to original behavior if user is still logged in
             sessions = SAMLSession.objects.filter(
                 user=self.request.user,
-                session_not_on_or_after__gt=timezone.now()  # Only non-expired
-            ).select_related('provider')
+                session_not_on_or_after__gt=timezone.now(),  # Only non-expired
+            ).select_related("provider")
 
             for session in sessions:
                 provider = session.provider
@@ -326,13 +323,13 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                         name_id=name_id,
                         name_id_format=name_id_format,
                         session_index=session.session_index,
-                        relay_state=return_url
+                        relay_state=return_url,
                     )
 
                     # Build redirect URL with proper SAML parameters
                     if provider.sls_binding == "redirect":
                         encoded_request = processor.encode_redirect()
-                        params = {"SAMLRequest": encoded_request, "relayState": return_url}
+                        params = {"SAMLRequest": encoded_request, "RelayState": return_url}
                         # Check if the SLS URL already has query parameters
                         if "?" in provider.sls_url:
                             logout_url = f"{provider.sls_url}&{urlencode(params)}"
@@ -342,7 +339,7 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                             {
                                 "url": logout_url,
                                 "provider_name": provider.name,
-                                "binding": "redirect"
+                                "binding": "redirect",
                             }
                         )
                     elif provider.sls_binding == "post":
@@ -352,13 +349,12 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                                 "url": provider.sls_url,
                                 "saml_request": encoded_request,
                                 "provider_name": provider.name,
-                                "binding": "post"
+                                "binding": "post",
                             }
                         )
 
                 except Exception as exc:
                     LOGGER.warning("Failed to generate logout URL", provider=provider, exc=exc)
-        print("SAML LOGOUT CHALLENGE====================")
         return SAMLIframeLogoutChallenge(
             data={
                 "component": "ak-stage-saml-iframe-logout",
@@ -366,6 +362,6 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
             }
         )
 
-    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:  # noqa: ARG002
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         """Iframe logout completed"""
         return self.executor.stage_ok()

@@ -280,21 +280,13 @@ class SAMLSession(SerializerModel):
     provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     session = models.ForeignKey(
-        AuthenticatedSession, 
+        AuthenticatedSession,
         on_delete=models.CASCADE,
-        help_text=_("Link to the user's authenticated session")
+        help_text=_("Link to the user's authenticated session"),
     )
-    session_index = models.TextField(
-        help_text=_("SAML SessionIndex for this session")
-    )
-    name_id = models.TextField(
-        help_text=_("SAML NameID value for this session")
-    )
-    name_id_format = models.TextField(
-        default="",
-        blank=True,
-        help_text=_("SAML NameID format")
-    )
+    session_index = models.TextField(help_text=_("SAML SessionIndex for this session"))
+    name_id = models.TextField(help_text=_("SAML NameID value for this session"))
+    name_id_format = models.TextField(default="", blank=True, help_text=_("SAML NameID format"))
     created = models.DateTimeField(auto_now_add=True)
     session_not_on_or_after = models.DateTimeField(
         help_text=_("Session expiration time sent to the SP")

@@ -2,10 +2,16 @@
 
 from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 from structlog.stdlib import get_logger
 
 from authentik.flows.models import in_memory_stage
 from authentik.flows.stage import StageView
+from authentik.providers.saml.idp_logout import (
+    SAMLIframeLogoutStageView,
+    SAMLLogoutStageView,
+)
+from authentik.providers.saml.models import SAMLSession
 from authentik.stages.user_logout.models import UserLogoutStage
 
 LOGGER = get_logger()
@@ -16,20 +22,20 @@ class UserLogoutStageView(StageView):
 
     def get_saml_sessions_data(self) -> list[dict] | None:
         """Get SAML session data before logout"""
-        # Import here to avoid circular imports
-        from django.utils import timezone
-        from authentik.providers.saml.models import SAMLSession
-
         # Check if user is authenticated
         if not self.request.user or not self.request.user.is_authenticated:
             return None
 
         # Get active SAML sessions with providers that have logout URLs
-        sessions = SAMLSession.objects.filter(
-            user=self.request.user,
-            session_not_on_or_after__gt=timezone.now(),
-            provider__sls_url__isnull=False,
-        ).exclude(provider__sls_url="").select_related('provider')
+        sessions = (
+            SAMLSession.objects.filter(
+                user=self.request.user,
+                session_not_on_or_after__gt=timezone.now(),
+                provider__sls_url__isnull=False,
+            )
+            .exclude(provider__sls_url="")
+            .select_related("provider")
+        )
 
         if not sessions.exists():
             return None
@@ -38,23 +44,19 @@ class UserLogoutStageView(StageView):
         session_data = []
         for session in sessions:
             if session.provider.sls_url:
-                session_data.append({
-                    'provider_pk': str(session.provider.pk),
-                    'session_index': session.session_index,
-                    'name_id': session.name_id,
-                    'name_id_format': session.name_id_format,
-                })
+                session_data.append(
+                    {
+                        "provider_pk": str(session.provider.pk),
+                        "session_index": session.session_index,
+                        "name_id": session.name_id,
+                        "name_id_format": session.name_id_format,
+                    }
+                )
 
         return session_data if session_data else None
 
     def inject_saml_logout_stage(self) -> HttpResponse:
         """Dynamically inject SAML logout stage into the flow"""
-        # Import here to avoid circular imports
-        from authentik.providers.saml.logout import (
-            SAMLIframeLogoutStageView,
-            SAMLLogoutStageView,
-        )
-
         stage: UserLogoutStage = self.executor.current_stage
 
         if stage.saml_redirect_logout:
@@ -87,5 +89,5 @@ class UserLogoutStageView(StageView):
             self.request.session["saml_logout_pending"] = saml_sessions
             self.request.session.save()  # Ensure session is saved after logout
             self.inject_saml_logout_stage()
-        
+
         return self.executor.stage_ok()

@@ -57,7 +57,7 @@ class AssertionProcessor:
     _valid_not_before: str
     _session_not_on_or_after: str
     _valid_not_on_or_after: str
-    
+
     session_index: str
     name_id: str
     name_id_format: str

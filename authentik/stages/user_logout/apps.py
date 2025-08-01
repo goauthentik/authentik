@@ -12,10 +12,5 @@ class AuthentikStageUserLogoutConfig(ManagedAppConfig):
     default = True
 
     def ready(self):
-        """Import SAML logout challenges to ensure they're discovered"""
+        """Initialize user logout stage"""
         super().ready()
-        # Import to ensure challenges are registered
-        from authentik.providers.saml.logout import (  # noqa: F401
-            SAMLIframeLogoutChallenge,
-            SAMLIframeLogoutChallengeResponse,
-        )

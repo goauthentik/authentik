@@ -1,4 +1,5 @@
 """SAML Session API Views"""
+
 from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
