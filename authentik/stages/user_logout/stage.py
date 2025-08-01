@@ -15,24 +15,22 @@ class UserLogoutStageView(StageView):
     """Logout stage that logs out the user and optionally handles SAML logout"""
 
     def should_inject_saml_logout(self) -> bool:
-        """Check if any SAML providers have logout URLs"""
+        """Check if user has any active SAML sessions"""
         # Import here to avoid circular imports
-        from authentik.providers.saml.models import SAMLProvider
+        from django.utils import timezone
+        from authentik.providers.saml.models import SAMLSession
 
-        # Check if any SAML providers have logout URLs configured
-        return (
-            SAMLProvider.objects.filter(
-                application__isnull=False,
-                sls_url__isnull=False,
-            )
-            .exclude(sls_url="")
-            .exists()
-        )
+        # Check if user has any active SAML sessions with providers that have logout URLs
+        return SAMLSession.objects.filter(
+            user=self.request.user,
+            session_not_on_or_after__gt=timezone.now(),
+            provider__sls_url__isnull=False,
+        ).exclude(provider__sls_url="").exists()
 
     def inject_saml_logout_stage(self) -> HttpResponse:
         """Dynamically inject SAML logout stage into the flow"""
         # Import here to avoid circular imports
-        from authentik.providers.saml.stages.logout import (
+        from authentik.providers.saml.logout import (
             SAMLIframeLogoutStageView,
             SAMLLogoutStageView,
         )
