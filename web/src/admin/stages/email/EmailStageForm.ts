@@ -232,6 +232,36 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             })}
                         </select>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Max Attempts")}
+                        required
+                        name="recoveryMaxAttempts"
+                    >
+                        <input
+                            type="number"
+                            value="${this.instance?.recoveryMaxAttempts ?? 5}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Account Recovery Cache Timeout")}
+                        required
+                        name="recoveryCacheTimeout"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.recoveryCacheTimeout || "minutes=5")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "The time window used to count recent account recovery attempts.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             ${this.renderConnectionSettings()}`;

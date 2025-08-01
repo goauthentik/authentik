@@ -61,6 +61,8 @@ entries:
       subject: authentik
       template: email/password_reset.html
       activate_user_on_success: true
+      recovery_max_attempts: 5
+      recovery_cache_timeout: minutes=5
   - identifiers:
       name: default-recovery-user-write
     id: default-recovery-user-write
