@@ -3,6 +3,7 @@ import { AKFormGroup } from "#elements/forms/FormGroup";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -84,7 +85,7 @@ export class HorizontalFormElement extends AKElement {
     public required = false;
 
     @property({ attribute: false })
-    public errorMessages: string[] | string[][] = [];
+    public errorMessages?: ErrorProp[];
 
     _invalid = false;
 
@@ -157,21 +158,7 @@ export class HorizontalFormElement extends AKElement {
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.errorMessages.map((message) => {
-                        if (message instanceof Object) {
-                            return html`${Object.entries(message).map(([field, errMsg]) => {
-                                return html`<p
-                                    class="pf-c-form__helper-text pf-m-error"
-                                    aria-live="polite"
-                                >
-                                    ${msg(str`${field}: ${errMsg}`)}
-                                </p>`;
-                            })}`;
-                        }
-                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${message}
-                        </p>`;
-                    })}
+                    ${AKFormErrors({ errors: this.errorMessages })}
                 </div>
             </div>
         </div>`;

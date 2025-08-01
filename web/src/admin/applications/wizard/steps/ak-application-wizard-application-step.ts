@@ -135,7 +135,8 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     name="group"
                     value=${ifDefined(app.group)}
                     label=${msg("Group")}
-                    .errorMessages=${errors.group ?? []}
+                    placeholder=${msg("e.g. Collaboration, Communication, Internal, etc.")}
+                    .errorMessages=${errors.group}
                     help=${msg(
                         "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                     )}
@@ -147,7 +148,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     name="policyEngineMode"
                     .options=${policyEngineModes}
                     .value=${app.policyEngineMode}
-                    .errorMessages=${errors.policyEngineMode ?? []}
+                    .errorMessages=${errors.policyEngineMode}
                 ></ak-radio-input>
                 <ak-form-group label=${msg("UI Settings")}>
                     <div class="pf-c-form">

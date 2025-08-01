@@ -127,6 +127,7 @@ export function renderForm(
             placeholder=${msg("Provider name")}
             label=${msg("Name")}
             value=${ifDefined(provider?.name)}
+            .errorMessages=${errors?.name}
             required
         ></ak-text-input>
 
@@ -140,6 +141,7 @@ export function renderForm(
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${provider?.authorizationFlow}
+                .errorMessages=${errors?.authorizationFlow}
                 required
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
@@ -165,6 +167,7 @@ export function renderForm(
                     value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
                     input-hint="code"
+                    .errorMessages=${errors?.clientId}
                 >
                 </ak-text-input>
                 <ak-hidden-text-input
