@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.logout_request import LogoutRequestProcessor
 from authentik.sources.saml.processors.constants import SAML_NAME_ID_FORMAT_EMAIL
 
@@ -40,17 +40,28 @@ class SAMLLogoutStageView(ChallengeStageView):
 
     response_class = SAMLLogoutChallengeResponse
 
-    def get_pending_providers(self) -> list[str]:
+    def get_pending_providers(self) -> list[dict]:
         """Get list of SAML providers that need logout"""
         # Get from session or initialize
         pending = self.request.session.get("saml_logout_pending", None)
         if pending is None:
-            # Query all SAML providers with logout URLs
-            providers = SAMLProvider.objects.filter(
-                application__isnull=False,
-                sls_url__isnull=False,
-            ).exclude(sls_url="")
-            pending = [str(p.pk) for p in providers]
+            # Query active SAML sessions for current user
+            from django.utils import timezone
+            sessions = SAMLSession.objects.filter(
+                user=self.request.user,
+                session_not_on_or_after__gt=timezone.now()  # Only non-expired
+            ).select_related('provider')
+            
+            # Filter for providers with logout URLs
+            pending = []
+            for session in sessions:
+                if session.provider.sls_url:
+                    pending.append({
+                        'provider_pk': str(session.provider.pk),
+                        'session_index': session.session_index,
+                        'name_id': session.name_id,
+                        'name_id_format': session.name_id_format,
+                    })
             self.request.session["saml_logout_pending"] = pending
         return pending
 
@@ -73,32 +84,20 @@ class SAMLLogoutStageView(ChallengeStageView):
             )
 
         # Get next provider
-        provider_pk = pending.pop(0)
+        session_data = pending.pop(0)
         self.request.session["saml_logout_pending"] = pending
 
         try:
-            provider = SAMLProvider.objects.get(pk=provider_pk)
+            provider = SAMLProvider.objects.get(pk=session_data['provider_pk'])
             # Generate return URL back to this stage using the interface URL
             return_url = self.request.build_absolute_uri(
                 reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
             )
 
-            # Determine NameID
+            # Use stored session data
             user = self.request.user
-            name_id = user.email
-            name_id_format = SAML_NAME_ID_FORMAT_EMAIL
-
-            if provider.name_id_mapping:
-                try:
-                    value = provider.name_id_mapping.evaluate(
-                        user=user,
-                        request=self.request,
-                        provider=provider,
-                    )
-                    if value is not None:
-                        name_id = str(value)
-                except Exception as exc:
-                    LOGGER.warning("Failed to evaluate name_id_mapping", exc=exc, provider=provider)
+            name_id = session_data['name_id']
+            name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
 
             # Create SAML logout request
             processor = LogoutRequestProcessor(
@@ -204,34 +203,28 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
 
     def get_challenge(self) -> Challenge:
         """Generate iframe logout challenge"""
-        providers = SAMLProvider.objects.filter(
-            application__isnull=False,
-            sls_url__isnull=False,
-        ).exclude(sls_url="")
+        from django.utils import timezone
+        
+        # Get active SAML sessions for current user
+        sessions = SAMLSession.objects.filter(
+            user=self.request.user,
+            session_not_on_or_after__gt=timezone.now()  # Only non-expired
+        ).select_related('provider')
 
         return_url = self.request.build_absolute_uri(
                 reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
             )
 
         logout_urls = []
-        for provider in providers:
+        for session in sessions:
+            provider = session.provider
+            if not provider.sls_url:
+                continue
             try:
-                # Determine NameID
+                # Use stored session data
                 user = self.request.user
-                name_id = user.email
-                name_id_format = SAML_NAME_ID_FORMAT_EMAIL
-
-                if provider.name_id_mapping:
-                    try:
-                        value = provider.name_id_mapping.evaluate(
-                            user=user,
-                            request=self.request,
-                            provider=provider,
-                        )
-                        if value is not None:
-                            name_id = str(value)
-                    except Exception as exc:
-                        LOGGER.warning("Failed to evaluate name_id_mapping", exc=exc, provider=provider)
+                name_id = session.name_id
+                name_id_format = session.name_id_format or SAML_NAME_ID_FORMAT_EMAIL
 
                 # Create SAML logout request
                 processor = LogoutRequestProcessor(

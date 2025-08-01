@@ -4,6 +4,7 @@ from django.urls import path
 
 from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
+from authentik.providers.saml.api.sessions import SAMLSessionViewSet
 from authentik.providers.saml.views import metadata, sso
 from authentik.providers.saml.views.sp_slo import (
     SPInitiatedSLOBindingPOSTView,
@@ -50,4 +51,5 @@ urlpatterns = [
 api_urlpatterns = [
     ("propertymappings/provider/saml", SAMLPropertyMappingViewSet),
     ("providers/saml", SAMLProviderViewSet),
+    ("providers/saml/sessions", SAMLSessionViewSet),
 ]

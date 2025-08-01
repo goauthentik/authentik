@@ -8,9 +8,9 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import CreatableType
-from authentik.core.models import PropertyMapping, Provider
+from authentik.core.models import AuthenticatedSession, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -272,3 +272,49 @@ class SAMLProviderImportModel(CreatableType, Provider):
         abstract = True
         verbose_name = _("SAML Provider from Metadata")
         verbose_name_plural = _("SAML Providers from Metadata")
+
+
+class SAMLSession(SerializerModel):
+    """Track active SAML sessions for Single Logout support"""
+
+    provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    session = models.ForeignKey(
+        AuthenticatedSession, 
+        on_delete=models.CASCADE,
+        help_text=_("Link to the user's authenticated session")
+    )
+    session_index = models.TextField(
+        unique=True,
+        help_text=_("SAML SessionIndex for this session")
+    )
+    name_id = models.TextField(
+        help_text=_("SAML NameID value for this session")
+    )
+    name_id_format = models.TextField(
+        default="",
+        blank=True,
+        help_text=_("SAML NameID format")
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    session_not_on_or_after = models.DateTimeField(
+        help_text=_("Session expiration time sent to the SP")
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.saml.api.sessions import SAMLSessionSerializer
+
+        return SAMLSessionSerializer
+
+    def __str__(self):
+        return f"SAML Session {self.session_index[:10]}... for {self.user}"
+
+    class Meta:
+        verbose_name = _("SAML Session")
+        verbose_name_plural = _("SAML Sessions")
+        indexes = [
+            models.Index(fields=["session_index"]),
+            models.Index(fields=["provider", "user"]),
+            models.Index(fields=["session"]),
+        ]
