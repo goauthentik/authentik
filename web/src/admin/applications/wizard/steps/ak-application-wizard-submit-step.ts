@@ -297,11 +297,15 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.wizard.providerModel);
+
         if (!renderer) {
             throw new Error(
                 `Provider ${this.wizard.providerModel ?? "-- undefined --"} has no summary renderer.`,
             );
         }
+
+        const metaLaunchUrl = app.metaLaunchUrl?.trim();
+
         return html`
             <div class="ak-wizard-main-content">
                 <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
@@ -321,12 +325,10 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                             ${app.policyEngineMode?.toUpperCase()}
                         </dt>
                     </div>
-                    ${(app.metaLaunchUrl ?? "").trim() !== ""
+                    ${metaLaunchUrl
                         ? html` <div class="pf-c-description-list__group">
                               <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                              <dt class="pf-c-description-list__description">
-                                  ${app.metaLaunchUrl}
-                              </dt>
+                              <dt class="pf-c-description-list__description">${metaLaunchUrl}</dt>
                           </div>`
                         : nothing}
                 </dl>
