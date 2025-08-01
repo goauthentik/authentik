@@ -178,11 +178,9 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_response.status_code = 200
         mock_response.raise_for_status.return_value = None  # No exception for successful request
         mock_session.post.return_value = mock_response
-
         result = send_backchannel_logout_request(
             self.provider.pk, "http://testserver", sub="test-user-uid"
         )
-
         self.assertTrue(result)
         mock_session.post.assert_called_once()
         call_args = mock_session.post.call_args
