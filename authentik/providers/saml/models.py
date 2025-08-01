@@ -285,7 +285,6 @@ class SAMLSession(SerializerModel):
         help_text=_("Link to the user's authenticated session")
     )
     session_index = models.TextField(
-        unique=True,
         help_text=_("SAML SessionIndex for this session")
     )
     name_id = models.TextField(
@@ -313,6 +312,7 @@ class SAMLSession(SerializerModel):
     class Meta:
         verbose_name = _("SAML Session")
         verbose_name_plural = _("SAML Sessions")
+        unique_together = [("session_index", "provider")]
         indexes = [
             models.Index(fields=["session_index"]),
             models.Index(fields=["provider", "user"]),

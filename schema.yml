@@ -58184,11 +58184,8 @@ components:
           items:
             type: object
             additionalProperties: {}
-        timeout:
-          type: integer
       required:
       - logout_urls
-      - timeout
     SAMLIframeLogoutChallengeResponseRequest:
       type: object
       description: Response for SAML iframe logout

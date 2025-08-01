@@ -1,7 +1,11 @@
 """SP-initiated SAML Single Logout Views"""
 
+import base64
+import json
+
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +19,7 @@ from authentik.flows.stage import SessionEndStage
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
-from authentik.providers.saml.models import SAMLProvider
+from authentik.providers.saml.models import SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.views.flows import (
     REQUEST_KEY_RELAY_STATE,
@@ -73,14 +77,33 @@ class SPInitiatedSLOView(PolicyAccessView):
 class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
     """SAML Handler for SP initiated SLO/Redirect bindings, which are sent via GET"""
 
-    def check_saml_request(self) -> HttpRequest | None:
-        # Check if this is a LogoutResponse
-        if REQUEST_KEY_SAML_RESPONSE in self.request.GET:
-            relay_state = self.request.GET.get(REQUEST_KEY_RELAY_STATE, "")
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Override dispatch to handle logout responses before authentication check"""
+        # Check if this is a LogoutResponse before doing any authentication checks
+        if REQUEST_KEY_SAML_RESPONSE in request.GET:
+            relay_state = request.GET.get(REQUEST_KEY_RELAY_STATE, "")
+            LOGGER.debug("SAML logout response received", relay_state=relay_state)
             if relay_state:
+                # Try to decode the relay state first
+                try:
+                    json_data = base64.urlsafe_b64decode(relay_state.encode()).decode()
+                    data = json.loads(json_data)
+                    # If it's our encoded format, redirect to the return URL
+                    if isinstance(data, dict) and 'return_url' in data:
+                        LOGGER.debug("Decoded relay state, redirecting", return_url=data['return_url'])
+                        return redirect(data['return_url'])
+                except Exception as exc:
+                    # If decoding fails, treat it as a regular URL
+                    LOGGER.debug("Failed to decode relay state", exc=exc)
+                    pass
                 return redirect(relay_state)
             return redirect("authentik_core:root-redirect")
+        
+        # For regular SAML logout requests, use the parent dispatch
+        return super().dispatch(request, *args, **kwargs)
 
+    def check_saml_request(self) -> HttpRequest | None:
+        # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
@@ -91,6 +114,35 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
             self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
+            
+            LOGGER.info(
+                "SP-initiated logout request received",
+                provider=self.provider.name,
+                issuer=logout_request.issuer,
+                session_index=logout_request.session_index,
+                has_session_index=bool(logout_request.session_index)
+            )
+            
+            # Remove the SAML session if we have a session index
+            if logout_request.session_index:
+                try:
+                    saml_session = SAMLSession.objects.get(
+                        session_index=logout_request.session_index,
+                        provider=self.provider
+                    )
+                    LOGGER.info(
+                        "Removing SAML session for SP-initiated logout",
+                        session_index=logout_request.session_index,
+                        provider=self.provider.name,
+                        user=saml_session.user
+                    )
+                    saml_session.delete()
+                except SAMLSession.DoesNotExist:
+                    LOGGER.warning(
+                        "SAML session not found for logout",
+                        session_index=logout_request.session_index,
+                        provider=self.provider.name
+                    )
         except CannotHandleAssertion as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -107,16 +159,49 @@ class SPInitiatedSLOBindingRedirectView(SPInitiatedSLOView):
 class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
     """SAML Handler for SP-initiated SLO with POST binding"""
 
-    def check_saml_request(self) -> HttpRequest | None:
-        payload = self.request.POST
-
-        # Check if this is a LogoutResponse
-        if REQUEST_KEY_SAML_RESPONSE in payload:
-            relay_state = payload.get(REQUEST_KEY_RELAY_STATE, "")
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Override dispatch to handle logout requests and responses"""
+        # First check if this is a LogoutResponse (from our initiated logout)
+        if REQUEST_KEY_SAML_RESPONSE in request.POST:
+            relay_state = request.POST.get(REQUEST_KEY_RELAY_STATE, "")
+            LOGGER.debug("SAML logout response received (POST)", relay_state=relay_state)
             if relay_state:
+                # Try to decode the relay state first
+                try:
+                    json_data = base64.urlsafe_b64decode(relay_state.encode()).decode()
+                    data = json.loads(json_data)
+                    # If it's our encoded format, redirect to the return URL
+                    if isinstance(data, dict) and 'return_url' in data:
+                        LOGGER.debug("Decoded relay state, redirecting", return_url=data['return_url'])
+                        return redirect(data['return_url'])
+                except Exception as exc:
+                    # If decoding fails, treat it as a regular URL
+                    LOGGER.debug("Failed to decode relay state", exc=exc)
+                    pass
                 return redirect(relay_state)
             return redirect("authentik_core:root-redirect")
+        
+        # Check if this is a LogoutRequest (SP-initiated logout)
+        # We need to handle this before authentication check since user might already be logged out
+        if REQUEST_KEY_SAML_REQUEST in request.POST:
+            LOGGER.debug("SAML logout request in POST, processing without auth check")
+            # Skip the PolicyAccessView's dispatch which requires authentication
+            # Instead, manually resolve provider and handle the request
+            try:
+                self.resolve_provider_application()
+            except (Application.DoesNotExist, Provider.DoesNotExist, Http404) as exc:
+                LOGGER.warning("Failed to resolve application for SP logout", exc=exc)
+                return bad_request_message(request, "Invalid application")
+            
+            # Now handle the logout request
+            return self.post(request, *args, **kwargs)
+        
+        # For other requests, use the parent dispatch
+        return super().dispatch(request, *args, **kwargs)
 
+    def check_saml_request(self) -> HttpRequest | None:
+        payload = self.request.POST
+        # Logout responses are now handled in dispatch()
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
@@ -127,6 +212,35 @@ class SPInitiatedSLOBindingPOSTView(SPInitiatedSLOView):
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
             self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
+            
+            LOGGER.info(
+                "SP-initiated logout request received (POST)",
+                provider=self.provider.name,
+                issuer=logout_request.issuer,
+                session_index=logout_request.session_index,
+                has_session_index=bool(logout_request.session_index)
+            )
+            
+            # Remove the SAML session if we have a session index
+            if logout_request.session_index:
+                try:
+                    saml_session = SAMLSession.objects.get(
+                        session_index=logout_request.session_index,
+                        provider=self.provider
+                    )
+                    LOGGER.info(
+                        "Removing SAML session for SP-initiated logout (POST)",
+                        session_index=logout_request.session_index,
+                        provider=self.provider.name,
+                        user=saml_session.user
+                    )
+                    saml_session.delete()
+                except SAMLSession.DoesNotExist:
+                    LOGGER.warning(
+                        "SAML session not found for logout (POST)",
+                        session_index=logout_request.session_index,
+                        provider=self.provider.name
+                    )
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))

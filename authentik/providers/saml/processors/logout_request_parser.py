@@ -19,6 +19,8 @@ class LogoutRequest:
     id: str | None = None
 
     issuer: str | None = None
+    
+    session_index: str | None = None
 
     relay_state: str | None = None
 
@@ -42,6 +44,14 @@ class LogoutRequestParser:
             issuers = root.findall(f"{{{NS_SAML_ASSERTION}}}Issuer")
         if len(issuers) > 0:
             request.issuer = issuers[0].text
+        
+        # Extract SessionIndex
+        session_indexes = root.findall(f"{{{NS_SAML_PROTOCOL}}}SessionIndex")
+        if not session_indexes:
+            session_indexes = root.findall(f"{{{NS_SAML_ASSERTION}}}SessionIndex")
+        if len(session_indexes) > 0:
+            request.session_index = session_indexes[0].text
+        
         request.relay_state = relay_state
         return request
 

@@ -63,8 +63,8 @@ class SAMLFlowFinalView(ChallengeStageView):
             if auth_session:
                 SAMLSession.objects.update_or_create(
                     session_index=processor.session_index,
+                    provider=provider,
                     defaults={
-                        "provider": provider,
                         "user": request.user,
                         "session": auth_session,
                         "name_id": processor.name_id,

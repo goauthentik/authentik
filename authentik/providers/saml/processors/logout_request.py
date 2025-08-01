@@ -31,6 +31,7 @@ class LogoutRequestProcessor:
     destination: str
     name_id: str | None
     name_id_format: str
+    session_index: str | None
     relay_state: str | None
 
     _issue_instant: str
@@ -43,6 +44,7 @@ class LogoutRequestProcessor:
         destination: str,
         name_id: str | None = None,
         name_id_format: str = SAML_NAME_ID_FORMAT_EMAIL,
+        session_index: str | None = None,
         relay_state: str | None = None,
     ):
         self.provider = provider
@@ -50,6 +52,7 @@ class LogoutRequestProcessor:
         self.destination = destination
         self.name_id = name_id or (user.email if user else None)
         self.name_id_format = name_id_format
+        self.session_index = session_index
         self.relay_state = relay_state
 
         self._issue_instant = get_time_string()
@@ -78,9 +81,18 @@ class LogoutRequestProcessor:
 
         logout_request.append(self.get_issuer())
         logout_request.append(self.get_name_id())
+        
+        # Add SessionIndex if provided
+        if self.session_index:
+            session_index_element = Element(f"{{{NS_SAML_PROTOCOL}}}SessionIndex")
+            session_index_element.text = self.session_index
+            logout_request.append(session_index_element)
 
         LOGGER.debug(
-            "Built LogoutRequest", request_id=self._request_id, destination=self.destination
+            "Built LogoutRequest", 
+            request_id=self._request_id, 
+            destination=self.destination,
+            session_index=self.session_index
         )
         return logout_request
 

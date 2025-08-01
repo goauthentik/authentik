@@ -65,17 +65,10 @@ class UserLogoutStageView(StageView):
             saml_stage = in_memory_stage(
                 SAMLIframeLogoutStageView,
             )
-        print ("SAML STAGE INJECTED==========================")
         self.executor.plan.insert_stage(saml_stage)
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Log out user first, then handle SAML logout if needed"""
-
-        # Check if we're coming back after SAML logout
-        if self.request.session.get("saml_logout_completed", False):
-            self.request.session.pop("saml_logout_completed", None)
-            self.request.session.pop("saml_logout_pending", None)
-            return self.executor.stage_ok()
 
         # Get SAML session data before logging out
         saml_sessions = self.get_saml_sessions_data()
@@ -92,8 +85,7 @@ class UserLogoutStageView(StageView):
         if saml_sessions:
             # Store the session data for SAML logout stage to use
             self.request.session["saml_logout_pending"] = saml_sessions
-            self.request.session["saml_logout_completed"] = True
             self.request.session.save()  # Ensure session is saved after logout
             self.inject_saml_logout_stage()
-        print("LOGOUT COMPLETEDDDDDDDD===============")
+        
         return self.executor.stage_ok()

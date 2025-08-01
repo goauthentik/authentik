@@ -1,5 +1,7 @@
 """SAML Logout stages for automatic injection"""
 
+import base64
+import json
 from urllib.parse import urlencode
 
 from django.http import HttpResponse
@@ -39,14 +41,45 @@ class SAMLLogoutStageView(ChallengeStageView):
     """SAML Logout stage that handles redirect chain logout"""
 
     response_class = SAMLLogoutChallengeResponse
+    
+    def encode_relay_state(self, pending_sessions: list[dict], return_url: str) -> str:
+        """Encode pending sessions and return URL into RelayState"""
+        relay_data = {
+            'return_url': return_url,
+            'pending': pending_sessions
+        }
+        json_data = json.dumps(relay_data)
+        return base64.urlsafe_b64encode(json_data.encode()).decode()
+    
+    def decode_relay_state(self, relay_state: str) -> tuple[str, list[dict]]:
+        """Decode RelayState to get return URL and pending sessions"""
+        try:
+            json_data = base64.urlsafe_b64decode(relay_state.encode()).decode()
+            data = json.loads(json_data)
+            return data.get('return_url', ''), data.get('pending', [])
+        except Exception as exc:
+            LOGGER.warning("Failed to decode relay state", exc=exc)
+            return '', []
 
     def get_pending_providers(self) -> list[dict]:
         """Get list of SAML providers that need logout"""
-        # Get from session or initialize
+        # First check if we have RelayState from a logout response
+        relay_state = self.request.GET.get("RelayState") or self.request.POST.get("RelayState")
+        if relay_state:
+            _, pending = self.decode_relay_state(relay_state)
+            if pending:
+                return pending
+                
+        # Then check session
         pending = self.request.session.get("saml_logout_pending", None)
         if pending is None:
             # Query active SAML sessions for current user
             from django.utils import timezone
+            
+            # Check if user is authenticated
+            if not self.request.user or not self.request.user.is_authenticated:
+                return []
+                
             sessions = SAMLSession.objects.filter(
                 user=self.request.user,
                 session_not_on_or_after__gt=timezone.now()  # Only non-expired
@@ -85,7 +118,10 @@ class SAMLLogoutStageView(ChallengeStageView):
 
         # Get next provider
         session_data = pending.pop(0)
-        self.request.session["saml_logout_pending"] = pending
+        
+        # Update session only if we have a session
+        if self.request.session.session_key:
+            self.request.session["saml_logout_pending"] = pending
 
         try:
             provider = SAMLProvider.objects.get(pk=session_data['provider_pk'])
@@ -95,9 +131,13 @@ class SAMLLogoutStageView(ChallengeStageView):
             )
 
             # Use stored session data
-            user = self.request.user
+            user = self.request.user if self.request.user.is_authenticated else None
             name_id = session_data['name_id']
             name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
+            session_index = session_data['session_index']
+
+            # Encode remaining sessions in relay state
+            relay_state = self.encode_relay_state(pending, return_url)
 
             # Create SAML logout request
             processor = LogoutRequestProcessor(
@@ -106,7 +146,8 @@ class SAMLLogoutStageView(ChallengeStageView):
                 destination=provider.sls_url,
                 name_id=name_id,
                 name_id_format=name_id_format,
-                relay_state=return_url,
+                session_index=session_index,
+                relay_state=relay_state,  # This now contains pending sessions
             )
 
             if provider.sls_binding == "post":
@@ -117,7 +158,7 @@ class SAMLLogoutStageView(ChallengeStageView):
                         "component": "ak-stage-saml-logout",
                         "url": provider.sls_url,
                         "saml_request": encoded_request,
-                        "relay_state": return_url,
+                        "relay_state": relay_state,
                         "provider_name": provider.name,
                         "binding": "post",
                     }
@@ -125,7 +166,7 @@ class SAMLLogoutStageView(ChallengeStageView):
             else:
                 # Build redirect URL with proper SAML parameters
                 encoded_request = processor.encode_redirect()
-                params = {"SAMLRequest": encoded_request, "RelayState": return_url}
+                params = {"SAMLRequest": encoded_request, "RelayState": relay_state}
 
                 # Check if the SLS URL already has query parameters
                 if "?" in provider.sls_url:
@@ -169,9 +210,10 @@ class SAMLLogoutStageView(ChallengeStageView):
         # If is_complete is true, we're done with all providers
         if challenge.initial_data.get("is_complete") == "true":
             LOGGER.debug("All SAML providers logged out, completing stage")
-            # Clean up session before completing
-            self.request.session.pop("saml_logout_pending", None)
-            self.request.session.save()
+            # Clean up session before completing (if we have one)
+            if self.request.session.session_key:
+                self.request.session.pop("saml_logout_pending", None)
+                self.request.session.save()
             return self.executor.stage_ok()
 
         # Otherwise, return the next challenge
@@ -218,6 +260,7 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
 
                     name_id = session_data['name_id']
                     name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
+                    session_index = session_data['session_index']
 
                     # Create SAML logout request (user is None since they're logged out)
                     processor = LogoutRequestProcessor(
@@ -226,6 +269,7 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                         destination=provider.sls_url,
                         name_id=name_id,
                         name_id_format=name_id_format,
+                        session_index=session_index,
                         relay_state=return_url
                     )
 
@@ -281,6 +325,7 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
                         destination=provider.sls_url,
                         name_id=name_id,
                         name_id_format=name_id_format,
+                        session_index=session.session_index,
                         relay_state=return_url
                     )
 
