@@ -13,6 +13,7 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
 
@@ -23,7 +24,7 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -40,15 +41,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
-    @property({ type: String })
-    applicationSlug?: string;
-
-    @state()
-    application?: Application;
-
-    @state()
-    missingOutpost = false;
-
     static styles: CSSResult[] = [
         PFBase,
         PFList,
@@ -61,7 +53,28 @@ export class ApplicationViewPage extends AKElement {
         PFCard,
     ];
 
-    fetchIsMissingOutpost(providersByPk: Array<number>) {
+    //#region Properties
+
+    @property({ type: String })
+    public applicationSlug?: string;
+    //#endregion
+
+    //#region State
+
+    @state()
+    protected application?: Application;
+
+    @state()
+    protected error?: APIError;
+
+    @state()
+    protected missingOutpost = false;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    protected fetchIsMissingOutpost(providersByPk: Array<number>) {
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesList({
                 providersByPk,
@@ -74,26 +87,33 @@ export class ApplicationViewPage extends AKElement {
             });
     }
 
-    fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
-            this.application = app;
-            if (
-                app.providerObj &&
-                [
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
-                ].includes(app.providerObj.metaModelName)
-            ) {
-                this.fetchIsMissingOutpost([app.provider || 0]);
-            }
-        });
+    protected fetchApplication(slug: string) {
+        new CoreApi(DEFAULT_CONFIG)
+            .coreApplicationsRetrieve({ slug })
+            .then((app) => {
+                this.application = app;
+                if (
+                    app.providerObj &&
+                    [
+                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                    ].includes(app.providerObj.metaModelName)
+                ) {
+                    this.fetchIsMissingOutpost([app.provider || 0]);
+                }
+            })
+            .catch(async (error) => {
+                this.error = await parseAPIResponseError(error);
+            });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }
     }
+
+    //#region Render
 
     render(): TemplateResult {
         return html`<ak-page-header
@@ -111,9 +131,17 @@ export class ApplicationViewPage extends AKElement {
     }
 
     renderApp(): TemplateResult {
+        if (this.error) {
+            return html`<ak-empty-state icon="fa-ban"
+                ><span>${msg(str`Failed to fetch application "${this.applicationSlug}".`)}</span>
+                <div slot="body">${pluckErrorDetail(this.error)}</div>
+            </ak-empty-state>`;
+        }
+
         if (!this.application) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }
+
         return html`<ak-tabs>
             ${this.missingOutpost
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
