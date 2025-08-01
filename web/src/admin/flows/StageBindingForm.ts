@@ -7,12 +7,13 @@ import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+
 import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowStageBinding,
     InvalidResponseActionEnum,
-    PolicyEngineMode,
     Stage,
     StagesAllListRequest,
     StagesApi,
@@ -202,22 +203,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 required
                 name="policyEngineMode"
             >
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "any",
-                            value: PolicyEngineMode.Any,
-                            default: true,
-                            description: html`${msg("Any policy must match to grant access")}`,
-                        },
-                        {
-                            label: "all",
-                            value: PolicyEngineMode.All,
-                            description: html`${msg("All policies must match to grant access")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.policyEngineMode}
-                >
+                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }
