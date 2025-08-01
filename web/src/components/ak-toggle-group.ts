@@ -35,7 +35,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
         `,
     ];
 
-    /*
+    /**
      * The value (causes highlighting, value is returned)
      *
      * @attr
