@@ -14,18 +14,38 @@ LOGGER = get_logger()
 class UserLogoutStageView(StageView):
     """Logout stage that logs out the user and optionally handles SAML logout"""
 
-    def should_inject_saml_logout(self) -> bool:
-        """Check if user has any active SAML sessions"""
+    def get_saml_sessions_data(self) -> list[dict] | None:
+        """Get SAML session data before logout"""
         # Import here to avoid circular imports
         from django.utils import timezone
         from authentik.providers.saml.models import SAMLSession
 
-        # Check if user has any active SAML sessions with providers that have logout URLs
-        return SAMLSession.objects.filter(
+        # Check if user is authenticated
+        if not self.request.user or not self.request.user.is_authenticated:
+            return None
+
+        # Get active SAML sessions with providers that have logout URLs
+        sessions = SAMLSession.objects.filter(
             user=self.request.user,
             session_not_on_or_after__gt=timezone.now(),
             provider__sls_url__isnull=False,
-        ).exclude(provider__sls_url="").exists()
+        ).exclude(provider__sls_url="").select_related('provider')
+
+        if not sessions.exists():
+            return None
+
+        # Store session data that we'll need after logout
+        session_data = []
+        for session in sessions:
+            if session.provider.sls_url:
+                session_data.append({
+                    'provider_pk': str(session.provider.pk),
+                    'session_index': session.session_index,
+                    'name_id': session.name_id,
+                    'name_id_format': session.name_id_format,
+                })
+
+        return session_data if session_data else None
 
     def inject_saml_logout_stage(self) -> HttpResponse:
         """Dynamically inject SAML logout stage into the flow"""
@@ -45,26 +65,35 @@ class UserLogoutStageView(StageView):
             saml_stage = in_memory_stage(
                 SAMLIframeLogoutStageView,
             )
-
-        self.executor.plan.insert_stage(self.executor.current_stage)
+        print ("SAML STAGE INJECTED==========================")
         self.executor.plan.insert_stage(saml_stage)
-        return self.executor.stage_ok()
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        """Check if we need to inject SAML logout before proceeding"""
+        """Log out user first, then handle SAML logout if needed"""
 
-        if self.should_inject_saml_logout():
-            # Check if we've already injected (to avoid infinite loop)
-            if not self.request.session.get("saml_logout_injected", False):
-                self.request.session["saml_logout_injected"] = True
-                return self.inject_saml_logout_stage()
+        # Check if we're coming back after SAML logout
+        if self.request.session.get("saml_logout_completed", False):
+            self.request.session.pop("saml_logout_completed", None)
+            self.request.session.pop("saml_logout_pending", None)
+            return self.executor.stage_ok()
 
-        self.request.session.pop("saml_logout_injected", None)
+        # Get SAML session data before logging out
+        saml_sessions = self.get_saml_sessions_data()
 
+        # Log the user out first
         LOGGER.debug(
             "Logged out",
             user=request.user,
             flow_slug=self.executor.flow.slug,
         )
         logout(self.request)
+
+        # If there are SAML sessions to logout, inject the SAML stage
+        if saml_sessions:
+            # Store the session data for SAML logout stage to use
+            self.request.session["saml_logout_pending"] = saml_sessions
+            self.request.session["saml_logout_completed"] = True
+            self.request.session.save()  # Ensure session is saved after logout
+            self.inject_saml_logout_stage()
+        print("LOGOUT COMPLETEDDDDDDDD===============")
         return self.executor.stage_ok()

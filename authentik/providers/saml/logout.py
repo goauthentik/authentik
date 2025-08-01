@@ -51,7 +51,7 @@ class SAMLLogoutStageView(ChallengeStageView):
                 user=self.request.user,
                 session_not_on_or_after__gt=timezone.now()  # Only non-expired
             ).select_related('provider')
-            
+
             # Filter for providers with logout URLs
             pending = []
             for session in sessions:
@@ -138,7 +138,7 @@ class SAMLLogoutStageView(ChallengeStageView):
                     provider=provider.name,
                     logout_url=logout_url,
                 )
-
+                print("SAML LOGOUT CHALLENGE====================")
                 return SAMLLogoutChallenge(
                     data={
                         "component": "ak-stage-saml-logout",
@@ -199,68 +199,121 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
     def get_challenge(self) -> Challenge:
         """Generate iframe logout challenge"""
         from django.utils import timezone
-        
-        # Get active SAML sessions for current user
-        sessions = SAMLSession.objects.filter(
-            user=self.request.user,
-            session_not_on_or_after__gt=timezone.now()  # Only non-expired
-        ).select_related('provider')
 
         return_url = self.request.build_absolute_uri(
                 reverse("authentik_core:if-flow", kwargs={"flow_slug": self.executor.flow.slug})
             )
 
         logout_urls = []
-        for session in sessions:
-            provider = session.provider
-            if not provider.sls_url:
-                continue
-            try:
-                # Use stored session data
-                user = self.request.user
-                name_id = session.name_id
-                name_id_format = session.name_id_format or SAML_NAME_ID_FORMAT_EMAIL
 
-                # Create SAML logout request
-                processor = LogoutRequestProcessor(
-                    provider=provider,
-                    user=user,
-                    destination=provider.sls_url,
-                    name_id=name_id,
-                    name_id_format=name_id_format,
-                    relay_state=return_url
-                )
+        # Check if we have pre-stored session data (user already logged out)
+        pending = self.request.session.get("saml_logout_pending", None)
+        if pending:
+            # Use pre-stored session data
+            for session_data in pending:
+                try:
+                    provider = SAMLProvider.objects.get(pk=session_data['provider_pk'])
+                    if not provider.sls_url:
+                        continue
 
-                # Build redirect URL with proper SAML parameters
-                if provider.sls_binding == "redirect":
-                    encoded_request = processor.encode_redirect()
-                    params = {"SAMLRequest": encoded_request, "relayState": return_url}
-                    # Check if the SLS URL already has query parameters
-                    if "?" in provider.sls_url:
-                        logout_url = f"{provider.sls_url}&{urlencode(params)}"
-                    else:
-                        logout_url = f"{provider.sls_url}?{urlencode(params)}"
-                    logout_urls.append(
-                        {
-                            "url": logout_url,
-                            "provider_name": provider.name,
-                            "binding": "redirect"
-                        }
-                    )
-                elif provider.sls_binding == "post":
-                    encoded_request = processor.encode_post()
-                    logout_urls.append(
-                        {
-                            "url": provider.sls_url,
-                            "saml_request": encoded_request,
-                            "provider_name": provider.name,
-                            "binding": "post"
-                        }
+                    name_id = session_data['name_id']
+                    name_id_format = session_data['name_id_format'] or SAML_NAME_ID_FORMAT_EMAIL
+
+                    # Create SAML logout request (user is None since they're logged out)
+                    processor = LogoutRequestProcessor(
+                        provider=provider,
+                        user=None,  # User is already logged out
+                        destination=provider.sls_url,
+                        name_id=name_id,
+                        name_id_format=name_id_format,
+                        relay_state=return_url
                     )
 
-            except Exception as exc:
-                LOGGER.warning("Failed to generate logout URL", provider=provider, exc=exc)
+                    # Build redirect URL with proper SAML parameters
+                    if provider.sls_binding == "redirect":
+                        encoded_request = processor.encode_redirect()
+                        params = {"SAMLRequest": encoded_request, "relayState": return_url}
+                        # Check if the SLS URL already has query parameters
+                        if "?" in provider.sls_url:
+                            logout_url = f"{provider.sls_url}&{urlencode(params)}"
+                        else:
+                            logout_url = f"{provider.sls_url}?{urlencode(params)}"
+                        logout_urls.append(
+                            {
+                                "url": logout_url,
+                                "provider_name": provider.name,
+                                "binding": "redirect"
+                            }
+                        )
+                    elif provider.sls_binding == "post":
+                        encoded_request = processor.encode_post()
+                        logout_urls.append(
+                            {
+                                "url": provider.sls_url,
+                                "saml_request": encoded_request,
+                                "provider_name": provider.name,
+                                "binding": "post"
+                            }
+                        )
+                except Exception as exc:
+                    LOGGER.warning("Failed to generate logout URL", provider_pk=session_data.get('provider_pk'), exc=exc)
+        else:
+            # Fallback to original behavior if user is still logged in
+            sessions = SAMLSession.objects.filter(
+                user=self.request.user,
+                session_not_on_or_after__gt=timezone.now()  # Only non-expired
+            ).select_related('provider')
 
+            for session in sessions:
+                provider = session.provider
+                if not provider.sls_url:
+                    continue
+                try:
+                    # Use stored session data
+                    user = self.request.user
+                    name_id = session.name_id
+                    name_id_format = session.name_id_format or SAML_NAME_ID_FORMAT_EMAIL
+
+                    # Create SAML logout request
+                    processor = LogoutRequestProcessor(
+                        provider=provider,
+                        user=user,
+                        destination=provider.sls_url,
+                        name_id=name_id,
+                        name_id_format=name_id_format,
+                        relay_state=return_url
+                    )
+
+                    # Build redirect URL with proper SAML parameters
+                    if provider.sls_binding == "redirect":
+                        encoded_request = processor.encode_redirect()
+                        params = {"SAMLRequest": encoded_request, "relayState": return_url}
+                        # Check if the SLS URL already has query parameters
+                        if "?" in provider.sls_url:
+                            logout_url = f"{provider.sls_url}&{urlencode(params)}"
+                        else:
+                            logout_url = f"{provider.sls_url}?{urlencode(params)}"
+                        logout_urls.append(
+                            {
+                                "url": logout_url,
+                                "provider_name": provider.name,
+                                "binding": "redirect"
+                            }
+                        )
+                    elif provider.sls_binding == "post":
+                        encoded_request = processor.encode_post()
+                        logout_urls.append(
+                            {
+                                "url": provider.sls_url,
+                                "saml_request": encoded_request,
+                                "provider_name": provider.name,
+                                "binding": "post"
+                            }
+                        )
+
+                except Exception as exc:
+                    LOGGER.warning("Failed to generate logout URL", provider=provider, exc=exc)
+        print("SAML LOGOUT CHALLENGE====================")
         return SAMLIframeLogoutChallenge(
             data={
                 "component": "ak-stage-saml-iframe-logout",

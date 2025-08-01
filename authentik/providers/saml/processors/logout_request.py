@@ -27,7 +27,7 @@ class LogoutRequestProcessor:
     """Generate SAML LogoutRequest messages"""
 
     provider: SAMLProvider
-    user: User
+    user: User | None
     destination: str
     name_id: str | None
     name_id_format: str
@@ -39,7 +39,7 @@ class LogoutRequestProcessor:
     def __init__(
         self,
         provider: SAMLProvider,
-        user: User,
+        user: User | None,
         destination: str,
         name_id: str | None = None,
         name_id_format: str = SAML_NAME_ID_FORMAT_EMAIL,
@@ -48,7 +48,7 @@ class LogoutRequestProcessor:
         self.provider = provider
         self.user = user
         self.destination = destination
-        self.name_id = name_id or user.email
+        self.name_id = name_id or (user.email if user else None)
         self.name_id_format = name_id_format
         self.relay_state = relay_state
 
