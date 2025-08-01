@@ -75,6 +75,7 @@ TENANT_APPS = [
     "pgtrigger",
     "authentik.admin",
     "authentik.api",
+    "authentik.core",
     "authentik.crypto",
     "authentik.enterprise",
     "authentik.events",
@@ -564,7 +565,6 @@ if DEBUG:
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 
-TENANT_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
 
