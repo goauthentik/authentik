@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 
 from django.http import HttpResponse
 from django.urls import reverse
-from rest_framework.fields import CharField, DictField, IntegerField, ListField
+from rest_framework.fields import CharField, DictField, ListField
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
@@ -183,7 +183,6 @@ class SAMLIframeLogoutChallenge(Challenge):
 
     component = CharField(default="ak-stage-saml-iframe-logout")
     logout_urls = ListField(child=DictField())
-    timeout = IntegerField()
 
 
 class SAMLIframeLogoutChallengeResponse(ChallengeResponse):
@@ -196,10 +195,6 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
     """SAML Logout stage that handles parallel iframe logout"""
 
     response_class = SAMLIframeLogoutChallengeResponse
-
-    def __init__(self, executor, **kwargs):
-        super().__init__(executor, **kwargs)
-        self.iframe_timeout = kwargs.get("iframe_timeout", 5000)
 
     def get_challenge(self) -> Challenge:
         """Generate iframe logout challenge"""
@@ -270,7 +265,6 @@ class SAMLIframeLogoutStageView(ChallengeStageView):
             data={
                 "component": "ak-stage-saml-iframe-logout",
                 "logout_urls": logout_urls,
-                "timeout": self.iframe_timeout,
             }
         )
 

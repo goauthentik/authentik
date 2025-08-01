@@ -106,11 +106,9 @@ export class SAMLIframeLogoutStage extends BaseStage<
     }
 
     async performLogouts(): Promise<void> {
-        const timeout = this.challenge.timeout || 5000;
-
         // Create iframes for each logout URL
         this.challenge.logoutUrls?.forEach((logoutData: LogoutURLData, index: number) => {
-            this.createLogoutIframe(logoutData, index, timeout);
+            this.createLogoutIframe(logoutData, index);
         });
 
         // Set a final timeout to complete even if some iframes don't respond
@@ -119,10 +117,10 @@ export class SAMLIframeLogoutStage extends BaseStage<
                 const submitEvent = new Event("submit") as SubmitEvent;
             this.submitForm(submitEvent);
             }
-        }, timeout + 1000);
+        }, 6000); // 6 seconds (5 second timeout + 1 second buffer)
     }
 
-    createLogoutIframe(logoutData: LogoutURLData, index: number, timeout: number): void {
+    createLogoutIframe(logoutData: LogoutURLData, index: number): void {
 
         const iframe = document.createElement("iframe");
         iframe.style.display = "none";
@@ -135,7 +133,7 @@ export class SAMLIframeLogoutStage extends BaseStage<
         const timeoutId = setTimeout(() => {
             this.handleLogoutComplete(index, false);
             iframe.remove();
-        }, timeout);
+        }, 5000); // 5 second timeout
 
         // Try to detect when iframe loads (may not work for cross-origin)
         iframe.addEventListener("load", () => {

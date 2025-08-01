@@ -44,7 +44,6 @@ class UserLogoutStageView(StageView):
         else:
             saml_stage = in_memory_stage(
                 SAMLIframeLogoutStageView,
-                iframe_timeout=5000,  # Hardcoded 5 second timeout
             )
 
         self.executor.plan.insert_stage(self.executor.current_stage)
