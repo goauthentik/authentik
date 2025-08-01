@@ -188,7 +188,7 @@ export class ApplicationViewPage extends AKElement {
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                        <div class="pf-c-description-list__text pf-m-monospace">
                                             ${this.application.policyEngineMode?.toUpperCase()}
                                         </div>
                                     </dd>
