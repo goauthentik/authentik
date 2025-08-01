@@ -10,8 +10,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export interface VisibilityToggleProps {
     open: boolean;
     disabled: boolean;
-    showMessage: string;
-    hideMessage: string;
+    revealContentLabel: string;
+    hideContentLabel: string;
 }
 
 /**
@@ -48,19 +48,19 @@ export class VisibilityToggle extends AKElement implements VisibilityToggleProps
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
-    showMessage = msg("Show field content");
+    revealContentLabel = msg("Show field content");
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })
-    hideMessage = msg("Hide field content");
+    hideContentLabel = msg("Hide field content");
 
     render() {
         const [label, icon] = this.open
-            ? [this.hideMessage, "fa-eye"]
-            : [this.showMessage, "fa-eye-slash"];
+            ? [this.hideContentLabel, "fa-eye"]
+            : [this.revealContentLabel, "fa-eye-slash"];
 
         const onClick = (ev: PointerEvent) => {
             ev.stopPropagation();

@@ -79,39 +79,71 @@ export abstract class SearchSelectBase<T>
         return groupBy(items, () => "");
     };
 
-    // Whether or not the dropdown component can be left blank
+    /**
+     * Whether or not the dropdown component can be left blank
+     * @property
+     * @attr
+     */
     @property({ type: Boolean })
     public blankable = false;
 
-    // An initial string to filter the search contents, and the value of the input which further
-    // serves to restrict the search
-    @property()
+    /**
+     * An initial string to filter the search contents,
+     * and the value of the input which further serves to restrict the search.
+     * @property
+     */
+    @property({ type: String })
     public query?: string;
 
     // The objects currently available under search
     @property({ attribute: false })
     public objects?: T[];
 
-    // The currently selected object
+    /**
+     * The currently selected object.
+     * @property
+     */
     @property({ attribute: false })
     public selectedObject?: T;
 
-    // Used to inform the form of the name of the object
+    /**
+     * Used to inform the form of the name of the object
+     * @property
+     */
     @property()
     public name?: string;
 
-    // Used to inform the form of the input label.
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    protected fieldID?: string;
+
+    /**
+     * Used to inform the form of the input label.
+     * @property
+     */
     @property()
     public label?: string;
 
-    // The textual placeholder for the search's <input> object, if currently empty. Used as the
-    // native <input> object's `placeholder` field.
-    @property()
+    /**
+     * The textual placeholder for the search's <input> object, if currently empty.
+     *
+     * Used as the native <input> object's `placeholder` field.
+     * @property
+     * @attr
+     */
+    @property({ type: String })
     public placeholder: string = msg("Select an object.");
 
-    // A textual string representing "The user has affirmed they want to leave the selection blank."
-    // Only used if `blankable` above is true.
-    @property()
+    /**
+     * A textual string representing "The user has affirmed they want to leave the selection blank."
+     * Only used if `blankable` above is true.
+     *
+     * @property
+     */
+    @property({ type: String })
     public emptyOption = "---------";
 
     //#endregion
@@ -283,6 +315,7 @@ export abstract class SearchSelectBase<T>
 
         return html`<ak-search-select-view
             managed
+            .fieldID=${this.fieldID}
             .options=${options}
             value=${ifDefined(value)}
             ?blankable=${this.blankable}

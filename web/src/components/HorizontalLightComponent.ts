@@ -5,11 +5,12 @@ import { SlottedTemplateResult } from "../elements/types";
 import { AKElement, type AKElementProps } from "#elements/Base";
 
 import { ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
@@ -39,13 +40,15 @@ export abstract class HorizontalLightComponent<T>
         return this;
     }
 
+    //#region Properties
+
     /**
      * The name attribute for the form element
      * @property
      * @attribute
      */
     @property({ type: String, reflect: true })
-    name!: string;
+    public name!: string;
 
     /**
      * The label for the input control
@@ -53,14 +56,14 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    label?: string;
+    public label?: string;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    required = false;
+    public required = false;
 
     /**
      * Help text to display below the form element. Optional
@@ -68,41 +71,40 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    help = "";
+    public help = "";
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
      * @property
      */
     @property({ type: Object })
-    bighelp?: TemplateResult | TemplateResult[];
+    public bighelp?: TemplateResult | TemplateResult[];
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    hidden = false;
+    public hidden = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    invalid = false;
+    public invalid = false;
 
     /**
      * @property
      */
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    public errorMessages?: ErrorProp[];
 
     /**
-     * @attribute
      * @property
      */
     @property({ attribute: false })
-    value?: T;
+    public value?: T;
 
     /**
      * Input hint.
@@ -111,13 +113,23 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, attribute: "input-hint" })
-    inputHint?: string;
+    public inputHint?: string;
 
-    protected renderControl() {
-        throw new Error("Must be implemented in a subclass");
-    }
-
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
     protected fieldID = IDGenerator.elementID().toString();
+
+    //#endregion
+
+    //#region Rendering
+
+    /**
+     * Render the control element, e.g. an input, textarea, select, etc.
+     */
+    protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
         const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
@@ -132,15 +144,20 @@ export abstract class HorizontalLightComponent<T>
 
     render() {
         return html`<ak-form-element-horizontal
-            fieldID=${this.fieldID}
-            label=${ifDefined(this.label)}
+            .fieldID=${this.fieldID}
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
             .errorMessages=${this.errorMessages}
             ?invalid=${this.invalid}
         >
+            <div slot="label" class="pf-c-form__group-label">
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+            </div>
+
             ${this.renderControl()} ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }
+
+    //#endregion
 }

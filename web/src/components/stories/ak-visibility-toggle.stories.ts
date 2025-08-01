@@ -18,7 +18,7 @@ const metadata: Meta<VisibilityToggleProps> = {
 # Visibility Toggle Component
 
 A straightforward two-state iconic button for toggling the visibility of sensitive content such as passwords, private keys, or other secret information.
-                
+
 - Use for sensitive content that users might want to temporarily reveal
 - There are default hide/show messages for screen readers, but they can be overridden
 - Clients always handle the state
@@ -33,12 +33,12 @@ A straightforward two-state iconic button for toggling the visibility of sensiti
             control: "boolean",
             description: "Whether the toggle is in the 'show' state (true) or 'hide' state (false)",
         },
-        showMessage: {
+        revealContentLabel: {
             control: "text",
             description:
                 'Message for screen readers when in hide state (default: "Show field content")',
         },
-        hideMessage: {
+        hideContentLabel: {
             control: "text",
             description:
                 'Message for screen readers when in show state (default: "Hide field content")',
@@ -57,14 +57,14 @@ type Story = StoryObj<VisibilityToggle>;
 const Template: Story = {
     args: {
         open: false,
-        showMessage: "Show field content",
-        hideMessage: "Hide field content",
+        revealContentLabel: "Show field content",
+        hideContentLabel: "Hide field content",
     },
     render: (args) => html`
         <ak-visibility-toggle
             ?open=${args.open}
-            show-message=${ifDefined(args.showMessage)}
-            hide-message=${ifDefined(args.hideMessage)}
+            show-message=${ifDefined(args.revealContentLabel)}
+            hide-message=${ifDefined(args.hideContentLabel)}
             @click=${(e: Event) => {
                 const target = e.target as VisibilityToggle;
                 target.open = !target.open;
@@ -78,8 +78,8 @@ const Template: Story = {
 // Password field integration example
 export const PasswordFieldExample: Story = {
     args: {
-        showMessage: "Reveal password",
-        hideMessage: "Conceal password",
+        revealContentLabel: "Reveal password",
+        hideContentLabel: "Conceal password",
     },
     render: () => {
         let isVisible = false;

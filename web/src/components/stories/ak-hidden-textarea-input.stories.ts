@@ -52,11 +52,11 @@ A textarea input field with a visibility control, so you can show/hide sensitive
             options: ["text", "code"],
             description: "Input type hint for styling and behavior",
         },
-        showMessage: {
+        revealContentLabel: {
             control: "text",
             description: "Custom message for show action",
         },
-        hideMessage: {
+        hideContentLabel: {
             control: "text",
             description: "Custom message for hide action",
         },
@@ -104,8 +104,8 @@ const Template: Story = {
             wrap=${ifDefined(args.wrap)}
             ?required=${args.required}
             input-hint=${ifDefined(args.inputHint)}
-            show-message=${ifDefined(args.showMessage)}
-            hide-message=${ifDefined(args.hideMessage)}
+            show-message=${ifDefined(args.revealContentLabel)}
+            hide-message=${ifDefined(args.hideContentLabel)}
         ></ak-hidden-textarea-input>
     `,
 };
@@ -134,8 +134,8 @@ kPFn6jeMHyiq0Pqnf82T6M2EDuneMLzAgMBAAE=
         inputHint: "code",
         rows: 15,
         resize: "vertical",
-        showMessage: "Show certificate content",
-        hideMessage: "Hide certificate content",
+        revealContentLabel: "Show certificate content",
+        hideContentLabel: "Hide certificate content",
         autocomplete: "off",
     },
 };

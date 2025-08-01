@@ -8,12 +8,12 @@ import {
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &
-    Pick<VisibilityToggleProps, "showMessage" | "hideMessage">;
+    Pick<VisibilityToggleProps, "hideContentLabel" | "revealContentLabel">;
 
 export interface AkHiddenTextInputProps extends BaseProps {
     revealed: boolean;
@@ -53,10 +53,13 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @property
      * @attribute
      */
+
     @property({ type: String, reflect: true })
     public value = "";
 
     /**
+     * Whether the input value is visible.
+     *
      * @property
      * @attribute
      */
@@ -64,7 +67,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     public revealed = false;
 
     /**
-     * Text for when the input has no set value
+     * Placeholder text when no value is set.
      *
      * @property
      * @attribute
@@ -73,16 +76,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     public placeholder?: string;
 
     /**
-     * Text for when the input has no set value
-     *
-     * @property
-     * @attribute
-     */
-    @property({ type: String })
-    public label?: string;
-
-    /**
-     * Specify kind of help the browser should try to provide
+     * Specify kind of help the browser should try to provide.
      *
      * @property
      * @attribute
@@ -95,29 +89,37 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
-    public showMessage = msg("Show field content");
+    public revealContentLabel = msg("Show field content");
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })
-    public hideMessage = msg("Hide field content");
+    public hideContentLabel = msg("Hide field content");
 
-    @query("#main > input")
-    protected inputField!: T;
+    /**
+     * A listener for the input event.
+     */
+    protected inputListener = (event: InputEvent) => {
+        this.value = (event.target as T).value;
+    };
 
-    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping its content
-    // in the LightDom so the inner components actually inherit styling, the normal `css` options
-    // aren't available. Embedding styles is bad styling, and we'll fix it in the next style
-    // refresh.
-    protected renderInputField(setValue: InputListener, code: boolean) {
+    /**
+     * Render the input field.
+     *
+     * TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping its content LightDOM so the inner components actually inherit styling, the normal `css` options aren't available. Embedding styles is bad styling, and we'll fix it in the next style refresh.
+     */
+    protected renderInputField() {
+        const code = this.inputHint === "code";
+
         return html` <input
             part="input"
+            id=${ifDefined(this.fieldID)}
             autocomplete=${ifDefined(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
             aria-label=${ifDefined(this.label)}
-            @input=${setValue}
+            @input=${this.inputListener}
             value=${ifDefined(this.value)}
             placeholder=${ifDefined(this.placeholder)}
             class="${classMap({
@@ -130,19 +132,14 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     }
 
     protected override renderControl() {
-        const code = this.inputHint === "code";
-        const setValue: InputListener = (ev) => {
-            this.value = (ev.target as T).value;
-        };
-
         return html` <div style="display: flex; gap: 0.25rem">
-            ${this.renderInputField(setValue, code)}
+            ${this.renderInputField()}
             <ak-visibility-toggle
                 part="toggle"
                 style="flex: 0 0 auto; align-self: flex-start"
                 ?open=${this.revealed}
-                show-message=${this.showMessage}
-                hide-message=${this.hideMessage}
+                show-message=${this.revealContentLabel}
+                hide-message=${this.hideContentLabel}
                 @click=${() => (this.revealed = !this.revealed)}
             ></ak-visibility-toggle>
         </div>`;

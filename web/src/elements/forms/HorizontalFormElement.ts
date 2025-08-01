@@ -61,6 +61,7 @@ export class HorizontalFormElement extends AKElement {
      * The label for the input control
      * @property
      * @attribute
+     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label` element instead.
      */
     @property({ type: String })
     public label?: string;
@@ -126,7 +127,8 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group" role="group" aria-label="${this.label}">
+
+        return html`<div class="pf-c-form__group" role="group">
             ${this.label
                 ? html`<div class="pf-c-form__group-label">
                       ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}

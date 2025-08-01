@@ -9,15 +9,18 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
 
+    #inputListener = (ev: InputEvent) => {
+        this.value = (ev.target as HTMLInputElement).value;
+    };
+
     public override renderControl() {
         const code = this.inputHint === "code";
-        const setValue = (ev: InputEvent) => {
-            this.value = (ev.target as HTMLInputElement).value;
-        };
+
         // Prevent the leading spaces added by Prettier's whitespace algo
         // prettier-ignore
         return html`<textarea
-            @input=${setValue}
+            id=${ifDefined(this.fieldID)}
+            @input=${this.#inputListener}
             class="pf-c-form-control"
             ?required=${this.required}
             name=${this.name}
