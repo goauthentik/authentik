@@ -76,6 +76,7 @@ TENANT_APPS = [
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
+    "authentik.enterprise",
     "authentik.events",
     "authentik.flows",
     "authentik.outposts",
@@ -520,17 +521,35 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 
-def _update_settings(app_path: str):
+def subtract_list(a: list, b: list) -> list:
+    return [item for item in a if item not in b]
+
+
+def _filter_and_update(apps: list[str]) -> None:
+    for _app in set(apps):
+        if not _app.startswith("authentik"):
+            continue
+        _update_settings(f"{_app}.settings")
+
+
+def _update_settings(app_path: str) -> None:
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
-        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
+
+        new_shared_apps = subtract_list(getattr(settings_module, "SHARED_APPS", []), SHARED_APPS)
+        new_tenant_apps = subtract_list(getattr(settings_module, "TENANT_APPS", []), TENANT_APPS)
+        SHARED_APPS.extend(new_shared_apps)
+        TENANT_APPS.extend(new_tenant_apps)
+        _filter_and_update(new_shared_apps + new_tenant_apps)
+
         MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
+
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
         SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
         REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
+
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -549,21 +568,8 @@ TENANT_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
 
-# Attempt to load enterprise app, if available
-try:
-    importlib.import_module("authentik.enterprise.apps")
-    CONFIG.log("info", "Enabled authentik enterprise")
-    TENANT_APPS.append("authentik.enterprise")
-    _update_settings("authentik.enterprise.settings")
-except ImportError:
-    pass
-
-
 # Load subapps's settings
-for _app in set(SHARED_APPS + TENANT_APPS):
-    if not _app.startswith("authentik"):
-        continue
-    _update_settings(f"{_app}.settings")
+_filter_and_update(SHARED_APPS + TENANT_APPS)
 _update_settings("data.user_settings")
 
 MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
