@@ -1,11 +1,7 @@
-import {
-    AkHiddenTextInput,
-    type AkHiddenTextInputProps,
-    InputListener,
-} from "./ak-hidden-text-input.js";
+import { AkHiddenTextInput, type AkHiddenTextInputProps } from "./ak-hidden-text-input.js";
 
 import { html } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -48,43 +44,44 @@ export class AkHiddenTextAreaInput
     extends AkHiddenTextInput<HTMLTextAreaElement>
     implements AkHiddenTextAreaInputProps
 {
-    /* These are mostly just forwarded to the textarea component. */
+    //#region Properties
 
     /**
-     * @property
-     * @attribute
-     */
-    @property({ type: Number })
-    rows?: number = 4;
-
-    /**
-     * @property
-     * @attribute
-     */
-    @property({ type: Number })
-    cols?: number;
-
-    /**
-     * @property
-     * @attribute
+     * Number of visible text lines (rows)
      *
-     * You want `resize=true` so that the resize value is visible in the component tag, activating
-     * the CSS associated with these values.
+     * @property
+     * @attribute
+     */
+    @property({ type: Number })
+    public rows?: number = 4;
+
+    /**
+     * Nummber of visible character width (cols)
+     * @property
+     * @attribute
+     */
+    @property({ type: Number })
+    public cols?: number;
+
+    /**
+     * You want `resize=true` so that the resize value is visible in the component tag, activating the CSS associated with these values.
+     *
+     * @property
+     * @attribute
      */
     @property({ type: String, reflect: true })
-    resize?: "none" | "both" | "horizontal" | "vertical" = "vertical";
+    public resize?: "none" | "both" | "horizontal" | "vertical" = "vertical";
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String })
-    wrap?: "soft" | "hard" | "off" = "soft";
+    public wrap?: "soft" | "hard" | "off" = "soft";
 
-    @query("#main > textarea")
-    protected inputField!: HTMLTextAreaElement;
+    //#endregion
 
-    get displayValue() {
+    get #visibleValue() {
         const value = this.value ?? "";
         if (this.revealed) {
             return value;
@@ -96,18 +93,18 @@ export class AkHiddenTextAreaInput
             .join("\n");
     }
 
-    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping its content
-    // in the LightDom so the inner components actually inherit styling, the normal `css` options
-    // aren't available. Embedding styles is bad styling, and we'll fix it in the next style
-    // refresh.
-    protected override renderInputField(setValue: InputListener, code: boolean) {
+    //#region Rendering
+
+    protected override renderInputField() {
         const wrap = this.revealed ? this.wrap : "soft";
+        const code = this.inputHint === "code";
 
         return html`
             <textarea
                 style="flex: 1 1 auto; min-width: 0;"
                 part="textarea"
-                @input=${setValue}
+                @input=${this}
+                id=${ifDefined(this.fieldID)}
                 placeholder=${ifDefined(this.placeholder)}
                 aria-label=${ifDefined(this.label)}
                 rows=${ifDefined(this.rows)}
@@ -120,10 +117,12 @@ export class AkHiddenTextAreaInput
                 spellcheck=${code ? "false" : "true"}
                 ?required=${this.required}
             >
-${this.displayValue}</textarea
+${this.#visibleValue}</textarea
             >
         `;
     }
+
+    //#endregion
 }
 
 declare global {

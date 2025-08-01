@@ -49,11 +49,11 @@ A text-input field with a visibility control, so you can show/hide sensitive fie
             options: ["text", "code"],
             description: "Input type hint for styling and behavior",
         },
-        showMessage: {
+        revealContentLabel: {
             control: "text",
             description: "Custom message for show action",
         },
-        hideMessage: {
+        hideContentLabel: {
             control: "text",
             description: "Custom message for hide action",
         },
@@ -78,8 +78,8 @@ const Template: Story = {
             placeholder=${ifDefined(args.placeholder)}
             ?required=${args.required}
             input-hint=${ifDefined(args.inputHint)}
-            show-message=${ifDefined(args.showMessage)}
-            hide-message=${ifDefined(args.hideMessage)}
+            show-message=${ifDefined(args.revealContentLabel)}
+            hide-message=${ifDefined(args.hideContentLabel)}
         ></ak-hidden-text-input>
     `,
 };

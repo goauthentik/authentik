@@ -1,7 +1,5 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { bound } from "#elements/decorators/bound";
-
 import { kebabCase } from "change-case";
 
 import { html } from "lit";
@@ -56,7 +54,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
 
     // Do not stop propagation of this event; it must be sent up the tree so that a parent
     // component, such as a custom forms manager, may receive it.
-    protected handleTouch(ev: Event) {
+    #touchListener = (ev: Event) => {
         this.value = this.input.value = slugify(this.input.value);
 
         // Reset 'touched' status if the slug & target have been reset
@@ -68,10 +66,9 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         if (ev && ev.target && ev.target instanceof HTMLInputElement) {
             this.#touched = true;
         }
-    }
+    };
 
-    @bound
-    protected slugify(ev: Event) {
+    #slugify = (ev: Event) => {
         if (!(ev && ev.target && ev.target instanceof HTMLInputElement)) {
             return;
         }
@@ -114,18 +111,18 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
                 cancelable: true,
             }),
         );
-    }
+    };
 
     public override disconnectedCallback() {
-        if (this.#origin) {
-            this.#origin.removeEventListener("input", this.slugify);
-        }
+        this.#origin?.removeEventListener("input", this.#slugify);
+
         super.disconnectedCallback();
     }
 
     public override renderControl() {
         return html`<input
-            @input=${(ev: Event) => this.handleTouch(ev)}
+            id=${ifDefined(this.fieldID)}
+            @input=${this.#touchListener}
             type="text"
             value=${ifDefined(this.value)}
             class="pf-c-form-control"
@@ -143,7 +140,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
             this.#origin = rootNode.querySelector(this.source);
         }
         if (this.#origin) {
-            this.#origin.addEventListener("input", this.slugify);
+            this.#origin.addEventListener("input", this.#slugify);
         }
     }
 }

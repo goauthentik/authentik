@@ -151,6 +151,13 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public placeholder: string = msg("Select an object.");
 
     /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    protected fieldID?: string;
+
+    /**
      * If true, the component only sends an input message up to a parent component. If false, the
      * list of options sent downstream will be filtered by the contents of the `<input>` field
      * locally.
@@ -386,6 +393,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"
                             type="text"
+                            id=${ifDefined(this.fieldID)}
                             ${ref(this.#inputRef)}
                             placeholder=${this.placeholder}
                             aria-label=${ifDefined(this.label)}
