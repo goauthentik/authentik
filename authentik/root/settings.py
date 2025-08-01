@@ -245,10 +245,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
+MIDDLEWARE_FIRST = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+]
 MIDDLEWARE = [
     "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
@@ -261,6 +263,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+]
+MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
@@ -496,7 +500,9 @@ _DISALLOWED_ITEMS = [
     "SHARED_APPS",
     "TENANT_APPS",
     "INSTALLED_APPS",
+    "MIDDLEWARE_FIRST",
     "MIDDLEWARE",
+    "MIDDLEWARE_LAST",
     "AUTHENTICATION_BACKENDS",
     "SPECTACULAR_SETTINGS",
     "REST_FRAMEWORK",
@@ -520,6 +526,7 @@ def _update_settings(app_path: str):
         CONFIG.log("debug", "Loaded app settings", path=app_path)
         SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
+        MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
         SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
@@ -559,5 +566,6 @@ for _app in set(SHARED_APPS + TENANT_APPS):
     _update_settings(f"{_app}.settings")
 _update_settings("data.user_settings")
 
+MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
