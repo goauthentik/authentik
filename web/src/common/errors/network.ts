@@ -178,6 +178,10 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
         ResponseErrorMessages[HTTPStatusCode.InternalServiceError],
     );
 
+    if (errorLike && typeof errorLike === "string") {
+        return errorLike;
+    }
+
     if (!errorLike || typeof errorLike !== "object") {
         return fallback;
     }
