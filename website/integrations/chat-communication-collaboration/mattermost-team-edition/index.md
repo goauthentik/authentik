@@ -10,7 +10,9 @@ support_level: community
 >
 > -- https://mattermost.com/
 
-Mattermost Team Edition does not natively support generic single sign-on. With a manual edit to your configuration, you can use Mattermost's GitLab integration with authentik's OAuth2/OpenID Provider to authenticate using authentik. When this configuration is complete, Mattermost will display a login button that uses the GitLab icon on it, but it will be using your authentik system for authentication. You do not need to have GitLab installed or available. This setup does not use GitLab in any way.
+:::info
+Mattermost Team Edition does not natively support generic single sign-on. However, you can manually configure Mattermost to use its GitLab integration for authentication via authentik’s OAuth2/OpenID Provider. This requires editing the `config.json` file directly, as the necessary settings are not available through the web interface. If you are using a hosted version of Mattermost without filesystem access, you will not be able to complete this setup. Once configured, Mattermost will display a login button with the GitLab icon, but authentication will be handled entirely by authentik. GitLab itself is not required or used in any way.
+:::
 
 ## Preparation
 
@@ -19,19 +21,15 @@ The following placeholders are used in this guide:
 - `mattermost.company` is the FQDN of the Mattermost installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-You will need direct access to the filesystem for your Mattermost Team Edition server. The configurations that are required can only be set by editing the `config.json` file directly. If you use a hosted version of Mattermost where you cannot access the files, you will not be able to complete these instructions.
-
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
 
-To support the integration of Mattermost Team Edition with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Mattermost Team Edition with authentik, you need to create property mappings and an application/provider pair in authentik.
 
 ### Create property mappings
-
-You need to create two scope mappings.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
@@ -41,7 +39,7 @@ You need to create two scope mappings.
     - **Expression**:
         ```python
         return {
-            "id": request.user.attributes.get("mattermostId", request.user.id)
+            "id": request.user.attributes.get("mattermostId", request.user.pk),
         }
         ```
 3. Click **Create** again, and create a **Scope Mapping** with the following settings:
@@ -51,12 +49,12 @@ You need to create two scope mappings.
     - **Expression**:
         ```python
         return {
-            "username": request.user.username
+            "username": request.user.username,
         }
         ```
 
 :::note
-The `mattermostId` property mapping is optional. Without it, Mattermost will use a variation on users' email addresses as their ID on the system. This leads to userids that look like **person-example.com** for a user whose email address is `person@example.com`. Since these are the nicknames in a chat system, that may be undesirable. Using the `mattermostId` property you can select or construct a different identifier that might be more aesthetically pleasing.
+The `id` property mapping is optional. If omitted, Mattermost will generate user IDs based on email addresses, resulting in names such as `person-example.com` for `person@example.com`. Since these IDs serve as nicknames, this format may be undesirable.
 :::
 
 ### Create an application and provider in authentik
@@ -64,12 +62,11 @@ The `mattermostId` property mapping is optional. Without it, Mattermost will use
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- **Application**: provide a descriptive name, an optional group for the type of application, and the policy engine mode
-    - Under UI Settings set the Launch URL to <kbd>https://<em>mattermost.company</em>/oauth/gitlab/login</kbd>
+- **Application**: provide a descriptive name, an optional group for the type of application, and the policy engine mode.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>mattermost.company</em>/signup/gitlab/complete</kbd>
+    - Set a `Strict` redirect URI to `https://mattermost.company/signup/gitlab/complete`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scopes you just created to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -78,26 +75,31 @@ The `mattermostId` property mapping is optional. Without it, Mattermost will use
 
 ## Mattermost Team Edition configuration
 
-1. Find the `config.json` file for your Mattermost installation ([documentation](https://docs.mattermost.com/configure/configuration-settings.html)). Open it in a text editor.
+To support the integration of Mattermost Team Edition with authentik, you'll need to update the `config.json` file of your Mattermost deployment:
 
-2. Change the `GitLabSettings` section of the file to look like the following. Insert your **client secret**, **client id**, and **slug** in the appropriate places.
-```json
+1. Modify the `GitLabSettings` section to look like the following:
+
+```json showLineNumbers title="/opt/mattermost/config/config.json"
 "GitLabSettings": {
     "Enable": true,
-    "Secret": "**client secret**",
-    "Id": "**client id**",
+    "Secret": "<client_secret>",
+    "Id": "<client_id>",
     "Scope": "",
     "AuthEndpoint": "https://authentik.company/application/o/authorize/",
     "TokenEndpoint": "https://authentik.company/application/o/token/",
     "UserAPIEndpoint": "https://authentik.company/application/o/userinfo/",
-    "DiscoveryEndpoint": "https://authentik.company/application/o/**slug**/.well-known/openid-configuration",
-    "ButtonText": "Login with authentik",
+    "DiscoveryEndpoint": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration",
+    "ButtonText": "Log in with authentik",
     "ButtonColor": "#000000"
 },
 ```
 
-3. On the Mattermost **Authentication** > **Signup** options (`https://mattermost.company/admin_console/authentication/signup`) make sure that **Enable Account Creation** is **true**.
-4. After saving the changes to the `config.json` file, restart Mattermost.
+2. On the Mattermost **Authentication** > **Signup** options (`https://mattermost.company/admin_console/authentication/signup`) make sure that **Enable Account Creation** is **true**.
+3. Restart Mattermost to apply the changes.
+
+## Configuration verification
+
+To verify the integration of authentik with Mattermost Team Edition, log out and attempt to log back in. You should see a button called "Log in with authentik" on the login page, and a successful login should redirect you back to Mattermost Team Edition without any errors.
 
 ## Additional Resources
 
