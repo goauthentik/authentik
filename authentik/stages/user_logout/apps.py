@@ -10,3 +10,7 @@ class AuthentikStageUserLogoutConfig(ManagedAppConfig):
     label = "authentik_stages_user_logout"
     verbose_name = "authentik Stages.User Logout"
     default = True
+
+    def ready(self):
+        """Initialize user logout stage"""
+        super().ready()

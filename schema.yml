@@ -22387,6 +22387,20 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: sls_binding
+        schema:
+          type: string
+          enum:
+          - post
+          - redirect
+        description: |+
+          This determines how authentik sends the logout response back to the Service Provider.
+
+      - in: query
+        name: sls_url
+        schema:
+          type: string
+      - in: query
         name: sp_binding
         schema:
           type: string
@@ -22738,6 +22752,265 @@ paths:
           description: Successfully imported provider
         '400':
           description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/saml/sessions/:
+    get:
+      operationId: providers_saml_sessions_list
+      description: SAMLSession Viewset
+      parameters:
+      - in: query
+        name: name_id
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: session_index
+        schema:
+          type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSAMLSessionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_saml_sessions_create
+      description: SAMLSession Viewset
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSession'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/saml/sessions/{id}/:
+    get:
+      operationId: providers_saml_sessions_retrieve
+      description: SAMLSession Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Session.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSession'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_saml_sessions_update
+      description: SAMLSession Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Session.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSession'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_saml_sessions_partial_update
+      description: SAMLSession Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Session.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SAMLSession'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_saml_sessions_destroy
+      description: SAMLSession Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Session.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/saml/sessions/{id}/used_by/:
+    get:
+      operationId: providers_saml_sessions_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SAML Session.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
         '403':
           content:
             application/json:
@@ -24705,6 +24978,7 @@ paths:
           - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
+          - authentik_providers_saml.samlsession
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_providers_ssf.ssfprovider
@@ -24955,6 +25229,7 @@ paths:
           - authentik_providers_radius.radiusproviderpropertymapping
           - authentik_providers_saml.samlpropertymapping
           - authentik_providers_saml.samlprovider
+          - authentik_providers_saml.samlsession
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_providers_ssf.ssfprovider
@@ -39894,6 +40169,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: saml_redirect_logout
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
@@ -43553,6 +43832,8 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
+      - $ref: '#/components/schemas/SAMLIframeLogoutChallenge'
+      - $ref: '#/components/schemas/SAMLLogoutChallenge'
       - $ref: '#/components/schemas/SessionEndChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
       - $ref: '#/components/schemas/UserLoginChallenge'
@@ -43582,6 +43863,8 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
+          ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallenge'
+          ak-stage-saml-logout: '#/components/schemas/SAMLLogoutChallenge'
           ak-stage-session-end: '#/components/schemas/SessionEndChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
           ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
@@ -45575,6 +45858,8 @@ components:
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
       - $ref: '#/components/schemas/RedirectChallengeResponseRequest'
+      - $ref: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
+      - $ref: '#/components/schemas/SAMLLogoutChallengeResponseRequest'
       - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
       discriminator:
         propertyName: component
@@ -45600,6 +45885,8 @@ components:
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
           xak-flow-redirect: '#/components/schemas/RedirectChallengeResponseRequest'
+          ak-stage-saml-iframe-logout: '#/components/schemas/SAMLIframeLogoutChallengeResponseRequest'
+          ak-stage-saml-logout: '#/components/schemas/SAMLLogoutChallengeResponseRequest'
           ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
@@ -48898,6 +49185,7 @@ components:
       - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
       - authentik_providers_saml.samlpropertymapping
+      - authentik_providers_saml.samlsession
       - authentik_providers_scim.scimprovider
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
@@ -51624,6 +51912,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SAMLProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
+    PaginatedSAMLSessionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SAMLSession'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -55212,6 +55515,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55286,6 +55594,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -55688,6 +56001,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -55875,6 +56191,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        saml_redirect_logout:
+          type: boolean
     PatchedUserOAuthSourceConnectionRequest:
       type: object
       description: User source connection
@@ -58117,6 +58435,74 @@ components:
           maxLength: 150
       required:
       - name
+    SAMLIframeLogoutChallenge:
+      type: object
+      description: Challenge for SAML iframe logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-saml-iframe-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        logout_urls:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - logout_urls
+    SAMLIframeLogoutChallengeResponseRequest:
+      type: object
+      description: Response for SAML iframe logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-saml-iframe-logout
+    SAMLLogoutChallenge:
+      type: object
+      description: Challenge for SAML logout
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-saml-logout
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        url:
+          type: string
+        saml_request:
+          type: string
+        relay_state:
+          type: string
+        provider_name:
+          type: string
+        binding:
+          type: string
+        redirect_url:
+          type: string
+        is_complete:
+          type: string
+          default: 'false'
+    SAMLLogoutChallengeResponseRequest:
+      type: object
+      description: Response for SAML logout
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-saml-logout
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -58274,6 +58660,11 @@ components:
         acs_url:
           type: string
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58344,6 +58735,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -58442,6 +58838,11 @@ components:
           type: string
           minLength: 1
           format: uri
+        sls_url:
+          type: string
+          description: Single Logout Service URL where the logout response should
+            be sent.
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -58516,6 +58917,11 @@ components:
           title: Service Provider Binding
           description: This determines how authentik sends the response back to the
             Service Provider.
+        sls_binding:
+          allOf:
+          - $ref: '#/components/schemas/SlsBindingEnum'
+          description: This determines how authentik sends the logout response back
+            to the Service Provider.
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
@@ -58524,6 +58930,63 @@ components:
       - authorization_flow
       - invalidation_flow
       - name
+    SAMLSession:
+      type: object
+      description: SAMLSession Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          type: integer
+          readOnly: true
+        provider_name:
+          type: string
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+        session:
+          type: string
+          readOnly: true
+          description: Link to the user's authenticated session
+        session_index:
+          type: string
+          readOnly: true
+          description: SAML SessionIndex for this session
+        name_id:
+          type: string
+          readOnly: true
+          description: SAML NameID value for this session
+        name_id_format:
+          type: string
+          readOnly: true
+          description: SAML NameID format
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        session_not_on_or_after:
+          type: string
+          format: date-time
+          readOnly: true
+          description: Session expiration time sent to the SP
+      required:
+      - created
+      - name_id
+      - name_id_format
+      - pk
+      - provider
+      - provider_name
+      - session
+      - session_index
+      - session_not_on_or_after
+      - user
+      - username
     SAMLSource:
       type: object
       description: SAMLSource Serializer
@@ -59896,6 +60359,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -59949,6 +60415,9 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        enable_iframe_saml_logout:
+          type: boolean
+          description: Use iframe method for SAML logout instead of redirect chain
     SeverityEnum:
       enum:
       - notice
@@ -59985,6 +60454,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
+      type: string
+    SlsBindingEnum:
+      enum:
+      - redirect
+      - post
       type: string
     Source:
       type: object
@@ -61563,6 +62037,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+        saml_redirect_logout:
+          type: boolean
       required:
       - component
       - meta_model_name
@@ -61581,6 +62057,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        saml_redirect_logout:
+          type: boolean
       required:
       - name
     UserMatchingModeEnum:
