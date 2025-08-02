@@ -198,7 +198,7 @@ class MetricsMiddleware(Middleware):
             self.labels,
         )
         self.messages_durations = Histogram(
-            f"{self.prefix}_tasks_duration_miliseconds",
+            f"{self.prefix}_tasks_duration_milliseconds",
             "The time spent processing tasks.",
             self.labels,
             buckets=(
