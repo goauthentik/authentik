@@ -73,7 +73,7 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
     return True
 
 
-@actor()
+@actor(description=_("Handle backchannel logout notifications dispatched via signal"))
 def backchannel_logout_notification_dispatch(revocations: list, **kwargs):
     """Handle backchannel logout notifications dispatched via signal"""
     for revocation in revocations:
