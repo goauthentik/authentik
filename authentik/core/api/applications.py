@@ -66,6 +66,42 @@ class ApplicationSerializer(ModelSerializer):
             user = self.context["request"].user
         return app.get_launch_url(user)
 
+    def validate(self, attrs):
+        """Validate application data"""
+        attrs = super().validate(attrs)
+
+        from authentik.providers.oauth2.models import OAuth2Provider
+
+        # Reserved slugs that would clash with OAuth2 provider endpoints
+        reserved_slugs = ["authorize", "token", "userinfo", "revoke"]
+
+        # Get the slug being used (either from attrs or from instance)
+        if self.instance:
+            slug = attrs.get("slug", self.instance.slug)
+        else:
+            slug = attrs.get("slug")
+
+        # Only validate if the slug is a reserved one
+        if slug in reserved_slugs:
+            # For new applications with a provider being set
+            if "provider" in attrs and attrs["provider"]:
+                provider_pk = attrs["provider"]
+                # Check if this provider is an OAuth2Provider
+                if OAuth2Provider.objects.filter(pk=provider_pk).exists():
+                    raise ValidationError(
+                        {"slug": f"The slug '{slug}' is reserved for OAuth2 provider endpoints."}
+                    )
+            # For existing applications with a provider already set
+            elif self.instance and self.instance.provider:
+                # Get the actual provider instance
+                provider_instance = self.instance.get_provider()
+                if provider_instance and isinstance(provider_instance, OAuth2Provider):
+                    raise ValidationError(
+                        {"slug": f"The slug '{slug}' is reserved for OAuth2 provider endpoints."}
+                    )
+
+        return attrs
+
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
