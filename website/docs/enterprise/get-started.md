@@ -2,20 +2,20 @@
 title: Get started
 ---
 
-Installing authentik is exactly the same process for both Enterprise version and our free [open source](https://github.com/goauthentik/authentik) version.
+Installing authentik is exactly the same process for both Enterprise version and our open source version.
 
 ## 1. Install Enterprise
 
 To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../../releases/) version or later.
 
-If this is a fresh install, refer to our [technical documentation](../install-config/index.mdx) for instructions to install and configure authentik.
+If this is a fresh install, refer to our technical documentation for [instructions](../install-config/index.mdx) to install and configure authentik.
 
 - [Docker Compose installation](../install-config/install/docker-compose.mdx)
 - [Kubernetes installation](../install-config/install/kubernetes.md)
 
 ## 2. Access Enterprise
 
-Access your Enterprise features by first [purchasing a license](./manage-enterprise.mdx#buy-a-license) for the organization.
+Access your Enterprise features by [purchasing a license](./manage-enterprise.mdx#buy-a-license) for the organization.
 
 To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise > Licenses**, and then click **Go to Customer Portal**.
 
