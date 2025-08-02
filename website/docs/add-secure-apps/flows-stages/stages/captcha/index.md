@@ -43,7 +43,7 @@ See https://docs.hcaptcha.com/switch
 
 ### Cloudflare Turnstile
 
-See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha
+See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recaptcha.
 
 #### Configuration options
 
