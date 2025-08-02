@@ -58,6 +58,11 @@ LABEL org.opencontainers.image.description="goauthentik.io Proxy outpost image, 
 LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.title="authentik proxy outpost image"
+LABEL org.opencontainers.image.authors="Authentik Security Inc."
+LABEL org.opencontainers.image.documentation="https://docs.goauthentik.io"
+LABEL org.opencontainers.image.vendor="Authentik Security Inc."
+LABEL org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
