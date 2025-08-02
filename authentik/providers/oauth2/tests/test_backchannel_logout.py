@@ -165,7 +165,8 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertIn("events", decoded3)
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
-    def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
+    @patch("authentik.providers.oauth2.tasks.CurrentTask.get_task")
+    def test_send_backchannel_logout_request_scenarios(self, mock_get_task, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
         # Setup provider with backchannel logout URI
         self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
@@ -178,6 +179,10 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_response.status_code = 200
         mock_response.raise_for_status.return_value = None  # No exception for successful request
         mock_session.post.return_value = mock_response
+
+        # Mock CurrentTask to avoid CurrentTaskNotFound error
+        mock_task = Mock()
+        mock_get_task.return_value = mock_task
         result = send_backchannel_logout_request(
             self.provider.pk, "http://testserver", sub="test-user-uid"
         )
@@ -189,13 +194,17 @@ class TestBackChannelLogout(OAuthTestCase):
             call_args[1]["headers"]["Content-Type"], "application/x-www-form-urlencoded"
         )
 
-        # Scenario 2: Failed request (400 response)
+        # Scenario 2: Failed request (400 response) - should raise exception
+        from requests.exceptions import HTTPError
         mock_session.post.reset_mock()
-        mock_response.status_code = 400
-        result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", sub="test-user-uid"
-        )
-        self.assertFalse(result)
+        error_response = Mock(spec=Response)
+        error_response.status_code = 400
+        error_response.raise_for_status.side_effect = HTTPError("HTTP 400")
+        mock_session.post.return_value = error_response
+        with self.assertRaises(HTTPError):
+            send_backchannel_logout_request(
+                self.provider.pk, "http://testserver", sub="test-user-uid"
+            )
 
         # Scenario 3: No URI configured
         mock_session.post.reset_mock()
@@ -204,16 +213,16 @@ class TestBackChannelLogout(OAuthTestCase):
         result = send_backchannel_logout_request(
             self.provider.pk, "http://testserver", sub="test-user-uid"
         )
-        self.assertFalse(result)
+        self.assertIsNone(result)
         mock_session.post.assert_not_called()
 
-        # Scenario 4: No subject provided
+        # Scenario 4: No sub provided - should fail
         result = send_backchannel_logout_request(self.provider.pk, "http://testserver")
-        self.assertFalse(result)
+        self.assertIsNone(result)
 
         # Scenario 5: Non-existent provider
         result = send_backchannel_logout_request(99999, "http://testserver", sub="test-user-uid")
-        self.assertFalse(result)
+        self.assertIsNone(result)
 
         # Scenario 6: Request timeout
         from requests.exceptions import Timeout
@@ -221,10 +230,10 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_session.post.side_effect = Timeout("Request timed out")
         self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
         self.provider.save()
-        result = send_backchannel_logout_request(
-            self.provider.pk, "http://testserver", sub="test-user-uid"
-        )
-        self.assertFalse(result)
+        with self.assertRaises(Timeout):
+            send_backchannel_logout_request(
+                self.provider.pk, "http://testserver", sub="test-user-uid"
+            )
 
         # Scenario 7: Event creation
         mock_session.post.side_effect = None
@@ -273,13 +282,6 @@ class TestBackChannelLogout(OAuthTestCase):
         send_backchannel_logout_notification(session=session2)
         # Should still call the task for each OAuth2 provider even without refresh tokens
         self.assertEqual(mock_task.call_count, 2)
-
-        # Scenario 3: With user parameter
-        # mock_task.reset_mock()
-        # try:
-        #     send_backchannel_logout_notification(user=self.user)
-        # except Exception as e:
-        #     self.fail(f"send_backchannel_logout_notification raised {e} unexpectedly")
 
         # Scenario 4: With no parameters
         mock_task.reset_mock()
