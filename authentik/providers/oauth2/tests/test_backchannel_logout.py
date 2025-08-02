@@ -8,6 +8,7 @@ import jwt
 from django.test import RequestFactory
 from django.utils import timezone
 from requests import Response
+from requests.exceptions import HTTPError, Timeout
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -195,7 +196,6 @@ class TestBackChannelLogout(OAuthTestCase):
         )
 
         # Scenario 2: Failed request (400 response) - should raise exception
-        from requests.exceptions import HTTPError
         mock_session.post.reset_mock()
         error_response = Mock(spec=Response)
         error_response.status_code = 400
@@ -225,8 +225,6 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertIsNone(result)
 
         # Scenario 6: Request timeout
-        from requests.exceptions import Timeout
-
         mock_session.post.side_effect = Timeout("Request timed out")
         self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
         self.provider.save()
