@@ -47,14 +47,15 @@ See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recap
 
 #### Configuration options
 
-In authentik open the Admin interface and navigate to Flows and Stages --> Stages --> Create
-Select Captcha Stage and press Next
-Name the stage e.g. authentication-captcha
-Under the Stage-specific settings copy the following from the Cloudflare Turnstile Widget you setup previously
-- Copy the Turnstile Site Key to the Public Key
-- Copy the Turnstile Site Key to the Private Key
-- Enable Interactive: Enabled if the Turnstile instance is configured as visible or managed
-- Leave both score thresholds at their default, they are not used for Turnstile
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+3. Select **Captcha Stage** and click **Next**.
+4. Provide a descriptive name for the stage (e.g. authentication-captcha) and configure the following required settings based on the values of your [Cloudflare Turnstile Widget](https://developers.cloudflare.com/turnstile/concepts/widget/):
+    - Under **Stage-specific settings**:
+        - **Public Key**: set to the **Turnstile Site Key** value from the widget.
+        - **Private Key**: set to the **Turnstile Secret Key** value from the widget.
+        - **Enable Interactive**: Enable this option if the Turnstile instance is configured as **Invisible** or **Managed**.
+        - Leave both score thresholds at their default. They are not used for Turnstile.
 - JS URL: `https://challenges.cloudflare.com/turnstile/v0/api.js`
 - API URL: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 
