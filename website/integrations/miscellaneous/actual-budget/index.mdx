@@ -96,15 +96,16 @@ Alternatively, it is possible to configure OpenID Connect via the UI.
 </Tabs>
 
 :::warning
-Please note that users are not created automatically in Actual Budget. The owner must manually provision users.
+Users are not created automatically in Actual Budget and must be manually provisioned before OIDC authentication, otherwise you will receive a password error.
 
-To do so, login as a local (non-OIDC) admin, then navigate to **Server online** > **User Directory**, and create users matching existing authentik usernames. Then, grant access to the budget via the **User Access** tab.
+To provision users:
 
-If you want to create an admin user with OIDC integration you'll need to provision an account with the `admin` role.  To also configure this admin account as an owner, you can transfer ownership via **User Access Management**.  After the transfer of ownership, you may need to reset the `admin` role if it doesn't appear in the **User Directory**.
-:::
+1. Login as a local (non-OIDC) admin
+2. Navigate to **Server online** > **User Directory**
+3. Create users matching existing authentik usernames
+4. Grant access to the budget via the **User Access** tab
 
-:::warning
-If you do not provision user accounts before OIDC authentication, you will receive a password error.
+For admin users with OIDC integration, provision an account with the `admin` role. To configure this admin as an owner, transfer ownership via **User Access Management**. You may need to reset the `admin` role afterward if it doesn't appear in the **User Directory**.
 :::
 
 ## Configuration verification
