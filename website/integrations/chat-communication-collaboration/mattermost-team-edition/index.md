@@ -33,19 +33,9 @@ To support the integration of Mattermost Team Edition with authentik, you need t
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
-    - **Name**: Set an appropriate name.
-    - **Scope Name**: `id`
-    - **Description**: Set an appropriate description, if desired.
-    - **Expression**:
-        ```python
-        return {
-            "id": request.user.attributes.get("mattermostId", request.user.pk),
-        }
-        ```
-3. Click **Create** again, and create a **Scope Mapping** with the following settings:
-    - **Name**: Set an appropriate name.
+    - **Name**: `mattermost-username`
     - **Scope Name**: `username`
-    - **Description**: Set an appropriate description, if desired.
+    - **Description**: `Maps the user's authentik username to the username field for Mattermost authentication.`
     - **Expression**:
         ```python
         return {
@@ -54,8 +44,19 @@ To support the integration of Mattermost Team Edition with authentik, you need t
         ```
 
 :::note
-The `id` property mapping is optional. If omitted, Mattermost will generate user IDs based on email addresses, resulting in names such as `person-example.com` for `person@example.com`. Since these IDs serve as nicknames, this format may be undesirable.
+The following `id` property mapping is optional. If omitted, Mattermost will generate user IDs based on email addresses, resulting in names such as `person-example.com` for `person@example.com`. Since these IDs serve as nicknames, this format may be undesirable.
 :::
+
+3. If desired, click **Create** again, and create another **Scope Mapping** with the following settings:
+    - **Name**: `mattermost-id`
+    - **Scope Name**: `id`
+    - **Description**: `Maps the user's Mattermost ID or primary key to the id field for Mattermost authentication.`
+    - **Expression**:
+        ```python
+        return {
+            "id": request.user.attributes.get("mattermostId", request.user.pk),
+        }
+        ```
 
 ### Create an application and provider in authentik
 
@@ -94,7 +95,7 @@ To support the integration of Mattermost Team Edition with authentik, you'll nee
 },
 ```
 
-2. On the Mattermost **Authentication** > **Signup** options (`https://mattermost.company/admin_console/authentication/signup`) make sure that **Enable Account Creation** is **true**.
+2. Log in to Mattermost as an administrator and navigate to the System Console. Go to **Authentication** > **Signup** options (`https://mattermost.company/admin_console/authentication/signup`) and make sure that **Enable Account Creation** is set to **true**.
 3. Restart Mattermost to apply the changes.
 
 ## Configuration verification
