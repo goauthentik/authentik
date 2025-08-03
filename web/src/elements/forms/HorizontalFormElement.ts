@@ -59,18 +59,6 @@ export class HorizontalFormElement extends AKElement {
                     var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
                     var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
             }
-
-            .pf-c-form__group-label {
-                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-            }
-
-            .pf-c-form__label[aria-required] .pf-c-form__label-text::after {
-                content: "*";
-                user-select: none;
-                margin-left: var(--pf-c-form__label-required--MarginLeft);
-                font-size: var(--pf-c-form__label-required--FontSize);
-                color: var(--pf-c-form__label-required--Color);
-            }
         `,
     ];
 
@@ -108,11 +96,9 @@ export class HorizontalFormElement extends AKElement {
     @property({ type: String })
     public name = "";
 
-    @property({
-        type: String,
-        attribute: "flow-direction",
-    })
-    public flowDirection: "row" | "column" = "column";
+    //#endregion
+
+    //#region Lifecycle
 
     firstUpdated(): void {
         this.updated();
@@ -138,12 +124,7 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div
-            class="pf-c-form__group"
-            role="group"
-            aria-label="${this.label}"
-            data-flow-direction="${this.flowDirection}"
-        >
+        return html`<div class="pf-c-form__group" role="group" aria-label="${this.label}">
             <div class="pf-c-form__group-label">
                 <label
                     id="group-label"
