@@ -156,6 +156,24 @@ class UserSerializer(ModelSerializer):
                 required=False, child=ChoiceField(choices=get_permission_choices())
             )
 
+        if self._should_show_passwords:
+            self.fields["password"] = CharField(required=False, allow_null=True)
+
+    @property
+    def _should_show_passwords(self) -> bool:
+        request: Request = self.context.get("request", None)
+
+        if not request:
+            return False
+
+        if request.query_params.get("include_password", "false") != "true":
+            return False
+
+        if not request.user.has_perm("authentik_core.view_password_hashes"):
+            return False
+
+        return True
+
     def create(self, validated_data: dict) -> User:
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
@@ -419,6 +437,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter("include_groups", bool, default=True),
+            OpenApiParameter("include_password", bool, default=False),
         ]
     )
     def list(self, request, *args, **kwargs):
