@@ -8,26 +8,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    value = "";
+    public value = "";
 
     @property({ type: String })
-    autocomplete?: string;
+    public autocomplete?: AutoFill;
 
     @property({ type: String })
-    placeholder?: string;
+    public placeholder?: string;
 
-    renderControl() {
-        const setValue = (ev: InputEvent) => {
-            this.value = (ev.target as HTMLInputElement).value;
-        };
+    #inputListener(ev: InputEvent) {
+        this.value = (ev.target as HTMLInputElement).value;
+    }
 
+    public override renderControl() {
         const code = this.inputHint === "code";
 
         return html` <input
             type="text"
             role="textbox"
             id=${ifDefined(this.fieldID)}
-            @input=${setValue}
+            @input=${this.#inputListener}
             value=${ifDefined(this.value)}
             class="${classMap({
                 "pf-c-form-control": true,
