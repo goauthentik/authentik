@@ -71,7 +71,7 @@ class ApplicationSerializer(ModelSerializer):
         attrs = super().validate(attrs)
 
         # Reserved slugs that would clash with OAuth2 provider endpoints
-        reserved_slugs = ["authorize", "token", "userinfo", "revoke"]
+        reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
 
         # Get the slug being used (either from attrs or from instance)
         if self.instance:
