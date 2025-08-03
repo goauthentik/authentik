@@ -43,5 +43,5 @@ def pre_delete_connection_token_disconnect(sender, instance: ConnectionToken, **
 @receiver([post_save, post_delete], sender=Endpoint)
 def post_save_post_delete_endpoint(**_):
     """Clear user's endpoint cache upon endpoint creation or deletion"""
-    keys = cache.keys(user_endpoint_cache_key("*"))
+    keys = cache.keys(user_endpoint_cache_key("*", "*"))
     cache.delete_many(keys)

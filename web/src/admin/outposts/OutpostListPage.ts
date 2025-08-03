@@ -6,6 +6,8 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+import "#elements/tasks/ScheduleList";
+import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
@@ -16,6 +18,7 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
 import {
+    ModelEnum,
     Outpost,
     OutpostHealth,
     OutpostsApi,
@@ -160,7 +163,8 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     renderExpanded(item: Outpost): TemplateResult {
-        return html`<td role="cell" colspan="5">
+        const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
+        return html`<td role="cell" colspan="7">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${msg(
@@ -177,6 +181,38 @@ export class OutpostListPage extends TablePage<Outpost> {
                             </dd>
                         </div>`;
                     })}
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-schedule-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-schedule-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </dd>
+                    </div>
                 </dl>
             </div>
         </td>`;

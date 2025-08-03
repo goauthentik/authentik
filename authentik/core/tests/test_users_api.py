@@ -21,7 +21,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.flows.models import FlowDesignation
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 
@@ -103,8 +103,11 @@ class TestUsersAPI(APITestCase):
         self.assertTrue(self.admin.check_password(new_pw))
 
     def test_recovery(self):
-        """Test user recovery link (no recovery flow set)"""
-        flow = create_test_flow(FlowDesignation.RECOVERY)
+        """Test user recovery link"""
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
         brand: Brand = create_test_brand()
         brand.flow_recovery = flow
         brand.save()

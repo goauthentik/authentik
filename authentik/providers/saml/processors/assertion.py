@@ -205,6 +205,13 @@ class AssertionProcessor:
     def get_name_id(self) -> Element:
         """Get NameID Element"""
         name_id = Element(f"{{{NS_SAML_ASSERTION}}}NameID")
+        # For requests that don't specify a NameIDPolicy, check if we
+        # can fall back to the provider default
+        if (
+            self.auth_n_request.name_id_policy == SAML_NAME_ID_FORMAT_UNSPECIFIED
+            and self.provider.default_name_id_policy != SAML_NAME_ID_FORMAT_UNSPECIFIED
+        ):
+            self.auth_n_request.name_id_policy = self.provider.default_name_id_policy
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
         # persistent is used as a fallback, so always generate it
         persistent = self.http_request.user.uid

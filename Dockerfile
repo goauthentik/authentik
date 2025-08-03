@@ -14,7 +14,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+    npm ci
 
 COPY ./package.json /work
 COPY ./web /work/web/
@@ -76,7 +76,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.8.2 AS uv
+FROM ghcr.io/astral-sh/uv:0.8.4 AS uv
 # Stage 5: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.13.5-slim-bookworm-fips AS python-base
 
@@ -123,6 +123,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
+    --mount=type=bind,target=packages,src=packages \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
@@ -168,6 +169,7 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
+COPY ./packages/ /ak-root/packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/

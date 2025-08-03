@@ -4,6 +4,7 @@ import re
 from uuid import uuid4
 
 from django.apps import apps
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -11,6 +12,7 @@ from django.db.utils import IntegrityError
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django_tenants.models import DomainMixin, TenantMixin, post_schema_sync
+from django_tenants.utils import get_tenant_base_schema
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -113,8 +115,8 @@ class Tenant(TenantMixin, SerializerModel):
     )
 
     def save(self, *args, **kwargs):
-        if self.schema_name == "template":
-            raise IntegrityError("Cannot create schema named template")
+        if self.schema_name == get_tenant_base_schema() and not settings.TEST:
+            raise IntegrityError(f"Cannot create schema named {self.schema_name}")
         super().save(*args, **kwargs)
 
     @property
