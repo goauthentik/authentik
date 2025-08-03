@@ -1,5 +1,7 @@
+import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
 import { AKFormGroup } from "#elements/forms/FormGroup";
+import { isNameableElement } from "#elements/utils/inputs";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 
@@ -31,22 +33,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *    being very few unique uses.
  */
 
-const isAkControl = (el: unknown): boolean =>
-    el instanceof HTMLElement &&
-    "dataset" in el &&
-    el.dataset instanceof DOMStringMap &&
-    "akControl" in el.dataset;
-
-const nameables = new Set([
-    "input",
-    "textarea",
-    "select",
-    "ak-codemirror",
-    "ak-chip-group",
-    "ak-search-select",
-    "ak-radio",
-]);
-
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
@@ -70,7 +56,7 @@ export class HorizontalFormElement extends AKElement {
     public label = "";
 
     @property({ type: Boolean })
-    public required = false;
+    public required?: boolean;
 
     @property({ attribute: false })
     public errorMessages?: ErrorProp[];
@@ -95,32 +81,33 @@ export class HorizontalFormElement extends AKElement {
     }
 
     @property({ type: String })
-    public name = "";
+    public name?: string;
 
     //#endregion
 
     //#region Lifecycle
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.updated();
     }
 
-    updated(): void {
-        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
-            input.focus();
-        });
-        this.querySelectorAll("*").forEach((input) => {
-            if (isAkControl(input) && !input.getAttribute("name")) {
-                input.setAttribute("name", this.name);
-                return;
-            }
+    /**
+     * Ensure that all inputs have a name attribute.
+     *
+     * TODO: Swap with `HTMLElement.prototype.attachInternals`.
+     */
+    public override updated(): void {
+        // If we don't have a name, we can't do anything.
+        if (!this.name) return;
 
-            if (nameables.has(input.tagName.toLowerCase())) {
-                input.setAttribute("name", this.name);
-            } else {
-                return;
-            }
-        });
+        for (const element of this.querySelectorAll("*")) {
+            // Is this element capable of being named?
+            if (!isControlElement(element) && !isNameableElement(element)) continue;
+            // And does the element already match the name?
+            if (element.getAttribute("name") === this.name) continue;
+
+            element.setAttribute("name", this.name);
+        }
     }
 
     render(): TemplateResult {
