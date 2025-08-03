@@ -9,7 +9,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => string;
+    value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy: (items: T[]) => [string, T[]][];
 }
@@ -58,7 +58,7 @@ export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelec
     public renderDescription?: (element: T) => string | TemplateResult;
 
     @property({ attribute: false })
-    public value!: (element?: T) => string;
+    public value!: (element: T | null) => string;
 
     @property({ attribute: false })
     public selected?: (element: T, elements: T[]) => boolean;

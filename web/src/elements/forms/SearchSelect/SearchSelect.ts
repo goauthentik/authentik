@@ -22,12 +22,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 type Group<T> = [string, T[]];
 
 export interface ISearchSelectBase<T> {
-    blankable: boolean;
+    blankable?: boolean;
     query?: string;
     objects?: T[];
-    selectedObject?: T;
+    selectedObject: T | null;
     name?: string;
-    placeholder: string;
+    placeholder?: string;
     emptyOption: string;
 }
 
@@ -62,7 +62,7 @@ export abstract class SearchSelectBase<T>
      * A function which returns the currently selected object's primary key, used for serialization
      * into forms.
      */
-    public abstract value: (element?: T) => string;
+    public abstract value: (element: T | null) => string;
 
     /**
      * A function passed to this object that determines an object in the collection under search
@@ -85,7 +85,7 @@ export abstract class SearchSelectBase<T>
      * @attr
      */
     @property({ type: Boolean })
-    public blankable = false;
+    public blankable?: boolean;
 
     /**
      * An initial string to filter the search contents,
@@ -104,7 +104,7 @@ export abstract class SearchSelectBase<T>
      * @property
      */
     @property({ attribute: false })
-    public selectedObject?: T;
+    public selectedObject: T | null = null;
 
     /**
      * Used to inform the form of the name of the object
@@ -135,7 +135,7 @@ export abstract class SearchSelectBase<T>
      * @attr
      */
     @property({ type: String })
-    public placeholder: string = msg("Select an object.");
+    public placeholder?: string = msg("Select an object.");
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -168,7 +168,7 @@ export abstract class SearchSelectBase<T>
         return this.toForm();
     }
 
-    protected dispatchChangeEvent(value: T | undefined) {
+    protected dispatchChangeEvent(value: T | null) {
         this.dispatchEvent(
             new CustomEvent("ak-change", {
                 composed: true,
@@ -226,7 +226,7 @@ export abstract class SearchSelectBase<T>
         const value = (event.target as SearchSelectView).rawValue;
 
         if (!value) {
-            this.selectedObject = undefined;
+            this.selectedObject = null;
             return;
         }
 
@@ -238,15 +238,19 @@ export abstract class SearchSelectBase<T>
 
     private onSelect(event: InputEvent) {
         const value = (event.target as SearchSelectView).value;
-        if (value === undefined) {
-            this.selectedObject = undefined;
-            this.dispatchChangeEvent(undefined);
+
+        if (!value) {
+            this.selectedObject = null;
+            this.dispatchChangeEvent(null);
+
             return;
         }
-        const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === value);
+        const selected = this.objects?.find((obj) => this.value(obj) === value) || null;
+
         if (!selected) {
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
+
         this.selectedObject = selected;
         this.dispatchChangeEvent(this.selectedObject);
     }
