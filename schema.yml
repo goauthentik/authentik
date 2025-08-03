@@ -4722,7 +4722,7 @@ paths:
         name: include_children
         schema:
           type: boolean
-          default: true
+          default: false
       - in: query
         name: include_users
         schema:
@@ -4849,7 +4849,7 @@ paths:
         name: include_children
         schema:
           type: boolean
-          default: true
+          default: false
       - in: query
         name: include_users
         schema:

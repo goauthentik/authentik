@@ -92,7 +92,7 @@ class GroupSerializer(ModelSerializer):
         request: Request = self.context.get("request", None)
         if not request:
             return True
-        return str(request.query_params.get("include_children", "true")).lower() == "true"
+        return str(request.query_params.get("include_children", "false")).lower() == "true"
 
     @extend_schema_field(GroupMemberSerializer(many=True))
     def get_users_obj(self, instance: Group) -> list[GroupMemberSerializer] | None:
@@ -246,7 +246,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
-            OpenApiParameter("include_children", bool, default=True),
+            OpenApiParameter("include_children", bool, default=False),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -255,7 +255,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
-            OpenApiParameter("include_children", bool, default=True),
+            OpenApiParameter("include_children", bool, default=False),
         ]
     )
     def retrieve(self, request, *args, **kwargs):
