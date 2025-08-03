@@ -88,17 +88,21 @@ class TestApplicationsReservedSlugs(APITestCase):
         self.assertIn("slug", response.data)
         self.assertIn("reserved", response.data["slug"][0])
 
-    def test_non_oauth2_provider_allowed(self):
-        """Test that non-OAuth2 providers can use reserved slugs"""
-        response = self.client.post(
-            reverse("authentik_api:application-list"),
-            {
-                "name": "Test Application",
-                "slug": "authorize",
-            },
-        )
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["slug"], "authorize")
+    def test_reserved_slugs_blocked_for_all_applications(self):
+        """Test that reserved slugs are blocked for all applications regardless of provider"""
+        reserved_slugs = ["authorize", "token", "userinfo", "revoke"]
+
+        for slug in reserved_slugs:
+            response = self.client.post(
+                reverse("authentik_api:application-list"),
+                {
+                    "name": f"Test Application {slug}",
+                    "slug": slug,
+                },
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertIn("slug", response.data)
+            self.assertIn("reserved", response.data["slug"][0])
 
     def test_valid_slug_allowed(self):
         """Test that applications with valid slugs can be created with OAuth2 providers"""
