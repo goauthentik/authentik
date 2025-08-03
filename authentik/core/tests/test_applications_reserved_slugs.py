@@ -90,7 +90,7 @@ class TestApplicationsReservedSlugs(APITestCase):
 
     def test_reserved_slugs_blocked_for_all_applications(self):
         """Test that reserved slugs are blocked for all applications regardless of provider"""
-        reserved_slugs = ["authorize", "token", "userinfo", "revoke"]
+        reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
 
         for slug in reserved_slugs:
             response = self.client.post(
