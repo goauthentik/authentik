@@ -43,7 +43,7 @@ import Tabs from "@theme/Tabs";
 
 ## authentik configuration
 
-To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Home Assistant with authentik you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
