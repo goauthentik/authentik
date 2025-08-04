@@ -80,7 +80,12 @@ class ApplicationSerializer(ModelSerializer):
         # Block reserved slugs
         if slug in reserved_slugs:
             raise ValidationError(
-                {"slug": _("The slug '%(slug)s' is reserved and cannot be used for applications.") % {"slug": slug}}
+                {
+                    "slug": _(
+                        "The slug '%(slug)s' is reserved and cannot be used for applications."
+                    )
+                    % {"slug": slug}
+                }
             )
 
         return attrs
