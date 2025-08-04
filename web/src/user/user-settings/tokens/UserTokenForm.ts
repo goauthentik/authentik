@@ -23,7 +23,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated token.")
             : msg("Successfully created token.");
@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())

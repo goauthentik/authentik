@@ -16,19 +16,19 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
     public confirm!: (selectedItems: Group[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
-    public static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -55,11 +55,11 @@ export class GroupSelectModal extends TableModal<Group> {
         ];
     }
 
-    protected renderSelectedChip(item: Group): TemplateResult {
+    protected override renderSelectedChip(item: Group): TemplateResult {
         return html`${item.name}`;
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

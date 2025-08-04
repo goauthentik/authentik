@@ -70,7 +70,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: Boolean, attribute: "left-justified" })
     public leftJustified = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFFlex,
@@ -121,7 +121,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         return this.header ?? nothing;
     }
 
-    public render(): SlottedTemplateResult {
+    public override render(): SlottedTemplateResult {
         return html`<div
             aria-label="${ifDefined(this.header)}"
             role="region"

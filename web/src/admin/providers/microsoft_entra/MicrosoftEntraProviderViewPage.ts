@@ -47,7 +47,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     @state()
     protected provider?: MicrosoftEntraProvider;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFForm,
@@ -75,13 +75,13 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
             .then((prov) => (this.provider = prov));
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

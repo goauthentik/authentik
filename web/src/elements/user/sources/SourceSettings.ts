@@ -32,7 +32,7 @@ export class UserSourceSettingsPage extends AKElement {
     @property({ type: Boolean })
     public canConnect = true;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFDataList,
         css`
             .pf-c-data-list__cell {
@@ -60,7 +60,7 @@ export class UserSourceSettingsPage extends AKElement {
         });
     }
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.sourceSettings = await new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
         this.connections = await new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList({
             user: this.userId,
@@ -111,7 +111,7 @@ export class UserSourceSettingsPage extends AKElement {
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <ul class="pf-c-data-list" role="list">
             ${this.sourceSettings
                 ? html`

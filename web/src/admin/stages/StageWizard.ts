@@ -47,7 +47,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     public createText = msg("Create");
@@ -64,13 +64,13 @@ export class StageWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {
             this.stageTypes = types;
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}

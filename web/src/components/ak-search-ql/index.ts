@@ -15,14 +15,14 @@ import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
-    createCompletionElement() {
+    public override createCompletionElement() {
         this.completionEnabled = !!this.options.completionEnabled;
         return;
     }
-    logError(message: string): void {
+    public override logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
-    textareaResize() {}
+    public override textareaResize() {}
 }
 
 @customElement("ak-search-ql")
@@ -58,7 +58,7 @@ export class QLSearch extends AKElement {
         this.ql.loadIntrospections(value.autocomplete as unknown as Introspections);
     }
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFFormControl,
         PFSearchInput,
@@ -99,7 +99,7 @@ export class QLSearch extends AKElement {
         `,
     ];
 
-    public firstUpdated() {
+    public override firstUpdated() {
         if (!this.searchElement) {
             return;
         }
@@ -276,7 +276,7 @@ export class QLSearch extends AKElement {
         `;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-search-input">
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">

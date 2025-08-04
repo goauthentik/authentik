@@ -43,7 +43,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
     public source = "[name='name']";
 
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     @query("input")
     private input!: HTMLInputElement;

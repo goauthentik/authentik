@@ -96,7 +96,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         `;
     }
 
-    public render() {
+    public override render() {
         return this.licenseSummary
             ? html`${this.renderFlagBanner()}${this.renderStatusBanner()}`
             : nothing;

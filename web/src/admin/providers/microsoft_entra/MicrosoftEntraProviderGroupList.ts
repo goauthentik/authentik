@@ -22,13 +22,13 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
     @property({ type: Number })
     public providerId?: number;
 
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -48,7 +48,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
             ${super.renderToolbar()}`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Microsoft Entra Group(s)")}
@@ -85,7 +85,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         ];
     }
 
-    protected renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
+    protected override renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

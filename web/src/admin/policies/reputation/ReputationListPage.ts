@@ -24,7 +24,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -40,10 +40,10 @@ export class ReputationListPage extends TablePage<Reputation> {
     }
 
     @property()
-    public order = "identifier";
+    public override order = "identifier";
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
@@ -61,7 +61,7 @@ export class ReputationListPage extends TablePage<Reputation> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Reputation")}

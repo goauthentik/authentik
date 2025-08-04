@@ -32,7 +32,7 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
         });
     }
 
-    protected renderExtraFields(): TemplateResult {
+    protected override renderExtraFields(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Scope name")}
                 required

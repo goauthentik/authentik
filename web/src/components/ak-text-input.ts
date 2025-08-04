@@ -8,7 +8,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     @property({ type: String })
     public autocomplete?: string;
@@ -16,7 +16,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
     public placeholder?: string;
 
-    protected renderControl() {
+    protected override renderControl() {
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;
         };

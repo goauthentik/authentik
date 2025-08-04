@@ -16,17 +16,17 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property({ type: Number })
     public providerId?: number;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
         return new SsfApi(DEFAULT_CONFIG).ssfStreamsList({

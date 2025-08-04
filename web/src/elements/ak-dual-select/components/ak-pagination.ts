@@ -38,7 +38,7 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
         this.dispatchCustomEvent(DualSelectEventType.NavigateTo, nav);
     };
 
-    public render() {
+    public override render() {
         const { pages } = this;
 
         if (!pages) return nothing;

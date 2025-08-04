@@ -8,7 +8,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-wizard-title")
 export class AkWizardTitle extends AKElement {
-    public static styles = [
+    public static override styles = [
         PFContent,
         PFTitle,
         css`
@@ -18,7 +18,7 @@ export class AkWizardTitle extends AKElement {
         `,
     ];
 
-    public render() {
+    public override render() {
         return html`<div class="ak-bottom-spacing pf-c-content">
             <h3><slot></slot></h3>
         </div>`;

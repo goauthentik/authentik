@@ -44,7 +44,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFFormControl,
@@ -117,7 +117,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
             });
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             // convert certain members of the PublicKeyCredentialCreateOptions into
             // byte arrays as expected by the spec.
@@ -129,7 +129,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static

@@ -71,7 +71,7 @@ const styles = css`
 
 @customElement("ak-status-label")
 export class AkStatusLabel extends AKElement {
-    public static styles = [PFBase, PFLabel, styles];
+    public static override styles = [PFBase, PFLabel, styles];
 
     @property({ type: Boolean })
     public good = false;
@@ -88,7 +88,7 @@ export class AkStatusLabel extends AKElement {
     @property({ type: String })
     public type: StatusName = "error";
 
-    public render() {
+    public override render() {
         const details = statusToDetails.get(this.type);
         if (!details) {
             throw new Error(`Bad status type [${this.type}] passed to ak-status-label`);

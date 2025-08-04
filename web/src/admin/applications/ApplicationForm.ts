@@ -51,7 +51,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @property({ type: Boolean })
     public clearIcon = false;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")
             : msg("Successfully created application.");
@@ -112,7 +112,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         this.clearIcon = !!(ev.target as HTMLInputElement).checked;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );

@@ -35,9 +35,9 @@ const COLUMNS = [
 
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
-    label = msg("Configure Bindings");
+    public override label = msg("Configure Bindings");
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", destination: "submit" },
             { kind: "back", destination: "provider" },
@@ -48,7 +48,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     @query("ak-select-table")
     protected selectTable!: SelectTable;
 
-    public static styles = [
+    public static override styles = [
         ...super.styles,
         PFCard,
         css`
@@ -152,7 +152,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             ></ak-select-table>`;
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }

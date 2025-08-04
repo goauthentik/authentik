@@ -28,7 +28,7 @@ type Keyed<T> = { key: string; item: T };
 
 @customElement("ak-array-input")
 export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFButton,
         PFInputGroup,
@@ -88,14 +88,14 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     @queryAll("div.ak-input-group")
     protected inputGroups?: HTMLDivElement[];
 
-    json() {
+    public override json() {
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
         }
         return this.items;
     }
 
-    get isValid() {
+    public override get isValid() {
         if (!this.validate) {
             return true;
         }
@@ -141,7 +141,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         </button>`;
     }
 
-    public render() {
+    public override render() {
         return html` <div class="pf-l-stack">
             ${repeat(
                 this.#items,

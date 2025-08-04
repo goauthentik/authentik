@@ -28,7 +28,7 @@ export class FlowCard extends AKElement {
     @property({ type: Boolean })
     public loading = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFTitle,
@@ -52,7 +52,7 @@ export class FlowCard extends AKElement {
         `,
     ];
 
-    public render() {
+    public override render() {
         let inner = html`<slot></slot>`;
         if (!this.challenge || this.loading) {
             inner = html`<ak-empty-state loading default-label></ak-empty-state>`;

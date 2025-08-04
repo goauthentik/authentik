@@ -12,7 +12,7 @@ type StatusContent = { icon: string; message: TemplateResult };
 
 @customElement("ak-admin-fips-status-system")
 export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
 
     @state()
     protected statusSummary?: string;
@@ -38,11 +38,11 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
               });
     }
 
-    protected renderHeader(): TemplateResult {
+    protected override renderHeader(): TemplateResult {
         return html`${msg("FIPS Status")}`;
     }
 
-    protected renderValue(): TemplateResult {
+    protected override renderValue(): TemplateResult {
         return html`${this.statusSummary}`;
     }
 }

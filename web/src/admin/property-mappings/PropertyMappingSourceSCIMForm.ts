@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-scim-form")
 export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 

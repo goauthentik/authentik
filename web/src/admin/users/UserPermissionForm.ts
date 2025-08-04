@@ -28,13 +28,13 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
     @property({ type: Number })
     public userId?: number;
 
-    async load(): Promise<void> {}
+    public override async load(): Promise<void> {}
 
     loadInstance(): Promise<UserPermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
@@ -48,7 +48,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
                 <div class="pf-c-input-group">

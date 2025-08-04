@@ -35,7 +35,7 @@ const closeButtonIcon = html`<svg
 
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFButton,
         PFPage,
@@ -122,7 +122,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         </section>`;
     }
 
-    public render() {
+    public override render() {
         return this.showHint || this.forceHint ? this.renderHint() : this.renderReminder();
     }
 }

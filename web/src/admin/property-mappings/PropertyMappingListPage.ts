@@ -35,7 +35,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -48,11 +48,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         return "pf-icon pf-icon-blueprint";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     @state()
     protected hideManaged = getURLParam<boolean>("hideManaged", true);
@@ -72,7 +72,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Property Mapping(s)")}
@@ -131,11 +131,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
     }
 
-    protected renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

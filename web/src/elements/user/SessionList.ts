@@ -25,9 +25,9 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         });
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    order = "-expires";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "-expires";
 
     columns(): TableColumn[] {
         return [
@@ -37,7 +37,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Session(s)")}

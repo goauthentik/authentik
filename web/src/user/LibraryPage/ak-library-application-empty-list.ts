@@ -29,7 +29,7 @@ export class LibraryPageApplicationEmptyList
     extends AKElement
     implements ILibraryPageApplicationEmptyList
 {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFEmptyState,
         PFButton,

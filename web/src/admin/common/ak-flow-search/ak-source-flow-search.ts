@@ -38,7 +38,7 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
 
     // If there's no instance or no currentFlowId for it and the flow resembles the fallback,
     // otherwise defer to the parent class.
-    selected(flow: Flow): boolean {
+    public override selected(flow: Flow): boolean {
         return (
             (!this.instanceId && !this.currentFlow && flow.slug === this.fallback) ||
             super.selected(flow)

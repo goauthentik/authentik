@@ -38,7 +38,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     @state()
     protected defaultOrder = 0;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
@@ -87,7 +87,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         </ak-form-element-horizontal>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select

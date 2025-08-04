@@ -29,8 +29,8 @@ export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
     public userSettings?: UserSetting[];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
@@ -59,7 +59,7 @@ export class MFADevicesPage extends Table<Device> {
         ].map((th) => new TableColumn(th, ""));
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         const settings = (this.userSettings || []).filter((stage) => {
             if (stage.component === "ak-user-settings-password") {
                 return false;
@@ -114,7 +114,7 @@ export class MFADevicesPage extends Table<Device> {
         }
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}

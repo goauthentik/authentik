@@ -30,8 +30,8 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     @state()
     protected modelPermissions?: PaginatedPermissionList;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
@@ -62,7 +62,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return baseColumns;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to user")} </span>
@@ -78,7 +78,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.filter((item) => item.isSuperuser).length > 0;

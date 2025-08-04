@@ -78,11 +78,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
     @state()
     protected user?: SessionUser;
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.user = await me();
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         const username = this.user?.user.name || this.user?.user.username;
 
         return html`<ak-page-header

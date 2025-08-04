@@ -45,7 +45,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: Boolean })
     public iconImage = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 display: none;
@@ -53,7 +53,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         `,
     ];
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
 
         AKPageNavbar.setNavbarDetails({
@@ -64,7 +64,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         });
     }
 
-    public updated(): void {
+    public override updated(): void {
         AKPageNavbar.setNavbarDetails({
             header: this.header,
             description: this.description,

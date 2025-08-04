@@ -46,7 +46,7 @@ type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -335,7 +335,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         </ak-flow-card>`;
     }
 
-    public render() {
+    public override render() {
         if (!this.challenge) {
             return this.embedded ? nothing : akEmptyState({ loading: true });
         }
@@ -351,14 +351,14 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.#listenController.abort();
 
         if (!this.challenge?.interactive) {
@@ -372,7 +372,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    public firstUpdated(changedProperties: PropertyValues<this>) {
+    public override firstUpdated(changedProperties: PropertyValues<this>) {
         if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
             return;
         }
@@ -380,7 +380,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         this.#refreshVendor();
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }

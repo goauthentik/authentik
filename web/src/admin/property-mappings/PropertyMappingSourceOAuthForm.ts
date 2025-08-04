@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-oauth-form")
 export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 

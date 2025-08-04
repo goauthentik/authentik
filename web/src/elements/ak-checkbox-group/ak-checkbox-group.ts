@@ -117,7 +117,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     internals?: ElementInternals;
     doneFirstUpdate = false;
 
-    json() {
+    public override json() {
         return this.values;
     }
 
@@ -161,14 +161,14 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.value = this.values;
     }
 
-    public willUpdate(changed: PropertyValues<this>) {
+    public override willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && !this.doneFirstUpdate) {
             this.doneFirstUpdate = true;
             this.values = this.value;
         }
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
         if (this.name && !this.internals) {
@@ -194,7 +194,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         });
     }
 
-    public render() {
+    public override render() {
         const renderOne = ([name, label]: CheckboxPr) => {
             const selected = this.values.includes(name);
             const blockFwd = (e: Event) => {

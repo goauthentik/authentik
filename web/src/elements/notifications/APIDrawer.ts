@@ -20,7 +20,7 @@ export class APIDrawer extends AKElement {
     @property({ attribute: false })
     public requests: RequestInfo[] = [];
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFNotificationDrawer,
         PFButton,
@@ -83,7 +83,7 @@ export class APIDrawer extends AKElement {
         </li>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">

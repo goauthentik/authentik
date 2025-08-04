@@ -22,7 +22,7 @@ export class InvitationListLink extends AKElement {
     @property()
     public selectedFlow?: string;
 
-    public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
+    public static override styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
 
     protected renderLink(): string {
         if (this.invitation?.flowObj) {
@@ -83,7 +83,7 @@ export class InvitationListLink extends AKElement {
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             ${this.invitation?.flow === undefined ? this.renderFlowSelector() : html``}
             <div class="pf-c-description-list__group">

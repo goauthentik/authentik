@@ -27,7 +27,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
 
     #didFirstUpdate = false;
 
-    public willUpdate(changed: PropertyValues<this>) {
+    public override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
 
         // On the first update *only*, even before rendering, when the options are handed up, update
@@ -43,7 +43,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         });
     }
 
-    public render() {
+    public override render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}

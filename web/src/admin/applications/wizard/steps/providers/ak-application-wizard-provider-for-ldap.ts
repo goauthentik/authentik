@@ -17,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
     ApplicationWizardProviderForm<LDAPProvider>,
 ) {
-    label = msg("Configure LDAP Provider");
+    public override label = msg("Configure LDAP Provider");
 
     protected renderForm(provider: LDAPProvider, errors: ValidationRecord) {
         return html`
@@ -28,7 +28,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
         `;
     }
 
-    public render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("LDAP Provider Step received uninitialized wizard context.");
         }

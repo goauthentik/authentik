@@ -37,7 +37,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated initial permissions.")
             : msg("Successfully created initial permissions.");
@@ -55,7 +55,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

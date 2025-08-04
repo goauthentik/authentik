@@ -24,13 +24,13 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    public deviceChallenge?: DeviceChallenge;
+    public override deviceChallenge?: DeviceChallenge;
 
     @property()
     public errorMessage?: string;
 
     @property({ type: Boolean })
-    public showBackButton = false;
+    public override showBackButton = false;
 
     @state()
     protected authenticating = false;
@@ -74,7 +74,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             // convert certain members of the PublicKeyCredentialRequestOptions into
             // byte arrays as expected by the spec.
@@ -104,7 +104,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <form class="pf-c-form">
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">

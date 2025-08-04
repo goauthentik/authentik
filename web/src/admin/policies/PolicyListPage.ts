@@ -29,7 +29,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -44,11 +44,11 @@ export class PolicyListPage extends TablePage<Policy> {
         return "pf-icon pf-icon-infrastructure";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
@@ -106,7 +106,7 @@ export class PolicyListPage extends TablePage<Policy> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy / Policies")}
@@ -128,11 +128,11 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-policy-wizard> </ak-policy-wizard>`;
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}

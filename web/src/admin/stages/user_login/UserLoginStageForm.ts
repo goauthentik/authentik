@@ -33,7 +33,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

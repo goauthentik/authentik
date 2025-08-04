@@ -20,7 +20,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
         return "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik";
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated mapping.")
             : msg("Successfully created mapping.");
@@ -30,7 +30,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
         return html``;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -89,7 +89,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     public source?: OAuthSource;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -107,7 +107,7 @@ export class OAuthSourceViewPage extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

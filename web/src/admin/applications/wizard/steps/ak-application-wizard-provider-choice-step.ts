@@ -21,7 +21,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose a Provider");
+    public override label = msg("Choose a Provider");
 
     @state()
     protected failureMessage = "";
@@ -29,7 +29,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
     public providerModelsList!: LocalTypeCreate[];
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", destination: "provider" },
             { kind: "back", destination: "application" },
@@ -51,7 +51,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         super.handleButton(button);
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         const selectedTypes = this.providerModelsList.filter(
             (t) => t.modelName === this.wizard.providerModel,
         );

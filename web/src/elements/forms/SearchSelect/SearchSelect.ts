@@ -32,7 +32,7 @@ export interface ISearchSelectBase<T> {
 }
 
 export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
-    public static styles = [PFBase];
+    public static override styles = [PFBase];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
@@ -106,7 +106,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         return this.value(this.selectedObject) || "";
     }
 
-    public json() {
+    public override json() {
         return this.toForm();
     }
 

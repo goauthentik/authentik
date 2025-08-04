@@ -25,7 +25,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -38,12 +38,12 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         return "pf-icon pf-icon-export";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
@@ -59,7 +59,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification transport(s)")}
@@ -117,7 +117,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    protected renderExpanded(item: NotificationTransport): TemplateResult {
+    protected override renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -141,7 +141,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </td>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

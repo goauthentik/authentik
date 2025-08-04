@@ -12,6 +12,7 @@
         "useDefineForClassFields": false,
         "target": "esnext",
         "module": "esnext",
+        "noImplicitOverride": true,
         "moduleResolution": "bundler",
         "baseUrl": ".",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],

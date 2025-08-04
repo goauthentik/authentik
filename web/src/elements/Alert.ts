@@ -64,7 +64,7 @@ export class AKAlert extends AKElement implements IAlert {
     @property()
     public icon = "fa-exclamation-circle";
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFAlert,
         css`
@@ -87,7 +87,7 @@ export class AKAlert extends AKElement implements IAlert {
         };
     }
 
-    public render() {
+    public override render() {
         return html`<div class="${classMap(this.classmap)}">
             <div class="pf-c-alert__icon">
                 <i aria-hidden="true" class="fas ${this.icon}"></i>

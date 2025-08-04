@@ -12,7 +12,7 @@ export class OAuthSourceDiagram extends Diagram {
     @property({ attribute: false })
     public source?: OAuthSource;
 
-    refreshHandler = (): void => {
+    public override refreshHandler = (): void => {
         if (!this.source) return;
         const graph = ["graph LR"];
         graph.push(`source[${msg(str`OAuth Source ${this.source.name}`)}]`);

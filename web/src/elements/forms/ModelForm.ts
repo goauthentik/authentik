@@ -73,19 +73,19 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    reset(): void {
+    public override reset(): void {
         this.instance = undefined;
         this.#initialLoad = false;
     }
 
-    protected renderVisible(): TemplateResult {
+    protected override renderVisible(): TemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return super.renderVisible();
     }
 
-    public render(): SlottedTemplateResult {
+    public override render(): SlottedTemplateResult {
         // if we're in viewport now and haven't loaded AND have a PK set, load now
         // Or if we don't check for viewport in some cases
         const viewportVisible = this.isInViewport || !this.viewportCheck;

@@ -27,7 +27,7 @@ export class TokenForm extends ModelForm<Token, string> {
         return token;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated token.")
             : msg("Successfully created token.");
@@ -56,7 +56,7 @@ export class TokenForm extends ModelForm<Token, string> {
         </ak-form-element-horizontal>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 name="identifier"

@@ -38,7 +38,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     @property({ attribute: false })
     public request?: PropertyMappingTestRequest;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
@@ -126,7 +126,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         `;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
                     blankable

@@ -45,13 +45,13 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         return inst;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated instance.")
             : msg("Successfully created instance.");
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
@@ -65,7 +65,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -24,7 +24,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         return stage;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
     }
 
@@ -133,7 +133,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         </ak-form-group>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",

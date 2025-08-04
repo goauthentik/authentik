@@ -22,16 +22,16 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     @property({ type: Number })
     public providerId?: number;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
+    public override expandable = true;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
@@ -51,7 +51,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             ${super.renderToolbar()}`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Google Workspace User(s)")}
@@ -89,7 +89,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         ];
     }
 
-    protected renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
+    protected override renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

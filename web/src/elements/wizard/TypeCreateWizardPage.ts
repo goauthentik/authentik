@@ -59,15 +59,15 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#endregion
 
-    public sidebarLabel = () => msg("Select type");
+    public override sidebarLabel = () => msg("Select type");
 
-    public reset = () => {
+    public override reset = () => {
         super.reset();
         this.selectedType = undefined;
         this.formRef.value?.reset();
     };
 
-    activeCallback = (): void => {
+    public override activeCallback = (): void => {
         const form = this.formRef.value;
 
         this.host.isValid = form?.checkValidity() ?? false;
@@ -174,7 +174,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         </form>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         switch (this.layout) {
             case TypeCreateWizardPageLayouts.grid:
                 return this.renderGrid();

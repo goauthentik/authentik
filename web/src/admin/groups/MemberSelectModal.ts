@@ -22,7 +22,7 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
-    public static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             .show-disabled-toggle-group {
@@ -31,10 +31,10 @@ export class MemberSelectTable extends TableModal<User> {
         `,
     ];
 
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
@@ -43,7 +43,7 @@ export class MemberSelectTable extends TableModal<User> {
 
     userListFilter: UserListFilter = "active";
 
-    order = "username";
+    public override order = "username";
 
     // The `userListRequestFilter` clause is necessary because the back-end for searches is
     // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
@@ -69,7 +69,7 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    protected renderToolbarAfter() {
+    protected override renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {
             this.userListFilter = this.userListFilter === "all" ? "active" : "all";
             this.page = 1;
@@ -111,11 +111,11 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    protected renderSelectedChip(item: User): TemplateResult {
+    protected override renderSelectedChip(item: User): TemplateResult {
         return html`${item.username}`;
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>

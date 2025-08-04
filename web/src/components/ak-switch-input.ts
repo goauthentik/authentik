@@ -15,7 +15,7 @@ export class AkSwitchInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
@@ -39,7 +39,7 @@ export class AkSwitchInput extends AKElement {
 
     #fieldID: string = IDGenerator.randomID();
 
-    public render() {
+    public override render() {
         const doCheck = this.checked ? this.checked : undefined;
         const helpText = this.help.trim();
 

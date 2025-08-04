@@ -111,7 +111,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
         </div>`;
     }
 
-    public render() {
+    public override render() {
         return html`
             <div class="ak-dual-list-selector__controls">
                 ${this.renderButton(

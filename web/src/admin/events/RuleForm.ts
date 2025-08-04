@@ -35,13 +35,13 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         });
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
             ordering: "name",
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated rule.")
             : msg("Successfully created rule.");
@@ -59,7 +59,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

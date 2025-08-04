@@ -21,7 +21,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
@@ -39,7 +39,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

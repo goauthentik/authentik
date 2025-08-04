@@ -15,7 +15,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported provider.");
     }
 
@@ -32,7 +32,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>

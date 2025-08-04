@@ -37,7 +37,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated brand.")
             : msg("Successfully created brand.");
@@ -55,7 +55,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Domain")} required name="domain">
                 <input
                     type="text"

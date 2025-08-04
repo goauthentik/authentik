@@ -30,8 +30,8 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     @state()
     protected modelPermissions?: PaginatedPermissionList;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
@@ -62,7 +62,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return baseColumns;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to role")} </span>
@@ -78,7 +78,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

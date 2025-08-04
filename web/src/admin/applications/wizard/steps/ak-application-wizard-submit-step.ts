@@ -95,7 +95,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `,
     ];
 
-    label = msg("Review and Submit Application");
+    public override label = msg("Review and Submit Application");
 
     @state()
     protected state: SubmitStates = "reviewing";
@@ -198,7 +198,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         const forReview: WizardButton[] = [
             { kind: "next", label: msg("Submit"), destination: "here" },
             { kind: "back", destination: "bindings" },
@@ -338,7 +338,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `;
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
         if (!(this.wizard && app && provider)) {

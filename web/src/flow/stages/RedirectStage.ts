@@ -23,7 +23,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     protected startedRedirect = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -41,7 +41,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -78,7 +78,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }

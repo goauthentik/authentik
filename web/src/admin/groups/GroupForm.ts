@@ -27,7 +27,7 @@ export function rbacRolePair(item: Role): DualSelectPair {
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {
@@ -46,7 +46,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
@@ -65,7 +65,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

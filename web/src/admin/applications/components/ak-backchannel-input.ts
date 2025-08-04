@@ -24,7 +24,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
 
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this as HTMLElement;
     }
 
@@ -55,7 +55,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     @property({ type: String })
     public help = "";
 
-    public render() {
+    public override render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
                 removable

@@ -32,7 +32,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     @property({ attribute: false })
     public request?: number;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
@@ -45,12 +45,12 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return (this.result = result);
     }
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
         this.result = null;
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     protected renderResult(): TemplateResult {
         return html`
@@ -92,7 +92,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         `;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {

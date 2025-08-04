@@ -14,7 +14,7 @@ import { customElement, state } from "lit/decorators.js";
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
 
     @state()
     protected statusSummary?: string;
@@ -84,11 +84,11 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    protected renderHeader(): SlottedTemplateResult {
+    protected override renderHeader(): SlottedTemplateResult {
         return msg("System status");
     }
 
-    protected renderValue(): SlottedTemplateResult {
+    protected override renderValue(): SlottedTemplateResult {
         return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
 }

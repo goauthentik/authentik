@@ -24,7 +24,7 @@ export const ApplyActionsSlot = "apply-actions";
 
 @customElement("ak-wizard")
 export class Wizard extends ModalButton {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFWizard,
         css`
@@ -183,16 +183,16 @@ export class Wizard extends ModalButton {
 
     //#region Lifecycle
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.#initialSteps = this._steps;
     }
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.addEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
@@ -240,7 +240,7 @@ export class Wizard extends ModalButton {
 
     //#region Rendering
 
-    public renderModalInner(): TemplateResult {
+    public override renderModalInner(): TemplateResult {
         const { activeStepIndex, lastPage } = this.#gatherSteps();
 
         const navigatePrevious = () => {

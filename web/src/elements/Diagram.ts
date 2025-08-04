@@ -26,7 +26,7 @@ export class Diagram extends AKElement {
 
     handlerBound = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 display: flex;
@@ -55,7 +55,7 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
@@ -70,12 +70,12 @@ export class Diagram extends AKElement {
         this.refreshHandler();
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         this.querySelectorAll("*").forEach((el) => {
             try {
                 el.remove();

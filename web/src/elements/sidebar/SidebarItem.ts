@@ -19,7 +19,7 @@ export interface SidebarItemProperties {
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFNav,
@@ -109,7 +109,7 @@ export class SidebarItem extends AKElement {
         });
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.onHashChange();
         window.addEventListener("hashchange", () => this.onHashChange());
     }
@@ -141,7 +141,7 @@ export class SidebarItem extends AKElement {
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return this.renderInner();
     }
 

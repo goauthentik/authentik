@@ -51,11 +51,11 @@ export class TreeViewNode extends AKElement {
         return pathItems.reverse().join(this.separator);
     }
 
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         const pathSegments = this.activePath.split(this.separator);
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
@@ -68,7 +68,7 @@ export class TreeViewNode extends AKElement {
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         const shouldRenderChildren = (this.item?.childItems || []).length > 0 && this.open;
         return html`
             <li
@@ -140,7 +140,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFTreeView];
+    public static override styles: CSSResult[] = [PFBase, PFTreeView];
 
     @property({ type: Array })
     public items: string[] = [];
@@ -191,7 +191,7 @@ export class TreeView extends AKElement {
         return rootItem;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
             <ul class="pf-c-tree-view__list" role="tree">

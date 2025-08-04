@@ -83,7 +83,7 @@ export class ProxyProviderViewPage extends AKElement {
     @state()
     protected provider?: ProxyProvider;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -116,7 +116,7 @@ export class ProxyProviderViewPage extends AKElement {
             .then((prov) => (this.provider = prov));
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
@@ -194,7 +194,7 @@ export class ProxyProviderViewPage extends AKElement {
         >`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

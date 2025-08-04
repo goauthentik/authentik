@@ -25,21 +25,21 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
     public provider?: RACProvider;
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
@@ -57,7 +57,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Endpoint(s)")}
@@ -108,7 +108,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    protected renderExpanded(item: Endpoint): TemplateResult {
+    protected override renderExpanded(item: Endpoint): TemplateResult {
         return html` <td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -124,7 +124,7 @@ export class EndpointListPage extends Table<Endpoint> {
             </td>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

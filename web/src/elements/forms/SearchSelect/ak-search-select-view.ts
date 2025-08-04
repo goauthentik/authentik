@@ -69,7 +69,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    public static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    public static override styles = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
@@ -188,7 +188,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      */
     flatOptions: [string, SelectOption][] = [];
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());

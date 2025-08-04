@@ -33,7 +33,7 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
         return Promise.resolve();
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-rbac-object-permission-page
             .model=${this.model}
             .objectPk=${this.objectPk}
@@ -51,9 +51,9 @@ export class ObjectPermissionModal extends AKElement {
     @property()
     public objectPk?: string | number;
 
-    public static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
                 <span slot="header"> ${msg("Update Permissions")} </span>

@@ -90,7 +90,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
         />`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<form class="pf-c-input-group" method="get" @submit=${this.#submitListener}>
             ${this.renderInput()}
             <button

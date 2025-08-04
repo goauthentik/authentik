@@ -22,10 +22,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {
-    expandable = true;
+    public override expandable = true;
 
     @property()
-    public order = "-created";
+    public override order = "-created";
 
     @property()
     public targetModelPk!: string | number;
@@ -65,7 +65,7 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("targetModelName") && this.targetModelName) {
             this.fetch();
         }
@@ -82,7 +82,7 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    protected renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
@@ -93,7 +93,7 @@ export class ObjectChangelog extends Table<Event> {
             <td></td>`;
     }
 
-    protected renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

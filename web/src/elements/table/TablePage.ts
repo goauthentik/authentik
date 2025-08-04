@@ -13,7 +13,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T extends object> extends Table<T> {
-    public static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
+    public static override styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
 
     //#region Abstract methods
 
@@ -62,7 +62,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     /**
      * Render the empty state.
      */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -105,7 +105,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         </button>`;
     }
 
-    public render() {
+    public override render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

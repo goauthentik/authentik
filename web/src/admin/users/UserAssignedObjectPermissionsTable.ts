@@ -17,8 +17,8 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     @property({ type: Number })
     public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
@@ -27,7 +27,9 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         });
     }
 
-    groupBy(items: ExtraUserObjectPermission[]): [string, ExtraUserObjectPermission[]][] {
+    public override groupBy(
+        items: ExtraUserObjectPermission[],
+    ): [string, ExtraUserObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
@@ -42,7 +44,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

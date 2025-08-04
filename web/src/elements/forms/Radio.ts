@@ -55,7 +55,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
     // not trigger an element update.
-    public willUpdate() {
+    public override willUpdate() {
         if (!this.value) {
             const maybeDefault = this.options.filter((opt) => opt.default);
             if (maybeDefault.length > 0) {
@@ -107,7 +107,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
         </div>`;
     };
 
-    public render() {
+    public override render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
             ${map(this.options, this.#renderRadio)}
         </div>`;

@@ -36,7 +36,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",

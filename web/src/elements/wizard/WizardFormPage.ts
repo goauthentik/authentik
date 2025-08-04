@@ -13,7 +13,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class WizardForm extends Form {
-    viewportCheck = false;
+    public override viewportCheck = false;
 
     @property({ attribute: false })
     public nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
@@ -21,7 +21,7 @@ export abstract class WizardForm extends Form {
     /* Override the traditional behavior of the form and instead simply serialize the form and push
      * it's contents to the next page.
      */
-    async submit(): Promise<boolean | undefined> {
+    public override async submit(): Promise<boolean | undefined> {
         const data = this.serialize();
 
         if (!data) return;
@@ -36,7 +36,7 @@ export abstract class WizardForm extends Form {
 }
 
 export class WizardFormPage extends WizardPage {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,
@@ -55,7 +55,7 @@ export class WizardFormPage extends WizardPage {
         this.host.isValid = state;
     }
 
-    nextCallback = async (): Promise<boolean> => {
+    public override nextCallback = async (): Promise<boolean> => {
         const form = this.shadowRoot?.querySelector<WizardForm>("ak-wizard-form");
 
         if (!form) {
@@ -77,11 +77,11 @@ export class WizardFormPage extends WizardPage {
         return html``;
     }
 
-    activeCallback = async () => {
+    public override activeCallback = async () => {
         this.inputCallback();
     };
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard-form
                 .nextDataCallback=${this.nextDataCallback}

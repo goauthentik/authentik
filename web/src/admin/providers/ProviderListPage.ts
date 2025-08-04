@@ -29,38 +29,38 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
-    override searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    override pageTitle(): string {
+    public override pageTitle(): string {
         return msg("Providers");
     }
 
-    override pageDescription(): string {
+    public override pageDescription(): string {
         return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
     }
 
-    override pageIcon(): string {
+    public override pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
 
-    override checkbox = true;
-    override clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
-    public searchLabel = msg("Provider name");
-    public searchPlaceholder = msg("Search for providers…");
+    public override searchLabel = msg("Provider name");
+    public override searchPlaceholder = msg("Search for providers…");
 
-    override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
+    public override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    override columns(): TableColumn[] {
+    public override columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Application")),
@@ -113,7 +113,7 @@ export class ProviderListPage extends TablePage<Provider> {
             ${msg("Warning: Provider not assigned to any application.")}`;
     }
 
-    override row(item: Provider): TemplateResult[] {
+    public override row(item: Provider): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
             this.#rowApp(item),

@@ -27,7 +27,7 @@ const selectStyles = css`
  */
 @customElement("ak-multi-select")
 export class AkMultiSelect extends AkControlElement {
-    public static styles = [PFBase, PFForm, PFFormControl, selectStyles];
+    public static override styles = [PFBase, PFForm, PFFormControl, selectStyles];
 
     /**
      * The [name] attribute, which is also distributed to the layout manager and the input control.
@@ -84,11 +84,11 @@ export class AkMultiSelect extends AkControlElement {
      * control that produces values of specific interest to our REST API. This is our modern
      * accessor name.
      */
-    json() {
+    public override json() {
         return this.values;
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
     }
@@ -117,7 +117,7 @@ export class AkMultiSelect extends AkControlElement {
 
     selectRef: Ref<HTMLSelectElement> = createRef();
 
-    public render() {
+    public override render() {
         return html` <div class="pf-c-form">
             <ak-form-element-horizontal
                 label=${this.label}

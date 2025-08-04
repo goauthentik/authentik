@@ -10,7 +10,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    icon = "pf-icon pf-icon-bundle";
+    public override icon = "pf-icon pf-icon-bundle";
 
     getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
@@ -48,11 +48,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         });
     }
 
-    protected renderHeader(): TemplateResult {
+    protected override renderHeader(): TemplateResult {
         return html`${msg("Version")}`;
     }
 
-    protected renderValue(): TemplateResult {
+    protected override renderValue(): TemplateResult {
         let text = this.value?.versionCurrent;
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();

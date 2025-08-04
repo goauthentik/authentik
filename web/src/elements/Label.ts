@@ -47,7 +47,7 @@ export class Label extends AKElement implements ILabel {
     @property({ type: Boolean })
     public compact = false;
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFLabel,
         css`
@@ -77,7 +77,7 @@ export class Label extends AKElement implements ILabel {
         };
     }
 
-    public render() {
+    public override render() {
         const { classes, icon } = this.classesAndIcon;
 
         return html`<span class=${classMap(classes)}>

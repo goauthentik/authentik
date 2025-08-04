@@ -64,7 +64,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFEmptyState,
         PFTitle,
@@ -76,7 +76,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         `,
     ];
 
-    public willUpdate() {
+    public override willUpdate() {
         if (this.defaultLabel && this.querySelector("span:not([slot])") === null) {
             render(html`<span>${msg("Loading")}</span>`, this);
         }
@@ -87,7 +87,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         return result instanceof HTMLElement ? result.innerText || undefined : undefined;
     }
 
-    public render() {
+    public override render() {
         const hasHeading = this.hasSlotted(null);
         const loading = this.loading || this.defaultLabel;
         const classes = {

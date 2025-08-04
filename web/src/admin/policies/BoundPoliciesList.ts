@@ -49,12 +49,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    order = "order";
+    public override order = "order";
 
-    public static styles: CSSResult[] = [...super.styles, PFSpacing];
+    public static override styles: CSSResult[] = [...super.styles, PFSpacing];
 
     public get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
@@ -138,7 +138,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html``;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy binding(s)")}
@@ -199,7 +199,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    protected renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
@@ -229,7 +229,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         );
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
@@ -266,7 +266,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </p>`;
     }
 
-    protected renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }

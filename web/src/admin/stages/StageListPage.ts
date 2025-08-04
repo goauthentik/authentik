@@ -55,15 +55,15 @@ export class StageListPage extends TablePage<Stage> {
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";
     }
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
@@ -77,7 +77,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Stage(s)")}
@@ -154,7 +154,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-stage-wizard></ak-stage-wizard> `;
     }
 }

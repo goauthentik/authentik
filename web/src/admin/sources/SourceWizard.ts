@@ -26,7 +26,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     public sourceTypes: TypeCreate[] = [];
@@ -34,13 +34,13 @@ export class SourceWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
             this.sourceTypes = types;
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

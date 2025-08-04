@@ -15,9 +15,9 @@ export class TimeDeltaHelp extends AKElement {
     @property({ type: Boolean })
     public negative = false;
 
-    public static styles: CSSResult[] = [PFBase, PFForm, PFList];
+    public static override styles: CSSResult[] = [PFBase, PFForm, PFList];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-form__helper-text">
             <span>
                 ${this.negative

@@ -25,7 +25,7 @@ export interface IQuickActionsCard {
  */
 @customElement("ak-quick-actions-card")
 export class QuickActionsCard extends AKElement implements IQuickActionsCard {
-    public static styles = [PFBase, PFList];
+    public static override styles = [PFBase, PFList];
 
     /**
      * Card title
@@ -33,7 +33,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
      * @attr
      */
     @property()
-    public title = msg("Quick actions");
+    public override title = msg("Quick actions");
 
     /**
      * Card contents. An array of [label, url, isExternal].  External links will
@@ -44,7 +44,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
     @property({ type: Array })
     public actions: QuickAction[] = [];
 
-    public render() {
+    public override render() {
         const renderItem = ([label, url, external]: QuickAction) =>
             html` <li>
                 <a class="pf-u-mb-xl" href=${url} ${external ? 'target="_blank"' : ""}>

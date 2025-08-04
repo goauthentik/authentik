@@ -100,7 +100,7 @@ export class ModalForm extends ModalButton {
         );
     };
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`${this.loading
                 ? html`<ak-loading-overlay topmost></ak-loading-overlay>`
                 : nothing}

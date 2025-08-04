@@ -67,7 +67,7 @@ export class RouterOutlet extends AKElement {
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 background-color: transparent !important;
@@ -92,7 +92,7 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.navigate();
     }
 
@@ -133,7 +133,7 @@ export class RouterOutlet extends AKElement {
         this.current = matchedRoute;
     }
 
-    public updated(changedProperties: PropertyValues<this>): void {
+    public override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
         if (!this.sentryClient) return;
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
@@ -152,7 +152,7 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    public render(): TemplateResult | undefined {
+    public override render(): TemplateResult | undefined {
         return this.current?.render();
     }
 }

@@ -11,9 +11,9 @@ const style = css`
 
 @customElement("ak-hint-title")
 export class AkHintTitle extends AKElement {
-    public static styles = [style];
+    public static override styles = [style];
 
-    public render() {
+    public override render() {
         return html`<div id="host" part="ak-hint-title"><slot></slot></div>`;
     }
 }

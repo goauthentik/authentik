@@ -170,7 +170,7 @@ class Stage<T extends FlowInfoChallenge> {
 const IS_INVALID = "is-invalid";
 
 class IdentificationStage extends Stage<IdentificationChallenge> {
-    render() {
+    override render() {
         this.html(`
             <form id="ident-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
@@ -206,7 +206,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
 }
 
 class PasswordStage extends Stage<PasswordChallenge> {
-    render() {
+    override render() {
         this.html(`
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
@@ -230,13 +230,13 @@ class PasswordStage extends Stage<PasswordChallenge> {
 }
 
 class RedirectStage extends Stage<RedirectChallenge> {
-    render() {
+    override render() {
         window.location.assign(this.challenge.to);
     }
 }
 
 class AutosubmitStage extends Stage<AutosubmitChallenge> {
-    render() {
+    override render() {
         this.html(`
             <form id="autosubmit-form" action="${this.challenge.url}" method="POST">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
@@ -403,7 +403,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         };
     }
 
-    render() {
+    override render() {
         if (this.challenge.deviceChallenges.length === 1) {
             this.deviceChallenge = this.challenge.deviceChallenges[0];
         }

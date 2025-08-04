@@ -37,7 +37,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     @property({ type: Boolean })
     public showWebhook = false;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated transport.")
             : msg("Successfully created transport.");
@@ -66,7 +66,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         }
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

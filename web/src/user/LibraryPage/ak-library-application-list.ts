@@ -41,7 +41,7 @@ const LAYOUTS = new Map<string, [string, string]>([
  */
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFEmptyState,
         PFContent,
@@ -75,7 +75,7 @@ export class LibraryPageApplicationList extends AKElement {
         return layout;
     }
 
-    public render() {
+    public override render() {
         const [groupClass, groupGrid] = this.currentLayout;
 
         return html`<div class="pf-l-grid pf-m-gutter">

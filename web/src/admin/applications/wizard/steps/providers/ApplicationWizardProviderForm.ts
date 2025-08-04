@@ -17,7 +17,7 @@ import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    public static styles: CSSResult[] = [...AwadStyles];
+    public static override styles: CSSResult[] = [...AwadStyles];
 
     label = "";
 

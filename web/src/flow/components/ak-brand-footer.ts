@@ -24,12 +24,12 @@ const styles = css`
 
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
-    public static styles = [PFBase, PFList, styles];
+    public static override styles = [PFBase, PFList, styles];
 
     @property({ type: Array, attribute: false })
     public links: FooterLink[] = [];
 
-    public render() {
+    public override render() {
         const links = [...(this.links ?? [])];
 
         return html` <ul class="pf-c-list pf-m-inline">

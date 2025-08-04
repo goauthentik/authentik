@@ -228,13 +228,13 @@ export class FlowExecutor
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
@@ -277,7 +277,7 @@ export class FlowExecutor
     }
 
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowInfo") && this.flowInfo) {
             this.#setShadowStyles(this.flowInfo);
         }
@@ -548,7 +548,7 @@ export class FlowExecutor
         );
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <ak-locale-context>
             <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">

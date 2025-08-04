@@ -42,7 +42,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
         `,
     ];
 
-    public render() {
+    public override render() {
         if (!this.version || !this.licenseSummary) {
             return nothing;
         }

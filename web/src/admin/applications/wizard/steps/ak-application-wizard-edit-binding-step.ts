@@ -44,12 +44,12 @@ const PASS_FAIL = [
 
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
-    override label = msg("Edit Binding");
+    public override label = msg("Edit Binding");
 
-    override hide = true;
+    public override hide = true;
 
     @query("form#bindingform")
-    protected form!: HTMLFormElement;
+    protected override form!: HTMLFormElement;
 
     @query(".policy-search-select")
     protected searchSelect!:
@@ -64,7 +64,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     instance?: PolicyBinding;
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", label: msg("Save Binding"), destination: "bindings" },
             { kind: "back", destination: "bindings" },
@@ -221,7 +221,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

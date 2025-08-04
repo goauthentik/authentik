@@ -46,7 +46,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
     @state()
     protected usersToAdd: User[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user(s).");
     }
 
@@ -64,7 +64,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Users to add")} name="users">
             <div class="pf-c-input-group">
                 <ak-group-member-select-table
@@ -104,11 +104,11 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
@@ -116,7 +116,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     public targetGroup?: Group;
 
     @property()
-    public order = "last_login";
+    public override order = "last_login";
 
     @property({ type: Boolean })
     public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
@@ -148,7 +148,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -226,7 +226,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    protected renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -374,7 +374,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             <td></td>`;
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             ${this.targetGroup
                 ? html`<ak-forms-modal>
@@ -450,7 +450,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         `;
     }
 
-    protected renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

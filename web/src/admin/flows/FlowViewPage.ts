@@ -37,7 +37,7 @@ export class FlowViewPage extends AKElement {
     @state()
     protected flow!: Flow;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFDescriptionList,
@@ -61,13 +61,13 @@ export class FlowViewPage extends AKElement {
         });
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowSlug") && this.flowSlug) {
             this.fetchFlow(this.flowSlug);
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.flow) {
             return html``;
         }

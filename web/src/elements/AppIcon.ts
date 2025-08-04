@@ -28,7 +28,7 @@ export class AppIcon extends AKElement implements IAppIcon {
     @property({ reflect: true })
     public size: PFSize = PFSize.Medium;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFFAIcons,
         PFAvatar,
         css`
@@ -74,7 +74,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         `,
     ];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
             .with([undefined, undefined],

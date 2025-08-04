@@ -82,7 +82,7 @@ export class AkHiddenTextAreaInput
     public wrap?: "soft" | "hard" | "off" = "soft";
 
     @query("#main > textarea")
-    protected inputField!: HTMLTextAreaElement;
+    protected override inputField!: HTMLTextAreaElement;
 
     public get displayValue() {
         const value = this.value ?? "";

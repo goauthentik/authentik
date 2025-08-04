@@ -18,7 +18,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {
     @property()
-    public title!: string;
+    public override title!: string;
 
     @property({ type: Number })
     public connectionPk = 0;
@@ -43,7 +43,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         );
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.connectionPk === -1) {
             return html`<ak-spinner></ak-spinner>`;
         }

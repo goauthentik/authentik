@@ -8,7 +8,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-skip-to-content")
 export class AKSkipToContent extends AKElement {
-    public static styles = [
+    public static override styles = [
         PFBase,
         css`
             .show-on-focus:not(:focus) {
@@ -55,7 +55,7 @@ export class AKSkipToContent extends AKElement {
         element.focus?.();
     };
 
-    public render() {
+    public override render() {
         return html`
             <button
                 @click=${this.#skipToContent}

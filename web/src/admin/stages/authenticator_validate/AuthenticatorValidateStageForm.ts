@@ -42,7 +42,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         return stage;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
             ordering: "name",
         });
@@ -73,7 +73,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         );
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const authenticators = [
             [DeviceClassesEnum.Static, msg("Static Tokens")],
             [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],

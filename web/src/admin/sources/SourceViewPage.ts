@@ -68,7 +68,7 @@ export class SourceViewPage extends AKElement {
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-middleware"
                 header=${ifDefined(this.source?.name)}

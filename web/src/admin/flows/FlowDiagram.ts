@@ -13,7 +13,7 @@ export class FlowDiagram extends Diagram {
     @property()
     public flowSlug?: string;
 
-    refreshHandler = (): void => {
+    override refreshHandler = (): void => {
         this.diagram = undefined;
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInstancesDiagramRetrieve({

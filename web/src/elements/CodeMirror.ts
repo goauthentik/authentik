@@ -67,7 +67,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
     #syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
     #syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         // Better alignment with patternfly components
         css`
             .cm-editor {
@@ -160,7 +160,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
                 this.#editor?.dispatch({

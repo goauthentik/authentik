@@ -54,13 +54,13 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         }
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.updateLocale();
         window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
     }
 
-    public disconnectedCallback() {
+    public override disconnectedCallback() {
         window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
         super.disconnectedCallback();
     }
@@ -91,7 +91,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         this.dispatchEvent(customEvent(EVENT_LOCALE_CHANGE));
     }
 
-    public render() {
+    public override render() {
         return html`<slot></slot>`;
     }
 }

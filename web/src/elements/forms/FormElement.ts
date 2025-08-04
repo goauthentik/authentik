@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
+    public static override styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @property()
     public label?: string;
@@ -37,13 +37,13 @@ export class FormElement extends AKElement {
 
     _errors?: ErrorDetail[];
 
-    public updated(): void {
+    public override updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-form__group">
             <label class="pf-c-form__label">
                 <span class="pf-c-form__label-text">${this.label}</span>

@@ -37,7 +37,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
  */
 @customElement("ak-library-application-search")
 export class LibraryPageApplicationSearch extends AKElement {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFDisplay,
         css`
@@ -95,7 +95,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         if (!this.query) {
             return;
@@ -149,7 +149,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         }
     }
 
-    public render() {
+    public override render() {
         return html`<input
             @input=${this.onInput}
             @keydown=${this.onKeyDown}

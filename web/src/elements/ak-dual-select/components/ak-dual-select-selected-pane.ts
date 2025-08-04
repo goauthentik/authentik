@@ -62,7 +62,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
     //#endregion
 
     //#region Lifecycle
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         for (const [attr, value] of hostAttributes) {
@@ -116,7 +116,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Render
 
-    public render() {
+    public override render() {
         return html`
             <div class="pf-c-dual-list-selector__menu">
                 <ul class="pf-c-dual-list-selector__list">

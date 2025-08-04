@@ -18,10 +18,10 @@ export class LogViewer extends Table<LogEvent> {
     @property({ attribute: false })
     public logs?: LogEvent[] = [];
 
-    expandable = true;
-    paginated = false;
+    public override expandable = true;
+    public override paginated = false;
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
@@ -38,13 +38,13 @@ export class LogViewer extends Table<LogEvent> {
         };
     }
 
-    protected renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
-    protected renderExpanded(item: LogEvent): TemplateResult {
+    protected override renderExpanded(item: LogEvent): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
@@ -73,7 +73,7 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    protected renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html``;
     }
 

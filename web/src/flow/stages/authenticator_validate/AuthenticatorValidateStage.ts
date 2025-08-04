@@ -67,7 +67,7 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -127,7 +127,7 @@ export class AuthenticatorValidateStage
         return this.host?.submit(payload, options) || Promise.resolve();
     }
 
-    public willUpdate(_changed: PropertyValues<this>) {
+    public override willUpdate(_changed: PropertyValues<this>) {
         if (this._firstInitialized || !this.challenge) {
             return;
         }
@@ -284,7 +284,7 @@ export class AuthenticatorValidateStage
         return nothing;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()

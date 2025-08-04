@@ -21,7 +21,7 @@ type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T extends object> extends Table<T> {
-    paginated = false;
+    public override paginated = false;
 
     @property({ attribute: false })
     public objects: T[] = [];
@@ -35,7 +35,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     @state()
     protected usedByData: Map<T, UsedBy[]> = new Map();
 
-    public static styles: CSSResult[] = [...super.styles, PFList];
+    public static override styles: CSSResult[] = [...super.styles, PFList];
 
     async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
@@ -64,16 +64,16 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    protected renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html``;
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.expandable = this.usedBy !== undefined;
         super.firstUpdated();
     }
 
-    protected renderExpanded(item: T): TemplateResult {
+    protected override renderExpanded(item: T): TemplateResult {
         const handler = async () => {
             if (!this.usedByData.has(item) && this.usedBy) {
                 this.usedByData.set(item, await this.usedBy(item));
@@ -193,7 +193,7 @@ export class DeleteBulkForm<T> extends ModalButton {
         });
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

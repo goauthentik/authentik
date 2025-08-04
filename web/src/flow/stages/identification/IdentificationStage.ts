@@ -47,7 +47,7 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFInputGroup,
@@ -120,7 +120,7 @@ export class IdentificationStage extends BaseStage<
 
     //#region Lifecycle
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.#autoRedirect();
             this.#createHelperForm();
@@ -237,11 +237,11 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    protected onSubmitSuccess(): void {
+    protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    protected onSubmitFailure(): void {
+    protected override onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
 
@@ -380,7 +380,7 @@ export class IdentificationStage extends BaseStage<
                 : nothing}`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre

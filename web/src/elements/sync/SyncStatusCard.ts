@@ -95,7 +95,7 @@ export class SyncStatusCard extends AKElement {
         `;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__actions">

@@ -21,7 +21,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated certificate-key pair.")
             : msg("Successfully created certificate-key pair.");
@@ -39,7 +39,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"

@@ -50,7 +50,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const provider = this.instance;
 
         return html`<ak-text-input

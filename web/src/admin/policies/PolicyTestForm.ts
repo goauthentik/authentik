@@ -38,7 +38,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
     public request?: PolicyTestRequest;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
@@ -51,7 +51,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return (this.result = result);
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     protected renderResult(): TemplateResult {
         return html`
@@ -94,7 +94,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {

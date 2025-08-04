@@ -20,7 +20,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -33,11 +33,11 @@ export class PromptListPage extends TablePage<Prompt> {
         return "pf-icon pf-icon-plugged";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
@@ -56,7 +56,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Prompt(s)")}
@@ -105,7 +105,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal size=${PFSize.XLarge}>
                 <span slot="submit"> ${msg("Create")} </span>

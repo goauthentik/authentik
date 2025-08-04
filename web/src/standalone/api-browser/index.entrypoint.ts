@@ -38,7 +38,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @state()
     protected textColor = "#000000";
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             const style = getComputedStyle(document.documentElement);
             if (ev.detail === UiThemeEnum.Light) {
@@ -60,7 +60,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
         );
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-locale-context>
                 <rapi-doc

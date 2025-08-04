@@ -60,9 +60,9 @@ const styles = css`
 
 @customElement("ak-hint")
 export class AkHint extends AKElement {
-    public static styles = [styles];
+    public static override styles = [styles];
 
-    public render() {
+    public override render() {
         return html`<div part="ak-hint" id="host"><slot></slot></div>`;
     }
 }

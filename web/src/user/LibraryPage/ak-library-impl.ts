@@ -40,7 +40,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    public static styles = styles;
+    public static override styles = styles;
 
     /**
      * Controls showing the "Switch to Admin" button.
@@ -76,7 +76,7 @@ export class LibraryPage extends AKElement {
         return msg("My Applications");
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.filteredApps = this.apps;
         if (this.filteredApps === undefined) {
@@ -90,7 +90,7 @@ export class LibraryPage extends AKElement {
         this.addEventListener(LibraryPageSearchSelected.eventName, this.#launchRequest);
     }
 
-    public disconnectedCallback() {
+    public override disconnectedCallback() {
         this.removeEventListener(LibraryPageSearchUpdated.eventName, this.#searchUpdated);
         this.removeEventListener(LibraryPageSearchReset.eventName, this.#searchReset);
         this.removeEventListener(LibraryPageSearchEmpty.eventName, this.#searchEmpty);
@@ -176,7 +176,7 @@ export class LibraryPage extends AKElement {
             : this.renderNoAppsFound();
     }
 
-    public render() {
+    public override render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
                 <h1 role="heading" aria-level="1" id="library-page-title">

@@ -53,7 +53,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     @property({ attribute: false })
     public plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    public override get defaultInstance(): PlexSource | undefined {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
@@ -174,7 +174,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -72,7 +72,7 @@ export class AKMDX extends AKElement {
 
     resolvedHTML = "";
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFList,
         PFTable,
@@ -163,7 +163,7 @@ export class AKMDX extends AKElement {
         `,
     ];
 
-    public async connectedCallback() {
+    public override async connectedCallback() {
         super.connectedCallback();
         this.#reactRoot = createRoot(this.shadowRoot!);
 

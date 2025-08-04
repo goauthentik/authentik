@@ -30,7 +30,7 @@ const providerToTag = new Map([
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     @state()
-    public label = msg("Configure Provider");
+    public override label = msg("Configure Provider");
 
     @query("#providerform")
     protected element!: ApplicationWizardProviderForm<OneOfProvider>;
@@ -39,7 +39,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         return this.element.valid;
     }
 
-    get formValues() {
+    public override get formValues() {
         return this.element.formValues;
     }
 
@@ -66,7 +66,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         super.handleButton(button);
     }
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", destination: "bindings" },
             { kind: "back", destination: "provider-choice" },
@@ -74,7 +74,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         ];
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         if (!this.wizard.providerModel) {
             throw new Error("Attempted to access provider page without providing a provider type.");
         }
@@ -97,7 +97,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
             : nothing;
     }
 
-    public updated(changed: PropertyValues<this>) {
+    public override updated(changed: PropertyValues<this>) {
         if (changed.has("wizard")) {
             const label = this.element?.label ?? this.label;
             if (label !== this.label) {

@@ -100,7 +100,7 @@ export class SimpleTableSortTest extends LitElement {
         ]);
     }
 
-    render() {
+    override render() {
         const onTableSort = (event: TableSortEvent) => {
             if (event.value === this.order) {
                 this.sortDown = !this.sortDown;

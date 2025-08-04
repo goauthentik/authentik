@@ -47,7 +47,7 @@ export abstract class ModalButton extends AKElement {
     @property({ type: Boolean })
     public locked = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFModalBox,
@@ -139,7 +139,7 @@ export abstract class ModalButton extends AKElement {
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }

@@ -43,7 +43,7 @@ export const applicationListStyle = css`
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -58,11 +58,11 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return "pf-icon pf-icon-applications";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
@@ -84,7 +84,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    protected renderSidebarAfter(): TemplateResult {
+    protected override renderSidebarAfter(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
@@ -94,7 +94,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </div>`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Application(s)")}
@@ -154,7 +154,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
                 <button
                     slot="trigger"
@@ -172,7 +172,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             </ak-forms-modal>`;
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared application cache")}

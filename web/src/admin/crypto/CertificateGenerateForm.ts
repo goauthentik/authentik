@@ -17,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully generated certificate-key pair.");
     }
 
@@ -27,7 +27,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("Common Name")}
                 name="commonName"

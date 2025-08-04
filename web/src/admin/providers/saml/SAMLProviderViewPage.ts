@@ -79,7 +79,7 @@ export class SAMLProviderViewPage extends AKElement {
     @state()
     protected previewUser?: User;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -136,7 +136,7 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
@@ -212,7 +212,7 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

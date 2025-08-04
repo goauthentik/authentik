@@ -22,10 +22,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-events-user")
 export class UserEvents extends Table<Event> {
-    expandable = true;
+    public override expandable = true;
 
     @property()
-    public order = "-created";
+    public override order = "-created";
 
     @property()
     public targetUser!: string;
@@ -56,7 +56,7 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    protected renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
@@ -67,7 +67,7 @@ export class UserEvents extends Table<Event> {
             <td></td>`;
     }
 
-    protected renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

@@ -32,9 +32,9 @@ export class UserReputationList extends Table<Reputation> {
         });
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    order = "identifier";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "identifier";
 
     columns(): TableColumn[] {
         return [
@@ -45,7 +45,7 @@ export class UserReputationList extends Table<Reputation> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Reputation score(s)")}

@@ -49,7 +49,7 @@ export class ApplicationViewPage extends AKElement {
     @state()
     protected missingOutpost = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFList,
         PFBanner,
@@ -89,13 +89,13 @@ export class ApplicationViewPage extends AKElement {
         });
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}

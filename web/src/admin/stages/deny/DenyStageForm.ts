@@ -31,7 +31,7 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <span>
                 ${msg(

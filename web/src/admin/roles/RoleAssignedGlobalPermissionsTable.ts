@@ -18,14 +18,14 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
     public roleUuid?: string;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    order = "content_type__app_label,content_type__model";
+    public override order = "content_type__app_label,content_type__model";
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
@@ -34,7 +34,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    public override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
@@ -48,7 +48,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Assign")} </span>
@@ -62,7 +62,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         `;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

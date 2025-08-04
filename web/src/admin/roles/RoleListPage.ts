@@ -18,9 +18,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -34,7 +34,7 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
@@ -44,7 +44,7 @@ export class RoleListPage extends TablePage<Role> {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Role(s)")}
@@ -66,7 +66,7 @@ export class RoleListPage extends TablePage<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    public render(): HTMLTemplateResult {
+    public override render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
@@ -94,7 +94,7 @@ export class RoleListPage extends TablePage<Role> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

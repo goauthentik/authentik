@@ -17,9 +17,9 @@ export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
     public topN?: EventTopPerUser[];
 
-    public static styles: CSSResult[] = [PFTable];
+    public static override styles: CSSResult[] = [PFTable];
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)
             .eventsEventsTopPerUserList({
                 action: "authorize_application",
@@ -43,7 +43,7 @@ export class TopApplicationsTable extends AKElement {
         </tr>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<table class="pf-c-table pf-m-compact" role="grid">
             <thead>
                 <tr role="row">

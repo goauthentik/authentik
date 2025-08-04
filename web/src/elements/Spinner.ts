@@ -13,9 +13,9 @@ export class Spinner extends AKElement {
     @property()
     public size: PFSize = PFSize.Medium;
 
-    public static styles: CSSResult[] = [PFSpinner];
+    public static override styles: CSSResult[] = [PFSpinner];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<span
             class="pf-c-spinner ${this.size.toString()}"
             role="progressbar"

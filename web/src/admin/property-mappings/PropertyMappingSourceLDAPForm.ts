@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 

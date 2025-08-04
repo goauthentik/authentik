@@ -50,7 +50,7 @@ export class SCIMSourceViewPage extends AKElement {
     @property({ attribute: false })
     public source?: SCIMSource;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -70,7 +70,7 @@ export class SCIMSourceViewPage extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

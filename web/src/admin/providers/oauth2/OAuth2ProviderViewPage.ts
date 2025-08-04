@@ -82,7 +82,7 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     protected previewUser?: User;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -113,7 +113,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             .then((preview) => (this.preview = preview));
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

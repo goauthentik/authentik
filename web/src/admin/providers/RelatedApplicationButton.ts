@@ -15,7 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     public provider?: Provider;
@@ -23,7 +23,7 @@ export class RelatedApplicationButton extends AKElement {
     @property()
     public mode: "primary" | "backchannel" = "primary";
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
             return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
                 ${this.provider.assignedApplicationName}

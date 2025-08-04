@@ -116,7 +116,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             });
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("modelName")) {
             this.fetchProviderType(this.modelName);
         }
@@ -258,7 +258,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         </ak-form-group>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

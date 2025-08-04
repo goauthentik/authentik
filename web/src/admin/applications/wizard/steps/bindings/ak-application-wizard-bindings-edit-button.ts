@@ -8,7 +8,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-wizard-binding-step-edit-button")
 export class ApplicationWizardBindingStepEditButton extends AKElement {
-    public static styles = [PFButton];
+    public static override styles = [PFButton];
 
     @property({ type: Number })
     public value = -1;
@@ -24,7 +24,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
         );
     };
 
-    public render() {
+    public override render() {
         return html`<button class="pf-c-button pf-c-secondary" @click=${this.#clickListener}>
             ${msg("Edit")}
         </button>`;

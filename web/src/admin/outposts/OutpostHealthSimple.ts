@@ -29,7 +29,7 @@ export class OutpostHealthSimpleElement extends AKElement {
     @property({ attribute: false })
     public showVersion = true;
 
-    public static styles: CSSResult[] = [PFBase];
+    public static override styles: CSSResult[] = [PFBase];
 
     public constructor() {
         super();
@@ -39,7 +39,7 @@ export class OutpostHealthSimpleElement extends AKElement {
         });
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         if (!this.outpostId) return;
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesHealthList({
@@ -51,7 +51,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.outpostId || !this.loaded) {
             return html`<ak-spinner></ak-spinner>`;
         }

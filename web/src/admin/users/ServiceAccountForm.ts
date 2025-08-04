@@ -27,7 +27,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
     public group?: Group;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.group) {
             return msg(str`Successfully created user and added to group ${this.group.name}`);
         }
@@ -51,12 +51,12 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
         this.result = null;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="name">
                 <input
                     type="text"
@@ -138,7 +138,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    protected renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }

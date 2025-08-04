@@ -16,11 +16,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
-    getChartType(): string {
+    public override getChartType(): string {
         return "doughnut";
     }
 
-    getOptions(): ChartOptions {
+    public override getOptions(): ChartOptions {
         return {
             plugins: {
                 legend: {

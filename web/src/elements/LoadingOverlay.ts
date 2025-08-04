@@ -53,7 +53,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     @property({ type: String })
     public icon?: string;
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         css`
             :host {
@@ -74,7 +74,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
         `,
     ];
 
-    public render() {
+    public override render() {
         // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...
         return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifDefined(this.icon)}>
             ${this.hasSlotted(null) ? html`<span><slot></slot></span>` : nothing}

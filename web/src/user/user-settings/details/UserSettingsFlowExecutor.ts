@@ -88,13 +88,13 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    public firstUpdated() {
+    public override firstUpdated() {
         if (this.flowSlug) {
             this.nextChallenge();
         }
     }
 
-    public updated(): void {
+    public override updated(): void {
         if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
@@ -201,7 +201,7 @@ export class UserSettingsFlowExecutor
         return html` ${this.renderChallenge()} `;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>

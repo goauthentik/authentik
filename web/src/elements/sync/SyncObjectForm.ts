@@ -44,7 +44,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         return Promise.reject();
     };
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully triggered sync.");
     }
 
@@ -119,7 +119,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal> `;
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
                 ? this.renderSelectUser()
                 : nothing}

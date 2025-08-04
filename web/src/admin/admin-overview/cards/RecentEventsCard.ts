@@ -25,7 +25,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     @property()
-    public order = "-created";
+    public override order = "-created";
 
     @property({ type: Number })
     public pageSize = 10;
@@ -37,7 +37,7 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFCard,
         css`
@@ -62,7 +62,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
             <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
@@ -81,7 +81,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         if (this.error) {
             return super.renderEmpty(inner);
         }

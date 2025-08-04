@@ -122,7 +122,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         ) as unknown as number;
     }
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener(
             "focus",
@@ -141,12 +141,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         clearInterval(this.clipboardWatcherTimer);
     }
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
@@ -363,7 +363,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         `;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             ${this.renderOverlay()}
             <div class="container">${this.container}</div>

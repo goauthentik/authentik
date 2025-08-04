@@ -34,13 +34,13 @@ const isStr = (v: any): v is string => typeof v === "string";
 
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
-    label = msg("Application");
+    public override label = msg("Application");
 
     @state()
     protected errors = new Map<string, string>();
 
     @query("form#applicationform")
-    protected form!: HTMLFormElement;
+    protected override form!: HTMLFormElement;
 
     public constructor() {
         super();
@@ -56,7 +56,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                   []);
     }
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
     }
 
@@ -177,7 +177,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    protected renderMain() {
+    protected override renderMain() {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

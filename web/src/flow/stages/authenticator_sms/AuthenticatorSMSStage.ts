@@ -27,7 +27,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallenge,
     AuthenticatorSMSChallengeResponseRequest
 > {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFLogin,
@@ -117,7 +117,7 @@ export class AuthenticatorSMSStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();
         }

@@ -117,7 +117,7 @@ export class AkSbFruity extends LitElement {
         );
     }
 
-    render() {
+    override render() {
         return html`<ak-dual-select
             .options=${this.pageoptions}
             .pages=${this.page}

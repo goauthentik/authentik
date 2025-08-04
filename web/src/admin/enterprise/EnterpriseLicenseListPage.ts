@@ -36,10 +36,10 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -53,7 +53,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     @state()
     protected forecast?: LicenseForecast;
@@ -64,7 +64,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     protected installID?: string;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,
@@ -105,7 +105,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -119,7 +119,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `);
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("License(s)")}
@@ -147,7 +147,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderSectionBefore(): TemplateResult {
+    protected override renderSectionBefore(): TemplateResult {
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -273,7 +273,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </div> `;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Install")} </span>

@@ -25,7 +25,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-system-tasks")
 export class SystemTasksPage extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFList,
         PFBanner,
@@ -37,7 +37,7 @@ export class SystemTasksPage extends AKElement {
         PFCard,
     ];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-automation"
                 header=${msg("System Tasks")}

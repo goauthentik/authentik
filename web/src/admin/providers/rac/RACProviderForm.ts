@@ -31,7 +31,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
@@ -50,7 +50,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

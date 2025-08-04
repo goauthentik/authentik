@@ -24,7 +24,7 @@ export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -34,7 +34,7 @@ export class PasswordStage extends BaseStage<
         PFTitle,
     ];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form
                 class="pf-c-form"

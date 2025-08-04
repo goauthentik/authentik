@@ -34,7 +34,7 @@ export abstract class HorizontalLightComponent<T>
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
@@ -81,7 +81,7 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    public hidden = false;
+    public override hidden = false;
 
     /**
      * @property
@@ -129,7 +129,7 @@ export abstract class HorizontalLightComponent<T>
         ];
     }
 
-    public render() {
+    public override render() {
         return html`<ak-form-element-horizontal
             fieldID=${this.fieldID}
             label=${ifDefined(this.label)}

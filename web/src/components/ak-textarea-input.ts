@@ -7,7 +7,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-textarea-input")
 export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     public override renderControl() {
         const code = this.inputHint === "code";

@@ -48,7 +48,7 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFFormControl,
@@ -114,11 +114,11 @@ export class HorizontalFormElement extends AKElement {
     })
     public flowDirection: "row" | "column" = "column";
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.updated();
     }
 
-    public updated(): void {
+    public override updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
@@ -136,7 +136,7 @@ export class HorizontalFormElement extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         this.updated();
         return html`<div
             class="pf-c-form__group"

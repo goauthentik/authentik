@@ -85,12 +85,12 @@ const recoveryButtonStyles = css`
 
 @customElement("ak-user-list")
 export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -104,7 +104,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     @property()
-    public order = "last_login";
+    public override order = "last_login";
 
     @property()
     public activePath;
@@ -161,7 +161,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
@@ -208,7 +208,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -286,7 +286,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    protected renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -394,7 +394,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <td></td>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -413,7 +413,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         `;
     }
 
-    protected renderSidebarBefore(): TemplateResult {
+    protected override renderSidebarBefore(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("User folders")}</div>

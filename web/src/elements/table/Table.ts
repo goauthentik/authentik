@@ -185,7 +185,7 @@ export abstract class Table<T extends object>
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("page")) {
             updateURLParams({
                 [this.#pageParam]: this.page,
@@ -198,7 +198,7 @@ export abstract class Table<T extends object>
         }
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.fetch();
     }
 
@@ -651,7 +651,7 @@ export abstract class Table<T extends object>
             ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return this.renderTable();
     }
 }

@@ -39,7 +39,7 @@ export class LibraryApplication extends AKElement {
     @query("ak-library-rac-endpoint-launch")
     protected racEndpointLaunch?: RACLaunchEndpointModal;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,
@@ -145,7 +145,7 @@ export class LibraryApplication extends AKElement {
             </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }

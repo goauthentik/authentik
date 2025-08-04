@@ -30,7 +30,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated endpoint.")
             : msg("Successfully created endpoint.");
@@ -54,7 +54,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input

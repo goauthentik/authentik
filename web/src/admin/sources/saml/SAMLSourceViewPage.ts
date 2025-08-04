@@ -54,7 +54,7 @@ export class SAMLSourceViewPage extends AKElement {
     @state()
     protected metadata?: SAMLMetadata;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFGrid,
@@ -72,7 +72,7 @@ export class SAMLSourceViewPage extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

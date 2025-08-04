@@ -127,7 +127,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         });
     }
 
-    public render() {
+    public override render() {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-user"
                 header=${msg(str`User ${this.user?.username || ""}`)}

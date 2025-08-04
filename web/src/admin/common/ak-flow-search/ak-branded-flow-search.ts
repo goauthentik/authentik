@@ -26,7 +26,7 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
         this.selected = this.selected.bind(this);
     }
 
-    selected(flow: Flow): boolean {
+    public override selected(flow: Flow): boolean {
         return super.selected(flow) || flow.pk === this.brandFlow;
     }
 }

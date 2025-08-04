@@ -45,7 +45,7 @@ export class RoleViewPage extends AKElement {
     @state()
     protected _role?: Role;
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFPage,
         PFButton,
@@ -73,7 +73,7 @@ export class RoleViewPage extends AKElement {
         });
     }
 
-    public render() {
+    public override render() {
         return html`<ak-page-header
                 icon="fa fa-lock"
                 header=${msg(str`Role ${this._role?.name || ""}`)}

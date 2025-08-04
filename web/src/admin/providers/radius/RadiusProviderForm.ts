@@ -30,7 +30,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
         });
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         return renderForm(this.instance ?? {}, [], this.brand);
     }
 }

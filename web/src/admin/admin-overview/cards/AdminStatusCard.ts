@@ -43,7 +43,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     }
 
     // Lifecycle method: Called when component is added to DOM
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         // Initial data fetch
         this.#fetchData();
@@ -70,7 +70,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param changed - Map of changed properties
      * @returns boolean indicating if update should proceed
      */
-    shouldUpdate(changed: PropertyValues<this>) {
+    public override shouldUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && this.value !== undefined) {
             // When value changes, fetch new status
             this.getStatus(this.value)
@@ -138,7 +138,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for current component state
      */
-    protected renderInner(): SlottedTemplateResult {
+    protected override renderInner(): SlottedTemplateResult {
         return html`
             <p class="center-value">
                 ${

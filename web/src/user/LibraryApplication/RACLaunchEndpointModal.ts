@@ -11,12 +11,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
-    clickable = true;
-    searchEnabled(): boolean {
+    public override clickable = true;
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    clickHandler = (item: Endpoint) => {
+    public override clickHandler = (item: Endpoint) => {
         if (!item.launchUrl) {
             return;
         }
@@ -50,7 +50,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         return [html`${item.name}`];
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select endpoint to connect to")}</h1>

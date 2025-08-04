@@ -17,7 +17,7 @@ import { html } from "lit";
 export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
     ApplicationWizardProviderForm<RadiusProvider>,
 ) {
-    label = msg("Configure Radius Provider");
+    public override label = msg("Configure Radius Provider");
 
     protected renderForm(provider: RadiusProvider, errors: ValidationRecord) {
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
@@ -26,7 +26,7 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
             </form>`;
     }
 
-    public render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }

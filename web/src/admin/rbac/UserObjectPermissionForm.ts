@@ -38,7 +38,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
     @state()
     protected modelPermissions?: PaginatedPermissionList;
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
         this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
@@ -51,7 +51,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
@@ -66,7 +66,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         if (!this.modelPermissions) {
             return html``;
         }

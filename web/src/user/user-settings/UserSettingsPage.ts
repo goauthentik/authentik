@@ -37,7 +37,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFDisplay,
@@ -86,11 +86,11 @@ export class UserSettingsPage extends AKElement {
         });
     }
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];

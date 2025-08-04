@@ -33,7 +33,7 @@ export class NotificationDrawer extends AKElement {
     @property({ type: Number })
     public unread = 0;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFNotificationDrawer,
@@ -62,7 +62,7 @@ export class NotificationDrawer extends AKElement {
         `,
     ];
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         me().then((user) => {
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
@@ -176,7 +176,7 @@ export class NotificationDrawer extends AKElement {
         </ak-empty-state>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.notifications) {
             return html``;
         }

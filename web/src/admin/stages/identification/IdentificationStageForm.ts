@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
-    public static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             ak-checkbox-group::part(checkbox-group) {
@@ -66,7 +66,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         );
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const userSelectFields = [
             { name: UserFieldsEnum.Username, label: msg("Username") },
             { name: UserFieldsEnum.Email, label: msg("Email") },

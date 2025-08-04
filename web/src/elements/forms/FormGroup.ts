@@ -29,7 +29,7 @@ export class AKFormGroup extends AKElement {
     @property({ type: String, reflect: true })
     public description?: string;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFButton,
@@ -106,7 +106,7 @@ export class AKFormGroup extends AKElement {
 
     scrollAnimationFrame = -1;
 
-    scrollIntoView = (): void => {
+    public override scrollIntoView = (): void => {
         this.formRef.value?.scrollIntoView({
             behavior: "smooth",
         });
@@ -126,7 +126,7 @@ export class AKFormGroup extends AKElement {
         }
     };
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <details
                 ${ref(this.formRef)}

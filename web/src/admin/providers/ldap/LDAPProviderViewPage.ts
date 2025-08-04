@@ -48,7 +48,7 @@ export class LDAPProviderViewPage extends AKElement {
     @state()
     protected me?: SessionUser;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFBanner,
@@ -79,13 +79,13 @@ export class LDAPProviderViewPage extends AKElement {
             .then((prov) => (this.provider = prov));
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

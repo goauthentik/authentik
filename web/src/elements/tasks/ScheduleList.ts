@@ -23,15 +23,15 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
-    expandable = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "next_run";
+    public override order = "next_run";
 
     @property()
     public relObjAppLabel?: string;
@@ -43,7 +43,7 @@ export class ScheduleList extends Table<Schedule> {
     @property({ type: Boolean })
     public showOnlyStandalone: boolean = true;
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =
@@ -77,7 +77,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    protected renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         if (this.relObjId !== undefined) {
             return html``;
         }
@@ -154,7 +154,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    protected renderExpanded(item: Schedule): TemplateResult {
+    protected override renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">

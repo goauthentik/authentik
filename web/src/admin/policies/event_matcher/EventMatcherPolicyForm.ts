@@ -44,7 +44,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",

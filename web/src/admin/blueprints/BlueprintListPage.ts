@@ -46,7 +46,7 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -59,14 +59,14 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return "pf-icon pf-icon-blueprint";
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "name";
+    public override order = "name";
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
@@ -84,7 +84,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Blueprint(s)")}
@@ -109,7 +109,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderExpanded(item: BlueprintInstance): TemplateResult {
+    protected override renderExpanded(item: BlueprintInstance): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -201,7 +201,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

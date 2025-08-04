@@ -62,7 +62,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     protected showClientSecret = true;
 
-    public static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             ak-array-input {
@@ -91,7 +91,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         });
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };

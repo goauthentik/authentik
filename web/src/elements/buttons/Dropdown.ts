@@ -22,7 +22,7 @@ export class DropdownButton extends AKElement {
         this.menu.hidden = true;
     };
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
         this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
@@ -35,12 +35,12 @@ export class DropdownButton extends AKElement {
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.#clickListener);
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

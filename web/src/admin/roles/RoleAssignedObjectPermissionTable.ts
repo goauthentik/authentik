@@ -17,12 +17,12 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     @property()
     public roleUuid?: string;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
@@ -31,7 +31,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         });
     }
 
-    groupBy(items: ExtraRoleObjectPermission[]): [string, ExtraRoleObjectPermission[]][] {
+    public override groupBy(
+        items: ExtraRoleObjectPermission[],
+    ): [string, ExtraRoleObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
@@ -46,7 +48,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

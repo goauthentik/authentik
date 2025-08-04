@@ -38,13 +38,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    expandable = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
@@ -78,7 +78,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     row(item: ServiceConnection): TemplateResult[] {
         const itemState = this.state[item.pk];
@@ -113,7 +113,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         ];
     }
 
-    protected renderExpanded(item: ServiceConnection): TemplateResult {
+    protected override renderExpanded(item: ServiceConnection): TemplateResult {
         const [appLabel, modelName] = item.metaModelName.split(".");
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -153,7 +153,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         </td>`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Outpost integration(s)")}
@@ -175,7 +175,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-service-connection-wizard></ak-service-connection-wizard> `;
     }
 }

@@ -25,13 +25,13 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated license.")
             : msg("Successfully created license.");
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.installID = (
             await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
         ).installId;
@@ -53,7 +53,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Install ID")}>
                 <input
                     class="pf-c-form-control pf-m-monospace"

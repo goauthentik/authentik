@@ -96,18 +96,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
             });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated prompt.")
             : msg("Successfully created prompt.");
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
+    public static override styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 
     #shouldRefresh = false;
     #timer = 0;
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
@@ -120,7 +120,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         }, minUpdateDelay) as unknown as number;
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         clearTimeout(this.#timer);
     }
@@ -157,7 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         )}`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
             <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">
                 ${this.renderEditForm()}

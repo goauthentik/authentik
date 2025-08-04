@@ -27,11 +27,11 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -47,7 +47,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
@@ -63,7 +63,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification rule(s)")}
@@ -115,7 +115,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -126,7 +126,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         `;
     }
 
-    protected renderExpanded(item: NotificationRule): TemplateResult {
+    protected override renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
         return html` <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

@@ -20,7 +20,7 @@ export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    public static styles: CSSResult[] = [PFBase];
+    public static override styles: CSSResult[] = [PFBase];
 
     /**
      * The label to display in the sidebar for this page.
@@ -64,7 +64,7 @@ export class WizardPage extends AKElement {
         return Promise.resolve(true);
     };
 
-    public requestUpdate(
+    public override requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
         options?: PropertyDeclaration<unknown, unknown>,
@@ -77,7 +77,7 @@ export class WizardPage extends AKElement {
         return super.requestUpdate(name, oldValue, options);
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

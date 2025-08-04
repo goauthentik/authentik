@@ -41,7 +41,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     extends HorizontalLightComponent<string>
     implements AkHiddenTextInputProps
 {
-    public static styles = [
+    public static override styles = [
         css`
             main {
                 display: flex;
@@ -54,7 +54,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     /**
      * @property
@@ -79,7 +79,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String })
-    public label?: string;
+    public override label?: string;
 
     /**
      * Specify kind of help the browser should try to provide

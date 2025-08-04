@@ -68,16 +68,16 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     @state()
     protected defaultOrder = 0;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
         return msg("Successfully created binding.");
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,
         // as this function is called when the correct parameters are set
         this.policyGroupUser = this.allowedTypes[0];
@@ -145,7 +145,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         </ak-toggle-group>`;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

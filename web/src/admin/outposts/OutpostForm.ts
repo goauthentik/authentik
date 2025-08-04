@@ -113,14 +113,14 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         return o;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.defaultConfig = await new OutpostsApi(
             DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated outpost.")
             : msg("Successfully created outpost.");
@@ -138,7 +138,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],

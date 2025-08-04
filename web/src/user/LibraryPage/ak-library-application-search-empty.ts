@@ -18,9 +18,9 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-library-application-search-empty")
 export class LibraryPageApplicationSearchEmpty extends AKElement {
-    public static styles = [PFBase, PFEmptyState, PFContent, PFSpacing];
+    public static override styles = [PFBase, PFEmptyState, PFContent, PFSpacing];
 
-    public render() {
+    public override render() {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>

@@ -214,7 +214,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",

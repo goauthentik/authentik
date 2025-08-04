@@ -48,7 +48,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -63,7 +63,7 @@ export class Portal extends LitElement implements IPortal {
 
     content!: Element;
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
@@ -88,7 +88,7 @@ export class Portal extends LitElement implements IPortal {
         this.content = this.firstElementChild;
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.connected = false;
         this.dropdownContainer?.remove();
         this.cleanup?.();
@@ -123,14 +123,14 @@ export class Portal extends LitElement implements IPortal {
         super.performUpdate();
     }
 
-    public render() {
+    public override render() {
         this.dropdownContainer.appendChild(this.content);
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
         return nothing;
     }
 
-    public updated() {
+    public override updated() {
         (this.content as HTMLElement).style.display = "none";
         if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
             (this.content as HTMLElement).style.display = "";

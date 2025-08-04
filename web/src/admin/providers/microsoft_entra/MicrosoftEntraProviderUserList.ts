@@ -22,16 +22,16 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
     @property({ type: Number })
     public providerId?: number;
 
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
@@ -51,7 +51,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
             ${super.renderToolbar()}`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Microsoft Entra User(s)")}
@@ -89,7 +89,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         ];
     }
 
-    protected renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
+    protected override renderExpanded(item: MicrosoftEntraProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

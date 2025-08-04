@@ -22,7 +22,7 @@ export class Tabs extends AKElement {
     @property({ type: Boolean })
     public vertical = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFGlobal,
         PFTabs,
         css`
@@ -53,7 +53,7 @@ export class Tabs extends AKElement {
         });
     }
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.observer.observe(this, {
             attributes: true,
@@ -62,7 +62,7 @@ export class Tabs extends AKElement {
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.observer.disconnect();
         super.disconnectedCallback();
     }
@@ -87,7 +87,7 @@ export class Tabs extends AKElement {
         </li>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();

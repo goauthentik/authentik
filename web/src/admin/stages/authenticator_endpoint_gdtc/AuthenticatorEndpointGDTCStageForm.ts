@@ -36,9 +36,9 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
         });
     }
 
-    public static styles = [...super.styles, PFBanner];
+    public static override styles = [...super.styles, PFBanner];
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">
                 ${msg("Endpoint Google Chrome Device Trust is in preview.")}
                 <a href="mailto:hello+feature/gdtc@goauthentik.io">${msg("Send us feedback!")}</a>

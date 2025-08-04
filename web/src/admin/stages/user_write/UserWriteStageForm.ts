@@ -42,7 +42,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     `Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user

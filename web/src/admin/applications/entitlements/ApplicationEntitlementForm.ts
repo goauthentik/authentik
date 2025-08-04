@@ -29,14 +29,14 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     @property()
     public targetPk?: string;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
         }
         return msg("Successfully created entitlement.");
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
     send(data: ApplicationEntitlement): Promise<unknown> {
         if (this.targetPk) {
@@ -53,7 +53,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

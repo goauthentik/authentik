@@ -182,7 +182,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
             </a>`;
     }
 
-    public render() {
+    public override render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
         // that the contract we promised is being honored, and the rest of the code that depends on
@@ -291,7 +291,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
     }
 
-    public async connectedCallback() {
+    public override async connectedCallback() {
         super.connectedCallback();
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
@@ -299,7 +299,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
     }
 
-    public disconnectedCallback() {
+    public override disconnectedCallback() {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
@@ -341,7 +341,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         });
     }
 
-    public render() {
+    public override render() {
         if (!this.me) {
             console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
 

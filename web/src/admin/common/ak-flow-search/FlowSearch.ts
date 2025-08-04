@@ -116,7 +116,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return selected;
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {
@@ -129,7 +129,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         }
     }
 
-    public render() {
+    public override render() {
         return html`
             <ak-search-select
                 .fetchObjects=${this.fetchObjects}

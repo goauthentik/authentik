@@ -13,7 +13,7 @@ export class AkFileInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
@@ -47,7 +47,7 @@ export class AkFileInput extends AKElement {
         return this.input.files;
     }
 
-    public render() {
+    public override render() {
         const currentMsg =
             this.value && this.current
                 ? html` <p class="pf-c-form__helper-text">${this.current} ${this.value}</p> `

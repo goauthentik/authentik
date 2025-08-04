@@ -14,12 +14,12 @@ export class FormWizardPage extends WizardPage {
         return Promise.resolve();
     };
 
-    activeCallback = async () => {
+    public override activeCallback = async () => {
         this.host.isValid = true;
         this.activePageCallback(this);
     };
 
-    nextCallback = async (): Promise<boolean> => {
+    public override nextCallback = async (): Promise<boolean> => {
         const form = this.querySelector<Form<unknown>>("*");
 
         if (!form) {

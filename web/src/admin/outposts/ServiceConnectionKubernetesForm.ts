@@ -26,7 +26,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
@@ -44,7 +44,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

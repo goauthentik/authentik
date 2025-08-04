@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-plex-form")
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 

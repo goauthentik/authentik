@@ -73,7 +73,7 @@ export interface ISimpleTable {
 
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFTable,
         css`
@@ -196,7 +196,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         `;
     }
 
-    public render() {
+    public override render() {
         return this.renderTable();
     }
 

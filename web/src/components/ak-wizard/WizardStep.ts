@@ -62,7 +62,7 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
 export class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
-    public static styles = [
+    public static override styles = [
         PFWizard,
         PFContent,
         PFTitle,
@@ -110,7 +110,7 @@ export class WizardStep extends AKElement {
     /**
      * The ID of the current step.
      */
-    public id = "";
+    public override id = "";
 
     /**
      *The label of the current step.  Displayed in the navigation bar.
@@ -162,7 +162,7 @@ export class WizardStep extends AKElement {
 
     // END Public API
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         if (!this.name) {
             const name = this.getAttribute("slot");
@@ -268,7 +268,7 @@ export class WizardStep extends AKElement {
         `;
     };
 
-    public render() {
+    public override render() {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
             ? html` <div class="pf-c-modal-box ak-wizard-box">
                   <div class="pf-c-wizard">

@@ -20,11 +20,11 @@ export class FlowImportForm extends Form<Flow> {
     @state()
     protected result?: FlowImportResult;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported flow.");
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");
@@ -64,7 +64,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">

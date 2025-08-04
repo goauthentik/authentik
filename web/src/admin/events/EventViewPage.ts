@@ -31,7 +31,7 @@ export class EventViewPage extends AKElement {
     @state()
     protected event!: EventWithContext;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFGrid,
         PFDescriptionList,
@@ -46,13 +46,13 @@ export class EventViewPage extends AKElement {
         });
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("eventID") && this.eventID) {
             this.fetchEvent(this.eventID);
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.event) {
             return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${msg("Loading")}>
             </ak-page-header> `;

@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFNav,
@@ -70,9 +70,9 @@ export class Sidebar extends AKElement {
     ];
 
     @property({ type: Boolean })
-    public hidden = false;
+    public override hidden = false;
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
             role="presentation"

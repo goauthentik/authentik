@@ -30,9 +30,9 @@ export class ObjectPermissionPage extends AKElement {
     @property({ type: Boolean })
     public embedded = false;
 
-    public static styles = [PFBase, PFGrid, PFPage, PFCard];
+    public static override styles = [PFBase, PFGrid, PFPage, PFCard];
 
-    public render() {
+    public override render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
             ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
                 ? this.renderCoreUser()

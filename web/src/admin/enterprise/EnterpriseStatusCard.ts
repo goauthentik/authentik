@@ -52,7 +52,7 @@ export class EnterpriseStatusCard extends AKElement {
         return percentage;
     }
 
-    public render() {
+    public override render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }

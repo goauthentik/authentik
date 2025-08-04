@@ -29,9 +29,9 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -46,13 +46,13 @@ export class InvitationListPage extends TablePage<Invitation> {
         return "pf-icon pf-icon-migration";
     }
 
-    public static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "expires";
+    public override order = "expires";
 
     @state()
     protected invitationStageExists = false;
@@ -93,7 +93,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Invitation(s)")}
@@ -147,7 +147,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    protected renderExpanded(item: Invitation): TemplateResult {
+    protected override renderExpanded(item: Invitation): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
@@ -160,7 +160,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <td></td>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -171,7 +171,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         `;
     }
 
-    public render(): HTMLTemplateResult {
+    public override render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

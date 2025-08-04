@@ -20,8 +20,8 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     @property({ type: Number })
     public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
@@ -30,7 +30,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    public override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
@@ -44,7 +44,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Assign")} </span>
@@ -58,7 +58,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         `;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

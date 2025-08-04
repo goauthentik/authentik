@@ -47,7 +47,7 @@ export class AkApplicationWizardMain extends AKElement {
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             const wizardReadyProviders = Object.keys(providerTypeRenderers);
@@ -81,7 +81,7 @@ export class AkApplicationWizardMain extends AKElement {
         }
     }
 
-    public render() {
+    public override render() {
         return html`<ak-wizard-steps>
             <ak-application-wizard-application-step
                 slot="application"

@@ -20,7 +20,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-for-oauth")
 export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2ProviderRequest> {
-    label = msg("Configure OAuth2 Provider");
+    public override label = msg("Configure OAuth2 Provider");
 
     @state()
     protected showClientSecret = true;
@@ -55,7 +55,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             </form>`;
     }
 
-    public render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }

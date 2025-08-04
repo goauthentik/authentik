@@ -24,7 +24,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
         })[0];
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully updated device.");
     }
 
@@ -74,7 +74,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
         return device;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
             <input
                 type="text"

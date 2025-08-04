@@ -24,7 +24,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
     @property({ attribute: false })
     public user!: User;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent email.");
     }
 
@@ -33,7 +33,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Email stage")}
             required

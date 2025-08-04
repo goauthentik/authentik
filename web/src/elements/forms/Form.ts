@@ -191,7 +191,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     @state()
     protected nonFieldErrors?: string[];
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,
@@ -390,7 +390,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
     }
 
-    public render(): SlottedTemplateResult {
+    public override render(): SlottedTemplateResult {
         if (this.viewportCheck && !this.isInViewport) {
             return nothing;
         }

@@ -27,7 +27,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @state()
     protected groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user to group(s).");
     }
 
@@ -45,7 +45,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return data;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
             <div class="pf-c-input-group">
                 <ak-user-group-select-table
@@ -85,14 +85,14 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
     public targetUser?: User;
@@ -114,7 +114,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Group(s)")}
@@ -158,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>

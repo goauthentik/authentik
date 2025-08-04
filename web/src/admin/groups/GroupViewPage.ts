@@ -49,7 +49,7 @@ export class GroupViewPage extends AKElement {
     @property({ attribute: false })
     public group?: Group;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -70,7 +70,7 @@ export class GroupViewPage extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-users"
                 header=${msg(str`Group ${this.group?.name || ""}`)}

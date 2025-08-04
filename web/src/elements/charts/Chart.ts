@@ -58,7 +58,7 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             .container {
                 height: 100%;
@@ -82,7 +82,7 @@ export abstract class AKChart<T> extends AKElement {
         `,
     ];
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
@@ -96,7 +96,7 @@ export abstract class AKChart<T> extends AKElement {
         }) as EventListener);
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener("resize", this.resizeHandler);
         this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
@@ -117,7 +117,7 @@ export abstract class AKChart<T> extends AKElement {
         this.chart.resize();
     }
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         this.apiRequest()
             .then((r) => {
                 const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
@@ -198,7 +198,7 @@ export abstract class AKChart<T> extends AKElement {
         return new Chart(ctx, config as ChartConfiguration);
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <div class="container">
                 ${this.error

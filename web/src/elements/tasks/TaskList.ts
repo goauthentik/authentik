@@ -30,8 +30,8 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
-    expandable = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
     @property()
     public relObjAppLabel?: string;
@@ -46,14 +46,14 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     public excludeSuccessful: boolean = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "-mtime";
+    public override order = "-mtime";
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList, PFSpacing, PFTitle];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList, PFSpacing, PFTitle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
@@ -103,7 +103,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    protected renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -182,7 +182,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    protected renderExpanded(item: Task): TemplateResult {
+    protected override renderExpanded(item: Task): TemplateResult {
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">

@@ -276,7 +276,7 @@ ${prompt.initialValue}</textarea
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.fields.map((prompt) => {

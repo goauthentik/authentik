@@ -18,9 +18,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -34,7 +34,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(
@@ -46,7 +46,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Initial Permissions")}
@@ -68,7 +68,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         </ak-forms-delete-bulk>`;
     }
 
-    public render(): HTMLTemplateResult {
+    public override render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
@@ -97,7 +97,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

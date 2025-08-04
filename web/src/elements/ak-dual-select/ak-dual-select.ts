@@ -126,7 +126,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.addCustomListener("ak-search", this.#searchListener);
     }
 
-    public willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("selected")) {
             this.#selectedKeys = new Set(this.selected.map(([key]) => key));
         }
@@ -276,7 +276,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Render
 
-    public render() {
+    public override render() {
         const selected =
             this.selectedFilter === ""
                 ? this.selected

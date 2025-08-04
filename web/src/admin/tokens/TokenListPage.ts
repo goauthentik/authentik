@@ -27,7 +27,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -42,11 +42,11 @@ export class TokenListPage extends TablePage<Token> {
         return "pf-icon pf-icon-security";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "expires";
+    public override order = "expires";
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
@@ -63,7 +63,7 @@ export class TokenListPage extends TablePage<Token> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Token(s)")}
@@ -88,7 +88,7 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

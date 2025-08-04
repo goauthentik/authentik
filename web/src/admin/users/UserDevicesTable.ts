@@ -18,8 +18,8 @@ export class UserDeviceTable extends Table<Device> {
     @property({ type: Number })
     public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
@@ -76,7 +76,7 @@ export class UserDeviceTable extends Table<Device> {
         }
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}
@@ -91,7 +91,7 @@ export class UserDeviceTable extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html` <ak-spinner-button
             .callAction=${() => {
                 return this.fetch();

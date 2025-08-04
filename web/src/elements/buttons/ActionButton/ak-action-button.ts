@@ -39,11 +39,11 @@ export class ActionButton extends BaseTaskButton {
         this.onError = this.onError.bind(this);
     }
 
-    callAction = (): Promise<unknown> => {
+    public override callAction = (): Promise<unknown> => {
         return this.apiRequest();
     };
 
-    protected async onError(error: Error | Response) {
+    protected override async onError(error: Error | Response) {
         super.onError(error);
         const message = error instanceof Error ? error.toString() : await error.text();
         showMessage({

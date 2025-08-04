@@ -19,7 +19,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .icon-description {
@@ -67,7 +67,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return "fa-mobile-alt";
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">

@@ -72,7 +72,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {
@@ -113,7 +113,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         );
     }
 
-    public render() {
+    public override render() {
         return html`
             <ak-search-select
                 name=${ifDefined(this.name ?? undefined)}

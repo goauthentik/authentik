@@ -31,7 +31,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>

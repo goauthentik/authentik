@@ -39,7 +39,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    public static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
+    public static override styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 
@@ -208,7 +208,7 @@ export class InputPassword extends AKElement {
         console.debug("authentik/stages/password: started focus observer");
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         this.observeInputFocus();
@@ -217,7 +217,7 @@ export class InputPassword extends AKElement {
         addEventListener("keyup", this.#capsLockListener);
     }
 
-    public disconnectedCallback() {
+    public override disconnectedCallback() {
         if (this.inputFocusIntervalID) {
             clearInterval(this.inputFocusIntervalID);
         }
@@ -238,7 +238,7 @@ export class InputPassword extends AKElement {
      * Must support both older browsers and shadyDom; we'll keep using this in-line,
      * but it'll still be in the scope of the parent element, not an independent shadowDOM.
      */
-    createRenderRoot() {
+    public override createRenderRoot() {
         return this;
     }
 
@@ -310,7 +310,7 @@ export class InputPassword extends AKElement {
         </div>`;
     }
 
-    public render() {
+    public override render() {
         return html` <ak-form-element
             label="${this.label}"
             required

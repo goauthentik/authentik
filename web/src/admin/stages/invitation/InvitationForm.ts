@@ -25,7 +25,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated invitation.")
             : msg("Successfully created invitation.");
@@ -43,7 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const checkSlug = (ev: InputEvent) => {
             if (ev && ev.target && ev.target instanceof HTMLInputElement) {
                 ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");

@@ -33,7 +33,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
         });
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         return renderForm(this.instance ?? {}, [], this.brand);
     }
 }

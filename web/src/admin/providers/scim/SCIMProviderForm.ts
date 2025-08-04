@@ -28,7 +28,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
         });
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         return renderForm(this.instance ?? {}, []);
     }
 }

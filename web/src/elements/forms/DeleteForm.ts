@@ -18,7 +18,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    public static styles: CSSResult[] = [...super.styles, PFList];
+    public static override styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
     public obj?: Record<string, unknown>;
@@ -70,7 +70,7 @@ export class DeleteForm extends ModalButton {
         });
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         let objName = this.obj?.name;
         if (objName) {
             objName = ` "${objName}"`;

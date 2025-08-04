@@ -35,7 +35,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated flow.")
             : msg("Successfully created flow.");
@@ -77,7 +77,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

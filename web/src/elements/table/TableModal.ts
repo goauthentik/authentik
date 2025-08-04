@@ -38,7 +38,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
 
     #open = false;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFModalBox,
         PFBullseye,
@@ -115,7 +115,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }

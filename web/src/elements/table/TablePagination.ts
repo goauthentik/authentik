@@ -23,7 +23,7 @@ export class TablePagination extends AKElement {
     @property({ attribute: false })
     public onPageChange?: TablePageChangeListener;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPagination,
@@ -46,7 +46,7 @@ export class TablePagination extends AKElement {
         this.onPageChange?.(this.pages?.next || 0);
     };
 
-    public render() {
+    public override render() {
         if (!this.pages) {
             return nothing;
         }

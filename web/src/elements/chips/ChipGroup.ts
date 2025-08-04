@@ -11,7 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
 export class ChipGroup extends AKElement {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFChip,
         PFChipGroup,
@@ -41,7 +41,7 @@ export class ChipGroup extends AKElement {
         return values;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-chip-group">
             <div class="pf-c-chip-group__main">
                 <ul class="pf-c-chip-group__list" role="list">

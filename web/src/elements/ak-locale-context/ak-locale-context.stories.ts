@@ -15,7 +15,7 @@ export default {
 @localized()
 @customElement("ak-locale-demo-component")
 export class AKLocaleDemoComponent extends LitElement {
-    render() {
+    override render() {
         return html`<span>${msg("Everything is ok.")}</span>`;
     }
 }
@@ -23,7 +23,7 @@ export class AKLocaleDemoComponent extends LitElement {
 @localized()
 @customElement("ak-locale-sensitive-demo-component")
 export class AKLocaleSensitiveDemoComponent extends LitElement {
-    render() {
+    override render() {
         return html`<p>${msg("Everything is ok.")}</p>`;
     }
 }

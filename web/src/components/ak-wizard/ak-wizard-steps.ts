@@ -74,7 +74,7 @@ export class WizardStepsManager extends AKElement {
         });
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.findSlots();
         this.findStepLabels();
@@ -156,11 +156,11 @@ export class WizardStepsManager extends AKElement {
         });
     };
 
-    public render() {
+    public override render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;
     }
 
-    public firstUpdated() {
+    public override firstUpdated() {
         this.findStepLabels();
     }
 }

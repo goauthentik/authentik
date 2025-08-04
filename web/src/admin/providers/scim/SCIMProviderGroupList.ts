@@ -22,15 +22,15 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
     public providerId?: number;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -48,7 +48,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             ${super.renderToolbar()}`;
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("SCIM Group(s)")}
@@ -84,7 +84,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             html`${item.id}`,
         ];
     }
-    protected renderExpanded(item: SCIMProviderGroup): TemplateResult {
+    protected override renderExpanded(item: SCIMProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

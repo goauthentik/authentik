@@ -26,8 +26,8 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
-    expandable = true;
-    supportsQL = true;
+    public override expandable = true;
+    public override supportsQL = true;
 
     pageTitle(): string {
         return msg("Event Log");
@@ -38,12 +38,12 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     pageIcon(): string {
         return "pf-icon pf-icon-catalog";
     }
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "-created";
+    public override order = "-created";
 
     public static styles: CSSResult[] = [
         ...TablePage.styles,
@@ -70,7 +70,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    protected renderSectionBefore(): TemplateResult {
+    protected override renderSectionBefore(): TemplateResult {
         if (this.hasEnterpriseLicense) {
             return html`<div
                 class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
@@ -122,7 +122,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    protected renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>

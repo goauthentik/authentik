@@ -38,7 +38,7 @@ export class ProviderViewPage extends AKElement {
     @property({ attribute: false })
     public provider?: Provider;
 
-    public static styles: CSSResult[] = [PFPage];
+    public static override styles: CSSResult[] = [PFPage];
 
     protected renderProvider(): TemplateResult {
         if (!this.provider) {
@@ -90,7 +90,7 @@ export class ProviderViewPage extends AKElement {
         }
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-integration"
                 header=${ifDefined(this.provider?.name)}

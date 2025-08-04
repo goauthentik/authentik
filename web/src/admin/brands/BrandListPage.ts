@@ -19,7 +19,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -32,11 +32,11 @@ export class BrandListPage extends TablePage<Brand> {
         return "pf-icon pf-icon-tenant";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    public order = "domain";
+    public override order = "domain";
 
     async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
@@ -51,7 +51,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Brand(s)")}
@@ -100,7 +100,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

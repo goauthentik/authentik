@@ -15,7 +15,7 @@ export class FormStatic extends AKElement {
     @property()
     public user?: string;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFAvatar,
         css`
             /* Form with user */
@@ -40,7 +40,7 @@ export class FormStatic extends AKElement {
         `,
     ];
 
-    public render() {
+    public override render() {
         if (!this.user) {
             return nothing;
         }

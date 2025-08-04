@@ -22,7 +22,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {
-    public static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     public createText = msg("Create");
@@ -33,13 +33,13 @@ export class ServiceConnectionWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    public firstUpdated(): void {
+    public override firstUpdated(): void {
         new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList().then((types) => {
             this.connectionTypes = types;
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

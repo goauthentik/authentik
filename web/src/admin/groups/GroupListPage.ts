@@ -18,9 +18,9 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    protected override searchEnabled(): boolean {
         return true;
     }
     pageTitle(): string {
@@ -34,7 +34,7 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -53,7 +53,7 @@ export class GroupListPage extends TablePage<Group> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Group(s)")}
@@ -94,7 +94,7 @@ export class GroupListPage extends TablePage<Group> {
         ];
     }
 
-    protected renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

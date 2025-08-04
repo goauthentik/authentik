@@ -44,7 +44,7 @@ export class NavigationButtons extends AKElement {
     @property({ type: Number })
     public notificationsCount = 0;
 
-    public static styles = [
+    public static override styles = [
         PFBase,
         PFDisplay,
         PFBrand,
@@ -69,7 +69,7 @@ export class NavigationButtons extends AKElement {
         `,
     ];
 
-    public async firstUpdated() {
+    public override async firstUpdated() {
         this.me = await me();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
@@ -189,7 +189,7 @@ export class NavigationButtons extends AKElement {
             .otherwise(() => this.me?.user.username);
     }
 
-    public render() {
+    public override render() {
         return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderApiDrawerTrigger()}

@@ -13,10 +13,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-select-table")
 export class ProviderSelectModal extends TableModal<Provider> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
@@ -26,7 +26,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
     @property()
     public confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
@@ -48,11 +48,11 @@ export class ProviderSelectModal extends TableModal<Provider> {
         ];
     }
 
-    protected renderSelectedChip(item: Provider): TemplateResult {
+    protected override renderSelectedChip(item: Provider): TemplateResult {
         return html`${item.name}`;
     }
 
-    protected renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

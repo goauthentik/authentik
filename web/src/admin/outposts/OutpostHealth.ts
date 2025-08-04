@@ -19,7 +19,7 @@ export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
     public outpostHealth?: OutpostHealth;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFDescriptionList,
         css`
@@ -29,7 +29,7 @@ export class OutpostHealthElement extends AKElement {
         `,
     ];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }

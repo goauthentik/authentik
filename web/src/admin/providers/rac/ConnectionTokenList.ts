@@ -17,15 +17,15 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    public order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
     public provider?: RACProvider;
@@ -33,7 +33,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     @property({ type: Number })
     public userId?: number;
 
-    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
@@ -43,7 +43,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         });
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Connection Token(s)")}

@@ -19,7 +19,7 @@ export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
     @property()
     public description = msg("Learn more about the enterprise license.");
 
-    public render() {
+    public override render() {
         if (this.hasEnterpriseLicense) {
             return nothing;
         }

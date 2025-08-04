@@ -24,11 +24,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    order = "order";
+    public override order = "order";
 
     @property()
     public target?: string;
@@ -49,7 +49,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         ];
     }
 
-    protected renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Stage binding(s)")}
@@ -114,7 +114,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         ];
     }
 
-    protected renderExpanded(item: FlowStageBinding): TemplateResult {
+    protected override renderExpanded(item: FlowStageBinding): TemplateResult {
         return html` <td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -134,7 +134,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             </td>`;
     }
 
-    protected renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module">
                 <span>${msg("No Stages bound")}</span>
@@ -159,7 +159,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         );
     }
 
-    protected renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             <ak-stage-wizard
                 createText=${msg("Create and bind Stage")}

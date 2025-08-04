@@ -45,7 +45,7 @@ export class TokenCopyButton extends BaseTaskButton {
         this.onError = this.onError.bind(this);
     }
 
-    callAction: () => Promise<unknown> = () => {
+    public override callAction: () => Promise<unknown> = () => {
         if (!this.identifier) {
             return Promise.reject();
         }
@@ -54,7 +54,7 @@ export class TokenCopyButton extends BaseTaskButton {
         });
     };
 
-    protected async onSuccess(token: unknown) {
+    protected override async onSuccess(token: unknown) {
         super.onSuccess(token);
         if (!isTokenView(token)) {
             throw new Error(`Unrecognized return from server: ${token}`);
@@ -76,7 +76,7 @@ export class TokenCopyButton extends BaseTaskButton {
         });
     }
 
-    protected async onError(error: unknown) {
+    protected override async onError(error: unknown) {
         super.onError(error);
         // prettier-ignore
         const message = error instanceof ResponseError ? await error.response.text()

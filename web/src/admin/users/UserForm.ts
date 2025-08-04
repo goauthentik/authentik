@@ -29,7 +29,7 @@ export class UserForm extends ModelForm<User, number> {
         return {};
     }
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {
@@ -47,7 +47,7 @@ export class UserForm extends ModelForm<User, number> {
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
         }
@@ -84,7 +84,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"

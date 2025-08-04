@@ -53,7 +53,7 @@ export class SSFProviderViewPage extends AKElement {
     @property({ attribute: false })
     public provider?: SSFProvider;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -75,7 +75,7 @@ export class SSFProviderViewPage extends AKElement {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

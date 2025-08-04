@@ -34,7 +34,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         });
     }
 
-    protected renderForm() {
+    protected override renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;

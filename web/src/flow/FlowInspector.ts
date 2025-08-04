@@ -32,7 +32,7 @@ export class FlowInspector extends AKElement {
     @property({ attribute: false })
     public error?: APIError;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFStack,
@@ -61,7 +61,7 @@ export class FlowInspector extends AKElement {
         window.addEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
@@ -135,7 +135,7 @@ export class FlowInspector extends AKElement {
         </div>`;
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.error) {
             return this.renderAccessDenied();
         }

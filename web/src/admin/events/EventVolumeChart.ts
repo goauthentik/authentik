@@ -25,7 +25,7 @@ export class EventVolumeChart extends EventChart {
         this.refreshHandler();
     }
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFCard,
         css`
@@ -51,7 +51,7 @@ export class EventVolumeChart extends EventChart {
         });
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__body">${super.render()}</div>
         </div>`;

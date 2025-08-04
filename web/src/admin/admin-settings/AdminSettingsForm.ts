@@ -45,7 +45,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
 
     #settings?: Settings;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFList,
         css`
@@ -55,7 +55,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         `,
     ];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully updated settings.");
     }
 
@@ -67,7 +67,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-text-input
                 name="avatars"

@@ -18,7 +18,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-flow-error")
 export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeResponseRequest> {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -36,7 +36,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
         `,
     ];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-empty-state icon="fa-times"

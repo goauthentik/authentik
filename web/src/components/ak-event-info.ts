@@ -84,7 +84,7 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     public event!: EventWithContext;
 
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFFlex,
@@ -200,7 +200,7 @@ export class EventInfo extends AKElement {
     // however, putting this return type creates a virtuous check of *all* the subrenderers to
     // ensure that all of them return what we're expecting.
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.event) {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }

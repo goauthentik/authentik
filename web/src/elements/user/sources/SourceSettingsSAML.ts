@@ -17,12 +17,12 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-settings-source-saml")
 export class SourceSettingsSAML extends BaseUserSettings {
     @property()
-    public title!: string;
+    public override title!: string;
 
     @property({ type: Number })
     public connectionPk = 0;
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.connectionPk === -1) {
             return html`<ak-spinner></ak-spinner>`;
         }

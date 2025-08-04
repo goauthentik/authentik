@@ -20,7 +20,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-for-proxy")
 export class ApplicationWizardProxyProviderForm extends ApplicationWizardProviderForm<ProxyProvider> {
-    label = msg("Configure Proxy Provider");
+    public override label = msg("Configure Proxy Provider");
 
     @state()
     protected showHttpBasic = true;
@@ -51,7 +51,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
             </form>`;
     }
 
-    public render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }

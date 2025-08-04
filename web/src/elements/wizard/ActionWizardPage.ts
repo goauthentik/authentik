@@ -30,7 +30,7 @@ export interface ActionStateBundle {
 
 @customElement("ak-wizard-page-action")
 export class ActionWizardPage extends WizardPage {
-    public static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFBullseye,
         PFEmptyState,
@@ -44,7 +44,7 @@ export class ActionWizardPage extends WizardPage {
     @property({ attribute: false })
     public currentStep?: ActionStateBundle;
 
-    activeCallback = async (): Promise<void> => {
+    public override activeCallback = async (): Promise<void> => {
         this.states = [];
 
         this.host.actions.map((act, idx) => {
@@ -64,7 +64,7 @@ export class ActionWizardPage extends WizardPage {
         this.host.isValid = true;
     };
 
-    sidebarLabel = () => msg("Apply changes");
+    public override sidebarLabel = () => msg("Apply changes");
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
@@ -107,7 +107,7 @@ export class ActionWizardPage extends WizardPage {
         );
     }
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">

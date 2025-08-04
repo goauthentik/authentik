@@ -31,7 +31,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported device.");
     }
 
@@ -43,7 +43,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    protected renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
             : html``}
