@@ -65,15 +65,15 @@ export default metadata;
 @customElement("ak-sb-fruity")
 export class AkSbFruity extends LitElement {
     @property({ type: Array })
-    options: DualSelectPair[] = goodForYou;
+    public options: DualSelectPair[] = goodForYou;
 
     @property({ attribute: "page-length", type: Number })
-    pageLength = 20;
+    public pageLength = 20;
 
     @state()
-    page: Pagination;
+    protected page: Pagination;
 
-    constructor() {
+    public constructor() {
         super();
         this.page = {
             count: this.options.length,
@@ -84,11 +84,10 @@ export class AkSbFruity extends LitElement {
             previous: 0,
             totalPages: Math.ceil(this.options.length / this.pageLength),
         };
-        this.onNavigation = this.onNavigation.bind(this);
         this.addEventListener(DualSelectEventType.NavigateTo, this.onNavigation);
     }
 
-    onNavigation(evt: Event) {
+    public onNavigation = (evt: Event) => {
         const current: number = (evt as CustomEvent).detail;
         const index = current - 1;
         if (index * this.pageLength > this.options.length) {
@@ -108,16 +107,16 @@ export class AkSbFruity extends LitElement {
             next: (index + 1) * this.pageLength > this.options.length ? 0 : current + 1,
             previous: index,
         };
-    }
+    };
 
-    get pageoptions() {
+    public get pageoptions() {
         return this.options.slice(
             this.pageLength * (this.page.current - 1),
             this.pageLength * this.page.current,
         );
     }
 
-    override render() {
+    public override render() {
         return html`<ak-dual-select
             .options=${this.pageoptions}
             .pages=${this.page}

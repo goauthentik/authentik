@@ -83,17 +83,17 @@ type Ord = Record<string | number, string | number>;
 @customElement("ak-select-table-test-sort")
 export class SimpleTableSortTest extends LitElement {
     @state()
-    order = "name";
+    public order = "name";
 
     @state()
-    sortDown = true;
+    public sortDown = true;
 
     @property({ type: Boolean, attribute: true })
-    multiple = false;
+    public multiple = false;
 
-    columns = columns.map((a) => [a, a.toLowerCase()]);
+    public columns = columns.map((a) => [a, a.toLowerCase()]);
 
-    get content() {
+    public get content() {
         const content = [...nutritionDbUSDA];
 
         // Sort according to the key
@@ -109,7 +109,7 @@ export class SimpleTableSortTest extends LitElement {
         }));
     }
 
-    override render() {
+    public override render() {
         const onTableSort = (event: TableSortEvent) => {
             if (event.value === this.order) {
                 this.sortDown = !this.sortDown;

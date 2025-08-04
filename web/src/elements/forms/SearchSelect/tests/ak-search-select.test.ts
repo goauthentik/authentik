@@ -34,7 +34,7 @@ export class MockSearch extends CustomListenerElement(AKElement) {
     @query("ak-search-select")
     protected search!: SearchSelect<ViewSample>;
 
-    selectedFruit?: ViewSample;
+    protected selectedFruit?: ViewSample;
 
     public get value() {
         return this.selectedFruit ? renderValue(this.selectedFruit) : undefined;
@@ -60,7 +60,7 @@ export class MockSearch extends CustomListenerElement(AKElement) {
         return new Promise(resolver);
     };
 
-    render() {
+    public override render() {
         return html`
             <ak-search-select
                 .fetchObjects=${this.#fetchObjects}

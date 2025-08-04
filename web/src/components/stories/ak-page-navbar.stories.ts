@@ -27,7 +27,7 @@ export default metadata;
 
 @customElement("story-ak-page-navbar")
 class AKPageNavbarStory extends AKPageNavbar {
-    override brand: CurrentBrand = {
+    public override brand: CurrentBrand = {
         ...DefaultBrand,
         brandingLogo: new URL(DefaultBrand.brandingLogo, "http://localhost:9000").toString(),
     };
