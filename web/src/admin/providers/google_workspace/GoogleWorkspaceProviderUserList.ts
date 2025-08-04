@@ -31,7 +31,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     checkbox = true;
     clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
@@ -51,7 +51,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Google Workspace User(s)")}
@@ -89,7 +89,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         ];
     }
 
-    renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
+    protected renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

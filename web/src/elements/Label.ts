@@ -77,7 +77,7 @@ export class Label extends AKElement implements ILabel {
         };
     }
 
-    render() {
+    public render() {
         const { classes, icon } = this.classesAndIcon;
 
         return html`<span class=${classMap(classes)}>

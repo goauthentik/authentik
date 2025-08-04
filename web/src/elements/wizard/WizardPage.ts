@@ -77,7 +77,7 @@ export class WizardPage extends AKElement {
         return super.requestUpdate(name, oldValue, options);
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

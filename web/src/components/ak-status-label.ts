@@ -88,7 +88,7 @@ export class AkStatusLabel extends AKElement {
     @property({ type: String })
     type: StatusName = "error";
 
-    render() {
+    public render() {
         const details = statusToDetails.get(this.type);
         if (!details) {
             throw new Error(`Bad status type [${this.type}] passed to ak-status-label`);

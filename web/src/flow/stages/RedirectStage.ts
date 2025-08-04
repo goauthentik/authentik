@@ -62,7 +62,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.startedRedirect = true;
     }
 
-    renderLoading(): TemplateResult {
+    protected renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
@@ -78,7 +78,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }

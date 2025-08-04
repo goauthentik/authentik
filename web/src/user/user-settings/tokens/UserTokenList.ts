@@ -51,7 +51,7 @@ export class UserTokenList extends Table<Token> {
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -74,7 +74,7 @@ export class UserTokenList extends Table<Token> {
         `;
     }
 
-    renderExpanded(item: Token): TemplateResult {
+    protected renderExpanded(item: Token): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -131,7 +131,7 @@ export class UserTokenList extends Table<Token> {
             <td></td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Token(s)")}

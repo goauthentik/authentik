@@ -39,7 +39,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -70,7 +70,7 @@ export class GroupViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-users"
                 header=${msg(str`Group ${this.group?.name || ""}`)}
@@ -80,7 +80,7 @@ export class GroupViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderBody(): TemplateResult {
+    protected renderBody(): TemplateResult {
         if (!this.group) {
             return html``;
         }

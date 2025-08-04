@@ -181,7 +181,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,

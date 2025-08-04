@@ -24,14 +24,14 @@ export class InvitationListLink extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
 
-    renderLink(): string {
+    protected renderLink(): string {
         if (this.invitation?.flowObj) {
             this.selectedFlow = this.invitation.flowObj?.slug;
         }
         return `${window.location.protocol}//${window.location.host}/if/flow/${this.selectedFlow}/?itoken=${this.invitation?.pk}`;
     }
 
-    renderFlowSelector(): TemplateResult {
+    protected renderFlowSelector(): TemplateResult {
         return html`<div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">
                 <span class="pf-c-description-list__text">${msg("Select an enrollment flow")}</span>
@@ -83,7 +83,7 @@ export class InvitationListLink extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             ${this.invitation?.flow === undefined ? this.renderFlowSelector() : html``}
             <div class="pf-c-description-list__group">

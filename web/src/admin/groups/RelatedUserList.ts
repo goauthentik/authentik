@@ -64,7 +64,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Users to add")} name="users">
             <div class="pf-c-input-group">
                 <ak-group-member-select-table
@@ -148,7 +148,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -226,7 +226,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -374,7 +374,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`
             ${this.targetGroup
                 ? html`<ak-forms-modal>
@@ -450,7 +450,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         `;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

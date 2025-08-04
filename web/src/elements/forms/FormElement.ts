@@ -43,7 +43,7 @@ export class FormElement extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-form__group">
             <label class="pf-c-form__label">
                 <span class="pf-c-form__label-text">${this.label}</span>

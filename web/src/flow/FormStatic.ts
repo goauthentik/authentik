@@ -40,7 +40,7 @@ export class FormStatic extends AKElement {
         `,
     ];
 
-    render() {
+    public render() {
         if (!this.user) {
             return nothing;
         }

@@ -53,11 +53,11 @@ export class PermissionSelectModal extends TableModal<Permission> {
         ];
     }
 
-    renderSelectedChip(item: Permission): TemplateResult {
+    protected renderSelectedChip(item: Permission): TemplateResult {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select permissions to assign")}</h1>

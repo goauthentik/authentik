@@ -46,7 +46,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }

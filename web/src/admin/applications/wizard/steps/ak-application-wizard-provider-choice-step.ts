@@ -51,7 +51,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         super.handleButton(button);
     }
 
-    renderMain() {
+    protected renderMain() {
         const selectedTypes = this.providerModelsList.filter(
             (t) => t.modelName === this.wizard.providerModel,
         );

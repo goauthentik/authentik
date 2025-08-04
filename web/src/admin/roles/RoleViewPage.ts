@@ -73,7 +73,7 @@ export class RoleViewPage extends AKElement {
         });
     }
 
-    render() {
+    public render() {
         return html`<ak-page-header
                 icon="fa fa-lock"
                 header=${msg(str`Role ${this._role?.name || ""}`)}
@@ -82,7 +82,7 @@ export class RoleViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderUpdateControl(role: Role) {
+    protected renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
@@ -93,7 +93,7 @@ export class RoleViewPage extends AKElement {
         </div>`;
     }
 
-    renderBody() {
+    protected renderBody() {
         if (!this._role) {
             return nothing;
         }

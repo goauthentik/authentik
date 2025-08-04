@@ -15,7 +15,7 @@ export class Router404 extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-question-circle pf-c-empty-state__icon" aria-hidden="true"></i>

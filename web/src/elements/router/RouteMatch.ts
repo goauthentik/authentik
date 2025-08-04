@@ -15,7 +15,7 @@ export class RouteMatch {
         this.fullURL = fullUrl;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return this.route.render(this.arguments);
     }
 

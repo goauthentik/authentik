@@ -15,7 +15,7 @@ export class Spinner extends AKElement {
 
     public static styles: CSSResult[] = [PFSpinner];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<span
             class="pf-c-spinner ${this.size.toString()}"
             role="progressbar"

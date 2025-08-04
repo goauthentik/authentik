@@ -70,7 +70,7 @@ export class DeleteForm extends ModalButton {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         let objName = this.obj?.name;
         if (objName) {
             objName = ` "${objName}"`;

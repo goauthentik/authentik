@@ -16,7 +16,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String })
     placeholder?: string;
 
-    renderControl() {
+    protected renderControl() {
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;
         };

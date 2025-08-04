@@ -104,7 +104,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <form class="pf-c-form">
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">

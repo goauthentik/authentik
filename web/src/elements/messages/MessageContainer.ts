@@ -131,7 +131,7 @@ export class MessageContainer extends AKElement {
         this.messages = this.messages.filter((v) => v !== message);
     };
 
-    render() {
+    public render() {
         return html`<ul
             role="region"
             aria-label="${msg("Status messages")}"

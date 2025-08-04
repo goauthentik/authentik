@@ -141,11 +141,11 @@ export class SidebarItem extends AKElement {
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return this.renderInner();
     }
 
-    renderWithChildren() {
+    protected renderWithChildren() {
         return html`<li
             aria-label=${ifDefined(this.label)}
             role="heading"
@@ -183,7 +183,7 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
-    renderWithPathAndChildren() {
+    protected renderWithPathAndChildren() {
         return html`<li
             role="presentation"
             aria-label=${ifDefined(this.label)}
@@ -214,7 +214,7 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
-    renderWithPath() {
+    protected renderWithPath() {
         return html`
             <a
                 id="sidebar-nav-link-${this.path}"
@@ -227,11 +227,11 @@ export class SidebarItem extends AKElement {
         `;
     }
 
-    renderWithLabel() {
+    protected renderWithLabel() {
         return html` <span class="pf-c-nav__link"> ${this.label} </span> `;
     }
 
-    renderInner() {
+    protected renderInner() {
         if (this.childItems.length > 0) {
             return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }

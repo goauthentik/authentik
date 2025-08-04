@@ -20,7 +20,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 export class LibraryPageApplicationSearchEmpty extends AKElement {
     public static styles = [PFBase, PFEmptyState, PFContent, PFSpacing];
 
-    render() {
+    public render() {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>

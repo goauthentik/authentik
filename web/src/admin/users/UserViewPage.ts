@@ -127,7 +127,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         });
     }
 
-    render() {
+    public render() {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-user"
                 header=${msg(str`User ${this.user?.username || ""}`)}
@@ -137,7 +137,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             ${this.renderBody()}`;
     }
 
-    renderUserCard() {
+    protected renderUserCard() {
         if (!this.user) {
             return nothing;
         }
@@ -172,7 +172,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         `;
     }
 
-    renderActionButtons(user: User) {
+    protected renderActionButtons(user: User) {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && user.pk !== this.me?.user.pk;
 
@@ -231,7 +231,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div> `;
     }
 
-    renderRecoveryButtons(user: User) {
+    protected renderRecoveryButtons(user: User) {
         return html`<div class="ak-button-collection">
             <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                 <span slot="submit">${msg("Update password")}</span>
@@ -268,7 +268,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div> `;
     }
 
-    renderTabCredentialsToken(user: User): TemplateResult {
+    protected renderTabCredentialsToken(user: User): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
                 <section
@@ -368,7 +368,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         `;
     }
 
-    renderTabApplications(user: User): TemplateResult {
+    protected renderTabApplications(user: User): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__body">
                 <ak-user-application-table .user=${user}></ak-user-application-table>
@@ -376,7 +376,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div>`;
     }
 
-    renderBody() {
+    protected renderBody() {
         if (!this.user) {
             return nothing;
         }

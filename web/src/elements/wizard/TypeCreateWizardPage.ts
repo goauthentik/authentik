@@ -87,7 +87,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         );
     }
 
-    renderGrid(): TemplateResult {
+    protected renderGrid(): TemplateResult {
         return html`<div
             class="pf-l-grid pf-m-gutter"
             data-ouid-component-type="ak-type-create-grid"
@@ -136,7 +136,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         </div>`;
     }
 
-    renderList(): TemplateResult {
+    protected renderList(): TemplateResult {
         return html`<form
             ${ref(this.formRef)}
             class="pf-c-form pf-m-horizontal"
@@ -174,7 +174,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         </form>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         switch (this.layout) {
             case TypeCreateWizardPageLayouts.grid:
                 return this.renderGrid();

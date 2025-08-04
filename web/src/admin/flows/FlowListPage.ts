@@ -63,7 +63,7 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Flow(s)")}
@@ -127,7 +127,7 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -144,7 +144,7 @@ export class FlowListPage extends TablePage<Flow> {
         `;
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm

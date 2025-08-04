@@ -55,7 +55,7 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         }
     }
 
-    renderInner(): TemplateResult {
+    protected renderInner(): TemplateResult {
         return html`<p class="center-value">
             ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
         </p>`;

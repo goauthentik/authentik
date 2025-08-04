@@ -51,7 +51,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         });
     }
 
-    renderForm() {
+    protected renderForm() {
         const onSetMode: SetMode = (ev) => {
             this.mode = ev.detail.value;
         };

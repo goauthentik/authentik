@@ -72,7 +72,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Property Mapping(s)")}
@@ -131,11 +131,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

@@ -23,7 +23,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
     public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static

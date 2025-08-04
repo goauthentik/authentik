@@ -161,7 +161,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
         return Boolean(this.uiConfig && this.me && this.brand);
     }
 
-    renderAdminInterfaceLink() {
+    protected renderAdminInterfaceLink() {
         if (!this.canAccessAdmin) {
             return nothing;
         }
@@ -182,7 +182,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
             </a>`;
     }
 
-    render() {
+    public render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
         // that the contract we promised is being honored, and the rest of the code that depends on
@@ -341,7 +341,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         });
     }
 
-    render() {
+    public render() {
         if (!this.me) {
             console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
 

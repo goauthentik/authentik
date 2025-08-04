@@ -103,7 +103,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -182,7 +182,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    renderExpanded(item: Task): TemplateResult {
+    protected renderExpanded(item: Task): TemplateResult {
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">

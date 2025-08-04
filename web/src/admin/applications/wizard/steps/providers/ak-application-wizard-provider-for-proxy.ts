@@ -25,7 +25,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
     @state()
     showHttpBasic = true;
 
-    renderForm(provider: ProxyProvider, errors: ValidationRecord) {
+    protected renderForm(provider: ProxyProvider, errors: ValidationRecord) {
         const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {
             this.dispatchEvent(
                 new WizardUpdateEvent({ ...this.wizard, proxyMode: ev.detail.value }),
@@ -51,7 +51,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
             </form>`;
     }
 
-    render() {
+    public render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Proxy Provider Step received uninitialized wizard context.");
         }

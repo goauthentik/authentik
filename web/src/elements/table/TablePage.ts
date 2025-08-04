@@ -105,7 +105,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         </button>`;
     }
 
-    render() {
+    public render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

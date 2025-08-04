@@ -39,7 +39,7 @@ export class AkSwitchInput extends AKElement {
 
     #fieldID: string = IDGenerator.randomID();
 
-    render() {
+    public render() {
         const doCheck = this.checked ? this.checked : undefined;
         const helpText = this.help.trim();
 

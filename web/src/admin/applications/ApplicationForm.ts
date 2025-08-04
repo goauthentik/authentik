@@ -119,7 +119,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         this.clearIcon = !!(ev.target as HTMLInputElement).checked;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         const alertMsg = msg(
             "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
         );

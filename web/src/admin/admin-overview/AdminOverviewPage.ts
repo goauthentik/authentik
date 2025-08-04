@@ -82,7 +82,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
         this.user = await me();
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const username = this.user?.user.name || this.user?.user.username;
 
         return html`<ak-page-header
@@ -154,7 +154,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
             </section>`;
     }
 
-    renderCards() {
+    protected renderCards() {
         const isEnterprise = this.hasEnterpriseLicense;
         const classes = {
             "card-container": true,

@@ -142,7 +142,7 @@ export class SAMLProviderViewPage extends AKElement {
         }
     }
 
-    renderRelatedObjects(): TemplateResult {
+    protected renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
             relatedObjects.push(
@@ -212,7 +212,7 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -254,7 +254,7 @@ export class SAMLProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -437,7 +437,7 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    renderTabMetadata(): TemplateResult {
+    protected renderTabMetadata(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -501,7 +501,7 @@ export class SAMLProviderViewPage extends AKElement {
         `;
     }
 
-    renderTabPreview(): TemplateResult {
+    protected renderTabPreview(): TemplateResult {
         if (!this.preview) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }

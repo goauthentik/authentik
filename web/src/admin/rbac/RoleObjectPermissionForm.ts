@@ -65,7 +65,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         if (!this.modelPermissions) {
             return html``;
         }

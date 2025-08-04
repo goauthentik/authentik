@@ -84,7 +84,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"

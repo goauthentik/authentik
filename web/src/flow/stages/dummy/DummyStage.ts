@@ -20,7 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {
     public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>

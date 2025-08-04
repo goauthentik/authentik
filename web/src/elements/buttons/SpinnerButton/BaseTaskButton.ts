@@ -124,7 +124,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             .trim();
     }
 
-    render() {
+    public render() {
         return html`<button
             id="spinner-button"
             part="spinner-button"

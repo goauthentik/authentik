@@ -13,7 +13,7 @@ const style = css`
 export class AkHintTitle extends AKElement {
     public static styles = [style];
 
-    render() {
+    public render() {
         return html`<div id="host" part="ak-hint-title"><slot></slot></div>`;
     }
 }

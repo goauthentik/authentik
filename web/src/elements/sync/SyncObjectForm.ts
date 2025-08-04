@@ -56,7 +56,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         });
     }
 
-    renderSelectUser() {
+    protected renderSelectUser() {
         return html`<ak-form-element-horizontal label=${msg("User")} name="syncObjectId">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -83,7 +83,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderSelectGroup() {
+    protected renderSelectGroup() {
         return html` <ak-form-element-horizontal label=${msg("Group")} name="syncObjectId">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<Group[]> => {
@@ -107,7 +107,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Log messages")}>
             <div class="pf-c-form__group-label">
                 <div class="c-form__horizontal-group">
@@ -119,7 +119,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal> `;
     }
 
-    renderForm() {
+    protected renderForm() {
         return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
                 ? this.renderSelectUser()
                 : nothing}

@@ -30,7 +30,7 @@ export class UserActiveForm extends DeleteForm {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Update ${this.objectLabel}`)}</h1>

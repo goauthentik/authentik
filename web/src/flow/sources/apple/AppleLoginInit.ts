@@ -50,7 +50,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Apple...")}</span>
             <form class="pf-c-form">

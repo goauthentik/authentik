@@ -87,7 +87,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         return result instanceof HTMLElement ? result.innerText || undefined : undefined;
     }
 
-    render() {
+    public render() {
         const hasHeading = this.hasSlotted(null);
         const loading = this.loading || this.defaultLabel;
         const classes = {

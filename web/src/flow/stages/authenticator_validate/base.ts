@@ -46,7 +46,7 @@ export class BaseDeviceStage<
         return this.host?.submit(payload) || Promise.resolve();
     }
 
-    renderReturnToDevicePicker() {
+    protected renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }

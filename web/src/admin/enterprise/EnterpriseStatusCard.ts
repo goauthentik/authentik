@@ -23,7 +23,7 @@ export class EnterpriseStatusCard extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
 
-    renderSummaryBadge() {
+    protected renderSummaryBadge() {
         switch (this.summary?.status) {
             case LicenseSummaryStatusEnum.Expired:
                 return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
@@ -46,7 +46,7 @@ export class EnterpriseStatusCard extends AKElement {
         return percentage;
     }
 
-    render() {
+    public render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }

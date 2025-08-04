@@ -45,7 +45,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    protected renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
             return html``;
         }
@@ -133,7 +133,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",

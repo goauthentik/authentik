@@ -69,7 +69,7 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    override renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
 
         return html`<ak-forms-delete-bulk
@@ -142,7 +142,7 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    override renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-provider-wizard> </ak-provider-wizard> `;
     }
 }

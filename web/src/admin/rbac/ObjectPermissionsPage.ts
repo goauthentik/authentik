@@ -32,7 +32,7 @@ export class ObjectPermissionPage extends AKElement {
 
     public static styles = [PFBase, PFGrid, PFPage, PFCard];
 
-    render() {
+    public render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
             ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
                 ? this.renderCoreUser()
@@ -85,7 +85,7 @@ export class ObjectPermissionPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderCoreUser() {
+    protected renderCoreUser() {
         return html`
             <div
                 slot="page-assigned-global-permissions"
@@ -132,7 +132,7 @@ export class ObjectPermissionPage extends AKElement {
         `;
     }
 
-    renderRbacRole() {
+    protected renderRbacRole() {
         return html`
             <div
                 slot="page-assigned-global-permissions"

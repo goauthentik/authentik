@@ -93,7 +93,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Invitation(s)")}
@@ -147,7 +147,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    renderExpanded(item: Invitation): TemplateResult {
+    protected renderExpanded(item: Invitation): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
@@ -160,7 +160,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -171,7 +171,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         `;
     }
 
-    render(): HTMLTemplateResult {
+    public render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

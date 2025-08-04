@@ -130,7 +130,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         this.sendChange();
     };
 
-    renderDeleteButton(idx: number) {
+    protected renderDeleteButton(idx: number) {
         const deleteOneGroup = () => {
             this.items = [...this.items.slice(0, idx), ...this.items.slice(idx + 1)];
             this.sendChange();
@@ -141,7 +141,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         </button>`;
     }
 
-    render() {
+    public render() {
         return html` <div class="pf-l-stack">
             ${repeat(
                 this._items,

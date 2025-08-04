@@ -109,7 +109,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 
-    renderSettings(): TemplateResult {
+    protected renderSettings(): TemplateResult {
         if (!this.plexToken) {
             return html` <button
                 class="pf-c-button pf-m-primary"
@@ -174,7 +174,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

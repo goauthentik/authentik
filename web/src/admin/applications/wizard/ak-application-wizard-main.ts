@@ -81,7 +81,7 @@ export class AkApplicationWizardMain extends AKElement {
         }
     }
 
-    render() {
+    public render() {
         return html`<ak-wizard-steps>
             <ak-application-wizard-application-step
                 slot="application"

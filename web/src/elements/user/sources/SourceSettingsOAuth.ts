@@ -22,7 +22,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
     @property({ type: Number })
     connectionPk = 0;
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.connectionPk === -1) {
             return html`<ak-spinner></ak-spinner>`;
         }

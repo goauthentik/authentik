@@ -64,7 +64,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected renderToolbarContainer(): TemplateResult {
         return html``;
     }
 
@@ -73,7 +73,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         super.firstUpdated();
     }
 
-    renderExpanded(item: T): TemplateResult {
+    protected renderExpanded(item: T): TemplateResult {
         const handler = async () => {
             if (!this.usedByData.has(item) && this.usedBy) {
                 this.usedByData.set(item, await this.usedBy(item));
@@ -89,7 +89,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         </td>`;
     }
 
-    renderUsedBy(usedBy: UsedBy[]): TemplateResult {
+    protected renderUsedBy(usedBy: UsedBy[]): TemplateResult {
         if (usedBy.length < 1) {
             return html`<span>${msg("Not used by any other object.")}</span>`;
         }
@@ -193,7 +193,7 @@ export class DeleteBulkForm<T> extends ModalButton {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

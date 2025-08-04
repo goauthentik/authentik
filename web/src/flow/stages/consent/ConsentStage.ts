@@ -38,7 +38,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         PFText,
     ];
 
-    renderPermissions(perms: ConsentPermission[]): TemplateResult {
+    protected renderPermissions(perms: ConsentPermission[]): TemplateResult {
         return html`${perms.map((permission) => {
             if (permission.name === "") {
                 return nothing;
@@ -51,7 +51,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         })}`;
     }
 
-    renderNoPrevious(): TemplateResult {
+    protected renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
                 <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
@@ -71,7 +71,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         `;
     }
 
-    renderAdditional(): TemplateResult {
+    protected renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
                 <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-md">
@@ -103,7 +103,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
         `;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form
                 class="pf-c-form"

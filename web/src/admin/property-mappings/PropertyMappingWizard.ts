@@ -49,7 +49,7 @@ export class PropertyMappingWizard extends AKElement {
         ).propertymappingsAllTypesList();
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

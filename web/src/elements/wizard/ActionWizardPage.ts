@@ -107,7 +107,7 @@ export class ActionWizardPage extends WizardPage {
         );
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">

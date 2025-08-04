@@ -56,7 +56,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
         return hasLegalScheme(href) && URL.canParse(href);
     }
 
-    render() {
+    public render() {
         const onChange = () => {
             this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
         };

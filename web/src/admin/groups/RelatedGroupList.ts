@@ -45,7 +45,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
             <div class="pf-c-input-group">
                 <ak-user-group-select-table
@@ -114,7 +114,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Group(s)")}
@@ -158,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>

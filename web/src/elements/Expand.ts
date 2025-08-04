@@ -37,7 +37,7 @@ export class Expand extends AKElement implements IExpand {
         `,
     ];
 
-    render() {
+    public render() {
         return html`<div
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"

@@ -48,7 +48,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

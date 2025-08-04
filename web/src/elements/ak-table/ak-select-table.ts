@@ -212,7 +212,7 @@ export class SelectTable extends SimpleTable {
         </tr>`;
     };
 
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    protected renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
             this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
 

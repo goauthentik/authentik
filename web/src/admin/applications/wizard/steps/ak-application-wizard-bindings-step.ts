@@ -99,7 +99,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         this.handleUpdate({ bindings }, "bindings");
     }
 
-    renderEmptyCollection() {
+    protected renderEmptyCollection() {
         return html`<ak-wizard-title
                 >${msg("Configure Policy/User/Group Bindings")}</ak-wizard-title
             >
@@ -133,7 +133,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             </div>`;
     }
 
-    renderCollection() {
+    protected renderCollection() {
         return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
             <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
@@ -152,7 +152,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             ></ak-select-table>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }

@@ -52,7 +52,7 @@ export class EventViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.event) {
             return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${msg("Loading")}>
             </ak-page-header> `;

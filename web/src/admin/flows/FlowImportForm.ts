@@ -41,7 +41,7 @@ export class FlowImportForm extends Form<Flow> {
         return result;
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Successful")}>
                 <div class="pf-c-form__group-label">
@@ -64,7 +64,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">

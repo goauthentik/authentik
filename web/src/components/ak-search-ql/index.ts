@@ -241,7 +241,7 @@ export class QLSearch extends AKElement {
         }
     }
 
-    renderMenu() {
+    protected renderMenu() {
         if (!this.menuOpen || !this.ql) {
             return nothing;
         }
@@ -276,7 +276,7 @@ export class QLSearch extends AKElement {
         `;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-search-input">
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">

@@ -146,7 +146,7 @@ export class UserSettingsFlowExecutor
         });
     }
 
-    renderChallenge(): TemplateResult {
+    protected renderChallenge(): TemplateResult {
         if (!this.challenge) {
             return html``;
         }
@@ -191,7 +191,7 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    renderChallengeWrapper(): TemplateResult {
+    protected renderChallengeWrapper(): TemplateResult {
         if (!this.flowSlug) {
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
@@ -201,7 +201,7 @@ export class UserSettingsFlowExecutor
         return html` ${this.renderChallenge()} `;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>

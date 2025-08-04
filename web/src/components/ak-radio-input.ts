@@ -27,7 +27,7 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
         return nothing;
     }
 
-    renderControl() {
+    protected renderControl() {
         const helpText = this.help.trim();
 
         return html`<ak-radio

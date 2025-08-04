@@ -12,7 +12,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
     min = NaN;
 
-    renderControl() {
+    protected renderControl() {
         const setValue = (ev: InputEvent) => {
             const value = (ev.target as HTMLInputElement).value;
             this.value = value.trim() === "" ? NaN : parseInt(value, 10);

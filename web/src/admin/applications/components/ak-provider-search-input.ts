@@ -65,7 +65,7 @@ export class AkProviderInput extends AKElement {
         return this.value !== undefined && this.value === item.pk;
     }
 
-    render() {
+    public render() {
         return html` <ak-form-element-horizontal label=${this.label} name=${this.name}>
             <ak-search-select
                 .selected=${this.selected}

@@ -55,7 +55,7 @@ export class AKSkipToContent extends AKElement {
         element.focus?.();
     };
 
-    render() {
+    public render() {
         return html`
             <button
                 @click=${this.#skipToContent}

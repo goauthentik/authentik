@@ -74,7 +74,7 @@ export class AdminSettingsPage extends AKElement {
         return this.form?.reset();
     };
 
-    render() {
+    public render() {
         if (!this.settings) return nothing;
 
         return html`

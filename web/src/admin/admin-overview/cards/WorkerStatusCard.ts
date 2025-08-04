@@ -16,7 +16,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
         return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
     }
 
-    renderHeader(): TemplateResult {
+    protected renderHeader(): TemplateResult {
         return html`${msg("Workers")}`;
     }
 
@@ -37,7 +37,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
         });
     }
 
-    renderValue() {
+    protected renderValue() {
         return html`${this.value?.length}`;
     }
 }

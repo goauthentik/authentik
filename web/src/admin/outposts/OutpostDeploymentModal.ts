@@ -16,7 +16,7 @@ export class OutpostDeploymentModal extends ModalButton {
     @property({ attribute: false })
     outpost?: Outpost;
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         return html`<div class="pf-c-modal-box__header">
                 <h1 class="pf-c-title pf-m-2xl">${msg("Outpost Deployment Info")}</h1>
             </div>

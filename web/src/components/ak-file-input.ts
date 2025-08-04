@@ -47,7 +47,7 @@ export class AkFileInput extends AKElement {
         return this.input.files;
     }
 
-    render() {
+    public render() {
         const currentMsg =
             this.value && this.current
                 ? html` <p class="pf-c-form__helper-text">${this.current} ${this.value}</p> `

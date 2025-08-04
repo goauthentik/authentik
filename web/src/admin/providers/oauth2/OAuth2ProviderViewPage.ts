@@ -113,7 +113,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             .then((preview) => (this.preview = preview));
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -166,7 +166,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -378,7 +378,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             </div>`;
     }
 
-    renderTabPreview(): TemplateResult {
+    protected renderTabPreview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

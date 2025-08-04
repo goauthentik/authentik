@@ -77,7 +77,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected renderToolbarAfter(): TemplateResult {
         if (this.relObjId !== undefined) {
             return html``;
         }
@@ -154,7 +154,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    renderExpanded(item: Schedule): TemplateResult {
+    protected renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">

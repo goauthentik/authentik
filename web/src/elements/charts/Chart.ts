@@ -198,7 +198,7 @@ export abstract class AKChart<T> extends AKElement {
         return new Chart(ctx, config as ChartConfiguration);
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <div class="container">
                 ${this.error

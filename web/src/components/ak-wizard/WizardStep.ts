@@ -136,7 +136,7 @@ export class WizardStep extends AKElement {
     }
 
     // Override this to provide the form.
-    public renderMain() {
+    protected renderMain() {
         throw new Error("This must be overridden in client classes");
     }
 
@@ -235,7 +235,7 @@ export class WizardStep extends AKElement {
             });
     };
 
-    renderHeaderCancelIcon() {
+    protected renderHeaderCancelIcon() {
         return html`<button
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
@@ -268,7 +268,7 @@ export class WizardStep extends AKElement {
         `;
     };
 
-    render() {
+    public render() {
         return this.wizardStepState.currentStep === this.getAttribute("slot")
             ? html` <div class="pf-c-modal-box ak-wizard-box">
                   <div class="pf-c-wizard">

@@ -40,7 +40,7 @@ export class SourceWizard extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

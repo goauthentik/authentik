@@ -51,7 +51,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Brand(s)")}
@@ -100,7 +100,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

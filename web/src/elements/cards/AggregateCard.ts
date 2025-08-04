@@ -103,11 +103,11 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         `,
     ];
 
-    renderInner(): SlottedTemplateResult {
+    protected renderInner(): SlottedTemplateResult {
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): SlottedTemplateResult {
+    protected renderHeaderLink(): SlottedTemplateResult {
         if (!this.headerLink) {
             return nothing;
         }
@@ -117,11 +117,11 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         </a>`;
     }
 
-    renderHeader(): SlottedTemplateResult {
+    protected renderHeader(): SlottedTemplateResult {
         return this.header ?? nothing;
     }
 
-    render(): SlottedTemplateResult {
+    public render(): SlottedTemplateResult {
         return html`<div
             aria-label="${ifDefined(this.header)}"
             role="region"

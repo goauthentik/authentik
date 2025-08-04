@@ -53,7 +53,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         const backends = [
             {
                 name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,

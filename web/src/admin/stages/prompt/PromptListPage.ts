@@ -56,7 +56,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Prompt(s)")}
@@ -105,7 +105,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal size=${PFSize.XLarge}>
                 <span slot="submit"> ${msg("Create")} </span>

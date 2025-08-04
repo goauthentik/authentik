@@ -70,7 +70,7 @@ export class StageWizard extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}

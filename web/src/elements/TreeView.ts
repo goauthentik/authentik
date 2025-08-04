@@ -68,7 +68,7 @@ export class TreeViewNode extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const shouldRenderChildren = (this.item?.childItems || []).length > 0 && this.open;
         return html`
             <li
@@ -191,7 +191,7 @@ export class TreeView extends AKElement {
         return rootItem;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
             <ul class="pf-c-tree-view__list" role="tree">

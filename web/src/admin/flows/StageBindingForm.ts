@@ -74,7 +74,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    protected renderTarget(): TemplateResult {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
@@ -87,7 +87,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select

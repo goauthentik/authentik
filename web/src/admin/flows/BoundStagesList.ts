@@ -49,7 +49,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Stage binding(s)")}
@@ -114,7 +114,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         ];
     }
 
-    renderExpanded(item: FlowStageBinding): TemplateResult {
+    protected renderExpanded(item: FlowStageBinding): TemplateResult {
         return html` <td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -134,7 +134,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             </td>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module">
                 <span>${msg("No Stages bound")}</span>
@@ -159,7 +159,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         );
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`
             <ak-stage-wizard
                 createText=${msg("Create and bind Stage")}

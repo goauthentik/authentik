@@ -56,7 +56,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
         );
     }
 
-    render() {
+    public render() {
         const last = this.options.length - 1;
         const mkClass = (v: string) => ({
             "pf-c-toggle-group__button": true,

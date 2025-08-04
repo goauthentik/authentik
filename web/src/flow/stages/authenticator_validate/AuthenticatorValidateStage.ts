@@ -162,7 +162,7 @@ export class AuthenticatorValidateStage
         }
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
+    protected renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
         switch (deviceChallenge.deviceClass) {
             case DeviceClassesEnum.Duo:
                 return html`<i class="fas fa-mobile-alt"></i>
@@ -206,7 +206,7 @@ export class AuthenticatorValidateStage
         return nothing;
     }
 
-    renderDevicePicker(): TemplateResult {
+    protected renderDevicePicker(): TemplateResult {
         return html`<ul>
             ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
@@ -224,7 +224,7 @@ export class AuthenticatorValidateStage
         </ul>`;
     }
 
-    renderStagePicker(): TemplateResult {
+    protected renderStagePicker(): TemplateResult {
         return html`<ul>
             ${this.challenge?.configurationStages.map((stage) => {
                 return html`<li>
@@ -248,7 +248,7 @@ export class AuthenticatorValidateStage
         </ul>`;
     }
 
-    renderDeviceChallenge() {
+    protected renderDeviceChallenge() {
         if (!this.selectedDeviceChallenge) {
             return nothing;
         }
@@ -284,7 +284,7 @@ export class AuthenticatorValidateStage
         return nothing;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()

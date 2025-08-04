@@ -347,7 +347,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Render
 
-    public renderFormWrapper(): TemplateResult {
+    protected renderFormWrapper(): TemplateResult {
         const inline = this.renderForm();
 
         if (!inline) {
@@ -365,11 +365,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         </form>`;
     }
 
-    public renderForm(): SlottedTemplateResult | null {
+    protected renderForm(): SlottedTemplateResult | null {
         return null;
     }
 
-    public renderNonFieldErrors(): SlottedTemplateResult {
+    protected renderNonFieldErrors(): SlottedTemplateResult {
         if (!this.nonFieldErrors) {
             return nothing;
         }
@@ -386,7 +386,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         </div>`;
     }
 
-    public renderVisible(): TemplateResult {
+    protected renderVisible(): TemplateResult {
         return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
     }
 

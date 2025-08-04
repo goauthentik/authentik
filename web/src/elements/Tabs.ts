@@ -78,7 +78,7 @@ export class Tabs extends AKElement {
         page.dispatchEvent(new CustomEvent("activate"));
     }
 
-    renderTab(page: Element): TemplateResult {
+    protected renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
             <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
@@ -87,7 +87,7 @@ export class Tabs extends AKElement {
         </li>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();

@@ -129,7 +129,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static

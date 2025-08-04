@@ -50,7 +50,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    protected renderPromptInner(prompt: StagePrompt): TemplateResult {
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return html`<input
@@ -220,7 +220,7 @@ ${prompt.initialValue}</textarea
         }
     }
 
-    renderPromptHelpText(prompt: StagePrompt) {
+    protected renderPromptHelpText(prompt: StagePrompt) {
         if (prompt.subText === "") {
             return nothing;
         }
@@ -236,7 +236,7 @@ ${prompt.initialValue}</textarea
         );
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
@@ -268,7 +268,7 @@ ${prompt.initialValue}</textarea
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
-    renderContinue(): TemplateResult {
+    protected renderContinue(): TemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
@@ -276,7 +276,7 @@ ${prompt.initialValue}</textarea
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.fields.map((prompt) => {

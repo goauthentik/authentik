@@ -109,7 +109,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         super.handleButton(button);
     }
 
-    renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
+    protected renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
         return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
@@ -177,7 +177,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

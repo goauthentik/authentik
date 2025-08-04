@@ -62,7 +62,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return baseColumns;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to role")} </span>
@@ -78,7 +78,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

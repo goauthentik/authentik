@@ -134,7 +134,7 @@ export class LibraryPage extends AKElement {
         this.selectedApp = undefined;
     };
 
-    renderApps() {
+    protected renderApps() {
         const selected = this.selectedApp?.slug;
         const layout = this.uiConfig.layout as string;
         const background = this.uiConfig.background;
@@ -151,21 +151,21 @@ export class LibraryPage extends AKElement {
         ></ak-library-application-list>`;
     }
 
-    renderSearch() {
+    protected renderSearch() {
         return html`<ak-library-application-search
             .apps=${this.apps}
         ></ak-library-application-search>`;
     }
 
-    renderNoAppsFound() {
+    protected renderNoAppsFound() {
         return html`<ak-library-application-search-empty></ak-library-application-search-empty>`;
     }
 
-    renderSearchEmpty() {
+    protected renderSearchEmpty() {
         return nothing;
     }
 
-    renderState() {
+    protected renderState() {
         if (!this.apps.some(appHasLaunchUrl)) {
             return html`<ak-library-application-empty-list
                 ?isadmin=${this.isAdmin}
@@ -176,7 +176,7 @@ export class LibraryPage extends AKElement {
             : this.renderNoAppsFound();
     }
 
-    render() {
+    public render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
                 <h1 role="heading" aria-level="1" id="library-page-title">

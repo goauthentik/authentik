@@ -24,7 +24,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
         );
     };
 
-    render() {
+    public render() {
         return html`<button class="pf-c-button pf-c-secondary" @click=${this.#clickListener}>
             ${msg("Edit")}
         </button>`;

@@ -76,7 +76,7 @@ export class UserDeviceTable extends Table<Device> {
         }
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}
@@ -91,7 +91,7 @@ export class UserDeviceTable extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html` <ak-spinner-button
             .callAction=${() => {
                 return this.fetch();

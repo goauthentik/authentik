@@ -136,7 +136,7 @@ export class HorizontalFormElement extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         this.updated();
         return html`<div
             class="pf-c-form__group"

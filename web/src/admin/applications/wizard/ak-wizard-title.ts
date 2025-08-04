@@ -18,7 +18,7 @@ export class AkWizardTitle extends AKElement {
         `,
     ];
 
-    render() {
+    public render() {
         return html`<div class="ak-bottom-spacing pf-c-content">
             <h3><slot></slot></h3>
         </div>`;

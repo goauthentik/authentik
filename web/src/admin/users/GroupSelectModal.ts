@@ -55,11 +55,11 @@ export class GroupSelectModal extends TableModal<Group> {
         ];
     }
 
-    renderSelectedChip(item: Group): TemplateResult {
+    protected renderSelectedChip(item: Group): TemplateResult {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

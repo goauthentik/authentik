@@ -69,7 +69,7 @@ export class PolicyWizard extends AKElement {
         this.wizard.isValid = true;
     };
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}

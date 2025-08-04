@@ -23,7 +23,7 @@ export class TaskStatus extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFButton];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         switch (this.status) {
             case TasksTasksListAggregatedStatusEnum.Queued:
             case TaskAggregatedStatusEnum.Queued:

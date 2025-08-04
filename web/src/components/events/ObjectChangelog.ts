@@ -82,7 +82,7 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    protected renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
@@ -93,7 +93,7 @@ export class ObjectChangelog extends Table<Event> {
             <td></td>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

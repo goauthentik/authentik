@@ -19,7 +19,7 @@ export class ApplicationWizardBindingsToolbar extends AKElement {
         this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }));
     }
 
-    render() {
+    public render() {
         return html`
             <div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">

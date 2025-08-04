@@ -91,7 +91,7 @@ export class FlowInspector extends AKElement {
         return stage;
     }
 
-    renderHeader() {
+    protected renderHeader() {
         return html` <div class="pf-c-notification-drawer__header">
             <div class="text">
                 <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
@@ -118,7 +118,7 @@ export class FlowInspector extends AKElement {
         </div>`;
     }
 
-    renderAccessDenied(): TemplateResult {
+    protected renderAccessDenied(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 ${this.renderHeader()}
@@ -135,7 +135,7 @@ export class FlowInspector extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.error) {
             return this.renderAccessDenied();
         }

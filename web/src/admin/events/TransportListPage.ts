@@ -59,7 +59,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification transport(s)")}
@@ -117,7 +117,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderExpanded(item: NotificationTransport): TemplateResult {
+    protected renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -141,7 +141,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

@@ -62,7 +62,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return baseColumns;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to user")} </span>
@@ -78,7 +78,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.filter((item) => item.isSuperuser).length > 0;

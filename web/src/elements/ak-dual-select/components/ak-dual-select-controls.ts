@@ -88,7 +88,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
     @property({ attribute: "enable-delete-all", type: Boolean })
     deleteAll = false;
 
-    renderButton(
+    protected renderButton(
         label: string,
         eventType: DualSelectEventType,
         active: boolean,
@@ -111,7 +111,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
         </div>`;
     }
 
-    render() {
+    public render() {
         return html`
             <div class="ak-dual-list-selector__controls">
                 ${this.renderButton(

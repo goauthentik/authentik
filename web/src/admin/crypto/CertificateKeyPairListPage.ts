@@ -66,7 +66,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Certificate-Key Pair(s)")}
@@ -140,7 +140,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         ];
     }
 
-    renderExpanded(item: CertificateKeyPair): TemplateResult {
+    protected renderExpanded(item: CertificateKeyPair): TemplateResult {
         return html`<td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -210,7 +210,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Import")} </span>

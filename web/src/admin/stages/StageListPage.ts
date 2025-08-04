@@ -77,7 +77,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Stage(s)")}
@@ -99,7 +99,7 @@ export class StageListPage extends TablePage<Stage> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderStageActions(stage: Stage) {
+    protected renderStageActions(stage: Stage) {
         return stage.component === "ak-stage-authenticator-duo-form"
             ? html`<ak-forms-modal>
                   <span slot="submit">${msg("Import")}</span>
@@ -154,7 +154,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-stage-wizard></ak-stage-wizard> `;
     }
 }

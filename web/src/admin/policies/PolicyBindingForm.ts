@@ -127,7 +127,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderModeSelector(): TemplateResult {
+    protected renderModeSelector(): TemplateResult {
         return html` <ak-toggle-group
             value=${this.policyGroupUser}
             @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
@@ -145,7 +145,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

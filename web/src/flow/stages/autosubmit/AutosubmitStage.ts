@@ -32,7 +32,7 @@ export class AutosubmitStage extends BaseStage<
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         let title = msg("Loading");
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;

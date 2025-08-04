@@ -67,7 +67,7 @@ export class UserSourceSettingsPage extends AKElement {
         });
     }
 
-    renderSourceSettings(source: UserSetting): TemplateResult {
+    protected renderSourceSettings(source: UserSetting): TemplateResult {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
@@ -111,7 +111,7 @@ export class UserSourceSettingsPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <ul class="pf-c-data-list" role="list">
             ${this.sourceSettings
                 ? html`

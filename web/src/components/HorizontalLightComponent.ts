@@ -129,7 +129,7 @@ export abstract class HorizontalLightComponent<T>
         ];
     }
 
-    render() {
+    public render() {
         return html`<ak-form-element-horizontal
             fieldID=${this.fieldID}
             label=${ifDefined(this.label)}

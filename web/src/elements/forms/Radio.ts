@@ -107,7 +107,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
         </div>`;
     };
 
-    render() {
+    public render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
             ${map(this.options, this.#renderRadio)}
         </div>`;

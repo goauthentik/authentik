@@ -149,7 +149,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         }
     }
 
-    render() {
+    public render() {
         return html`<input
             @input=${this.onInput}
             @keydown=${this.onKeyDown}

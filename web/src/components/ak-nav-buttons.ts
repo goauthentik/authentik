@@ -81,7 +81,7 @@ export class NavigationButtons extends AKElement {
         this.uiConfig = await uiConfig();
     }
 
-    renderApiDrawerTrigger() {
+    protected renderApiDrawerTrigger() {
         if (!this.uiConfig?.enabledFeatures.apiDrawer) {
             return nothing;
         }
@@ -102,7 +102,7 @@ export class NavigationButtons extends AKElement {
         </div>`;
     }
 
-    renderNotificationDrawerTrigger() {
+    protected renderNotificationDrawerTrigger() {
         if (!this.uiConfig?.enabledFeatures.notificationDrawer) {
             return nothing;
         }
@@ -135,7 +135,7 @@ export class NavigationButtons extends AKElement {
         </div> `;
     }
 
-    renderSettings() {
+    protected renderSettings() {
         if (!this.uiConfig?.enabledFeatures.settings) {
             return nothing;
         }
@@ -153,7 +153,7 @@ export class NavigationButtons extends AKElement {
         </div>`;
     }
 
-    renderImpersonation() {
+    protected renderImpersonation() {
         if (!this.me?.original) return nothing;
 
         const onClick = async () => {
@@ -171,7 +171,7 @@ export class NavigationButtons extends AKElement {
             </div>`;
     }
 
-    renderAvatar() {
+    protected renderAvatar() {
         return html`<img
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             src=${ifDefined(this.me?.user.avatar)}
@@ -189,7 +189,7 @@ export class NavigationButtons extends AKElement {
             .otherwise(() => this.me?.user.username);
     }
 
-    render() {
+    public render() {
         return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderApiDrawerTrigger()}

@@ -43,7 +43,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         );
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.connectionPk === -1) {
             return html`<ak-spinner></ak-spinner>`;
         }

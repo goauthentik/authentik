@@ -56,7 +56,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
         return true;
     }
 
-    render() {
+    public render() {
         const onChange = () => {
             this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
         };

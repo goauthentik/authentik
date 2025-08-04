@@ -46,7 +46,7 @@ export class TablePagination extends AKElement {
         this.onPageChange?.(this.pages?.next || 0);
     };
 
-    render() {
+    public render() {
         if (!this.pages) {
             return nothing;
         }

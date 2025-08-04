@@ -214,7 +214,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             .exhaustive();
     }
 
-    renderInfo(
+    protected renderInfo(
         state: string,
         label: string,
         icons: string[],
@@ -235,7 +235,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         </div>`;
     }
 
-    renderError() {
+    protected renderError() {
         const { errors } = this.wizard;
 
         if (Object.keys(errors).length === 0) return nothing;
@@ -295,7 +295,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 )}`;
     }
 
-    renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
+    protected renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.wizard.providerModel);
         if (!renderer) {
             throw new Error(
@@ -338,7 +338,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `;
     }
 
-    renderMain() {
+    protected renderMain() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
         if (!(this.wizard && app && provider)) {

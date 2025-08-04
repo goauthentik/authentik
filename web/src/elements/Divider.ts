@@ -34,7 +34,7 @@ export class Divider extends AKElement {
         `,
     ];
 
-    render() {
+    public render() {
         return html`<div class="separator">
             <slot></slot>
         </div>`;

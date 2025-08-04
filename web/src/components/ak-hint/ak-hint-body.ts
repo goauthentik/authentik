@@ -14,7 +14,7 @@ const style = css`
 export class AkHintBody extends AKElement {
     public static styles = [style];
 
-    render() {
+    public render() {
         return html`<div part="ak-hint-body"><slot></slot></div>`;
     }
 }

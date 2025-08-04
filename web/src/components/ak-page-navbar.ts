@@ -347,7 +347,7 @@ export class AKPageNavbar
 
     //#region Render
 
-    renderIcon() {
+    protected renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img
@@ -365,7 +365,7 @@ export class AKPageNavbar
         return nothing;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <slot></slot>
             <div role="banner" aria-label="Main" class="main-content">
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">

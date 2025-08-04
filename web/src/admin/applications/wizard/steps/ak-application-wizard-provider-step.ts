@@ -74,7 +74,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         ];
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!this.wizard.providerModel) {
             throw new Error("Attempted to access provider page without providing a provider type.");
         }

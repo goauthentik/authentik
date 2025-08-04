@@ -93,7 +93,7 @@ export class AkMultiSelect extends AkControlElement {
         this.dataset.akControl = "true";
     }
 
-    renderHelp() {
+    protected renderHelp() {
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
             this.bighelp ? this.bighelp : nothing,
@@ -117,7 +117,7 @@ export class AkMultiSelect extends AkControlElement {
 
     selectRef: Ref<HTMLSelectElement> = createRef();
 
-    render() {
+    public render() {
         return html` <div class="pf-c-form">
             <ak-form-element-horizontal
                 label=${this.label}

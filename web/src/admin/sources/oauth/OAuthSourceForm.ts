@@ -122,7 +122,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         }
     }
 
-    renderUrlOptions(): TemplateResult {
+    protected renderUrlOptions(): TemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
@@ -258,7 +258,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

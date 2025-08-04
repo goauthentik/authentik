@@ -51,7 +51,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.outpostId || !this.loaded) {
             return html`<ak-spinner></ak-spinner>`;
         }

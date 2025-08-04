@@ -24,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class DebugPage extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-page-header icon="pf-icon pf-icon-user" header="Debug"> </ak-page-header>
             <section class="pf-c-page__main-section">

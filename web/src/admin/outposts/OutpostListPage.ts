@@ -162,7 +162,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    renderExpanded(item: Outpost): TemplateResult {
+    protected renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
         return html`<td role="cell" colspan="7">
             <div class="pf-c-table__expandable-row-content">
@@ -218,7 +218,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Outpost(s)")}
@@ -240,7 +240,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

@@ -44,7 +44,7 @@ export class RoleListPage extends TablePage<Role> {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Role(s)")}
@@ -66,7 +66,7 @@ export class RoleListPage extends TablePage<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): HTMLTemplateResult {
+    public render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
@@ -94,7 +94,7 @@ export class RoleListPage extends TablePage<Role> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

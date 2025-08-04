@@ -42,7 +42,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}

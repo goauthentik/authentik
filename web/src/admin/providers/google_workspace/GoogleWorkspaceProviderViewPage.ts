@@ -81,7 +81,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -135,7 +135,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

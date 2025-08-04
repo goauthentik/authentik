@@ -30,7 +30,7 @@ export class TopApplicationsTable extends AKElement {
             });
     }
 
-    renderRow(event: EventTopPerUser): TemplateResult {
+    protected renderRow(event: EventTopPerUser): TemplateResult {
         return html`<tr role="row">
             <td role="cell">${event.application.name}</td>
             <td role="cell">${event.countedEvents}</td>
@@ -43,7 +43,7 @@ export class TopApplicationsTable extends AKElement {
         </tr>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<table class="pf-c-table pf-m-compact" role="grid">
             <thead>
                 <tr role="row">

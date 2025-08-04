@@ -37,7 +37,7 @@ export class SystemTasksPage extends AKElement {
         PFCard,
     ];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-automation"
                 header=${msg("System Tasks")}

@@ -94,7 +94,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </div>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Application(s)")}
@@ -154,7 +154,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
                 <button
                     slot="trigger"
@@ -172,7 +172,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             </ak-forms-modal>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared application cache")}

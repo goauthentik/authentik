@@ -43,7 +43,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         });
     }
 
-    render() {
+    public render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}

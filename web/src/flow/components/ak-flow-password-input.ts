@@ -274,7 +274,7 @@ export class InputPassword extends AKElement {
         iconElement.classList.add(masked ? Visibility.Reveal.icon : Visibility.Mask.icon);
     }
 
-    renderVisibilityToggle() {
+    protected renderVisibilityToggle() {
         if (!this.allowShowPassword) return nothing;
 
         const { label, icon } = this.passwordVisible ? Visibility.Mask : Visibility.Reveal;
@@ -290,7 +290,7 @@ export class InputPassword extends AKElement {
         </button>`;
     }
 
-    renderHelperText() {
+    protected renderHelperText() {
         if (!this.capsLock) return nothing;
 
         return html`<div
@@ -310,7 +310,7 @@ export class InputPassword extends AKElement {
         </div>`;
     }
 
-    render() {
+    public render() {
         return html` <ak-form-element
             label="${this.label}"
             required

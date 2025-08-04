@@ -297,7 +297,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Render
 
-    renderBody() {
+    protected renderBody() {
         if (this.error) {
             return akEmptyState({ icon: "fa-times" }, { heading: this.error });
         }
@@ -316,7 +316,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return akEmptyState({ loading: true }, { heading: msg("Verifying...") });
     }
 
-    renderMain() {
+    protected renderMain() {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static
@@ -335,7 +335,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         </ak-flow-card>`;
     }
 
-    render() {
+    public render() {
         if (!this.challenge) {
             return this.embedded ? nothing : akEmptyState({ loading: true });
         }

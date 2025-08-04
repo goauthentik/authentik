@@ -35,7 +35,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",

@@ -47,7 +47,7 @@ export class Route {
         return this;
     }
 
-    render(args: RouteArgs): TemplateResult {
+    public render(args: RouteArgs): TemplateResult {
         if (this.callback) {
             return html`${until(
                 this.callback(args),

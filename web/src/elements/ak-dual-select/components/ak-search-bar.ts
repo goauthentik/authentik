@@ -44,7 +44,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         });
     };
 
-    render() {
+    public render() {
         return html`
             <div class="pf-c-text-input-group">
                 <div class="pf-c-text-input-group__main pf-m-icon">

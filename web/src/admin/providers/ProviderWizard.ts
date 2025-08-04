@@ -50,7 +50,7 @@ export class ProviderWizard extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

@@ -54,7 +54,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input

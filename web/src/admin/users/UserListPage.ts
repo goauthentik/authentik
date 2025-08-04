@@ -161,7 +161,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
@@ -208,7 +208,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -286,7 +286,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -394,7 +394,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

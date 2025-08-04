@@ -194,7 +194,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         });
     }
 
-    render() {
+    public render() {
         const renderOne = ([name, label]: CheckboxPr) => {
             const selected = this.values.includes(name);
             const blockFwd = (e: Event) => {

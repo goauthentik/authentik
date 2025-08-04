@@ -87,7 +87,7 @@ export class AKAlert extends AKElement implements IAlert {
         };
     }
 
-    render() {
+    public render() {
         return html`<div class="${classMap(this.classmap)}">
             <div class="pf-c-alert__icon">
                 <i aria-hidden="true" class="fas ${this.icon}"></i>

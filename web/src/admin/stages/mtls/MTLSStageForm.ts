@@ -44,7 +44,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
         }
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`
             <span> ${msg("Client-certificate/mTLS authentication/enrollment.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">

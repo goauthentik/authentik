@@ -52,7 +52,7 @@ export class FlowCard extends AKElement {
         `,
     ];
 
-    render() {
+    public render() {
         let inner = html`<slot></slot>`;
         if (!this.challenge || this.loading) {
             inner = html`<ak-empty-state loading default-label></ak-empty-state>`;

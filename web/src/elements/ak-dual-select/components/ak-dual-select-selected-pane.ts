@@ -116,7 +116,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Render
 
-    render() {
+    public render() {
         return html`
             <div class="pf-c-dual-list-selector__menu">
                 <ul class="pf-c-dual-list-selector__list">

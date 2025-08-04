@@ -77,7 +77,7 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
-    renderItem(item: Notification): TemplateResult {
+    protected renderItem(item: Notification): TemplateResult {
         let level = "";
         switch (item.severity) {
             case "notice":
@@ -169,14 +169,14 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
-    renderEmpty() {
+    protected renderEmpty() {
         return html`<ak-empty-state
             ><span>${msg("No notifications found.")}</span>
             <div slot="body">${msg("You don't have any notifications currently.")}</div>
         </ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.notifications) {
             return html``;
         }

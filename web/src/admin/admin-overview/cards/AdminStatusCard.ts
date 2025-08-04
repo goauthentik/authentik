@@ -38,23 +38,21 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     constructor() {
         super();
-        // Proper binding for event handler
-        this.fetchData = this.fetchData.bind(this);
         // Register refresh event listener
-        this.addEventListener(EVENT_REFRESH, this.fetchData);
+        this.addEventListener(EVENT_REFRESH, this.#fetchData);
     }
 
     // Lifecycle method: Called when component is added to DOM
     connectedCallback(): void {
         super.connectedCallback();
         // Initial data fetch
-        this.fetchData();
+        this.#fetchData();
     }
 
     /**
      * Fetch primary data and handle errors
      */
-    private fetchData() {
+    #fetchData = () => {
         this.getPrimaryValue()
             .then((value: T) => {
                 this.value = value; // Triggers shouldUpdate
@@ -64,7 +62,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                 this.status = undefined;
                 this.error = await parseAPIResponseError(error);
             });
-    }
+    };
 
     /**
      * Lit lifecycle method: Determine if component should update
@@ -106,7 +104,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param status - AdminStatus object containing icon and message
      * @returns TemplateResult for status display
      */
-    private renderStatus(status: AdminStatus): SlottedTemplateResult {
+    protected renderStatus(status: AdminStatus): SlottedTemplateResult {
         return html`
             <p><i class="${status.icon}"></i>&nbsp;${this.renderValue()}</p>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
@@ -119,7 +117,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param error - Error message to display
      * @returns TemplateResult for error display
      */
-    private renderError(error: string): SlottedTemplateResult {
+    protected renderError(error: string): SlottedTemplateResult {
         return html`
             <p><i aria-hidden="true" class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
             <p class="subtext">${error}</p>
@@ -131,7 +129,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for loading spinner
      */
-    private renderLoading(): SlottedTemplateResult {
+    protected renderLoading(): SlottedTemplateResult {
         return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
     }
 
@@ -140,7 +138,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for current component state
      */
-    renderInner(): SlottedTemplateResult {
+    protected renderInner(): SlottedTemplateResult {
         return html`
             <p class="center-value">
                 ${

@@ -62,7 +62,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
             <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
@@ -81,7 +81,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         if (this.error) {
             return super.renderEmpty(inner);
         }

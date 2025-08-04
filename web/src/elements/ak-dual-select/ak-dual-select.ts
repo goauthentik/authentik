@@ -276,7 +276,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Render
 
-    render() {
+    public render() {
         const selected =
             this.selectedFilter === ""
                 ? this.selected

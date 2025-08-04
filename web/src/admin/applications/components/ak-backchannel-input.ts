@@ -55,7 +55,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     @property({ type: String })
     help = "";
 
-    render() {
+    public render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
                 removable

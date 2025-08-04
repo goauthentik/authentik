@@ -44,7 +44,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
     @property({ type: Array })
     actions: QuickAction[] = [];
 
-    render() {
+    public render() {
         const renderItem = ([label, url, external]: QuickAction) =>
             html` <li>
                 <a class="pf-u-mb-xl" href=${url} ${external ? 'target="_blank"' : ""}>

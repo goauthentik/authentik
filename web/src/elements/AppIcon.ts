@@ -74,7 +74,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         `,
     ];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
             .with([undefined, undefined],

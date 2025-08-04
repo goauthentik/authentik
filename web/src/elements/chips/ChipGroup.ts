@@ -41,7 +41,7 @@ export class ChipGroup extends AKElement {
         return values;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-chip-group">
             <div class="pf-c-chip-group__main">
                 <ul class="pf-c-chip-group__list" role="list">

@@ -57,7 +57,7 @@ export class VisibilityToggle extends AKElement implements VisibilityToggleProps
     @property({ type: String, attribute: "hide-message" })
     hideMessage = msg("Hide field content");
 
-    render() {
+    public render() {
         const [label, icon] = this.open
             ? [this.hideMessage, "fa-eye"]
             : [this.showMessage, "fa-eye-slash"];

@@ -337,7 +337,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         console.debug("authentik/rac: Sent clipboard");
     }
 
-    renderOverlay() {
+    protected renderOverlay() {
         if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
@@ -363,7 +363,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         `;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             ${this.renderOverlay()}
             <div class="container">${this.container}</div>

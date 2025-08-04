@@ -34,7 +34,7 @@ export class DashboardUserPage extends AKElement {
         `,
     ];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User Statistics")}>
             </ak-page-header>
             <section class="pf-c-page__main-section">

@@ -37,7 +37,7 @@ export class AuthenticatorSMSStage extends BaseStage<
         PFButton,
     ];
 
-    renderPhoneNumber(): TemplateResult {
+    protected renderPhoneNumber(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
@@ -75,7 +75,7 @@ export class AuthenticatorSMSStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    renderCode(): TemplateResult {
+    protected renderCode(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
@@ -117,7 +117,7 @@ export class AuthenticatorSMSStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.challenge.phoneNumberRequired) {
             return this.renderPhoneNumber();
         }

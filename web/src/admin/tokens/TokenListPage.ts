@@ -63,7 +63,7 @@ export class TokenListPage extends TablePage<Token> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Token(s)")}
@@ -88,7 +88,7 @@ export class TokenListPage extends TablePage<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

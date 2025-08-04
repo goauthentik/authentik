@@ -33,7 +33,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Email stage")}
             required

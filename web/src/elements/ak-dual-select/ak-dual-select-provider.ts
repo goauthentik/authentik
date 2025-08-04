@@ -179,7 +179,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     //#endregion
 
-    render() {
+    public render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}

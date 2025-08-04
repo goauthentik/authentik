@@ -23,7 +23,7 @@ export class AccessDeniedStage extends BaseStage<
 > {
     public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static

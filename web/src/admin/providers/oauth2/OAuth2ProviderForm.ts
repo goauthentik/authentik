@@ -91,7 +91,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         });
     }
 
-    renderForm() {
+    protected renderForm() {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };

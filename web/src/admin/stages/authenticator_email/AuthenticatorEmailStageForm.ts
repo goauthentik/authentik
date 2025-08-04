@@ -48,7 +48,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    protected renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
             return html``;
         }
@@ -141,7 +141,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

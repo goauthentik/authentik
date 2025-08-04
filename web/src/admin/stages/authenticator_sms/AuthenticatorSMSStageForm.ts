@@ -58,7 +58,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         });
     }
 
-    renderProviderTwillio(): TemplateResult {
+    protected renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Twilio Account SID")}
                 required
@@ -91,7 +91,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>`;
     }
 
-    renderProviderGeneric(): TemplateResult {
+    protected renderProviderGeneric(): TemplateResult {
         return html`
             <ak-form-element-horizontal
                 label=${msg("Authentication Type")}
@@ -164,7 +164,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>

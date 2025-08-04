@@ -17,7 +17,7 @@ export class StoryFlowInterface extends FlowExecutor {
         return true;
     };
 
-    async renderChallenge(): Promise<TemplateResult> {
+    protected async renderChallenge(): Promise<TemplateResult> {
         return html`<slot></slot>`;
     }
 }

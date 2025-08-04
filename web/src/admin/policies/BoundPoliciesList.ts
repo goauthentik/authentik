@@ -138,7 +138,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html``;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy binding(s)")}
@@ -199,7 +199,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    protected renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
@@ -229,7 +229,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         );
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
@@ -253,7 +253,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal> `;
     }
 
-    renderPolicyEngineMode() {
+    protected renderPolicyEngineMode() {
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
@@ -266,7 +266,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </p>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected renderToolbarContainer(): TemplateResult {
         return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }

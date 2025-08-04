@@ -72,7 +72,7 @@ export class LibraryApplication extends AKElement {
         `,
     ];
 
-    renderExpansion(application: Application) {
+    protected renderExpansion(application: Application) {
         const { me, uiConfig } = rootInterface<UserInterface>();
 
         return html`<ak-expand textOpen=${msg("Fewer details")} textClosed=${msg("More details")}>
@@ -94,7 +94,7 @@ export class LibraryApplication extends AKElement {
         </ak-expand>`;
     }
 
-    renderLaunch(): TemplateResult {
+    protected renderLaunch(): TemplateResult {
         if (!this.application) {
             return html``;
         }
@@ -145,7 +145,7 @@ export class LibraryApplication extends AKElement {
             </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }

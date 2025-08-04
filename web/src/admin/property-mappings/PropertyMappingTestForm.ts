@@ -52,7 +52,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         return (this.result = result);
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
@@ -71,7 +71,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderExampleButtons() {
+    protected renderExampleButtons() {
         return this.mapping?.metaModelName ===
             RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
@@ -79,7 +79,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             : nothing;
     }
 
-    renderExampleLDAP(): TemplateResult {
+    protected renderExampleLDAP(): TemplateResult {
         return html`
             <button
                 class="pf-c-button pf-m-secondary"
@@ -126,7 +126,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
                     blankable

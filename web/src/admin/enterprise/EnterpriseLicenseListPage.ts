@@ -105,7 +105,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -119,7 +119,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `);
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("License(s)")}
@@ -147,7 +147,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderSectionBefore(): TemplateResult {
+    protected renderSectionBefore(): TemplateResult {
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -236,7 +236,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         ];
     }
 
-    renderGetLicenseCard() {
+    protected renderGetLicenseCard() {
         const renderSpinner = () =>
             html` <div class="pf-c-card__body">
                 <ak-spinner></ak-spinner>
@@ -273,7 +273,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </div> `;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Install")} </span>

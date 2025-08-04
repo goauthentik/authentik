@@ -67,7 +67,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return "fa-mobile-alt";
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">

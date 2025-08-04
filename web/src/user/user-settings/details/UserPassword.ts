@@ -21,7 +21,7 @@ export class UserSettingsPassword extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         // For this stage we don't need to check for a configureFlow,
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">

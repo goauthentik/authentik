@@ -34,7 +34,7 @@ export class PasswordStage extends BaseStage<
         PFTitle,
     ];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form
                 class="pf-c-form"

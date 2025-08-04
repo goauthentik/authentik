@@ -64,7 +64,7 @@ export class APIDrawer extends AKElement {
         }) as EventListener);
     }
 
-    renderItem(item: RequestInfo): TemplateResult {
+    protected renderItem(item: RequestInfo): TemplateResult {
         return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
@@ -83,7 +83,7 @@ export class APIDrawer extends AKElement {
         </li>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">

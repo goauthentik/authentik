@@ -70,7 +70,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    renderSectionBefore(): TemplateResult {
+    protected renderSectionBefore(): TemplateResult {
         if (this.hasEnterpriseLicense) {
             return html`<div
                 class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
@@ -122,7 +122,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    protected renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>

@@ -75,7 +75,7 @@ export class Diagram extends AKElement {
         window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         this.querySelectorAll("*").forEach((el) => {
             try {
                 el.remove();

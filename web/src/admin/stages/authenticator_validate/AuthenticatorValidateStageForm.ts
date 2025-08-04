@@ -73,7 +73,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         );
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         const authenticators = [
             [DeviceClassesEnum.Static, msg("Static Tokens")],
             [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],

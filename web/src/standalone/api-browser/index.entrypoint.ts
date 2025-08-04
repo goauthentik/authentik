@@ -60,7 +60,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
         );
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-locale-context>
                 <rapi-doc

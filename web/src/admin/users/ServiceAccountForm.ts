@@ -56,7 +56,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = null;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="name">
                 <input
                     type="text"
@@ -112,7 +112,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
+    protected renderResponseForm(): TemplateResult {
         return html`<p>
                 ${msg(
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
@@ -138,7 +138,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderFormWrapper(): TemplateResult {
+    protected renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }

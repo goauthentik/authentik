@@ -62,7 +62,7 @@ const styles = css`
 export class AkHint extends AKElement {
     public static styles = [styles];
 
-    render() {
+    public render() {
         return html`<div part="ak-hint" id="host"><slot></slot></div>`;
     }
 }

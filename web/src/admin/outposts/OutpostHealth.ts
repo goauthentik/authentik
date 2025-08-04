@@ -29,7 +29,7 @@ export class OutpostHealthElement extends AKElement {
         `,
     ];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }

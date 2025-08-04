@@ -69,7 +69,7 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    renderToolbarAfter() {
+    protected renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {
             this.userListFilter = this.userListFilter === "all" ? "active" : "all";
             this.page = 1;
@@ -111,11 +111,11 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    renderSelectedChip(item: User): TemplateResult {
+    protected renderSelectedChip(item: User): TemplateResult {
         return html`${item.username}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>

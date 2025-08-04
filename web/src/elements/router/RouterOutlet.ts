@@ -152,7 +152,7 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    render(): TemplateResult | undefined {
+    public render(): TemplateResult | undefined {
         return this.current?.render();
     }
 }

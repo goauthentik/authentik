@@ -30,7 +30,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     checkbox = true;
     clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -48,7 +48,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("SCIM Group(s)")}
@@ -84,7 +84,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             html`${item.id}`,
         ];
     }
-    renderExpanded(item: SCIMProviderGroup): TemplateResult {
+    protected renderExpanded(item: SCIMProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

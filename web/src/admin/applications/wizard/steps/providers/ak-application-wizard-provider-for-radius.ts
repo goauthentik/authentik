@@ -19,14 +19,14 @@ export class ApplicationWizardRadiusProviderForm extends WithBrandConfig(
 ) {
     label = msg("Configure Radius Provider");
 
-    renderForm(provider: RadiusProvider, errors: ValidationRecord) {
+    protected renderForm(provider: RadiusProvider, errors: ValidationRecord) {
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(provider ?? {}, errors, this.brand)}
             </form>`;
     }
 
-    render() {
+    public render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }

@@ -43,14 +43,14 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
             : html``}
         ${this.renderFormManual()}`;
     }
 
-    renderFormManual(): TemplateResult {
+    protected renderFormManual(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="username">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -87,7 +87,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
             </ak-form-element-horizontal>`;
     }
 
-    renderFormAutomatic(): TemplateResult {
+    protected renderFormAutomatic(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Automatic import")}>
                 <ak-action-button

@@ -13,7 +13,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    protected renderPromptInner(prompt: StagePrompt): TemplateResult {
         return prompt.type === PromptTypeEnum.Checkbox
             ? html`<input
                   type="checkbox"
@@ -26,7 +26,7 @@ export class UserSettingsPromptStage extends PromptStage {
             : super.renderPromptInner(prompt);
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected renderField(prompt: StagePrompt): TemplateResult {
         const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
@@ -46,7 +46,7 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
-    renderContinue(): TemplateResult {
+    protected renderContinue(): TemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
@@ -65,7 +65,7 @@ export class UserSettingsPromptStage extends PromptStage {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"

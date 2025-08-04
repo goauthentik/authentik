@@ -77,7 +77,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

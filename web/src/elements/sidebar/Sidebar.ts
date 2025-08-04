@@ -72,7 +72,7 @@ export class Sidebar extends AKElement {
     @property({ type: Boolean })
     hidden = false;
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
             role="presentation"

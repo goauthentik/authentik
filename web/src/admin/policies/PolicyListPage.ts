@@ -106,7 +106,7 @@ export class PolicyListPage extends TablePage<Policy> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy / Policies")}
@@ -128,11 +128,11 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-policy-wizard> </ak-policy-wizard>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}

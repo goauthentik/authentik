@@ -55,7 +55,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Domain")} required name="domain">
                 <input
                     type="text"

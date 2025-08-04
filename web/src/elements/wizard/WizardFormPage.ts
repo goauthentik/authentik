@@ -73,7 +73,7 @@ export class WizardFormPage extends WizardPage {
             return false;
         };
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html``;
     }
 
@@ -81,7 +81,7 @@ export class WizardFormPage extends WizardPage {
         this.inputCallback();
     };
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`
             <ak-wizard-form
                 .nextDataCallback=${this.nextDataCallback}

@@ -75,7 +75,7 @@ export class LibraryPageApplicationList extends AKElement {
         return layout;
     }
 
-    render() {
+    public render() {
         const [groupClass, groupGrid] = this.currentLayout;
 
         return html`<div class="pf-l-grid pf-m-gutter">

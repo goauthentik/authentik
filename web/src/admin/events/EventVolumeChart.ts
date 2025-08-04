@@ -51,7 +51,7 @@ export class EventVolumeChart extends EventChart {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__body">${super.render()}</div>
         </div>`;

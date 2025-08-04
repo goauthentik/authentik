@@ -57,7 +57,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Endpoint(s)")}
@@ -108,7 +108,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    renderExpanded(item: Endpoint): TemplateResult {
+    protected renderExpanded(item: Endpoint): TemplateResult {
         return html` <td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -124,7 +124,7 @@ export class EndpointListPage extends Table<Endpoint> {
             </td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

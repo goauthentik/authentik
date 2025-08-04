@@ -48,11 +48,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         });
     }
 
-    renderHeader(): TemplateResult {
+    protected renderHeader(): TemplateResult {
         return html`${msg("Version")}`;
     }
 
-    renderValue(): TemplateResult {
+    protected renderValue(): TemplateResult {
         let text = this.value?.versionCurrent;
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();

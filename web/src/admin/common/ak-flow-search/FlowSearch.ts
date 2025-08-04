@@ -129,7 +129,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         }
     }
 
-    render() {
+    public render() {
         return html`
             <ak-search-select
                 .fetchObjects=${this.fetchObjects}

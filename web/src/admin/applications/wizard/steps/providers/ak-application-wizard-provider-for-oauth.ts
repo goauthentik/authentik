@@ -40,7 +40,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             });
     }
 
-    renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
+    protected renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
@@ -55,7 +55,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             </form>`;
     }
 
-    render() {
+    public render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }

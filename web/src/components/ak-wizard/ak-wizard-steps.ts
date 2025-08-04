@@ -156,7 +156,7 @@ export class WizardStepsManager extends AKElement {
         });
     };
 
-    render() {
+    public render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;
     }
 

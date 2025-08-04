@@ -67,7 +67,7 @@ export class FlowViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.flow) {
             return html``;
         }

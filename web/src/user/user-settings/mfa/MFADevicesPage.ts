@@ -59,7 +59,7 @@ export class MFADevicesPage extends Table<Device> {
         ].map((th) => new TableColumn(th, ""));
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         const settings = (this.userSettings || []).filter((stage) => {
             if (stage.component === "ak-user-settings-password") {
                 return false;
@@ -114,7 +114,7 @@ export class MFADevicesPage extends Table<Device> {
         }
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}

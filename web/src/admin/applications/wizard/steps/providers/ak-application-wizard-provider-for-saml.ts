@@ -19,7 +19,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     @state()
     hasSigningKp = false;
 
-    renderForm() {
+    protected renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
@@ -37,7 +37,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             </form>`;
     }
 
-    render() {
+    public render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("SAML Provider Step received uninitialized wizard context.");
         }

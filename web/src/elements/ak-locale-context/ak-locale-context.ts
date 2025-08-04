@@ -91,7 +91,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         this.dispatchEvent(customEvent(EVENT_LOCALE_CHANGE));
     }
 
-    render() {
+    public render() {
         return html`<slot></slot>`;
     }
 }

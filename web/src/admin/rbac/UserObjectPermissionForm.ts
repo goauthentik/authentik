@@ -66,7 +66,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         if (!this.modelPermissions) {
             return html``;
         }

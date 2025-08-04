@@ -26,11 +26,11 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             : msg("Successfully created mapping.");
     }
 
-    renderExtraFields(): TemplateResult {
+    protected renderExtraFields(): TemplateResult {
         return html``;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

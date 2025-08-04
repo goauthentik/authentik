@@ -87,7 +87,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         return this.group === group.pk;
     }
 
-    render() {
+    public render() {
         return html`
             <ak-search-select
                 .fetchObjects=${fetchObjects}

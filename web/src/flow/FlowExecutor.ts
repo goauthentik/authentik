@@ -373,7 +373,7 @@ export class FlowExecutor
         }
     }
 
-    async renderChallenge(): Promise<TemplateResult> {
+    protected async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
             return html`<ak-flow-card loading></ak-flow-card>`;
         }
@@ -534,7 +534,7 @@ export class FlowExecutor
         }
     }
 
-    async renderInspector() {
+    protected async renderInspector() {
         if (!this.inspectorOpen) {
             return nothing;
         }
@@ -548,7 +548,7 @@ export class FlowExecutor
         );
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <ak-locale-context>
             <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">

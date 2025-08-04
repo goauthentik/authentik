@@ -32,7 +32,7 @@ export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAM
         });
     }
 
-    renderExtraFields(): TemplateResult {
+    protected renderExtraFields(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("SAML Attribute Name")}
                 required

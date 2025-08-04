@@ -60,7 +60,7 @@ export class ShowHintController implements ReactiveController {
         this.host.showHint = localStores[this.hintToken] as boolean;
     }
 
-    render() {
+    public render() {
         return html`<ak-hint-footer
             ><div style="text-align: right">
                 <input type="checkbox" @input=${this.hide} />&nbsp;${msg(

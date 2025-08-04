@@ -63,7 +63,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification rule(s)")}
@@ -115,7 +115,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -126,7 +126,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         `;
     }
 
-    renderExpanded(item: NotificationRule): TemplateResult {
+    protected renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
         return html` <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

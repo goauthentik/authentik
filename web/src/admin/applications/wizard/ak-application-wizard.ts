@@ -19,7 +19,7 @@ export class AkApplicationWizard extends ModalButton {
         this.open = false;
     };
 
-    renderModalInner() {
+    protected renderModalInner() {
         return html` <ak-application-wizard-main> </ak-application-wizard-main>`;
     }
 }

@@ -70,7 +70,7 @@ export class SCIMSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

@@ -141,7 +141,7 @@ export class EventMap extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-map>
                 <ol-select

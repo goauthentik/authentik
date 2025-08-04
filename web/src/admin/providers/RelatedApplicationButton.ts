@@ -23,7 +23,7 @@ export class RelatedApplicationButton extends AKElement {
     @property()
     mode: "primary" | "backchannel" = "primary";
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
             return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
                 ${this.provider.assignedApplicationName}

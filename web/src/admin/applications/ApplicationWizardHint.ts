@@ -66,7 +66,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         );
     }
 
-    renderReminder() {
+    protected renderReminder() {
         const sectionStyles = {
             paddingBottom: "0",
             marginBottom: "-0.5rem",
@@ -98,7 +98,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         </section>`;
     }
 
-    renderHint() {
+    protected renderHint() {
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
                 <ak-hint-body>
@@ -122,7 +122,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         </section>`;
     }
 
-    render() {
+    public render() {
         return this.showHint || this.forceHint ? this.renderHint() : this.renderReminder();
     }
 }

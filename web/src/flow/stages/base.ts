@@ -89,7 +89,7 @@ export abstract class BaseStage<
         });
     };
 
-    renderNonFieldErrors() {
+    protected renderNonFieldErrors() {
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
@@ -108,7 +108,7 @@ export abstract class BaseStage<
         </div>`;
     }
 
-    renderUserInfo() {
+    protected renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
             return nothing;
         }

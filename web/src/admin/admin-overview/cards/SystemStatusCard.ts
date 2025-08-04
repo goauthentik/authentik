@@ -84,11 +84,11 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    renderHeader(): SlottedTemplateResult {
+    protected renderHeader(): SlottedTemplateResult {
         return msg("System status");
     }
 
-    renderValue(): SlottedTemplateResult {
+    protected renderValue(): SlottedTemplateResult {
         return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
 }

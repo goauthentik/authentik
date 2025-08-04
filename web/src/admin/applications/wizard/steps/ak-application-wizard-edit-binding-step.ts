@@ -151,7 +151,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         }
     }
 
-    renderSearch(title: string, policyKind: target) {
+    protected renderSearch(title: string, policyKind: target) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
@@ -165,7 +165,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(instance?: PolicyBinding) {
+    protected renderForm(instance?: PolicyBinding) {
         return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
@@ -218,7 +218,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    renderMain() {
+    protected renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

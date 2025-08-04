@@ -113,7 +113,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         );
     }
 
-    render() {
+    public render() {
         return html`
             <ak-search-select
                 name=${ifDefined(this.name ?? undefined)}

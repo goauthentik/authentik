@@ -338,7 +338,7 @@ export abstract class Table<T extends object>
         return msg(str`${name}`);
     }
 
-    private renderRows(): TemplateResult[] | undefined {
+    protected renderRows(): TemplateResult[] | undefined {
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
@@ -368,7 +368,7 @@ export abstract class Table<T extends object>
         return groupBy(items, () => "");
     }
 
-    renderExpanded(_item: T): SlottedTemplateResult {
+    protected renderExpanded(_item: T): SlottedTemplateResult {
         if (this.expandable) {
             throw new Error("Expandable is enabled but renderExpanded is not overridden!");
         }
@@ -376,7 +376,7 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    private renderRowGroup(items: T[]): TemplateResult[] {
+    protected renderRowGroup(items: T[]): TemplateResult[] {
         const columns = this.columns();
 
         return items.map((item) => {
@@ -565,7 +565,7 @@ export abstract class Table<T extends object>
      * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    protected renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
             this.selectedElements.length === this.data?.results.length &&
             this.selectedElements.length > 0;
@@ -651,7 +651,7 @@ export abstract class Table<T extends object>
             ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return this.renderTable();
     }
 }

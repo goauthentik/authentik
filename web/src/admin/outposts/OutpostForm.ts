@@ -138,7 +138,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],

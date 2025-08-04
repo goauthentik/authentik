@@ -139,7 +139,7 @@ export abstract class ModalButton extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }

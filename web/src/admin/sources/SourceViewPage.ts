@@ -34,7 +34,7 @@ export class SourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: Source;
 
-    renderSource(): TemplateResult {
+    protected renderSource(): TemplateResult {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -68,7 +68,7 @@ export class SourceViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-middleware"
                 header=${ifDefined(this.source?.name)}

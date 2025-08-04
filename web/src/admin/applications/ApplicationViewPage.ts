@@ -95,7 +95,7 @@ export class ApplicationViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
@@ -110,7 +110,7 @@ export class ApplicationViewPage extends AKElement {
             ${this.renderApp()}`;
     }
 
-    renderApp(): TemplateResult {
+    protected renderApp(): TemplateResult {
         if (!this.application) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }

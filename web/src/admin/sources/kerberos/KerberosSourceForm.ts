@@ -81,7 +81,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
         return source;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
                 label=${msg("Name")}

@@ -38,13 +38,13 @@ export class LogViewer extends Table<LogEvent> {
         };
     }
 
-    renderEmpty(): TemplateResult {
+    protected renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
-    renderExpanded(item: LogEvent): TemplateResult {
+    protected renderExpanded(item: LogEvent): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
@@ -73,7 +73,7 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected renderToolbarContainer(): TemplateResult {
         return html``;
     }
 

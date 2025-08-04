@@ -47,7 +47,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Application entitlement(s)")}
@@ -95,7 +95,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         ];
     }
 
-    renderExpanded(item: ApplicationEntitlement): TemplateResult {
+    protected renderExpanded(item: ApplicationEntitlement): TemplateResult {
         return html`<td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -118,7 +118,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             </td>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No app entitlements created.")}</span>
@@ -133,7 +133,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         );
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
             <span slot="submit"> ${msg("Create")} </span>
             <span slot="header"> ${msg("Create Entitlement")} </span>

@@ -18,7 +18,7 @@ export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm
     @state()
     propertyMappings?: PaginatedSCIMMappingList;
 
-    render() {
+    public render() {
         return html`<ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(

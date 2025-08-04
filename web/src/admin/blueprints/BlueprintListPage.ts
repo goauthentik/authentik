@@ -84,7 +84,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Blueprint(s)")}
@@ -109,7 +109,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderExpanded(item: BlueprintInstance): TemplateResult {
+    protected renderExpanded(item: BlueprintInstance): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -201,7 +201,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

@@ -40,7 +40,7 @@ export class ProviderViewPage extends AKElement {
 
     public static styles: CSSResult[] = [PFPage];
 
-    renderProvider(): TemplateResult {
+    protected renderProvider(): TemplateResult {
         if (!this.provider) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -90,7 +90,7 @@ export class ProviderViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-integration"
                 header=${ifDefined(this.provider?.name)}

@@ -51,7 +51,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",

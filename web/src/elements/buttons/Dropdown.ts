@@ -39,7 +39,7 @@ export class DropdownButton extends AKElement {
         window.removeEventListener(EVENT_REFRESH, this.clickHandler);
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

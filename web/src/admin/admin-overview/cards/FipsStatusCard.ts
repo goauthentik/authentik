@@ -38,11 +38,11 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
               });
     }
 
-    renderHeader(): TemplateResult {
+    protected renderHeader(): TemplateResult {
         return html`${msg("FIPS Status")}`;
     }
 
-    renderValue(): TemplateResult {
+    protected renderValue(): TemplateResult {
         return html`${this.statusSummary}`;
     }
 }

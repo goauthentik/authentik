@@ -90,7 +90,7 @@ export class UserSettingsPage extends AKElement {
         this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         const pwStage =
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];

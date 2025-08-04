@@ -119,7 +119,7 @@ export class LibraryPage extends AKElement {
         ></ak-library-impl>`;
     }
 
-    render() {
+    public render() {
         return this.ready ? this.running() : this.loading();
     }
 }

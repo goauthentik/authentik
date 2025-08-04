@@ -125,7 +125,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         clearTimeout(this._timer);
     }
 
-    renderTypes(): TemplateResult {
+    protected renderTypes(): TemplateResult {
         // prettier-ignore
         const promptTypesWithLabels = [
             [PromptTypeEnum.Text, msg("Text: Simple Text input")],
@@ -157,7 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         )}`;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
             <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">
                 ${this.renderEditForm()}
@@ -166,7 +166,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         </div> `;
     }
 
-    renderPreview(): TemplateResult {
+    protected renderPreview(): TemplateResult {
         return html`
             <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
@@ -203,7 +203,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         `;
     }
 
-    renderEditForm(): TemplateResult {
+    protected renderEditForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

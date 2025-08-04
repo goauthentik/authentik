@@ -73,7 +73,7 @@ export class PlexLoginInit extends BaseStage<
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Plex...")}</span>
             <form class="pf-c-form">

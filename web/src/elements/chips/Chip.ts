@@ -20,7 +20,7 @@ export class Chip extends AKElement {
 
     public static styles: CSSResult[] = [PFBase, PFButton, PFChip];
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<li class="pf-c-chip-group__list-item">
             <div class="pf-c-chip">
                 <span class="pf-c-chip__text">

@@ -18,7 +18,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
 
     public static styles = [PFBanner];
 
-    renderStatusBanner() {
+    protected renderStatusBanner() {
         // Check if we're in the correct interface to render a banner
         switch (this.licenseSummary?.status) {
             // user warning is both on admin interface and user interface
@@ -81,7 +81,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         </div>`;
     }
 
-    renderFlagBanner() {
+    protected renderFlagBanner() {
         return html`
             ${this.licenseSummary?.licenseFlags.includes(LicenseFlagsEnum.Trial)
                 ? html`<div class="pf-c-banner pf-m-sticky pf-m-gold">
@@ -96,7 +96,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
         `;
     }
 
-    render() {
+    public render() {
         return this.licenseSummary
             ? html`${this.renderFlagBanner()}${this.renderStatusBanner()}`
             : nothing;

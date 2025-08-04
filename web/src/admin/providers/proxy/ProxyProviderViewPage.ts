@@ -122,7 +122,7 @@ export class ProxyProviderViewPage extends AKElement {
         }
     }
 
-    renderConfig(): TemplateResult {
+    protected renderConfig(): TemplateResult {
         const servers = [
             {
                 label: msg("Nginx (Ingress)"),
@@ -194,7 +194,7 @@ export class ProxyProviderViewPage extends AKElement {
         >`;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -229,7 +229,7 @@ export class ProxyProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabAuthentication(): TemplateResult {
+    protected renderTabAuthentication(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -260,7 +260,7 @@ export class ProxyProviderViewPage extends AKElement {
         </div>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

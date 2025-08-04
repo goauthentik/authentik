@@ -14,7 +14,7 @@ import { customElement } from "lit/decorators.js";
 export class SbHostProvider extends LitElement {
     public static styles = globalVariables;
 
-    render() {
+    public render() {
         return html`<slot></slot>`;
     }
 }

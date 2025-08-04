@@ -34,7 +34,7 @@ export class SearchSelectLoadingIndicator extends AKElement {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    render() {
+    public render() {
         return html`
             <div class="pf-c-select" part="ak-search-select">
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">

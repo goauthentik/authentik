@@ -50,7 +50,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

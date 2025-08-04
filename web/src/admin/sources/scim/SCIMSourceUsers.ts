@@ -29,7 +29,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    renderExpanded(item: SCIMSourceUser): TemplateResult {
+    protected renderExpanded(item: SCIMSourceUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

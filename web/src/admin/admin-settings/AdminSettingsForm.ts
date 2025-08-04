@@ -67,7 +67,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`
             <ak-text-input
                 name="avatars"

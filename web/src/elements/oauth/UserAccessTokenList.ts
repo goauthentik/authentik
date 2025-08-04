@@ -44,7 +44,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         ];
     }
 
-    renderExpanded(item: TokenModel): TemplateResult {
+    protected renderExpanded(item: TokenModel): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-l-flex">
@@ -59,7 +59,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
             <td></td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Access Tokens(s)")}

@@ -57,7 +57,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected renderToolbarSelected(): TemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
@@ -127,7 +127,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected renderObjectCreate(): TemplateResult {
         return html`<ak-source-wizard> </ak-source-wizard> `;
     }
 }

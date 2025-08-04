@@ -29,7 +29,7 @@ export class BrandLinks extends AKElement {
     @property({ type: Array, attribute: false })
     links: FooterLink[] = [];
 
-    render() {
+    public render() {
         const links = [...(this.links ?? [])];
 
         return html` <ul class="pf-c-list pf-m-inline">

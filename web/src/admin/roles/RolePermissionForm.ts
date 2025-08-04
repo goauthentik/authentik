@@ -48,7 +48,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
                 <div class="pf-c-input-group">

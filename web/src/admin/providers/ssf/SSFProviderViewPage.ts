@@ -75,7 +75,7 @@ export class SSFProviderViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -107,7 +107,7 @@ export class SSFProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

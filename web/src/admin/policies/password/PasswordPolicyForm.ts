@@ -45,7 +45,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         });
     }
 
-    renderStaticRules(): TemplateResult {
+    protected renderStaticRules(): TemplateResult {
         return html` <ak-form-group label="${msg("Static rules")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
@@ -141,7 +141,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         </ak-form-group>`;
     }
 
-    renderHIBP(): TemplateResult {
+    protected renderHIBP(): TemplateResult {
         return html`
             <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
                 <div class="pf-c-form">
@@ -165,7 +165,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderZxcvbn(): TemplateResult {
+    protected renderZxcvbn(): TemplateResult {
         return html`
             <ak-form-group open label="${msg("zxcvbn settings")}">
                 <div class="pf-c-form">
@@ -214,7 +214,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",

@@ -123,7 +123,7 @@ export class Portal extends LitElement implements IPortal {
         super.performUpdate();
     }
 
-    render() {
+    public render() {
         this.dropdownContainer.appendChild(this.content);
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.

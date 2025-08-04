@@ -138,7 +138,7 @@ export class AkRememberMeController implements ReactiveController {
         this.usernameField.addEventListener("keyup", this.trackRememberMe);
     }
 
-    render() {
+    public render() {
         return this.isEnabled
             ? html` <label class="pf-c-switch remember-me-switch">
                   <input

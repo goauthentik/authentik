@@ -41,7 +41,7 @@ export class SyncStatusCard extends AKElement {
         });
     }
 
-    renderSyncStatus(): TemplateResult {
+    protected renderSyncStatus(): TemplateResult {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
@@ -89,7 +89,7 @@ export class SyncStatusCard extends AKElement {
         `;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__actions">
