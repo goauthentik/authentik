@@ -66,7 +66,7 @@ export class RadiusProviderViewPage extends AKElement {
             .then((prov) => (this.provider = prov));
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }

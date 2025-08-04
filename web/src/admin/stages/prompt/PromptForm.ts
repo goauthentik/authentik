@@ -107,7 +107,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     _shouldRefresh = false;
     _timer = 0;
 
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
@@ -120,7 +120,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         }, minUpdateDelay) as unknown as number;
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         clearTimeout(this._timer);
     }

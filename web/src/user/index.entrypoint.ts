@@ -291,7 +291,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
     }
 
-    async connectedCallback() {
+    public async connectedCallback() {
         super.connectedCallback();
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
@@ -299,7 +299,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
     }
 
-    disconnectedCallback() {
+    public disconnectedCallback() {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);

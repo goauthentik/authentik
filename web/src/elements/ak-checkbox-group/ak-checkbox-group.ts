@@ -161,14 +161,14 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.value = this.values;
     }
 
-    willUpdate(changed: PropertyValues<this>) {
+    public willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && !this.doneFirstUpdate) {
             this.doneFirstUpdate = true;
             this.values = this.value;
         }
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
         if (this.name && !this.internals) {

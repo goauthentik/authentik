@@ -43,7 +43,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     }
 
     // Lifecycle method: Called when component is added to DOM
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
         // Initial data fetch
         this.#fetchData();

@@ -88,7 +88,7 @@ export class AkMultiSelect extends AkControlElement {
         return this.values;
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
     }

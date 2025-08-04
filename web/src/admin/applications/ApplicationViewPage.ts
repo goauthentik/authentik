@@ -89,7 +89,7 @@ export class ApplicationViewPage extends AKElement {
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }

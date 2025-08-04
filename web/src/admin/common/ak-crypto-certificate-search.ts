@@ -72,7 +72,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {

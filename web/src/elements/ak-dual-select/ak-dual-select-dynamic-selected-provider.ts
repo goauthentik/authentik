@@ -27,7 +27,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
 
     #didFirstUpdate = false;
 
-    willUpdate(changed: PropertyValues<this>) {
+    public willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
 
         // On the first update *only*, even before rendering, when the options are handed up, update

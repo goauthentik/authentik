@@ -64,7 +64,7 @@ export class WizardPage extends AKElement {
         return Promise.resolve(true);
     };
 
-    requestUpdate(
+    public requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
         options?: PropertyDeclaration<unknown, unknown>,

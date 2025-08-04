@@ -116,7 +116,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("modelName")) {
             this.fetchProviderType(this.modelName);
         }

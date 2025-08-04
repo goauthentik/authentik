@@ -188,7 +188,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      */
     flatOptions: [string, SelectOption][] = [];
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());

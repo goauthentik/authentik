@@ -61,7 +61,7 @@ export class FlowViewPage extends AKElement {
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowSlug") && this.flowSlug) {
             this.fetchFlow(this.flowSlug);
         }

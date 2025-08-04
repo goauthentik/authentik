@@ -92,7 +92,7 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.navigate();
     }
 
@@ -133,7 +133,7 @@ export class RouterOutlet extends AKElement {
         this.current = matchedRoute;
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
+    public updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
         if (!this.sentryClient) return;
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing

@@ -27,7 +27,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     @state()
     protected authenticating = false;
 
-    updated(changedProperties: PropertyValues<this>) {
+    public updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.authenticating = true;
             this.host

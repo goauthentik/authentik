@@ -95,7 +95,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         if (!this.query) {
             return;

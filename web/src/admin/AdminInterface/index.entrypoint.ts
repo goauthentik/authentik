@@ -166,7 +166,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         WebsocketClient.close();
     }
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         me().then((session) => {
             this.user = session;
 

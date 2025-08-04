@@ -37,7 +37,7 @@ export class FormElement extends AKElement {
 
     _errors?: ErrorDetail[];
 
-    updated(): void {
+    public updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });

@@ -47,7 +47,7 @@ export class AkApplicationWizardMain extends AKElement {
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             const wizardReadyProviders = Object.keys(providerTypeRenderers);

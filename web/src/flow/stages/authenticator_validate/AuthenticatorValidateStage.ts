@@ -127,7 +127,7 @@ export class AuthenticatorValidateStage
         return this.host?.submit(payload, options) || Promise.resolve();
     }
 
-    willUpdate(_changed: PropertyValues<this>) {
+    public willUpdate(_changed: PropertyValues<this>) {
         if (this._firstInitialized || !this.challenge) {
             return;
         }

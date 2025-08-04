@@ -41,7 +41,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {

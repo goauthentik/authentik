@@ -62,7 +62,7 @@ export class NotificationDrawer extends AKElement {
         `,
     ];
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         me().then((user) => {
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({

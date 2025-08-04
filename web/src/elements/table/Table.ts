@@ -198,7 +198,7 @@ export abstract class Table<T extends object>
         }
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.fetch();
     }
 

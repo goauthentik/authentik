@@ -27,7 +27,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class SearchSelectLoadingIndicator extends AKElement {
     public static styles = [PFBase, PFFormControl, PFSelect];
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-loading-indicator");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());

@@ -19,7 +19,7 @@ export class TopApplicationsTable extends AKElement {
 
     public static styles: CSSResult[] = [PFTable];
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)
             .eventsEventsTopPerUserList({
                 action: "authorize_application",

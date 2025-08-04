@@ -111,7 +111,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         this.#fetch(1);
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("selected") && !this.#didFirstUpdate) {
             this.#didFirstUpdate = true;
             this.#selected = this.selected;

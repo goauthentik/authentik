@@ -65,7 +65,7 @@ export class ObjectChangelog extends Table<Event> {
         ];
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("targetModelName") && this.targetModelName) {
             this.fetch();
         }

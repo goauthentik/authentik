@@ -337,7 +337,7 @@ export class AKPageNavbar
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
-    willUpdate() {
+    public willUpdate() {
         // Always update title, even if there's no header value set,
         // as in that case we still need to return to the generic title
         this.#setTitle(this.header);

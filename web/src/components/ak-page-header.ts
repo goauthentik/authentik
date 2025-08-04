@@ -53,7 +53,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         `,
     ];
 
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
 
         AKPageNavbar.setNavbarDetails({
@@ -64,7 +64,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         });
     }
 
-    updated(): void {
+    public updated(): void {
         AKPageNavbar.setNavbarDetails({
             header: this.header,
             description: this.description,

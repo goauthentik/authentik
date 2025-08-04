@@ -60,7 +60,7 @@ export class UserSourceSettingsPage extends AKElement {
         });
     }
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         this.sourceSettings = await new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
         this.connections = await new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList({
             user: this.userId,

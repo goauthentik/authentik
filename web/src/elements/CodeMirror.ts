@@ -160,7 +160,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
                 this.#editor?.dispatch({

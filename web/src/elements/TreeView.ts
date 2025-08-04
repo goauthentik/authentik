@@ -55,7 +55,7 @@ export class TreeViewNode extends AKElement {
         return this;
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         const pathSegments = this.activePath.split(this.separator);
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded

@@ -54,13 +54,13 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         }
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.updateLocale();
         window.addEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
     }
 
-    disconnectedCallback() {
+    public disconnectedCallback() {
         window.removeEventListener(EVENT_LOCALE_REQUEST, this.updateLocaleHandler as EventListener);
         super.disconnectedCallback();
     }

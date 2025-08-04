@@ -88,13 +88,13 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    firstUpdated() {
+    public firstUpdated() {
         if (this.flowSlug) {
             this.nextChallenge();
         }
     }
 
-    updated(): void {
+    public updated(): void {
         if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();

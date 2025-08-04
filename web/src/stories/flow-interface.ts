@@ -8,7 +8,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-storybook-interface-flow")
 export class StoryFlowInterface extends FlowExecutor {
-    async firstUpdated() {}
+    public async firstUpdated() {}
 
     submit = async (
         payload?: FlowChallengeResponseRequest,

@@ -61,7 +61,7 @@ export class FlowInspector extends AKElement {
         window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
     }

@@ -76,7 +76,7 @@ export class LibraryPage extends AKElement {
         return msg("My Applications");
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.filteredApps = this.apps;
         if (this.filteredApps === undefined) {
@@ -90,7 +90,7 @@ export class LibraryPage extends AKElement {
         this.addEventListener(LibraryPageSearchSelected.eventName, this.#launchRequest);
     }
 
-    disconnectedCallback() {
+    public disconnectedCallback() {
         this.removeEventListener(LibraryPageSearchUpdated.eventName, this.#searchUpdated);
         this.removeEventListener(LibraryPageSearchReset.eventName, this.#searchReset);
         this.removeEventListener(LibraryPageSearchEmpty.eventName, this.#searchEmpty);

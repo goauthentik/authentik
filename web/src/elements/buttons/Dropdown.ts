@@ -21,7 +21,7 @@ export class DropdownButton extends AKElement {
         this.menu.hidden = true;
     };
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
         this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
@@ -34,7 +34,7 @@ export class DropdownButton extends AKElement {
         });
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.clickHandler);
     }

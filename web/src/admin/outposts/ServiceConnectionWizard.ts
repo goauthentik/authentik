@@ -33,7 +33,7 @@ export class ServiceConnectionWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllTypesList().then((types) => {
             this.connectionTypes = types;
         });

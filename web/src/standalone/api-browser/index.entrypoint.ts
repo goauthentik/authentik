@@ -38,7 +38,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @state()
     protected textColor = "#000000";
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             const style = getComputedStyle(document.documentElement);
             if (ev.detail === UiThemeEnum.Light) {

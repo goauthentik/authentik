@@ -39,7 +39,7 @@ export class OutpostHealthSimpleElement extends AKElement {
         });
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         if (!this.outpostId) return;
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesHealthList({

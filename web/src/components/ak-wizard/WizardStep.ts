@@ -162,7 +162,7 @@ export class WizardStep extends AKElement {
 
     // END Public API
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         if (!this.name) {
             const name = this.getAttribute("slot");

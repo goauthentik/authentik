@@ -53,7 +53,7 @@ export class Tabs extends AKElement {
         });
     }
 
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
         this.observer.observe(this, {
             attributes: true,
@@ -62,7 +62,7 @@ export class Tabs extends AKElement {
         });
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         this.observer.disconnect();
         super.disconnectedCallback();
     }

@@ -109,7 +109,7 @@ export class SidebarItem extends AKElement {
         });
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.onHashChange();
         window.addEventListener("hashchange", () => this.onHashChange());
     }

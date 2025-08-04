@@ -45,7 +45,7 @@ export class PlexLoginInit extends BaseStage<
         PFDivider,
     ];
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
         this.authUrl = authInfo.authUrl;
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);

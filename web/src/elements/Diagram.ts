@@ -55,7 +55,7 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
@@ -70,7 +70,7 @@ export class Diagram extends AKElement {
         this.refreshHandler();
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }

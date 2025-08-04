@@ -116,7 +116,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return selected;
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {

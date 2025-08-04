@@ -46,7 +46,7 @@ export class EventViewPage extends AKElement {
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("eventID") && this.eventID) {
             this.fetchEvent(this.eventID);
         }

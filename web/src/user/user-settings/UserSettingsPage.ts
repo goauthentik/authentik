@@ -86,7 +86,7 @@ export class UserSettingsPage extends AKElement {
         });
     }
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
     }
 

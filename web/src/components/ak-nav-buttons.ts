@@ -69,7 +69,7 @@ export class NavigationButtons extends AKElement {
         `,
     ];
 
-    async firstUpdated() {
+    public async firstUpdated() {
         this.me = await me();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,

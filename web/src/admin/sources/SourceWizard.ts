@@ -34,7 +34,7 @@ export class SourceWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         new SourcesApi(DEFAULT_CONFIG).sourcesAllTypesList().then((types) => {
             this.sourceTypes = types;
         });

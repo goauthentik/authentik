@@ -114,11 +114,11 @@ export class HorizontalFormElement extends AKElement {
     })
     public flowDirection: "row" | "column" = "column";
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.updated();
     }
 
-    updated(): void {
+    public updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });

@@ -208,7 +208,7 @@ export class InputPassword extends AKElement {
         console.debug("authentik/stages/password: started focus observer");
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
 
         this.observeInputFocus();
@@ -217,7 +217,7 @@ export class InputPassword extends AKElement {
         addEventListener("keyup", this.#capsLockListener);
     }
 
-    disconnectedCallback() {
+    public disconnectedCallback() {
         if (this.inputFocusIntervalID) {
             clearInterval(this.inputFocusIntervalID);
         }

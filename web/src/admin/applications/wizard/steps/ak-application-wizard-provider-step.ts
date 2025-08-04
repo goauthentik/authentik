@@ -97,7 +97,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
             : nothing;
     }
 
-    updated(changed: PropertyValues<this>) {
+    public updated(changed: PropertyValues<this>) {
         if (changed.has("wizard")) {
             const label = this.element?.label ?? this.label;
             if (label !== this.label) {

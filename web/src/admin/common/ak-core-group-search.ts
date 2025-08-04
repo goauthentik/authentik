@@ -64,7 +64,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         return this.selectedGroup ? renderValue(this.selectedGroup) : undefined;
     }
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {

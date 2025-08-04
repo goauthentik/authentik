@@ -78,7 +78,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
     @state()
     protected user?: SessionUser;
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         this.user = await me();
     }
 

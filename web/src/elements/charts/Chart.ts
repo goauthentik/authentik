@@ -82,7 +82,7 @@ export abstract class AKChart<T> extends AKElement {
         `,
     ];
 
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
@@ -96,7 +96,7 @@ export abstract class AKChart<T> extends AKElement {
         }) as EventListener);
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener("resize", this.resizeHandler);
         this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
@@ -117,7 +117,7 @@ export abstract class AKChart<T> extends AKElement {
         this.chart.resize();
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.apiRequest()
             .then((r) => {
                 const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");

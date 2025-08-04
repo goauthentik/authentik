@@ -122,7 +122,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         ) as unknown as number;
     }
 
-    connectedCallback(): void {
+    public connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener(
             "focus",
@@ -141,12 +141,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         });
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         clearInterval(this.clipboardWatcherTimer);
     }
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host

@@ -43,7 +43,7 @@ export class ProviderWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             this.providerTypes = providerTypes;

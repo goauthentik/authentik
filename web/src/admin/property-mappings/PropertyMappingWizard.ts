@@ -43,7 +43,7 @@ export class PropertyMappingWizard extends AKElement {
     @query("ak-wizard")
     protected wizard?: Wizard;
 
-    async firstUpdated(): Promise<void> {
+    public async firstUpdated(): Promise<void> {
         this.mappingTypes = await new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsAllTypesList();

@@ -82,7 +82,7 @@ export class EventMap extends AKElement {
         `,
     ];
 
-    updated(_changedProperties: PropertyValues<this>): void {
+    public updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
             return;
         }

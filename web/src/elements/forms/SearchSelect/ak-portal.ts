@@ -63,7 +63,7 @@ export class Portal extends LitElement implements IPortal {
 
     content!: Element;
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
@@ -88,7 +88,7 @@ export class Portal extends LitElement implements IPortal {
         this.content = this.firstElementChild;
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         this.connected = false;
         this.dropdownContainer?.remove();
         this.cleanup?.();
@@ -130,7 +130,7 @@ export class Portal extends LitElement implements IPortal {
         return nothing;
     }
 
-    updated() {
+    public updated() {
         (this.content as HTMLElement).style.display = "none";
         if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
             (this.content as HTMLElement).style.display = "";

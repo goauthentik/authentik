@@ -79,7 +79,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
     //#region Lifecycle
 
-    connectedCallback() {
+    public connectedCallback() {
         super.connectedCallback();
 
         for (const [attr, value] of hostAttributes) {

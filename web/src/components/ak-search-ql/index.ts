@@ -99,7 +99,7 @@ export class QLSearch extends AKElement {
         `,
     ];
 
-    firstUpdated() {
+    public firstUpdated() {
         if (!this.searchElement) {
             return;
         }

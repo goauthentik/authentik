@@ -68,7 +68,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         return html``;
     }
 
-    firstUpdated(): void {
+    public firstUpdated(): void {
         this.expandable = this.usedBy !== undefined;
         super.firstUpdated();
     }
