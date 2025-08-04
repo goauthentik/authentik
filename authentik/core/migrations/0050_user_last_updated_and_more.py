@@ -20,4 +20,8 @@ class Migration(migrations.Migration):
             model_name="user",
             index=models.Index(fields=["last_updated"], name="authentik_c_last_up_ed7486_idx"),
         ),
+        migrations.AddIndex(
+            model_name="user",
+            index=models.Index(fields=["date_joined"], name="authentik_c_date_jo_58c256_idx"),
+        ),
     ]

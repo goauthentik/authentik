@@ -295,6 +295,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
+            models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
         ]
 
