@@ -102,9 +102,9 @@ export class AKFormGroup extends AKElement {
         `,
     ];
 
-    formRef = createRef<HTMLFormElement>();
+    protected formRef = createRef<HTMLFormElement>();
 
-    scrollAnimationFrame = -1;
+    protected scrollAnimationFrame = -1;
 
     public override scrollIntoView = (): void => {
         this.formRef.value?.scrollIntoView({

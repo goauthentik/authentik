@@ -28,17 +28,17 @@ export class TableColumn {
     /**
      * The text to show in the column header
      */
-    value: string;
+    protected value: string;
 
     /**
      * If not undefined, the element that will first receive the `tablesort` event
      */
-    host?: HTMLElement;
+    public host?: HTMLElement;
 
     /**
      * If not undefined, show the sort indicator, and indicate the sort state
      */
-    orderBy?: string;
+    protected orderBy?: string;
 
     public constructor(value: string, orderBy?: string, host?: HTMLElement) {
         this.value = value;

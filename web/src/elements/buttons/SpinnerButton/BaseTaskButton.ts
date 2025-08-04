@@ -49,13 +49,13 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  */
 
 export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
-    eventPrefix = "ak-button";
+    protected eventPrefix = "ak-button";
 
     public static styles = [...buttonStyles];
 
-    callAction!: () => Promise<unknown>;
+    protected callAction!: () => Promise<unknown>;
 
-    actionTask: Task;
+    protected actionTask: Task;
 
     @property({ type: Boolean })
     public disabled = false;

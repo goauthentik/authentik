@@ -5,9 +5,9 @@ import { Route } from "#elements/router/Route";
 import { TemplateResult } from "lit";
 
 export class RouteMatch {
-    route: Route;
-    arguments: { [key: string]: string };
-    fullURL: string;
+    public route: Route;
+    public arguments: { [key: string]: string };
+    public fullURL: string;
 
     public constructor(route: Route, fullUrl: string) {
         this.route = route;

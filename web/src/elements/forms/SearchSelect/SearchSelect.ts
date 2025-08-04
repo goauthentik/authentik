@@ -36,28 +36,28 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    protected fetchObjects!: (query?: string) => Promise<T[]>;
 
     // A function passed to this object that extracts a string representation of items of the
     // collection under search.
-    renderElement!: (element: T) => string;
+    protected renderElement!: (element: T) => string;
 
     // A function passed to this object that extracts an HTML representation of additional
     // information for items of the collection under search.
-    renderDescription?: (element: T) => string | TemplateResult;
+    protected renderDescription?: (element: T) => string | TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
-    value!: (element: T | undefined) => string;
+    protected value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
     // fetching the data; sets an initial default value.
-    selected?: (element: T, elements: T[]) => boolean;
+    protected selected?: (element: T, elements: T[]) => boolean;
 
     // A function passed to this object (or using the default below) that groups objects in the
     // collection under search into categories.
-    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
+    protected groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
         return groupBy(items, () => {
             return "";
         });
@@ -94,7 +94,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     @property()
     public emptyOption = "---------";
 
-    isFetchingData = false;
+    protected isFetchingData = false;
 
     @state()
     protected error?: APIError;

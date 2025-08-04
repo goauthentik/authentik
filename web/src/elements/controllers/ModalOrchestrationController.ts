@@ -5,7 +5,8 @@ interface ModalElement extends LitElement {
 }
 
 export class ModalShowEvent extends Event {
-    modal: ModalElement;
+    public modal: ModalElement;
+
     public constructor(modal: ModalElement) {
         super("ak-modal-show", { bubbles: true, composed: true });
         this.modal = modal;
@@ -13,7 +14,8 @@ export class ModalShowEvent extends Event {
 }
 
 export class ModalHideEvent extends Event {
-    modal: ModalElement;
+    public modal: ModalElement;
+
     public constructor(modal: ModalElement) {
         super("ak-modal-hide", { bubbles: true, composed: true });
         this.modal = modal;
@@ -76,7 +78,7 @@ export class ModalOrchestrationController implements ReactiveController {
         });
     };
 
-    closeModal = (e: ModalHideEvent) => {
+    protected closeModal = (e: ModalHideEvent) => {
         const modal = e.modal;
 
         if (!modalIsLive(modal)) return;
@@ -108,7 +110,7 @@ export class ModalOrchestrationController implements ReactiveController {
         this.#knownModals = knownModals;
     };
 
-    handleKeyup = ({ key }: KeyboardEvent) => {
+    protected handleKeyup = ({ key }: KeyboardEvent) => {
         // The latter handles Firefox 37 and earlier.
         if (key === "Escape" || key === "Esc") {
             this.#removeTopmostModal();

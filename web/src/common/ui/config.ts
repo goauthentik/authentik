@@ -64,29 +64,29 @@ export interface UIConfig {
 }
 
 export class DefaultUIConfig implements UIConfig {
-    enabledFeatures = {
+    public enabledFeatures = {
         apiDrawer: true,
         notificationDrawer: true,
         settings: true,
         applicationEdit: true,
         search: true,
     };
-    layout = {
+    public layout = {
         type: LayoutType.row,
     };
-    navbar = {
+    public navbar = {
         userDisplay: UserDisplay.username,
     };
-    theme = {
+    public theme = {
         base: UiThemeEnum.Automatic,
         background: "",
         cardBackground: "",
     };
-    pagination = {
+    public pagination = {
         perPage: 20,
     };
-    locale = "";
-    defaults = {
+    public locale = "";
+    public defaults = {
         userPath: "users",
     };
 

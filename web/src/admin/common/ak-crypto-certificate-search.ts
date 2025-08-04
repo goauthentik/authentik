@@ -59,7 +59,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     @property({ type: Boolean, attribute: "singleton" })
     public singleton = false;
 
-    selectedKeypair?: CertificateKeyPair;
+    public selectedKeypair?: CertificateKeyPair;
 
     public constructor() {
         super();

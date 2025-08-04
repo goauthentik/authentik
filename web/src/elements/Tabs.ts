@@ -44,7 +44,7 @@ export class Tabs extends AKElement {
         `,
     ];
 
-    observer: MutationObserver;
+    protected observer: MutationObserver;
 
     public constructor() {
         super();

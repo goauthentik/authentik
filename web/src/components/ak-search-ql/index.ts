@@ -48,8 +48,8 @@ export class QLSearch extends AKElement {
     @state()
     protected cursorY: number = 0;
 
-    ql?: QL;
-    canvas?: CanvasRenderingContext2D;
+    protected ql?: QL;
+    protected canvas?: CanvasRenderingContext2D;
 
     public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
         if (!value || !value.autocomplete || !this.ql) {

@@ -75,7 +75,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     @property({ type: String })
     public name: string | null | undefined;
 
-    selectedFlow?: T;
+    protected selectedFlow?: T;
 
     public get value() {
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;

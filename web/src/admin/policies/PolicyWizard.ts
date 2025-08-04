@@ -54,7 +54,7 @@ export class PolicyWizard extends AKElement {
         });
     }
 
-    selectListener = ({ detail }: CustomEvent<TypeCreate>) => {
+    protected selectListener = ({ detail }: CustomEvent<TypeCreate>) => {
         if (!this.wizard) return;
 
         const { component, modelName } = detail;

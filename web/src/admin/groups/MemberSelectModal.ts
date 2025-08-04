@@ -41,7 +41,7 @@ export class MemberSelectTable extends TableModal<User> {
     @property()
     public confirm!: (selectedItems: User[]) => Promise<unknown>;
 
-    userListFilter: UserListFilter = "active";
+    protected userListFilter: UserListFilter = "active";
 
     public override order = "username";
 

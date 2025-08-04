@@ -27,9 +27,9 @@ export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
     public currentStep?: string;
 
-    wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
+    protected wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
 
-    slots: WizardStep[] = [];
+    protected slots: WizardStep[] = [];
 
     public constructor() {
         super();

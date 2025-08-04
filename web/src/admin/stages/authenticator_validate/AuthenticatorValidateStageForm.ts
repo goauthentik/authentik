@@ -48,7 +48,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         });
     }
 
-    stages?: PaginatedStageList;
+    protected stages?: PaginatedStageList;
 
     @property({ type: Boolean })
     public showConfigurationStages = true;

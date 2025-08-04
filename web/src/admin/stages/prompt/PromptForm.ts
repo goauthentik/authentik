@@ -28,10 +28,10 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 class PreviewStageHost implements StageHost {
-    challenge = undefined;
-    flowSlug = undefined;
-    loading = false;
-    brand = undefined;
+    public challenge = undefined;
+    public flowSlug = undefined;
+    public loading = false;
+    public brand = undefined;
     async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
         return false;

@@ -87,7 +87,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         return this._options;
     }
 
-    _options!: GroupedOptions;
+    protected _options!: GroupedOptions;
 
     /**
      * The current value.  Must be one of the keys in the options group above.
@@ -160,7 +160,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public emptyOption = "---------";
 
     // Handle the behavior of the drop-down when the :host scrolls off the page.
-    scrollHandler?: () => void;
+    protected scrollHandler?: () => void;
 
     // observer: IntersectionObserver;
 
@@ -175,18 +175,18 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     /**
      * Permanent identity with the portal so focus events can be checked.
      */
-    menuRef: Ref<ListSelect> = createRef();
+    protected menuRef: Ref<ListSelect> = createRef();
 
     /**
      * Permanent identify for the input object, so the floating portal can find where to anchor
      * itself.
      */
-    inputRef: Ref<HTMLInputElement> = createRef();
+    protected inputRef: Ref<HTMLInputElement> = createRef();
 
     /**
      *  Maps a value from the portal to labels to be put into the <input> field>
      */
-    flatOptions: [string, SelectOption][] = [];
+    protected flatOptions: [string, SelectOption][] = [];
 
     public override connectedCallback() {
         super.connectedCallback();

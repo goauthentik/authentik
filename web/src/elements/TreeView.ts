@@ -151,7 +151,7 @@ export class TreeView extends AKElement {
     @state()
     public activeNode?: TreeViewNode;
 
-    separator = "/";
+    protected separator = "/";
 
     createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();

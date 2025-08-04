@@ -10,7 +10,7 @@ import { customElement } from "lit/decorators.js";
  */
 @customElement("ak-wizard-page-form")
 export class FormWizardPage extends WizardPage {
-    activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
+    protected activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
         return Promise.resolve();
     };
 

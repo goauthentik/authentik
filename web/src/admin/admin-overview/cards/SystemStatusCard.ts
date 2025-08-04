@@ -12,7 +12,7 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-admin-status-system")
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
-    now?: Date;
+    protected now?: Date;
 
     public override icon = "pf-icon pf-icon-server";
 

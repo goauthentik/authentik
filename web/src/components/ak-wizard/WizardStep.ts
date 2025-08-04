@@ -197,7 +197,7 @@ export class WizardStep extends AKElement {
         };
     }
 
-    renderCloseButton = (button: WizardButton) => {
+    protected renderCloseButton = (button: WizardButton) => {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
                 class=${classMap(this.getButtonClasses(button))}
@@ -209,13 +209,13 @@ export class WizardStep extends AKElement {
         </div>`;
     };
 
-    renderDisabledButton = (button: WizardButton) => {
+    protected renderDisabledButton = (button: WizardButton) => {
         return html`<button class=${classMap(this.getButtonClasses(button))} type="button" disabled>
             ${this.getButtonLabel(button)}
         </button>`;
     };
 
-    renderNavigableButton = (button: WizardButton) => {
+    protected renderNavigableButton = (button: WizardButton) => {
         return html`<button
             class=${classMap(this.getButtonClasses(button))}
             type="button"
@@ -226,7 +226,7 @@ export class WizardStep extends AKElement {
         </button>`;
     };
 
-    renderButton = (button: WizardButton) => {
+    protected renderButton = (button: WizardButton) => {
         return match(button)
             .with({ kind: P.union("close", "cancel") }, () => this.renderCloseButton(button))
             .with({ destination: P.string }, () => this.renderNavigableButton(button))
@@ -246,7 +246,7 @@ export class WizardStep extends AKElement {
         </button>`;
     }
 
-    renderSidebarStep = (step: WizardStepLabel) => {
+    protected renderSidebarStep = (step: WizardStepLabel) => {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
             "pf-m-disabled": !step.enabled,

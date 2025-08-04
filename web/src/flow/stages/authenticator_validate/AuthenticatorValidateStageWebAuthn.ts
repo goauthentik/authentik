@@ -35,7 +35,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     @state()
     protected authenticating = false;
 
-    transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
+    protected transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
     async authenticate(): Promise<void> {
         // request the authenticator to create an assertion signature using the

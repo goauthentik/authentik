@@ -37,7 +37,7 @@ export class AkApplicationWizardMain extends AKElement {
     @state()
     protected wizard: ApplicationWizardState = freshWizardState();
 
-    wizardProviderProvider = new ContextProvider(this, {
+    protected wizardProviderProvider = new ContextProvider(this, {
         context: applicationWizardProvidersContext,
         initialValue: [],
     });

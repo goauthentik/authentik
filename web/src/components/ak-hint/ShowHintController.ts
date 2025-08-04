@@ -20,15 +20,14 @@ const getCurrentStorageValue = (): Record<string, unknown> => {
 };
 
 export class ShowHintController implements ReactiveController {
-    host: ShowHintControllerHost;
+    #host: ShowHintControllerHost;
 
-    hintToken: string;
+    protected hintToken: string;
 
     public constructor(host: ShowHintControllerHost, hintToken: string) {
-        (this.host = host).addController(this);
+        this.#host = host;
+        this.#host.addController(this);
         this.hintToken = hintToken;
-        this.hide = this.hide.bind(this);
-        this.show = this.show.bind(this);
     }
 
     setTheHint(state: boolean = false) {
@@ -39,16 +38,16 @@ export class ShowHintController implements ReactiveController {
                 [this.hintToken]: state,
             }),
         );
-        this.host.showHint = state;
+        this.#host.showHint = state;
     }
 
-    hide() {
+    public hide = () => {
         this.setTheHint(false);
-    }
+    };
 
-    show() {
+    public show = () => {
         this.setTheHint(true);
-    }
+    };
 
     hostConnected() {
         const localStores = getCurrentStorageValue();
@@ -57,7 +56,7 @@ export class ShowHintController implements ReactiveController {
         }
         // Note that we only do this IF the field exists and is defined. `undefined` means "do the
         // default thing of showing the hint."
-        this.host.showHint = localStores[this.hintToken] as boolean;
+        this.#host.showHint = localStores[this.hintToken] as boolean;
     }
 
     public render() {

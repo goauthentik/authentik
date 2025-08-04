@@ -73,8 +73,8 @@ export class RacInterface extends WithBrandConfig(Interface) {
         `,
     ];
 
-    client?: Guacamole.Client;
-    tunnel?: Guacamole.Tunnel;
+    protected client?: Guacamole.Client;
+    protected tunnel?: Guacamole.Tunnel;
 
     @state()
     protected container?: HTMLElement;

@@ -55,7 +55,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#region Refs
 
-    formRef: Ref<HTMLFormElement> = createRef();
+    protected formRef: Ref<HTMLFormElement> = createRef();
 
     //#endregion
 

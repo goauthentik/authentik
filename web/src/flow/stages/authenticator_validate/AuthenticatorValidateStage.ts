@@ -77,7 +77,7 @@ export class AuthenticatorValidateStage
         customCSS,
     ];
 
-    flowSlug = "";
+    public flowSlug = "";
 
     public set loading(value: boolean) {
         this.host.loading = value;

@@ -114,8 +114,8 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     @state()
     protected values: string[] = [];
 
-    internals?: ElementInternals;
-    doneFirstUpdate = false;
+    protected internals?: ElementInternals;
+    protected doneFirstUpdate = false;
 
     public override json() {
         return this.values;

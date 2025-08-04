@@ -60,9 +60,9 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     @state()
     protected policyGroupUser: target = target.policy;
 
-    instanceId = -1;
+    protected instanceId = -1;
 
-    instance?: PolicyBinding;
+    protected instance?: PolicyBinding;
 
     public override get buttons(): WizardButton[] {
         return [

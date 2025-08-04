@@ -3,9 +3,9 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { DetailedCountry, PoliciesApi } from "@goauthentik/api";
 
 class CountryCache {
-    countries: DetailedCountry[];
-    lastReceivedAt?: number;
-    TTL: number;
+    protected countries: DetailedCountry[];
+    protected lastReceivedAt?: number;
+    protected TTL: number;
 
     public constructor() {
         this.countries = [];

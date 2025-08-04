@@ -115,7 +115,7 @@ export class AkMultiSelect extends AkControlElement {
         }
     }
 
-    selectRef: Ref<HTMLSelectElement> = createRef();
+    protected selectRef: Ref<HTMLSelectElement> = createRef();
 
     public override render() {
         return html` <div class="pf-c-form">

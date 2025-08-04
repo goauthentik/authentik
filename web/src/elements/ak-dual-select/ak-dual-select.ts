@@ -104,9 +104,9 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Refs
 
-    availablePane: Ref<AkDualSelectAvailablePane> = createRef();
+    protected availablePane: Ref<AkDualSelectAvailablePane> = createRef();
 
-    selectedPane: Ref<AkDualSelectSelectedPane> = createRef();
+    protected selectedPane: Ref<AkDualSelectSelectedPane> = createRef();
 
     //#endregion
 

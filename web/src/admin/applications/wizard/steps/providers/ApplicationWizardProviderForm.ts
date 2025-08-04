@@ -19,7 +19,7 @@ import { property, query } from "lit/decorators.js";
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     public static override styles: CSSResult[] = [...AwadStyles];
 
-    label = "";
+    public label = "";
 
     @property({ type: Object, attribute: false })
     public wizard!: ApplicationWizardState;

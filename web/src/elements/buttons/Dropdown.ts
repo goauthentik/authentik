@@ -7,7 +7,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-dropdown")
 export class DropdownButton extends AKElement {
-    menu: HTMLElement | null = null;
+    protected menu: HTMLElement | null = null;
 
     public constructor() {
         super();

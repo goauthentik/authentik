@@ -124,9 +124,9 @@ export class InputPassword extends AKElement {
 
     //#region Refs
 
-    inputRef: Ref<HTMLInputElement> = createRef();
+    protected inputRef: Ref<HTMLInputElement> = createRef();
 
-    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+    protected toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
 
     //#endregion
 
@@ -180,7 +180,7 @@ export class InputPassword extends AKElement {
      *
      * @see {@linkcode observeInputFocus}
      */
-    inputFocusIntervalID?: ReturnType<typeof setInterval>;
+    protected inputFocusIntervalID?: ReturnType<typeof setInterval>;
 
     /**
      * Periodically attempt to focus the input field until it is focused.

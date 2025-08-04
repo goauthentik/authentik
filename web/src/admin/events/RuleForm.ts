@@ -27,7 +27,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
-    eventTransports?: PaginatedNotificationTransportList;
+    protected eventTransports?: PaginatedNotificationTransportList;
 
     protected loadInstance(pk: string): Promise<NotificationRule> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({

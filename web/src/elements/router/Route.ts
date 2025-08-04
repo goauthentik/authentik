@@ -12,7 +12,7 @@ export interface RouteArgs {
 }
 
 export class Route {
-    url: RegExp;
+    public url: RegExp;
 
     private element?: TemplateResult;
     private callback?: (args: RouteArgs) => Promise<TemplateResult>;

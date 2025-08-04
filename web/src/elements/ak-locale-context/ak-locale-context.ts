@@ -34,9 +34,9 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
     @property({ attribute: true, type: String })
     public param = "locale";
 
-    getLocale: LocaleGetter;
+    protected getLocale: LocaleGetter;
 
-    setLocale: LocaleSetter;
+    protected setLocale: LocaleSetter;
 
     public constructor(code = DEFAULT_LOCALE) {
         super();

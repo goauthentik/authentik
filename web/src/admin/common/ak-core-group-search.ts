@@ -52,7 +52,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
     @property({ type: String })
     public name: string | null | undefined;
 
-    selectedGroup?: Group;
+    protected selectedGroup?: Group;
 
     public constructor() {
         super();

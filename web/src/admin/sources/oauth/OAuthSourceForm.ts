@@ -61,7 +61,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         return source;
     }
 
-    _modelName?: string;
+    protected _modelName?: string;
 
     @property()
     public modelName?: string;

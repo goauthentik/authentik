@@ -68,7 +68,7 @@ export class WizardFormPage extends WizardPage {
         return Boolean(response);
     };
 
-    nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
+    protected nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
         async (): Promise<boolean> => {
             return false;
         };

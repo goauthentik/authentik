@@ -19,7 +19,7 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    brand: CurrentBrand;
+    protected brand: CurrentBrand;
     public constructor(brand: CurrentBrand) {
         this.brand = brand;
     }

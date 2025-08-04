@@ -70,7 +70,7 @@ export class LibraryPageApplicationSearch extends AKElement {
     @query("input")
     protected searchInput?: HTMLInputElement;
 
-    fuse: Fuse<Application>;
+    protected fuse: Fuse<Application>;
 
     public constructor() {
         super();

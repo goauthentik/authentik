@@ -49,7 +49,7 @@ export class WizardPage extends AKElement {
     /**
      * Called when this is the page brought into view.
      */
-    activeCallback: WizardPageActiveCallback = () => {
+    public activeCallback: WizardPageActiveCallback = () => {
         this.host.isValid = false;
     };
 
@@ -60,7 +60,7 @@ export class WizardPage extends AKElement {
      *
      * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
      */
-    nextCallback: WizardPageNextCallback = () => {
+    public nextCallback: WizardPageNextCallback = () => {
         return Promise.resolve(true);
     };
 

@@ -25,7 +25,7 @@ export class MyElement extends LitElement {
 */
 
 export class ListenerController {
-    listenerController?: AbortController;
+    protected listenerController?: AbortController;
 
     public get signal() {
         if (!this.listenerController) {

@@ -57,7 +57,7 @@ export abstract class AKChart<T> extends AKElement {
     @property()
     public centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    protected fontColour = FONT_COLOUR_LIGHT_MODE;
 
     public static override styles: CSSResult[] = [
         css`

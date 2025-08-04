@@ -24,7 +24,7 @@ export class Diagram extends AKElement {
         this.diagram = this.textContent;
     };
 
-    handlerBound = false;
+    protected handlerBound = false;
 
     public static override styles: CSSResult[] = [
         css`
@@ -35,7 +35,7 @@ export class Diagram extends AKElement {
         `,
     ];
 
-    config: MermaidConfig;
+    protected config: MermaidConfig;
 
     public constructor() {
         super();

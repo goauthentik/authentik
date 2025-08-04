@@ -56,12 +56,12 @@ export class Portal extends LitElement implements IPortal {
     /**
      * The tether object.
      */
-    dropdownContainer!: HTMLDivElement;
+    protected dropdownContainer!: HTMLDivElement;
     public cleanup?: () => void;
 
-    connected = false;
+    protected connected = false;
 
-    content!: Element;
+    protected content!: Element;
 
     public override connectedCallback() {
         super.connectedCallback();

@@ -80,7 +80,7 @@ export class SidebarItem extends AKElement {
     @property({ type: String })
     public label?: string;
 
-    activeMatchers: RegExp[] = [];
+    protected activeMatchers: RegExp[] = [];
 
     @property({ type: Boolean })
     public expanded = false;

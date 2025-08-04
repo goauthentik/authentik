@@ -42,7 +42,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     @property()
     public registerMessage = "";
 
-    publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
+    protected publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
     public static override styles: CSSResult[] = [
         PFBase,

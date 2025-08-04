@@ -28,7 +28,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
     }
 
-    templates?: TypeCreate[];
+    protected templates?: TypeCreate[];
 
     @property({ type: Boolean })
     public showConnectionSettings = false;

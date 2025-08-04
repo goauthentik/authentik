@@ -172,7 +172,7 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
     protected abstract send(data: T): Promise<unknown>;
 
-    viewportCheck = true;
+    public viewportCheck = true;
 
     //#region Properties
 
