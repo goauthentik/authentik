@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 import jwt
 from django.test import RequestFactory
 from django.utils import timezone
+from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
@@ -162,8 +163,7 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertIn("events", decoded3)
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
-    @patch("authentik.providers.oauth2.tasks.CurrentTask.get_task")
-    def test_send_backchannel_logout_request_scenarios(self, mock_get_task, mock_get_session):
+    def test_send_backchannel_logout_request_scenarios(self, mock_get_session):
         """Test various scenarios for backchannel logout request task"""
         # Setup provider with backchannel logout URI
         self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
@@ -177,10 +177,7 @@ class TestBackChannelLogout(OAuthTestCase):
         mock_response.raise_for_status.return_value = None  # No exception for successful request
         mock_session.post.return_value = mock_response
 
-        # Mock CurrentTask to avoid CurrentTaskNotFound error
-        mock_task = Mock()
-        mock_get_task.return_value = mock_task
-        result = send_backchannel_logout_request(
+        result = send_backchannel_logout_request.send(
             self.provider.pk, "http://testserver", sub="test-user-uid"
         )
         self.assertTrue(result)
@@ -197,34 +194,38 @@ class TestBackChannelLogout(OAuthTestCase):
         error_response.status_code = 400
         error_response.raise_for_status.side_effect = HTTPError("HTTP 400")
         mock_session.post.return_value = error_response
-        with self.assertRaises(HTTPError):
-            send_backchannel_logout_request(
+        with self.assertRaises(ResultFailure):
+            send_backchannel_logout_request.send(
                 self.provider.pk, "http://testserver", sub="test-user-uid"
-            )
+            ).get_result()
 
         # Scenario 3: No URI configured
         mock_session.post.reset_mock()
         self.provider.backchannel_logout_uri = ""
         self.provider.save()
-        result = send_backchannel_logout_request(
+        result = send_backchannel_logout_request.send(
             self.provider.pk, "http://testserver", sub="test-user-uid"
-        )
+        ).get_result()
         self.assertIsNone(result)
         mock_session.post.assert_not_called()
 
         # Scenario 4: No sub provided - should fail
-        result = send_backchannel_logout_request(self.provider.pk, "http://testserver")
+        result = send_backchannel_logout_request.send(
+            self.provider.pk, "http://testserver"
+        ).get_result()
         self.assertIsNone(result)
 
         # Scenario 5: Non-existent provider
-        result = send_backchannel_logout_request(99999, "http://testserver", sub="test-user-uid")
+        result = send_backchannel_logout_request.send(
+            99999, "http://testserver", sub="test-user-uid"
+        ).get_result()
         self.assertIsNone(result)
 
         # Scenario 6: Request timeout
         mock_session.post.side_effect = Timeout("Request timed out")
         self.provider.backchannel_logout_uri = "http://testserver/backchannel_logout"
         self.provider.save()
-        with self.assertRaises(Timeout):
-            send_backchannel_logout_request(
+        with self.assertRaises(ResultFailure):
+            send_backchannel_logout_request.send(
                 self.provider.pk, "http://testserver", sub="test-user-uid"
-            )
+            ).get_result()
