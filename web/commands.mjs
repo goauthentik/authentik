@@ -15,6 +15,7 @@ export function addCommands(browser) {
         /**
          * @this {HTMLElement}
          */
+        // @ts-ignore
         function () {
             this.focus();
 
@@ -28,6 +29,7 @@ export function addCommands(browser) {
         /**
          * @this {HTMLElement}
          */
+        // @ts-ignore
         function () {
             this.blur();
 
