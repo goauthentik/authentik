@@ -88,9 +88,6 @@
         "@types/react-dom": "^18.3.0",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
-        "@wdio/browser-runner": "9.4",
-        "@wdio/cli": "9.4",
-        "@wdio/spec-reporter": "^9.1.2",
         "chromedriver": "^131.0.1",
         "esbuild": "^0.25.0",
         "esbuild-plugin-polyfill-node": "^0.3.0",
@@ -128,7 +125,10 @@
         "@esbuild/linux-arm64": "^0.24.0",
         "@rollup/rollup-darwin-arm64": "4.23.0",
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
-        "@rollup/rollup-linux-x64-gnu": "4.23.0"
+        "@rollup/rollup-linux-x64-gnu": "4.23.0",
+        "@wdio/browser-runner": "9.4",
+        "@wdio/cli": "9.4",
+        "@wdio/spec-reporter": "^9.1.2"
     },
     "overrides": {
         "rapidoc": {
