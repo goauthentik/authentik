@@ -5,7 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -16,6 +16,7 @@ from django.utils.translation import gettext as _
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
+    IsoDateTimeFilter,
     ModelMultipleChoiceFilter,
     MultipleChoiceFilter,
     UUIDFilter,
@@ -241,6 +242,7 @@ class UserSerializer(ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "last_updated",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -331,6 +333,14 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
+    date_joined__lt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="lt")
+    date_joined = IsoDateTimeFilter(field_name="date_joined")
+    date_joined__gt = IsoDateTimeFilter(field_name="date_joined", lookup_expr="gt")
+
+    last_updated__lt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="lt")
+    last_updated = IsoDateTimeFilter(field_name="last_updated")
+    last_updated__gt = IsoDateTimeFilter(field_name="last_updated", lookup_expr="gt")
+
     is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
@@ -376,6 +386,8 @@ class UsersFilter(FilterSet):
         fields = [
             "username",
             "email",
+            "date_joined",
+            "last_updated",
             "name",
             "is_active",
             "is_superuser",
@@ -390,10 +402,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     """User Viewset"""
 
     queryset = User.objects.none()
-    ordering = ["username"]
+    ordering = ["username", "date_joined", "last_updated"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
+    search_fields = [
+        "username",
+        "name",
+        "is_active",
+        "email",
+        "uuid",
+        "attributes",
+        "date_joined",
+        "last_updated",
+    ]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
@@ -435,6 +456,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
+        self.request._request.user = AnonymousUser()
         try:
             plan = planner.plan(
                 self.request._request,
