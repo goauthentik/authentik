@@ -7,20 +7,20 @@ authentik_preview: true
 
 ## Overview
 
-Back-channel logout is a security feature defined in the [OpenID Connect Back-Channel Logout 1.0 specification](https://openid.net/specs/openid-connect-backchannel-1_0.html). It allows an OpenID Provider (OP) like authentik to notify Relying Parties (RPs) when a user session ends, ensuring that all connected applications properly terminate the user's session.
+Back-channel logout is a security feature defined in the [OpenID Connect Back-Channel Logout 1.0 specification](https://openid.net/specs/openid-connect-backchannel-1_0.html). It allow an OpenID Provider (OP), such as authentik, to notify Relying Parties (RPs) when a user session ends. This ensures that all associated applications can properly terminate the user's session, even without direct user interaction.
 
 :::warning
-Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to handle back-channel logout requests. Not all OAuth applications support this feature.
+Your OAuth application (Relying Party) must explicitly support the OpenID Connect Back-Channel Logout 1.0 specification to properly handle back-channel logout requests. Not all OAuth applications support this feature, so compatibility should be verified.
 :::
 
 ## How back-channel logout works
 
-When a user logs out _or_ their session is terminated in authentik, the following events occur:
+When a user logs out _or_ their session is otherwise terminated in authentik, the following events occur:
 
-1. **Session Termination**: The user's session is ended (via logout flow, admin action, or token revocation).
-2. **Provider Notification**: authentik identifies all OAuth2 providers that have active sessions with the user.
+1. **Session Termination**: The user's session is ended through the logout flow, an administrative action, or token revocation.
+2. **Provider Notification**: authentik identifies all OAuth2 providers with active sessions for the user.
 3. **Back-Channel Request**: HTTP POST requests are sent to each provider's configured back-channel logout URI.
-4. **RP Processing**: Each Relying Party validates the logout token and terminates the user's local session.
+4. **RP Processing**: Each Relying Party processes the request, validates the logout token, and terminates the user's local session.
 
 ## Requirements
 
