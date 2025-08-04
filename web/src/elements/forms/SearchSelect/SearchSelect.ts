@@ -163,7 +163,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    private onSearch(event: InputEvent) {
+    protected onSearch(event: InputEvent) {
         const value = (event.target as SearchSelectView).rawValue;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -176,7 +176,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         });
     }
 
-    private onSelect(event: InputEvent) {
+    protected onSelect(event: InputEvent) {
         const value = (event.target as SearchSelectView).value;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -191,7 +191,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.dispatchChangeEvent(this.selectedObject);
     }
 
-    private getGroupedItems(): GroupedOptions {
+    protected getGroupedItems(): GroupedOptions {
         const groupedItems = this.groupBy(this.objects || []);
 
         const makeSearchTuples = (items: T[]): SelectOption[] =>

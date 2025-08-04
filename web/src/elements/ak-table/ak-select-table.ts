@@ -92,15 +92,15 @@ export class SelectTable extends SimpleTable {
     // WARNING: This property and `set selected` must mirror each other perfectly.
     @property({ type: String, attribute: true, reflect: true })
     public set value(value: string) {
-        this._value = value;
+        this.#value = value;
         this.#selected = value.split(this.valueSep).filter((v) => v.trim() !== "");
     }
 
     public get value() {
-        return this._value;
+        return this.#value;
     }
 
-    private _value: string = "";
+    #value: string = "";
 
     @property({ type: Boolean, attribute: true })
     public multiple = false;
@@ -112,7 +112,7 @@ export class SelectTable extends SimpleTable {
     @property({ attribute: false })
     public set selected(selected: string[]) {
         this.#selected = selected;
-        this._value = this.#selected.toSorted().join(this.valueSep);
+        this.#value = this.#selected.toSorted().join(this.valueSep);
     }
 
     @queryAll('input[data-ouia-component-role="select"]')
@@ -126,18 +126,18 @@ export class SelectTable extends SimpleTable {
         return this.#selected;
     }
 
-    private get valuesOnPage() {
+    get #valuesOnPage() {
         return Array.from(this.selectCheckboxesOnPage).map((checkbox) => checkbox.value);
     }
 
-    private get checkedValuesOnPage() {
+    get #checkedValuesOnPage() {
         return Array.from(this.selectCheckboxesOnPage)
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.value);
     }
 
-    private get selectedOnPage() {
-        return this.checkedValuesOnPage.filter((value) => this.#selected.includes(value));
+    get #selectedOnPage() {
+        return this.#checkedValuesOnPage.filter((value) => this.#selected.includes(value));
     }
 
     public clear() {
@@ -174,7 +174,7 @@ export class SelectTable extends SimpleTable {
         // via onSelect() or other change to `this.selected`. Done here instead of in `updated` as
         // changes here cannot trigger an update. See:
         // https://lit.dev/docs/components/lifecycle/#willupdate
-        this.setAttribute("value", this._value);
+        this.setAttribute("value", this.#value);
     }
 
     public renderCheckbox(key: string | undefined) {
@@ -214,11 +214,12 @@ export class SelectTable extends SimpleTable {
 
     protected renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
-            this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
+            this.#selectedOnPage.length &&
+            this.#selectedOnPage.length === this.#valuesOnPage.length;
 
         const onInput = (ev: InputEvent) => {
             const selected = [...this.selected];
-            const values = this.valuesOnPage;
+            const values = this.#valuesOnPage;
             // The behavior preserves the `selected` elements that are not currently visible; its
             // purpose is to preserve the complete value list locally in case clients want to
             // implement pagination.  To clear the entire list, call `clear()` on the component.

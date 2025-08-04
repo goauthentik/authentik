@@ -22,7 +22,7 @@ export class AutosubmitStage extends BaseStage<
     AutoSubmitChallengeResponseRequest
 > {
     @query("form")
-    private form?: HTMLFormElement;
+    protected form?: HTMLFormElement;
 
     public static override styles: CSSResult[] = [
         PFBase,

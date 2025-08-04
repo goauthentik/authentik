@@ -121,7 +121,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         return this.values;
     }
 
-    private get formValue() {
+    get #formValue() {
         if (this.name === undefined) {
             throw new Error("This cannot be called without having the name set.");
         }
@@ -154,7 +154,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                     this,
                 );
             }
-            this.internals.setFormValue(this.formValue);
+            this.internals.setFormValue(this.#formValue);
         }
         // Doing a write-back so anyone examining the checkbox.value field will get something
         // meaningful. Doesn't do anything for anyone, usually, but it's nice to have.

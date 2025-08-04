@@ -41,7 +41,7 @@ export class AKPageNavbar
 {
     //#region Static Properties
 
-    private static elementRef: AKPageNavbar | null = null;
+    protected static elementRef: AKPageNavbar | null = null;
 
     public static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
         const { elementRef } = AKPageNavbar;

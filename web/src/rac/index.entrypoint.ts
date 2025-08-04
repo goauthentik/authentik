@@ -314,7 +314,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
             if (newValue !== this.#previousClipboardValue) {
                 console.debug(`authentik/rac: new clipboard value: ${newValue}`);
                 this.#previousClipboardValue = newValue;
-                this.writeClipboard(newValue);
+                this.#writeClipboard(newValue);
             }
         } catch (ex) {
             // The error is most likely caused by the document not being in focus
@@ -326,7 +326,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         }
     }
 
-    private writeClipboard(value: string) {
+    #writeClipboard(value: string) {
         if (!this.client) {
             return;
         }

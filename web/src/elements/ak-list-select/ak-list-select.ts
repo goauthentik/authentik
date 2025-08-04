@@ -124,37 +124,37 @@ export class ListSelect extends AKElement implements IListSelect {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-menu-select");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
-        this.setIndexOfFocusedItemFromValue();
-        this.highlightFocusedItem();
+        this.#setIndexOfFocusedItemFromValue();
+        this.#highlightFocusedItem();
     }
 
     public get hasFocus() {
         return this.renderRoot.contains(document.activeElement) || document.activeElement === this;
     }
 
-    private get displayedElements(): HTMLElement[] {
+    get #displayedElements(): HTMLElement[] {
         return Array.from(this.renderRoot.querySelectorAll(".ak-select-item"));
     }
 
     public get currentElement(): HTMLElement | undefined {
         const curIndex = this.indexOfFocusedItem;
-        return curIndex < 0 || curIndex > this.displayedElements.length - 1
+        return curIndex < 0 || curIndex > this.#displayedElements.length - 1
             ? undefined
-            : this.displayedElements[curIndex];
+            : this.#displayedElements[curIndex];
     }
 
-    private setIndexOfFocusedItemFromValue() {
-        const index = this.displayedElements.findIndex((element) => {
+    #setIndexOfFocusedItemFromValue() {
+        const index = this.#displayedElements.findIndex((element) => {
             return element.getAttribute("value") === this.value;
         });
-        const elementCount = this.displayedElements.length;
+        const elementCount = this.#displayedElements.length;
 
         const checkIndex = () => (index === -1 ? 0 : index);
         return elementCount === 0 ? -1 : checkIndex();
     }
 
-    private highlightFocusedItem() {
-        this.displayedElements.forEach((item) => {
+    #highlightFocusedItem() {
+        this.#displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
             item.tabIndex = -1;
@@ -185,19 +185,19 @@ export class ListSelect extends AKElement implements IListSelect {
     #clickListener = (value: string | undefined) => {
         // let the click through, but include the change event.
         this.value = value;
-        this.setIndexOfFocusedItemFromValue();
+        this.#setIndexOfFocusedItemFromValue();
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
     };
 
     #keydownListener = (event: KeyboardEvent) => {
         const key = event.key;
-        const lastItem = this.displayedElements.length - 1;
+        const lastItem = this.#displayedElements.length - 1;
         const current = this.indexOfFocusedItem;
 
         const updateIndex = (pos: number) => {
             event.preventDefault();
             this.indexOfFocusedItem = pos;
-            this.highlightFocusedItem();
+            this.#highlightFocusedItem();
             this.currentElement?.focus();
         };
 
@@ -209,7 +209,7 @@ export class ListSelect extends AKElement implements IListSelect {
 
         const pageBy = (direction: number) => {
             const visibleElementCount =
-                this.displayedElements.filter((element) =>
+                this.#displayedElements.filter((element) =>
                     isVisibleInScrollRegion(element, this.ul),
                 ).length - 1;
             return visibleElementCount * direction + current;
@@ -236,7 +236,7 @@ export class ListSelect extends AKElement implements IListSelect {
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    private renderEmptyMenuItem() {
+    protected renderEmptyMenuItem() {
         return html`<li role="option" class="ak-select-item" part="ak-list-select-option">
             <button
                 class="pf-c-dropdown__menu-item"
@@ -250,7 +250,7 @@ export class ListSelect extends AKElement implements IListSelect {
         </li>`;
     }
 
-    private renderMenuItems(options: SelectOption[]) {
+    protected renderMenuItems(options: SelectOption[]) {
         return options.map(
             ([value, label, desc]: SelectOption) => html`
                 <li
@@ -283,7 +283,7 @@ export class ListSelect extends AKElement implements IListSelect {
         );
     }
 
-    private renderMenuGroups(optionGroups: SelectGroup[]) {
+    protected renderMenuGroups(optionGroups: SelectGroup[]) {
         return optionGroups.map(
             ({ name, options }) => html`
                 <section class="pf-c-dropdown__group" part="ak-list-select-group">

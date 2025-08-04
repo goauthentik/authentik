@@ -27,7 +27,7 @@ export class TableColumn {
         table.fetch();
     }
 
-    private getSortIndicator(table: TableLike): string {
+    #getSortIndicator(table: TableLike): string {
         switch (this.getARIASort(table)) {
             case "ascending":
                 return "fa-long-arrow-alt-up";
@@ -57,7 +57,7 @@ export class TableColumn {
             <div class="pf-c-table__button-content">
                 <span class="pf-c-table__text">${this.title}</span>
                 <span class="pf-c-table__sort-indicator">
-                    <i aria-hidden="true" class="fas ${this.getSortIndicator(table)}"></i>
+                    <i aria-hidden="true" class="fas ${this.#getSortIndicator(table)}"></i>
                 </span>
             </div>
         </button>`;

@@ -110,7 +110,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.actionTask.run();
     }
 
-    private spinner = html`<span class="pf-c-button__progress">
+    #spinner = html`<span class="pf-c-button__progress">
         <ak-spinner size=${PFSize.Medium}></ak-spinner>
     </span>`;
 
@@ -132,7 +132,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             @click=${this.onClick}
             ?disabled=${this.disabled}
         >
-            ${this.actionTask.render({ pending: () => this.spinner })}
+            ${this.actionTask.render({ pending: () => this.#spinner })}
             <slot></slot>
         </button>`;
     }

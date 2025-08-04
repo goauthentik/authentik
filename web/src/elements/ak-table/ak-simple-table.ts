@@ -100,14 +100,14 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     @property({ type: Object, attribute: false })
     public set content(content: ContentType) {
-        this._content = convertContent(content);
+        this.#content = convertContent(content);
     }
 
     public get content(): TableGrouped | TableFlat {
-        return this._content;
+        return this.#content;
     }
 
-    private _content: TableGrouped | TableFlat = {
+    #content: TableGrouped | TableFlat = {
         kind: "flat",
         content: [],
     };

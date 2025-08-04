@@ -46,7 +46,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
     public override value = "";
 
     @query("input")
-    private input!: HTMLInputElement;
+    protected input!: HTMLInputElement;
 
     #origin?: HTMLInputElement | null;
 

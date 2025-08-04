@@ -54,7 +54,7 @@ export class TableColumn {
         }
     };
 
-    private sortIndicator(orderBy: string) {
+    #sortIndicator(orderBy: string) {
         // prettier-ignore
         switch(orderBy) {
             case this.orderBy:       return "fa-long-arrow-alt-down";
@@ -63,12 +63,12 @@ export class TableColumn {
         }
     }
 
-    private sortButton(orderBy: string) {
+    #sortButton(orderBy: string) {
         return html` <button class="pf-c-table__button" @click=${this.#sortListener}>
             <div class="pf-c-table__button-content">
                 <span part="column-text" class="pf-c-table__text">${this.value}</span>
                 <span part="column-sort" class="pf-c-table__sort-indicator">
-                    <i class="fas ${this.sortIndicator(orderBy)}"></i>
+                    <i class="fas ${this.#sortIndicator(orderBy)}"></i>
                 </span>
             </div>
         </button>`;
@@ -88,7 +88,7 @@ export class TableColumn {
             scope="col"
             class="${classMap(classes)}"
         >
-            ${orderBy && this.orderBy ? this.sortButton(orderBy) : html`${this.value}`}
+            ${orderBy && this.orderBy ? this.#sortButton(orderBy) : html`${this.value}`}
         </td>`;
     }
 }

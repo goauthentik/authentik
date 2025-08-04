@@ -119,23 +119,23 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     public get value(): T | string {
         if (!this.parseValue) {
-            return this.getInnerValue();
+            return this.#getInnerValue();
         }
         try {
             switch (this.mode) {
                 case CodeMirrorMode.YAML:
-                    return YAML.parse(this.getInnerValue());
+                    return YAML.parse(this.#getInnerValue());
                 case CodeMirrorMode.JavaScript:
-                    return JSON.parse(this.getInnerValue());
+                    return JSON.parse(this.#getInnerValue());
                 default:
-                    return this.getInnerValue();
+                    return this.#getInnerValue();
             }
         } catch (_e: unknown) {
-            return this.getInnerValue();
+            return this.#getInnerValue();
         }
     }
 
-    private getInnerValue(): string {
+    #getInnerValue(): string {
         if (!this.#editor) {
             return "";
         }

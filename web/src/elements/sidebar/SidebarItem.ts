@@ -119,10 +119,10 @@ export class SidebarItem extends AKElement {
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
-        this.current = this.matchesPath(activePath);
+        this.current = this.#matchesPath(activePath);
     }
 
-    private matchesPath(path: string): boolean {
+    #matchesPath(path: string): boolean {
         if (!this.path) {
             return false;
         }
@@ -134,7 +134,7 @@ export class SidebarItem extends AKElement {
     }
 
     protected expandParentRecursive(activePath: string, item: SidebarItem): void {
-        if (item.matchesPath(activePath) && item.parent) {
+        if (item.#matchesPath(activePath) && item.parent) {
             item.parent.expanded = true;
             this.requestUpdate();
         }

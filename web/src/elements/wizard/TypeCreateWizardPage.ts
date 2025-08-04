@@ -73,11 +73,11 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         this.host.isValid = form?.checkValidity() ?? false;
 
         if (this.selectedType) {
-            this.selectDispatch(this.selectedType);
+            this.#selectDispatch(this.selectedType);
         }
     };
 
-    private selectDispatch(type: TypeCreate) {
+    #selectDispatch(type: TypeCreate) {
         this.dispatchEvent(
             new CustomEvent("select", {
                 detail: type,
@@ -113,7 +113,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     @click=${() => {
                         if (requiresEnterprise) return;
 
-                        this.selectDispatch(type);
+                        this.#selectDispatch(type);
                         this.selectedType = type;
                     }}
                 >
@@ -156,7 +156,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.selectDispatch(type);
+                            this.#selectDispatch(type);
                         }}
                         ?disabled=${requiresEnterprise}
                     />

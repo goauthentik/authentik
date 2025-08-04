@@ -64,8 +64,8 @@ export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     public routes: Route[] = [];
 
-    private sentryClient?: BrowserClient;
-    private pageLoadSpan?: Span;
+    #sentryClient?: BrowserClient;
+    #pageLoadSpan?: Span;
 
     public static override styles: CSSResult[] = [
         css`
@@ -81,9 +81,9 @@ export class RouterOutlet extends AKElement {
     public constructor() {
         super();
         window.addEventListener("hashchange", (ev: HashChangeEvent) => this.navigate(ev));
-        this.sentryClient = getClient();
-        if (this.sentryClient) {
-            this.pageLoadSpan = startBrowserTracingPageLoadSpan(this.sentryClient, {
+        this.#sentryClient = getClient();
+        if (this.#sentryClient) {
+            this.#pageLoadSpan = startBrowserTracingPageLoadSpan(this.#sentryClient, {
                 name: window.location.pathname,
                 attributes: {
                     [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "url",
@@ -135,14 +135,14 @@ export class RouterOutlet extends AKElement {
 
     public override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
-        if (!this.sentryClient) return;
+        if (!this.#sentryClient) return;
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-        if (this.pageLoadSpan) {
-            this.pageLoadSpan.updateName(this.current.sanitizedURL());
-            this.pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
-            this.pageLoadSpan = undefined;
+        if (this.#pageLoadSpan) {
+            this.#pageLoadSpan.updateName(this.current.sanitizedURL());
+            this.#pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
+            this.#pageLoadSpan = undefined;
         } else {
-            startBrowserTracingNavigationSpan(this.sentryClient, {
+            startBrowserTracingNavigationSpan(this.#sentryClient, {
                 op: "navigation",
                 name: this.current.sanitizedURL(),
                 attributes: {
