@@ -9335,6 +9335,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s76790480b7b28ad2">
   <source>Edit provider</source>
 </trans-unit>
+<trans-unit id="s9839619155ed2cf6">
+  <source>Default NameID Policy</source>
+</trans-unit>
+<trans-unit id="s0c48c5f754275796">
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
