@@ -1,7 +1,6 @@
 import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
@@ -117,8 +116,8 @@ export class ListSelect extends AKElement implements IListSelect {
 
     public constructor() {
         super();
-        this.addEventListener("focus", this.onFocus);
-        this.addEventListener("blur", this.onBlur);
+        this.addEventListener("focus", this.#focusListener);
+        this.addEventListener("blur", this.#blurListener);
     }
 
     public override connectedCallback() {
@@ -171,30 +170,26 @@ export class ListSelect extends AKElement implements IListSelect {
         currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
-    @bound
-    onFocus() {
+    #focusListener = () => {
         // Allow the event to propagate.
         this.currentElement?.focus();
-        this.addEventListener("keydown", this.onKeydown);
-    }
+        this.addEventListener("keydown", this.#keydownListener);
+    };
 
-    @bound
-    onBlur() {
+    #blurListener = () => {
         // Allow the event to propagate.
-        this.removeEventListener("keydown", this.onKeydown);
+        this.removeEventListener("keydown", this.#keydownListener);
         this.indexOfFocusedItem = 0;
-    }
+    };
 
-    @bound
-    onClick(value: string | undefined) {
+    #clickListener = (value: string | undefined) => {
         // let the click through, but include the change event.
         this.value = value;
         this.setIndexOfFocusedItemFromValue();
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
-    }
+    };
 
-    @bound
-    onKeydown(event: KeyboardEvent) {
+    #keydownListener = (event: KeyboardEvent) => {
         const key = event.key;
         const lastItem = this.displayedElements.length - 1;
         const current = this.indexOfFocusedItem;
@@ -229,7 +224,7 @@ export class ListSelect extends AKElement implements IListSelect {
             .with({ key: "End" }, () => updateIndex(lastItem))
             .with({ key: " " }, () => setValueAndDispatch())
             .with({ key: "Enter" }, () => setValueAndDispatch());
-    }
+    };
 
     public override performUpdate() {
         this.removeAttribute("data-ouia-component-safe");
@@ -247,7 +242,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 class="pf-c-dropdown__menu-item"
                 role="option"
                 tabindex="0"
-                @click=${() => this.onClick(undefined)}
+                @click=${() => this.#clickListener(undefined)}
                 part="ak-list-select-button"
             >
                 ${this.emptyOption}
@@ -268,7 +263,7 @@ export class ListSelect extends AKElement implements IListSelect {
                         class="pf-c-dropdown__menu-item pf-m-description"
                         value="${value}"
                         tabindex="0"
-                        @click=${() => this.onClick(value)}
+                        @click=${() => this.#clickListener(value)}
                         part="ak-list-select-button"
                     >
                         <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">

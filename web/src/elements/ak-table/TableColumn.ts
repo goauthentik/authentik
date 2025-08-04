@@ -1,5 +1,3 @@
-import { bound } from "#elements/decorators/bound";
-
 import { html } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -50,12 +48,11 @@ export class TableColumn {
         }
     }
 
-    @bound
-    private onSort() {
+    #sortListener = () => {
         if (this.host && this.orderBy) {
             this.host.dispatchEvent(new TableSortEvent(this.orderBy));
         }
-    }
+    };
 
     private sortIndicator(orderBy: string) {
         // prettier-ignore
@@ -67,7 +64,7 @@ export class TableColumn {
     }
 
     private sortButton(orderBy: string) {
-        return html` <button class="pf-c-table__button" @click=${this.onSort}>
+        return html` <button class="pf-c-table__button" @click=${this.#sortListener}>
             <div class="pf-c-table__button-content">
                 <span part="column-text" class="pf-c-table__text">${this.value}</span>
                 <span part="column-sort" class="pf-c-table__sort-indicator">

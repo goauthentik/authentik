@@ -1,7 +1,6 @@
 import "#elements/forms/FormElement";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import { isActiveElement } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
@@ -150,8 +149,7 @@ export class InputPassword extends AKElement {
      *
      * @param event The event that triggered the visibility toggle.
      */
-    @bound
-    togglePasswordVisibility(event?: PointerEvent) {
+    public togglePasswordVisibility = (event?: PointerEvent) => {
         event?.stopPropagation();
         event?.preventDefault();
 
@@ -166,15 +164,14 @@ export class InputPassword extends AKElement {
         input.type = input.type === "password" ? "text" : "password";
 
         this.syncVisibilityToggle(input);
-    }
+    };
 
     /**
      * Listen for key events, synchronizing the caps lock indicators.
      */
-    @bound
-    capsLockListener(event: KeyboardEvent) {
+    #capsLockListener = (event: KeyboardEvent) => {
         this.capsLock = event.getModifierState("CapsLock");
-    }
+    };
 
     //#region Lifecycle
 
@@ -216,8 +213,8 @@ export class InputPassword extends AKElement {
 
         this.observeInputFocus();
 
-        addEventListener("keydown", this.capsLockListener);
-        addEventListener("keyup", this.capsLockListener);
+        addEventListener("keydown", this.#capsLockListener);
+        addEventListener("keyup", this.#capsLockListener);
     }
 
     disconnectedCallback() {
@@ -227,8 +224,8 @@ export class InputPassword extends AKElement {
 
         super.disconnectedCallback();
 
-        removeEventListener("keydown", this.capsLockListener);
-        removeEventListener("keyup", this.capsLockListener);
+        removeEventListener("keydown", this.#capsLockListener);
+        removeEventListener("keyup", this.#capsLockListener);
     }
 
     //#endregion

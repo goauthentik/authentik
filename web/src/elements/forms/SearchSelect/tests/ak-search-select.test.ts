@@ -6,7 +6,6 @@ import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";
 
 /* eslint-env jest */
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import { render } from "#elements/tests/utils";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
@@ -30,10 +29,10 @@ export class MockSearch extends CustomListenerElement(AKElement) {
      * @attr
      */
     @property({ type: String, reflect: true })
-    fruit?: string;
+    public fruit?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<ViewSample>;
+    protected search!: SearchSelect<ViewSample>;
 
     selectedFruit?: ViewSample;
 
@@ -41,20 +40,17 @@ export class MockSearch extends CustomListenerElement(AKElement) {
         return this.selectedFruit ? renderValue(this.selectedFruit) : undefined;
     }
 
-    @bound
-    handleSearchUpdate(ev: CustomEvent) {
+    #searchUpdateListener = (ev: CustomEvent) => {
         ev.stopPropagation();
         this.selectedFruit = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
-    }
+    };
 
-    @bound
-    selected(fruit: ViewSample) {
+    #selected = (fruit: ViewSample) => {
         return this.fruit === slug(fruit.produce);
-    }
+    };
 
-    @bound
-    fetchObjects() {
+    #fetchObjects = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const resolver = (resolve: any) => {
             this.addEventListener("resolve", () => {
@@ -62,18 +58,18 @@ export class MockSearch extends CustomListenerElement(AKElement) {
             });
         };
         return new Promise(resolver);
-    }
+    };
 
     render() {
         return html`
             <ak-search-select
-                .fetchObjects=${this.fetchObjects}
+                .fetchObjects=${this.#fetchObjects}
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${renderValue}
-                .selected=${this.selected}
+                .selected=${this.#selected}
                 managed
-                @ak-change=${this.handleSearchUpdate}
+                @ak-change=${this.#searchUpdateListener}
                 blankable
             >
             </ak-search-select>

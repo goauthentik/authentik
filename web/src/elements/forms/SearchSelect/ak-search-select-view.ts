@@ -5,7 +5,6 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
@@ -203,11 +202,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         // TODO
     }
 
-    @bound
-    onClick(_ev: Event) {
+    #clickListener = (_ev: Event) => {
         this.open = !this.open;
         this.inputRef.value?.focus();
-    }
+    };
 
     setFromMatchList(value: string | undefined) {
         if (value === undefined) {
@@ -219,8 +217,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    @bound
-    onKeydown(event: KeyboardEvent) {
+    #keydownListener = (event: KeyboardEvent) => {
         if (event.code === "Escape") {
             event.stopPropagation();
             this.open = false;
@@ -233,10 +230,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.setFromMatchList(this.value);
             this.menuRef.value?.currentElement?.focus();
         }
-    }
+    };
 
-    @bound
-    onListBlur(event: FocusEvent) {
+    #listBlurListener = (event: FocusEvent) => {
         // If we lost focus but the menu got it, don't do anything;
         const relatedTarget = event.relatedTarget as HTMLElement | undefined;
         if (
@@ -255,7 +251,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             }
             this.setValue(undefined);
         }
-    }
+    };
 
     setValue(newValue: string | undefined) {
         this.value = newValue;
@@ -281,17 +277,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    @bound
-    onInput(_ev: InputEvent) {
+    #inputListener = (_ev: InputEvent) => {
         if (!this.managed) {
             this.findValueForInput();
             this.requestUpdate();
         }
         this.open = true;
-    }
+    };
 
-    @bound
-    onListKeydown(event: KeyboardEvent) {
+    #listKeydownListener = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
             this.open = false;
             this.inputRef.value?.focus();
@@ -300,10 +294,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             event.preventDefault();
             this.inputRef.value?.focus();
         }
-    }
+    };
 
-    @bound
-    onListChange(event: InputEvent) {
+    #listChangeListener = (event: InputEvent) => {
         if (!event.target) {
             return;
         }
@@ -318,7 +311,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
         this.open = false;
         this.setValue(value);
-    }
+    };
 
     findDisplayForValue(value: string) {
         const newDisplayValue = this.flatOptions.find((option) => option[0] === value);
@@ -364,10 +357,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             ${ref(this.inputRef)}
                             placeholder=${this.placeholder}
                             spellcheck="false"
-                            @input=${this.onInput}
-                            @click=${this.onClick}
-                            @blur=${this.onListBlur}
-                            @keydown=${this.onKeydown}
+                            @input=${this.#inputListener}
+                            @click=${this.#clickListener}
+                            @blur=${this.#listBlurListener}
+                            @keydown=${this.#keydownListener}
                             value=${this.displayValue}
                         />
                     </div>
@@ -385,10 +378,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                               ${ref(this.menuRef)}
                               .options=${this.managedOptions}
                               value=${ifDefined(this.value)}
-                              @change=${this.onListChange}
-                              @blur=${this.onListBlur}
+                              @change=${this.#listChangeListener}
+                              @blur=${this.#listBlurListener}
                               emptyOption=${ifDefined(emptyOption)}
-                              @keydown=${this.onListKeydown}
+                              @keydown=${this.#listKeydownListener}
                           ></ak-list-select>
                       </ak-portal>
                   `

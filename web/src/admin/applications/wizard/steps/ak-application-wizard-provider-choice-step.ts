@@ -7,15 +7,12 @@ import "#elements/wizard/TypeCreateWizardPage";
 import { applicationWizardProvidersContext } from "../ContextIdentity.js";
 import { type LocalTypeCreate } from "./ProviderChoices.js";
 
-import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
 import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
-
-import { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
@@ -52,13 +49,6 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
             return;
         }
         super.handleButton(button);
-    }
-
-    @bound
-    onSelect(ev: CustomEvent<LocalTypeCreate>) {
-        ev.stopPropagation();
-        const detail: TypeCreate = ev.detail;
-        this.handleUpdate({ providerModel: detail.modelName });
     }
 
     renderMain() {

@@ -18,7 +18,6 @@ import type { PageUIConfig } from "./types.js";
 import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 
 import type { Application } from "@goauthentik/api";
 
@@ -85,22 +84,21 @@ export class LibraryPage extends AKElement {
                 "Application.results should never be undefined when passed to the Library Page.",
             );
         }
-        this.addEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
-        this.addEventListener(LibraryPageSearchReset.eventName, this.searchReset);
-        this.addEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
-        this.addEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
+        this.addEventListener(LibraryPageSearchUpdated.eventName, this.#searchUpdated);
+        this.addEventListener(LibraryPageSearchReset.eventName, this.#searchReset);
+        this.addEventListener(LibraryPageSearchEmpty.eventName, this.#searchEmpty);
+        this.addEventListener(LibraryPageSearchSelected.eventName, this.#launchRequest);
     }
 
     disconnectedCallback() {
-        this.removeEventListener(LibraryPageSearchUpdated.eventName, this.searchUpdated);
-        this.removeEventListener(LibraryPageSearchReset.eventName, this.searchReset);
-        this.removeEventListener(LibraryPageSearchEmpty.eventName, this.searchEmpty);
-        this.removeEventListener(LibraryPageSearchSelected.eventName, this.launchRequest);
+        this.removeEventListener(LibraryPageSearchUpdated.eventName, this.#searchUpdated);
+        this.removeEventListener(LibraryPageSearchReset.eventName, this.#searchReset);
+        this.removeEventListener(LibraryPageSearchEmpty.eventName, this.#searchEmpty);
+        this.removeEventListener(LibraryPageSearchSelected.eventName, this.#launchRequest);
         super.disconnectedCallback();
     }
 
-    @bound
-    searchUpdated(event: LibraryPageSearchUpdated) {
+    #searchUpdated = (event: LibraryPageSearchUpdated) => {
         event.stopPropagation();
         const apps = event.apps;
         if (apps.length <= 0) {
@@ -110,10 +108,9 @@ export class LibraryPage extends AKElement {
         }
         this.filteredApps = apps;
         this.selectedApp = apps[0];
-    }
+    };
 
-    @bound
-    launchRequest(event: LibraryPageSearchSelected) {
+    #launchRequest = (event: LibraryPageSearchSelected) => {
         event.stopPropagation();
         if (!this.selectedApp?.launchUrl) {
             return;
@@ -123,21 +120,19 @@ export class LibraryPage extends AKElement {
         } else {
             window.open(this.selectedApp.launchUrl);
         }
-    }
+    };
 
-    @bound
-    searchReset(event: LibraryPageSearchReset) {
+    #searchReset = (event: LibraryPageSearchReset) => {
         event.stopPropagation();
         this.filteredApps = this.apps;
         this.selectedApp = undefined;
-    }
+    };
 
-    @bound
-    searchEmpty(event: LibraryPageSearchEmpty) {
+    #searchEmpty = (event: LibraryPageSearchEmpty) => {
         event.stopPropagation();
         this.filteredApps = [];
         this.selectedApp = undefined;
-    }
+    };
 
     renderApps() {
         const selected = this.selectedApp?.slug;

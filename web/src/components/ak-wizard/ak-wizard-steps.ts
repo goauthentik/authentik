@@ -4,7 +4,6 @@ import { wizardStepContext } from "./WizardContexts.js";
 import { type WizardStep } from "./WizardStep.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 
 import { ContextProvider } from "@lit/context";
 import { html, nothing } from "lit";
@@ -41,8 +40,8 @@ export class WizardStepsManager extends AKElement {
                 stepLabels: [],
             },
         });
-        this.addEventListener(WizardNavigationEvent.eventName, this.onNavigation);
-        this.addEventListener("slotchange", this.onSlotchange);
+        this.addEventListener(WizardNavigationEvent.eventName, this.#navigationListener);
+        this.addEventListener("slotchange", this.#slotChangeListener);
     }
 
     findSlots() {
@@ -92,13 +91,12 @@ export class WizardStepsManager extends AKElement {
         }
     }
 
-    @bound
-    onSlotchange(ev: Event) {
+    #slotChangeListener = (ev: Event) => {
         ev.stopPropagation();
         this.findSlots();
         this.findSlot(this.currentStep);
         this.findStepLabels();
-    }
+    };
 
     // This event sequence handles the following possibilities:
     // - The user on a step validated and wants to move forward. We want to make sure the *next*
@@ -129,8 +127,7 @@ export class WizardStepsManager extends AKElement {
         }
     }
 
-    @bound
-    onNavigation(ev: WizardNavigationEvent) {
+    #navigationListener = (ev: WizardNavigationEvent) => {
         ev.stopPropagation();
         const { destination, details } = ev;
 
@@ -157,7 +154,7 @@ export class WizardStepsManager extends AKElement {
             stepLabels: this.stepLabels,
             currentStep: target.slot,
         });
-    }
+    };
 
     render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;

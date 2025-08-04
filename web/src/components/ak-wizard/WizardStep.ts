@@ -9,7 +9,6 @@ import {
 import { wizardStepContext } from "./WizardContexts.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 
 import { match, P } from "ts-pattern";
 
@@ -174,20 +173,18 @@ export class WizardStep extends AKElement {
         }
     }
 
-    @bound
-    onWizardNavigationEvent(ev: Event, button: WizardButton) {
+    #wizardNavigationListener = (ev: Event, button: WizardButton) => {
         ev.stopPropagation();
         if (!isNavigable(button)) {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
         this.handleButton(button);
-    }
+    };
 
-    @bound
-    onWizardCloseEvent(ev: Event) {
+    #wizardCloseListener = (ev: Event) => {
         ev.stopPropagation();
         this.dispatchEvent(new WizardCloseEvent());
-    }
+    };
 
     getButtonLabel(button: WizardButton) {
         return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
@@ -200,61 +197,56 @@ export class WizardStep extends AKElement {
         };
     }
 
-    @bound
-    renderCloseButton(button: WizardButton) {
+    renderCloseButton = (button: WizardButton) => {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
                 class=${classMap(this.getButtonClasses(button))}
                 type="button"
-                @click=${this.onWizardCloseEvent}
+                @click=${this.#wizardCloseListener}
             >
                 ${this.getButtonLabel(button)}
             </button>
         </div>`;
-    }
+    };
 
-    @bound
-    renderDisabledButton(button: WizardButton) {
+    renderDisabledButton = (button: WizardButton) => {
         return html`<button class=${classMap(this.getButtonClasses(button))} type="button" disabled>
             ${this.getButtonLabel(button)}
         </button>`;
-    }
+    };
 
-    @bound
-    renderNavigableButton(button: WizardButton) {
+    renderNavigableButton = (button: WizardButton) => {
         return html`<button
             class=${classMap(this.getButtonClasses(button))}
             type="button"
-            @click=${(ev: Event) => this.onWizardNavigationEvent(ev, button)}
+            @click=${(ev: Event) => this.#wizardNavigationListener(ev, button)}
             data-ouid-button-kind="wizard-${button.kind}"
         >
             ${this.getButtonLabel(button)}
         </button>`;
-    }
+    };
 
-    @bound
-    renderButton(button: WizardButton) {
+    renderButton = (button: WizardButton) => {
         return match(button)
             .with({ kind: P.union("close", "cancel") }, () => this.renderCloseButton(button))
             .with({ destination: P.string }, () => this.renderNavigableButton(button))
             .otherwise(() => {
                 throw new Error("Button type is not close, disabled, or navigable?");
             });
-    }
+    };
 
     renderHeaderCancelIcon() {
         return html`<button
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
             aria-label="${msg("Close")}"
-            @click=${this.onWizardCloseEvent}
+            @click=${this.#wizardCloseListener}
         >
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>`;
     }
 
-    @bound
-    renderSidebarStep(step: WizardStepLabel) {
+    renderSidebarStep = (step: WizardStepLabel) => {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
             "pf-m-disabled": !step.enabled,
@@ -274,7 +266,7 @@ export class WizardStep extends AKElement {
                 </li>
             </div>
         `;
-    }
+    };
 
     render() {
         return this.wizardStepState.currentStep === this.getAttribute("slot")

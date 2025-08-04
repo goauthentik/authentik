@@ -1,5 +1,4 @@
 import { AkControlElement } from "#elements/AkControlElement";
-import { bound } from "#elements/decorators/bound";
 import { type Spread } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
@@ -121,17 +120,15 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
     }
 
-    @bound
-    onChange() {
+    #changeListener = () => {
         this.items = this.itemsFromDom();
         this.sendChange();
-    }
+    };
 
-    @bound
-    addNewGroup() {
+    #addNewGroup = () => {
         this.items = [...this.itemsFromDom(), this.newItem()];
         this.sendChange();
-    }
+    };
 
     renderDeleteButton(idx: number) {
         const deleteOneGroup = () => {
@@ -150,11 +147,11 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
                 this._items,
                 (item: Keyed<T>) => item.key,
                 (item: Keyed<T>, idx) =>
-                    html` <div class="ak-input-group" @change=${() => this.onChange()}>
+                    html` <div class="ak-input-group" @change=${() => this.#changeListener()}>
                         ${this.row(item.item, idx)}${this.renderDeleteButton(idx)}
                     </div>`,
             )}
-            <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>
+            <button class="pf-c-button pf-m-link" type="button" @click=${this.#addNewGroup}>
                 <i class="fas fa-plus" aria-hidden="true"></i>&nbsp; ${msg("Add entry")}
             </button>
         </div>`;

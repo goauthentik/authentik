@@ -1,7 +1,6 @@
 import "./ak-application-wizard-main.js";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
-import { bound } from "#elements/decorators/bound";
 
 import { WizardCloseEvent } from "#components/ak-wizard/events";
 
@@ -12,14 +11,13 @@ import { customElement } from "lit/decorators.js";
 export class AkApplicationWizard extends ModalButton {
     constructor() {
         super();
-        this.addEventListener(WizardCloseEvent.eventName, this.onCloseEvent);
+        this.addEventListener(WizardCloseEvent.eventName, this.#closeListener);
     }
 
-    @bound
-    onCloseEvent(ev: WizardCloseEvent) {
-        ev.stopPropagation();
+    #closeListener = (event: WizardCloseEvent) => {
+        event.stopPropagation();
         this.open = false;
-    }
+    };
 
     renderModalInner() {
         return html` <ak-application-wizard-main> </ak-application-wizard-main>`;

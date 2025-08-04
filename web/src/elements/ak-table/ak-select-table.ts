@@ -1,8 +1,6 @@
 import { type ISimpleTable, SimpleTable } from "./ak-simple-table.js";
 import type { TableRow } from "./types.js";
 
-import { bound } from "#elements/decorators/bound";
-
 import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
@@ -148,8 +146,7 @@ export class SelectTable extends SimpleTable {
 
     private _selected: string[] = [];
 
-    @bound
-    private onSelect(ev: InputEvent) {
+    #selectListener = (ev: InputEvent) => {
         ev.stopPropagation();
         const value = (ev.target as HTMLInputElement).value;
         if (this.multiple) {
@@ -160,7 +157,7 @@ export class SelectTable extends SimpleTable {
             this.selected = this.selected.includes(value) ? [] : [value];
         }
         this.dispatchEvent(new Event("change"));
-    }
+    };
 
     protected override ouiaTypeDeclaration() {
         this.setAttribute("data-ouia-component-type", "ak-select-table");
@@ -198,15 +195,14 @@ export class SelectTable extends SimpleTable {
                 value=${key}
                 ?checked=${checked}
                 .checked=${checked}
-                @click=${this.onSelect}
+                @click=${this.#selectListener}
             />
         </td>`;
     }
 
     // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.  This
     // override makes room for the select checkbox.
-    @bound
-    public override renderRow(row: TableRow, _rowidx: number) {
+    protected override renderRow = (row: TableRow, _rowidx: number) => {
         return html` <tr part="row">
             ${this.renderCheckbox(row.key)}
             ${map(
@@ -214,7 +210,7 @@ export class SelectTable extends SimpleTable {
                 (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
             )}
         </tr>`;
-    }
+    };
 
     renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
