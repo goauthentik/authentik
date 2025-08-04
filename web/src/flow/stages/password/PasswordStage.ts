@@ -33,7 +33,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         PFTitle,
     ];
 
-    hasError(field: string): boolean {
+    protected hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];
         return (errors || []).length > 0;
     }

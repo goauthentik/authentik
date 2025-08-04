@@ -83,7 +83,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    selected(group: Group) {
+    protected selected(group: Group) {
         return this.group === group.pk;
     }
 

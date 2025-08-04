@@ -24,7 +24,7 @@ export class ConfirmationForm extends ModalButton {
     @property({ attribute: false })
     public onConfirm!: () => Promise<unknown>;
 
-    confirm(): Promise<void> {
+    protected confirm(): Promise<void> {
         return this.onConfirm()
             .then(() => {
                 this.onSuccess();

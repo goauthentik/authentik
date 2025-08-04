@@ -83,7 +83,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         this.policyGroupUser = this.allowedTypes[0];
     }
 
-    send(data: PolicyBinding): Promise<unknown> {
+    protected send(data: PolicyBinding): Promise<unknown> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
@@ -113,7 +113,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         });
     }
 
-    async getOrder(): Promise<number> {
+    protected async getOrder(): Promise<number> {
         if (this.instance?.pk) {
             return this.instance.order;
         }

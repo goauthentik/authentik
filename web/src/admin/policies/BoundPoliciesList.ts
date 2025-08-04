@@ -77,7 +77,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    getPolicyUserGroupRowLabel(item: PolicyBinding): string {
+    protected getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
             return msg(str`Policy ${item.policyObj?.name}`);
         } else if (item.group) {
@@ -88,7 +88,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return msg("-");
     }
 
-    getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
+    protected getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
             return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
@@ -99,7 +99,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${label}`;
     }
 
-    getObjectEditButton(item: PolicyBinding): TemplateResult {
+    protected getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>

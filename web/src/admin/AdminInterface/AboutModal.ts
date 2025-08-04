@@ -29,7 +29,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         `,
     ];
 
-    async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
+    protected async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         const version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         let build: string | TemplateResult = msg("Release");

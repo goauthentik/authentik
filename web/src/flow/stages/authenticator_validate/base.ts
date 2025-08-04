@@ -42,7 +42,7 @@ export class BaseDeviceStage<
         `,
     ];
 
-    submit(payload: Tin): Promise<boolean> {
+    public submit(payload: Tin): Promise<boolean> {
         return this.host?.submit(payload) || Promise.resolve();
     }
 

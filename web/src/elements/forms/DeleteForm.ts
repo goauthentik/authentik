@@ -32,7 +32,7 @@ export class DeleteForm extends ModalButton {
     @property({ attribute: false })
     public delete!: () => Promise<unknown>;
 
-    confirm(): Promise<void> {
+    protected confirm(): Promise<void> {
         return this.delete()
             .then(() => {
                 this.onSuccess();

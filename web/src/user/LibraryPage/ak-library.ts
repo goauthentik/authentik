@@ -71,7 +71,7 @@ export class LibraryPage extends AKElement {
         });
     }
 
-    async fetchApplications(): Promise<Application[]> {
+    protected async fetchApplications(): Promise<Application[]> {
         const applicationListParams = (page = 1) => ({
             ordering: "name",
             page,
@@ -107,11 +107,11 @@ export class LibraryPage extends AKElement {
         return msg("My Applications");
     }
 
-    loading() {
+    protected loading() {
         return html`<ak-empty-state default-label></ak-empty-state>`;
     }
 
-    running() {
+    protected running() {
         return html`<ak-library-impl
             ?isadmin=${this.isAdmin}
             .apps=${this.apps}

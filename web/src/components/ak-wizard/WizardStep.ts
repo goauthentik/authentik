@@ -186,11 +186,11 @@ export class WizardStep extends AKElement {
         this.dispatchEvent(new WizardCloseEvent());
     };
 
-    getButtonLabel(button: WizardButton) {
+    protected getButtonLabel(button: WizardButton) {
         return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
     }
 
-    getButtonClasses(button: WizardButton) {
+    protected getButtonClasses(button: WizardButton) {
         return {
             "pf-c-button": true,
             [BUTTON_KIND_TO_CLASS[button.kind]]: true,

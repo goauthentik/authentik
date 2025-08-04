@@ -29,7 +29,7 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     protected loadInstance(): Promise<unknown> {
         return Promise.resolve();
     }
-    send(): Promise<unknown> {
+    protected send(): Promise<unknown> {
         return Promise.resolve();
     }
 

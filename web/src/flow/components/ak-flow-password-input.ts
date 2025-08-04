@@ -188,7 +188,7 @@ export class InputPassword extends AKElement {
      * This is some-what of a crude way to get autofocus, but in most cases
      * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
      */
-    observeInputFocus(): void {
+    protected observeInputFocus(): void {
         if (!this.grabFocus) {
             return;
         }
@@ -254,7 +254,9 @@ export class InputPassword extends AKElement {
      *
      * @param input The password field to render the visibility features for.
      */
-    syncVisibilityToggle(input: HTMLInputElement | undefined = this.inputRef.value): void {
+    protected syncVisibilityToggle(
+        input: HTMLInputElement | undefined = this.inputRef.value,
+    ): void {
         if (!input) return;
 
         const toggleElement = this.toggleVisibilityRef.value;

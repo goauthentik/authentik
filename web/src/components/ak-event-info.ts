@@ -123,7 +123,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getModelInfo(context: EventModel): TemplateResult {
+    protected getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -142,7 +142,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getEmailInfo(context: EventContext): SlottedTemplateResult {
+    protected getEmailInfo(context: EventContext): SlottedTemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -182,7 +182,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    buildGitHubIssueUrl(context: EventContext): string {
+    protected buildGitHubIssueUrl(context: EventContext): string {
         const httpRequest = this.event.context.http_request as EventContext;
         const title = httpRequest ? `${httpRequest?.method} ${httpRequest?.path}` : "";
 

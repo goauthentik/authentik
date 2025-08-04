@@ -16,7 +16,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     T,
     string
 > {
-    docLink(): string {
+    protected docLink(): string {
         return "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik";
     }
 

@@ -58,7 +58,7 @@ export class UserSettingsFlowExecutor
 
     public static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
-    submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    public submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-ignore
@@ -101,7 +101,7 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async nextChallenge(): Promise<void> {
+    protected async nextChallenge(): Promise<void> {
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
@@ -118,7 +118,7 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async errorMessage(error: APIError): Promise<void> {
+    protected async errorMessage(error: APIError): Promise<void> {
         const challenge: FlowErrorChallenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
@@ -128,7 +128,7 @@ export class UserSettingsFlowExecutor
         this.challenge = challenge as ChallengeTypes;
     }
 
-    globalRefresh(): void {
+    protected globalRefresh(): void {
         refreshMe().then(() => {
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {

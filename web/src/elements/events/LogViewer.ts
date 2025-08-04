@@ -86,7 +86,7 @@ export class LogViewer extends Table<LogEvent> {
         ];
     }
 
-    statusForItem(item: LogEvent): string {
+    protected statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
             case LogLevelEnum.Critical:
             case LogLevelEnum.Error:

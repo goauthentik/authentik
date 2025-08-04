@@ -69,7 +69,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersMicrosoftEntraRetrieve({ id })
             .then((prov) => (this.provider = prov));

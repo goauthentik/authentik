@@ -110,7 +110,7 @@ export class ProxyProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersProxyRetrieve({ id })
             .then((prov) => (this.provider = prov));

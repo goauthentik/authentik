@@ -54,7 +54,7 @@ export class UserDeviceTable extends Table<Device> {
         ].map((th) => new TableColumn(th, ""));
     }
 
-    async deleteWrapper(device: Device) {
+    protected async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":

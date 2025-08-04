@@ -42,7 +42,7 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
     @property()
     public failureMessage = msg("Operation failed to complete");
 
-    async promiseProxy(): Promise<TemplateResult | typeof nothing> {
+    protected async promiseProxy(): Promise<TemplateResult | typeof nothing> {
         if (!this.promise) {
             return nothing;
         }

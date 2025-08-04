@@ -143,20 +143,20 @@ export abstract class AKChart<T> extends AKElement {
             });
     }
 
-    getChartType(): string {
+    protected getChartType(): string {
         return "bar";
     }
 
-    getPlugins(): Plugin[] {
+    protected getPlugins(): Plugin[] {
         return [];
     }
 
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+    protected timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
         return formatElapsedTime(new Date(valueStamp.value));
     }
 
-    getOptions(): ChartOptions {
+    protected getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
             responsive: true,
@@ -189,7 +189,7 @@ export abstract class AKChart<T> extends AKElement {
         } as ChartOptions;
     }
 
-    configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
+    protected configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
         const config = {
             type: this.getChartType(),
             data: this.getChartData(data),

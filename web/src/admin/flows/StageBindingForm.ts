@@ -45,7 +45,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return msg("Successfully created binding.");
     }
 
-    send(data: FlowStageBinding): Promise<unknown> {
+    protected send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsPartialUpdate({
                 fsbUuid: this.instance.pk,
@@ -60,7 +60,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         });
     }
 
-    async getOrder(): Promise<number> {
+    protected async getOrder(): Promise<number> {
         if (this.instance?.pk) {
             return this.instance.order;
         }

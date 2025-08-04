@@ -222,7 +222,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    removeAll() {
+    protected removeAll() {
         this.selected = [];
         this.selectedPane.value!.clearMove();
     }

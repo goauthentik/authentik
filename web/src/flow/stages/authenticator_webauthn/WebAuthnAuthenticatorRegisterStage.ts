@@ -63,7 +63,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         `,
     ];
 
-    async register(): Promise<void> {
+    protected async register(): Promise<void> {
         if (!this.challenge) {
             return;
         }
@@ -101,7 +101,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
     }
 
-    async registerWrapper(): Promise<void> {
+    protected async registerWrapper(): Promise<void> {
         if (this.registerRunning) {
             return;
         }

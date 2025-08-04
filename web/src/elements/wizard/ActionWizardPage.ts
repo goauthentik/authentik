@@ -66,7 +66,7 @@ export class ActionWizardPage extends WizardPage {
 
     public override sidebarLabel = () => msg("Apply changes");
 
-    async run(): Promise<void> {
+    protected async run(): Promise<void> {
         this.currentStep = this.states[0];
 
         await new Promise((r) => setTimeout(r, 500));

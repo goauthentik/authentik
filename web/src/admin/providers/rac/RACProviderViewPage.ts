@@ -68,7 +68,7 @@ export class RACProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersRacRetrieve({ id })
             .then((prov) => (this.provider = prov));

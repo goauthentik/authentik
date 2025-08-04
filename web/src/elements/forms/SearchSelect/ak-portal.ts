@@ -95,7 +95,7 @@ export class Portal extends LitElement implements IPortal {
         super.disconnectedCallback();
     }
 
-    setPosition() {
+    protected setPosition() {
         if (!(this.anchor && this.dropdownContainer)) {
             throw new Error("Tether initialized incorrectly: missing anchor or tether destination");
         }

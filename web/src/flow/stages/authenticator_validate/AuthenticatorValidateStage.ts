@@ -120,7 +120,7 @@ export class AuthenticatorValidateStage
         return this._selectedDeviceChallenge;
     }
 
-    submit(
+    public submit(
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {

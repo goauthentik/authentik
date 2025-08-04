@@ -309,21 +309,21 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         WebsocketClient.close();
     }
 
-    toggleNotificationDrawer() {
+    protected toggleNotificationDrawer() {
         this.notificationDrawerOpen = !this.notificationDrawerOpen;
         updateURLParams({
             notificationDrawerOpen: this.notificationDrawerOpen,
         });
     }
 
-    toggleApiDrawer() {
+    protected toggleApiDrawer() {
         this.apiDrawerOpen = !this.apiDrawerOpen;
         updateURLParams({
             apiDrawerOpen: this.apiDrawerOpen,
         });
     }
 
-    fetchConfigurationDetails() {
+    protected fetchConfigurationDetails() {
         me().then((session: SessionUser) => {
             this.me = session;
             this.uiConfig = getConfigForUser(session.user);

@@ -91,7 +91,7 @@ export class MFADevicesPage extends Table<Device> {
             ${super.renderToolbar()}`;
     }
 
-    async deleteWrapper(device: Device) {
+    protected async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
         const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {

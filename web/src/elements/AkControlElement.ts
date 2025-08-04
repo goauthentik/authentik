@@ -14,7 +14,7 @@ export class AkControlElement<T = string | string[]> extends AKElement {
         this.dataset.akControl = "true";
     }
 
-    json(): T {
+    public json(): T {
         throw new Error("Controllers using this protocol must override this method");
     }
 

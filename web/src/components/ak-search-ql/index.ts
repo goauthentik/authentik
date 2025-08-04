@@ -122,7 +122,7 @@ export class QLSearch extends AKElement {
         this.canvas = context;
     }
 
-    refreshCompletions() {
+    protected refreshCompletions() {
         this.value = this.searchElement?.value;
         if (!this.ql) {
             return;
@@ -137,7 +137,7 @@ export class QLSearch extends AKElement {
         this.requestUpdate();
     }
 
-    updateDropdownPosition() {
+    protected updateDropdownPosition() {
         if (!this.searchElement) {
             return;
         }

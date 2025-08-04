@@ -65,7 +65,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         });
     }
 
-    isDeviceClassSelected(field: DeviceClassesEnum): boolean {
+    protected isDeviceClassSelected(field: DeviceClassesEnum): boolean {
         return (
             (this.instance?.deviceClasses || []).filter((isField) => {
                 return field === isField;

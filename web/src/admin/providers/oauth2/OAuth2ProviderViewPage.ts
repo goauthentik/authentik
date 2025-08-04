@@ -104,7 +104,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         });
     }
 
-    fetchPreview(): void {
+    protected fetchPreview(): void {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersOauth2PreviewUserRetrieve({
                 id: this.provider?.pk || 0,

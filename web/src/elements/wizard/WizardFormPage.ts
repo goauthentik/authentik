@@ -46,7 +46,7 @@ export class WizardFormPage extends WizardPage {
         PFFormControl,
     ];
 
-    inputCallback(): void {
+    protected inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
 
         if (!form) return;

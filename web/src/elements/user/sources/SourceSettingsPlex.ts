@@ -23,7 +23,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
     @property({ type: Number })
     public connectionPk = 0;
 
-    async doPlex(): Promise<void> {
+    protected async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.configureUrl || "", authInfo.pin.id).then((token) => {

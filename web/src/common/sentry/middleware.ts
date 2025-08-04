@@ -3,7 +3,7 @@ import { FetchParams, Middleware, RequestContext } from "@goauthentik/api";
 import { getCurrentScope, getTraceData } from "@sentry/core";
 
 export class SentryMiddleware implements Middleware {
-    pre?(context: RequestContext): Promise<FetchParams | void> {
+    public pre?(context: RequestContext): Promise<FetchParams | void> {
         if (!getCurrentScope().getClient) {
             return Promise.resolve(context);
         }

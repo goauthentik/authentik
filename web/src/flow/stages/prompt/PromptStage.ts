@@ -227,7 +227,7 @@ ${prompt.initialValue}</textarea
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    shouldRenderInWrapper(prompt: StagePrompt): boolean {
+    protected shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
         return !(
             prompt.type === PromptTypeEnum.Static ||

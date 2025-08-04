@@ -51,7 +51,7 @@ export class AuthenticatorDuoStage extends BaseStage<
         }
     }
 
-    async checkEnrollStatus(): Promise<boolean> {
+    protected async checkEnrollStatus(): Promise<boolean> {
         const status = await new StagesApi(
             DEFAULT_CONFIG,
         ).stagesAuthenticatorDuoEnrollmentStatusCreate({

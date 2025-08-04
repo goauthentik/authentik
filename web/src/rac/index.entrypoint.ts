@@ -204,7 +204,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.client.connect(params.toString());
     }
 
-    reconnect(): void {
+    protected reconnect(): void {
         this.clientState = undefined;
         this.#connectionAttempt += 1;
         if (!this.#hasConnected) {
@@ -231,7 +231,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         }, delay);
     }
 
-    updateTitle(): void {
+    protected updateTitle(): void {
         let title = this.brandingTitle;
 
         if (this.endpointName) {
@@ -256,7 +256,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         );
     }
 
-    initMouse(container: HTMLElement): void {
+    protected initMouse(container: HTMLElement): void {
         const mouse = new Guacamole.Mouse(container);
         const handler = (mouseState: Guacamole.Mouse.State, scaleMouse = false) => {
             if (!this.client) return;
@@ -279,7 +279,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         });
     }
 
-    initAudioInput(): void {
+    protected initAudioInput(): void {
         const stream = this.client?.createAudioStream(AUDIO_INPUT_MIMETYPE);
         if (!stream) return;
         // Guacamole.AudioPlayer
@@ -294,7 +294,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         recorder.onclose = this.initAudioInput.bind(this);
     }
 
-    initKeyboard(): void {
+    protected initKeyboard(): void {
         const keyboard = new Guacamole.Keyboard(document);
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
@@ -304,7 +304,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    async checkClipboard(): Promise<void> {
+    protected async checkClipboard(): Promise<void> {
         try {
             if (!this.#previousClipboardValue) {
                 this.#previousClipboardValue = await navigator.clipboard.readText();

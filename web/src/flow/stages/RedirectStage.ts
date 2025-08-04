@@ -37,7 +37,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         `,
     ];
 
-    getURL(): string {
+    protected getURL(): string {
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
@@ -53,7 +53,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    redirect() {
+    protected redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,

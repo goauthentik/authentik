@@ -206,7 +206,7 @@ export abstract class Table<T extends object>
 
     //#endregion
 
-    async defaultEndpointConfig() {
+    protected async defaultEndpointConfig() {
         return {
             ordering: this.order,
             page: this.page,

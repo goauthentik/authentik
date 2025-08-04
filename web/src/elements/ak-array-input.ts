@@ -106,7 +106,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         return allAreValid && (this.validator ? this.validator(this.items) : true);
     }
 
-    itemsFromDom(): T[] {
+    protected itemsFromDom(): T[] {
         return Array.from(this.inputGroups ?? [])
             .map(
                 (group) =>
@@ -116,7 +116,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
             .filter((i) => i !== null);
     }
 
-    sendChange() {
+    protected sendChange() {
         this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
     }
 

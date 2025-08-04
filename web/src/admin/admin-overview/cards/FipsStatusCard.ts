@@ -17,7 +17,7 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
     @state()
     protected statusSummary?: string;
 
-    async getPrimaryValue(): Promise<SystemInfo> {
+    protected async getPrimaryValue(): Promise<SystemInfo> {
         return await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
     }
 

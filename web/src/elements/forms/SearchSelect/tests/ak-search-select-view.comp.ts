@@ -48,28 +48,28 @@ export class AkSearchSelectViewDriver {
         return this.element.getProperty("open");
     }
 
-    async input() {
+    protected async input() {
         return await this.element.$(">>>input");
     }
 
-    async listElements() {
+    protected async listElements() {
         return await this.menu.$$(">>>li");
     }
 
-    async focusOnInput() {
+    protected async focusOnInput() {
         // @ts-ignore
         await (await this.input()).focus();
     }
 
-    async inputIsVisible() {
+    protected async inputIsVisible() {
         return await this.element.$(">>>input").isDisplayed();
     }
 
-    async menuIsVisible() {
+    protected async menuIsVisible() {
         return (await this.menu.isExisting()) && (await this.menu.isDisplayed());
     }
 
-    async clickInput() {
+    protected async clickInput() {
         return await (await this.input()).click();
     }
 }

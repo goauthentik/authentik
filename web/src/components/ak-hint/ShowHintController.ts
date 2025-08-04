@@ -30,7 +30,7 @@ export class ShowHintController implements ReactiveController {
         this.hintToken = hintToken;
     }
 
-    setTheHint(state: boolean = false) {
+    protected setTheHint(state: boolean = false) {
         window?.localStorage.setItem(
             LOCALSTORAGE_AUTHENTIK_KEY,
             JSON.stringify({
@@ -49,7 +49,7 @@ export class ShowHintController implements ReactiveController {
         this.setTheHint(true);
     };
 
-    hostConnected() {
+    public hostConnected() {
         const localStores = getCurrentStorageValue();
         if (!(this.hintToken in localStores)) {
             return;

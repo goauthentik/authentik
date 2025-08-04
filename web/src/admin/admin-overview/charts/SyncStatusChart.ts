@@ -44,7 +44,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async fetchStatus<T>(
+    protected async fetchStatus<T>(
         listObjects: () => Promise<PaginatedResponse<T>>,
         fetchSyncStatus: (element: T) => Promise<SyncStatus>,
         label: string,

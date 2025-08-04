@@ -101,7 +101,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     // The search select configurations for the three different types of fetches that we care about,
     // policy, user, and group, all using the SearchSelectEZ protocol.
-    searchSelectConfigs(kind: target) {
+    protected searchSelectConfigs(kind: target) {
         switch (kind) {
             case target.policy:
                 return {

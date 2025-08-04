@@ -92,7 +92,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         return source;
     }
 
-    async doAuth(): Promise<void> {
+    protected async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
@@ -102,7 +102,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         });
     }
 
-    async loadServers(): Promise<void> {
+    protected async loadServers(): Promise<void> {
         if (!this.plexToken) {
             return;
         }

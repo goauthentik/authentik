@@ -7,7 +7,7 @@ import { Middleware, ResponseContext } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 
 export class MessageMiddleware implements Middleware {
-    post(context: ResponseContext): Promise<Response | void> {
+    public post(context: ResponseContext): Promise<Response | void> {
         if (context.response.status >= 500) {
             showMessage({
                 level: MessageLevel.error,

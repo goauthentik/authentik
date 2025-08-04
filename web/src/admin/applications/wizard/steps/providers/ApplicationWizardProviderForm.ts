@@ -42,7 +42,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
         return this.form.checkValidity();
     }
 
-    errorMessages(name: string) {
+    protected errorMessages(name: string) {
         return name in this.errors
             ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
@@ -50,7 +50,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
                   []);
     }
 
-    isValid(name: keyof T) {
+    protected isValid(name: keyof T) {
         return !(
             (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
             this.errors?.[name] !== undefined

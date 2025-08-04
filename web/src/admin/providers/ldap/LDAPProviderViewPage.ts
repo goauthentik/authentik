@@ -73,7 +73,7 @@ export class LDAPProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersLdapRetrieve({ id })
             .then((prov) => (this.provider = prov));

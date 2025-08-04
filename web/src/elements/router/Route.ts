@@ -22,7 +22,7 @@ export class Route {
         this.callback = callback;
     }
 
-    redirect(to: string, raw = false): Route {
+    public redirect(to: string, raw = false): Route {
         this.callback = async () => {
             console.debug(`authentik/router: redirecting ${to}`);
             if (!raw) {
@@ -35,14 +35,14 @@ export class Route {
         return this;
     }
 
-    then(render: (args: RouteArgs) => TemplateResult): Route {
+    protected then(render: (args: RouteArgs) => TemplateResult): Route {
         this.callback = async (args) => {
             return render(args);
         };
         return this;
     }
 
-    thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
+    protected thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
         this.callback = render;
         return this;
     }
@@ -60,7 +60,7 @@ export class Route {
         throw new Error("Route does not have callback or element");
     }
 
-    toString(): string {
+    protected toString(): string {
         return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
     }
 }

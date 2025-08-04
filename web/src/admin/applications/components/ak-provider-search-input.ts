@@ -61,7 +61,7 @@ export class AkProviderInput extends AKElement {
         this.selected = this.selected.bind(this);
     }
 
-    selected(item: Provider) {
+    protected selected(item: Provider) {
         return this.value !== undefined && this.value === item.pk;
     }
 

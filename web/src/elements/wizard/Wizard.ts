@@ -144,13 +144,13 @@ export class Wizard extends ModalButton {
         return this.activeStep;
     }
 
-    getStepElementByIndex(stepIndex: number): WizardPage | null {
+    protected getStepElementByIndex(stepIndex: number): WizardPage | null {
         const stepName = this._steps[stepIndex];
 
         return this.querySelector<WizardPage>(`[slot=${stepName}]`);
     }
 
-    getStepElementByName(stepName: string): WizardPage | null {
+    protected getStepElementByName(stepName: string): WizardPage | null {
         return this.querySelector<WizardPage>(`[slot=${stepName}]`);
     }
 

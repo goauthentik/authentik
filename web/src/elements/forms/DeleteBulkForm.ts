@@ -158,7 +158,7 @@ export class DeleteBulkForm<T> extends ModalButton {
     @property({ attribute: false })
     public delete!: (item: T) => Promise<unknown>;
 
-    async confirm(): Promise<void> {
+    protected async confirm(): Promise<void> {
         try {
             await Promise.all(
                 this.objects.map((item) => {

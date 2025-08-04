@@ -75,7 +75,7 @@ export class SCIMProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersScimRetrieve({ id })
             .then((prov) => (this.provider = prov));

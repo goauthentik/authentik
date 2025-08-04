@@ -153,7 +153,7 @@ export class TreeView extends AKElement {
 
     protected separator = "/";
 
-    createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
+    protected createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();
         const idx = parentItem.childItems.findIndex((e: TreeViewItem) => {
             return e.id === id;
@@ -176,7 +176,7 @@ export class TreeView extends AKElement {
         return this.createNode(path, parentItem.childItems[idx], level + 1);
     }
 
-    parse(data: string[]): TreeViewItem {
+    protected parse(data: string[]): TreeViewItem {
         const rootItem: TreeViewItem = {
             id: undefined,
             label: msg("Root"),

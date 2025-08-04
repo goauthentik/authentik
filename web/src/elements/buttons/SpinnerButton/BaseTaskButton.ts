@@ -68,7 +68,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.actionTask = this.buildTask();
     }
 
-    buildTask() {
+    protected buildTask() {
         return new Task(this, {
             task: () => this.callAction(),
             args: () => [],

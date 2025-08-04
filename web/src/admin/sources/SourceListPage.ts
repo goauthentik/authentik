@@ -119,7 +119,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    rowInbuilt(item: Source): TemplateResult[] {
+    protected rowInbuilt(item: Source): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

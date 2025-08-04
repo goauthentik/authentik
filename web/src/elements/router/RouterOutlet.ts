@@ -96,7 +96,7 @@ export class RouterOutlet extends AKElement {
         this.navigate();
     }
 
-    navigate(ev?: HashChangeEvent): void {
+    protected navigate(ev?: HashChangeEvent): void {
         let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         if (ev) {
             // Check if we've actually changed paths

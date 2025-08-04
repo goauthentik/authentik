@@ -133,7 +133,7 @@ export class SidebarItem extends AKElement {
         return pathIsWholePath || pathIsAnActivePath;
     }
 
-    expandParentRecursive(activePath: string, item: SidebarItem): void {
+    protected expandParentRecursive(activePath: string, item: SidebarItem): void {
         if (item.matchesPath(activePath) && item.parent) {
             item.parent.expanded = true;
             this.requestUpdate();

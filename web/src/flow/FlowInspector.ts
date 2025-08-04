@@ -83,7 +83,7 @@ export class FlowInspector extends AKElement {
     };
 
     // getStage return a stage without flowSet, for brevity
-    getStage(stage?: Stage): unknown {
+    protected getStage(stage?: Stage): unknown {
         if (!stage) {
             return stage;
         }

@@ -38,7 +38,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
 
     public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    send(data: ApplicationEntitlement): Promise<unknown> {
+    protected send(data: ApplicationEntitlement): Promise<unknown> {
         if (this.targetPk) {
             data.app = this.targetPk;
         }

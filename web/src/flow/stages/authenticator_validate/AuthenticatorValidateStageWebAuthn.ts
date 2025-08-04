@@ -37,7 +37,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
     protected transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
-    async authenticate(): Promise<void> {
+    protected async authenticate(): Promise<void> {
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
@@ -86,7 +86,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    async authenticateWrapper(): Promise<void> {
+    protected async authenticateWrapper(): Promise<void> {
         if (this.authenticating) {
             return;
         }

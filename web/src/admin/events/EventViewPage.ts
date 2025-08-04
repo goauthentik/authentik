@@ -40,7 +40,7 @@ export class EventViewPage extends AKElement {
         PFCard,
     ];
 
-    fetchEvent(eventUuid: string) {
+    protected fetchEvent(eventUuid: string) {
         new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {
             this.event = ev as EventWithContext;
         });

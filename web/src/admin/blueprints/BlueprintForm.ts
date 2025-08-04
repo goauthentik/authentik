@@ -32,7 +32,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     @state()
     protected source: blueprintSource = blueprintSource.file;
 
-    async loadInstance(pk: string): Promise<BlueprintInstance> {
+    protected async loadInstance(pk: string): Promise<BlueprintInstance> {
         const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });

@@ -61,7 +61,7 @@ export class ApplicationViewPage extends AKElement {
         PFCard,
     ];
 
-    fetchIsMissingOutpost(providersByPk: Array<number>) {
+    protected fetchIsMissingOutpost(providersByPk: Array<number>) {
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesList({
                 providersByPk,
@@ -74,7 +74,7 @@ export class ApplicationViewPage extends AKElement {
             });
     }
 
-    fetchApplication(slug: string) {
+    protected fetchApplication(slug: string) {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
             this.application = app;
             if (

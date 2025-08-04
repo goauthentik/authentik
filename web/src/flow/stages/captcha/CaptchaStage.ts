@@ -179,7 +179,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeGReCaptcha() {
+    protected async executeGReCaptcha() {
         return grecaptcha.ready(() => {
             return grecaptcha.execute(
                 grecaptcha.render(this.captchaDocumentContainer, {
@@ -191,11 +191,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         });
     }
 
-    async refreshGReCaptchaFrame() {
+    protected async refreshGReCaptchaFrame() {
         this.#iframeRef.value?.contentWindow?.grecaptcha.reset();
     }
 
-    async refreshGReCaptcha() {
+    protected async refreshGReCaptcha() {
         window.grecaptcha.reset();
         window.grecaptcha.execute();
     }
@@ -214,7 +214,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeHCaptcha() {
+    protected async executeHCaptcha() {
         await hcaptcha.execute(
             hcaptcha.render(this.captchaDocumentContainer, {
                 sitekey: this.challenge.siteKey,
@@ -224,11 +224,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         );
     }
 
-    async refreshHCaptchaFrame() {
+    protected async refreshHCaptchaFrame() {
         this.#iframeRef.value?.contentWindow?.hcaptcha?.reset();
     }
 
-    async refreshHCaptcha() {
+    protected async refreshHCaptcha() {
         window.hcaptcha.reset();
         window.hcaptcha.execute();
     }
@@ -248,18 +248,18 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeTurnstile() {
+    protected async executeTurnstile() {
         window.turnstile.render(this.captchaDocumentContainer, {
             sitekey: this.challenge.siteKey,
             callback: this.onTokenChange,
         });
     }
 
-    async refreshTurnstileFrame() {
+    protected async refreshTurnstileFrame() {
         this.#iframeRef.value?.contentWindow?.turnstile.reset();
     }
 
-    async refreshTurnstile() {
+    protected async refreshTurnstile() {
         window.turnstile.reset();
     }
 

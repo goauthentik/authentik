@@ -351,7 +351,7 @@ export class FlowExecutor
 
     //#region Render
 
-    getLayout(): string {
+    protected getLayout(): string {
         const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
@@ -359,7 +359,7 @@ export class FlowExecutor
         return prefilledFlow;
     }
 
-    getLayoutClass(): string {
+    protected getLayoutClass(): string {
         const layout = this.getLayout();
 
         switch (layout) {

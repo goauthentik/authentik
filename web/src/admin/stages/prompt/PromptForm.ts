@@ -32,7 +32,7 @@ class PreviewStageHost implements StageHost {
     public flowSlug = undefined;
     public loading = false;
     public brand = undefined;
-    async submit(payload: unknown): Promise<boolean> {
+    public async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
         return false;
     }
@@ -51,7 +51,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     @state()
     public previewResult: unknown;
 
-    send(data: Prompt): Promise<unknown> {
+    protected send(data: Prompt): Promise<unknown> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
                 promptUuid: this.instance.pk || "",
@@ -71,7 +71,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         return prompt;
     }
 
-    async refreshPreview(prompt?: Prompt): Promise<void> {
+    protected async refreshPreview(prompt?: Prompt): Promise<void> {
         if (!prompt) {
             prompt = this.serialize();
             if (!prompt) {

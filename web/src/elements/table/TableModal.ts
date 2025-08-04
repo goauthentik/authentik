@@ -62,7 +62,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
         this.open = false;
     };
 
-    resetForms(): void {
+    protected resetForms(): void {
         for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
             form.reset?.();
         }

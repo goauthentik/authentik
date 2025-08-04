@@ -142,7 +142,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return this.#editor.state.doc.toString();
     }
 
-    getLanguageExtension(): LanguageSupport | undefined {
+    protected getLanguageExtension(): LanguageSupport | undefined {
         switch (this.mode.toLowerCase()) {
             case CodeMirrorMode.XML:
                 return xml();

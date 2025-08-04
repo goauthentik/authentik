@@ -109,7 +109,7 @@ export class PlexAPIClient {
         return new Promise(executePoll);
     }
 
-    async getServers(): Promise<PlexResource[]> {
+    public async getServers(): Promise<PlexResource[]> {
         const resourcesResponse = await fetch(
             `https://plex.tv/api/v2/resources?X-Plex-Token=${this.token}&X-Plex-Client-Identifier=authentik`,
             {

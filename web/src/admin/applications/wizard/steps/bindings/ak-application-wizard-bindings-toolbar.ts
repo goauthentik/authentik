@@ -15,7 +15,7 @@ export class ApplicationWizardBindingsToolbar extends AKElement {
     @property({ type: Boolean, attribute: "can-delete", reflect: true })
     public canDelete = false;
 
-    notify(eventName: string) {
+    protected notify(eventName: string) {
         this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }));
     }
 

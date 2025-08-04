@@ -58,7 +58,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         });
     }
 
-    isUserFieldSelected(field: UserFieldsEnum): boolean {
+    protected isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (
             (this.instance?.userFields || []).filter((isField) => {
                 return field === isField;

@@ -60,7 +60,7 @@ export class RadiusProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersRadiusRetrieve({ id })
             .then((prov) => (this.provider = prov));

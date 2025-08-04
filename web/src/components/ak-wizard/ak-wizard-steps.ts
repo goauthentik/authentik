@@ -44,11 +44,11 @@ export class WizardStepsManager extends AKElement {
         this.addEventListener("slotchange", this.#slotChangeListener);
     }
 
-    findSlots() {
+    protected findSlots() {
         this.slots = Array.from(this.querySelectorAll("[slot]")) as WizardStep[];
     }
 
-    findSlot(name?: string) {
+    protected findSlot(name?: string) {
         const target = this.slots.find((slot) => slot.slot === name);
         if (!target) {
             throw new Error(`Request for wizard panel that does not exist: ${name}`);
@@ -67,7 +67,7 @@ export class WizardStepsManager extends AKElement {
             }));
     }
 
-    findStepLabels() {
+    protected findStepLabels() {
         this.wizardStepContext.setValue({
             ...this.wizardStepContext.value,
             stepLabels: this.stepLabels,
@@ -106,7 +106,7 @@ export class WizardStepsManager extends AKElement {
     //   through the entire wizard," but since the user invalidated a prior, that shouldn't be
     //   unexpected.  None of the data will have been lost.
 
-    updateStepAvailability(details: NavigationEventInit) {
+    protected updateStepAvailability(details: NavigationEventInit) {
         const asArr = (v?: string[] | string) =>
             v === undefined ? [] : Array.isArray(v) ? v : [v];
         const enabled = asArr(details.enable);

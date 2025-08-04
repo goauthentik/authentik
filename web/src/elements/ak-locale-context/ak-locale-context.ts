@@ -70,7 +70,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         this.updateLocale(ev.detail.locale);
     }
 
-    updateLocale(requestedLocale: string | undefined = undefined) {
+    protected updateLocale(requestedLocale: string | undefined = undefined) {
         const localeRequest = autoDetectLanguage(requestedLocale, this.brand.defaultLocale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
@@ -85,7 +85,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         });
     }
 
-    notifyApplication() {
+    protected notifyApplication() {
         // You will almost never have cause to catch this event. Lit's own `@localized()` decorator
         // works just fine for almost every use case.
         this.dispatchEvent(customEvent(EVENT_LOCALE_CHANGE));

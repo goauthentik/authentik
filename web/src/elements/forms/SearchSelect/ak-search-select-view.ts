@@ -198,7 +198,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     // If the user has changed the content of the input box, they are manipulating the *Label*, not
     // the value. We'll have to retroactively decide the value and publish it to any listeners.
-    settleValue() {
+    protected settleValue() {
         // TODO
     }
 
@@ -207,7 +207,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.inputRef.value?.focus();
     };
 
-    setFromMatchList(value: string | undefined) {
+    protected setFromMatchList(value: string | undefined) {
         if (value === undefined) {
             return;
         }
@@ -253,12 +253,12 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    setValue(newValue: string | undefined) {
+    protected setValue(newValue: string | undefined) {
         this.value = newValue;
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
     }
 
-    findValueForInput() {
+    protected findValueForInput() {
         const value = this.inputRef.value?.value;
         if (value === undefined || value.trim() === "") {
             this.setValue(undefined);
@@ -313,7 +313,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         this.setValue(value);
     };
 
-    findDisplayForValue(value: string) {
+    protected findDisplayForValue(value: string) {
         const newDisplayValue = this.flatOptions.find((option) => option[0] === value);
         return newDisplayValue ? newDisplayValue[1][1] : undefined;
     }

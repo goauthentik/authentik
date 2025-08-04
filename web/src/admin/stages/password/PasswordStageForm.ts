@@ -42,7 +42,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         });
     }
 
-    isBackendSelected(field: BackendsEnum): boolean {
+    protected isBackendSelected(field: BackendsEnum): boolean {
         if (!this.instance) {
             return true;
         }

@@ -69,7 +69,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersGoogleWorkspaceRetrieve({ id })
             .then((prov) => (this.provider = prov));

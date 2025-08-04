@@ -91,7 +91,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    async fetchObjects(query?: string): Promise<CertificateKeyPair[]> {
+    protected async fetchObjects(query?: string): Promise<CertificateKeyPair[]> {
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
@@ -106,7 +106,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         return certificates.results;
     }
 
-    selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
+    protected selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
         return (
             (this.singleton && !this.certificate && items.length === 1) ||
             (!!this.certificate && this.certificate === item.pk)

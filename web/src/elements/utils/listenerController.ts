@@ -34,7 +34,7 @@ export class ListenerController {
         return this.listenerController.signal;
     }
 
-    abort() {
+    public abort() {
         this.listenerController?.abort();
         this.listenerController = undefined;
     }

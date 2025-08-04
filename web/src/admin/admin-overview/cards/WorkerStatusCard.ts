@@ -12,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
     public override icon = "pf-icon pf-icon-server";
 
-    getPrimaryValue(): Promise<Worker[]> {
+    protected getPrimaryValue(): Promise<Worker[]> {
         return new TasksApi(DEFAULT_CONFIG).tasksWorkersList();
     }
 

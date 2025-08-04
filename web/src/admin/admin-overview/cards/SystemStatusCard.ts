@@ -19,7 +19,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     @state()
     protected statusSummary?: string;
 
-    async getPrimaryValue(): Promise<SystemInfo> {
+    protected async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         if (

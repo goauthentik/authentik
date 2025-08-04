@@ -106,7 +106,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         return source;
     }
 
-    fetchProviderType(v: string | undefined) {
+    protected fetchProviderType(v: string | undefined) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
                 name: v?.replace("oauthsource", ""),

@@ -105,7 +105,7 @@ export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClas
             }
         }
 
-        addCustomListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
+        public addCustomListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
             const internalHandler = (event: Event) => {
                 if (!isCustomEvent<D>(event)) {
                     console.error(
@@ -122,7 +122,10 @@ export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClas
             this.addEventListener(eventType, internalHandler);
         }
 
-        removeCustomListener<D = unknown>(eventType: string, listener: CustomEventListener<D>) {
+        public removeCustomListener<D = unknown>(
+            eventType: string,
+            listener: CustomEventListener<D>,
+        ) {
             const realHandler = this.#getListener(eventType, listener);
 
             if (realHandler) {

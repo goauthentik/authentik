@@ -107,7 +107,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.onSelected(matchingApps);
     }
 
-    resetSearch(): void {
+    protected resetSearch(): void {
         if (this.searchInput) {
             this.searchInput.value = "";
         }

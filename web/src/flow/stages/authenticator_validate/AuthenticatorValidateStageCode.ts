@@ -33,7 +33,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         `,
     ];
 
-    deviceMessage(): string {
+    protected deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email: {
                 const email = this.deviceChallenge.challenge?.email;
@@ -52,7 +52,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return msg("Enter the code from your authenticator device.");
     }
 
-    deviceIcon(): string {
+    protected deviceIcon(): string {
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email:
                 return "fa-envelope";

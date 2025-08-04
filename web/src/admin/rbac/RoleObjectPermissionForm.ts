@@ -54,7 +54,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         return msg("Successfully assigned permission.");
     }
 
-    send(data: RoleAssignData): Promise<unknown> {
+    protected send(data: RoleAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {

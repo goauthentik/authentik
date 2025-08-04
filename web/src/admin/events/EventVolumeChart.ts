@@ -38,7 +38,7 @@ export class EventVolumeChart extends EventChart {
         `,
     ];
 
-    apiRequest(): Promise<EventVolume[]> {
+    protected apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             historyDays: 7,
             ...this.#query,

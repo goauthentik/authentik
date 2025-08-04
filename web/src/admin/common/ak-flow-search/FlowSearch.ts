@@ -94,7 +94,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    async fetchObjects(query?: string): Promise<Flow[]> {
+    protected async fetchObjects(query?: string): Promise<Flow[]> {
         const args: FlowsInstancesListRequest = {
             ordering: "slug",
             designation: this.flowType,
@@ -108,7 +108,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * use this method, but several have more complex needs, such as relating to the brand, or just
      * returning false.
      */
-    selected(flow: Flow): boolean {
+    protected selected(flow: Flow): boolean {
         let selected = this.currentFlow === flow.pk;
         if (!this.currentFlow && this.defaultFlowSlug && flow.slug === this.defaultFlowSlug) {
             selected = true;

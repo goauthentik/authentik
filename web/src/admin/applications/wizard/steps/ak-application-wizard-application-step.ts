@@ -48,7 +48,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         this.enabled = true;
     }
 
-    errorMessages(name: string) {
+    protected errorMessages(name: string) {
         return this.errors.has(name)
             ? [this.errors.get(name)]
             : (this.wizard.errors?.app?.[name] ??

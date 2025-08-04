@@ -14,7 +14,7 @@ class CountryCache {
         this.TTL = 60 * 1000;
     }
 
-    async getCountries() {
+    public async getCountries() {
         const shouldInvalidate =
             this.lastReceivedAt === undefined ||
             new Date().getTime() - this.lastReceivedAt > this.TTL;

@@ -101,7 +101,7 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
-    fetchPreview(): void {
+    protected fetchPreview(): void {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersSamlPreviewUserRetrieve({
                 id: this.provider?.pk || 0,
@@ -112,19 +112,19 @@ export class SAMLProviderViewPage extends AKElement {
             });
     }
 
-    fetchCertificate(kpUuid: string) {
+    protected fetchCertificate(kpUuid: string) {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
     }
 
-    fetchSigningCertificate(kpUuid: string) {
+    protected fetchSigningCertificate(kpUuid: string) {
         this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
     }
 
-    fetchVerificationCertificate(kpUuid: string) {
+    protected fetchVerificationCertificate(kpUuid: string) {
         this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
             if (this.provider.signingKp) {

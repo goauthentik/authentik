@@ -25,7 +25,7 @@ export class RouteMatch {
      *
      * @returns The sanitized URL for logging/tracing.
      */
-    sanitizedURL() {
+    public sanitizedURL() {
         let cleanedURL = this.fullURL;
         for (const match of Object.keys(this.arguments)) {
             const value = this.arguments[match];
@@ -34,7 +34,7 @@ export class RouteMatch {
         return cleanedURL;
     }
 
-    toString(): string {
+    protected toString(): string {
         return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(
             this.arguments,
         )}>`;
