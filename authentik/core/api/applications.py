@@ -6,6 +6,7 @@ from copy import copy
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -73,16 +74,13 @@ class ApplicationSerializer(ModelSerializer):
         # Reserved slugs that would clash with OAuth2 provider endpoints
         reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
 
-        # Get the slug being used (either from attrs or from instance)
-        if self.instance:
-            slug = attrs.get("slug", self.instance.slug)
-        else:
-            slug = attrs.get("slug")
+        # Get the slug being used
+        slug = attrs.get("slug", getattr(self.instance, "slug", None))
 
         # Block reserved slugs
         if slug in reserved_slugs:
             raise ValidationError(
-                {"slug": f"The slug '{slug}' is reserved and cannot be used for applications."}
+                {"slug": _("The slug '%(slug)s' is reserved and cannot be used for applications.") % {"slug": slug}}
             )
 
         return attrs
