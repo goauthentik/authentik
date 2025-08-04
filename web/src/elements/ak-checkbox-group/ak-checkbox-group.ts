@@ -92,7 +92,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         `,
     ];
 
-    static get formAssociated() {
+    public static get formAssociated() {
         return true;
     }
 

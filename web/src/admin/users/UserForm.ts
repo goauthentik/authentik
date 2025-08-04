@@ -25,7 +25,7 @@ export class UserForm extends ModelForm<User, number> {
     @property()
     public defaultPath: string = "users";
 
-    static get defaultUserAttributes(): { [key: string]: unknown } {
+    public static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
 

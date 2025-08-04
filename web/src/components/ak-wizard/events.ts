@@ -25,7 +25,7 @@ export class WizardNavigationEvent<D extends string = string> extends Event {
     /**
      * Given an event target, bind the destination and details for dispatching.
      */
-    static toListener<D extends string = string>(
+    public static toListener<D extends string = string>(
         target: EventTarget,
         destination: D,
         init?: NavigationEventInit,

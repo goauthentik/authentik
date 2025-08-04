@@ -30,7 +30,7 @@ export class AkSearchSelectViewDriver {
         /* no op */
     }
 
-    static async build(element: WebdriverIO.Element) {
+    public static async build(element: WebdriverIO.Element) {
         const tagname = await element.getTagName();
         const comptype = await element.getAttribute("data-ouia-component-type");
         if (comptype !== "ak-search-select-view") {

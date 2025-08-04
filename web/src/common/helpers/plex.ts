@@ -49,7 +49,7 @@ export class PlexAPIClient {
         this.token = token;
     }
 
-    static async getPin(
+    public static async getPin(
         clientIdentifier: string,
     ): Promise<{ authUrl: string; pin: PlexPinResponse }> {
         const headers = {
@@ -69,7 +69,10 @@ export class PlexAPIClient {
         };
     }
 
-    static async pinStatus(clientIdentifier: string, id: number): Promise<string | undefined> {
+    public static async pinStatus(
+        clientIdentifier: string,
+        id: number,
+    ): Promise<string | undefined> {
         const headers = {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
@@ -85,7 +88,7 @@ export class PlexAPIClient {
         return pin.authToken;
     }
 
-    static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
+    public static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
         const executePoll = async (
             resolve: (authToken: string) => void,
             reject: (e: Error) => void,
