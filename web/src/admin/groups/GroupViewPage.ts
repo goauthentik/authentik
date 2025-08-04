@@ -49,7 +49,7 @@ export class GroupViewPage extends AKElement {
     @property({ attribute: false })
     group?: Group;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

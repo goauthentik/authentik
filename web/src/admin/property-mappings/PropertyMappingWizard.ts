@@ -35,7 +35,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static styles = [PFBase, PFButton];
+    public static styles = [PFBase, PFButton];
 
     @property({ attribute: false })
     mappingTypes: TypeCreate[] = [];

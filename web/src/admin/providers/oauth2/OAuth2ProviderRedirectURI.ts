@@ -23,7 +23,7 @@ export type RedirectURIProperties = LitPropertyRecord<{
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
-    static styles = [
+    public static styles = [
         PFBase,
         PFInputGroup,
         PFFormControl,

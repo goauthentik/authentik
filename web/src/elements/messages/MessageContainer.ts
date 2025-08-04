@@ -85,7 +85,7 @@ export class MessageContainer extends AKElement {
     @property()
     alignment: "top" | "bottom" = "top";
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFAlertGroup,
         css`

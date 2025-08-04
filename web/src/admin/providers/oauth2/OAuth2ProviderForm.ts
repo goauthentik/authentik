@@ -62,7 +62,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
 
-    static styles = [
+    public static styles = [
         ...super.styles,
         css`
             ak-array-input {

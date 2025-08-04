@@ -26,7 +26,7 @@ import PFText from "@patternfly/patternfly/utilities/Text/text.css";
 
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFList,

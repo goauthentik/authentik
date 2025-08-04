@@ -46,7 +46,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         return "pf-icon pf-icon-migration";
     }
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     checkbox = true;
     clearOnRefresh = true;

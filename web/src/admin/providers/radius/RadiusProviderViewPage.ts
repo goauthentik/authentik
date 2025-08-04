@@ -40,7 +40,7 @@ export class RadiusProviderViewPage extends AKElement {
     @state()
     provider?: RadiusProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,

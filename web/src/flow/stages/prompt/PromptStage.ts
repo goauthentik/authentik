@@ -32,7 +32,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFAlert,

@@ -36,7 +36,7 @@ const hostAttributes = [
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
+    public static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
 

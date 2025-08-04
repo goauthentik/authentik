@@ -37,7 +37,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFDisplay,

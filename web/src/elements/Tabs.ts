@@ -22,7 +22,7 @@ export class Tabs extends AKElement {
     @property({ type: Boolean })
     vertical = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFGlobal,
         PFTabs,
         css`

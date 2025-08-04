@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * The base interface element for the application.
  */
 export abstract class Interface extends AKElement {
-    static styles = [PFBase];
+    public static styles = [PFBase];
 
     constructor() {
         super();

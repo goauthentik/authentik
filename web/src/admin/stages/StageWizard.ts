@@ -47,7 +47,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

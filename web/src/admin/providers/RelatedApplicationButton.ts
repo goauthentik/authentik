@@ -15,7 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-related-application")
 export class RelatedApplicationButton extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     provider?: Provider;

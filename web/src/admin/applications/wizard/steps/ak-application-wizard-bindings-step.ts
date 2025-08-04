@@ -48,7 +48,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     @query("ak-select-table")
     selectTable!: SelectTable;
 
-    static styles = [
+    public static styles = [
         ...super.styles,
         PFCard,
         css`

@@ -50,7 +50,7 @@ export class SCIMSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: SCIMSource;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

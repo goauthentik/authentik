@@ -25,7 +25,7 @@ type Pair = [string, string];
 
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFToggleGroup,
         css`

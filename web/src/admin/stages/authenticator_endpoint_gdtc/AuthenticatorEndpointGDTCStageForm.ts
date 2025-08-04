@@ -36,7 +36,7 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
         });
     }
 
-    static styles = [...super.styles, PFBanner];
+    public static styles = [...super.styles, PFBanner];
 
     renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">

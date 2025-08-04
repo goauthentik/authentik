@@ -31,7 +31,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
     AuthenticatorTOTPChallenge,
     AuthenticatorTOTPChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

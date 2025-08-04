@@ -40,7 +40,7 @@ const hostAttributes = [
 export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
     AKElement,
 ) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
+    public static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
 

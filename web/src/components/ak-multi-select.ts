@@ -27,7 +27,7 @@ const selectStyles = css`
  */
 @customElement("ak-multi-select")
 export class AkMultiSelect extends AkControlElement {
-    static styles = [PFBase, PFForm, PFFormControl, selectStyles];
+    public static styles = [PFBase, PFForm, PFFormControl, selectStyles];
 
     /**
      * The [name] attribute, which is also distributed to the layout manager and the input control.

@@ -20,7 +20,7 @@ export class APIDrawer extends AKElement {
     @property({ attribute: false })
     requests: RequestInfo[] = [];
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFNotificationDrawer,
         PFButton,

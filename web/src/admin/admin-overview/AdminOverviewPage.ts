@@ -37,7 +37,7 @@ const AdminOverviewBase = WithLicenseSummary(AKElement);
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFGrid,
         PFPage,

@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
-    static styles = [
+    public static styles = [
         ...super.styles,
         css`
             ak-checkbox-group::part(checkbox-group) {

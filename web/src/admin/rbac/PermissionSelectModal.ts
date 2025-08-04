@@ -28,7 +28,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
 
     order = "content_type__app_label,content_type__model";
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());

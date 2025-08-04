@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
-    static styles = [PFBase, globalVariables, searchStyles];
+    public static styles = [PFBase, globalVariables, searchStyles];
 
     @property({ type: String, reflect: true })
     public value = "";

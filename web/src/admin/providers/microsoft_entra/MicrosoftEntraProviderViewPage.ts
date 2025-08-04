@@ -47,7 +47,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
     @state()
     provider?: MicrosoftEntraProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFForm,

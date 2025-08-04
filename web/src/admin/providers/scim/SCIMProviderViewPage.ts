@@ -52,7 +52,7 @@ export class SCIMProviderViewPage extends AKElement {
     @state()
     provider?: SCIMProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFBanner,

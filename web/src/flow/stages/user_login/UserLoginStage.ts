@@ -24,7 +24,7 @@ export class PasswordStage extends BaseStage<
     UserLoginChallenge,
     UserLoginChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

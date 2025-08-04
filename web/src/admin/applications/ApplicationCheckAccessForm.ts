@@ -50,7 +50,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         this.result = null;
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     renderResult(): TemplateResult {
         return html`

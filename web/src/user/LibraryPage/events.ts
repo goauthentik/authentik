@@ -8,7 +8,7 @@ import type { Application } from "@goauthentik/api";
  *
  */
 export class LibraryPageSearchUpdated extends Event {
-    static readonly eventName = "authentik.library.search-updated";
+    public static readonly eventName = "authentik.library.search-updated";
     /**
      * @attr apps: The list of those entries found by the current search.
      */
@@ -25,7 +25,7 @@ export class LibraryPageSearchUpdated extends Event {
  *
  */
 export class LibraryPageSearchReset extends Event {
-    static readonly eventName = "authentik.library.search-reset";
+    public static readonly eventName = "authentik.library.search-reset";
     constructor() {
         super(LibraryPageSearchReset.eventName, { composed: true, bubbles: true });
     }
@@ -40,7 +40,7 @@ export class LibraryPageSearchReset extends Event {
  *
  */
 export class LibraryPageSearchEmpty extends Event {
-    static readonly eventName = "authentik.library.search-empty";
+    public static readonly eventName = "authentik.library.search-empty";
 
     constructor() {
         super(LibraryPageSearchEmpty.eventName, { composed: true, bubbles: true });
@@ -56,7 +56,7 @@ export class LibraryPageSearchEmpty extends Event {
  *
  */
 export class LibraryPageSearchSelected extends Event {
-    static readonly eventName = "authentik.library.search-item-selected";
+    public static readonly eventName = "authentik.library.search-item-selected";
     constructor() {
         super(LibraryPageSearchSelected.eventName, { composed: true, bubbles: true });
     }

@@ -31,9 +31,7 @@ export class SyncStatusCard extends AKElement {
     @property({ attribute: false })
     fetch!: () => Promise<SyncStatus>;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFCard, PFDescriptionList, PFStack];
-    }
+    public static styles: CSSResult[] = [PFBase, PFButton, PFCard, PFDescriptionList, PFStack];
 
     firstUpdated() {
         this.loading = true;

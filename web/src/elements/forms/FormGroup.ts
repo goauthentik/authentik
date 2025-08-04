@@ -29,7 +29,7 @@ export class AKFormGroup extends AKElement {
     @property({ type: String, reflect: true })
     public description?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFButton,

@@ -68,7 +68,7 @@ export class EventMap extends AKElement {
     @property({ type: Number })
     zoomPaddingPx = 100;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFCard,
         css`

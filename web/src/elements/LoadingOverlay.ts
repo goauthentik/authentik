@@ -53,7 +53,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     @property({ type: String })
     icon?: string;
 
-    static styles = [
+    public static styles = [
         PFBase,
         css`
             :host {

@@ -51,7 +51,7 @@ export class LDAPSourceViewPage extends AKElement {
     @property({ attribute: false })
     source!: LDAPSource;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

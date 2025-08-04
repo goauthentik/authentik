@@ -67,7 +67,7 @@ export class RouterOutlet extends AKElement {
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             :host {
                 background-color: transparent !important;

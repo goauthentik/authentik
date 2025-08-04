@@ -29,7 +29,7 @@ export class UserForm extends ModelForm<User, number> {
         return {};
     }
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {

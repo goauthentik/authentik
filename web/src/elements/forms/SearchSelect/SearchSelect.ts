@@ -32,7 +32,7 @@ export interface ISearchSelectBase<T> {
 }
 
 export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
-    static styles = [PFBase];
+    public static styles = [PFBase];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.

@@ -27,7 +27,7 @@ export class AuthenticatorEmailStage extends BaseStage<
     AuthenticatorEmailChallenge,
     AuthenticatorEmailChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFLogin,

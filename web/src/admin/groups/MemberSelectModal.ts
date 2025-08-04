@@ -22,7 +22,7 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
-    static styles = [
+    public static styles = [
         ...super.styles,
         css`
             .show-disabled-toggle-group {

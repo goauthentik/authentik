@@ -29,7 +29,7 @@ export class OutpostHealthSimpleElement extends AKElement {
     @property({ attribute: false })
     showVersion = true;
 
-    static styles: CSSResult[] = [PFBase];
+    public static styles: CSSResult[] = [PFBase];
 
     constructor() {
         super();

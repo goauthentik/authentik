@@ -21,7 +21,7 @@ export class EnterpriseStatusCard extends AKElement {
     @state()
     summary?: LicenseSummary;
 
-    static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+    public static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
 
     renderSummaryBadge() {
         switch (this.summary?.status) {

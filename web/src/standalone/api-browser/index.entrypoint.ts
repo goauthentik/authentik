@@ -22,7 +22,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             img.logo {
                 width: 100%;

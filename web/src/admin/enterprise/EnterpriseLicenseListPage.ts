@@ -64,7 +64,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     installID?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,

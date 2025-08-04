@@ -27,7 +27,7 @@ export function rbacRolePair(item: Role): DualSelectPair {
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {

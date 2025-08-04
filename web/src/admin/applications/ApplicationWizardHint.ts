@@ -35,7 +35,7 @@ const closeButtonIcon = html`<svg
 
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         PFPage,

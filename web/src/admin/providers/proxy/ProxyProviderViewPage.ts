@@ -83,7 +83,7 @@ export class ProxyProviderViewPage extends AKElement {
     @state()
     provider?: ProxyProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,

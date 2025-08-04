@@ -54,7 +54,7 @@ export class FlowExecutor
 {
     //#region Styles
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFDrawer,

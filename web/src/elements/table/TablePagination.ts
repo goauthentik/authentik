@@ -23,7 +23,7 @@ export class TablePagination extends AKElement {
     @property({ attribute: false })
     onPageChange?: TablePageChangeListener;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPagination,

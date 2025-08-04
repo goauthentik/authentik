@@ -6,7 +6,7 @@ import { classMap } from "lit/directives/class-map.js";
 // the source TableColumn in some way.
 //
 export class TableSortEvent extends Event {
-    static readonly eventName = "tablesort";
+    public static readonly eventName = "tablesort";
     public value: string;
     constructor(value: string) {
         super(TableSortEvent.eventName, { composed: true, bubbles: true });

@@ -58,7 +58,7 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             .container {
                 height: 100%;

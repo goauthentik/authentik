@@ -24,7 +24,7 @@ const hasLegalScheme = (url: string) =>
 
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AkControlElement<FooterLink> {
-    static styles = [
+    public static styles = [
         PFBase,
         PFInputGroup,
         PFFormControl,

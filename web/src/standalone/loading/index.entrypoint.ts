@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
 export class Loading extends AKElement {
-    static styles = [
+    public static styles = [
         PFBase,
         PFPage,
         PFSpinner,

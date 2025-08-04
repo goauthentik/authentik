@@ -89,7 +89,7 @@ export class OAuthSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: OAuthSource;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

@@ -39,7 +39,7 @@ export class EndpointListPage extends Table<Endpoint> {
     @property({ attribute: false })
     provider?: RACProvider;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({

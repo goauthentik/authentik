@@ -19,7 +19,7 @@ export interface SidebarItemProperties {
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends AKElement {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFNav,

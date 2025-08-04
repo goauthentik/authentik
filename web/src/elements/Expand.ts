@@ -27,7 +27,7 @@ export class Expand extends AKElement implements IExpand {
     @property({ type: String, attribute: "text-closed" })
     textClosed = msg("Show more");
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFExpandableSection,
         css`

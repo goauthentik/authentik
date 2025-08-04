@@ -37,7 +37,7 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFCard,
         css`

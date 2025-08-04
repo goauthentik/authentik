@@ -70,7 +70,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: Boolean, attribute: "left-justified" })
     leftJustified = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFFlex,

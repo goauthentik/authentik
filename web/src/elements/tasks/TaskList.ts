@@ -53,9 +53,7 @@ export class TaskList extends Table<Task> {
     @property()
     order = "-mtime";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList, PFSpacing, PFTitle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =

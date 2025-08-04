@@ -27,7 +27,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallenge,
     AuthenticatorSMSChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFLogin,

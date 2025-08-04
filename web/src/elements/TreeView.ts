@@ -140,7 +140,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFTreeView];
+    public static styles: CSSResult[] = [PFBase, PFTreeView];
 
     @property({ type: Array })
     items: string[] = [];

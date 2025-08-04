@@ -38,7 +38,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
 
     #open = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFModalBox,
         PFBullseye,

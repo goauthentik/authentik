@@ -53,7 +53,7 @@ export class SSFProviderViewPage extends AKElement {
     @property({ attribute: false })
     provider?: SSFProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,

@@ -44,7 +44,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFFormControl,

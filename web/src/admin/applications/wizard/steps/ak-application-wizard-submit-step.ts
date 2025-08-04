@@ -80,7 +80,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
-    static styles = [
+    public static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
         PFEmptyState,

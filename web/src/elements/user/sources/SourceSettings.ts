@@ -32,7 +32,7 @@ export class UserSourceSettingsPage extends AKElement {
     @property({ type: Boolean })
     canConnect = true;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFDataList,
         css`
             .pf-c-data-list__cell {

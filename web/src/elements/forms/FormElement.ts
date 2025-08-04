@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
+    public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @property()
     label?: string;

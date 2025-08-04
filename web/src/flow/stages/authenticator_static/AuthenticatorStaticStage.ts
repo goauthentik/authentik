@@ -26,7 +26,7 @@ export class AuthenticatorStaticStage extends BaseStage<
     AuthenticatorStaticChallenge,
     AuthenticatorStaticChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

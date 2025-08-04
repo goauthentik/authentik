@@ -22,7 +22,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

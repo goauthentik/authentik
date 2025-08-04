@@ -79,7 +79,7 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static styles = [
+    public static styles = [
         PFBase,
         PFForm,
         PFCheck,

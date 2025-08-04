@@ -49,7 +49,7 @@ export class UserTokenList extends Table<Token> {
         return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     renderToolbar(): TemplateResult {
         return html`

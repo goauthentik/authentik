@@ -39,7 +39,7 @@ export class LibraryApplication extends AKElement {
     @query("ak-library-rac-endpoint-launch")
     racEndpointLaunch?: RACLaunchEndpointModal;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,

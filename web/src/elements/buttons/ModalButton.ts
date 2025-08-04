@@ -47,7 +47,7 @@ export abstract class ModalButton extends AKElement {
     @property({ type: Boolean })
     public locked = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFModalBox,

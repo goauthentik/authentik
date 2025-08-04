@@ -19,7 +19,7 @@ export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
     user?: User;
 
-    static styles: CSSResult[] = [...super.styles, applicationListStyle];
+    public static styles: CSSResult[] = [...super.styles, applicationListStyle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({

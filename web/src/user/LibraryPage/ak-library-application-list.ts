@@ -41,7 +41,7 @@ const LAYOUTS = new Map<string, [string, string]>([
  */
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [
+    public static styles = [
         PFBase,
         PFEmptyState,
         PFContent,

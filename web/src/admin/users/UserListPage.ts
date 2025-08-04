@@ -118,7 +118,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     me?: SessionUser;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
         PFCard,

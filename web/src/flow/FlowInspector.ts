@@ -32,7 +32,7 @@ export class FlowInspector extends AKElement {
     @property({ attribute: false })
     error?: APIError;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFStack,

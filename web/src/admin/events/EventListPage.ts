@@ -45,7 +45,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     @property()
     order = "-created";
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...TablePage.styles,
         PFGrid,
         css`

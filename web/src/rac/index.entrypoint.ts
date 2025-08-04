@@ -47,7 +47,7 @@ const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
 export class RacInterface extends WithBrandConfig(Interface) {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFContent,

@@ -40,7 +40,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
-    static styles = styles;
+    public static styles = styles;
 
     /**
      * Controls showing the "Switch to Admin" button.

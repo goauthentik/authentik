@@ -62,7 +62,7 @@ const DelegatedEvents = [
  */
 @customElement("ak-dual-select")
 export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
-    static styles = [PFBase, PFButton, globalVariables, mainStyles];
+    public static styles = [PFBase, PFButton, globalVariables, mainStyles];
 
     //#region Properties
 

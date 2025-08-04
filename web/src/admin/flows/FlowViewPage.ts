@@ -37,7 +37,7 @@ export class FlowViewPage extends AKElement {
     @state()
     flow!: Flow;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFDescriptionList,

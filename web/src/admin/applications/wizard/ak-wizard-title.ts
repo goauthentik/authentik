@@ -8,7 +8,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-wizard-title")
 export class AkWizardTitle extends AKElement {
-    static styles = [
+    public static styles = [
         PFContent,
         PFTitle,
         css`

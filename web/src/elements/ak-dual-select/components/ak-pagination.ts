@@ -13,7 +13,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-pagination")
 export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         PFPagination,

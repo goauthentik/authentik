@@ -12,7 +12,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("sb-dual-select-host-provider")
 export class SbHostProvider extends LitElement {
-    static styles = globalVariables;
+    public static styles = globalVariables;
 
     render() {
         return html`<slot></slot>`;

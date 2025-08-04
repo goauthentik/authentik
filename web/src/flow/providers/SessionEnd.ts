@@ -21,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-session-end")
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

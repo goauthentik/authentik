@@ -13,7 +13,7 @@ export class Spinner extends AKElement {
     @property()
     size: PFSize = PFSize.Medium;
 
-    static styles: CSSResult[] = [PFSpinner];
+    public static styles: CSSResult[] = [PFSpinner];
 
     render(): TemplateResult {
         return html`<span

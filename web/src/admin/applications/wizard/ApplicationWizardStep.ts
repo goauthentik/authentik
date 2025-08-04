@@ -21,7 +21,7 @@ import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
 export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardStep {
-    static styles = [...WizardStep.styles, ...styles];
+    public static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
     wizard!: ApplicationWizardState;

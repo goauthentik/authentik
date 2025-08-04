@@ -18,7 +18,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static styles: CSSResult[] = [...super.styles, PFList];
+    public static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
     obj?: Record<string, unknown>;

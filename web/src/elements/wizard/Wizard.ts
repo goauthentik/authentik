@@ -24,7 +24,7 @@ export const ApplyActionsSlot = "apply-actions";
 
 @customElement("ak-wizard")
 export class Wizard extends ModalButton {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFWizard,
         css`

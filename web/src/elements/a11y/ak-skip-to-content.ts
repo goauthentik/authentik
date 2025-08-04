@@ -8,7 +8,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-skip-to-content")
 export class AKSkipToContent extends AKElement {
-    static styles = [
+    public static styles = [
         PFBase,
         css`
             .show-on-focus:not(:focus) {

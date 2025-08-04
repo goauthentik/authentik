@@ -36,7 +36,7 @@ export abstract class WizardForm extends Form {
 }
 
 export class WizardFormPage extends WizardPage {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,

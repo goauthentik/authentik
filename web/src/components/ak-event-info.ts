@@ -84,7 +84,7 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFFlex,

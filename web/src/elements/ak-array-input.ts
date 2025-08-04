@@ -28,7 +28,7 @@ type Keyed<T> = { key: string; item: T };
 
 @customElement("ak-array-input")
 export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         PFInputGroup,

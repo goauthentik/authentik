@@ -43,7 +43,7 @@ const LevelARIALiveMap = {
 
 @customElement("ak-message")
 export class Message extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
+    public static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
 
     //#region Properties
 

@@ -37,7 +37,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
  */
 @customElement("ak-library-application-search")
 export class LibraryPageApplicationSearch extends AKElement {
-    static styles = [
+    public static styles = [
         PFBase,
         PFDisplay,
         css`

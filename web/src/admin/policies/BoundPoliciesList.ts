@@ -54,9 +54,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     order = "order";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
+    public static styles: CSSResult[] = [...super.styles, PFSpacing];
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");

@@ -49,7 +49,7 @@ export class ApplicationViewPage extends AKElement {
     @state()
     missingOutpost = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFList,
         PFBanner,

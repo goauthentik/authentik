@@ -67,7 +67,7 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

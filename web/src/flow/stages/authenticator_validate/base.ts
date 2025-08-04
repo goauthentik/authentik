@@ -24,7 +24,7 @@ export class BaseDeviceStage<
     @property({ type: Boolean })
     showBackButton = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

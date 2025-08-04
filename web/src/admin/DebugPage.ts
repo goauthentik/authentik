@@ -22,7 +22,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
 
     render(): TemplateResult {
         return html`

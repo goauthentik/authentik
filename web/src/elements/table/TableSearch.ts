@@ -29,7 +29,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
     @property()
     public onSearch?: (value: string) => void;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFToolbar,

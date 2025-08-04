@@ -33,7 +33,7 @@ export class NotificationDrawer extends AKElement {
     @property({ type: Number })
     unread = 0;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFNotificationDrawer,

@@ -48,7 +48,7 @@ export class PlexSourceViewPage extends AKElement {
     @property({ attribute: false })
     source?: PlexSource;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

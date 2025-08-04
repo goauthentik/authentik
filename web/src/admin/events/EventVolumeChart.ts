@@ -25,7 +25,7 @@ export class EventVolumeChart extends EventChart {
         this.refreshHandler();
     }
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFCard,
         css`

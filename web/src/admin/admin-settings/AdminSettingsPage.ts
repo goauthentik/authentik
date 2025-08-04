@@ -33,7 +33,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         PFPage,

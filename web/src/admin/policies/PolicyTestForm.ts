@@ -51,7 +51,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return (this.result = result);
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     renderResult(): TemplateResult {
         return html`

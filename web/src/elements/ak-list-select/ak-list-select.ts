@@ -45,7 +45,7 @@ export interface IListSelect {
  */
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
-    static styles = [
+    public static styles = [
         PFBase,
         PFDropdown,
         PFSelect,

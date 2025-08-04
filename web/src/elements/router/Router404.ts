@@ -13,7 +13,7 @@ export class Router404 extends AKElement {
     @property()
     url = "";
 
-    static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
+    public static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
 
     render(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">

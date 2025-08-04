@@ -64,7 +64,7 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: Boolean, attribute: "full-height" })
     public fullHeight = false;
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFEmptyState,
         PFTitle,

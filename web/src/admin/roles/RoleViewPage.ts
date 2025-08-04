@@ -45,7 +45,7 @@ export class RoleViewPage extends AKElement {
     @state()
     _role?: Role;
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFPage,
         PFButton,

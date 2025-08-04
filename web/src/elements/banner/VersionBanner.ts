@@ -9,7 +9,7 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-version-banner")
 export class VersionBanner extends WithVersion(AKElement) {
-    static styles = [PFBanner];
+    public static styles = [PFBanner];
 
     render() {
         if (!this.version?.versionCurrent) return nothing;

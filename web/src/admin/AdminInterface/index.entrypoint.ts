@@ -79,7 +79,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     //#region Styles
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

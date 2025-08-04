@@ -32,7 +32,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     #fieldID: string = this.name || IDGenerator.randomID();
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFRadio,
         PFForm,

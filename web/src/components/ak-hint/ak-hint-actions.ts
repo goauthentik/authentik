@@ -20,7 +20,7 @@ const style = css`
 
 @customElement("ak-hint-actions")
 export class AkHintActions extends AKElement {
-    static styles = [style];
+    public static styles = [style];
 
     render() {
         return html`<div part="ak-hint-actions"><slot></slot></div>`;

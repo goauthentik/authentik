@@ -100,7 +100,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     checkbox = true;
     clearOnRefresh = true;

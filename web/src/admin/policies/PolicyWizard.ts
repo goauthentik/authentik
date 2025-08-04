@@ -31,7 +31,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
     createText = msg("Create");

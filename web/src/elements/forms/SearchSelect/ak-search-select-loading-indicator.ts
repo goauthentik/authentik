@@ -25,7 +25,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-select-loading-indicator")
 export class SearchSelectLoadingIndicator extends AKElement {
-    static styles = [PFBase, PFFormControl, PFSelect];
+    public static styles = [PFBase, PFFormControl, PFSelect];
 
     connectedCallback() {
         super.connectedCallback();

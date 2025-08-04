@@ -54,7 +54,7 @@ export class KerberosSourceViewPage extends AKElement {
     @property({ attribute: false })
     source!: KerberosSource;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,

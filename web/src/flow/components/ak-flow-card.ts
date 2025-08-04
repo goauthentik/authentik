@@ -28,7 +28,7 @@ export class FlowCard extends AKElement {
     @property({ type: Boolean })
     loading = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFTitle,

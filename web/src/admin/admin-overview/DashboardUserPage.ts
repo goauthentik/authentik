@@ -18,7 +18,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFGrid,
         PFPage,
         PFContent,

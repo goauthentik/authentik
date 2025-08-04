@@ -21,9 +21,7 @@ export class TaskStatus extends AKElement {
     @property()
     status?: TaskAggregatedStatusEnum | TasksTasksListAggregatedStatusEnum | LastTaskStatusEnum;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     render(): TemplateResult {
         switch (this.status) {

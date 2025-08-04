@@ -46,7 +46,7 @@ export class RACProviderViewPage extends AKElement {
     @state()
     provider?: RACProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,

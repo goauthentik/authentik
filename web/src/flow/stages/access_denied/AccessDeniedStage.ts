@@ -21,7 +21,7 @@ export class AccessDeniedStage extends BaseStage<
     AccessDeniedChallenge,
     FlowChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
+    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

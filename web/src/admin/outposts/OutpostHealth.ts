@@ -19,7 +19,7 @@ export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
     outpostHealth?: OutpostHealth;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFDescriptionList,
         css`

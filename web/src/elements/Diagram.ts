@@ -26,7 +26,7 @@ export class Diagram extends AKElement {
 
     handlerBound = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             :host {
                 display: flex;

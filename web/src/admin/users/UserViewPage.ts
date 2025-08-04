@@ -85,7 +85,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     @state()
     me?: SessionUser;
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFPage,
         PFButton,

@@ -13,7 +13,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T extends object> extends Table<T> {
-    static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
+    public static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
 
     //#region Abstract methods
 

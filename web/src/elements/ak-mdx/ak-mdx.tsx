@@ -72,7 +72,7 @@ export class AKMDX extends AKElement {
 
     resolvedHTML = "";
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFList,
         PFTable,

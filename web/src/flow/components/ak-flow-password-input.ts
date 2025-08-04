@@ -39,7 +39,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
+    public static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 

@@ -58,7 +58,7 @@ export class QLSearch extends AKElement {
         this.ql.loadIntrospections(value.autocomplete as unknown as Introspections);
     }
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFFormControl,
         PFSearchInput,

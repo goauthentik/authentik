@@ -64,7 +64,7 @@ export class AKAlert extends AKElement implements IAlert {
     @property()
     public icon = "fa-exclamation-circle";
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFAlert,
         css`

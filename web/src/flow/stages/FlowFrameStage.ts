@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
+    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

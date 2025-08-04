@@ -21,7 +21,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-sidebar-version")
 export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFNav,
         PFAvatar,

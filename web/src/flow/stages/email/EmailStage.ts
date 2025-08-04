@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-email")
 export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponseRequest> {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>

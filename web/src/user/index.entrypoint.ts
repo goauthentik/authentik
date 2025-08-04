@@ -121,7 +121,7 @@ const customStyles = css`
 @customElement("ak-interface-user-presentation")
 // @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFDisplay,
         PFBrand,

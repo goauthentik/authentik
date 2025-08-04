@@ -25,19 +25,17 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-system-tasks")
 export class SystemTasksPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFList,
-            PFBanner,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGrid,
-            PFCard,
-        ];
-    }
+    public static styles: CSSResult[] = [
+        PFBase,
+        PFList,
+        PFBanner,
+        PFPage,
+        PFContent,
+        PFButton,
+        PFDescriptionList,
+        PFGrid,
+        PFCard,
+    ];
 
     render(): TemplateResult {
         return html`<ak-page-header

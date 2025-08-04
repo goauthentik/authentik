@@ -45,7 +45,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
 
     private _settings?: Settings;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...super.styles,
         PFList,
         css`

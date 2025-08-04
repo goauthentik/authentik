@@ -21,7 +21,7 @@ export class LogViewer extends Table<LogEvent> {
     expandable = true;
     paginated = false;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {

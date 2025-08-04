@@ -18,7 +18,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
-    static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
+    public static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({

@@ -46,7 +46,7 @@ type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

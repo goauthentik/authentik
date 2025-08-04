@@ -19,7 +19,7 @@ import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
-    static styles = [
+    public static styles = [
         ...ModalButton.styles,
         PFAbout,
         css`

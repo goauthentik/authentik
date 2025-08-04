@@ -20,7 +20,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
     @property({ type: Boolean })
     isModalShown = false;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
     firstUpdated(): void {
         const appleAuth = document.createElement("script");

@@ -67,7 +67,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
     syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
     syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         // Better alignment with patternfly components
         css`
             .cm-editor {

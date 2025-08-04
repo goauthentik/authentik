@@ -18,7 +18,7 @@ export class Chip extends AKElement {
     @property({ type: Boolean })
     removable = false;
 
-    static styles: CSSResult[] = [PFBase, PFButton, PFChip];
+    public static styles: CSSResult[] = [PFBase, PFButton, PFChip];
 
     render(): TemplateResult {
         return html`<li class="pf-c-chip-group__list-item">

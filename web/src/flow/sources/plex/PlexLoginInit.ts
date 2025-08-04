@@ -35,7 +35,7 @@ export class PlexLoginInit extends BaseStage<
     @state()
     authUrl?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,

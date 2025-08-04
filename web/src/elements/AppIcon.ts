@@ -28,7 +28,7 @@ export class AppIcon extends AKElement implements IAppIcon {
     @property({ reflect: true })
     size: PFSize = PFSize.Medium;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFFAIcons,
         PFAvatar,
         css`

@@ -20,7 +20,7 @@ export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    static styles: CSSResult[] = [PFBase];
+    public static styles: CSSResult[] = [PFBase];
 
     /**
      * The label to display in the sidebar for this page.

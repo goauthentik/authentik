@@ -31,7 +31,14 @@ export class EventViewPage extends AKElement {
     @state()
     event!: EventWithContext;
 
-    static styles: CSSResult[] = [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
+    public static styles: CSSResult[] = [
+        PFBase,
+        PFGrid,
+        PFDescriptionList,
+        PFPage,
+        PFContent,
+        PFCard,
+    ];
 
     fetchEvent(eventUuid: string) {
         new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {

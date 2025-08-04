@@ -45,7 +45,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: Boolean })
     iconImage = false;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             :host {
                 display: none;

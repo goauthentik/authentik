@@ -73,7 +73,7 @@ export interface ISimpleTable {
 
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
-    static styles = [
+    public static styles = [
         PFBase,
         PFTable,
         css`

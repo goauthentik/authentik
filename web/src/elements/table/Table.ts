@@ -49,7 +49,7 @@ export abstract class Table<T extends object>
     extends WithLicenseSummary(AKElement)
     implements TableLike
 {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFTable,
         PFBullseye,

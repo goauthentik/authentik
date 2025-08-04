@@ -24,7 +24,7 @@ export class FlowImportForm extends Form<Flow> {
         return msg("Successfully imported flow.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");

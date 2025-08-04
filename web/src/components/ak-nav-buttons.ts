@@ -44,7 +44,7 @@ export class NavigationButtons extends AKElement {
     @property({ type: Number })
     notificationsCount = 0;
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFDisplay,
         PFBrand,

@@ -28,7 +28,7 @@ export class GroupSelectModal extends TableModal<Group> {
 
     order = "name";
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({

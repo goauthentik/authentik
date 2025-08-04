@@ -47,7 +47,7 @@ export class Label extends AKElement implements ILabel {
     @property({ type: Boolean })
     compact = false;
 
-    static styles = [
+    public static styles = [
         PFBase,
         PFLabel,
         css`

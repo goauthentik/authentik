@@ -11,7 +11,7 @@ export interface NavigationEventInit {
  * Event dispatched when the wizard navigation is updated.
  */
 export class WizardNavigationEvent<D extends string = string> extends Event {
-    static readonly eventName = "ak-wizard-navigation";
+    public static readonly eventName = "ak-wizard-navigation";
 
     public readonly destination?: D;
     public readonly details?: NavigationEventInit;
@@ -41,7 +41,7 @@ export class WizardNavigationEvent<D extends string = string> extends Event {
 }
 
 export class WizardUpdateEvent<T> extends Event {
-    static readonly eventName = "ak-wizard-update";
+    public static readonly eventName = "ak-wizard-update";
 
     public readonly content: T;
 
@@ -52,7 +52,7 @@ export class WizardUpdateEvent<T> extends Event {
 }
 
 export class WizardCloseEvent extends Event {
-    static readonly eventName = "ak-wizard-close";
+    public static readonly eventName = "ak-wizard-close";
 
     constructor() {
         super(WizardCloseEvent.eventName, { bubbles: true, composed: true });

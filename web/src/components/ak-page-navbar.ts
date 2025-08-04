@@ -43,7 +43,7 @@ export class AKPageNavbar
 
     private static elementRef: AKPageNavbar | null = null;
 
-    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
+    public static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
         const { elementRef } = AKPageNavbar;
         if (!elementRef) {
             console.debug(
@@ -61,7 +61,7 @@ export class AKPageNavbar
         elementRef.hasIcon = !!icon;
     };
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,

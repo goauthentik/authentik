@@ -48,7 +48,7 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFFormControl,

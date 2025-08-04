@@ -36,7 +36,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
         return msg("Successfully created entitlement.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
+    public static styles: CSSResult[] = [...super.styles, PFContent];
 
     send(data: ApplicationEntitlement): Promise<unknown> {
         if (this.targetPk) {

@@ -8,7 +8,7 @@ import { css, html, nothing, ReactiveController, ReactiveControllerHost } from "
 type RememberMeHost = ReactiveControllerHost & IdentificationStage;
 
 export class AkRememberMeController implements ReactiveController {
-    static styles = [
+    public static styles = [
         css`
             .remember-me-switch {
                 display: inline-block;

@@ -15,7 +15,7 @@ export class FormStatic extends AKElement {
     @property()
     user?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFAvatar,
         css`
             /* Form with user */

@@ -18,7 +18,7 @@ export class LDAPSourceConnectivity extends AKElement {
         };
     };
 
-    static styles: CSSResult[] = [PFBase, PFList];
+    public static styles: CSSResult[] = [PFBase, PFList];
 
     render(): TemplateResult {
         if (!this.connectivity) {

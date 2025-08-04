@@ -23,7 +23,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFInputGroup,

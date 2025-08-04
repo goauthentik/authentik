@@ -19,7 +19,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-dual-select-controls")
 export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         css`

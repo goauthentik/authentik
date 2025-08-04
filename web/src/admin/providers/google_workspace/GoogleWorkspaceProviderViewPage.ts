@@ -47,7 +47,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
     @state()
     provider?: GoogleWorkspaceProvider;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFForm,

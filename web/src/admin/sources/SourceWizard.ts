@@ -26,7 +26,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-source-wizard")
 export class SourceWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     sourceTypes: TypeCreate[] = [];
