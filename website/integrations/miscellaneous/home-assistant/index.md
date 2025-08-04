@@ -33,13 +33,13 @@ import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
 <Tabs
-  defaultValue="oidc"
-  values={[
-    { label: "OIDC", value: "oidc" },
-    { label: "Proxy Provider", value: "proxy" }
-  ]}
->
-  <TabItem value="oidc">
+defaultValue="oidc"
+values={[
+{ label: "OIDC", value: "oidc" },
+{ label: "Proxy Provider", value: "proxy" }
+]}
+
+>   <TabItem value="oidc">
 
 ## authentik configuration
 
