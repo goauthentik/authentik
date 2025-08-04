@@ -91,7 +91,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         });
     }
 
-    onSelected(apps: FuseResult<Application>[]) {
+    protected onSelected(apps: FuseResult<Application>[]) {
         this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
     }
 
@@ -118,7 +118,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.dispatchEvent(new LibraryPageSearchReset());
     }
 
-    onInput(ev: InputEvent) {
+    protected onInput(ev: InputEvent) {
         this.query = (ev.target as HTMLInputElement).value;
         if (this.query === "") {
             return this.resetSearch();
@@ -136,7 +136,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.onSelected(apps);
     }
 
-    onKeyDown(ev: KeyboardEvent) {
+    protected onKeyDown(ev: KeyboardEvent) {
         switch (ev.key) {
             case "Escape": {
                 this.resetSearch();

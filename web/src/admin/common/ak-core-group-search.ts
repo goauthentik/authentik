@@ -77,7 +77,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         }
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    protected handleSearchUpdate(ev: CustomEvent) {
         ev.stopPropagation();
         this.selectedGroup = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));

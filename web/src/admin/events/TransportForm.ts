@@ -55,7 +55,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         });
     }
 
-    onModeChange(mode: string | undefined): void {
+    protected onModeChange(mode: string | undefined): void {
         if (
             mode === NotificationTransportModeEnum.Webhook ||
             mode === NotificationTransportModeEnum.WebhookSlack

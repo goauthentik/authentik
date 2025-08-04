@@ -100,7 +100,7 @@ export class AkMultiSelect extends AkControlElement {
         ];
     }
 
-    handleChange(ev: Event) {
+    protected handleChange(ev: Event) {
         if (ev.type === "change") {
             this.values = Array.from(this.selectRef.value!.querySelectorAll("option"))
                 .filter((option) => option.selected)

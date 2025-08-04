@@ -67,7 +67,7 @@ export class Tabs extends AKElement {
         super.disconnectedCallback();
     }
 
-    onClick(slot?: string): void {
+    protected onClick(slot?: string): void {
         this.currentPage = slot;
         const params: { [key: string]: string | undefined } = {};
         params[this.pageIdentifier] = slot;

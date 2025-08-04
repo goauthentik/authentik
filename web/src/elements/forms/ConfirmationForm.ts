@@ -42,14 +42,14 @@ export class ConfirmationForm extends ModalButton {
             });
     }
 
-    onSuccess(): void {
+    protected onSuccess(): void {
         showMessage({
             message: this.successMessage,
             level: MessageLevel.success,
         });
     }
 
-    onError(error: unknown): Promise<void> {
+    protected onError(error: unknown): Promise<void> {
         return parseAPIResponseError(error).then((parsedError) => {
             showMessage({
                 message: msg(str`${this.errorMessage}: ${pluckErrorDetail(parsedError)}`),

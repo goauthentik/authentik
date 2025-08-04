@@ -85,13 +85,13 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     // TODO Fix those dispatches so that we handle them here, in this component, and *choose* how to
     // forward them.
-    onBindingEvent(binding?: number) {
+    protected onBindingEvent(binding?: number) {
         this.handleUpdate({ currentBinding: binding ?? -1 }, "edit-binding", {
             enable: "edit-binding",
         });
     }
 
-    onDeleteBindings() {
+    protected onDeleteBindings() {
         const toDelete = this.selectTable
             .json()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));

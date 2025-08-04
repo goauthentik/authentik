@@ -136,7 +136,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         this.onClick = this.onClick.bind(this);
     }
 
-    onClick(ev: Event) {
+    protected onClick(ev: Event) {
         ev.stopPropagation();
         this.values = Array.from(this.checkboxes)
             .filter((checkbox) => checkbox.checked)

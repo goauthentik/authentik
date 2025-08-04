@@ -43,7 +43,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
         return this.element.formValues;
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.valid) {
                 this.handleEnabling({

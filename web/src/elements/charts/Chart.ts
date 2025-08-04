@@ -102,7 +102,7 @@ export abstract class AKChart<T> extends AKElement {
         this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }
 
-    refreshHandler(): void {
+    protected refreshHandler(): void {
         this.apiRequest().then((r: T) => {
             if (!this.chart) return;
             this.chart.data = this.getChartData(r);
@@ -110,7 +110,7 @@ export abstract class AKChart<T> extends AKElement {
         });
     }
 
-    resizeHandler(): void {
+    protected resizeHandler(): void {
         if (!this.chart) {
             return;
         }

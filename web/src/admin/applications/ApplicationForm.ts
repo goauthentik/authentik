@@ -33,13 +33,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
-    constructor() {
-        super();
-        this.handleConfirmBackchannelProviders = this.handleConfirmBackchannelProviders.bind(this);
-        this.makeRemoveBackchannelProviderHandler =
-            this.makeRemoveBackchannelProviderHandler.bind(this);
-    }
-
     async loadInstance(pk: string): Promise<Application> {
         const app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk,
@@ -97,21 +90,21 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         return app;
     }
 
-    handleConfirmBackchannelProviders(items: Provider[]) {
+    #confirmBackchannelProviders = (items: Provider[]) => {
         this.backchannelProviders = items;
         this.requestUpdate();
         return Promise.resolve();
-    }
+    };
 
-    makeRemoveBackchannelProviderHandler(provider: Provider) {
+    #removeBackchannelProvider = (provider: Provider) => {
         return () => {
             const idx = this.backchannelProviders.indexOf(provider);
             this.backchannelProviders.splice(idx, 1);
             this.requestUpdate();
         };
-    }
+    };
 
-    handleClearIcon(ev: Event) {
+    protected handleClearIcon(ev: Event) {
         ev.stopPropagation();
         if (!(ev instanceof InputEvent) || !ev.target) {
             return;
@@ -164,8 +157,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     "Select backchannel providers which augment the functionality of the main provider.",
                 )}
                 .providers=${this.backchannelProviders}
-                .confirm=${this.handleConfirmBackchannelProviders}
-                .remover=${this.makeRemoveBackchannelProviderHandler}
+                .confirm=${this.#confirmBackchannelProviders}
+                .remover=${this.#removeBackchannelProvider}
                 .tooltip=${html`<pf-tooltip
                     position="top"
                     content=${msg("Add provider")}

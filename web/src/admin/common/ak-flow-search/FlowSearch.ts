@@ -88,7 +88,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    protected handleSearchUpdate(ev: CustomEvent) {
         ev.stopPropagation();
         this.selectedFlow = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));

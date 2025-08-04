@@ -70,7 +70,7 @@ export class AkApplicationWizardMain extends AKElement {
 
     // This is the actual top of the Wizard; so this is where we accept the update information and
     // incorporate it into the wizard.
-    handleUpdate(ev: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
+    protected handleUpdate(ev: WizardUpdateEvent<ApplicationWizardStateUpdate>) {
         ev.stopPropagation();
         const update = ev.content;
         if (update !== undefined) {

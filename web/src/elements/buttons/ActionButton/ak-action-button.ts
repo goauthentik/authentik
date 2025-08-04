@@ -43,7 +43,7 @@ export class ActionButton extends BaseTaskButton {
         return this.apiRequest();
     };
 
-    async onError(error: Error | Response) {
+    protected async onError(error: Error | Response) {
         super.onError(error);
         const message = error instanceof Error ? error.toString() : await error.text();
         showMessage({

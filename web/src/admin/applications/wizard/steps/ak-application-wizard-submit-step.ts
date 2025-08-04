@@ -177,7 +177,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    override handleButton(button: WizardButton) {
+    protected override handleButton(button: WizardButton) {
         match([button.kind, this.state])
             .with([P.union("back", "cancel"), P._], () => {
                 super.handleButton(button);

@@ -65,7 +65,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
         super.disconnectedCallback();
     }
 
-    updateLocaleHandler(ev: CustomEvent<{ locale: string }>) {
+    protected updateLocaleHandler(ev: CustomEvent<{ locale: string }>) {
         console.debug("authentik/locale: Locale update request received.");
         this.updateLocale(ev.detail.locale);
     }

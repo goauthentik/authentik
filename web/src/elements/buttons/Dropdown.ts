@@ -11,13 +11,14 @@ export class DropdownButton extends AKElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, this.clickHandler);
+        window.addEventListener(EVENT_REFRESH, this.#clickListener);
     }
 
-    clickHandler = (): void => {
+    #clickListener = (): void => {
         if (!this.menu) {
             return;
         }
+
         this.menu.hidden = true;
     };
 
@@ -36,7 +37,7 @@ export class DropdownButton extends AKElement {
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.clickHandler);
+        window.removeEventListener(EVENT_REFRESH, this.#clickListener);
     }
 
     public render(): TemplateResult {

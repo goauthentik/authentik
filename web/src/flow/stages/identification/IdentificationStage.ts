@@ -237,11 +237,11 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    onSubmitSuccess(): void {
+    protected onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    onSubmitFailure(): void {
+    protected onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
 

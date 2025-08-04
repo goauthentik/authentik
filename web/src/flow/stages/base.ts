@@ -133,11 +133,11 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
+    protected onSubmitSuccess(): void {
         // Method that can be overridden by stages
         return;
     }
-    onSubmitFailure(): void {
+    protected onSubmitFailure(): void {
         // Method that can be overridden by stages
         return;
     }

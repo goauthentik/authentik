@@ -241,7 +241,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         document.title = `${title}`;
     }
 
-    onConnected(): void {
+    protected onConnected(): void {
         console.debug("authentik/rac: connected");
         if (!this.client) {
             return;

@@ -78,7 +78,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         });
     }
 
-    onComplete() {
+    protected onComplete() {
         setTimeout(() => {
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             // set-up for the next task...
@@ -87,21 +87,21 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         }, SPINNER_TIMEOUT);
     }
 
-    onSuccess(r: unknown) {
+    protected onSuccess(r: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
             result: r,
         });
         this.onComplete();
     }
 
-    onError(error: unknown) {
+    protected onError(error: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
         this.onComplete();
     }
 
-    onClick() {
+    protected onClick() {
         // Don't accept clicks when a task is in progress..
         if (this.actionTask.status === TaskStatus.PENDING) {
             return;

@@ -179,7 +179,7 @@ export class QLSearch extends AKElement {
         this.cursorY = bcr.y + paddingTop + relY * lineHeight;
     }
 
-    onKeyDown(ev: KeyboardEvent) {
+    protected onKeyDown(ev: KeyboardEvent) {
         this.updateDropdownPosition();
         if (ev.key === "Enter" && ev.metaKey && this.onSearch && this.searchElement) {
             this.onSearch(this.searchElement?.value);

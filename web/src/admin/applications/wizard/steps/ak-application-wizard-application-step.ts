@@ -81,7 +81,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return this.errors.size === 0;
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.valid) {
                 this.handleEnabling({

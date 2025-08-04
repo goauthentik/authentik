@@ -142,7 +142,7 @@ export class WizardStep extends AKElement {
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
-    public handleButton(button: WizardButton, details?: NavigationEventInit) {
+    protected handleButton(button: WizardButton, details?: NavigationEventInit) {
         if (["close", "cancel"].includes(button.kind)) {
             this.dispatchEvent(new WizardCloseEvent());
             return;
@@ -156,7 +156,7 @@ export class WizardStep extends AKElement {
         throw new Error(`Incoherent button passed: ${JSON.stringify(button, null, 2)}`);
     }
 
-    public handleEnabling(details: NavigationEventInit) {
+    protected handleEnabling(details: NavigationEventInit) {
         this.dispatchEvent(new WizardNavigationEvent(undefined, details));
     }
 

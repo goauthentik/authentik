@@ -54,7 +54,7 @@ export class TokenCopyButton extends BaseTaskButton {
         });
     };
 
-    async onSuccess(token: unknown) {
+    protected async onSuccess(token: unknown) {
         super.onSuccess(token);
         if (!isTokenView(token)) {
             throw new Error(`Unrecognized return from server: ${token}`);
@@ -76,7 +76,7 @@ export class TokenCopyButton extends BaseTaskButton {
         });
     }
 
-    async onError(error: unknown) {
+    protected async onError(error: unknown) {
         super.onError(error);
         // prettier-ignore
         const message = error instanceof ResponseError ? await error.response.text()

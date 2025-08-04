@@ -72,7 +72,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form.checkValidity()) {
                 return;

@@ -114,7 +114,7 @@ export class SidebarItem extends AKElement {
         window.addEventListener("hashchange", () => this.onHashChange());
     }
 
-    onHashChange(): void {
+    protected onHashChange(): void {
         const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);

@@ -37,7 +37,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         this.failureMessage = "";
         if (button.kind === "next") {
             if (!this.wizard.providerModel) {

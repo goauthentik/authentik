@@ -58,15 +58,15 @@ export class FlowInspector extends AKElement {
 
     constructor() {
         super();
-        window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
+        window.addEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
+        window.removeEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
 
-    advanceHandler = (): void => {
+    #advanceListener = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
                 flowSlug: this.flowSlug || "",
@@ -140,7 +140,7 @@ export class FlowInspector extends AKElement {
             return this.renderAccessDenied();
         }
         if (!this.state) {
-            this.advanceHandler();
+            this.#advanceListener();
             return html`<div class="pf-c-drawer__body pf-m-no-padding">
                 <div class="pf-c-notification-drawer">
                     ${this.renderHeader()}
