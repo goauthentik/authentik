@@ -30,13 +30,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-property-mapping-test-form")
 export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     @property({ attribute: false })
-    mapping?: PropertyMapping;
+    public mapping?: PropertyMapping;
 
     @property({ attribute: false })
-    result?: PropertyMappingTestResult;
+    public result?: PropertyMappingTestResult;
 
     @property({ attribute: false })
-    request?: PropertyMappingTestRequest;
+    public request?: PropertyMappingTestRequest;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");

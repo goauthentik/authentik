@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({

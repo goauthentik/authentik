@@ -83,7 +83,7 @@ export class MessageContainer extends AKElement {
     protected messages: APIMessage[] = [];
 
     @property()
-    alignment: "top" | "bottom" = "top";
+    public alignment: "top" | "bottom" = "top";
 
     public static styles: CSSResult[] = [
         PFBase,

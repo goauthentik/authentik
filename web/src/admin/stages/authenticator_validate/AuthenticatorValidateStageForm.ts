@@ -51,7 +51,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
     stages?: PaginatedStageList;
 
     @property({ type: Boolean })
-    showConfigurationStages = true;
+    public showConfigurationStages = true;
 
     async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {

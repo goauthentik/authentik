@@ -50,16 +50,16 @@ export class StageWizard extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ type: Boolean })
-    showBindingPage = false;
+    public showBindingPage = false;
 
     @property()
-    bindingTarget?: string;
+    public bindingTarget?: string;
 
     @property({ attribute: false })
-    stageTypes: TypeCreate[] = [];
+    public stageTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
     wizard?: Wizard;

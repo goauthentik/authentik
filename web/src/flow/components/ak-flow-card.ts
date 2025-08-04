@@ -23,10 +23,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-card")
 export class FlowCard extends AKElement {
     @property({ type: Object })
-    challenge?: ChallengeTypes;
+    public challenge?: ChallengeTypes;
 
     @property({ type: Boolean })
-    loading = false;
+    public loading = false;
 
     public static styles: CSSResult[] = [
         PFBase,

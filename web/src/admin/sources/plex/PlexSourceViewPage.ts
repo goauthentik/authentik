@@ -35,7 +35,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesPlexRetrieve({
                 slug: value,
@@ -46,7 +46,7 @@ export class PlexSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: PlexSource;
+    public source?: PlexSource;
 
     public static styles: CSSResult[] = [
         PFBase,

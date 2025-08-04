@@ -52,10 +52,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
     async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({

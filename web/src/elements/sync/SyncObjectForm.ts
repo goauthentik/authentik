@@ -25,16 +25,16 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-sync-object-form")
 export class SyncObjectForm extends Form<SyncObjectRequest> {
     @property({ type: Number })
-    provider?: number;
+    public provider?: number;
 
     @property()
-    model: SyncObjectModelEnum = SyncObjectModelEnum.UnknownDefaultOpenApi;
+    public model: SyncObjectModelEnum = SyncObjectModelEnum.UnknownDefaultOpenApi;
 
     @property({ attribute: false })
-    result?: SyncObjectResult;
+    public result?: SyncObjectResult;
 
     @property({ attribute: false })
-    sync: (
+    public sync: (
         requestParameters: {
             id: number;
             syncObjectRequest: SyncObjectRequest;

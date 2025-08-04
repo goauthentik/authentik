@@ -60,12 +60,12 @@ export class LibraryPageApplicationSearch extends AKElement {
     ];
 
     @property({ attribute: false })
-    set apps(value: Application[]) {
+    public set apps(value: Application[]) {
         this.fuse.setCollection(value);
     }
 
     @property()
-    query = getURLParam<string | undefined>("search", undefined);
+    public query = getURLParam<string | undefined>("search", undefined);
 
     @query("input")
     searchInput?: HTMLInputElement;

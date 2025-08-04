@@ -34,7 +34,7 @@ export class GroupListPage extends TablePage<Group> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({

@@ -20,10 +20,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     @property()
-    defaultPath: string = "users";
+    public defaultPath: string = "users";
 
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};

@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     public static styles: CSSResult[] = [...super.styles, applicationListStyle];
 

@@ -46,7 +46,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
     }
 
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
     async send(data: KerberosSource): Promise<KerberosSource> {
         let source: KerberosSource;

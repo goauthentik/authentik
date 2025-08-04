@@ -46,7 +46,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
     /* The array of key/value pairs this pane is currently showing */
     @property({ type: Array })
-    readonly options: DualSelectPair[] = [];
+    public readonly options: DualSelectPair[] = [];
 
     /**
      * A set (set being easy for lookups) of keys with all the pairs selected,
@@ -54,7 +54,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * can be marked and their clicks ignored.
      */
     @property({ type: Object })
-    readonly selected: Set<string> = new Set();
+    public readonly selected: Set<string> = new Set();
 
     //#endregion
 
@@ -101,7 +101,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
         this.toMove = new Set();
     }
 
-    get moveable() {
+    public get moveable() {
         return Array.from(this.toMove.values());
     }
 

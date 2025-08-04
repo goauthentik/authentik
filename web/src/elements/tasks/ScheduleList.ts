@@ -31,17 +31,17 @@ export class ScheduleList extends Table<Schedule> {
     }
 
     @property()
-    order = "next_run";
+    public order = "next_run";
 
     @property()
-    relObjAppLabel?: string;
+    public relObjAppLabel?: string;
     @property()
-    relObjModel?: string;
+    public relObjModel?: string;
     @property()
-    relObjId?: string;
+    public relObjId?: string;
 
     @property({ type: Boolean })
-    showOnlyStandalone: boolean = true;
+    public showOnlyStandalone: boolean = true;
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

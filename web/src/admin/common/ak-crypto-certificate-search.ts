@@ -34,13 +34,13 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    public certificate?: string;
 
     @query("ak-search-select")
     search!: SearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name: string | null | undefined;
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
@@ -48,7 +48,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
-    noKey = false;
+    public noKey = false;
 
     /**
      * Set this to true if, should there be only one certificate available, you want the system to
@@ -57,7 +57,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "singleton" })
-    singleton = false;
+    public singleton = false;
 
     selectedKeypair?: CertificateKeyPair;
 
@@ -68,7 +68,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    get value() {
+    public get value() {
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
     }
 

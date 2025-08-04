@@ -35,7 +35,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     @property({ type: Boolean })
-    showWebhook = false;
+    public showWebhook = false;
 
     getSuccessMessage(): string {
         return this.instance

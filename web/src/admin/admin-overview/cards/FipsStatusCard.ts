@@ -15,7 +15,7 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
     icon = "pf-icon pf-icon-server";
 
     @state()
-    statusSummary?: string;
+    protected statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
         return await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();

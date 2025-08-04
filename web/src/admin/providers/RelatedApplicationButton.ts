@@ -18,10 +18,10 @@ export class RelatedApplicationButton extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
-    provider?: Provider;
+    public provider?: Provider;
 
     @property()
-    mode: "primary" | "backchannel" = "primary";
+    public mode: "primary" | "backchannel" = "primary";
 
     public render(): TemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {

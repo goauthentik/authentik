@@ -14,13 +14,13 @@ import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
     @property()
-    pageIdentifier = "page";
+    public pageIdentifier = "page";
 
     @property()
-    currentPage?: string;
+    public currentPage?: string;
 
     @property({ type: Boolean })
-    vertical = false;
+    public vertical = false;
 
     public static styles: CSSResult[] = [
         PFGlobal,

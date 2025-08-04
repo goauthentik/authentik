@@ -39,22 +39,22 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug = this.brand?.flowUserSettings;
+    public flowSlug = this.brand?.flowUserSettings;
 
-    private _challenge?: ChallengeTypes;
+    #challenge?: ChallengeTypes;
 
     @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
+    public set challenge(value: ChallengeTypes | undefined) {
+        this.#challenge = value;
         this.requestUpdate();
     }
 
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
+    public get challenge(): ChallengeTypes | undefined {
+        return this.#challenge;
     }
 
     @property({ type: Boolean })
-    loading = false;
+    public loading = false;
 
     public static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 

@@ -24,13 +24,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
     @property()
-    flowSlug?: string;
+    public flowSlug?: string;
 
     @property({ attribute: false })
-    state?: FlowInspection;
+    public state?: FlowInspection;
 
     @property({ attribute: false })
-    error?: APIError;
+    public error?: APIError;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -73,15 +73,15 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    set options(options: SelectOptions) {
-        this._options = groupOptions(options);
+    public set options(options: SelectOptions) {
+        this.#options = groupOptions(options);
     }
 
-    get options() {
-        return this._options;
+    public get options() {
+        return this.#options;
     }
 
-    _options!: GroupedOptions;
+    #options!: GroupedOptions;
 
     /**
      * The current value of the menu.
@@ -89,7 +89,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property({ type: String, reflect: true })
-    value?: string;
+    public value?: string;
 
     /**
      * The string representation that means an empty option. If not present, no empty option is
@@ -98,19 +98,19 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property()
-    emptyOption?: string;
+    public emptyOption?: string;
 
     // We have two different states that we're tracking in this component: the `value`, which is the
     // element that is currently selected according to the client, and the `index`, which is the
     // element that is being tracked for keyboard interaction. On a click, the index points to the
     // value element; on Keydown.Enter, the value becomes whatever the index points to.
     @state()
-    indexOfFocusedItem = 0;
+    protected indexOfFocusedItem = 0;
 
     @query("#ak-list-select-list")
     ul!: HTMLUListElement;
 
-    get json(): string {
+    public get json(): string {
         return this.value ?? "";
     }
 
@@ -312,9 +312,9 @@ export class ListSelect extends AKElement implements IListSelect {
                 part="ak-list-select"
             >
                 ${this.emptyOption === undefined ? nothing : this.renderEmptyMenuItem()}
-                ${this._options.grouped
-                    ? this.renderMenuGroups(this._options.options)
-                    : this.renderMenuItems(this._options.options)}
+                ${this.#options.grouped
+                    ? this.renderMenuGroups(this.#options.options)
+                    : this.renderMenuItems(this.#options.options)}
             </ul>
         </div> `;
     }

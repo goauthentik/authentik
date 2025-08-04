@@ -87,7 +87,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     @state()
-    health: { [key: string]: OutpostHealth[] } = {};
+    protected health: { [key: string]: OutpostHealth[] } = {};
 
     columns(): TableColumn[] {
         return [
@@ -106,7 +106,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     row(item: Outpost): TemplateResult[] {
         return [

@@ -37,7 +37,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
     ];
 
     @property({ type: Object, attribute: false })
-    footerLink: FooterLink = {
+    public footerLink: FooterLink = {
         name: "",
         href: "",
     };

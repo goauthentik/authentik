@@ -63,7 +63,7 @@ export class StageListPage extends TablePage<Stage> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());

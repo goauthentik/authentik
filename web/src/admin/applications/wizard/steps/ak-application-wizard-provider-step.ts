@@ -30,12 +30,12 @@ const providerToTag = new Map([
 @customElement("ak-application-wizard-provider-step")
 export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     @state()
-    label = msg("Configure Provider");
+    public label = msg("Configure Provider");
 
     @query("#providerform")
     element!: ApplicationWizardProviderForm<OneOfProvider>;
 
-    get valid() {
+    public get valid() {
         return this.element.valid;
     }
 

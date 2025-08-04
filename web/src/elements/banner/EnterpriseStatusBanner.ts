@@ -14,7 +14,7 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
     @property()
-    interface: "admin" | "user" | "flow" | "" = "";
+    public interface: "admin" | "user" | "flow" | "" = "";
 
     public static styles = [PFBanner];
 

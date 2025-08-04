@@ -23,10 +23,10 @@ interface UserPermissionAssign {
 @customElement("ak-user-permission-form")
 export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     async load(): Promise<void> {}
 

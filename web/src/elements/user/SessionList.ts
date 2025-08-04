@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
-    targetUser!: string;
+    public targetUser!: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({

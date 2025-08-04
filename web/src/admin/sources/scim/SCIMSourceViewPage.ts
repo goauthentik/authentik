@@ -37,7 +37,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesScimRetrieve({
                 slug: value,
@@ -48,7 +48,7 @@ export class SCIMSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: SCIMSource;
+    public source?: SCIMSource;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -65,7 +65,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     @state()
-    state: { [key: string]: ServiceConnectionState } = {};
+    protected state: { [key: string]: ServiceConnectionState } = {};
 
     columns(): TableColumn[] {
         return [
@@ -78,7 +78,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     row(item: ServiceConnection): TemplateResult[] {
         const itemState = this.state[item.pk];

@@ -17,7 +17,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
     label = msg("Configure SAML Provider");
 
     @state()
-    hasSigningKp = false;
+    protected hasSigningKp = false;
 
     protected renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {

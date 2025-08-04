@@ -135,21 +135,21 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
     ];
 
     @property({ type: Object })
-    uiConfig!: UIConfig;
+    public uiConfig!: UIConfig;
 
     @property({ type: Object })
-    me!: SessionUser;
+    public me!: SessionUser;
 
     @property({ type: Boolean, reflect: true })
-    notificationDrawerOpen = false;
+    public notificationDrawerOpen = false;
 
     @property({ type: Boolean, reflect: true })
-    apiDrawerOpen = false;
+    public apiDrawerOpen = false;
 
     @property({ type: Number })
-    notificationsCount = 0;
+    public notificationsCount = 0;
 
-    get canAccessAdmin() {
+    public get canAccessAdmin() {
         return (
             this.me.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
@@ -157,7 +157,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
         );
     }
 
-    get isFullyConfigured() {
+    public get isFullyConfigured() {
         return Boolean(this.uiConfig && this.me && this.brand);
     }
 
@@ -264,19 +264,19 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
 @customElement("ak-interface-user")
 export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @state()
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    protected apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     @state()
-    notificationsCount = 0;
+    protected notificationsCount = 0;
 
     @state()
-    me: SessionUser | null = null;
+    public me: SessionUser | null = null;
 
     @state()
-    uiConfig: UIConfig | null = null;
+    public uiConfig: UIConfig | null = null;
 
     constructor() {
         configureSentry(true);

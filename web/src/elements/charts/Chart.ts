@@ -48,13 +48,13 @@ export abstract class AKChart<T> extends AKElement {
     abstract getChartData(data: T): ChartData;
 
     @state()
-    chart?: Chart;
+    protected chart?: Chart;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
 
     @property()
-    centerText?: string;
+    public centerText?: string;
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 

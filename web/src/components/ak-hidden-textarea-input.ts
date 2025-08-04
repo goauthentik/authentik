@@ -55,14 +55,14 @@ export class AkHiddenTextAreaInput
      * @attribute
      */
     @property({ type: Number })
-    rows?: number = 4;
+    public rows?: number = 4;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Number })
-    cols?: number;
+    public cols?: number;
 
     /**
      * @property
@@ -72,19 +72,19 @@ export class AkHiddenTextAreaInput
      * the CSS associated with these values.
      */
     @property({ type: String, reflect: true })
-    resize?: "none" | "both" | "horizontal" | "vertical" = "vertical";
+    public resize?: "none" | "both" | "horizontal" | "vertical" = "vertical";
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String })
-    wrap?: "soft" | "hard" | "off" = "soft";
+    public wrap?: "soft" | "hard" | "off" = "soft";
 
     @query("#main > textarea")
     protected inputField!: HTMLTextAreaElement;
 
-    get displayValue() {
+    public get displayValue() {
         const value = this.value ?? "";
         if (this.revealed) {
             return value;

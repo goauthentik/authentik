@@ -97,22 +97,22 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     }
 
     @property({ type: Array })
-    options: CheckboxPair[] = [];
+    public options: CheckboxPair[] = [];
 
     @property({ type: Array })
-    value: string[] = [];
+    public value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name?: string;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @queryAll('input[type="checkbox"]')
     checkboxes!: NodeListOf<HTMLInputElement>;
 
     @state()
-    values: string[] = [];
+    protected values: string[] = [];
 
     internals?: ElementInternals;
     doneFirstUpdate = false;

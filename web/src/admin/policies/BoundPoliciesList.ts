@@ -34,20 +34,20 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
-    target?: string;
+    public target?: string;
 
     @property()
-    policyEngineMode: string = "";
+    public policyEngineMode: string = "";
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
+    public allowedTypes: PolicyBindingCheckTarget[] = [
         PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
     checkbox = true;
     clearOnRefresh = true;
@@ -56,7 +56,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     public static styles: CSSResult[] = [...super.styles, PFSpacing];
 
-    get allowedTypesLabel(): string {
+    public get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
     }
 

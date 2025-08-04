@@ -29,7 +29,7 @@ export class SourceWizard extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
-    sourceTypes: TypeCreate[] = [];
+    public sourceTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
     wizard?: Wizard;

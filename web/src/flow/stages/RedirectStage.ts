@@ -18,10 +18,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @property({ type: Boolean })
-    promptUser = false;
+    public promptUser = false;
 
     @state()
-    startedRedirect = false;
+    protected startedRedirect = false;
 
     public static styles: CSSResult[] = [
         PFBase,

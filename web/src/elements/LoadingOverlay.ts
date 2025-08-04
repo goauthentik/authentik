@@ -45,13 +45,13 @@ export interface ILoadingOverlay {
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     // Do not camelize: https://www.merriam-webster.com/dictionary/topmost
     @property({ type: Boolean, attribute: "topmost" })
-    topmost = false;
+    public topmost = false;
 
     @property({ type: Boolean, attribute: "no-spinner" })
-    noSpinner = false;
+    public noSpinner = false;
 
     @property({ type: String })
-    icon?: string;
+    public icon?: string;
 
     public static styles = [
         PFBase,

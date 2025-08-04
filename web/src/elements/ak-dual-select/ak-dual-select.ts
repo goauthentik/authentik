@@ -73,23 +73,23 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
      * only the currently shown list of options from a pagination collection.
      */
     @property({ type: Array })
-    options: DualSelectPair[] = [];
+    public options: DualSelectPair[] = [];
 
     /**
      * The list of options selected.
      * This is the *entire* list and will not be paginated.
      */
     @property({ type: Array })
-    selected: DualSelectPair[] = [];
+    public selected: DualSelectPair[] = [];
 
     @property({ type: Object })
-    pages?: BasePagination;
+    public pages?: BasePagination;
 
     @property({ attribute: "available-label" })
-    availableLabel = msg("Available options");
+    public availableLabel = msg("Available options");
 
     @property({ attribute: "selected-label" })
-    selectedLabel = msg("Selected options");
+    public selectedLabel = msg("Selected options");
 
     //#endregion
 
@@ -246,11 +246,11 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Public Getters
 
-    get value() {
+    public get value() {
         return this.selected;
     }
 
-    get canAddAll() {
+    public get canAddAll() {
         // False unless any visible option cannot be found in the selected list, so can still be
         // added.
         const allMoved =
@@ -260,7 +260,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         return this.options.length > 0 && !allMoved;
     }
 
-    get canRemoveAll() {
+    public get canRemoveAll() {
         // False if no visible option can be found in the selected list
         return (
             this.options.length > 0 &&
@@ -268,7 +268,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         );
     }
 
-    get needPagination() {
+    public get needPagination() {
         return (this.pages?.next ?? 0) > 0 || (this.pages?.previous ?? 0) > 0;
     }
 

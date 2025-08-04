@@ -14,14 +14,14 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {
     @property({ attribute: "with-map", type: Boolean })
-    withMap = false;
+    public withMap = false;
 
-    _query?: EventsEventsListRequest;
+    #query?: EventsEventsListRequest;
 
     @property({ attribute: false })
-    set query(value: EventsEventsListRequest | undefined) {
-        if (JSON.stringify(value) !== JSON.stringify(this._query)) return;
-        this._query = value;
+    public set query(value: EventsEventsListRequest | undefined) {
+        if (JSON.stringify(value) !== JSON.stringify(this.#query)) return;
+        this.#query = value;
         this.refreshHandler();
     }
 
@@ -41,7 +41,7 @@ export class EventVolumeChart extends EventChart {
     apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             historyDays: 7,
-            ...this._query,
+            ...this.#query,
         });
     }
 

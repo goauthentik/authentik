@@ -70,7 +70,7 @@ export class Sidebar extends AKElement {
     ];
 
     @property({ type: Boolean })
-    hidden = false;
+    public hidden = false;
 
     public render(): TemplateResult {
         return html`<div

@@ -12,7 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-charts-application-authorize")
 export class ApplicationAuthorizeChart extends EventChart {
     @property({ attribute: "application-id" })
-    applicationId!: string;
+    public applicationId!: string;
 
     async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({

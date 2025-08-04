@@ -21,7 +21,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-redirect-form")
 export class RedirectStageForm extends BaseStageForm<RedirectStage> {
     @property({ type: String })
-    mode: string = RedirectStageModeEnum.Static;
+    public mode: string = RedirectStageModeEnum.Static;
 
     loadInstance(pk: string): Promise<RedirectStage> {
         return new StagesApi(DEFAULT_CONFIG)

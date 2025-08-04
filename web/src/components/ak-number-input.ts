@@ -7,10 +7,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-number-input")
 export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
-    value = NaN;
+    public value = NaN;
 
     @property({ type: Number, reflect: true })
-    min = NaN;
+    public min = NaN;
 
     protected renderControl() {
         const setValue = (ev: InputEvent) => {

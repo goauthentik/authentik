@@ -18,7 +18,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
     @state()
-    result?: FlowImportResult;
+    protected result?: FlowImportResult;
 
     getSuccessMessage(): string {
         return msg("Successfully imported flow.");

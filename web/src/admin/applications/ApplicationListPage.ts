@@ -62,7 +62,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({

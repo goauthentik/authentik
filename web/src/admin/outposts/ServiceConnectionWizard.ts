@@ -25,10 +25,10 @@ export class ServiceConnectionWizard extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ attribute: false })
-    connectionTypes: TypeCreate[] = [];
+    public connectionTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
     wizard?: Wizard;

@@ -50,23 +50,23 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;
+    protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
+    public allowedTypes: PolicyBindingCheckTarget[] = [
         PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {

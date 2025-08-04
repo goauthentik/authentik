@@ -79,25 +79,25 @@ export class AuthenticatorValidateStage
 
     flowSlug = "";
 
-    set loading(value: boolean) {
+    public set loading(value: boolean) {
         this.host.loading = value;
     }
 
-    get loading(): boolean {
+    public get loading(): boolean {
         return this.host.loading;
     }
 
-    get brand(): CurrentBrand | undefined {
+    public get brand(): CurrentBrand | undefined {
         return this.host.brand;
     }
 
     @state()
-    _firstInitialized: boolean = false;
+    protected _firstInitialized: boolean = false;
 
     @state()
-    _selectedDeviceChallenge?: DeviceChallenge;
+    protected _selectedDeviceChallenge?: DeviceChallenge;
 
-    set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+    public set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
         if (value === undefined || value === previousChallenge) {
@@ -116,7 +116,7 @@ export class AuthenticatorValidateStage
         });
     }
 
-    get selectedDeviceChallenge(): DeviceChallenge | undefined {
+    public get selectedDeviceChallenge(): DeviceChallenge | undefined {
         return this._selectedDeviceChallenge;
     }
 

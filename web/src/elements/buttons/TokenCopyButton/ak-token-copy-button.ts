@@ -37,7 +37,7 @@ export class TokenCopyButton extends BaseTaskButton {
      * @attr
      */
     @property()
-    identifier?: string;
+    public identifier?: string;
 
     constructor() {
         super();

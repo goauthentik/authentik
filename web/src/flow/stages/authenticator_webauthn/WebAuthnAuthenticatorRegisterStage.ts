@@ -37,10 +37,10 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
     AuthenticatorWebAuthnChallengeResponseRequest
 > {
     @property({ type: Boolean })
-    registerRunning = false;
+    public registerRunning = false;
 
     @property()
-    registerMessage = "";
+    public registerMessage = "";
 
     publicKeyCredentialCreateOptions?: PublicKeyCredentialCreationOptions;
 

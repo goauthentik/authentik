@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {
     @property()
-    connectivity?: {
+    public connectivity?: {
         [key: string]: {
             [key: string]: string;
         };

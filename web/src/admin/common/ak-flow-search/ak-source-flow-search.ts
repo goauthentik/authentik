@@ -20,7 +20,7 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
      */
 
     @property({ type: String })
-    fallback: string | undefined;
+    public fallback: string | undefined;
 
     /**
      * The primary key of the Source (not the Flow). Mostly the instancePk itself, used to affirm
@@ -29,7 +29,7 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ type: String })
-    instanceId: string | undefined;
+    public instanceId: string | undefined;
 
     constructor() {
         super();

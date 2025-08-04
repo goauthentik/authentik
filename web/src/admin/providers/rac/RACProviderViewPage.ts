@@ -41,10 +41,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: RACProvider;
+    protected provider?: RACProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

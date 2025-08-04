@@ -11,7 +11,7 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 @customElement("ak-spinner")
 export class Spinner extends AKElement {
     @property()
-    size: PFSize = PFSize.Medium;
+    public size: PFSize = PFSize.Medium;
 
     public static styles: CSSResult[] = [PFSpinner];
 

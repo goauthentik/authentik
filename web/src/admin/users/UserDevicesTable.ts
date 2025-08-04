@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     checkbox = true;
     clearOnRefresh = true;

@@ -12,7 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-charts-user")
 export class UserChart extends EventChart {
     @property()
-    username?: string;
+    public username?: string;
 
     async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({

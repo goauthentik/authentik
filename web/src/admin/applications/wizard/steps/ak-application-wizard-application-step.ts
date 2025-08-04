@@ -37,7 +37,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     label = msg("Application");
 
     @state()
-    errors = new Map<string, string>();
+    protected errors = new Map<string, string>();
 
     @query("form#applicationform")
     form!: HTMLFormElement;
@@ -60,7 +60,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
     }
 
-    get valid() {
+    public get valid() {
         this.errors = new Map();
         const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 

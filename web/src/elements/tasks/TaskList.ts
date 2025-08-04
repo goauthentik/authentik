@@ -34,24 +34,24 @@ export class TaskList extends Table<Task> {
     clearOnRefresh = true;
 
     @property()
-    relObjAppLabel?: string;
+    public relObjAppLabel?: string;
     @property()
-    relObjModel?: string;
+    public relObjModel?: string;
     @property()
-    relObjId?: string;
+    public relObjId?: string;
 
     @property({ type: Boolean })
-    showOnlyStandalone: boolean = true;
+    public showOnlyStandalone: boolean = true;
 
     @property({ type: Boolean })
-    excludeSuccessful: boolean = true;
+    public excludeSuccessful: boolean = true;
 
     searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "-mtime";
+    public order = "-mtime";
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList, PFSpacing, PFTitle];
 

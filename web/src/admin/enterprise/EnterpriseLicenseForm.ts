@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
     @state()
-    installID?: string;
+    protected installID?: string;
 
     loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({

@@ -23,17 +23,23 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
     @state()
-    syncState?: SyncStatus;
+    protected syncState?: SyncStatus;
 
     @state()
-    loading = false;
+    protected loading = false;
 
     @property({ attribute: false })
-    fetch!: () => Promise<SyncStatus>;
+    public fetch!: () => Promise<SyncStatus>;
 
-    public static styles: CSSResult[] = [PFBase, PFButton, PFCard, PFDescriptionList, PFStack];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFCard,
+        PFDescriptionList,
+        PFStack,
+    ];
 
-    firstUpdated() {
+    public override firstUpdated() {
         this.loading = true;
         this.fetch().then((status) => {
             this.syncState = status;

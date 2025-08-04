@@ -41,7 +41,7 @@ export class FlowListPage extends TablePage<Flow> {
     clearOnRefresh = true;
 
     @property()
-    order = "slug";
+    public order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());

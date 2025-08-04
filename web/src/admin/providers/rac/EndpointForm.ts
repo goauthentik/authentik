@@ -22,7 +22,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     loadInstance(pk: string): Promise<Endpoint> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({

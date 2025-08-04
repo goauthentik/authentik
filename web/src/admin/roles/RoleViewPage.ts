@@ -32,7 +32,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
     @property({ type: String })
-    set roleId(id: string) {
+    public set roleId(id: string) {
         new RbacApi(DEFAULT_CONFIG)
             .rbacRolesRetrieve({
                 uuid: id,
@@ -43,7 +43,7 @@ export class RoleViewPage extends AKElement {
     }
 
     @state()
-    _role?: Role;
+    protected _role?: Role;
 
     public static styles = [
         PFBase,

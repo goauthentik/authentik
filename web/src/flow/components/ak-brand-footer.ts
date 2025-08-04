@@ -27,7 +27,7 @@ export class BrandLinks extends AKElement {
     public static styles = [PFBase, PFList, styles];
 
     @property({ type: Array, attribute: false })
-    links: FooterLink[] = [];
+    public links: FooterLink[] = [];
 
     public render() {
         const links = [...(this.links ?? [])];

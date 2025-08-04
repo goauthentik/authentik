@@ -13,10 +13,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-chip")
 export class Chip extends AKElement {
     @property()
-    value?: number | string;
+    public value?: number | string;
 
     @property({ type: Boolean })
-    removable = false;
+    public removable = false;
 
     public static styles: CSSResult[] = [PFBase, PFButton, PFChip];
 

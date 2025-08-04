@@ -17,7 +17,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     icon = "pf-icon pf-icon-server";
 
     @state()
-    statusSummary?: string;
+    protected statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();

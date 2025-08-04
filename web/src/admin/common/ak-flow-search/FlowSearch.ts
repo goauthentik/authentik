@@ -43,7 +43,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: String })
-    flowType?: FlowsInstancesListDesignationEnum;
+    public flowType?: FlowsInstancesListDesignationEnum;
 
     /**
      * The id of the current flow, if any. For stages where the flow is already defined.
@@ -51,7 +51,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: String })
-    currentFlow?: string | undefined;
+    public currentFlow?: string | undefined;
 
     /**
      * If true, it is not valid to leave the flow blank.
@@ -59,7 +59,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: Boolean })
-    required?: boolean = false;
+    public required?: boolean = false;
 
     @query("ak-search-select")
     search!: SearchSelect<T>;
@@ -70,14 +70,14 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property()
-    defaultFlowSlug?: string;
+    public defaultFlowSlug?: string;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name: string | null | undefined;
 
     selectedFlow?: T;
 
-    get value() {
+    public get value() {
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
     }
 

@@ -66,7 +66,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     @property({ type: Number })
-    set userId(id: number) {
+    public set userId(id: number) {
         me().then((me) => {
             this.me = me;
             new CoreApi(DEFAULT_CONFIG)
@@ -80,10 +80,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     }
 
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
     public static styles = [
         PFBase,

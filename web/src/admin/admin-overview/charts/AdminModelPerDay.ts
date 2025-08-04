@@ -17,13 +17,13 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-charts-admin-model-per-day")
 export class AdminModelPerDay extends EventChart {
     @property()
-    action: EventActions = EventActions.ModelCreated;
+    public action: EventActions = EventActions.ModelCreated;
 
     @property()
-    label?: string;
+    public label?: string;
 
     @property({ attribute: false })
-    query?: EventsEventsVolumeListRequest;
+    public query?: EventsEventsVolumeListRequest;
 
     async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({

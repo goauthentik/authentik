@@ -40,7 +40,7 @@ export class ReputationListPage extends TablePage<Reputation> {
     }
 
     @property()
-    order = "identifier";
+    public order = "identifier";
 
     checkbox = true;
     clearOnRefresh = true;

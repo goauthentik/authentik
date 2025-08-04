@@ -16,7 +16,7 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
     @property({ attribute: false })
-    logs?: LogEvent[] = [];
+    public logs?: LogEvent[] = [];
 
     expandable = true;
     paginated = false;

@@ -82,7 +82,7 @@ Add any other context about the problem here.
 @customElement("ak-event-info")
 export class EventInfo extends AKElement {
     @property({ attribute: false })
-    event!: EventWithContext;
+    public event!: EventWithContext;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -38,7 +38,7 @@ export class PropertyMappingWizard extends AKElement {
     public static styles = [PFBase, PFButton];
 
     @property({ attribute: false })
-    mappingTypes: TypeCreate[] = [];
+    public mappingTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
     wizard?: Wizard;

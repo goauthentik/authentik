@@ -28,7 +28,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     @property()
-    app?: string;
+    public app?: string;
 
     checkbox = true;
     clearOnRefresh = true;

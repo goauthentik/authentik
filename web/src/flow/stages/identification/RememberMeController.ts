@@ -43,23 +43,23 @@ export class AkRememberMeController implements ReactiveController {
         }
     }
 
-    get localSession() {
+    public get localSession() {
         return (getCookie("authentik_csrf") ?? "").substring(0, 8);
     }
 
-    get usernameField() {
+    public get usernameField() {
         return this.host.renderRoot.querySelector(
             'input[name="uidField"]',
         ) as HTMLInputElement | null;
     }
 
-    get rememberMeToggle() {
+    public get rememberMeToggle() {
         return this.host.renderRoot.querySelector(
             "#authentik-remember-me",
         ) as HTMLInputElement | null;
     }
 
-    get isValidChallenge() {
+    public get isValidChallenge() {
         return !(
             this.host.challenge.responseErrors &&
             this.host.challenge.responseErrors.non_field_errors &&
@@ -69,11 +69,11 @@ export class AkRememberMeController implements ReactiveController {
         );
     }
 
-    get submitButton() {
+    public get submitButton() {
         return this.host.renderRoot.querySelector('button[type="submit"]') as HTMLButtonElement;
     }
 
-    get isEnabled() {
+    public get isEnabled() {
         return (
             this.host.challenge !== undefined &&
             this.host.challenge.enableRememberMe &&
@@ -81,7 +81,7 @@ export class AkRememberMeController implements ReactiveController {
         );
     }
 
-    get canAutoSubmit() {
+    public get canAutoSubmit() {
         return (
             !!this.host.challenge &&
             !!this.username &&

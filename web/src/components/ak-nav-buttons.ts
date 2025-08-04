@@ -30,19 +30,19 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends AKElement {
     @property({ type: Object })
-    uiConfig?: UIConfig;
+    public uiConfig?: UIConfig;
 
     @property({ type: Object })
-    me?: SessionUser;
+    public me?: SessionUser;
 
     @property({ type: Boolean, reflect: true })
-    notificationDrawerOpen = false;
+    public notificationDrawerOpen = false;
 
     @property({ type: Boolean, reflect: true })
-    apiDrawerOpen = false;
+    public apiDrawerOpen = false;
 
     @property({ type: Number })
-    notificationsCount = 0;
+    public notificationsCount = 0;
 
     public static styles = [
         PFBase,
@@ -180,7 +180,7 @@ export class NavigationButtons extends AKElement {
         />`;
     }
 
-    get userDisplayName() {
+    public get userDisplayName() {
         return match<UserDisplay | undefined, string | undefined>(this.uiConfig?.navbar.userDisplay)
             .with(UserDisplay.username, () => this.me?.user.username)
             .with(UserDisplay.name, () => this.me?.user.name)

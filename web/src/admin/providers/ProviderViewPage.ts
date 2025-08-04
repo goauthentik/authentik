@@ -27,7 +27,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersAllRetrieve({
                 id: value,
@@ -36,7 +36,7 @@ export class ProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: Provider;
+    public provider?: Provider;
 
     public static styles: CSSResult[] = [PFPage];
 

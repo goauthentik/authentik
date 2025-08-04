@@ -52,13 +52,13 @@ export class InvitationListPage extends TablePage<Invitation> {
     clearOnRefresh = true;
 
     @property()
-    order = "expires";
+    public order = "expires";
 
     @state()
-    invitationStageExists = false;
+    protected invitationStageExists = false;
 
     @state()
-    multipleEnrollmentFlows = false;
+    protected multipleEnrollmentFlows = false;
 
     async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {

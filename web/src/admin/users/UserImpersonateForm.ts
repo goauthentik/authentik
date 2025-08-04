@@ -14,7 +14,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {
     @property({ type: Number })
-    instancePk?: number;
+    public instancePk?: number;
 
     async send(data: ImpersonationRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG)

@@ -41,13 +41,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
     @property({ type: String })
-    applicationSlug?: string;
+    public applicationSlug?: string;
 
     @state()
-    application?: Application;
+    protected application?: Application;
 
     @state()
-    missingOutpost = false;
+    protected missingOutpost = false;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -79,48 +79,48 @@ export class WizardStep extends AKElement {
     ];
 
     @property({ type: Boolean, attribute: true, reflect: true })
-    enabled = false;
+    public enabled = false;
 
     /**
      * The name. Should match the slot. Reflected if not present.
      */
     @property({ type: String, attribute: true, reflect: true })
-    name?: string;
+    public name?: string;
 
     @consume({ context: wizardStepContext, subscribe: true })
-    wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
+    protected wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
 
     /**
      * What appears in the titlebar of the Wizard. Usually, but not necessarily, the same for all
      * steps. Recommendation: Set this, the description, and `canCancel` in a subclass, and stop
      * worrying about them.
      */
-    wizardTitle = "--unset--";
+    public wizardTitle = "--unset--";
 
     /**
      * The text for a descriptive subtitle for the wizard
      */
-    wizardDescription?: string;
+    public wizardDescription?: string;
 
     /**
      * Show the [Cancel] icon and offer the [Cancel] button
      */
-    canCancel = false;
+    public canCancel = false;
 
     /**
      * The ID of the current step.
      */
-    id = "";
+    public id = "";
 
     /**
      *The label of the current step.  Displayed in the navigation bar.
      */
-    label: string = "--unset--";
+    public label: string = "--unset--";
 
     /**
      * If true, this step's label will not be shown in the navigation bar
      */
-    hide = false;
+    public hide = false;
 
     //  ___      _    _ _        _   ___ ___
     // | _ \_  _| |__| (_)__    /_\ | _ \_ _|

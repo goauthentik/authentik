@@ -20,13 +20,13 @@ export class FormElement extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @property()
-    label?: string;
+    public label?: string;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ attribute: false })
-    set errors(value: ErrorDetail[] | undefined) {
+    public set errors(value: ErrorDetail[] | undefined) {
         this._errors = value;
         const hasError = (value || []).length > 0;
         this.querySelectorAll("input").forEach((input) => {

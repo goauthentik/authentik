@@ -14,7 +14,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-outpost-deployment-modal")
 export class OutpostDeploymentModal extends ModalButton {
     @property({ attribute: false })
-    outpost?: Outpost;
+    public outpost?: Outpost;
 
     protected renderModalInner(): TemplateResult {
         return html`<div class="pf-c-modal-box__header">

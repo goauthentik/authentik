@@ -24,9 +24,16 @@ export class AutosubmitStage extends BaseStage<
     @query("form")
     private form?: HTMLFormElement;
 
-    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
-    updated(): void {
+    public override updated(): void {
         if (this.challenge.url !== undefined) {
             this.form?.submit();
         }

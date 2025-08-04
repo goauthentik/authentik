@@ -18,10 +18,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {
     @property()
-    title!: string;
+    public title!: string;
 
     @property({ type: Number })
-    connectionPk = 0;
+    public connectionPk = 0;
 
     async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");

@@ -23,7 +23,7 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
     label = msg("Configure Proxy Provider");
 
     @state()
-    showHttpBasic = true;
+    protected showHttpBasic = true;
 
     protected renderForm(provider: ProxyProvider, errors: ValidationRecord) {
         const onSetMode: SetMode = (ev: CustomEvent<ProxyModeValue>) => {

@@ -35,10 +35,10 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: RadiusProvider;
+    protected provider?: RadiusProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

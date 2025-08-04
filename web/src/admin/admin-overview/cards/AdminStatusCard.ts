@@ -22,7 +22,7 @@ export interface AdminStatus {
 export abstract class AdminStatusCard<T> extends AggregateCard {
     // Current data value state
     @state()
-    value?: T;
+    public value?: T;
 
     // Current status state derived from value
     @state()

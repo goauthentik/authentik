@@ -34,28 +34,28 @@ export class VisibilityToggle extends AKElement implements VisibilityToggleProps
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    disabled = false;
+    public disabled = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
-    showMessage = msg("Show field content");
+    public showMessage = msg("Show field content");
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })
-    hideMessage = msg("Hide field content");
+    public hideMessage = msg("Hide field content");
 
     public render() {
         const [label, icon] = this.open

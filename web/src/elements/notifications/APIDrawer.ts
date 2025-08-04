@@ -18,7 +18,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
-    requests: RequestInfo[] = [];
+    public requests: RequestInfo[] = [];
 
     public static styles: CSSResult[] = [
         PFBase,

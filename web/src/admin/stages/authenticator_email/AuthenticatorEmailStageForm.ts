@@ -34,7 +34,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     @property({ type: Boolean })
-    showConnectionSettings = false;
+    public showConnectionSettings = false;
 
     async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {

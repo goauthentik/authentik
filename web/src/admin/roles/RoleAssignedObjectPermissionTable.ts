@@ -15,7 +15,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
     searchEnabled(): boolean {
         return true;

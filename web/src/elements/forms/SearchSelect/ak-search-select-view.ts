@@ -78,12 +78,12 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    set options(options: SelectOptions) {
+    public set options(options: SelectOptions) {
         this._options = groupOptions(options);
         this.flatOptions = optionsToFlat(this._options);
     }
 
-    get options() {
+    public get options() {
         return this._options;
     }
 
@@ -95,7 +95,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: String, reflect: true })
-    value?: string;
+    public value?: string;
 
     /**
      * Whether or not the dropdown is open
@@ -103,7 +103,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * If set to true, this object MAY return undefined in no value is passed in and none is set
@@ -112,7 +112,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     /**
      * If not managed, make the matcher case-sensitive during interaction.  If managed,
@@ -121,7 +121,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, attribute: "case-sensitive" })
-    caseSensitive = false;
+    public caseSensitive = false;
 
     /**
      * The name of the input, for forms
@@ -129,7 +129,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    name?: string;
+    public name?: string;
 
     /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
@@ -138,7 +138,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object.");
 
     /**
      * If true, the component only sends an input message up to a parent component. If false, the
@@ -148,7 +148,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *@attr
      */
     @property({ type: Boolean })
-    managed = false;
+    public managed = false;
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -157,7 +157,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property()
-    emptyOption = "---------";
+    public emptyOption = "---------";
 
     // Handle the behavior of the drop-down when the :host scrolls off the page.
     scrollHandler?: () => void;
@@ -165,12 +165,12 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     // observer: IntersectionObserver;
 
     @state()
-    displayValue = "";
+    protected displayValue = "";
 
     // Tracks when the inputRef is populated, so we can safely reschedule the
     // render of the dropdown with respect to it.
     @state()
-    inputRefIsAvailable = false;
+    protected inputRefIsAvailable = false;
 
     /**
      * Permanent identity with the portal so focus events can be checked.
@@ -332,11 +332,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    get rawValue() {
+    public get rawValue() {
         return this.inputRef.value?.value ?? "";
     }
 
-    get managedOptions() {
+    public get managedOptions() {
         return this.managed
             ? this._options
             : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);

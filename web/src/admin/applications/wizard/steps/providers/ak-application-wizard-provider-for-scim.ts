@@ -16,7 +16,7 @@ export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm
     label = msg("Configure SCIM Provider");
 
     @state()
-    propertyMappings?: PaginatedSCIMMappingList;
+    protected propertyMappings?: PaginatedSCIMMappingList;
 
     public render() {
         return html`<ak-wizard-title>${this.label}</ak-wizard-title>

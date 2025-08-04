@@ -17,7 +17,7 @@ import { until } from "lit/directives/until.js";
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
     @property({ attribute: false })
-    diagram?: string;
+    public diagram?: string;
 
     refreshHandler = (): void => {
         if (!this.textContent) return;

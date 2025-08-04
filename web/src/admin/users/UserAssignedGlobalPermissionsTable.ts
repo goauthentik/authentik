@@ -18,7 +18,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-assigned-global-permissions-table")
 export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     checkbox = true;
     clearOnRefresh = true;

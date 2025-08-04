@@ -24,7 +24,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     @property()
-    confirm!: (selectedItems: Permission[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Permission[]) => Promise<unknown>;
 
     order = "content_type__app_label,content_type__model";
 

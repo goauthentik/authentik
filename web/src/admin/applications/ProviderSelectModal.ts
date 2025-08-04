@@ -21,10 +21,10 @@ export class ProviderSelectModal extends TableModal<Provider> {
     }
 
     @property({ type: Boolean })
-    backchannel = false;
+    public backchannel = false;
 
     @property()
-    confirm!: (selectedItems: Provider[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
     order = "name";
 

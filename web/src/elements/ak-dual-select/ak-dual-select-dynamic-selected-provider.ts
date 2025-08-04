@@ -23,7 +23,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
      * @attr
      */
     @property({ attribute: false })
-    selector?: DualSelectPairSource;
+    public selector?: DualSelectPairSource;
 
     #didFirstUpdate = false;
 

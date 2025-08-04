@@ -20,7 +20,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-microsoft-entra-groups-list")
 export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
     expandable = true;
 

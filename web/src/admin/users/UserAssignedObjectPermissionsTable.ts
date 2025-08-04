@@ -15,7 +15,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-assigned-object-permissions-table")
 export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPermission> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     checkbox = true;
     clearOnRefresh = true;

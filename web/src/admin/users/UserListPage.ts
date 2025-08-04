@@ -104,19 +104,19 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     @property()
-    order = "last_login";
+    public order = "last_login";
 
     @property()
-    activePath;
+    public activePath;
 
     @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
 
     @state()
-    userPaths?: UserPath;
+    protected userPaths?: UserPath;
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
     public static styles: CSSResult[] = [
         ...TablePage.styles,

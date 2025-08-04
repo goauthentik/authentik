@@ -42,7 +42,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     }
 
     @property({ type: Boolean })
-    clearBackground = false;
+    public clearBackground = false;
 
     async send(data: Flow): Promise<void | Flow> {
         let flow: Flow;

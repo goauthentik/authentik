@@ -15,7 +15,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-mfa-form")
 export class MFADeviceForm extends ModelForm<Device, string> {
     @property()
-    deviceType!: string;
+    public deviceType!: string;
 
     async loadInstance(pk: string): Promise<Device> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();

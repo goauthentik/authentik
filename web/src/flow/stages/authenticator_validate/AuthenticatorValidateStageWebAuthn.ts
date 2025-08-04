@@ -24,16 +24,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public deviceChallenge?: DeviceChallenge;
 
     @property()
-    errorMessage?: string;
+    public errorMessage?: string;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public showBackButton = false;
 
     @state()
-    authenticating = false;
+    protected authenticating = false;
 
     transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 

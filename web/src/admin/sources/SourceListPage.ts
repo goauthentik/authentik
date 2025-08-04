@@ -43,7 +43,7 @@ export class SourceListPage extends TablePage<Source> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());

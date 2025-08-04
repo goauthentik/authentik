@@ -37,7 +37,7 @@ export class PromptListPage extends TablePage<Prompt> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(

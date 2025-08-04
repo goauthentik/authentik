@@ -21,10 +21,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     loadInstance(): Promise<unknown> {
         return Promise.resolve();
@@ -46,10 +46,10 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     public static styles: CSSResult[] = [PFBase, PFButton];
 

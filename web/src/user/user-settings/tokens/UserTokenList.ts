@@ -33,7 +33,7 @@ export class UserTokenList extends Table<Token> {
     clearOnRefresh = true;
 
     @property()
-    order = "expires";
+    public order = "expires";
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({

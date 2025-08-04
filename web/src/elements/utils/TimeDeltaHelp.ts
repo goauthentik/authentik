@@ -13,7 +13,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-utils-time-delta-help")
 export class TimeDeltaHelp extends AKElement {
     @property({ type: Boolean })
-    negative = false;
+    public negative = false;
 
     public static styles: CSSResult[] = [PFBase, PFForm, PFList];
 

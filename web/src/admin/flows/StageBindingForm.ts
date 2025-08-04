@@ -33,10 +33,10 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
     getSuccessMessage(): string {
         if (this.instance?.pk) {

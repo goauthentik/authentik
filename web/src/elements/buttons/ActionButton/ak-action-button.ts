@@ -30,7 +30,7 @@ export class ActionButton extends BaseTaskButton {
      */
 
     @property({ attribute: false })
-    apiRequest: () => Promise<unknown> = () => {
+    public apiRequest: () => Promise<unknown> = () => {
         throw new Error();
     };
 

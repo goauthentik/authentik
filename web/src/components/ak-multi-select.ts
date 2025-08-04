@@ -33,49 +33,49 @@ export class AkMultiSelect extends AkControlElement {
      * The [name] attribute, which is also distributed to the layout manager and the input control.
      */
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     /**
      * The text label to display on the control
      */
     @property({ type: String })
-    label = "";
+    public label = "";
 
     /**
      * The values to be displayed in the select. The format is [Value, Label], where the label is
      * what will be displayed.
      */
     @property({ attribute: false })
-    options: Pair[] = [];
+    public options: Pair[] = [];
 
     /**
      * If true, at least one object must be selected
      */
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     /**
      * Supporting a simple help string
      */
     @property({ type: String })
-    help = "";
+    public help = "";
 
     /**
      * For more complex help instructions, provide a template result.
      */
     @property({ type: Object })
-    bighelp!: TemplateResult | TemplateResult[];
+    public bighelp!: TemplateResult | TemplateResult[];
 
     /**
      * An array of strings representing the objects currently selected.
      */
     @property({ type: Array })
-    values: string[] = [];
+    public values: string[] = [];
 
     /**
      * Helper accessor for older code
      */
-    get value() {
+    public get value() {
         return this.values;
     }
 

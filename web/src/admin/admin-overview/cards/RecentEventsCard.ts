@@ -25,10 +25,10 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     @property()
-    order = "-created";
+    public order = "-created";
 
     @property({ type: Number })
-    pageSize = 10;
+    public pageSize = 10;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({

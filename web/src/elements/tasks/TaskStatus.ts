@@ -19,7 +19,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {
     @property()
-    status?: TaskAggregatedStatusEnum | TasksTasksListAggregatedStatusEnum | LastTaskStatusEnum;
+    public status?:
+        | TaskAggregatedStatusEnum
+        | TasksTasksListAggregatedStatusEnum
+        | LastTaskStatusEnum;
 
     public static styles: CSSResult[] = [PFBase, PFButton];
 

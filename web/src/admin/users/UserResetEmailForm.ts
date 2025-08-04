@@ -22,7 +22,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
     @property({ attribute: false })
-    user!: User;
+    public user!: User;
 
     getSuccessMessage(): string {
         return msg("Successfully sent email.");

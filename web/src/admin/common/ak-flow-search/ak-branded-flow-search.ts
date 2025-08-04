@@ -19,7 +19,7 @@ export class AkBrandedFlowSearch<T extends Flow> extends FlowSearch<T> {
      * @attr
      */
     @property({ attribute: false, type: String })
-    brandFlow?: string;
+    public brandFlow?: string;
 
     constructor() {
         super();

@@ -25,7 +25,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
-    currentStep?: string;
+    public currentStep?: string;
 
     wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
 
@@ -56,7 +56,7 @@ export class WizardStepsManager extends AKElement {
         return target;
     }
 
-    get stepLabels() {
+    public get stepLabels() {
         return this.slots
             .filter((slot) => !slot.hide)
             .map((slot) => ({

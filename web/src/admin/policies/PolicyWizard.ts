@@ -34,16 +34,16 @@ export class PolicyWizard extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ type: Boolean })
-    showBindingPage = false;
+    public showBindingPage = false;
 
     @property()
-    bindingTarget?: string;
+    public bindingTarget?: string;
 
     @property({ attribute: false })
-    policyTypes: TypeCreate[] = [];
+    public policyTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
     wizard?: Wizard;

@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
-    outpostHealth?: OutpostHealth;
+    public outpostHealth?: OutpostHealth;
 
     public static styles: CSSResult[] = [
         PFBase,

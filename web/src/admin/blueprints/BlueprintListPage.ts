@@ -64,7 +64,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

@@ -20,7 +20,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
     searchEnabled(): boolean {
         return true;

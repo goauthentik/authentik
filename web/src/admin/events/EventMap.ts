@@ -57,7 +57,7 @@ export class Map extends OlMap {
 @customElement("ak-events-map")
 export class EventMap extends AKElement {
     @property({ attribute: false })
-    events?: PaginatedResponse<Event>;
+    public events?: PaginatedResponse<Event>;
 
     @query("ol-layer-vector")
     vectorLayer?: OlLayerVector;
@@ -66,7 +66,7 @@ export class EventMap extends AKElement {
     map?: Map;
 
     @property({ type: Number })
-    zoomPaddingPx = 100;
+    public zoomPaddingPx = 100;
 
     public static styles: CSSResult[] = [
         PFBase,

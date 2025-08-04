@@ -44,7 +44,7 @@ export class AkSearchSelectViewDriver {
         return new AkSearchSelectViewDriver(element, menu);
     }
 
-    get open() {
+    public get open() {
         return this.element.getProperty("open");
     }
 

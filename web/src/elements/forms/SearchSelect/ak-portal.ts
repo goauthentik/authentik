@@ -35,7 +35,7 @@ export class Portal extends LitElement implements IPortal {
      * @prop
      */
     @property({ type: Object, attribute: false })
-    anchor!: HTMLElement;
+    public anchor!: HTMLElement;
 
     /**
      * Whether or not the content is visible
@@ -43,7 +43,7 @@ export class Portal extends LitElement implements IPortal {
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * The name; used mostly for the management layer.
@@ -51,7 +51,7 @@ export class Portal extends LitElement implements IPortal {
      * @attr
      */
     @property()
-    name?: string;
+    public name?: string;
 
     /**
      * The tether object.

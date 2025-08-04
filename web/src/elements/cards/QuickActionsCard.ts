@@ -33,7 +33,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
      * @attr
      */
     @property()
-    title = msg("Quick actions");
+    public title = msg("Quick actions");
 
     /**
      * Card contents. An array of [label, url, isExternal].  External links will
@@ -42,7 +42,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
      * @attr
      */
     @property({ type: Array })
-    actions: QuickAction[] = [];
+    public actions: QuickAction[] = [];
 
     public render() {
         const renderItem = ([label, url, external]: QuickAction) =>

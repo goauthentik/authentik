@@ -11,7 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-router-404")
 export class Router404 extends AKElement {
     @property()
-    url = "";
+    public url = "";
 
     public static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
 

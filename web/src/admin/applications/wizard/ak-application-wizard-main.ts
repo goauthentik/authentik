@@ -35,7 +35,7 @@ const freshWizardState = (): ApplicationWizardState => ({
 @customElement("ak-application-wizard-main")
 export class AkApplicationWizardMain extends AKElement {
     @state()
-    wizard: ApplicationWizardState = freshWizardState();
+    protected wizard: ApplicationWizardState = freshWizardState();
 
     wizardProviderProvider = new ContextProvider(this, {
         context: applicationWizardProvidersContext,

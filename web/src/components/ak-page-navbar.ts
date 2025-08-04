@@ -259,19 +259,19 @@ export class AKPageNavbar
     //#region Properties
 
     @state()
-    icon?: string;
+    public icon?: string;
 
     @state()
-    iconImage = false;
+    public iconImage = false;
 
     @state()
-    header?: string;
+    public header?: string;
 
     @state()
-    description?: string;
+    public description?: string;
 
     @state()
-    hasIcon = true;
+    public hasIcon = true;
 
     @property({
         type: Boolean,

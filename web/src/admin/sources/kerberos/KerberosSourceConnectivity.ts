@@ -11,7 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-kerberos-connectivity")
 export class KerberosSourceConnectivity extends AKElement {
     @property()
-    connectivity?: {
+    public connectivity?: {
         [key: string]: {
             [key: string]: string;
         };

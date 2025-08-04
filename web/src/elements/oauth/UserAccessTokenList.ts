@@ -21,7 +21,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     expandable = true;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     public static styles: CSSResult[] = [...super.styles, PFFlex];
 

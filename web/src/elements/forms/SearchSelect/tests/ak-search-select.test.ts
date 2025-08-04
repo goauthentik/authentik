@@ -36,7 +36,7 @@ export class MockSearch extends CustomListenerElement(AKElement) {
 
     selectedFruit?: ViewSample;
 
-    get value() {
+    public get value() {
         return this.selectedFruit ? renderValue(this.selectedFruit) : undefined;
     }
 

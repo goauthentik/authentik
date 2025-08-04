@@ -64,13 +64,13 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     _modelName?: string;
 
     @property()
-    modelName?: string;
+    public modelName?: string;
 
     @property({ attribute: false })
-    providerType: SourceType | null = null;
+    public providerType: SourceType | null = null;
 
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;

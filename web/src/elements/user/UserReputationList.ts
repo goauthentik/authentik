@@ -16,10 +16,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
     @property()
-    targetUsername!: string;
+    public targetUsername!: string;
 
     @property()
-    targetEmail!: string | undefined;
+    public targetEmail!: string | undefined;
 
     async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];

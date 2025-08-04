@@ -19,10 +19,10 @@ export class BaseDeviceStage<
     Tout,
 > extends BaseStage<Tin, Tout> {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public showBackButton = false;
 
     public static styles: CSSResult[] = [
         PFBase,

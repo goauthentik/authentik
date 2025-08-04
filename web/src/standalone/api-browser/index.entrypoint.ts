@@ -20,7 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-api-browser")
 export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
-    schemaPath?: string;
+    public schemaPath?: string;
 
     public static styles: CSSResult[] = [
         css`
@@ -33,10 +33,10 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     ];
 
     @state()
-    bgColor = "#000000";
+    protected bgColor = "#000000";
 
     @state()
-    textColor = "#000000";
+    protected textColor = "#000000";
 
     firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {

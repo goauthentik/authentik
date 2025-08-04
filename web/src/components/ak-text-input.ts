@@ -8,13 +8,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-text-input")
 export class AkTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    value = "";
+    public value = "";
 
     @property({ type: String })
-    autocomplete?: string;
+    public autocomplete?: string;
 
     @property({ type: String })
-    placeholder?: string;
+    public placeholder?: string;
 
     protected renderControl() {
         const setValue = (ev: InputEvent) => {

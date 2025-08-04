@@ -24,7 +24,7 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     @property()
-    confirm!: (selectedItems: Group[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Group[]) => Promise<unknown>;
 
     order = "name";
 

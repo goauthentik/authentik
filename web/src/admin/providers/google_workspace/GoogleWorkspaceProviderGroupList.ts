@@ -20,7 +20,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
     expandable = true;
 

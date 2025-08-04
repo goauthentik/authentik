@@ -40,13 +40,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: LDAPProvider;
+    protected provider?: LDAPProvider;
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
     public static styles: CSSResult[] = [
         PFBase,

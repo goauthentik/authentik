@@ -47,7 +47,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

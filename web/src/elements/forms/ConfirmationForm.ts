@@ -14,15 +14,15 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-forms-confirm")
 export class ConfirmationForm extends ModalButton {
     @property()
-    successMessage!: string;
+    public successMessage!: string;
     @property()
-    errorMessage!: string;
+    public errorMessage!: string;
 
     @property()
-    action!: string;
+    public action!: string;
 
     @property({ attribute: false })
-    onConfirm!: () => Promise<unknown>;
+    public onConfirm!: () => Promise<unknown>;
 
     confirm(): Promise<void> {
         return this.onConfirm()

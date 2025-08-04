@@ -15,7 +15,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-token-form")
 export class UserTokenForm extends ModelForm<Token, string> {
     @property()
-    intent: IntentEnum = IntentEnum.Api;
+    public intent: IntentEnum = IntentEnum.Api;
 
     loadInstance(pk: string): Promise<Token> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({

@@ -23,10 +23,10 @@ export class SSFProviderStreamList extends Table<SSFStream> {
     clearOnRefresh = true;
 
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
         return new SsfApi(DEFAULT_CONFIG).ssfStreamsList({

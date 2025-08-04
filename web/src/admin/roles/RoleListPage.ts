@@ -34,7 +34,7 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());

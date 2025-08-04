@@ -24,16 +24,16 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
     paginated = false;
 
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: T[] = [];
 
     @property({ attribute: false })
-    metadata!: (item: T) => BulkDeleteMetadata;
+    public metadata!: (item: T) => BulkDeleteMetadata;
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @state()
-    usedByData: Map<T, UsedBy[]> = new Map();
+    protected usedByData: Map<T, UsedBy[]> = new Map();
 
     public static styles: CSSResult[] = [...super.styles, PFList];
 
@@ -119,28 +119,28 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
 @customElement("ak-forms-delete-bulk")
 export class DeleteBulkForm<T> extends ModalButton {
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: T[] = [];
 
     @property()
-    objectLabel?: string;
+    public objectLabel?: string;
 
     @property()
-    actionLabel?: string;
+    public actionLabel?: string;
 
     @property()
-    actionSubtext?: string;
+    public actionSubtext?: string;
 
     @property()
-    buttonLabel = msg("Delete");
+    public buttonLabel = msg("Delete");
 
     /**
      * Action shown in messages, for example `deleted` or `removed`
      */
     @property()
-    action = msg("deleted");
+    public action = msg("deleted");
 
     @property({ attribute: false })
-    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
+    public metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;
         const meta = [];
         if (Object.prototype.hasOwnProperty.call(rec, "name")) {
@@ -153,10 +153,10 @@ export class DeleteBulkForm<T> extends ModalButton {
     };
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: (item: T) => Promise<unknown>;
+    public delete!: (item: T) => Promise<unknown>;
 
     async confirm(): Promise<void> {
         try {

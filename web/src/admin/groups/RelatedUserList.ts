@@ -41,10 +41,10 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     @state()
-    usersToAdd: User[] = [];
+    protected usersToAdd: User[] = [];
 
     getSuccessMessage(): string {
         return msg("Successfully added user(s).");
@@ -113,16 +113,16 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup?: Group;
 
     @property()
-    order = "last_login";
+    public order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
     public static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
 

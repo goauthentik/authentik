@@ -58,7 +58,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     actionTask: Task;
 
     @property({ type: Boolean })
-    disabled = false;
+    public disabled = false;
 
     constructor() {
         super();
@@ -114,7 +114,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         <ak-spinner size=${PFSize.Medium}></ak-spinner>
     </span>`;
 
-    get buttonClasses() {
+    public get buttonClasses() {
         return [
             ...this.classList,
             StatusMap.get(this.actionTask.status),

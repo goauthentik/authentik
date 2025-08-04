@@ -35,7 +35,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
     @property({ type: String })
-    set groupId(id: string) {
+    public set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
@@ -47,7 +47,7 @@ export class GroupViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     public static styles: CSSResult[] = [
         PFBase,

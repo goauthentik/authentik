@@ -30,7 +30,7 @@ enum blueprintSource {
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     @state()
-    source: blueprintSource = blueprintSource.file;
+    protected source: blueprintSource = blueprintSource.file;
 
     async loadInstance(pk: string): Promise<BlueprintInstance> {
         const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({

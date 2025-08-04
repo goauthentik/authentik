@@ -78,10 +78,10 @@ export function isForward(mode: ProxyMode): boolean {
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: ProxyProvider;
+    protected provider?: ProxyProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

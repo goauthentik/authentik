@@ -26,13 +26,13 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#region Properties
 
     @property({ attribute: false })
-    types: TypeCreate[] = [];
+    public types: TypeCreate[] = [];
 
     @property({ attribute: false })
-    selectedType?: TypeCreate;
+    public selectedType?: TypeCreate;
 
     @property({ type: String })
-    layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+    public layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     //#endregion
 

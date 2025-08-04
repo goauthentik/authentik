@@ -54,7 +54,7 @@ export class AKAlert extends AKElement implements IAlert {
      * @attr
      */
     @property()
-    level: Level | Levels = Level.Warning;
+    public level: Level | Levels = Level.Warning;
 
     /**
      * Icon to display
@@ -74,7 +74,7 @@ export class AKAlert extends AKElement implements IAlert {
         `,
     ];
 
-    get classmap() {
+    public get classmap() {
         const level = levelNames.includes(this.level)
             ? `pf-m-${this.level}`
             : (this.level as string);

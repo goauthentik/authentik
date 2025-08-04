@@ -58,7 +58,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         `,
     ];
 
-    get bindingsAsColumns() {
+    public get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
             const { order, enabled, timeout } = binding;
             const isSet = P.union(P.string.minLength(1), P.number);

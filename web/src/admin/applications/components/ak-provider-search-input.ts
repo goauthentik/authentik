@@ -39,22 +39,22 @@ export class AkProviderInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Number })
-    value?: number;
+    public value?: number;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     constructor() {
         super();

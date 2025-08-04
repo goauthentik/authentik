@@ -45,13 +45,13 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     }
 
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
     @property()
-    plexToken?: string;
+    public plexToken?: string;
 
     @property({ attribute: false })
-    plexResources?: PlexResource[];
+    public plexResources?: PlexResource[];
 
     get defaultInstance(): PlexSource | undefined {
         return {

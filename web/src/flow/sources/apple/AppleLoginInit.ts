@@ -18,11 +18,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {
     @property({ type: Boolean })
-    isModalShown = false;
+    public isModalShown = false;
 
-    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         const appleAuth = document.createElement("script");
         appleAuth.src =
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";

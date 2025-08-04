@@ -24,7 +24,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
     label = msg("Choose a Provider");
 
     @state()
-    failureMessage = "";
+    protected failureMessage = "";
 
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
     public providerModelsList!: LocalTypeCreate[];

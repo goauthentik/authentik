@@ -51,10 +51,10 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
     ];
 
     @property({ type: Boolean, attribute: "show-hint" })
-    forceHint: boolean = false;
+    public forceHint: boolean = false;
 
     @state()
-    showHint: boolean = true;
+    public showHint: boolean = true;
 
     showHintController: ShowHintController;
 

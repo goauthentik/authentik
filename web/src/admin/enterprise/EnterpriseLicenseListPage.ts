@@ -53,16 +53,16 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     @state()
-    forecast?: LicenseForecast;
+    protected forecast?: LicenseForecast;
 
     @state()
-    summary?: LicenseSummary;
+    protected summary?: LicenseSummary;
 
     @state()
-    installID?: string;
+    protected installID?: string;
 
     public static styles: CSSResult[] = [
         ...super.styles,

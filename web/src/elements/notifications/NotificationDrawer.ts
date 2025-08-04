@@ -28,10 +28,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {
     @property({ attribute: false })
-    notifications?: PaginatedResponse<Notification>;
+    public notifications?: PaginatedResponse<Notification>;
 
     @property({ type: Number })
-    unread = 0;
+    public unread = 0;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -42,10 +42,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: MicrosoftEntraProvider;
+    protected provider?: MicrosoftEntraProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

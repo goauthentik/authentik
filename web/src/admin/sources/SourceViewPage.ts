@@ -21,7 +21,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesAllRetrieve({
                 slug: slug,
@@ -32,7 +32,7 @@ export class SourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: Source;
+    public source?: Source;
 
     protected renderSource(): TemplateResult {
         if (!this.source) {

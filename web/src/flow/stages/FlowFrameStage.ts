@@ -6,7 +6,7 @@ import { BaseStage } from "#flow/stages/base";
 
 import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api";
 
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -17,9 +17,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {
-    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, css``];
+    public static override styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle];
 
-    public render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${this.challenge.loadingOverlay
                 ? html`<ak-empty-state loading

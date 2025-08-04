@@ -17,10 +17,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {
     @property({ attribute: false })
-    invitation?: Invitation;
+    public invitation?: Invitation;
 
     @property()
-    selectedFlow?: string;
+    public selectedFlow?: string;
 
     public static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFDescriptionList];
 

@@ -26,10 +26,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
     @property({ type: String })
-    eventID?: string;
+    public eventID?: string;
 
     @state()
-    event!: EventWithContext;
+    protected event!: EventWithContext;
 
     public static styles: CSSResult[] = [
         PFBase,

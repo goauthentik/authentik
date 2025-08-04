@@ -36,7 +36,7 @@ export class BrandListPage extends TablePage<Brand> {
     clearOnRefresh = true;
 
     @property()
-    order = "domain";
+    public order = "domain";
 
     async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());

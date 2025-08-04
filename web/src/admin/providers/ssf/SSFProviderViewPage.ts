@@ -40,7 +40,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersSsfRetrieve({
                 id: value,
@@ -51,7 +51,7 @@ export class SSFProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: SSFProvider;
+    public provider?: SSFProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

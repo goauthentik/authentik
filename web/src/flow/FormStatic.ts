@@ -10,10 +10,10 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 @customElement("ak-form-static")
 export class FormStatic extends AKElement {
     @property()
-    userAvatar?: string;
+    public userAvatar?: string;
 
     @property()
-    user?: string;
+    public user?: string;
 
     public static styles: CSSResult[] = [
         PFAvatar,

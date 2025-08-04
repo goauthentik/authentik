@@ -15,7 +15,7 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
-    topN?: EventTopPerUser[];
+    public topN?: EventTopPerUser[];
 
     public static styles: CSSResult[] = [PFTable];
 

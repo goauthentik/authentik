@@ -34,7 +34,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(

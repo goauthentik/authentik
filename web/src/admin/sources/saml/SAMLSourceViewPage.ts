@@ -38,7 +38,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesSamlRetrieve({
                 slug: slug,
@@ -49,10 +49,10 @@ export class SAMLSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: SAMLSource;
+    public source?: SAMLSource;
 
     @state()
-    metadata?: SAMLMetadata;
+    protected metadata?: SAMLMetadata;
 
     public static styles: CSSResult[] = [
         PFBase,

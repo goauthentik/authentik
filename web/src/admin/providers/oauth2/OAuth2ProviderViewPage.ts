@@ -60,7 +60,7 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersOauth2Retrieve({
                 id: value,
@@ -71,16 +71,16 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: OAuth2Provider;
+    public provider?: OAuth2Provider;
 
     @state()
-    providerUrls?: OAuth2ProviderSetupURLs;
+    protected providerUrls?: OAuth2ProviderSetupURLs;
 
     @state()
-    preview?: PropertyMappingPreview;
+    protected preview?: PropertyMappingPreview;
 
     @state()
-    previewUser?: User;
+    protected previewUser?: User;
 
     public static styles: CSSResult[] = [
         PFBase,

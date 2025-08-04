@@ -27,7 +27,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     }
 
     @property({ type: Boolean })
-    showExpiresIn = false;
+    public showExpiresIn = false;
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {

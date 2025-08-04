@@ -27,7 +27,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {

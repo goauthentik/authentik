@@ -33,7 +33,7 @@ export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallengeResponseRequest
 > {
     @state()
-    authUrl?: string;
+    protected authUrl?: string;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -17,7 +17,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-user-settings-password")
 export class UserSettingsPassword extends AKElement {
     @property()
-    configureUrl?: string;
+    public configureUrl?: string;
 
     public static styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
 

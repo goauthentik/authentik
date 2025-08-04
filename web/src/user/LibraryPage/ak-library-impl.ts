@@ -48,7 +48,7 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: "isadmin", type: Boolean })
-    isAdmin = false;
+    public isAdmin = false;
 
     /**
      * The *complete* list of applications for this user. Not paginated.
@@ -56,7 +56,7 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: false, type: Array })
-    apps!: Application[];
+    public apps!: Application[];
 
     /**
      * The aggregate uiConfig, derived from user, brand, and instance data.
@@ -64,13 +64,13 @@ export class LibraryPage extends AKElement {
      * @attr
      */
     @property({ attribute: false })
-    uiConfig!: PageUIConfig;
+    public uiConfig!: PageUIConfig;
 
     @state()
-    selectedApp?: Application;
+    protected selectedApp?: Application;
 
     @state()
-    filteredApps: Application[] = [];
+    protected filteredApps: Application[] = [];
 
     pageTitle(): string {
         return msg("My Applications");

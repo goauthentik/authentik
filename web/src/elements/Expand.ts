@@ -19,13 +19,13 @@ export interface IExpand {
 @customElement("ak-expand")
 export class Expand extends AKElement implements IExpand {
     @property({ type: Boolean })
-    expanded = false;
+    public expanded = false;
 
     @property({ type: String, attribute: "text-open" })
-    textOpen = msg("Show less");
+    public textOpen = msg("Show less");
 
     @property({ type: String, attribute: "text-closed" })
-    textClosed = msg("Show more");
+    public textClosed = msg("Show more");
 
     public static styles = [
         PFBase,

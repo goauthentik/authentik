@@ -22,22 +22,22 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     label = "";
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
     @property({ type: Object, attribute: false })
-    errors: Record<string | number | symbol, string> = {};
+    public errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
     form!: HTMLFormElement;
 
-    get formValues() {
+    public get formValues() {
         return serializeForm([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),
         ]);
     }
 
-    get valid() {
+    public get valid() {
         this.errors = {};
         return this.form.checkValidity();
     }

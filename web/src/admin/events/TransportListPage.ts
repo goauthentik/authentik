@@ -43,7 +43,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     expandable = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(

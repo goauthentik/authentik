@@ -30,9 +30,16 @@ export class AuthenticatorDuoStage extends BaseStage<
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest
 > {
-    public static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
-    updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             const i = setInterval(() => {
                 this.checkEnrollStatus().then((shouldStop) => {

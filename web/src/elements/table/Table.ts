@@ -598,7 +598,7 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    get needChipGroup() {
+    public get needChipGroup() {
         return this.checkbox && this.checkboxChip;
     }
 

@@ -50,13 +50,13 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     @property({ attribute: false })
-    provider?: number;
+    public provider?: number;
 
     @state()
-    backchannelProviders: Provider[] = [];
+    protected backchannelProviders: Provider[] = [];
 
     @property({ type: Boolean })
-    clearIcon = false;
+    public clearIcon = false;
 
     getSuccessMessage(): string {
         return this.instance

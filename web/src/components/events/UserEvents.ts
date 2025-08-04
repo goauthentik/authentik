@@ -25,10 +25,10 @@ export class UserEvents extends Table<Event> {
     expandable = true;
 
     @property()
-    order = "-created";
+    public order = "-created";
 
     @property()
-    targetUser!: string;
+    public targetUser!: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({

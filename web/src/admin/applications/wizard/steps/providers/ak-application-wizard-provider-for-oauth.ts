@@ -23,10 +23,10 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
     label = msg("Configure OAuth2 Provider");
 
     @state()
-    showClientSecret = true;
+    protected showClientSecret = true;
 
     @state()
-    oauthSources?: PaginatedOAuthSourceList;
+    protected oauthSources?: PaginatedOAuthSourceList;
 
     constructor() {
         super();

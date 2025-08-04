@@ -34,16 +34,16 @@ export interface SidebarToggleEventDetail {
 @customElement("ak-page-header")
 export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: String })
-    header?: string;
+    public header?: string;
 
     @property({ type: String })
-    description?: string;
+    public description?: string;
 
     @property({ type: String })
-    icon?: string;
+    public icon?: string;
 
     @property({ type: Boolean })
-    iconImage = false;
+    public iconImage = false;
 
     public static styles: CSSResult[] = [
         css`

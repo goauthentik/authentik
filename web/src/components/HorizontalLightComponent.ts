@@ -44,7 +44,7 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    name!: string;
+    public name!: string;
 
     /**
      * The label for the input control
@@ -52,14 +52,14 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    label?: string;
+    public label?: string;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    required = false;
+    public required = false;
 
     /**
      * Help text to display below the form element. Optional
@@ -67,41 +67,41 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, reflect: true })
-    help = "";
+    public help = "";
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
      * @property
      */
     @property({ type: Object })
-    bighelp?: TemplateResult | TemplateResult[];
+    public bighelp?: TemplateResult | TemplateResult[];
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    hidden = false;
+    public hidden = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    invalid = false;
+    public invalid = false;
 
     /**
      * @property
      */
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    public errorMessages: string[] = [];
 
     /**
      * @attribute
      * @property
      */
     @property({ attribute: false })
-    value?: T;
+    public value?: T;
 
     /**
      * Input hint.
@@ -110,7 +110,7 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: String, attribute: "input-hint" })
-    inputHint?: string;
+    public inputHint?: string;
 
     protected renderControl() {
         throw new Error("Must be implemented in a subclass");

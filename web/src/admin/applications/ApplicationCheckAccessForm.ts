@@ -24,13 +24,13 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-application-check-access-form")
 export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     @property({ attribute: false })
-    application!: Application;
+    public application!: Application;
 
     @property({ attribute: false })
-    result: PolicyTestResult | null = null;
+    public result: PolicyTestResult | null = null;
 
     @property({ attribute: false })
-    request?: number;
+    public request?: number;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");

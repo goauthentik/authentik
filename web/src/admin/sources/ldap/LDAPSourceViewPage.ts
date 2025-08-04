@@ -38,7 +38,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesLdapRetrieve({
                 slug: slug,
@@ -49,7 +49,7 @@ export class LDAPSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source!: LDAPSource;
+    public source!: LDAPSource;
 
     public static styles: CSSResult[] = [
         PFBase,

@@ -43,13 +43,13 @@ class PreviewStageHost implements StageHost {
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {
     @state()
-    preview?: PromptChallenge;
+    protected preview?: PromptChallenge;
 
     @state()
-    previewError?: string[];
+    protected previewError?: string[];
 
     @state()
-    previewResult: unknown;
+    public previewResult: unknown;
 
     send(data: Prompt): Promise<unknown> {
         if (this.instance) {

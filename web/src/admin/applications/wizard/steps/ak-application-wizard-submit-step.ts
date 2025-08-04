@@ -98,7 +98,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     label = msg("Review and Submit Application");
 
     @state()
-    state: SubmitStates = "reviewing";
+    protected state: SubmitStates = "reviewing";
 
     async send() {
         const app = this.wizard.app;

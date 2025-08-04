@@ -82,7 +82,7 @@ export class EmptyState extends AKElement implements IEmptyState {
         }
     }
 
-    get localAriaLabel() {
+    public get localAriaLabel() {
         const result = this.querySelector("span:not([slot])");
         return result instanceof HTMLElement ? result.innerText || undefined : undefined;
     }

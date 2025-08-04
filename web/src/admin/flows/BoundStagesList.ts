@@ -31,7 +31,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     order = "order";
 
     @property()
-    target?: string;
+    public target?: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({

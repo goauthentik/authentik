@@ -30,13 +30,13 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
-    policy?: Policy;
+    public policy?: Policy;
 
     @state()
-    result?: PolicyTestResult;
+    protected result?: PolicyTestResult;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    public request?: PolicyTestRequest;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");

@@ -65,39 +65,39 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     // Whether or not the dropdown component can be left blank
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     // An initial string to filter the search contents, and the value of the input which further
     // serves to restrict the search
     @property()
-    query?: string;
+    public query?: string;
 
     // The objects currently available under search
     @property({ attribute: false })
-    objects?: T[];
+    public objects?: T[];
 
     // The currently selected object
     @property({ attribute: false })
-    selectedObject?: T;
+    public selectedObject?: T;
 
     // Used to inform the form of the name of the object
     @property()
-    name?: string;
+    public name?: string;
 
     // The textual placeholder for the search's <input> object, if currently empty. Used as the
     // native <input> object's `placeholder` field.
     @property()
-    placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object.");
 
     // A textual string representing "The user has affirmed they want to leave the selection blank."
     // Only used if `blankable` above is true.
     @property()
-    emptyOption = "---------";
+    public emptyOption = "---------";
 
     isFetchingData = false;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
 
     public toForm(): string {
         if (!this.objects) {

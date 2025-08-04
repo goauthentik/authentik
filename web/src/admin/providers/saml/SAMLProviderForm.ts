@@ -12,7 +12,7 @@ import { customElement, state } from "lit/decorators.js";
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
-    hasSigningKp = false;
+    protected hasSigningKp = false;
 
     async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({

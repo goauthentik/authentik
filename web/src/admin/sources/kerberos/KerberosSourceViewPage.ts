@@ -41,7 +41,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesKerberosRetrieve({
                 slug: slug,
@@ -52,7 +52,7 @@ export class KerberosSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source!: KerberosSource;
+    public source!: KerberosSource;
 
     public static styles: CSSResult[] = [
         PFBase,

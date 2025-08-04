@@ -22,13 +22,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
     public static styles = [PFBase, PFGrid, PFPage, PFCard];
 

@@ -93,7 +93,7 @@ export class SelectTable extends SimpleTable {
     @property({ type: String, attribute: true, reflect: true })
     public set value(value: string) {
         this._value = value;
-        this._selected = value.split(this.valueSep).filter((v) => v.trim() !== "");
+        this.#selected = value.split(this.valueSep).filter((v) => v.trim() !== "");
     }
 
     public get value() {
@@ -103,27 +103,27 @@ export class SelectTable extends SimpleTable {
     private _value: string = "";
 
     @property({ type: Boolean, attribute: true })
-    multiple = false;
+    public multiple = false;
 
     @property({ type: String, attribute: true })
-    valueSep = ";";
+    public valueSep = ";";
 
     // WARNING: This property and `set value` must mirror each other perfectly.
     @property({ attribute: false })
     public set selected(selected: string[]) {
-        this._selected = selected;
-        this._value = this._selected.toSorted().join(this.valueSep);
+        this.#selected = selected;
+        this._value = this.#selected.toSorted().join(this.valueSep);
     }
 
     @queryAll('input[data-ouia-component-role="select"]')
     selectCheckboxesOnPage!: HTMLInputElement[];
 
     public get selected() {
-        return this._selected;
+        return this.#selected;
     }
 
     public json() {
-        return this._selected;
+        return this.#selected;
     }
 
     private get valuesOnPage() {
@@ -137,14 +137,14 @@ export class SelectTable extends SimpleTable {
     }
 
     private get selectedOnPage() {
-        return this.checkedValuesOnPage.filter((value) => this._selected.includes(value));
+        return this.checkedValuesOnPage.filter((value) => this.#selected.includes(value));
     }
 
     public clear() {
         this.selected = [];
     }
 
-    private _selected: string[] = [];
+    #selected: string[] = [];
 
     #selectListener = (ev: InputEvent) => {
         ev.stopPropagation();

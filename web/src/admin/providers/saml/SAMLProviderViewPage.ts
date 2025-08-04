@@ -59,25 +59,25 @@ interface SAMLPreviewAttribute {
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: SAMLProvider;
+    protected provider?: SAMLProvider;
 
     @state()
-    preview?: SAMLPreviewAttribute;
+    protected preview?: SAMLPreviewAttribute;
 
     @state()
-    metadata?: SAMLMetadata;
+    protected metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    protected signer?: CertificateKeyPair;
 
     @state()
-    verifier?: CertificateKeyPair;
+    protected verifier?: CertificateKeyPair;
 
     @state()
-    previewUser?: User;
+    protected previewUser?: User;
 
     public static styles: CSSResult[] = [
         PFBase,

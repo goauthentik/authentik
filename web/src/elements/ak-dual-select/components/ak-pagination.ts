@@ -32,7 +32,7 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
     ];
 
     @property({ attribute: false })
-    pages?: BasePagination;
+    public pages?: BasePagination;
 
     #clickListener = (nav: number = 0) => {
         this.dispatchCustomEvent(DualSelectEventType.NavigateTo, nav);

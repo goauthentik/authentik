@@ -16,7 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-role-assigned-global-permissions-table")
 export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
     searchEnabled(): boolean {
         return true;

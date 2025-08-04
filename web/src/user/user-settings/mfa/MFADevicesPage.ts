@@ -27,7 +27,7 @@ export const stageToAuthenticatorName = (stage: UserSetting) =>
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
-    userSettings?: UserSetting[];
+    public userSettings?: UserSetting[];
 
     checkbox = true;
     clearOnRefresh = true;

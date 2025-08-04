@@ -20,19 +20,19 @@ export class AkSwitchInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Boolean })
-    checked: boolean = false;
+    public checked: boolean = false;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     @query("input.pf-c-switch__input[type=checkbox]")
     checkbox!: HTMLInputElement;

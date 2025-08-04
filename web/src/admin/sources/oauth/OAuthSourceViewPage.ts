@@ -76,7 +76,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthRetrieve({
                 slug: value,
@@ -87,7 +87,7 @@ export class OAuthSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: OAuthSource;
+    public source?: OAuthSource;
 
     public static styles: CSSResult[] = [
         PFBase,

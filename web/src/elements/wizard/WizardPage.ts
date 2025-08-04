@@ -29,11 +29,11 @@ export class WizardPage extends AKElement {
      * @todo: Should this be a getter or static property?
      */
     @property()
-    sidebarLabel = (): string => {
+    public sidebarLabel = (): string => {
         return "UNNAMED";
     };
 
-    get host(): Wizard {
+    public get host(): Wizard {
         return this.parentElement as Wizard;
     }
 

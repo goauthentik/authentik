@@ -22,10 +22,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     @state()
-    groupsToAdd: Group[] = [];
+    protected groupsToAdd: Group[] = [];
 
     getSuccessMessage(): string {
         return msg("Successfully added user to group(s).");
@@ -92,10 +92,10 @@ export class RelatedGroupList extends Table<Group> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     @property({ attribute: false })
-    targetUser?: User;
+    public targetUser?: User;
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({

@@ -11,7 +11,7 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
     public static styles = [PFButton];
 
     @property({ type: Number })
-    value = -1;
+    public value = -1;
 
     #clickListener = (ev: Event) => {
         ev.stopPropagation();

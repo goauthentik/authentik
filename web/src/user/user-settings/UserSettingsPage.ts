@@ -77,7 +77,7 @@ export class UserSettingsPage extends AKElement {
     ];
 
     @state()
-    userSettings?: UserSetting[];
+    protected userSettings?: UserSetting[];
 
     constructor() {
         super();

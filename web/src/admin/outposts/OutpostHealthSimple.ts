@@ -18,16 +18,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
     @property()
-    outpostId?: string;
+    public outpostId?: string;
 
     @state()
-    outpostHealths: OutpostHealth[] = [];
+    protected outpostHealths: OutpostHealth[] = [];
 
     @property({ attribute: false })
-    loaded = false;
+    public loaded = false;
 
     @property({ attribute: false })
-    showVersion = true;
+    public showVersion = true;
 
     public static styles: CSSResult[] = [PFBase];
 

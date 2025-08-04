@@ -35,20 +35,20 @@ const coreApi = () => new CoreApi(DEFAULT_CONFIG);
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
     @state()
-    ready = false;
+    protected ready = false;
 
     @state()
-    isAdmin = false;
+    protected isAdmin = false;
 
     /**
      * The list of applications. This is the *complete* list; the constructor fetches as many pages
      * as the server announces when page one is accessed, and then concatenates them all together.
      */
     @state()
-    apps: Application[] = [];
+    protected apps: Application[] = [];
 
     @state()
-    uiConfig: PageUIConfig;
+    protected uiConfig: PageUIConfig;
 
     constructor() {
         super();

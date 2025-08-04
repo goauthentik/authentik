@@ -48,7 +48,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
     public static styles = [...SearchSelectBase.styles];
 
     @property({ type: Object, attribute: false })
-    config!: ISearchSelectApi<T>;
+    public config!: ISearchSelectApi<T>;
 
     connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;

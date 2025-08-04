@@ -49,7 +49,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "input-id" })
-    inputId = "ak-stage-password-input";
+    public inputId = "ak-stage-password-input";
 
     /**
      * The name of the input field.
@@ -57,7 +57,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    name = "password";
+    public name = "password";
 
     /**
      * The label for the input field.
@@ -65,7 +65,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    label = msg("Password");
+    public label = msg("Password");
 
     /**
      * The placeholder text for the input field.
@@ -73,7 +73,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    placeholder = msg("Please enter your password");
+    public placeholder = msg("Please enter your password");
 
     /**
      * The initial value of the input field.
@@ -81,20 +81,20 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "prefill" })
-    initialValue = "";
+    public initialValue = "";
 
     /**
      * The errors for the input field.
      */
     @property({ type: Object })
-    errors: Record<string, string> = {};
+    public errors: Record<string, string> = {};
 
     /**
      * Forwarded to the input tag's aria-invalid attribute, if set
      * @attr
      */
     @property({ type: String })
-    invalid?: string;
+    public invalid?: string;
 
     /**
      * Whether to allow the user to toggle the visibility of the password.
@@ -102,7 +102,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "allow-show-password" })
-    allowShowPassword = false;
+    public allowShowPassword = false;
 
     /**
      * Whether the password is currently visible.
@@ -110,7 +110,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "password-visible" })
-    passwordVisible = false;
+    public passwordVisible = false;
 
     /**
      * Automatically grab focus after rendering.
@@ -118,7 +118,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "grab-focus" })
-    grabFocus = false;
+    public grabFocus = false;
 
     //#endregion
 
@@ -136,7 +136,7 @@ export class InputPassword extends AKElement {
      * Whether the caps lock key is enabled.
      */
     @state()
-    capsLock = false;
+    protected capsLock = false;
 
     //#endregion
 

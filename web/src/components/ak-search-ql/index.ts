@@ -28,30 +28,30 @@ export class QL extends DjangoQL {
 @customElement("ak-search-ql")
 export class QLSearch extends AKElement {
     @property()
-    value?: string;
+    public value?: string;
 
     @query("[name=search]")
     searchElement?: HTMLTextAreaElement;
 
     @state()
-    menuOpen = false;
+    protected menuOpen = false;
 
     @property()
-    onSearch?: (value: string) => void;
+    public onSearch?: (value: string) => void;
 
     @state()
-    selected?: number;
+    protected selected?: number;
 
     @state()
-    cursorX: number = 0;
+    protected cursorX: number = 0;
 
     @state()
-    cursorY: number = 0;
+    protected cursorY: number = 0;
 
     ql?: QL;
     canvas?: CanvasRenderingContext2D;
 
-    set apiResponse(value: PaginatedResponse<unknown> | undefined) {
+    public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
         if (!value || !value.autocomplete || !this.ql) {
             return;
         }

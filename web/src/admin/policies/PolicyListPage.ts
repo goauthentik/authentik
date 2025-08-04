@@ -48,7 +48,7 @@ export class PolicyListPage extends TablePage<Policy> {
     clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());

@@ -17,7 +17,7 @@ import { customElement, state } from "lit/decorators.js";
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
     @state()
-    showExpiry = true;
+    protected showExpiry = true;
 
     async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({

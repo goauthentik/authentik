@@ -189,7 +189,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     @state()
-    nonFieldErrors?: string[];
+    protected nonFieldErrors?: string[];
 
     public static styles: CSSResult[] = [
         PFBase,

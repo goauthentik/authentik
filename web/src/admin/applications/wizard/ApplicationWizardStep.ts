@@ -24,7 +24,7 @@ export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardSt
     public static styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
@@ -34,9 +34,9 @@ export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardSt
 
     // This should be overridden in the children for more precise targeting.
     @query("form")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
-    get formValues(): T {
+    public get formValues(): T {
         return serializeForm<T>([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),

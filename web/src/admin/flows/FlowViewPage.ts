@@ -32,10 +32,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
     @property({ type: String })
-    flowSlug?: string;
+    public flowSlug?: string;
 
     @state()
-    flow!: Flow;
+    protected flow!: Flow;
 
     public static styles: CSSResult[] = [
         PFBase,

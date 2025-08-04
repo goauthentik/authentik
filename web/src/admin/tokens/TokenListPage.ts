@@ -46,7 +46,7 @@ export class TokenListPage extends TablePage<Token> {
     clearOnRefresh = true;
 
     @property()
-    order = "expires";
+    public order = "expires";
 
     async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());

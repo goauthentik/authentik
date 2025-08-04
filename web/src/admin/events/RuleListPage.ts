@@ -47,7 +47,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());

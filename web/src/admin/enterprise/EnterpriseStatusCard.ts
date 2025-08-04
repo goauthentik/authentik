@@ -16,12 +16,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
     @state()
-    forecast?: LicenseForecast;
+    protected forecast?: LicenseForecast;
 
     @state()
-    summary?: LicenseSummary;
+    protected summary?: LicenseSummary;
 
-    public static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFDescriptionList,
+        PFCard,
+        PFSplit,
+        PFProgress,
+    ];
 
     protected renderSummaryBadge() {
         switch (this.summary?.status) {

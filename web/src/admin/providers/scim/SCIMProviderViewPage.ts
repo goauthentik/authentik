@@ -47,10 +47,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: SCIMProvider;
+    protected provider?: SCIMProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

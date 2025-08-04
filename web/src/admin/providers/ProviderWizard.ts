@@ -30,13 +30,13 @@ export class ProviderWizard extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ attribute: false })
-    providerTypes: TypeCreate[] = [];
+    public providerTypes: TypeCreate[] = [];
 
     @property({ attribute: false })
-    finalHandler: () => Promise<void> = () => {
+    public finalHandler: () => Promise<void> = () => {
         return Promise.resolve();
     };
 

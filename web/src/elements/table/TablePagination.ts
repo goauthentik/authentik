@@ -15,13 +15,13 @@ export type TablePageChangeListener = (page: number) => void;
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
     @property({ type: String })
-    label?: string;
+    public label?: string;
 
     @property({ attribute: false })
-    pages?: Pagination;
+    public pages?: Pagination;
 
     @property({ attribute: false })
-    onPageChange?: TablePageChangeListener;
+    public onPageChange?: TablePageChangeListener;
 
     public static styles: CSSResult[] = [
         PFBase,

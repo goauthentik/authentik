@@ -39,7 +39,7 @@ export class MemberSelectTable extends TableModal<User> {
     }
 
     @property()
-    confirm!: (selectedItems: User[]) => Promise<unknown>;
+    public confirm!: (selectedItems: User[]) => Promise<unknown>;
 
     userListFilter: UserListFilter = "active";
 

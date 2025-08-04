@@ -16,7 +16,7 @@ export abstract class WizardForm extends Form {
     viewportCheck = false;
 
     @property({ attribute: false })
-    nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
+    public nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
 
     /* Override the traditional behavior of the form and instead simply serialize the form and push
      * it's contents to the next page.

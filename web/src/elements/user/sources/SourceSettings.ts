@@ -21,16 +21,16 @@ import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
     @property({ attribute: false })
-    sourceSettings?: UserSetting[];
+    public sourceSettings?: UserSetting[];
 
     @property({ attribute: false })
-    connections?: PaginatedUserSourceConnectionList;
+    public connections?: PaginatedUserSourceConnectionList;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     @property({ type: Boolean })
-    canConnect = true;
+    public canConnect = true;
 
     public static styles: CSSResult[] = [
         PFDataList,

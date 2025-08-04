@@ -22,13 +22,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-rbac-user-object-permission-table")
 export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectPermission> {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
     checkbox = true;
     clearOnRefresh = true;

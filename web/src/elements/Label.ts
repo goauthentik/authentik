@@ -39,13 +39,13 @@ export interface ILabel {
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
     @property()
-    color: PFColor = PFColor.Grey;
+    public color: PFColor = PFColor.Grey;
 
     @property()
-    icon?: string;
+    public icon?: string;
 
     @property({ type: Boolean })
-    compact = false;
+    public compact = false;
 
     public static styles = [
         PFBase,
@@ -60,7 +60,7 @@ export class Label extends AKElement implements ILabel {
         `,
     ];
 
-    get classesAndIcon() {
+    public get classesAndIcon() {
         const chrome = chromeList.find(
             ([level, color]) => this.color === level || this.color === color,
         );

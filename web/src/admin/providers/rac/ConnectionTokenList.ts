@@ -25,13 +25,13 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider?: RACProvider;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

@@ -18,10 +18,10 @@ export class AkFileInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     /*
      * The message to show next to the "current icon".
@@ -29,21 +29,21 @@ export class AkFileInput extends AKElement {
      * @attr
      */
     @property({ type: String })
-    current = msg("Currently set to:");
+    public current = msg("Currently set to:");
 
     @property({ type: String })
-    value = "";
+    public value = "";
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     @query('input[type="file"]')
     input!: HTMLInputElement;
 
-    get files() {
+    public get files() {
         return this.input.files;
     }
 

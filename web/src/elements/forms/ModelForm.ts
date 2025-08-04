@@ -56,9 +56,9 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     #loading = false;
 
     @property({ attribute: false })
-    instance?: T = this.defaultInstance;
+    public instance?: T = this.defaultInstance;
 
-    get defaultInstance(): T | undefined {
+    public get defaultInstance(): T | undefined {
         return undefined;
     }
 

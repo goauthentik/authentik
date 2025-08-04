@@ -27,13 +27,13 @@ export class ChipGroup extends AKElement {
     ];
 
     @property()
-    name?: string;
+    public name?: string;
 
-    set value(v: (string | number | undefined)[]) {
+    public set value(v: (string | number | undefined)[]) {
         return;
     }
 
-    get value(): (string | number | undefined)[] {
+    public get value(): (string | number | undefined)[] {
         const values: (string | number | undefined)[] = [];
         this.querySelectorAll<Chip>("ak-chip").forEach((chip) => {
             values.push(chip.value);

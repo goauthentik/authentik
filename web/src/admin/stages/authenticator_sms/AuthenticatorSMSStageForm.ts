@@ -41,10 +41,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     }
 
     @property({ attribute: false })
-    provider: ProviderEnum = ProviderEnum.Twilio;
+    public provider: ProviderEnum = ProviderEnum.Twilio;
 
     @property({ attribute: false })
-    authType?: AuthTypeEnum;
+    public authType?: AuthTypeEnum;
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {

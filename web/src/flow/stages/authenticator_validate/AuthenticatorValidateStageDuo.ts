@@ -19,13 +19,13 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public showBackButton = false;
 
     @state()
-    authenticating = false;
+    protected authenticating = false;
 
     updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {

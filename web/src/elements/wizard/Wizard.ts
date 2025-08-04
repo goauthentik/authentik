@@ -40,13 +40,13 @@ export class Wizard extends ModalButton {
      * Whether the wizard can be cancelled.
      */
     @property({ type: Boolean })
-    canCancel = true;
+    public canCancel = true;
 
     /**
      * Whether the wizard can go back to the previous step.
      */
     @property({ type: Boolean })
-    canBack = true;
+    public canBack = true;
 
     /**
      * Header title of the wizard.
@@ -64,7 +64,7 @@ export class Wizard extends ModalButton {
      * Whether the wizard is valid and can proceed to the next step.
      */
     @property({ type: Boolean })
-    isValid = false;
+    public isValid = false;
 
     /**
      * Actions to display at the end of the wizard.
@@ -91,11 +91,11 @@ export class Wizard extends ModalButton {
     /**
      * Step tag names present in the wizard.
      */
-    get steps(): string[] {
+    public get steps(): string[] {
         return this._steps;
     }
 
-    set steps(nextSteps: string[]) {
+    public set steps(nextSteps: string[]) {
         const addApplyActionsSlot = this._steps.includes(ApplyActionsSlot);
 
         this._steps = nextSteps;
@@ -128,7 +128,7 @@ export class Wizard extends ModalButton {
     @state()
     protected activeStep: WizardPage | null = null;
 
-    set activeStepElement(nextActiveStepElement: WizardPage | null) {
+    public set activeStepElement(nextActiveStepElement: WizardPage | null) {
         this.activeStep = nextActiveStepElement;
 
         if (!this.activeStep) return;
@@ -140,7 +140,7 @@ export class Wizard extends ModalButton {
     /**
      * The active step element being displayed.
      */
-    get activeStepElement(): WizardPage | null {
+    public get activeStepElement(): WizardPage | null {
         return this.activeStep;
     }
 

@@ -10,7 +10,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-source-oauth-diagram")
 export class OAuthSourceDiagram extends Diagram {
     @property({ attribute: false })
-    source?: OAuthSource;
+    public source?: OAuthSource;
 
     refreshHandler = (): void => {
         if (!this.source) return;

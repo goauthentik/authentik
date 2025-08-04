@@ -38,7 +38,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
     async loadInstance(pk: string): Promise<SAMLSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({

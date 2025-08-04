@@ -34,10 +34,10 @@ export class EndpointListPage extends Table<Endpoint> {
     }
 
     @property()
-    order = "name";
+    public order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider?: RACProvider;
 
     public static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

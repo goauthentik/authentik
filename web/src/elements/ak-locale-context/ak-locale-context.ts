@@ -28,11 +28,11 @@ import { customElement, property } from "lit/decorators.js";
 export class LocaleContext extends WithBrandConfig(AKElement) {
     /// @attribute The text representation of the current locale */
     @property({ attribute: true, type: String })
-    locale = DEFAULT_LOCALE;
+    public locale = DEFAULT_LOCALE;
 
     /// @attribute The URL parameter to look for (if any)
     @property({ attribute: true, type: String })
-    param = "locale";
+    public param = "locale";
 
     getLocale: LocaleGetter;
 

@@ -28,13 +28,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-library-app")
 export class LibraryApplication extends AKElement {
     @property({ attribute: false })
-    application?: Application;
+    public application?: Application;
 
     @property({ type: Boolean })
-    selected = false;
+    public selected = false;
 
     @property()
-    background = "";
+    public background = "";
 
     @query("ak-library-rac-endpoint-launch")
     racEndpointLaunch?: RACLaunchEndpointModal;

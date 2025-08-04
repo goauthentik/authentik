@@ -23,10 +23,10 @@ interface RolePermissionAssign {
 @customElement("ak-role-permission-form")
 export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
     async load(): Promise<void> {}
 

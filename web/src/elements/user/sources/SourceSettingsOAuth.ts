@@ -17,10 +17,10 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {
     @property()
-    title!: string;
+    public title!: string;
 
     @property({ type: Number })
-    connectionPk = 0;
+    public connectionPk = 0;
 
     public render(): TemplateResult {
         if (this.connectionPk === -1) {

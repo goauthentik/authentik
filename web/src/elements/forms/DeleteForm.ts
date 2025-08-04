@@ -21,16 +21,16 @@ export class DeleteForm extends ModalButton {
     public static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
-    obj?: Record<string, unknown>;
+    public obj?: Record<string, unknown>;
 
     @property()
-    objectLabel?: string;
+    public objectLabel?: string;
 
     @property({ attribute: false })
-    usedBy?: () => Promise<UsedBy[]>;
+    public usedBy?: () => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: () => Promise<unknown>;
+    public delete!: () => Promise<unknown>;
 
     confirm(): Promise<void> {
         return this.delete()

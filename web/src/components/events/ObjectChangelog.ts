@@ -25,16 +25,16 @@ export class ObjectChangelog extends Table<Event> {
     expandable = true;
 
     @property()
-    order = "-created";
+    public order = "-created";
 
     @property()
-    targetModelPk!: string | number;
+    public targetModelPk!: string | number;
 
     @property()
-    targetModelApp?: string;
+    public targetModelApp?: string;
 
     @property()
-    targetModelName = "";
+    public targetModelName = "";
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;

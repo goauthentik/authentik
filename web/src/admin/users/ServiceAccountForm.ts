@@ -22,10 +22,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
-    result: UserServiceAccountResponse | null = null;
+    public result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     getSuccessMessage(): string {
         if (this.group) {

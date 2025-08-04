@@ -56,13 +56,13 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
     @property({ attribute: false })
-    current?: RouteMatch;
+    public current?: RouteMatch;
 
     @property()
-    defaultUrl?: string;
+    public defaultUrl?: string;
 
     @property({ attribute: false })
-    routes: Route[] = [];
+    public routes: Route[] = [];
 
     private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;

@@ -21,25 +21,25 @@ export interface TreeViewItem {
 @customElement("ak-treeview-node")
 export class TreeViewNode extends AKElement {
     @property({ attribute: false })
-    item?: TreeViewItem;
+    public item?: TreeViewItem;
 
     @property({ type: Boolean })
-    open = false;
+    public open = false;
 
     @property({ attribute: false })
-    host?: TreeView;
+    public host?: TreeView;
 
     @property()
-    activePath = "";
+    public activePath = "";
 
     @property()
-    separator = "";
+    public separator = "";
 
-    get openable(): boolean {
+    public get openable(): boolean {
         return (this.item?.childItems || []).length > 0;
     }
 
-    get fullPath(): string {
+    public get fullPath(): string {
         const pathItems = [];
         let item = this.item;
         while (item) {
@@ -143,13 +143,13 @@ export class TreeView extends AKElement {
     public static styles: CSSResult[] = [PFBase, PFTreeView];
 
     @property({ type: Array })
-    items: string[] = [];
+    public items: string[] = [];
 
     @property()
-    activePath = "";
+    public activePath = "";
 
     @state()
-    activeNode?: TreeViewNode;
+    public activeNode?: TreeViewNode;
 
     separator = "/";
 

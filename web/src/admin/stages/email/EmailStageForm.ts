@@ -31,7 +31,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
     templates?: TypeCreate[];
 
     @property({ type: Boolean })
-    showConnectionSettings = false;
+    public showConnectionSettings = false;
 
     async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {

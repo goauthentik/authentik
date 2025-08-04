@@ -74,19 +74,19 @@ export class AkStatusLabel extends AKElement {
     public static styles = [PFBase, PFLabel, styles];
 
     @property({ type: Boolean })
-    good = false;
+    public good = false;
 
     @property({ type: String, attribute: "good-label" })
-    goodLabel = msg("Yes");
+    public goodLabel = msg("Yes");
 
     @property({ type: String, attribute: "bad-label" })
-    badLabel = msg("No");
+    public badLabel = msg("No");
 
     @property({ type: Boolean })
-    compact = false;
+    public compact = false;
 
     @property({ type: String })
-    type: StatusName = "error";
+    public type: StatusName = "error";
 
     public render() {
         const details = statusToDetails.get(this.type);

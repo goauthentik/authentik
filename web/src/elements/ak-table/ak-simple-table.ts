@@ -93,17 +93,17 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     ];
 
     @property({ type: String, attribute: true, reflect: true })
-    order?: string;
+    public order?: string;
 
     @property({ type: Array, attribute: false })
-    columns: Column[] = [];
+    public columns: Column[] = [];
 
     @property({ type: Object, attribute: false })
-    set content(content: ContentType) {
+    public set content(content: ContentType) {
         this._content = convertContent(content);
     }
 
-    get content(): TableGrouped | TableFlat {
+    public get content(): TableGrouped | TableFlat {
         return this._content;
     }
 

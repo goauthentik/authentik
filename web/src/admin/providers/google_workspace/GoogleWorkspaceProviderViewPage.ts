@@ -42,10 +42,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: GoogleWorkspaceProvider;
+    protected provider?: GoogleWorkspaceProvider;
 
     public static styles: CSSResult[] = [
         PFBase,

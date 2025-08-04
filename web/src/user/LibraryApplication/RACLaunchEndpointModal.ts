@@ -28,7 +28,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     };
 
     @property({ attribute: false })
-    app?: Application;
+    public app?: Application;
 
     async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({

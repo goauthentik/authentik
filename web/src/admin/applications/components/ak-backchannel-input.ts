@@ -29,31 +29,31 @@ export class AkBackchannelProvidersInput extends AKElement {
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Array })
-    providers: Provider[] = [];
+    public providers: Provider[] = [];
 
     @property({ type: Object })
-    tooltip?: TemplateResult;
+    public tooltip?: TemplateResult;
 
     @property({ attribute: false, type: Object })
-    confirm!: ({ items }: { items: Provider[] }) => Promise<void>;
+    public confirm!: ({ items }: { items: Provider[] }) => Promise<void>;
 
     @property({ attribute: false, type: Object })
-    remover!: (provider: Provider) => () => void;
+    public remover!: (provider: Provider) => () => void;
 
     @property({ type: String })
-    value = "";
+    public value = "";
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     public render() {
         const renderOneChip = (provider: Provider) =>

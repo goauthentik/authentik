@@ -11,7 +11,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-source-scim-users-list")
 export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     @property()
-    sourceSlug?: string;
+    public sourceSlug?: string;
 
     expandable = true;
     searchEnabled(): boolean {
