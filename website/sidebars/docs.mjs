@@ -594,7 +594,12 @@ const items = [
                     type: "doc",
                     id: "sys-mgmt/events/index",
                 },
-                items: ["sys-mgmt/events/notifications", "sys-mgmt/events/transports"],
+                items: [
+                    "sys-mgmt/events/notifications",
+                    "sys-mgmt/events/transports",
+                    "sys-mgmt/events/logging-events",
+                    "sys-mgmt/events/event-actions",
+                ],
             },
             "sys-mgmt/certificates",
             "sys-mgmt/settings",
@@ -698,7 +703,11 @@ const items = [
                     {
                         type: "category",
                         label: "2025",
-                        items: ["security/cves/CVE-2025-52553", "security/cves/CVE-2025-29928"],
+                        items: [
+                            "security/cves/CVE-2025-53942",
+                            "security/cves/CVE-2025-52553",
+                            "security/cves/CVE-2025-29928",
+                        ],
                     },
                     {
                         type: "category",

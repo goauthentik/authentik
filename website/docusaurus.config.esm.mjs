@@ -88,7 +88,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
-            externalUrlRegex: /(:\/\/goauthentik\.io|integrations\.goauthentik\.io)/.toString(),
+            externalUrlRegex: /.*/.source,
         },
     },
     presets: [
@@ -96,7 +96,6 @@ const config = createDocusaurusConfig({
             "@docusaurus/preset-classic",
             /** @type {Preset.Options} */ ({
                 docs: {
-                    id: "docs",
                     routeBasePath: "docs",
                     sidebarPath: "./sidebars/docs.mjs",
                     showLastUpdateTime: false,
