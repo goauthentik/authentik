@@ -100,9 +100,11 @@ export const globalVariables = css`
         --pf-c-dual-list-selector__list-item-row--BackgroundColor: var(
             --ak-dark-background-light-ish
         );
-        --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
-            --ak-dark-background-lighter;
+
+        --pf-c-dual-list-selector__list-item-row--focus-within--BackgroundColor: var(
+            --ak-dark-background-darker
         );
+
         --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
             --pf-global--BackgroundColor--400
         );
