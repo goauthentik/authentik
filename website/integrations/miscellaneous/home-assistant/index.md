@@ -83,7 +83,7 @@ You must create OIDC users in Home Assistant before they can log in using OIDC.
 
 ## Configuration verification
 
-To verify the integration with Home Assistant, log out and attempt to log back in using the **OpenID/OAuth2 authentication** button. You should be redirected to the authenik login page. Once authenticated, you should be redirected to the Home Assistant dashboard.
+To verify the integration with Home Assistant, log out and attempt to log back in using the **OpenID/OAuth2 authentication** button. You should be redirected to the authentik login page. Once authenticated, you should be redirected to the Home Assistant dashboard.
 
   </TabItem>
   <TabItem value="proxy">
