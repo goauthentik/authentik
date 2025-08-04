@@ -24,13 +24,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
-    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
+    protected async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoPartialUpdate({
                 stageUuid: this.instance.pk || "",

@@ -86,9 +86,11 @@ export abstract class Table<T extends object>
         `,
     ];
 
-    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    abstract columns(): TableColumn[];
-    abstract row(item: T): SlottedTemplateResult[];
+    protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+
+    protected abstract columns(): TableColumn[];
+
+    protected abstract row(item: T): SlottedTemplateResult[];
 
     #loading = false;
 

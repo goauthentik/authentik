@@ -42,7 +42,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
+    protected async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
         this.request = data;
         const result = await new PoliciesApi(DEFAULT_CONFIG).policiesAllTestCreate({
             policyUuid: this.policy?.pk || "",

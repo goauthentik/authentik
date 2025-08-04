@@ -34,15 +34,18 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Certificate-Key Pairs");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Import certificates of external providers or create certificates to sign requests with.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-key";
     }
 
@@ -51,13 +54,13 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Private key available?")),
@@ -94,7 +97,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: CertificateKeyPair): TemplateResult[] {
+    protected row(item: CertificateKeyPair): TemplateResult[] {
         let managedSubText = msg("Managed by authentik");
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");

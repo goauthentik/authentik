@@ -31,7 +31,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
-    loadInstance(pk: string): Promise<Brand> {
+    protected loadInstance(pk: string): Promise<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
             brandUuid: pk,
         });
@@ -43,7 +43,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             : msg("Successfully created brand.");
     }
 
-    async send(data: Brand): Promise<Brand> {
+    protected async send(data: Brand): Promise<Brand> {
         if (this.instance?.brandUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
                 brandUuid: this.instance.brandUuid,

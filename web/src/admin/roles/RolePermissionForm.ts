@@ -30,7 +30,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
 
     public override async load(): Promise<void> {}
 
-    loadInstance(): Promise<RolePermissionAssign> {
+    protected loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
@@ -38,7 +38,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: RolePermissionAssign) {
+    protected async send(data: RolePermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {

@@ -19,7 +19,7 @@ export class Diagram extends AKElement {
     @property({ attribute: false })
     public diagram?: string;
 
-    refreshHandler = (): void => {
+    protected refreshHandler = (): void => {
         if (!this.textContent) return;
         this.diagram = this.textContent;
     };

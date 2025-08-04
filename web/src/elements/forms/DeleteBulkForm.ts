@@ -37,7 +37,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
 
     public static override styles: CSSResult[] = [...super.styles, PFList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<T>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -52,13 +52,13 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return this.metadata(this.objects[0]).map((element) => {
             return new TableColumn(element.key);
         });
     }
 
-    row(item: T): TemplateResult[] {
+    protected row(item: T): TemplateResult[] {
         return this.metadata(item).map((element) => {
             return html`${element.value}`;
         });

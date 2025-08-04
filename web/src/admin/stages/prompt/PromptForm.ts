@@ -63,7 +63,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         });
     }
 
-    async loadInstance(pk: string): Promise<Prompt> {
+    protected async loadInstance(pk: string): Promise<Prompt> {
         const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });

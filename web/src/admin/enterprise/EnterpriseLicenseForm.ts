@@ -19,7 +19,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     @state()
     protected installID?: string;
 
-    loadInstance(pk: string): Promise<License> {
+    protected loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
             licenseUuid: pk,
         });
@@ -37,7 +37,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         ).installId;
     }
 
-    async send(data: License): Promise<License> {
+    protected async send(data: License): Promise<License> {
         return (
             this.instance
                 ? new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicensePartialUpdate({

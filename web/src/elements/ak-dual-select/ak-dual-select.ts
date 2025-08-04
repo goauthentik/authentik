@@ -186,6 +186,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     // These are the *currently visible* options; the parent node is responsible for paginating and
     // updating the list of currently visible options;
+
     protected addAllVisible() {
         // Create a new array of all current options and selected, and de-dupe.
         const selected = new Map<string, DualSelectPair>([

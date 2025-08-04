@@ -26,7 +26,7 @@ export class FlowImportForm extends Form<Flow> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async send(): Promise<FlowImportResult> {
+    protected async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");
         if (!file) {
             throw new SentryIgnoredError("No form data");

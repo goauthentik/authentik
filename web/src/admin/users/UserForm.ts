@@ -41,7 +41,7 @@ export class UserForm extends ModelForm<User, number> {
         `,
     ];
 
-    loadInstance(pk: number): Promise<User> {
+    protected loadInstance(pk: number): Promise<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
             id: pk,
         });
@@ -57,7 +57,7 @@ export class UserForm extends ModelForm<User, number> {
         return msg("Successfully created user.");
     }
 
-    async send(data: User): Promise<User> {
+    protected async send(data: User): Promise<User> {
         if (data.attributes === null) {
             data.attributes = UserForm.defaultUserAttributes;
         }

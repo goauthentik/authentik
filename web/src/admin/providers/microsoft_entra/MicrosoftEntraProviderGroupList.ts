@@ -65,18 +65,18 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
-    row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
+    protected row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>

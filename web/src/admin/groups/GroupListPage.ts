@@ -20,30 +20,34 @@ import { customElement, property } from "lit/decorators.js";
 export class GroupListPage extends TablePage<Group> {
     public override checkbox = true;
     public override clearOnRefresh = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Groups");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Group users together and give them permissions based on the membership.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-users";
     }
 
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Parent"), "parent"),
@@ -75,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,

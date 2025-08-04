@@ -23,7 +23,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
     protected showZxcvbn = false;
 
-    async loadInstance(pk: string): Promise<PasswordPolicy> {
+    protected async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
             policyUuid: pk,
         });
@@ -33,7 +33,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         return policy;
     }
 
-    async send(data: PasswordPolicy): Promise<PasswordPolicy> {
+    protected async send(data: PasswordPolicy): Promise<PasswordPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordUpdate({
                 policyUuid: this.instance.pk || "",

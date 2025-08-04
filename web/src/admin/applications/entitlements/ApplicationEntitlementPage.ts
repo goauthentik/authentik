@@ -36,14 +36,14 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     public override order = "order";
 
-    async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
             app: this.app || "",
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
@@ -69,7 +69,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    protected row(item: ApplicationEntitlement): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>

@@ -39,13 +39,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         `,
     ];
 
-    loadInstance(pk: string): Promise<IdentificationStage> {
+    protected loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: IdentificationStage): Promise<IdentificationStage> {
+    protected async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",

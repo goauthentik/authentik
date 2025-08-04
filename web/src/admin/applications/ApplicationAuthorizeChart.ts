@@ -14,14 +14,14 @@ export class ApplicationAuthorizeChart extends EventChart {
     @property({ attribute: "application-id" })
     public applicationId!: string;
 
-    async apiRequest(): Promise<EventVolume[]> {
+    protected async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             action: EventActions.AuthorizeApplication,
             contextAuthorizedApp: this.applicationId.replaceAll("-", ""),
         });
     }
 
-    getChartData(data: EventVolume[]): ChartData {
+    protected getChartData(data: EventVolume[]): ChartData {
         return this.eventVolume(data, {
             optsMap: new Map([
                 [

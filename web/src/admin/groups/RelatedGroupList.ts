@@ -31,7 +31,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return msg("Successfully added user to group(s).");
     }
 
-    async send(data: { groups: string[] }): Promise<unknown> {
+    protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -87,6 +87,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 export class RelatedGroupList extends Table<Group> {
     public override checkbox = true;
     public override clearOnRefresh = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
@@ -97,7 +98,7 @@ export class RelatedGroupList extends Table<Group> {
     @property({ attribute: false })
     public targetUser?: User;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             membersByPk: this.targetUser ? [this.targetUser.pk] : [],
@@ -105,7 +106,7 @@ export class RelatedGroupList extends Table<Group> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Parent"), "parent"),
@@ -140,7 +141,7 @@ export class RelatedGroupList extends Table<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,

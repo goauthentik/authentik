@@ -52,7 +52,7 @@ const authorizationCodeAuthMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
-    async loadInstance(pk: string): Promise<OAuthSource> {
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
@@ -72,7 +72,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     @state()
     protected clearIcon = false;
 
-    async send(data: OAuthSource): Promise<OAuthSource> {
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {

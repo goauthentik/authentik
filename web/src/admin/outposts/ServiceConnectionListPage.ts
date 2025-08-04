@@ -27,17 +27,20 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Outpost integrations");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
+
     protected override searchEnabled(): boolean {
         return true;
     }
@@ -46,7 +49,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     public override expandable = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ServiceConnection>> {
         const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
             await this.defaultEndpointConfig(),
         );
@@ -67,7 +70,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     @state()
     protected state: { [key: string]: ServiceConnectionState } = {};
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type")),
@@ -80,7 +83,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     @property()
     public override order = "name";
 
-    row(item: ServiceConnection): TemplateResult[] {
+    protected row(item: ServiceConnection): TemplateResult[] {
         const itemState = this.state[item.pk];
         return [
             html`${item.name}`,

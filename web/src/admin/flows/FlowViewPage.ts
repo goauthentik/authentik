@@ -55,8 +55,8 @@ export class FlowViewPage extends AKElement {
         `,
     ];
 
-    fetchFlow(slug: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
+    protected fetchFlow(slug: string) {
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
             this.flow = flow;
         });
     }

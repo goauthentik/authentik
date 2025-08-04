@@ -35,7 +35,7 @@ export class UserTokenList extends Table<Token> {
     @property()
     public override order = "expires";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
@@ -45,7 +45,7 @@ export class UserTokenList extends Table<Token> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
     }
 
@@ -148,7 +148,7 @@ export class UserTokenList extends Table<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Token): TemplateResult[] {
+    protected row(item: Token): TemplateResult[] {
         return [
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`

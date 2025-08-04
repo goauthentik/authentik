@@ -17,13 +17,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-captcha-form")
 export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
-    loadInstance(pk: string): Promise<CaptchaStage> {
+    protected loadInstance(pk: string): Promise<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: CaptchaStage): Promise<CaptchaStage> {
+    protected async send(data: CaptchaStage): Promise<CaptchaStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",

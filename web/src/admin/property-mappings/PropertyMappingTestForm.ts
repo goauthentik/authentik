@@ -42,7 +42,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
+    protected async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;
         const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",

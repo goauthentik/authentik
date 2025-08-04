@@ -13,13 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-logout-form")
 export class UserLogoutStageForm extends BaseStageForm<UserLogoutStage> {
-    loadInstance(pk: string): Promise<UserLogoutStage> {
+    protected loadInstance(pk: string): Promise<UserLogoutStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: UserLogoutStage): Promise<UserLogoutStage> {
+    protected async send(data: UserLogoutStage): Promise<UserLogoutStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutUpdate({
                 stageUuid: this.instance.pk || "",

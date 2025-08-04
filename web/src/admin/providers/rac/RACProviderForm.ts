@@ -25,7 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
-    async loadInstance(pk: number): Promise<RACProvider> {
+    protected async loadInstance(pk: number): Promise<RACProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
             id: pk,
         });
@@ -38,7 +38,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         return msg("Successfully created provider.");
     }
 
-    async send(data: RACProvider): Promise<RACProvider> {
+    protected async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
                 id: this.instance.pk,

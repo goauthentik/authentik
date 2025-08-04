@@ -33,8 +33,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     protected error?: APIError;
 
     // Abstract methods to be implemented by subclasses
-    abstract getPrimaryValue(): Promise<T>;
-    abstract getStatus(value: T): Promise<AdminStatus>;
+    protected abstract getPrimaryValue(): Promise<T>;
+
+    protected abstract getStatus(value: T): Promise<AdminStatus>;
 
     public constructor() {
         super();

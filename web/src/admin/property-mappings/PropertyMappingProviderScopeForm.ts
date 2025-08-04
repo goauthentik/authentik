@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-provider-scope-form")
 export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<ScopeMapping> {
-    loadInstance(pk: string): Promise<ScopeMapping> {
+    protected loadInstance(pk: string): Promise<ScopeMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: ScopeMapping): Promise<ScopeMapping> {
+    protected async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeUpdate({
                 pmUuid: this.instance.pk,

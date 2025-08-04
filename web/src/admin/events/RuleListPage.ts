@@ -34,26 +34,29 @@ export class RuleListPage extends TablePage<NotificationRule> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Notification Rules");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Send notifications whenever a specific Event is created and matched by policies.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-attention-bell";
     }
 
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Enabled")),
             new TableColumn(msg("Name"), "name"),
@@ -85,7 +88,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationRule): TemplateResult[] {
+    protected row(item: NotificationRule): TemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
             html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,

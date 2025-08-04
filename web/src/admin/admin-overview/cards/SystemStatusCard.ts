@@ -38,7 +38,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
 
     // Called on fresh installations and whenever the embedded outpost is deleted
     // automatically send the login URL when the user first visits the admin dashboard.
-    async setOutpostHost(): Promise<void> {
+    protected async setOutpostHost(): Promise<void> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
             managedIexact: "goauthentik.io/outposts/embedded",
         });
@@ -53,7 +53,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    getStatus(value: SystemInfo): Promise<AdminStatus> {
+    protected getStatus(value: SystemInfo): Promise<AdminStatus> {
         if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({

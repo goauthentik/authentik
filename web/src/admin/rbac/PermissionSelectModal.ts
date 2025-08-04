@@ -30,7 +30,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
 
     public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
@@ -40,11 +40,11 @@ export class PermissionSelectModal extends TableModal<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

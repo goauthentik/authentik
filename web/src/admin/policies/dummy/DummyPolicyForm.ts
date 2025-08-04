@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-dummy-form")
 export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
-    loadInstance(pk: string): Promise<DummyPolicy> {
+    protected loadInstance(pk: string): Promise<DummyPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: DummyPolicy): Promise<DummyPolicy> {
+    protected async send(data: DummyPolicy): Promise<DummyPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
                 policyUuid: this.instance.pk || "",

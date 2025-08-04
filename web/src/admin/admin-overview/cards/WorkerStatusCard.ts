@@ -20,7 +20,7 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
         return html`${msg("Workers")}`;
     }
 
-    getStatus(value: Worker[]): Promise<AdminStatus> {
+    protected getStatus(value: Worker[]): Promise<AdminStatus> {
         if (value.length < 1) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-times-circle pf-m-danger",

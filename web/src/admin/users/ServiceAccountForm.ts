@@ -34,7 +34,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return msg("Successfully created user.");
     }
 
-    async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
+    protected async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
         const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });

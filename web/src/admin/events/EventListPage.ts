@@ -29,15 +29,18 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     public override expandable = true;
     public override supportsQL = true;
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Event Log");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return;
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-catalog";
     }
+
     protected override searchEnabled(): boolean {
         return true;
     }
@@ -55,11 +58,11 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         `,
     ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "user"),
@@ -104,7 +107,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         </div>`;
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,

@@ -23,13 +23,13 @@ function countryToPair(country: DetailedCountry): DualSelectPair {
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
-    loadInstance(pk: string): Promise<GeoIPPolicy> {
+    protected loadInstance(pk: string): Promise<GeoIPPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
+    protected async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
         if (data.asns?.toString() === "") {
             data.asns = [];
         } else {

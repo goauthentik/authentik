@@ -21,7 +21,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         return msg("Successfully generated certificate-key pair.");
     }
 
-    async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
+    protected async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({
             certificateGenerationRequest: data,
         });

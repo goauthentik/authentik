@@ -41,7 +41,7 @@ export class EndpointListPage extends Table<Endpoint> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
@@ -49,7 +49,7 @@ export class EndpointListPage extends Table<Endpoint> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Host"), "host"),
@@ -85,7 +85,7 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    protected row(item: Endpoint): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.host}`,

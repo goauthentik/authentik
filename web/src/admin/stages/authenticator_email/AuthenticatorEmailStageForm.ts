@@ -25,7 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
-    async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
+    protected async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
@@ -36,7 +36,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     @property({ type: Boolean })
     public showConnectionSettings = false;
 
-    async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
+    protected async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",

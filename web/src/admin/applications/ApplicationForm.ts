@@ -33,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
-    async loadInstance(pk: string): Promise<Application> {
+    protected async loadInstance(pk: string): Promise<Application> {
         const app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk,
         });
@@ -57,7 +57,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             : msg("Successfully created application.");
     }
 
-    async send(data: Application): Promise<Application | void> {
+    protected async send(data: Application): Promise<Application | void> {
         let app: Application;
         data.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
         if (this.instance) {

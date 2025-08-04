@@ -45,7 +45,7 @@ export class ScheduleList extends Table<Schedule> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =
             typeof this.relObjId !== "undefined"
                 ? undefined
@@ -67,7 +67,7 @@ export class ScheduleList extends Table<Schedule> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Schedule"), "actor_name"),
             new TableColumn(msg("Crontab"), "crontab"),
@@ -106,7 +106,7 @@ export class ScheduleList extends Table<Schedule> {
             </div>`;
     }
 
-    row(item: Schedule): TemplateResult[] {
+    protected row(item: Schedule): TemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,

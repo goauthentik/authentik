@@ -34,7 +34,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
-    async loadInstance(pk: string): Promise<PlexSource> {
+    protected async loadInstance(pk: string): Promise<PlexSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: pk,
         });
@@ -59,7 +59,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         } as PlexSource;
     }
 
-    async send(data: PlexSource): Promise<PlexSource> {
+    protected async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
         if (this.instance?.pk) {

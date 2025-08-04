@@ -38,13 +38,16 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Property Mappings");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Control how authentik exposes and interprets information.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
     }
 
@@ -57,14 +60,14 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @state()
     protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type"), "type"),
@@ -94,7 +97,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PropertyMapping): TemplateResult[] {
+    protected row(item: PropertyMapping): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.verboseName}`,

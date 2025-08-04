@@ -45,7 +45,7 @@ export class EventVolumeChart extends EventChart {
         });
     }
 
-    getChartData(data: EventVolume[]): ChartData {
+    protected getChartData(data: EventVolume[]): ChartData {
         return this.eventVolume(data, {
             padToDays: 7,
         });

@@ -21,13 +21,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-static-form")
 export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorStaticStage> {
-    loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
+    protected async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
                 stageUuid: this.instance.pk || "",

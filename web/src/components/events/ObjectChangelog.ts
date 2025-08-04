@@ -36,7 +36,7 @@ export class ObjectChangelog extends Table<Event> {
     @property()
     public targetModelName = "";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         let modelName = this.targetModelName;
         let appName = this.targetModelApp;
         if (this.targetModelName.indexOf(".") !== -1) {
@@ -56,7 +56,7 @@ export class ObjectChangelog extends Table<Event> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "enabled"),
@@ -71,7 +71,7 @@ export class ObjectChangelog extends Table<Event> {
         }
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             renderEventUser(item),

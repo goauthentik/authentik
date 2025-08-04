@@ -37,13 +37,13 @@ export const staticSettingOptions: RadioOption<string | undefined>[] = [
 
 @customElement("ak-property-mapping-provider-rac-form")
 export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACPropertyMapping> {
-    loadInstance(pk: string): Promise<RACPropertyMapping> {
+    protected loadInstance(pk: string): Promise<RACPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
+    protected async send(data: RACPropertyMapping): Promise<RACPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacUpdate({
                 pmUuid: this.instance.pk,

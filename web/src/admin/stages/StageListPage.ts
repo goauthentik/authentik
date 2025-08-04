@@ -44,17 +44,20 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Stages");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-plugged";
     }
+
     protected override searchEnabled(): boolean {
         return true;
     }
@@ -65,11 +68,11 @@ export class StageListPage extends TablePage<Stage> {
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Flows")),
@@ -118,7 +121,7 @@ export class StageListPage extends TablePage<Stage> {
             : nothing;
     }
 
-    row(item: Stage): TemplateResult[] {
+    protected row(item: Stage): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,

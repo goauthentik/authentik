@@ -20,7 +20,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
             ...(await this.defaultEndpointConfig()),
             userId: this.userId || 0,
@@ -35,7 +35,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -74,7 +74,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraUserObjectPermission): TemplateResult[] {
+    protected row(item: ExtraUserObjectPermission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

@@ -46,7 +46,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         });
     }
 
-    loadInstance(): Promise<RoleAssignData> {
+    protected loadInstance(): Promise<RoleAssignData> {
         throw new Error("Method not implemented.");
     }
 

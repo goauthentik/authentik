@@ -23,7 +23,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
-    loadInstance(pk: string): Promise<NotificationTransport> {
+    protected loadInstance(pk: string): Promise<NotificationTransport> {
         return new EventsApi(DEFAULT_CONFIG)
             .eventsTransportsRetrieve({
                 uuid: pk,
@@ -43,7 +43,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             : msg("Successfully created transport.");
     }
 
-    async send(data: NotificationTransport): Promise<NotificationTransport> {
+    protected async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",

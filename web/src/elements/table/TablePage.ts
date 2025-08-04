@@ -21,19 +21,19 @@ export abstract class TablePage<T extends object> extends Table<T> {
      * The title of the page.
      * @abstract
      */
-    abstract pageTitle(): string;
+    protected abstract pageTitle(): string;
 
     /**
      * The description of the page.
      * @abstract
      */
-    abstract pageDescription(): string | undefined;
+    protected abstract pageDescription(): string | undefined;
 
     /**
      * The icon to display in the page header.
      * @abstract
      */
-    abstract pageIcon(): string;
+    protected abstract pageIcon(): string;
 
     /**
      * Render content before the sidebar.

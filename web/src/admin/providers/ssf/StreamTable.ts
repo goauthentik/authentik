@@ -28,18 +28,18 @@ export class SSFProviderStreamList extends Table<SSFStream> {
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
         return new SsfApi(DEFAULT_CONFIG).ssfStreamsList({
             provider: this.providerId,
             ...(await this.defaultEndpointConfig()),
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Audience"), "aud")];
     }
 
-    row(item: SSFStream): TemplateResult[] {
+    protected row(item: SSFStream): TemplateResult[] {
         return [html`${item.aud}`];
     }
 }

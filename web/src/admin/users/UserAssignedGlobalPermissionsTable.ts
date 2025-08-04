@@ -23,7 +23,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId || 0,
@@ -36,7 +36,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -83,7 +83,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

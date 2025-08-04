@@ -104,7 +104,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     defaultConfig?: OutpostDefaultConfig;
 
-    async loadInstance(pk: string): Promise<Outpost> {
+    protected async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk,
         });
@@ -126,7 +126,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             : msg("Successfully created outpost.");
     }
 
-    async send(data: Outpost): Promise<Outpost> {
+    protected async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",

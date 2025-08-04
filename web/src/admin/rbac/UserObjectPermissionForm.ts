@@ -47,7 +47,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    loadInstance(): Promise<UserAssignData> {
+    protected loadInstance(): Promise<UserAssignData> {
         throw new Error("Method not implemented.");
     }
 

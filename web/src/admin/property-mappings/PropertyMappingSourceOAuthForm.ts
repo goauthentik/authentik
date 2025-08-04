@@ -15,13 +15,13 @@ export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAut
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
+    protected async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthUpdate({
                 pmUuid: this.instance.pk,

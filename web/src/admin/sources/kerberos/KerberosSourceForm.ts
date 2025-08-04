@@ -37,7 +37,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<KerberosSource>) {
-    async loadInstance(pk: string): Promise<KerberosSource> {
+    protected async loadInstance(pk: string): Promise<KerberosSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
             slug: pk,
         });
@@ -48,7 +48,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
     @state()
     protected clearIcon = false;
 
-    async send(data: KerberosSource): Promise<KerberosSource> {
+    protected async send(data: KerberosSource): Promise<KerberosSource> {
         let source: KerberosSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosPartialUpdate({

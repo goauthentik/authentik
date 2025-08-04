@@ -36,7 +36,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: { forUser: number }): Promise<PolicyTestResult> {
+    protected async send(data: { forUser: number }): Promise<PolicyTestResult> {
         this.request = data.forUser;
         const result = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCheckAccessRetrieve({
             slug: this.application?.slug,

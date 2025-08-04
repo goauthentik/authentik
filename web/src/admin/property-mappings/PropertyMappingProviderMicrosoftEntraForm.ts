@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-microsoft-entra-form")
 export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftEntraProviderMapping> {
-    loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
+    protected loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsProviderMicrosoftEntraRetrieve({
@@ -19,7 +19,9 @@ export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappi
         });
     }
 
-    async send(data: MicrosoftEntraProviderMapping): Promise<MicrosoftEntraProviderMapping> {
+    protected async send(
+        data: MicrosoftEntraProviderMapping,
+    ): Promise<MicrosoftEntraProviderMapping> {
         if (this.instance) {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,

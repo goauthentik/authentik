@@ -65,18 +65,18 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
-    row(item: SCIMProviderGroup): TemplateResult[] {
+    protected row(item: SCIMProviderGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -84,6 +84,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             html`${item.id}`,
         ];
     }
+
     protected override renderExpanded(item: SCIMProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

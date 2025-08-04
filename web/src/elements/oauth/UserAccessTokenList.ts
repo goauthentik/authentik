@@ -25,7 +25,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
 
     public static override styles: CSSResult[] = [...super.styles, PFFlex];
 
-    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
@@ -35,7 +35,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     public override checkbox = true;
     public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Provider"), "provider"),
             new TableColumn(msg("Revoked?"), "revoked"),
@@ -81,7 +81,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: TokenModel): TemplateResult[] {
+    protected row(item: TokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label

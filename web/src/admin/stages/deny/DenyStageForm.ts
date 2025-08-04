@@ -13,13 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-deny-form")
 export class DenyStageForm extends BaseStageForm<DenyStage> {
-    loadInstance(pk: string): Promise<DenyStage> {
+    protected loadInstance(pk: string): Promise<DenyStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesDenyRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: DenyStage): Promise<DenyStage> {
+    protected async send(data: DenyStage): Promise<DenyStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
                 stageUuid: this.instance.pk || "",

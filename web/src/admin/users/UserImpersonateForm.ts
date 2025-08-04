@@ -16,7 +16,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
     @property({ type: Number })
     public instancePk?: number;
 
-    async send(data: ImpersonationRequest): Promise<void> {
+    protected async send(data: ImpersonationRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG)
             .coreUsersImpersonateCreate({
                 id: this.instancePk || 0,

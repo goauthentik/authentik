@@ -49,13 +49,16 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Blueprints");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Automate and template configuration within authentik.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
     }
 
@@ -68,13 +71,13 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Status"), "status"),
@@ -145,7 +148,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </td>`;
     }
 
-    row(item: BlueprintInstance): TemplateResult[] {
+    protected row(item: BlueprintInstance): TemplateResult[] {
         let description = undefined;
         const descKey = "blueprints.goauthentik.io/description";
         if (

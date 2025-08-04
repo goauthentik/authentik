@@ -15,13 +15,13 @@ export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPS
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
+    protected async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
                 pmUuid: this.instance.pk,

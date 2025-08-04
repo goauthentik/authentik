@@ -24,7 +24,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     @property({ type: Number })
     public providerID?: number;
 
-    loadInstance(pk: string): Promise<Endpoint> {
+    protected loadInstance(pk: string): Promise<Endpoint> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
             pbmUuid: pk,
         });
@@ -36,7 +36,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             : msg("Successfully created endpoint.");
     }
 
-    async send(data: Endpoint): Promise<Endpoint> {
+    protected async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = AuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;

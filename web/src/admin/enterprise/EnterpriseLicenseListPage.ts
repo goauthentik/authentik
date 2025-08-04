@@ -42,13 +42,16 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Licenses");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Manage enterprise licenses");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-key";
     }
 
@@ -81,7 +84,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `,
     ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<License>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({
             cached: false,
@@ -94,7 +97,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Users")),
@@ -199,7 +202,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `;
     }
 
-    row(item: License): TemplateResult[] {
+    protected row(item: License): TemplateResult[] {
         let color = PFColor.Green;
         if (item.expiry) {
             const now = new Date();

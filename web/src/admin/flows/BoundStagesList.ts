@@ -33,14 +33,14 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     @property()
     public target?: string;
 
-    async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<FlowStageBinding>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Order"), "order"),
             new TableColumn(msg("Name"), "stage__name"),
@@ -77,7 +77,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: FlowStageBinding): TemplateResult[] {
+    protected row(item: FlowStageBinding): TemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${item.stageObj?.name}`,

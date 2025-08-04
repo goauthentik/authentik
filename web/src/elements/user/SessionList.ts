@@ -18,7 +18,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
     public targetUser!: string;
 
-    async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
             ...(await this.defaultEndpointConfig()),
             userUsername: this.targetUser,
@@ -29,7 +29,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     public override clearOnRefresh = true;
     public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Last IP"), "last_ip"),
             new TableColumn(msg("Last used"), "last_used"),
@@ -65,7 +65,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: AuthenticatedSession): TemplateResult[] {
+    protected row(item: AuthenticatedSession): TemplateResult[] {
         return [
             html`<div>
                     ${item.geoIp?.country

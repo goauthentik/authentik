@@ -32,15 +32,18 @@ export class PolicyListPage extends TablePage<Policy> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Policies");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-infrastructure";
     }
 
@@ -50,11 +53,11 @@ export class PolicyListPage extends TablePage<Policy> {
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type")),
@@ -62,7 +65,7 @@ export class PolicyListPage extends TablePage<Policy> {
         ];
     }
 
-    row(item: Policy): TemplateResult[] {
+    protected row(item: Policy): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0

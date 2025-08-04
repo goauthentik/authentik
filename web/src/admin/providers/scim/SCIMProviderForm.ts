@@ -10,13 +10,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
-    loadInstance(pk: number): Promise<SCIMProvider> {
+    protected loadInstance(pk: number): Promise<SCIMProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimRetrieve({
             id: pk,
         });
     }
 
-    async send(data: SCIMProvider): Promise<SCIMProvider> {
+    protected async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
                 id: this.instance.pk,

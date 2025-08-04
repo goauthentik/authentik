@@ -16,7 +16,7 @@ import { property } from "lit/decorators.js";
  */
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
-    abstract loadInstance(pk: PKT): Promise<T>;
+    protected abstract loadInstance(pk: PKT): Promise<T>;
 
     async load(): Promise<void> {
         return Promise.resolve();

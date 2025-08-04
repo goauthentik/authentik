@@ -24,7 +24,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
-    async loadInstance(pk: string): Promise<FlowStageBinding> {
+    protected async loadInstance(pk: string): Promise<FlowStageBinding> {
         const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });

@@ -53,22 +53,25 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 export class OutpostListPage extends TablePage<Outpost> {
     public override expandable = true;
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Outposts");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-zone";
     }
+
     protected override searchEnabled(): boolean {
         return true;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
@@ -89,7 +92,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     @state()
     protected health: { [key: string]: OutpostHealth[] } = {};
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type"), "type"),
@@ -108,7 +111,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     @property()
     public override order = "name";
 
-    row(item: Outpost): TemplateResult[] {
+    protected row(item: Outpost): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""

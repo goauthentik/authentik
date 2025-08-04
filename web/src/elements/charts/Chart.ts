@@ -44,8 +44,9 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
-    abstract apiRequest(): Promise<T>;
-    abstract getChartData(data: T): ChartData;
+    protected abstract apiRequest(): Promise<T>;
+
+    protected abstract getChartData(data: T): ChartData;
 
     @state()
     protected chart?: Chart;

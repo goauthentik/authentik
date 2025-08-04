@@ -24,7 +24,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
             ...(await this.defaultEndpointConfig()),
             uuid: this.roleUuid || "",
@@ -39,7 +39,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -78,7 +78,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraRoleObjectPermission): TemplateResult[] {
+    protected row(item: ExtraRoleObjectPermission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

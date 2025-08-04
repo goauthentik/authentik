@@ -50,7 +50,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return msg("Successfully added user(s).");
     }
 
-    async send(data: { users: number[] }): Promise<{ users: number[] }> {
+    protected async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((user) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -126,7 +126,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
 
     public static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
@@ -139,7 +139,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return users;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -180,7 +180,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [

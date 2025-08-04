@@ -20,29 +20,33 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     public override checkbox = true;
     public override clearOnRefresh = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Initial Permissions");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Set initial permissions for newly created objects.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "fa fa-lock";
     }
 
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
@@ -80,7 +84,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             </section>`;
     }
 
-    row(item: InitialPermissions): TemplateResult[] {
+    protected row(item: InitialPermissions): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>

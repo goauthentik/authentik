@@ -16,7 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
-    async loadInstance(pk: string): Promise<EmailStage> {
+    protected async loadInstance(pk: string): Promise<EmailStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
             stageUuid: pk,
         });
@@ -33,7 +33,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
     @property({ type: Boolean })
     public showConnectionSettings = false;
 
-    async send(data: EmailStage): Promise<EmailStage> {
+    protected async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",

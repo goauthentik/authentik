@@ -59,7 +59,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return msg("Successfully updated settings.");
     }
 
-    async send(data: SettingsRequest): Promise<Settings> {
+    protected async send(data: SettingsRequest): Promise<Settings> {
         const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest: data,
         });

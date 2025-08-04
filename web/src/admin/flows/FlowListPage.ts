@@ -25,15 +25,18 @@ export class FlowListPage extends TablePage<Flow> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Flows");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-process-automation";
     }
 
@@ -43,7 +46,7 @@ export class FlowListPage extends TablePage<Flow> {
     @property()
     public override order = "slug";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
@@ -53,7 +56,7 @@ export class FlowListPage extends TablePage<Flow> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "slug"),
             new TableColumn(msg("Name"), "name"),
@@ -85,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Flow): TemplateResult[] {
+    protected row(item: Flow): TemplateResult[] {
         return [
             html`<div>
                     <a href="#/flow/flows/${item.slug}">

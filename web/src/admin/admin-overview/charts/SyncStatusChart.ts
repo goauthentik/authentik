@@ -92,7 +92,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async apiRequest(): Promise<SummarizedSyncStatus[]> {
+    protected async apiRequest(): Promise<SummarizedSyncStatus[]> {
         const statuses = [
             await this.fetchStatus(
                 () => {
@@ -158,7 +158,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         return statuses;
     }
 
-    getChartData(data: SummarizedSyncStatus[]): ChartData {
+    protected getChartData(data: SummarizedSyncStatus[]): ChartData {
         return {
             labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {

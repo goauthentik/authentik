@@ -28,7 +28,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest
         return msg("Successfully sent email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
+    protected async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }

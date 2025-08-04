@@ -65,18 +65,18 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    row(item: SCIMProviderUser): TemplateResult[] {
+    protected row(item: SCIMProviderUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -85,6 +85,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             html`${item.id}`,
         ];
     }
+
     protected override renderExpanded(item: SCIMProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

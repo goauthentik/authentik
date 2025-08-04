@@ -39,7 +39,7 @@ export class GroupForm extends ModelForm<Group, string> {
         `,
     ];
 
-    loadInstance(pk: string): Promise<Group> {
+    protected loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
             includeUsers: false,
@@ -52,7 +52,7 @@ export class GroupForm extends ModelForm<Group, string> {
             : msg("Successfully created group.");
     }
 
-    async send(data: Group): Promise<Group> {
+    protected async send(data: Group): Promise<Group> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,

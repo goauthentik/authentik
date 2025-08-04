@@ -30,14 +30,14 @@ export class GroupSelectModal extends TableModal<Group> {
 
     public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Superuser"), "is_superuser"),
@@ -45,7 +45,7 @@ export class GroupSelectModal extends TableModal<Group> {
         ];
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

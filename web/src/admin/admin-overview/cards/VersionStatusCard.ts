@@ -12,11 +12,11 @@ import { customElement } from "lit/decorators.js";
 export class VersionStatusCard extends AdminStatusCard<Version> {
     public override icon = "pf-icon pf-icon-bundle";
 
-    getPrimaryValue(): Promise<Version> {
+    protected getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
-    getStatus(value: Version): Promise<AdminStatus> {
+    protected getStatus(value: Version): Promise<AdminStatus> {
         if (value.buildHash) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",

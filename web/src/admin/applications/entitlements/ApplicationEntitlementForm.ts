@@ -20,7 +20,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
-    async loadInstance(pk: string): Promise<ApplicationEntitlement> {
+    protected async loadInstance(pk: string): Promise<ApplicationEntitlement> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
             pbmUuid: pk,
         });

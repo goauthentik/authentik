@@ -21,7 +21,7 @@ export class UserReputationList extends Table<Reputation> {
     @property()
     public targetEmail!: string | undefined;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
@@ -36,7 +36,7 @@ export class UserReputationList extends Table<Reputation> {
     public override clearOnRefresh = true;
     public override order = "identifier";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "identifier"),
             new TableColumn(msg("IP"), "ip"),
@@ -67,7 +67,7 @@ export class UserReputationList extends Table<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    protected row(item: Reputation): TemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country

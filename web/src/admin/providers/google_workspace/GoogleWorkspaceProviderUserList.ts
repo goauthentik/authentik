@@ -68,18 +68,18 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
+    protected row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>

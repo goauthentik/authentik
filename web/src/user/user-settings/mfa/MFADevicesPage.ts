@@ -32,7 +32,7 @@ export class MFADevicesPage extends Table<Device> {
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
             pagination: {
@@ -48,7 +48,7 @@ export class MFADevicesPage extends Table<Device> {
         };
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         // prettier-ignore
         return [
             msg("Name"),
@@ -129,7 +129,7 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Device): TemplateResult[] {
+    protected row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>

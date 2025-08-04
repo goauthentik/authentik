@@ -21,7 +21,7 @@ export class UserDeviceTable extends Table<Device> {
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
             .authenticatorsAdminAllList({
                 user: this.userId,
@@ -42,7 +42,7 @@ export class UserDeviceTable extends Table<Device> {
             });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         // prettier-ignore
         return [
             msg("Name"),
@@ -102,7 +102,7 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    protected row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>

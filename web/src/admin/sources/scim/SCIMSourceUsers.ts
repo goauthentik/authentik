@@ -14,18 +14,19 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     public sourceSlug?: string;
 
     public override expandable = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceUser>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceUser>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimUsersList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.sourceSlug,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
@@ -37,7 +38,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         </td>`;
     }
 
-    row(item: SCIMSourceUser): TemplateResult[] {
+    protected row(item: SCIMSourceUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>

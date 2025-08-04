@@ -30,7 +30,7 @@ export class RecentEventsCard extends Table<Event> {
     @property({ type: Number })
     public pageSize = 10;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
@@ -52,7 +52,7 @@ export class RecentEventsCard extends Table<Event> {
         `,
     ];
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "user"),
@@ -68,7 +68,7 @@ export class RecentEventsCard extends Table<Event> {
         </div>`;
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,

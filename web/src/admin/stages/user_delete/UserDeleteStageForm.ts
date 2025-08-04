@@ -13,13 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
-    loadInstance(pk: string): Promise<UserDeleteStage> {
+    protected loadInstance(pk: string): Promise<UserDeleteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: UserDeleteStage): Promise<UserDeleteStage> {
+    protected async send(data: UserDeleteStage): Promise<UserDeleteStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
                 stageUuid: this.instance.pk || "",

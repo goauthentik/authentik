@@ -21,12 +21,12 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
         return await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
     }
 
-    setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
+    protected setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
         this.statusSummary = summary;
         return Promise.resolve<AdminStatus>(content);
     }
 
-    getStatus(value: SystemInfo): Promise<AdminStatus> {
+    protected getStatus(value: SystemInfo): Promise<AdminStatus> {
         return value.runtime.opensslFipsEnabled
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",

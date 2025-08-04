@@ -18,13 +18,15 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
-    loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticatorEndpointGDTCStage): Promise<AuthenticatorEndpointGDTCStage> {
+    protected async send(
+        data: AuthenticatorEndpointGDTCStage,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcPartialUpdate({
                 stageUuid: this.instance.pk || "",

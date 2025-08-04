@@ -23,13 +23,16 @@ export class PromptListPage extends TablePage<Prompt> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Prompts");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Single Prompts that can be used for Prompt Stages.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-plugged";
     }
 
@@ -39,13 +42,13 @@ export class PromptListPage extends TablePage<Prompt> {
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Field"), "field_key"),
@@ -78,7 +81,7 @@ export class PromptListPage extends TablePage<Prompt> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Prompt): TemplateResult[] {
+    protected row(item: Prompt): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<code>${item.fieldKey}</code>`,

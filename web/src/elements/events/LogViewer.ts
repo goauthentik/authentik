@@ -23,7 +23,7 @@ export class LogViewer extends Table<LogEvent> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
             pagination: {
                 next: 0,
@@ -77,7 +77,7 @@ export class LogViewer extends Table<LogEvent> {
         return html``;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Time")),
             new TableColumn(msg("Level")),
@@ -100,7 +100,7 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    protected row(item: LogEvent): TemplateResult[] {
         return [
             html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label

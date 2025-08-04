@@ -30,14 +30,14 @@ export class UserEvents extends Table<Event> {
     @property()
     public targetUser!: string;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             username: this.targetUser,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "enabled"),
@@ -46,7 +46,7 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             renderEventUser(item),

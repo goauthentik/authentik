@@ -30,7 +30,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
 
     public override async load(): Promise<void> {}
 
-    loadInstance(): Promise<UserPermissionAssign> {
+    protected loadInstance(): Promise<UserPermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
@@ -38,7 +38,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: UserPermissionAssign) {
+    protected async send(data: UserPermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({
             id: this.userId || 0,
             permissionAssignRequest: {

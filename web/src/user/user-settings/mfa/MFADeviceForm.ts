@@ -17,7 +17,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
     @property()
     public deviceType!: string;
 
-    async loadInstance(pk: string): Promise<Device> {
+    protected async loadInstance(pk: string): Promise<Device> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return devices.filter((device) => {
             return device.pk === pk && device.type === this.deviceType;
@@ -28,7 +28,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
         return msg("Successfully updated device.");
     }
 
-    async send(device: Device): Promise<Device> {
+    protected async send(device: Device): Promise<Device> {
         switch (this.instance?.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoUpdate({

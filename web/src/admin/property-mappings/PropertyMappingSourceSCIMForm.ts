@@ -15,13 +15,13 @@ export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMS
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
+    protected async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimUpdate({
                 pmUuid: this.instance.pk,

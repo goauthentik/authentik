@@ -48,7 +48,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         return msg("Successfully triggered sync.");
     }
 
-    async send(data: SyncObjectRequest): Promise<void> {
+    protected async send(data: SyncObjectRequest): Promise<void> {
         data.syncObjectModel = this.model;
         this.result = await this.sync({
             id: this.provider || 0,

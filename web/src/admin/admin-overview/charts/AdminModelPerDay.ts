@@ -25,7 +25,7 @@ export class AdminModelPerDay extends EventChart {
     @property({ attribute: false })
     public query?: EventsEventsVolumeListRequest;
 
-    async apiRequest(): Promise<EventVolume[]> {
+    protected async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             action: this.action,
             historyDays: 30,
@@ -33,7 +33,7 @@ export class AdminModelPerDay extends EventChart {
         });
     }
 
-    getChartData(data: EventVolume[]): ChartData {
+    protected getChartData(data: EventVolume[]): ChartData {
         return this.eventVolume(data, {
             optsMap: new Map([
                 [

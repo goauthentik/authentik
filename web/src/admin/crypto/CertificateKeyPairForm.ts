@@ -15,7 +15,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-crypto-certificate-form")
 export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {
-    loadInstance(pk: string): Promise<CertificateKeyPair> {
+    protected loadInstance(pk: string): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
             kpUuid: pk,
         });
@@ -27,7 +27,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
             : msg("Successfully created certificate-key pair.");
     }
 
-    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
+    protected async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {
             return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
                 kpUuid: this.instance.pk || "",

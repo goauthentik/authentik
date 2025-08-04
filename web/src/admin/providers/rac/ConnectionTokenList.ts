@@ -35,7 +35,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
 
     public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
@@ -71,7 +71,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         if (this.provider) {
             return [
                 new TableColumn(msg("Endpoint"), "endpoint__name"),
@@ -84,7 +84,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         ];
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    protected row(item: ConnectionToken): TemplateResult[] {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }

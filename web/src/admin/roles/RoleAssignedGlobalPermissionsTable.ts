@@ -27,7 +27,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
 
     public override order = "content_type__app_label,content_type__model";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             ...(await this.defaultEndpointConfig()),
             role: this.roleUuid,
@@ -40,7 +40,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -84,7 +84,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

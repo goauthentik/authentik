@@ -32,7 +32,7 @@ export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: stri
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    async loadInstance(pk: string): Promise<PolicyBinding> {
+    protected async loadInstance(pk: string): Promise<PolicyBinding> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });

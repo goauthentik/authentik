@@ -15,13 +15,13 @@ export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexS
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
+    protected async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexUpdate({
                 pmUuid: this.instance.pk,

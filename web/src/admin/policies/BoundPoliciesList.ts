@@ -60,14 +60,14 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Order"), "order"),
             new TableColumn(this.allowedTypesLabel),
@@ -169,7 +169,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PolicyBinding): TemplateResult[] {
+    protected row(item: PolicyBinding): TemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,

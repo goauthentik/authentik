@@ -14,7 +14,7 @@ export class UserChart extends EventChart {
     @property()
     public username?: string;
 
-    async apiRequest(): Promise<EventVolume[]> {
+    protected async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             actions: [
                 EventActions.Login,
@@ -25,7 +25,7 @@ export class UserChart extends EventChart {
         });
     }
 
-    getChartData(data: EventVolume[]): ChartData {
+    protected getChartData(data: EventVolume[]): ChartData {
         return this.eventVolume(data, {
             optsMap: new Map([
                 [

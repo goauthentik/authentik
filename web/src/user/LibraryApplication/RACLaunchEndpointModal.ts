@@ -12,6 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     public override clickable = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
@@ -30,7 +31,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     @property({ attribute: false })
     public app?: Application;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
@@ -42,11 +43,11 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         return endpoints;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"))];
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    protected row(item: Endpoint): TemplateResult[] {
         return [html`${item.name}`];
     }
 

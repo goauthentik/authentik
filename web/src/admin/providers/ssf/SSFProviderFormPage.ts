@@ -31,14 +31,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-ssf-form")
 export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
-    async loadInstance(pk: number): Promise<SSFProvider> {
+    protected async loadInstance(pk: number): Promise<SSFProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSsfRetrieve({
             id: pk,
         });
         return provider;
     }
 
-    async send(data: SSFProvider): Promise<SSFProvider> {
+    protected async send(data: SSFProvider): Promise<SSFProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSsfUpdate({
                 id: this.instance.pk,

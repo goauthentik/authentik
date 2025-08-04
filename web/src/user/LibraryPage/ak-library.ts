@@ -103,7 +103,7 @@ export class LibraryPage extends AKElement {
         );
     }
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("My Applications");
     }
 

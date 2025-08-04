@@ -17,7 +17,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
     @property()
     public intent: IntentEnum = IntentEnum.Api;
 
-    loadInstance(pk: string): Promise<Token> {
+    protected loadInstance(pk: string): Promise<Token> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
@@ -29,7 +29,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
             : msg("Successfully created token.");
     }
 
-    async send(data: Token): Promise<Token> {
+    protected async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({

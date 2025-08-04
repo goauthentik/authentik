@@ -22,13 +22,16 @@ export class BrandListPage extends TablePage<Brand> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Brands");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Configure visual settings and defaults for different domains.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-tenant";
     }
 
@@ -38,11 +41,11 @@ export class BrandListPage extends TablePage<Brand> {
     @property()
     public override order = "domain";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Domain"), "domain"),
             new TableColumn(msg("Brand name"), "branding_title"),
@@ -76,7 +79,7 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): TemplateResult[] {
+    protected row(item: Brand): TemplateResult[] {
         return [
             html`${item.domain}`,
             html`${item.brandingTitle}`,

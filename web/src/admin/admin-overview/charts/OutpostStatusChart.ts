@@ -31,7 +31,7 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async apiRequest(): Promise<SummarizedSyncStatus[]> {
+    protected async apiRequest(): Promise<SummarizedSyncStatus[]> {
         const api = new OutpostsApi(DEFAULT_CONFIG);
         const outposts = await api.outpostsInstancesList({});
         const outpostStats: SummarizedSyncStatus[] = [];
@@ -65,7 +65,7 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
         return outpostStats;
     }
 
-    getChartData(data: SummarizedSyncStatus[]): ChartData {
+    protected getChartData(data: SummarizedSyncStatus[]): ChartData {
         return {
             labels: [msg("Healthy outposts"), msg("Outdated outposts"), msg("Unhealthy outposts")],
             datasets: data.map((d) => {

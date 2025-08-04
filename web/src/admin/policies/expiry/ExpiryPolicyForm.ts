@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-expiry-form")
 export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolicy> {
-    loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
+    protected loadInstance(pk: string): Promise<PasswordExpiryPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
+    protected async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
                 policyUuid: this.instance.pk || "",

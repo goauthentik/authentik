@@ -34,15 +34,18 @@ export class InvitationListPage extends TablePage<Invitation> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Invitations");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-migration";
     }
 
@@ -60,7 +63,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     @state()
     protected multipleEnrollmentFlows = false;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
             const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
@@ -84,7 +87,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Created by"), "created_by"),
@@ -115,7 +118,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): TemplateResult[] {
+    protected row(item: Invitation): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows

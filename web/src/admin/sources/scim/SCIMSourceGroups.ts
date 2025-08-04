@@ -14,18 +14,19 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
     public sourceSlug?: string;
 
     public override expandable = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceGroup>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimGroupsList({
             ...(await this.defaultEndpointConfig()),
             sourceSlug: this.sourceSlug,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
@@ -37,7 +38,7 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         </td>`;
     }
 
-    row(item: SCIMSourceGroup): TemplateResult[] {
+    protected row(item: SCIMSourceGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>

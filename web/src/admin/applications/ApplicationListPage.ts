@@ -46,15 +46,18 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Applications");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-applications";
     }
 
@@ -64,7 +67,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
@@ -73,7 +76,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     public static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(""),
             new TableColumn(msg("Name"), "name"),
@@ -116,7 +119,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Application): TemplateResult[] {
+    protected row(item: Application): TemplateResult[] {
         return [
             html`<ak-app-icon
                 name=${item.name}

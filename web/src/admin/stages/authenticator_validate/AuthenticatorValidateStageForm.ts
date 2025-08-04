@@ -33,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
-    async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
+    protected async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         });
@@ -53,7 +53,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
     @property({ type: Boolean })
     public showConfigurationStages = true;
 
-    async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
+    protected async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",

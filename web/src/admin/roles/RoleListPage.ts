@@ -20,27 +20,31 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RoleListPage extends TablePage<Role> {
     public override checkbox = true;
     public override clearOnRefresh = true;
+
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Roles");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Manage roles which grant permissions to objects within authentik.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "fa fa-lock";
     }
 
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Role>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Role>> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
@@ -78,7 +82,7 @@ export class RoleListPage extends TablePage<Role> {
             </section>`;
     }
 
-    row(item: Role): TemplateResult[] {
+    protected row(item: Role): TemplateResult[] {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<ak-forms-modal>

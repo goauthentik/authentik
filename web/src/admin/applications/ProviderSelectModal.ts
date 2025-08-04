@@ -28,18 +28,18 @@ export class ProviderSelectModal extends TableModal<Provider> {
 
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ...(await this.defaultEndpointConfig()),
             backchannel: this.backchannel,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "username"), new TableColumn(msg("Type"))];
     }
 
-    row(item: Provider): TemplateResult[] {
+    protected row(item: Provider): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

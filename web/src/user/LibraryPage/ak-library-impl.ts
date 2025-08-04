@@ -72,7 +72,7 @@ export class LibraryPage extends AKElement {
     @state()
     protected filteredApps: Application[] = [];
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("My Applications");
     }
 

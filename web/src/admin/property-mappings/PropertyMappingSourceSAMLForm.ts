@@ -15,13 +15,13 @@ export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLS
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
+    protected async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlUpdate({
                 pmUuid: this.instance.pk,

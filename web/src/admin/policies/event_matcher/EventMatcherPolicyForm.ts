@@ -22,13 +22,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
-    loadInstance(pk: string): Promise<EventMatcherPolicy> {
+    protected loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+    protected async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
         if (data.action?.toString() === "") data.action = null;
         if (data.clientIp?.toString() === "") data.clientIp = null;
         if (data.app?.toString() === "") data.app = null;

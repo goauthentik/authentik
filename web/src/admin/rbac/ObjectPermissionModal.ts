@@ -26,7 +26,7 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
     public objectPk?: string | number;
 
-    loadInstance(): Promise<unknown> {
+    protected loadInstance(): Promise<unknown> {
         return Promise.resolve();
     }
     send(): Promise<unknown> {

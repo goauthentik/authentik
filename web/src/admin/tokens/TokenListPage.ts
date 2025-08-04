@@ -30,15 +30,18 @@ export class TokenListPage extends TablePage<Token> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Tokens");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-security";
     }
 
@@ -48,11 +51,11 @@ export class TokenListPage extends TablePage<Token> {
     @property()
     public override order = "expires";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "identifier"),
             new TableColumn(msg("User"), "user"),
@@ -99,7 +102,7 @@ export class TokenListPage extends TablePage<Token> {
         `;
     }
 
-    row(item: Token): TemplateResult[] {
+    protected row(item: Token): TemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
                 ${item.managed

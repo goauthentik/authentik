@@ -53,7 +53,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    async send(data: BlueprintInstance): Promise<BlueprintInstance> {
+    protected async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
             return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUpdate({
                 instanceUuid: this.instance.pk,

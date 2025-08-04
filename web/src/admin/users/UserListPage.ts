@@ -93,13 +93,16 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Users");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return "";
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-user";
     }
 
@@ -137,7 +140,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         });
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
@@ -151,7 +154,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return users;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -239,7 +242,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [

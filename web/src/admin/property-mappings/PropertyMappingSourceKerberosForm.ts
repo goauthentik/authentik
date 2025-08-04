@@ -15,13 +15,15 @@ export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<K
         return "/docs/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: KerberosSourcePropertyMapping): Promise<KerberosSourcePropertyMapping> {
+    protected async send(
+        data: KerberosSourcePropertyMapping,
+    ): Promise<KerberosSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosUpdate({
                 pmUuid: this.instance.pk,

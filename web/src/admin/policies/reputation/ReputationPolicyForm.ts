@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-reputation-form")
 export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
-    loadInstance(pk: string): Promise<ReputationPolicy> {
+    protected loadInstance(pk: string): Promise<ReputationPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: ReputationPolicy): Promise<ReputationPolicy> {
+    protected async send(data: ReputationPolicy): Promise<ReputationPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUpdate({
                 policyUuid: this.instance.pk || "",

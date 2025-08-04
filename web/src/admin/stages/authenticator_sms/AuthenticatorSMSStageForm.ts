@@ -28,7 +28,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
-    loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesAuthenticatorSmsRetrieve({
                 stageUuid: pk,
@@ -46,7 +46,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     @property({ attribute: false })
     public authType?: AuthTypeEnum;
 
-    async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
+    protected async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
                 stageUuid: this.instance.pk || "",

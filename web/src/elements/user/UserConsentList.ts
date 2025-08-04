@@ -18,7 +18,7 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     public userId?: number;
 
-    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
@@ -29,7 +29,7 @@ export class UserConsentList extends Table<UserConsent> {
     public override clearOnRefresh = true;
     public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Application"), "application"),
             new TableColumn(msg("Expires"), "expires"),
@@ -59,7 +59,7 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    protected row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
             html`${item.expires && item.expiring

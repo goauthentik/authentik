@@ -28,13 +28,16 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Notification Transports");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Define how notifications are sent to users, like Email or Webhook.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-export";
     }
 
@@ -45,13 +48,13 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     @property()
     public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Mode"), "mode"),
@@ -81,7 +84,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationTransport): TemplateResult[] {
+    protected row(item: NotificationTransport): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,

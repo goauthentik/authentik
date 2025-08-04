@@ -48,7 +48,7 @@ export class MemberSelectTable extends TableModal<User> {
     // The `userListRequestFilter` clause is necessary because the back-end for searches is
     // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
     // inactive users; only when it's _missing_ will you get all users.
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const userListRequestFilter: UserListRequestFilter = match(this.userListFilter)
             .with("all", () => ({}))
             .with("active", () => ({ isActive: true }))
@@ -61,7 +61,7 @@ export class MemberSelectTable extends TableModal<User> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -99,7 +99,7 @@ export class MemberSelectTable extends TableModal<User> {
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,

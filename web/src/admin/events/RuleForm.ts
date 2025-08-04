@@ -29,7 +29,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RuleForm extends ModelForm<NotificationRule, string> {
     eventTransports?: PaginatedNotificationTransportList;
 
-    loadInstance(pk: string): Promise<NotificationRule> {
+    protected loadInstance(pk: string): Promise<NotificationRule> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
             pbmUuid: pk,
         });
@@ -47,7 +47,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             : msg("Successfully created rule.");
     }
 
-    async send(data: NotificationRule): Promise<NotificationRule> {
+    protected async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",

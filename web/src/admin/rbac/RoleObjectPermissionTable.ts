@@ -33,7 +33,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     public override checkbox = true;
     public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
@@ -53,7 +53,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return perms;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         const baseColumns = [new TableColumn(msg("User"), "user")];
         // We don't check pagination since models shouldn't need to have that many permissions?
         this.modelPermissions?.results.forEach((perm) => {
@@ -107,7 +107,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): TemplateResult[] {
+    protected row(item: RoleAssignedObjectPermission): TemplateResult[] {
         const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =

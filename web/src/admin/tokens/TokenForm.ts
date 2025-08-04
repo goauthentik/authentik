@@ -19,7 +19,7 @@ export class TokenForm extends ModelForm<Token, string> {
     @state()
     protected showExpiry = true;
 
-    async loadInstance(pk: string): Promise<Token> {
+    protected async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
@@ -33,7 +33,7 @@ export class TokenForm extends ModelForm<Token, string> {
             : msg("Successfully created token.");
     }
 
-    async send(data: Token): Promise<Token> {
+    protected async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
                 identifier: this.instance.identifier,

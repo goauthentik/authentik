@@ -53,9 +53,14 @@ export class TaskList extends Table<Task> {
     @property()
     public override order = "-mtime";
 
-    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList, PFSpacing, PFTitle];
+    public static override styles: CSSResult[] = [
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Task>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
             typeof this.relObjId !== "undefined"
                 ? undefined
@@ -93,7 +98,7 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Task"), "actor_name"),
             new TableColumn(msg("Queue"), "queue_name"),
@@ -147,7 +152,7 @@ export class TaskList extends Table<Task> {
             </div>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    protected row(item: Task): TemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,

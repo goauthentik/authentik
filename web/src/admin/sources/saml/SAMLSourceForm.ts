@@ -40,7 +40,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
     @state()
     protected clearIcon = false;
 
-    async loadInstance(pk: string): Promise<SAMLSource> {
+    protected async loadInstance(pk: string): Promise<SAMLSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
@@ -48,7 +48,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         return source;
     }
 
-    async send(data: SAMLSource): Promise<SAMLSource> {
+    protected async send(data: SAMLSource): Promise<SAMLSource> {
         let source: SAMLSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
