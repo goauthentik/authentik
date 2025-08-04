@@ -55,7 +55,7 @@ See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recap
         - **Public Key**: set to the **Turnstile Site Key** value from the widget.
         - **Private Key**: set to the **Turnstile Secret Key** value from the widget.
         - **Enable Interactive**: Enable this option if the Turnstile instance is configured as **Invisible** or **Managed**.
-        - Leave both score thresholds at their default. They are not used for Turnstile.
+        - Leave both score thresholds at their default, as they are not supported for Turnstile.
 
 - JS URL: `https://challenges.cloudflare.com/turnstile/v0/api.js`
 - API URL: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
