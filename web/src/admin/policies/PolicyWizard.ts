@@ -46,7 +46,7 @@ export class PolicyWizard extends AKElement {
     public policyTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
     firstUpdated(): void {
         new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {

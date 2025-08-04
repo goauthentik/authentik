@@ -60,10 +60,10 @@ export class EventMap extends AKElement {
     public events?: PaginatedResponse<Event>;
 
     @query("ol-layer-vector")
-    vectorLayer?: OlLayerVector;
+    protected vectorLayer?: OlLayerVector;
 
     @query("ak-map")
-    map?: Map;
+    protected map?: Map;
 
     @property({ type: Number })
     public zoomPaddingPx = 100;

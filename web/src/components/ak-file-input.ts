@@ -41,7 +41,7 @@ export class AkFileInput extends AKElement {
     public help = "";
 
     @query('input[type="file"]')
-    input!: HTMLInputElement;
+    protected input!: HTMLInputElement;
 
     public get files() {
         return this.input.files;

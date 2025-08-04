@@ -41,7 +41,7 @@ export class ProviderWizard extends AKElement {
     };
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
     connectedCallback() {
         super.connectedCallback();

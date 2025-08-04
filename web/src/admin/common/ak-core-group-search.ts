@@ -47,7 +47,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
     public group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<Group>;
+    protected search!: SearchSelect<Group>;
 
     @property({ type: String })
     public name: string | null | undefined;

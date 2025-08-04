@@ -43,7 +43,7 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
     };
 
     @queryAll(".ak-form-control")
-    controls?: HTMLInputElement[];
+    protected controls?: HTMLInputElement[];
 
     json() {
         return Object.fromEntries(

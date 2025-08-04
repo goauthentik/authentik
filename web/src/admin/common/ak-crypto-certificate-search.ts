@@ -37,7 +37,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public certificate?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    protected search!: SearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
     public name: string | null | undefined;

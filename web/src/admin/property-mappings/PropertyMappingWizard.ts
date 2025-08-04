@@ -41,7 +41,7 @@ export class PropertyMappingWizard extends AKElement {
     public mappingTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
     async firstUpdated(): Promise<void> {
         this.mappingTypes = await new PropertymappingsApi(

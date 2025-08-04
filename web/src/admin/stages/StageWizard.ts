@@ -62,7 +62,7 @@ export class StageWizard extends AKElement {
     public stageTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
     firstUpdated(): void {
         new StagesApi(DEFAULT_CONFIG).stagesAllTypesList().then((types) => {

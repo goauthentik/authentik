@@ -109,7 +109,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
     public required = false;
 
     @queryAll('input[type="checkbox"]')
-    checkboxes!: NodeListOf<HTMLInputElement>;
+    protected checkboxes!: NodeListOf<HTMLInputElement>;
 
     @state()
     protected values: string[] = [];

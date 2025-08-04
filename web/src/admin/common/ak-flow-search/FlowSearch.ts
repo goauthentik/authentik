@@ -62,7 +62,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     public required?: boolean = false;
 
     @query("ak-search-select")
-    search!: SearchSelect<T>;
+    protected search!: SearchSelect<T>;
 
     /**
      * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.

@@ -68,7 +68,7 @@ export class LibraryPageApplicationSearch extends AKElement {
     public query = getURLParam<string | undefined>("search", undefined);
 
     @query("input")
-    searchInput?: HTMLInputElement;
+    protected searchInput?: HTMLInputElement;
 
     fuse: Fuse<Application>;
 

@@ -28,7 +28,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     public errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
     public get formValues() {
         return serializeForm([

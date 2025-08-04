@@ -44,7 +44,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     public inputID?: string;
 
     @queryAll(".ak-form-control")
-    controls?: HTMLInputElement[];
+    protected controls?: HTMLInputElement[];
 
     json() {
         return Object.fromEntries(

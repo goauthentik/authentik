@@ -116,7 +116,7 @@ export class SelectTable extends SimpleTable {
     }
 
     @queryAll('input[data-ouia-component-role="select"]')
-    selectCheckboxesOnPage!: HTMLInputElement[];
+    protected selectCheckboxesOnPage!: HTMLInputElement[];
 
     public get selected() {
         return this.#selected;

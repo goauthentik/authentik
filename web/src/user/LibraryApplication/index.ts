@@ -37,7 +37,7 @@ export class LibraryApplication extends AKElement {
     public background = "";
 
     @query("ak-library-rac-endpoint-launch")
-    racEndpointLaunch?: RACLaunchEndpointModal;
+    protected racEndpointLaunch?: RACLaunchEndpointModal;
 
     public static styles: CSSResult[] = [
         PFBase,

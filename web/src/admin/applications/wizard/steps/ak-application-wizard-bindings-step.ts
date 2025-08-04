@@ -46,7 +46,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     @query("ak-select-table")
-    selectTable!: SelectTable;
+    protected selectTable!: SelectTable;
 
     public static styles = [
         ...super.styles,

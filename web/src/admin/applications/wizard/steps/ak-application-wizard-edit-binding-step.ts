@@ -49,7 +49,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     override hide = true;
 
     @query("form#bindingform")
-    protected override form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
     @query(".policy-search-select")
     protected searchSelect!:

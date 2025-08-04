@@ -108,7 +108,7 @@ export class ListSelect extends AKElement implements IListSelect {
     protected indexOfFocusedItem = 0;
 
     @query("#ak-list-select-list")
-    ul!: HTMLUListElement;
+    protected ul!: HTMLUListElement;
 
     public get json(): string {
         return this.value ?? "";

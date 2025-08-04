@@ -33,7 +33,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     public label = msg("Configure Provider");
 
     @query("#providerform")
-    element!: ApplicationWizardProviderForm<OneOfProvider>;
+    protected element!: ApplicationWizardProviderForm<OneOfProvider>;
 
     public get valid() {
         return this.element.valid;

@@ -40,7 +40,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     protected errors = new Map<string, string>();
 
     @query("form#applicationform")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
     constructor() {
         super();

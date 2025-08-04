@@ -31,7 +31,7 @@ export class QLSearch extends AKElement {
     public value?: string;
 
     @query("[name=search]")
-    searchElement?: HTMLTextAreaElement;
+    protected searchElement?: HTMLTextAreaElement;
 
     @state()
     protected menuOpen = false;

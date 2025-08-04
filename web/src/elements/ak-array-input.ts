@@ -86,7 +86,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     }
 
     @queryAll("div.ak-input-group")
-    inputGroups?: HTMLDivElement[];
+    protected inputGroups?: HTMLDivElement[];
 
     json() {
         if (!this.inputGroups) {

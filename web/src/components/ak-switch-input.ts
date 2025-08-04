@@ -35,7 +35,7 @@ export class AkSwitchInput extends AKElement {
     public help = "";
 
     @query("input.pf-c-switch__input[type=checkbox]")
-    checkbox!: HTMLInputElement;
+    protected checkbox!: HTMLInputElement;
 
     #fieldID: string = IDGenerator.randomID();
 
