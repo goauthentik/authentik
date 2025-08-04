@@ -94,7 +94,7 @@
         "@floating-ui/dom": "^1.7.3",
         "@formatjs/intl-listformat": "^7.7.11",
         "@fortawesome/fontawesome-free": "^7.0.0",
-        "@goauthentik/api": "^2025.6.4-1753714826",
+        "@goauthentik/api": "^2025.6.4-1754241870",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.1.0",
         "@goauthentik/eslint-config": "^1.0.5",
@@ -128,16 +128,11 @@
         "@types/react-dom": "^19.1.6",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
-        "@wdio/browser-runner": "^9.18.4",
-        "@wdio/cli": "9.15",
-        "@wdio/spec-reporter": "^9.15.0",
-        "@web/test-runner": "^0.20.2",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
         "chart.js": "^4.5.0",
         "chartjs-adapter-date-fns": "^3.0.0",
-        "chromedriver": "^138.0.5",
         "codemirror": "^6.0.2",
         "construct-style-sheets-polyfill": "^3.1.0",
         "core-js": "^3.44.0",
@@ -194,7 +189,11 @@
         "@esbuild/linux-x64": "^0.25.4",
         "@rollup/rollup-darwin-arm64": "^4.46.2",
         "@rollup/rollup-linux-arm64-gnu": "^4.46.2",
-        "@rollup/rollup-linux-x64-gnu": "^4.46.2"
+        "@rollup/rollup-linux-x64-gnu": "^4.46.2",
+        "@wdio/browser-runner": "^9.18.4",
+        "@wdio/cli": "^9.18.4",
+        "@wdio/spec-reporter": "^9.18.0",
+        "@web/test-runner": "^0.20.2"
     },
     "wireit": {
         "build": {
