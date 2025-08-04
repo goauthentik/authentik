@@ -43,7 +43,7 @@ const LevelARIALiveMap = {
 
 @customElement("ak-message")
 export class Message extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
+    public static override styles: CSSResult[] = [PFBase, PFButton, PFAlert, PFAlertGroup];
 
     //#region Properties
 
@@ -81,23 +81,23 @@ export class Message extends AKElement {
         this.#timeoutID = setTimeout(this.onDismiss, this.lifetime);
     };
 
-    public firstUpdated() {
+    public override firstUpdated() {
         this.#scheduleDismiss();
     }
 
-    public willUpdate(changed: PropertyValues<this>) {
+    public override willUpdate(changed: PropertyValues<this>) {
         if (changed.has("lifetime") && this.lifetime) {
             this.#scheduleDismiss();
         }
     }
 
-    public disconnectedCallback() {
+    public override disconnectedCallback() {
         clearTimeout(this.#timeoutID);
     }
 
     //#endregion
 
-    public render() {
+    public override render() {
         const { description, level = MessageLevel.info } = this;
         const ariaLive = this.live ? LevelARIALiveMap[level] : "off";
 

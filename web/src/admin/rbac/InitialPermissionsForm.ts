@@ -31,19 +31,19 @@ export function rbacPermissionPair(item: Permission): DualSelectPair {
 
 @customElement("ak-initial-permissions-form")
 export class InitialPermissionsForm extends ModelForm<InitialPermissions, string> {
-    loadInstance(pk: string): Promise<InitialPermissions> {
+    protected loadInstance(pk: string): Promise<InitialPermissions> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsRetrieve({
             id: Number(pk),
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated initial permissions.")
             : msg("Successfully created initial permissions.");
     }
 
-    async send(data: InitialPermissions): Promise<InitialPermissions> {
+    protected async send(data: InitialPermissions): Promise<InitialPermissions> {
         if (this.instance?.pk) {
             return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsPartialUpdate({
                 id: this.instance.pk,
@@ -55,7 +55,7 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

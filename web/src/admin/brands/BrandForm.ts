@@ -31,19 +31,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
-    loadInstance(pk: string): Promise<Brand> {
+    protected loadInstance(pk: string): Promise<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsRetrieve({
             brandUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated brand.")
             : msg("Successfully created brand.");
     }
 
-    async send(data: Brand): Promise<Brand> {
+    protected async send(data: Brand): Promise<Brand> {
         if (this.instance?.brandUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
                 brandUuid: this.instance.brandUuid,
@@ -55,7 +55,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Domain")} required name="domain">
                 <input
                     type="text"

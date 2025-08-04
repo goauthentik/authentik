@@ -17,27 +17,27 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
     @state()
-    installID?: string;
+    protected installID?: string;
 
-    loadInstance(pk: string): Promise<License> {
+    protected loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
             licenseUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated license.")
             : msg("Successfully created license.");
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.installID = (
             await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
         ).installId;
     }
 
-    async send(data: License): Promise<License> {
+    protected async send(data: License): Promise<License> {
         return (
             this.instance
                 ? new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicensePartialUpdate({
@@ -53,7 +53,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Install ID")}>
                 <input
                     class="pf-c-form-control pf-m-monospace"

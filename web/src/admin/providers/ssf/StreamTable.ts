@@ -16,30 +16,30 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SSFStream>> {
         return new SsfApi(DEFAULT_CONFIG).ssfStreamsList({
             provider: this.providerId,
             ...(await this.defaultEndpointConfig()),
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Audience"), "aud")];
     }
 
-    row(item: SSFStream): TemplateResult[] {
+    protected row(item: SSFStream): TemplateResult[] {
         return [html`${item.aud}`];
     }
 }

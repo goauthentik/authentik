@@ -33,7 +33,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
-    async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
+    protected async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
             stageUuid: pk,
         });
@@ -42,18 +42,18 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         return stage;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
             ordering: "name",
         });
     }
 
-    stages?: PaginatedStageList;
+    protected stages?: PaginatedStageList;
 
     @property({ type: Boolean })
-    showConfigurationStages = true;
+    public showConfigurationStages = true;
 
-    async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
+    protected async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",
@@ -65,7 +65,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         });
     }
 
-    isDeviceClassSelected(field: DeviceClassesEnum): boolean {
+    protected isDeviceClassSelected(field: DeviceClassesEnum): boolean {
         return (
             (this.instance?.deviceClasses || []).filter((isField) => {
                 return field === isField;
@@ -73,7 +73,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const authenticators = [
             [DeviceClassesEnum.Static, msg("Static Tokens")],
             [DeviceClassesEnum.Totp, msg("TOTP Authenticators")],

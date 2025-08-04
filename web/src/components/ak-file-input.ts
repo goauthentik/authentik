@@ -13,15 +13,15 @@ export class AkFileInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     /*
      * The message to show next to the "current icon".
@@ -29,25 +29,25 @@ export class AkFileInput extends AKElement {
      * @attr
      */
     @property({ type: String })
-    current = msg("Currently set to:");
+    public current = msg("Currently set to:");
 
     @property({ type: String })
-    value = "";
+    public value = "";
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     @query('input[type="file"]')
-    input!: HTMLInputElement;
+    protected input!: HTMLInputElement;
 
-    get files() {
+    public get files() {
         return this.input.files;
     }
 
-    render() {
+    public override render() {
         const currentMsg =
             this.value && this.current
                 ? html` <p class="pf-c-form__helper-text">${this.current} ${this.value}</p> `

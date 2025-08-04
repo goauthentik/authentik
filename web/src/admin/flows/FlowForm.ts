@@ -27,7 +27,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
-    async loadInstance(pk: string): Promise<Flow> {
+    protected async loadInstance(pk: string): Promise<Flow> {
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
@@ -35,16 +35,16 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated flow.")
             : msg("Successfully created flow.");
     }
 
     @property({ type: Boolean })
-    clearBackground = false;
+    public clearBackground = false;
 
-    async send(data: Flow): Promise<void | Flow> {
+    protected async send(data: Flow): Promise<void | Flow> {
         let flow: Flow;
         if (this.instance) {
             flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
@@ -77,7 +77,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return flow;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

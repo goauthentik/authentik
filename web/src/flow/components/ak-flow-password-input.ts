@@ -1,7 +1,6 @@
 import "#elements/forms/FormElement";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import { isActiveElement } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
@@ -40,7 +39,7 @@ const Visibility = {
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
-    static styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
+    public static override styles = [PFBase, PFInputGroup, PFFormControl, PFButton];
 
     //#region Properties
 
@@ -50,7 +49,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "input-id" })
-    inputId = "ak-stage-password-input";
+    public inputId = "ak-stage-password-input";
 
     /**
      * The name of the input field.
@@ -58,7 +57,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    name = "password";
+    public name = "password";
 
     /**
      * The label for the input field.
@@ -66,7 +65,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    label = msg("Password");
+    public label = msg("Password");
 
     /**
      * The placeholder text for the input field.
@@ -74,7 +73,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String })
-    placeholder = msg("Please enter your password");
+    public placeholder = msg("Please enter your password");
 
     /**
      * The initial value of the input field.
@@ -82,20 +81,20 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: String, attribute: "prefill" })
-    initialValue = "";
+    public initialValue = "";
 
     /**
      * The errors for the input field.
      */
     @property({ type: Object })
-    errors: Record<string, string> = {};
+    public errors: Record<string, string> = {};
 
     /**
      * Forwarded to the input tag's aria-invalid attribute, if set
      * @attr
      */
     @property({ type: String })
-    invalid?: string;
+    public invalid?: string;
 
     /**
      * Whether to allow the user to toggle the visibility of the password.
@@ -103,7 +102,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "allow-show-password" })
-    allowShowPassword = false;
+    public allowShowPassword = false;
 
     /**
      * Whether the password is currently visible.
@@ -111,7 +110,7 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "password-visible" })
-    passwordVisible = false;
+    public passwordVisible = false;
 
     /**
      * Automatically grab focus after rendering.
@@ -119,15 +118,15 @@ export class InputPassword extends AKElement {
      * @attr
      */
     @property({ type: Boolean, attribute: "grab-focus" })
-    grabFocus = false;
+    public grabFocus = false;
 
     //#endregion
 
     //#region Refs
 
-    inputRef: Ref<HTMLInputElement> = createRef();
+    protected inputRef: Ref<HTMLInputElement> = createRef();
 
-    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+    protected toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
 
     //#endregion
 
@@ -137,7 +136,7 @@ export class InputPassword extends AKElement {
      * Whether the caps lock key is enabled.
      */
     @state()
-    capsLock = false;
+    protected capsLock = false;
 
     //#endregion
 
@@ -150,8 +149,7 @@ export class InputPassword extends AKElement {
      *
      * @param event The event that triggered the visibility toggle.
      */
-    @bound
-    togglePasswordVisibility(event?: PointerEvent) {
+    public togglePasswordVisibility = (event?: PointerEvent) => {
         event?.stopPropagation();
         event?.preventDefault();
 
@@ -166,15 +164,14 @@ export class InputPassword extends AKElement {
         input.type = input.type === "password" ? "text" : "password";
 
         this.syncVisibilityToggle(input);
-    }
+    };
 
     /**
      * Listen for key events, synchronizing the caps lock indicators.
      */
-    @bound
-    capsLockListener(event: KeyboardEvent) {
+    #capsLockListener = (event: KeyboardEvent) => {
         this.capsLock = event.getModifierState("CapsLock");
-    }
+    };
 
     //#region Lifecycle
 
@@ -183,7 +180,7 @@ export class InputPassword extends AKElement {
      *
      * @see {@linkcode observeInputFocus}
      */
-    inputFocusIntervalID?: ReturnType<typeof setInterval>;
+    protected inputFocusIntervalID?: ReturnType<typeof setInterval>;
 
     /**
      * Periodically attempt to focus the input field until it is focused.
@@ -191,7 +188,7 @@ export class InputPassword extends AKElement {
      * This is some-what of a crude way to get autofocus, but in most cases
      * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
      */
-    observeInputFocus(): void {
+    protected observeInputFocus(): void {
         if (!this.grabFocus) {
             return;
         }
@@ -211,24 +208,24 @@ export class InputPassword extends AKElement {
         console.debug("authentik/stages/password: started focus observer");
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         this.observeInputFocus();
 
-        addEventListener("keydown", this.capsLockListener);
-        addEventListener("keyup", this.capsLockListener);
+        addEventListener("keydown", this.#capsLockListener);
+        addEventListener("keyup", this.#capsLockListener);
     }
 
-    disconnectedCallback() {
+    public override disconnectedCallback() {
         if (this.inputFocusIntervalID) {
             clearInterval(this.inputFocusIntervalID);
         }
 
         super.disconnectedCallback();
 
-        removeEventListener("keydown", this.capsLockListener);
-        removeEventListener("keyup", this.capsLockListener);
+        removeEventListener("keydown", this.#capsLockListener);
+        removeEventListener("keyup", this.#capsLockListener);
     }
 
     //#endregion
@@ -241,7 +238,7 @@ export class InputPassword extends AKElement {
      * Must support both older browsers and shadyDom; we'll keep using this in-line,
      * but it'll still be in the scope of the parent element, not an independent shadowDOM.
      */
-    createRenderRoot() {
+    public override createRenderRoot() {
         return this;
     }
 
@@ -257,7 +254,9 @@ export class InputPassword extends AKElement {
      *
      * @param input The password field to render the visibility features for.
      */
-    syncVisibilityToggle(input: HTMLInputElement | undefined = this.inputRef.value): void {
+    protected syncVisibilityToggle(
+        input: HTMLInputElement | undefined = this.inputRef.value,
+    ): void {
         if (!input) return;
 
         const toggleElement = this.toggleVisibilityRef.value;
@@ -277,7 +276,7 @@ export class InputPassword extends AKElement {
         iconElement.classList.add(masked ? Visibility.Reveal.icon : Visibility.Mask.icon);
     }
 
-    renderVisibilityToggle() {
+    protected renderVisibilityToggle() {
         if (!this.allowShowPassword) return nothing;
 
         const { label, icon } = this.passwordVisible ? Visibility.Mask : Visibility.Reveal;
@@ -293,7 +292,7 @@ export class InputPassword extends AKElement {
         </button>`;
     }
 
-    renderHelperText() {
+    protected renderHelperText() {
         if (!this.capsLock) return nothing;
 
         return html`<div
@@ -313,7 +312,7 @@ export class InputPassword extends AKElement {
         </div>`;
     }
 
-    render() {
+    public override render() {
         return html` <ak-form-element
             label="${this.label}"
             required

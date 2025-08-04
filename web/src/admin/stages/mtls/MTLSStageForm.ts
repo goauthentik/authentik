@@ -25,13 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
-    loadInstance(pk: string): Promise<MutualTLSStage> {
+    protected loadInstance(pk: string): Promise<MutualTLSStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesMtlsRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: MutualTLSStage): Promise<MutualTLSStage> {
+    protected async send(data: MutualTLSStage): Promise<MutualTLSStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesMtlsUpdate({
                 stageUuid: this.instance.pk || "",
@@ -44,7 +44,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
         }
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <span> ${msg("Client-certificate/mTLS authentication/enrollment.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">

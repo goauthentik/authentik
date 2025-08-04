@@ -10,16 +10,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-application-wizard-bindings-toolbar")
 export class ApplicationWizardBindingsToolbar extends AKElement {
-    static styles = [PFBase, PFButton, PFToolbar];
+    public static override styles = [PFBase, PFButton, PFToolbar];
 
     @property({ type: Boolean, attribute: "can-delete", reflect: true })
-    canDelete = false;
+    public canDelete = false;
 
-    notify(eventName: string) {
+    protected notify(eventName: string) {
         this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }));
     }
 
-    render() {
+    public override render() {
         return html`
             <div class="pf-c-toolbar">
                 <div class="pf-c-toolbar__content">

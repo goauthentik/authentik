@@ -9,20 +9,20 @@ import { AKElement } from "#elements/Base";
  *
  */
 export class AkControlElement<T = string | string[]> extends AKElement {
-    constructor() {
+    public constructor() {
         super();
         this.dataset.akControl = "true";
     }
 
-    json(): T {
+    public json(): T {
         throw new Error("Controllers using this protocol must override this method");
     }
 
-    get toJson(): T {
+    public get toJson(): T {
         return this.json();
     }
 
-    get isValid(): boolean {
+    public get isValid(): boolean {
         return true;
     }
 }

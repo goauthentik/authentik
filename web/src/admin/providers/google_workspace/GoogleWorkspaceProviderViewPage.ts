@@ -42,12 +42,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: GoogleWorkspaceProvider;
+    protected provider?: GoogleWorkspaceProvider;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFForm,
@@ -61,7 +61,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -69,19 +69,19 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersGoogleWorkspaceRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -135,7 +135,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

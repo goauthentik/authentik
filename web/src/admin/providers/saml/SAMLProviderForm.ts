@@ -12,9 +12,9 @@ import { customElement, state } from "lit/decorators.js";
 @customElement("ak-provider-saml-form")
 export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
     @state()
-    hasSigningKp = false;
+    protected hasSigningKp = false;
 
-    async loadInstance(pk: number): Promise<SAMLProvider> {
+    protected async loadInstance(pk: number): Promise<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
@@ -22,7 +22,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         return provider;
     }
 
-    async send(data: SAMLProvider): Promise<SAMLProvider> {
+    protected async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
                 id: this.instance.pk,
@@ -34,7 +34,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         });
     }
 
-    renderForm() {
+    protected override renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;

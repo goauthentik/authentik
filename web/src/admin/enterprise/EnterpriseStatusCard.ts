@@ -16,14 +16,20 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-enterprise-status-card")
 export class EnterpriseStatusCard extends AKElement {
     @state()
-    forecast?: LicenseForecast;
+    protected forecast?: LicenseForecast;
 
     @state()
-    summary?: LicenseSummary;
+    protected summary?: LicenseSummary;
 
-    static styles: CSSResult[] = [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFDescriptionList,
+        PFCard,
+        PFSplit,
+        PFProgress,
+    ];
 
-    renderSummaryBadge() {
+    protected renderSummaryBadge() {
         switch (this.summary?.status) {
             case LicenseSummaryStatusEnum.Expired:
                 return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
@@ -40,13 +46,13 @@ export class EnterpriseStatusCard extends AKElement {
         }
     }
 
-    calcUserPercentage(licensed: number, current: number) {
+    protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
         if (current > 0 && licensed === 0) return Infinity;
         return percentage;
     }
 
-    render() {
+    public override render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }

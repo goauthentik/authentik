@@ -16,12 +16,12 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
     @property()
-    targetUsername!: string;
+    public targetUsername!: string;
 
     @property()
-    targetEmail!: string | undefined;
+    public targetEmail!: string | undefined;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         const identifiers = [this.targetUsername];
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
@@ -32,11 +32,11 @@ export class UserReputationList extends Table<Reputation> {
         });
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    order = "identifier";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "identifier";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "identifier"),
             new TableColumn(msg("IP"), "ip"),
@@ -45,7 +45,7 @@ export class UserReputationList extends Table<Reputation> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Reputation score(s)")}
@@ -67,7 +67,7 @@ export class UserReputationList extends Table<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    protected row(item: Reputation): TemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country

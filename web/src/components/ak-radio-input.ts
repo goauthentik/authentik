@@ -12,12 +12,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends HorizontalLightComponent<T> {
     @property({ type: Object })
-    value!: T;
+    public override value!: T;
 
     @property({ type: Array })
-    options: RadioOption<T>[] = [];
+    public options: RadioOption<T>[] = [];
 
-    handleInput(ev: CustomEvent) {
+    protected handleInput(ev: CustomEvent) {
         if ("detail" in ev) {
             this.value = ev.detail.value;
         }
@@ -27,7 +27,7 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
         return nothing;
     }
 
-    renderControl() {
+    protected override renderControl() {
         const helpText = this.help.trim();
 
         return html`<ak-radio

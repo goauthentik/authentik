@@ -43,13 +43,13 @@ export async function popupCenterScreen(
 }
 
 export class PlexAPIClient {
-    token: string;
+    protected token: string;
 
-    constructor(token: string) {
+    public constructor(token: string) {
         this.token = token;
     }
 
-    static async getPin(
+    public static async getPin(
         clientIdentifier: string,
     ): Promise<{ authUrl: string; pin: PlexPinResponse }> {
         const headers = {
@@ -69,7 +69,10 @@ export class PlexAPIClient {
         };
     }
 
-    static async pinStatus(clientIdentifier: string, id: number): Promise<string | undefined> {
+    public static async pinStatus(
+        clientIdentifier: string,
+        id: number,
+    ): Promise<string | undefined> {
         const headers = {
             ...DEFAULT_HEADERS,
             "X-Plex-Client-Identifier": clientIdentifier,
@@ -85,7 +88,7 @@ export class PlexAPIClient {
         return pin.authToken;
     }
 
-    static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
+    public static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
         const executePoll = async (
             resolve: (authToken: string) => void,
             reject: (e: Error) => void,
@@ -106,7 +109,7 @@ export class PlexAPIClient {
         return new Promise(executePoll);
     }
 
-    async getServers(): Promise<PlexResource[]> {
+    public async getServers(): Promise<PlexResource[]> {
         const resourcesResponse = await fetch(
             `https://plex.tv/api/v2/resources?X-Plex-Token=${this.token}&X-Plex-Client-Identifier=authentik`,
             {

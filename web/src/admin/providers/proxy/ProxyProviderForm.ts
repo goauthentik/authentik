@@ -18,9 +18,9 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
-    static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
+    public static override styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
 
-    async loadInstance(pk: number): Promise<ProxyProvider> {
+    protected async loadInstance(pk: number): Promise<ProxyProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
             id: pk,
         });
@@ -30,12 +30,12 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     }
 
     @state()
-    showHttpBasic = true;
+    protected showHttpBasic = true;
 
     @state()
-    mode: ProxyMode = ProxyMode.Proxy;
+    protected mode: ProxyMode = ProxyMode.Proxy;
 
-    async send(data: ProxyProvider): Promise<ProxyProvider> {
+    protected async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
         if (this.mode !== ProxyMode.ForwardDomain) {
             data.cookieDomain = "";
@@ -51,7 +51,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
         });
     }
 
-    renderForm() {
+    protected override renderForm() {
         const onSetMode: SetMode = (ev) => {
             this.mode = ev.detail.value;
         };

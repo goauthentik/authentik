@@ -21,25 +21,25 @@ export interface TreeViewItem {
 @customElement("ak-treeview-node")
 export class TreeViewNode extends AKElement {
     @property({ attribute: false })
-    item?: TreeViewItem;
+    public item?: TreeViewItem;
 
     @property({ type: Boolean })
-    open = false;
+    public open = false;
 
     @property({ attribute: false })
-    host?: TreeView;
+    public host?: TreeView;
 
     @property()
-    activePath = "";
+    public activePath = "";
 
     @property()
-    separator = "";
+    public separator = "";
 
-    get openable(): boolean {
+    public get openable(): boolean {
         return (this.item?.childItems || []).length > 0;
     }
 
-    get fullPath(): string {
+    public get fullPath(): string {
         const pathItems = [];
         let item = this.item;
         while (item) {
@@ -51,11 +51,11 @@ export class TreeViewNode extends AKElement {
         return pathItems.reverse().join(this.separator);
     }
 
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         const pathSegments = this.activePath.split(this.separator);
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
@@ -68,7 +68,7 @@ export class TreeViewNode extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         const shouldRenderChildren = (this.item?.childItems || []).length > 0 && this.open;
         return html`
             <li
@@ -140,20 +140,20 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFTreeView];
+    public static override styles: CSSResult[] = [PFBase, PFTreeView];
 
     @property({ type: Array })
-    items: string[] = [];
+    public items: string[] = [];
 
     @property()
-    activePath = "";
+    public activePath = "";
 
     @state()
-    activeNode?: TreeViewNode;
+    public activeNode?: TreeViewNode;
 
-    separator = "/";
+    protected separator = "/";
 
-    createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
+    protected createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();
         const idx = parentItem.childItems.findIndex((e: TreeViewItem) => {
             return e.id === id;
@@ -176,7 +176,7 @@ export class TreeView extends AKElement {
         return this.createNode(path, parentItem.childItems[idx], level + 1);
     }
 
-    parse(data: string[]): TreeViewItem {
+    protected parse(data: string[]): TreeViewItem {
         const rootItem: TreeViewItem = {
             id: undefined,
             label: msg("Root"),
@@ -191,7 +191,7 @@ export class TreeView extends AKElement {
         return rootItem;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         const rootItem = this.parse(this.items);
         return html`<div class="pf-c-tree-view pf-m-guides">
             <ul class="pf-c-tree-view__list" role="tree">

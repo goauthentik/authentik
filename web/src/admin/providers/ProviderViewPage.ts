@@ -27,7 +27,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 @customElement("ak-provider-view")
 export class ProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersAllRetrieve({
                 id: value,
@@ -36,11 +36,11 @@ export class ProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: Provider;
+    public provider?: Provider;
 
-    static styles: CSSResult[] = [PFPage];
+    public static override styles: CSSResult[] = [PFPage];
 
-    renderProvider(): TemplateResult {
+    protected renderProvider(): TemplateResult {
         if (!this.provider) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -90,7 +90,7 @@ export class ProviderViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-integration"
                 header=${ifDefined(this.provider?.name)}

@@ -37,7 +37,7 @@ const AdminOverviewBase = WithLicenseSummary(AKElement);
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFGrid,
         PFPage,
@@ -63,7 +63,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
         `,
     ];
 
-    quickActions: QuickAction[] = [
+    protected quickActions: QuickAction[] = [
         [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
         [msg("Check the logs"), paramURL("/events/log")],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
@@ -76,13 +76,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
     ];
 
     @state()
-    user?: SessionUser;
+    protected user?: SessionUser;
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.user = await me();
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         const username = this.user?.user.name || this.user?.user.username;
 
         return html`<ak-page-header
@@ -154,7 +154,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
             </section>`;
     }
 
-    renderCards() {
+    protected renderCards() {
         const isEnterprise = this.hasEnterpriseLicense;
         const classes = {
             "card-container": true,

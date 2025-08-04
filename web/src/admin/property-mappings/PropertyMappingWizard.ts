@@ -35,21 +35,21 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
-    static styles = [PFBase, PFButton];
+    public static override styles = [PFBase, PFButton];
 
     @property({ attribute: false })
-    mappingTypes: TypeCreate[] = [];
+    public mappingTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.mappingTypes = await new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsAllTypesList();
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

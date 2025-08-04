@@ -79,7 +79,7 @@ const AkElementWithCustomEvents = CustomEmitterElement(AkControlElement);
 
 @customElement("ak-checkbox-group")
 export class CheckboxGroup extends AkElementWithCustomEvents {
-    static styles = [
+    public static styles = [
         PFBase,
         PFForm,
         PFCheck,
@@ -92,36 +92,36 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         `,
     ];
 
-    static get formAssociated() {
+    public static get formAssociated() {
         return true;
     }
 
     @property({ type: Array })
-    options: CheckboxPair[] = [];
+    public options: CheckboxPair[] = [];
 
     @property({ type: Array })
-    value: string[] = [];
+    public value: string[] = [];
 
     @property({ type: String })
-    name?: string;
+    public name?: string;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @queryAll('input[type="checkbox"]')
-    checkboxes!: NodeListOf<HTMLInputElement>;
+    protected checkboxes!: NodeListOf<HTMLInputElement>;
 
     @state()
-    values: string[] = [];
+    protected values: string[] = [];
 
-    internals?: ElementInternals;
-    doneFirstUpdate = false;
+    protected internals?: ElementInternals;
+    protected doneFirstUpdate = false;
 
-    json() {
+    public override json() {
         return this.values;
     }
 
-    private get formValue() {
+    get #formValue() {
         if (this.name === undefined) {
             throw new Error("This cannot be called without having the name set.");
         }
@@ -131,12 +131,12 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         return entries;
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.onClick = this.onClick.bind(this);
     }
 
-    onClick(ev: Event) {
+    protected onClick(ev: Event) {
         ev.stopPropagation();
         this.values = Array.from(this.checkboxes)
             .filter((checkbox) => checkbox.checked)
@@ -154,21 +154,21 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
                     this,
                 );
             }
-            this.internals.setFormValue(this.formValue);
+            this.internals.setFormValue(this.#formValue);
         }
         // Doing a write-back so anyone examining the checkbox.value field will get something
         // meaningful. Doesn't do anything for anyone, usually, but it's nice to have.
         this.value = this.values;
     }
 
-    willUpdate(changed: PropertyValues<this>) {
+    public override willUpdate(changed: PropertyValues<this>) {
         if (changed.has("value") && !this.doneFirstUpdate) {
             this.doneFirstUpdate = true;
             this.values = this.value;
         }
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.dataset.akControl = "true";
         if (this.name && !this.internals) {
@@ -194,7 +194,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         });
     }
 
-    render() {
+    public override render() {
         const renderOne = ([name, label]: CheckboxPr) => {
             const selected = this.values.includes(name);
             const blockFwd = (e: Event) => {

@@ -28,7 +28,7 @@ import OL from "ol/ol.css";
 
 @customElement("ak-map")
 export class Map extends OlMap {
-    public render() {
+    public override render() {
         return html`
             <style>
                 ${OL}
@@ -57,18 +57,18 @@ export class Map extends OlMap {
 @customElement("ak-events-map")
 export class EventMap extends AKElement {
     @property({ attribute: false })
-    events?: PaginatedResponse<Event>;
+    public events?: PaginatedResponse<Event>;
 
     @query("ol-layer-vector")
-    vectorLayer?: OlLayerVector;
+    protected vectorLayer?: OlLayerVector;
 
     @query("ak-map")
-    map?: Map;
+    protected map?: Map;
 
     @property({ type: Number })
-    zoomPaddingPx = 100;
+    public zoomPaddingPx = 100;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         css`
@@ -82,7 +82,7 @@ export class EventMap extends AKElement {
         `,
     ];
 
-    updated(_changedProperties: PropertyValues<this>): void {
+    public override updated(_changedProperties: PropertyValues<this>): void {
         if (!_changedProperties.has("events")) {
             return;
         }
@@ -141,7 +141,7 @@ export class EventMap extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ak-map>
                 <ol-select

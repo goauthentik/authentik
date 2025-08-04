@@ -16,20 +16,20 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    order = "-expires";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Application"), "application"),
             new TableColumn(msg("Expires"), "expires"),
@@ -37,7 +37,7 @@ export class UserConsentList extends Table<UserConsent> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Consent(s)")}
@@ -59,7 +59,7 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    protected row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
             html`${item.expires && item.expiring

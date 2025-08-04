@@ -20,18 +20,17 @@ const getCurrentStorageValue = (): Record<string, unknown> => {
 };
 
 export class ShowHintController implements ReactiveController {
-    host: ShowHintControllerHost;
+    #host: ShowHintControllerHost;
 
-    hintToken: string;
+    protected hintToken: string;
 
-    constructor(host: ShowHintControllerHost, hintToken: string) {
-        (this.host = host).addController(this);
+    public constructor(host: ShowHintControllerHost, hintToken: string) {
+        this.#host = host;
+        this.#host.addController(this);
         this.hintToken = hintToken;
-        this.hide = this.hide.bind(this);
-        this.show = this.show.bind(this);
     }
 
-    setTheHint(state: boolean = false) {
+    protected setTheHint(state: boolean = false) {
         window?.localStorage.setItem(
             LOCALSTORAGE_AUTHENTIK_KEY,
             JSON.stringify({
@@ -39,28 +38,28 @@ export class ShowHintController implements ReactiveController {
                 [this.hintToken]: state,
             }),
         );
-        this.host.showHint = state;
+        this.#host.showHint = state;
     }
 
-    hide() {
+    public hide = () => {
         this.setTheHint(false);
-    }
+    };
 
-    show() {
+    public show = () => {
         this.setTheHint(true);
-    }
+    };
 
-    hostConnected() {
+    public hostConnected() {
         const localStores = getCurrentStorageValue();
         if (!(this.hintToken in localStores)) {
             return;
         }
         // Note that we only do this IF the field exists and is defined. `undefined` means "do the
         // default thing of showing the hint."
-        this.host.showHint = localStores[this.hintToken] as boolean;
+        this.#host.showHint = localStores[this.hintToken] as boolean;
     }
 
-    render() {
+    public render() {
         return html`<ak-hint-footer
             ><div style="text-align: right">
                 <input type="checkbox" @input=${this.hide} />&nbsp;${msg(

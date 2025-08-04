@@ -28,26 +28,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     @property()
-    app?: string;
+    public app?: string;
 
-    checkbox = true;
-    clearOnRefresh = true;
-    expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
 
-    order = "order";
+    public override order = "order";
 
-    async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
             app: this.app || "",
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Application entitlement(s)")}
@@ -69,7 +69,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    protected row(item: ApplicationEntitlement): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
@@ -95,7 +95,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         ];
     }
 
-    renderExpanded(item: ApplicationEntitlement): TemplateResult {
+    protected override renderExpanded(item: ApplicationEntitlement): TemplateResult {
         return html`<td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -118,7 +118,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             </td>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No app entitlements created.")}</span>
@@ -133,7 +133,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         );
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
             <span slot="submit"> ${msg("Create")} </span>
             <span slot="header"> ${msg("Create Entitlement")} </span>

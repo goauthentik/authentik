@@ -21,22 +21,24 @@ import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
 
 export class ApplicationWizardStep<T = Record<string, unknown>> extends WizardStep {
-    static styles = [...WizardStep.styles, ...styles];
+    public static override styles = [...WizardStep.styles, ...styles];
 
     @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public wizard!: ApplicationWizardState;
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application and configure a provider for it.");
-    canCancel = true;
+    public override wizardTitle = msg("New application");
+    public override wizardDescription = msg(
+        "Create a new application and configure a provider for it.",
+    );
+    public override canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
     @query("form")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
-    get formValues(): T {
+    public get formValues(): T {
         return serializeForm<T>([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),

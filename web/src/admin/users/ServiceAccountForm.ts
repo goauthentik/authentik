@@ -22,19 +22,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
-    result: UserServiceAccountResponse | null = null;
+    public result: UserServiceAccountResponse | null = null;
 
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.group) {
             return msg(str`Successfully created user and added to group ${this.group.name}`);
         }
         return msg("Successfully created user.");
     }
 
-    async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
+    protected async send(data: UserServiceAccountRequest): Promise<UserServiceAccountResponse> {
         const result = await new CoreApi(DEFAULT_CONFIG).coreUsersServiceAccountCreate({
             userServiceAccountRequest: data,
         });
@@ -51,12 +51,12 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         return result;
     }
 
-    reset(): void {
+    public override reset(): void {
         super.reset();
         this.result = null;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="name">
                 <input
                     type="text"
@@ -112,7 +112,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>`;
     }
 
-    renderResponseForm(): TemplateResult {
+    protected renderResponseForm(): TemplateResult {
         return html`<p>
                 ${msg(
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
@@ -138,7 +138,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderFormWrapper(): TemplateResult {
+    protected override renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }

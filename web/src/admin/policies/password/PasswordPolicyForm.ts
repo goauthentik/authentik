@@ -15,15 +15,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-policy-password-form")
 export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
     @state()
-    showStatic = true;
+    protected showStatic = true;
 
     @state()
-    showHIBP = false;
+    protected showHIBP = false;
 
     @state()
-    showZxcvbn = false;
+    protected showZxcvbn = false;
 
-    async loadInstance(pk: string): Promise<PasswordPolicy> {
+    protected async loadInstance(pk: string): Promise<PasswordPolicy> {
         const policy = await new PoliciesApi(DEFAULT_CONFIG).policiesPasswordRetrieve({
             policyUuid: pk,
         });
@@ -33,7 +33,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         return policy;
     }
 
-    async send(data: PasswordPolicy): Promise<PasswordPolicy> {
+    protected async send(data: PasswordPolicy): Promise<PasswordPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordUpdate({
                 policyUuid: this.instance.pk || "",
@@ -45,7 +45,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         });
     }
 
-    renderStaticRules(): TemplateResult {
+    protected renderStaticRules(): TemplateResult {
         return html` <ak-form-group label="${msg("Static rules")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
@@ -141,7 +141,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         </ak-form-group>`;
     }
 
-    renderHIBP(): TemplateResult {
+    protected renderHIBP(): TemplateResult {
         return html`
             <ak-form-group open label="${msg("HaveIBeenPwned settings")}">
                 <div class="pf-c-form">
@@ -165,7 +165,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderZxcvbn(): TemplateResult {
+    protected renderZxcvbn(): TemplateResult {
         return html`
             <ak-form-group open label="${msg("zxcvbn settings")}">
                 <div class="pf-c-form">
@@ -214,7 +214,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",

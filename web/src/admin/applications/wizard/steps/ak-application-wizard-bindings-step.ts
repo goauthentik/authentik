@@ -35,9 +35,9 @@ const COLUMNS = [
 
 @customElement("ak-application-wizard-bindings-step")
 export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
-    label = msg("Configure Bindings");
+    public override label = msg("Configure Bindings");
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", destination: "submit" },
             { kind: "back", destination: "provider" },
@@ -46,9 +46,9 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     }
 
     @query("ak-select-table")
-    selectTable!: SelectTable;
+    protected selectTable!: SelectTable;
 
-    static styles = [
+    public static override styles = [
         ...super.styles,
         PFCard,
         css`
@@ -58,7 +58,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         `,
     ];
 
-    get bindingsAsColumns() {
+    public get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
             const { order, enabled, timeout } = binding;
             const isSet = P.union(P.string.minLength(1), P.number);
@@ -85,13 +85,13 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     // TODO Fix those dispatches so that we handle them here, in this component, and *choose* how to
     // forward them.
-    onBindingEvent(binding?: number) {
+    protected onBindingEvent(binding?: number) {
         this.handleUpdate({ currentBinding: binding ?? -1 }, "edit-binding", {
             enable: "edit-binding",
         });
     }
 
-    onDeleteBindings() {
+    protected onDeleteBindings() {
         const toDelete = this.selectTable
             .json()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
@@ -99,7 +99,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
         this.handleUpdate({ bindings }, "bindings");
     }
 
-    renderEmptyCollection() {
+    protected renderEmptyCollection() {
         return html`<ak-wizard-title
                 >${msg("Configure Policy/User/Group Bindings")}</ak-wizard-title
             >
@@ -133,7 +133,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             </div>`;
     }
 
-    renderCollection() {
+    protected renderCollection() {
         return html` <ak-wizard-title>${msg("Configure Policy Bindings")}</ak-wizard-title>
             <h6 class="pf-c-title pf-m-md">
                 ${msg("These policies control which users can access this application.")}
@@ -152,7 +152,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
             ></ak-select-table>`;
     }
 
-    renderMain() {
+    protected override renderMain() {
         if ((this.wizard.bindings ?? []).length === 0) {
             return this.renderEmptyCollection();
         }

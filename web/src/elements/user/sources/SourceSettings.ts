@@ -21,18 +21,18 @@ import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {
     @property({ attribute: false })
-    sourceSettings?: UserSetting[];
+    public sourceSettings?: UserSetting[];
 
     @property({ attribute: false })
-    connections?: PaginatedUserSourceConnectionList;
+    public connections?: PaginatedUserSourceConnectionList;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
     @property({ type: Boolean })
-    canConnect = true;
+    public canConnect = true;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFDataList,
         css`
             .pf-c-data-list__cell {
@@ -53,21 +53,21 @@ export class UserSourceSettingsPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             this.firstUpdated();
         });
     }
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.sourceSettings = await new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
         this.connections = await new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList({
             user: this.userId,
         });
     }
 
-    renderSourceSettings(source: UserSetting): TemplateResult {
+    protected renderSourceSettings(source: UserSetting): TemplateResult {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
@@ -111,7 +111,7 @@ export class UserSourceSettingsPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <ul class="pf-c-data-list" role="list">
             ${this.sourceSettings
                 ? html`

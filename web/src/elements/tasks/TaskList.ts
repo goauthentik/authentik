@@ -30,34 +30,37 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
-    expandable = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
     @property()
-    relObjAppLabel?: string;
+    public relObjAppLabel?: string;
     @property()
-    relObjModel?: string;
+    public relObjModel?: string;
     @property()
-    relObjId?: string;
+    public relObjId?: string;
 
     @property({ type: Boolean })
-    showOnlyStandalone: boolean = true;
+    public showOnlyStandalone: boolean = true;
 
     @property({ type: Boolean })
-    excludeSuccessful: boolean = true;
+    public excludeSuccessful: boolean = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "-mtime";
+    public override order = "-mtime";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
-    }
+    public static override styles: CSSResult[] = [
+        ...super.styles,
+        PFDescriptionList,
+        PFSpacing,
+        PFTitle,
+    ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Task>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Task>> {
         const relObjIdIsnull =
             typeof this.relObjId !== "undefined"
                 ? undefined
@@ -95,7 +98,7 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Task"), "actor_name"),
             new TableColumn(msg("Queue"), "queue_name"),
@@ -105,7 +108,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -149,7 +152,7 @@ export class TaskList extends Table<Task> {
             </div>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    protected row(item: Task): TemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
@@ -184,7 +187,7 @@ export class TaskList extends Table<Task> {
         ];
     }
 
-    renderExpanded(item: Task): TemplateResult {
+    protected override renderExpanded(item: Task): TemplateResult {
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">

@@ -15,13 +15,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {
-    async loadInstance(pk: number): Promise<LDAPProvider> {
+    protected async loadInstance(pk: number): Promise<LDAPProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
         });
     }
 
-    async send(data: LDAPProvider): Promise<LDAPProvider> {
+    protected async send(data: LDAPProvider): Promise<LDAPProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
                 id: this.instance.pk,
@@ -33,7 +33,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
         });
     }
 
-    renderForm() {
+    protected override renderForm() {
         return renderForm(this.instance ?? {}, [], this.brand);
     }
 }

@@ -46,7 +46,7 @@ type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -179,7 +179,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeGReCaptcha() {
+    protected async executeGReCaptcha() {
         return grecaptcha.ready(() => {
             return grecaptcha.execute(
                 grecaptcha.render(this.captchaDocumentContainer, {
@@ -191,11 +191,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         });
     }
 
-    async refreshGReCaptchaFrame() {
+    protected async refreshGReCaptchaFrame() {
         this.#iframeRef.value?.contentWindow?.grecaptcha.reset();
     }
 
-    async refreshGReCaptcha() {
+    protected async refreshGReCaptcha() {
         window.grecaptcha.reset();
         window.grecaptcha.execute();
     }
@@ -214,7 +214,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeHCaptcha() {
+    protected async executeHCaptcha() {
         await hcaptcha.execute(
             hcaptcha.render(this.captchaDocumentContainer, {
                 sitekey: this.challenge.siteKey,
@@ -224,11 +224,11 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         );
     }
 
-    async refreshHCaptchaFrame() {
+    protected async refreshHCaptchaFrame() {
         this.#iframeRef.value?.contentWindow?.hcaptcha?.reset();
     }
 
-    async refreshHCaptcha() {
+    protected async refreshHCaptcha() {
         window.hcaptcha.reset();
         window.hcaptcha.execute();
     }
@@ -248,18 +248,18 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         ></div>`;
     };
 
-    async executeTurnstile() {
+    protected async executeTurnstile() {
         window.turnstile.render(this.captchaDocumentContainer, {
             sitekey: this.challenge.siteKey,
             callback: this.onTokenChange,
         });
     }
 
-    async refreshTurnstileFrame() {
+    protected async refreshTurnstileFrame() {
         this.#iframeRef.value?.contentWindow?.turnstile.reset();
     }
 
-    async refreshTurnstile() {
+    protected async refreshTurnstile() {
         window.turnstile.reset();
     }
 
@@ -297,7 +297,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Render
 
-    renderBody() {
+    protected renderBody() {
         if (this.error) {
             return akEmptyState({ icon: "fa-times" }, { heading: this.error });
         }
@@ -316,7 +316,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return akEmptyState({ loading: true }, { heading: msg("Verifying...") });
     }
 
-    renderMain() {
+    protected renderMain() {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form">
                 <ak-form-static
@@ -335,7 +335,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         </ak-flow-card>`;
     }
 
-    render() {
+    public override render() {
         if (!this.challenge) {
             return this.embedded ? nothing : akEmptyState({ loading: true });
         }
@@ -351,14 +351,14 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("message", this.#messageListener, {
             signal: this.#listenController.signal,
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.#listenController.abort();
 
         if (!this.challenge?.interactive) {
@@ -372,7 +372,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     //#endregion
 
-    public firstUpdated(changedProperties: PropertyValues<this>) {
+    public override firstUpdated(changedProperties: PropertyValues<this>) {
         if (!(changedProperties.has("challenge") && typeof this.challenge !== "undefined")) {
             return;
         }
@@ -380,7 +380,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         this.#refreshVendor();
     }
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (!changedProperties.has("refreshedAt") || !this.challenge) {
             return;
         }

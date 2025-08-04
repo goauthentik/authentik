@@ -32,12 +32,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
     @property({ type: String })
-    flowSlug?: string;
+    public flowSlug?: string;
 
     @state()
-    flow!: Flow;
+    protected flow!: Flow;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFDescriptionList,
@@ -55,19 +55,19 @@ export class FlowViewPage extends AKElement {
         `,
     ];
 
-    fetchFlow(slug: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
+    protected fetchFlow(slug: string) {
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
             this.flow = flow;
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowSlug") && this.flowSlug) {
             this.fetchFlow(this.flowSlug);
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.flow) {
             return html``;
         }

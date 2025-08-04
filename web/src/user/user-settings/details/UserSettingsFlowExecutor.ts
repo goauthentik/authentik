@@ -39,26 +39,26 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug = this.brand?.flowUserSettings;
+    public flowSlug = this.brand?.flowUserSettings;
 
-    private _challenge?: ChallengeTypes;
+    #challenge?: ChallengeTypes;
 
     @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
+    public set challenge(value: ChallengeTypes | undefined) {
+        this.#challenge = value;
         this.requestUpdate();
     }
 
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
+    public get challenge(): ChallengeTypes | undefined {
+        return this.#challenge;
     }
 
     @property({ type: Boolean })
-    loading = false;
+    public loading = false;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
+    public static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
-    submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
+    public submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
         // @ts-ignore
@@ -88,20 +88,20 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    firstUpdated() {
+    public override firstUpdated() {
         if (this.flowSlug) {
             this.nextChallenge();
         }
     }
 
-    updated(): void {
+    public override updated(): void {
         if (!this.flowSlug && this.brand?.flowUserSettings) {
             this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }
     }
 
-    async nextChallenge(): Promise<void> {
+    protected async nextChallenge(): Promise<void> {
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
@@ -118,7 +118,7 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async errorMessage(error: APIError): Promise<void> {
+    protected async errorMessage(error: APIError): Promise<void> {
         const challenge: FlowErrorChallenge = {
             component: "ak-stage-flow-error",
             error: pluckErrorDetail(error),
@@ -128,7 +128,7 @@ export class UserSettingsFlowExecutor
         this.challenge = challenge as ChallengeTypes;
     }
 
-    globalRefresh(): void {
+    protected globalRefresh(): void {
         refreshMe().then(() => {
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
@@ -146,7 +146,7 @@ export class UserSettingsFlowExecutor
         });
     }
 
-    renderChallenge(): TemplateResult {
+    protected renderChallenge(): TemplateResult {
         if (!this.challenge) {
             return html``;
         }
@@ -191,7 +191,7 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    renderChallengeWrapper(): TemplateResult {
+    protected renderChallengeWrapper(): TemplateResult {
         if (!this.flowSlug) {
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
@@ -201,7 +201,7 @@ export class UserSettingsFlowExecutor
         return html` ${this.renderChallenge()} `;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>

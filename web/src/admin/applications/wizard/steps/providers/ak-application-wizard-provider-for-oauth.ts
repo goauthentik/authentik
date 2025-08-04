@@ -20,15 +20,15 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-for-oauth")
 export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProviderForm<OAuth2ProviderRequest> {
-    label = msg("Configure OAuth2 Provider");
+    public override label = msg("Configure OAuth2 Provider");
 
     @state()
-    showClientSecret = true;
+    protected showClientSecret = true;
 
     @state()
-    oauthSources?: PaginatedOAuthSourceList;
+    protected oauthSources?: PaginatedOAuthSourceList;
 
-    constructor() {
+    public constructor() {
         super();
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({
@@ -40,7 +40,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             });
     }
 
-    renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
+    protected renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
@@ -55,7 +55,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             </form>`;
     }
 
-    render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("Oauth2 Provider Step received uninitialized wizard context.");
         }

@@ -25,16 +25,16 @@ export class MyElement extends LitElement {
 */
 
 export class ListenerController {
-    listenerController?: AbortController;
+    protected listenerController?: AbortController;
 
-    get signal() {
+    public get signal() {
         if (!this.listenerController) {
             this.listenerController = new AbortController();
         }
         return this.listenerController.signal;
     }
 
-    abort() {
+    public abort() {
         this.listenerController?.abort();
         this.listenerController = undefined;
     }

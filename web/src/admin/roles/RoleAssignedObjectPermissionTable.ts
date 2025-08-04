@@ -15,29 +15,31 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-role-assigned-object-permissions-table")
 export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPermission> {
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
             ...(await this.defaultEndpointConfig()),
             uuid: this.roleUuid || "",
         });
     }
 
-    groupBy(items: ExtraRoleObjectPermission[]): [string, ExtraRoleObjectPermission[]][] {
+    public override groupBy(
+        items: ExtraRoleObjectPermission[],
+    ): [string, ExtraRoleObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -46,7 +48,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
@@ -76,7 +78,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraRoleObjectPermission): TemplateResult[] {
+    protected row(item: ExtraRoleObjectPermission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

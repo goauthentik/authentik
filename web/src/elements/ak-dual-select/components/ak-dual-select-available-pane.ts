@@ -40,13 +40,13 @@ const hostAttributes = [
 export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEventType>(
     AKElement,
 ) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
+    public static styles = [PFBase, PFButton, PFDualListSelector, listStyles, availablePaneStyles];
 
     //#region Properties
 
     /* The array of key/value pairs this pane is currently showing */
     @property({ type: Array })
-    readonly options: DualSelectPair[] = [];
+    public readonly options: DualSelectPair[] = [];
 
     /**
      * A set (set being easy for lookups) of keys with all the pairs selected,
@@ -54,7 +54,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
      * can be marked and their clicks ignored.
      */
     @property({ type: Object })
-    readonly selected: Set<string> = new Set();
+    public readonly selected: Set<string> = new Set();
 
     //#endregion
 
@@ -79,7 +79,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
 
     //#region Lifecycle
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         for (const [attr, value] of hostAttributes) {
@@ -89,7 +89,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
         }
     }
 
-    protected updated(changed: PropertyValues<this>) {
+    protected override updated(changed: PropertyValues<this>) {
         if (changed.has("options")) {
             this.listRef.value?.scrollTo(0, 0);
         }
@@ -101,7 +101,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
         this.toMove = new Set();
     }
 
-    get moveable() {
+    public get moveable() {
         return Array.from(this.toMove.values());
     }
 
@@ -143,7 +143,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
     // change; this allows the available pane to illustrate selected items with the checkmark
     // without causing the list to scroll back up to the top.
 
-    render() {
+    public override render() {
         return html`
             <div ${ref(this.listRef)} class="pf-c-dual-list-selector__menu">
                 <ul class="pf-c-dual-list-selector__list">

@@ -17,16 +17,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
+    public static override styles: CSSResult[] = [PFBase, PFForm, PFFormControl];
 
     @property()
-    label?: string;
+    public label?: string;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ attribute: false })
-    set errors(value: ErrorDetail[] | undefined) {
+    public set errors(value: ErrorDetail[] | undefined) {
         this._errors = value;
         const hasError = (value || []).length > 0;
         this.querySelectorAll("input").forEach((input) => {
@@ -35,15 +35,15 @@ export class FormElement extends AKElement {
         this.requestUpdate();
     }
 
-    _errors?: ErrorDetail[];
+    protected _errors?: ErrorDetail[];
 
-    updated(): void {
+    public override updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-form__group">
             <label class="pf-c-form__label">
                 <span class="pf-c-form__label-text">${this.label}</span>

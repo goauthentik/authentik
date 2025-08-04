@@ -22,18 +22,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
     @property()
-    model?: RbacPermissionsAssignedByRolesListModelEnum;
+    public model?: RbacPermissionsAssignedByRolesListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
@@ -53,7 +53,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return perms;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         const baseColumns = [new TableColumn(msg("User"), "user")];
         // We don't check pagination since models shouldn't need to have that many permissions?
         this.modelPermissions?.results.forEach((perm) => {
@@ -62,7 +62,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         return baseColumns;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to role")} </span>
@@ -78,7 +78,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
@@ -107,7 +107,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): TemplateResult[] {
+    protected row(item: RoleAssignedObjectPermission): TemplateResult[] {
         const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =

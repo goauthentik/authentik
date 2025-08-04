@@ -45,12 +45,12 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
-    static styles = [...SearchSelectBase.styles];
+    public static override styles = [...SearchSelectBase.styles];
 
     @property({ type: Object, attribute: false })
-    config!: ISearchSelectApi<T>;
+    public config!: ISearchSelectApi<T>;
 
-    connectedCallback() {
+    public override connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;
         this.renderElement = this.config.renderElement;
         this.renderDescription = this.config.renderDescription;

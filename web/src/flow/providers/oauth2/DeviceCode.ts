@@ -25,9 +25,16 @@ export class OAuth2DeviceCode extends BaseStage<
     OAuthDeviceCodeChallenge,
     OAuthDeviceCodeChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"

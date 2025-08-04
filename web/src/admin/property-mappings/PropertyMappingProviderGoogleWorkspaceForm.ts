@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-google-workspace-form")
 export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {
-    loadInstance(pk: string): Promise<GoogleWorkspaceProviderMapping> {
+    protected loadInstance(pk: string): Promise<GoogleWorkspaceProviderMapping> {
         return new PropertymappingsApi(
             DEFAULT_CONFIG,
         ).propertymappingsProviderGoogleWorkspaceRetrieve({
@@ -19,7 +19,9 @@ export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMapp
         });
     }
 
-    async send(data: GoogleWorkspaceProviderMapping): Promise<GoogleWorkspaceProviderMapping> {
+    protected async send(
+        data: GoogleWorkspaceProviderMapping,
+    ): Promise<GoogleWorkspaceProviderMapping> {
         if (this.instance) {
             return new PropertymappingsApi(
                 DEFAULT_CONFIG,

@@ -32,32 +32,32 @@ export interface ISearchSelectBase<T> {
 }
 
 export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
-    static styles = [PFBase];
+    public static override styles = [PFBase];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    protected fetchObjects!: (query?: string) => Promise<T[]>;
 
     // A function passed to this object that extracts a string representation of items of the
     // collection under search.
-    renderElement!: (element: T) => string;
+    protected renderElement!: (element: T) => string;
 
     // A function passed to this object that extracts an HTML representation of additional
     // information for items of the collection under search.
-    renderDescription?: (element: T) => string | TemplateResult;
+    protected renderDescription?: (element: T) => string | TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
-    value!: (element: T | undefined) => string;
+    protected value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
     // fetching the data; sets an initial default value.
-    selected?: (element: T, elements: T[]) => boolean;
+    protected selected?: (element: T, elements: T[]) => boolean;
 
     // A function passed to this object (or using the default below) that groups objects in the
     // collection under search into categories.
-    groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
+    protected groupBy: (items: T[]) => [string, T[]][] = (items: T[]): [string, T[]][] => {
         return groupBy(items, () => {
             return "";
         });
@@ -65,39 +65,39 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     // Whether or not the dropdown component can be left blank
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     // An initial string to filter the search contents, and the value of the input which further
     // serves to restrict the search
     @property()
-    query?: string;
+    public query?: string;
 
     // The objects currently available under search
     @property({ attribute: false })
-    objects?: T[];
+    public objects?: T[];
 
     // The currently selected object
     @property({ attribute: false })
-    selectedObject?: T;
+    public selectedObject?: T;
 
     // Used to inform the form of the name of the object
     @property()
-    name?: string;
+    public name?: string;
 
     // The textual placeholder for the search's <input> object, if currently empty. Used as the
     // native <input> object's `placeholder` field.
     @property()
-    placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object.");
 
     // A textual string representing "The user has affirmed they want to leave the selection blank."
     // Only used if `blankable` above is true.
     @property()
-    emptyOption = "---------";
+    public emptyOption = "---------";
 
-    isFetchingData = false;
+    protected isFetchingData = false;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
 
     public toForm(): string {
         if (!this.objects) {
@@ -106,7 +106,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         return this.value(this.selectedObject) || "";
     }
 
-    public json() {
+    public override json() {
         return this.toForm();
     }
 
@@ -163,7 +163,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    private onSearch(event: InputEvent) {
+    protected onSearch(event: InputEvent) {
         const value = (event.target as SearchSelectView).rawValue;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -176,7 +176,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         });
     }
 
-    private onSelect(event: InputEvent) {
+    protected onSelect(event: InputEvent) {
         const value = (event.target as SearchSelectView).value;
         if (value === undefined) {
             this.selectedObject = undefined;
@@ -191,7 +191,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         this.dispatchChangeEvent(this.selectedObject);
     }
 
-    private getGroupedItems(): GroupedOptions {
+    protected getGroupedItems(): GroupedOptions {
         const groupedItems = this.groupBy(this.objects || []);
 
         const makeSearchTuples = (items: T[]): SelectOption[] =>

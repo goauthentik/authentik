@@ -20,9 +20,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-api-browser")
 export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
-    schemaPath?: string;
+    public schemaPath?: string;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         css`
             img.logo {
                 width: 100%;
@@ -33,12 +33,12 @@ export class APIBrowser extends WithBrandConfig(Interface) {
     ];
 
     @state()
-    bgColor = "#000000";
+    protected bgColor = "#000000";
 
     @state()
-    textColor = "#000000";
+    protected textColor = "#000000";
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             const style = getComputedStyle(document.documentElement);
             if (ev.detail === UiThemeEnum.Light) {
@@ -60,7 +60,7 @@ export class APIBrowser extends WithBrandConfig(Interface) {
         );
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-locale-context>
                 <rapi-doc

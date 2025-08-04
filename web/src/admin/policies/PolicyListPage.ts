@@ -29,32 +29,35 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Policies");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-infrastructure";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type")),
@@ -62,7 +65,7 @@ export class PolicyListPage extends TablePage<Policy> {
         ];
     }
 
-    row(item: Policy): TemplateResult[] {
+    protected row(item: Policy): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0
@@ -106,7 +109,7 @@ export class PolicyListPage extends TablePage<Policy> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy / Policies")}
@@ -128,11 +131,11 @@ export class PolicyListPage extends TablePage<Policy> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-policy-wizard> </ak-policy-wizard>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html` ${super.renderToolbar()}
             <ak-forms-confirm
                 successMessage=${msg("Successfully cleared policy cache")}

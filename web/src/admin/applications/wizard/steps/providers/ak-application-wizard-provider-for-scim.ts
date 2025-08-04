@@ -13,12 +13,12 @@ import { html } from "lit";
 
 @customElement("ak-application-wizard-provider-for-scim")
 export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm<SCIMProvider> {
-    label = msg("Configure SCIM Provider");
+    public override label = msg("Configure SCIM Provider");
 
     @state()
-    propertyMappings?: PaginatedSCIMMappingList;
+    protected propertyMappings?: PaginatedSCIMMappingList;
 
-    render() {
+    public override render() {
         return html`<ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(

@@ -41,15 +41,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
     @property({ type: String })
-    applicationSlug?: string;
+    public applicationSlug?: string;
 
     @state()
-    application?: Application;
+    protected application?: Application;
 
     @state()
-    missingOutpost = false;
+    protected missingOutpost = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFList,
         PFBanner,
@@ -61,7 +61,7 @@ export class ApplicationViewPage extends AKElement {
         PFCard,
     ];
 
-    fetchIsMissingOutpost(providersByPk: Array<number>) {
+    protected fetchIsMissingOutpost(providersByPk: Array<number>) {
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesList({
                 providersByPk,
@@ -74,7 +74,7 @@ export class ApplicationViewPage extends AKElement {
             });
     }
 
-    fetchApplication(slug: string) {
+    protected fetchApplication(slug: string) {
         new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
             this.application = app;
             if (
@@ -89,13 +89,13 @@ export class ApplicationViewPage extends AKElement {
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
@@ -110,7 +110,7 @@ export class ApplicationViewPage extends AKElement {
             ${this.renderApp()}`;
     }
 
-    renderApp(): TemplateResult {
+    protected renderApp(): TemplateResult {
         if (!this.application) {
             return html`<ak-empty-state default-label></ak-empty-state>`;
         }

@@ -37,7 +37,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
  */
 @customElement("ak-library-application-search")
 export class LibraryPageApplicationSearch extends AKElement {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFDisplay,
         css`
@@ -60,19 +60,19 @@ export class LibraryPageApplicationSearch extends AKElement {
     ];
 
     @property({ attribute: false })
-    set apps(value: Application[]) {
+    public set apps(value: Application[]) {
         this.fuse.setCollection(value);
     }
 
     @property()
-    query = getURLParam<string | undefined>("search", undefined);
+    public query = getURLParam<string | undefined>("search", undefined);
 
     @query("input")
-    searchInput?: HTMLInputElement;
+    protected searchInput?: HTMLInputElement;
 
-    fuse: Fuse<Application>;
+    protected fuse: Fuse<Application>;
 
-    constructor() {
+    public constructor() {
         super();
         this.fuse = new Fuse([], {
             keys: [
@@ -91,11 +91,11 @@ export class LibraryPageApplicationSearch extends AKElement {
         });
     }
 
-    onSelected(apps: FuseResult<Application>[]) {
+    protected onSelected(apps: FuseResult<Application>[]) {
         this.dispatchEvent(new LibraryPageSearchUpdated(apps.map((app) => app.item)));
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         if (!this.query) {
             return;
@@ -107,7 +107,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.onSelected(matchingApps);
     }
 
-    resetSearch(): void {
+    protected resetSearch(): void {
         if (this.searchInput) {
             this.searchInput.value = "";
         }
@@ -118,7 +118,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.dispatchEvent(new LibraryPageSearchReset());
     }
 
-    onInput(ev: InputEvent) {
+    protected onInput(ev: InputEvent) {
         this.query = (ev.target as HTMLInputElement).value;
         if (this.query === "") {
             return this.resetSearch();
@@ -136,7 +136,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.onSelected(apps);
     }
 
-    onKeyDown(ev: KeyboardEvent) {
+    protected onKeyDown(ev: KeyboardEvent) {
         switch (ev.key) {
             case "Escape": {
                 this.resetSearch();
@@ -149,7 +149,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         }
     }
 
-    render() {
+    public override render() {
         return html`<input
             @input=${this.onInput}
             @keydown=${this.onKeyDown}

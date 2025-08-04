@@ -16,20 +16,20 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     @property()
-    targetUser!: string;
+    public targetUser!: string;
 
-    async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<AuthenticatedSession>> {
         return new CoreApi(DEFAULT_CONFIG).coreAuthenticatedSessionsList({
             ...(await this.defaultEndpointConfig()),
             userUsername: this.targetUser,
         });
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    order = "-expires";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Last IP"), "last_ip"),
             new TableColumn(msg("Last used"), "last_used"),
@@ -37,7 +37,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Session(s)")}
@@ -65,7 +65,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: AuthenticatedSession): TemplateResult[] {
+    protected row(item: AuthenticatedSession): TemplateResult[] {
         return [
             html`<div>
                     ${item.geoIp?.country

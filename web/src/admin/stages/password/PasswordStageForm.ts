@@ -24,13 +24,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
 export class PasswordStageForm extends BaseStageForm<PasswordStage> {
-    loadInstance(pk: string): Promise<PasswordStage> {
+    protected loadInstance(pk: string): Promise<PasswordStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPasswordRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: PasswordStage): Promise<PasswordStage> {
+    protected async send(data: PasswordStage): Promise<PasswordStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
@@ -42,7 +42,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         });
     }
 
-    isBackendSelected(field: BackendsEnum): boolean {
+    protected isBackendSelected(field: BackendsEnum): boolean {
         if (!this.instance) {
             return true;
         }
@@ -53,7 +53,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const backends = [
             {
                 name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,

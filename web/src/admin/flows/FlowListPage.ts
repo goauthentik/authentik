@@ -22,38 +22,41 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Flows");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-process-automation";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "slug";
+    public override order = "slug";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
         return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
-    groupBy(items: Flow[]): [string, Flow[]][] {
+    public override groupBy(items: Flow[]): [string, Flow[]][] {
         return groupBy(items, (flow) => {
             return DesignationToLabel(flow.designation);
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "slug"),
             new TableColumn(msg("Name"), "name"),
@@ -63,7 +66,7 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Flow(s)")}
@@ -85,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Flow): TemplateResult[] {
+    protected row(item: Flow): TemplateResult[] {
         return [
             html`<div>
                     <a href="#/flow/flows/${item.slug}">
@@ -127,7 +130,7 @@ export class FlowListPage extends TablePage<Flow> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -144,7 +147,7 @@ export class FlowListPage extends TablePage<Flow> {
         `;
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm

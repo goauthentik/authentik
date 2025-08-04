@@ -59,27 +59,27 @@ interface SAMLPreviewAttribute {
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: SAMLProvider;
+    protected provider?: SAMLProvider;
 
     @state()
-    preview?: SAMLPreviewAttribute;
+    protected preview?: SAMLPreviewAttribute;
 
     @state()
-    metadata?: SAMLMetadata;
+    protected metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    protected signer?: CertificateKeyPair;
 
     @state()
-    verifier?: CertificateKeyPair;
+    protected verifier?: CertificateKeyPair;
 
     @state()
-    previewUser?: User;
+    protected previewUser?: User;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -93,7 +93,7 @@ export class SAMLProviderViewPage extends AKElement {
         PFBanner,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -101,7 +101,7 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
-    fetchPreview(): void {
+    protected fetchPreview(): void {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersSamlPreviewUserRetrieve({
                 id: this.provider?.pk || 0,
@@ -112,19 +112,19 @@ export class SAMLProviderViewPage extends AKElement {
             });
     }
 
-    fetchCertificate(kpUuid: string) {
+    protected fetchCertificate(kpUuid: string) {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
     }
 
-    fetchSigningCertificate(kpUuid: string) {
+    protected fetchSigningCertificate(kpUuid: string) {
         this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
     }
 
-    fetchVerificationCertificate(kpUuid: string) {
+    protected fetchVerificationCertificate(kpUuid: string) {
         this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
             if (this.provider.signingKp) {
@@ -136,13 +136,13 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    renderRelatedObjects(): TemplateResult {
+    protected renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
             relatedObjects.push(
@@ -212,7 +212,7 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -254,7 +254,7 @@ export class SAMLProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -437,7 +437,7 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    renderTabMetadata(): TemplateResult {
+    protected renderTabMetadata(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -501,7 +501,7 @@ export class SAMLProviderViewPage extends AKElement {
         `;
     }
 
-    renderTabPreview(): TemplateResult {
+    protected renderTabPreview(): TemplateResult {
         if (!this.preview) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }

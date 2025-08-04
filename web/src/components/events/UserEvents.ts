@@ -22,22 +22,22 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-events-user")
 export class UserEvents extends Table<Event> {
-    expandable = true;
+    public override expandable = true;
 
     @property()
-    order = "-created";
+    public override order = "-created";
 
     @property()
-    targetUser!: string;
+    public targetUser!: string;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             username: this.targetUser,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "enabled"),
@@ -46,7 +46,7 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             renderEventUser(item),
@@ -56,7 +56,7 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
@@ -67,7 +67,7 @@ export class UserEvents extends Table<Event> {
             <td></td>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state
                 ><span>${msg("No Events found.")}</span>

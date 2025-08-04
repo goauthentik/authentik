@@ -16,9 +16,9 @@ import { property } from "lit/decorators.js";
  */
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
-    abstract loadInstance(pk: PKT): Promise<T>;
+    protected abstract loadInstance(pk: PKT): Promise<T>;
 
-    async load(): Promise<void> {
+    protected async load(): Promise<void> {
         return Promise.resolve();
     }
 
@@ -56,13 +56,13 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     #loading = false;
 
     @property({ attribute: false })
-    instance?: T = this.defaultInstance;
+    public instance?: T = this.defaultInstance;
 
-    get defaultInstance(): T | undefined {
+    public get defaultInstance(): T | undefined {
         return undefined;
     }
 
-    constructor() {
+    public constructor() {
         super();
 
         this.addEventListener(EVENT_REFRESH, () => {
@@ -73,19 +73,19 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    reset(): void {
+    public override reset(): void {
         this.instance = undefined;
         this.#initialLoad = false;
     }
 
-    renderVisible(): TemplateResult {
+    protected override renderVisible(): TemplateResult {
         if ((this.#instancePk && !this.instance) || !this.#initialDataLoad) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return super.renderVisible();
     }
 
-    render(): SlottedTemplateResult {
+    public override render(): SlottedTemplateResult {
         // if we're in viewport now and haven't loaded AND have a PK set, load now
         // Or if we don't check for viewport in some cases
         const viewportVisible = this.isInViewport || !this.viewportCheck;

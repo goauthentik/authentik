@@ -23,7 +23,7 @@ export type RedirectURIProperties = LitPropertyRecord<{
 
 @customElement("ak-provider-oauth2-redirect-uri")
 export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFInputGroup,
         PFFormControl,
@@ -44,19 +44,19 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     public inputID?: string;
 
     @queryAll(".ak-form-control")
-    controls?: HTMLInputElement[];
+    protected controls?: HTMLInputElement[];
 
-    json() {
+    public override json() {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as RedirectURI;
     }
 
-    get isValid() {
+    public override get isValid() {
         return true;
     }
 
-    render() {
+    public override render() {
         const onChange = () => {
             this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
         };

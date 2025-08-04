@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-provider-saml-form")
 export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAMLPropertyMapping> {
-    loadInstance(pk: string): Promise<SAMLPropertyMapping> {
+    protected loadInstance(pk: string): Promise<SAMLPropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
+    protected async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlUpdate({
                 pmUuid: this.instance.pk,
@@ -32,7 +32,7 @@ export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAM
         });
     }
 
-    renderExtraFields(): TemplateResult {
+    protected override renderExtraFields(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("SAML Attribute Name")}
                 required

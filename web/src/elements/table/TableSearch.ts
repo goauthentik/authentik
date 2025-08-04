@@ -29,7 +29,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
     @property()
     public onSearch?: (value: string) => void;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFToolbar,
@@ -68,7 +68,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
         this.onSearch(value);
     };
 
-    renderInput(): TemplateResult {
+    protected renderInput(): TemplateResult {
         if (this.supportsQL && this.hasEnterpriseLicense) {
             return html`<ak-search-ql
                 .apiResponse=${this.apiResponse}
@@ -90,7 +90,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
         />`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<form class="pf-c-input-group" method="get" @submit=${this.#submitListener}>
             ${this.renderInput()}
             <button

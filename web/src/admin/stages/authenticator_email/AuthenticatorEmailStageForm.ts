@@ -25,7 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-authenticator-email-form")
 export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmailStage> {
-    async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
+    protected async loadInstance(pk: string): Promise<AuthenticatorEmailStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailRetrieve({
             stageUuid: pk,
         });
@@ -34,9 +34,9 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
     }
 
     @property({ type: Boolean })
-    showConnectionSettings = false;
+    public showConnectionSettings = false;
 
-    async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
+    protected async send(data: AuthenticatorEmailStage): Promise<AuthenticatorEmailStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailUpdate({
                 stageUuid: this.instance.pk || "",
@@ -48,7 +48,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    protected renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
             return html``;
         }
@@ -141,7 +141,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

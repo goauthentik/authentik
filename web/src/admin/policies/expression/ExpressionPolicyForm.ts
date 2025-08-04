@@ -18,13 +18,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
-    loadInstance(pk: string): Promise<ExpressionPolicy> {
+    protected loadInstance(pk: string): Promise<ExpressionPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
+    protected async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionUpdate({
                 policyUuid: this.instance.pk || "",
@@ -36,7 +36,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",

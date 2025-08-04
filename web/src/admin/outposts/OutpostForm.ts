@@ -94,17 +94,17 @@ function providerProvider(type: OutpostTypeEnum): DataProvider {
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
     @property()
-    type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
+    public type: OutpostTypeEnum = OutpostTypeEnum.Proxy;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
     @state()
-    providers: DataProvider = providerProvider(this.type);
+    protected providers: DataProvider = providerProvider(this.type);
 
-    defaultConfig?: OutpostDefaultConfig;
+    protected defaultConfig?: OutpostDefaultConfig;
 
-    async loadInstance(pk: string): Promise<Outpost> {
+    protected async loadInstance(pk: string): Promise<Outpost> {
         const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
             uuid: pk,
         });
@@ -113,20 +113,20 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         return o;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.defaultConfig = await new OutpostsApi(
             DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated outpost.")
             : msg("Successfully created outpost.");
     }
 
-    async send(data: Outpost): Promise<Outpost> {
+    protected async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
@@ -138,7 +138,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const typeOptions = [
             [OutpostTypeEnum.Proxy, msg("Proxy")],
             [OutpostTypeEnum.Ldap, msg("LDAP")],

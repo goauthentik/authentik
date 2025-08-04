@@ -25,13 +25,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends BaseStageForm<PromptStage> {
-    loadInstance(pk: string): Promise<PromptStage> {
+    protected loadInstance(pk: string): Promise<PromptStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: PromptStage): Promise<PromptStage> {
+    protected async send(data: PromptStage): Promise<PromptStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
                 stageUuid: this.instance.pk || "",
@@ -43,7 +43,7 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",

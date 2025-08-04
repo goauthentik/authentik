@@ -60,19 +60,17 @@ export class AKMDX extends AKElement {
     @property({
         reflect: true,
     })
-    url: string = "";
+    public url: string = "";
 
     @property()
-    content: string = "";
+    public content: string = "";
 
     @property({ attribute: false })
-    replacers: Replacer[] = [];
+    public replacers: Replacer[] = [];
 
     #reactRoot: Root | null = null;
 
-    resolvedHTML = "";
-
-    static styles = [
+    public static override styles = [
         PFBase,
         PFList,
         PFTable,
@@ -163,7 +161,7 @@ export class AKMDX extends AKElement {
         `,
     ];
 
-    public async connectedCallback() {
+    public override async connectedCallback() {
         super.connectedCallback();
         this.#reactRoot = createRoot(this.shadowRoot!);
 

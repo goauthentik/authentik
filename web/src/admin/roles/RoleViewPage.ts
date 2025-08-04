@@ -32,7 +32,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
     @property({ type: String })
-    set roleId(id: string) {
+    public set roleId(id: string) {
         new RbacApi(DEFAULT_CONFIG)
             .rbacRolesRetrieve({
                 uuid: id,
@@ -43,9 +43,9 @@ export class RoleViewPage extends AKElement {
     }
 
     @state()
-    _role?: Role;
+    protected _role?: Role;
 
-    static styles = [
+    public static override styles = [
         PFBase,
         PFPage,
         PFButton,
@@ -65,7 +65,7 @@ export class RoleViewPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this._role?.pk) return;
@@ -73,7 +73,7 @@ export class RoleViewPage extends AKElement {
         });
     }
 
-    render() {
+    public override render() {
         return html`<ak-page-header
                 icon="fa fa-lock"
                 header=${msg(str`Role ${this._role?.name || ""}`)}
@@ -82,7 +82,7 @@ export class RoleViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderUpdateControl(role: Role) {
+    protected renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
@@ -93,7 +93,7 @@ export class RoleViewPage extends AKElement {
         </div>`;
     }
 
-    renderBody() {
+    protected renderBody() {
         if (!this._role) {
             return nothing;
         }

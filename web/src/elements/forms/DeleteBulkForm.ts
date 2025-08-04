@@ -21,23 +21,23 @@ type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T extends object> extends Table<T> {
-    paginated = false;
+    public override paginated = false;
 
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: T[] = [];
 
     @property({ attribute: false })
-    metadata!: (item: T) => BulkDeleteMetadata;
+    public metadata!: (item: T) => BulkDeleteMetadata;
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @state()
-    usedByData: Map<T, UsedBy[]> = new Map();
+    protected usedByData: Map<T, UsedBy[]> = new Map();
 
-    static styles: CSSResult[] = [...super.styles, PFList];
+    public static override styles: CSSResult[] = [...super.styles, PFList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<T>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
             pagination: {
                 count: this.objects.length,
@@ -52,28 +52,28 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return this.metadata(this.objects[0]).map((element) => {
             return new TableColumn(element.key);
         });
     }
 
-    row(item: T): TemplateResult[] {
+    protected row(item: T): TemplateResult[] {
         return this.metadata(item).map((element) => {
             return html`${element.value}`;
         });
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html``;
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.expandable = this.usedBy !== undefined;
         super.firstUpdated();
     }
 
-    renderExpanded(item: T): TemplateResult {
+    protected override renderExpanded(item: T): TemplateResult {
         const handler = async () => {
             if (!this.usedByData.has(item) && this.usedBy) {
                 this.usedByData.set(item, await this.usedBy(item));
@@ -89,7 +89,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         </td>`;
     }
 
-    renderUsedBy(usedBy: UsedBy[]): TemplateResult {
+    protected renderUsedBy(usedBy: UsedBy[]): TemplateResult {
         if (usedBy.length < 1) {
             return html`<span>${msg("Not used by any other object.")}</span>`;
         }
@@ -119,28 +119,28 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
 @customElement("ak-forms-delete-bulk")
 export class DeleteBulkForm<T> extends ModalButton {
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: T[] = [];
 
     @property()
-    objectLabel?: string;
+    public objectLabel?: string;
 
     @property()
-    actionLabel?: string;
+    public actionLabel?: string;
 
     @property()
-    actionSubtext?: string;
+    public actionSubtext?: string;
 
     @property()
-    buttonLabel = msg("Delete");
+    public buttonLabel = msg("Delete");
 
     /**
      * Action shown in messages, for example `deleted` or `removed`
      */
     @property()
-    action = msg("deleted");
+    public action = msg("deleted");
 
     @property({ attribute: false })
-    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
+    public metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
         const rec = item as Record<string, unknown>;
         const meta = [];
         if (Object.prototype.hasOwnProperty.call(rec, "name")) {
@@ -153,12 +153,12 @@ export class DeleteBulkForm<T> extends ModalButton {
     };
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: (item: T) => Promise<unknown>;
+    public delete!: (item: T) => Promise<unknown>;
 
-    async confirm(): Promise<void> {
+    protected async confirm(): Promise<void> {
         try {
             await Promise.all(
                 this.objects.map((item) => {
@@ -179,21 +179,21 @@ export class DeleteBulkForm<T> extends ModalButton {
         }
     }
 
-    onSuccess(): void {
+    protected onSuccess(): void {
         showMessage({
             message: msg(str`Successfully deleted ${this.objects.length} ${this.objectLabel}`),
             level: MessageLevel.success,
         });
     }
 
-    onError(e: Error): void {
+    protected onError(e: Error): void {
         showMessage({
             message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
             level: MessageLevel.error,
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

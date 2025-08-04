@@ -20,18 +20,18 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -51,7 +51,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Google Workspace Group(s)")}
@@ -68,18 +68,18 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
-    row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
+    protected row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -88,7 +88,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         ];
     }
 
-    renderExpanded(item: GoogleWorkspaceProviderGroup): TemplateResult {
+    protected override renderExpanded(item: GoogleWorkspaceProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

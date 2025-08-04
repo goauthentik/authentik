@@ -16,31 +16,31 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-role-assigned-global-permissions-table")
 export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    order = "content_type__app_label,content_type__model";
+    public override order = "content_type__app_label,content_type__model";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             ...(await this.defaultEndpointConfig()),
             role: this.roleUuid,
         });
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    public override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -48,7 +48,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Assign")} </span>
@@ -62,7 +62,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         `;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
@@ -84,7 +84,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

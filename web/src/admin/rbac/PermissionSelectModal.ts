@@ -16,35 +16,35 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-rbac-permission-select-table")
 export class PermissionSelectModal extends TableModal<Permission> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    confirm!: (selectedItems: Permission[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Permission[]) => Promise<unknown>;
 
-    order = "content_type__app_label,content_type__model";
+    public override order = "content_type__app_label,content_type__model";
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList(await this.defaultEndpointConfig());
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    public override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (perm) => {
             return perm.appLabelVerbose;
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -53,11 +53,11 @@ export class PermissionSelectModal extends TableModal<Permission> {
         ];
     }
 
-    renderSelectedChip(item: Permission): TemplateResult {
+    protected override renderSelectedChip(item: Permission): TemplateResult {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select permissions to assign")}</h1>

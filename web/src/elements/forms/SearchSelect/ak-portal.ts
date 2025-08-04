@@ -35,7 +35,7 @@ export class Portal extends LitElement implements IPortal {
      * @prop
      */
     @property({ type: Object, attribute: false })
-    anchor!: HTMLElement;
+    public anchor!: HTMLElement;
 
     /**
      * Whether or not the content is visible
@@ -43,7 +43,7 @@ export class Portal extends LitElement implements IPortal {
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * The name; used mostly for the management layer.
@@ -51,19 +51,19 @@ export class Portal extends LitElement implements IPortal {
      * @attr
      */
     @property()
-    name?: string;
+    public name?: string;
 
     /**
      * The tether object.
      */
-    dropdownContainer!: HTMLDivElement;
+    protected dropdownContainer!: HTMLDivElement;
     public cleanup?: () => void;
 
-    connected = false;
+    protected connected = false;
 
-    content!: Element;
+    protected content!: Element;
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
@@ -88,14 +88,14 @@ export class Portal extends LitElement implements IPortal {
         this.content = this.firstElementChild;
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.connected = false;
         this.dropdownContainer?.remove();
         this.cleanup?.();
         super.disconnectedCallback();
     }
 
-    setPosition() {
+    protected setPosition() {
         if (!(this.anchor && this.dropdownContainer)) {
             throw new Error("Tether initialized incorrectly: missing anchor or tether destination");
         }
@@ -123,14 +123,14 @@ export class Portal extends LitElement implements IPortal {
         super.performUpdate();
     }
 
-    render() {
+    public override render() {
         this.dropdownContainer.appendChild(this.content);
         // This is a dummy object that just has to exist to be the communications channel between
         // the tethered object and its anchor.
         return nothing;
     }
 
-    updated() {
+    public override updated() {
         (this.content as HTMLElement).style.display = "none";
         if (this.anchor && this.dropdownContainer && this.open && !this.hidden) {
             (this.content as HTMLElement).style.display = "";

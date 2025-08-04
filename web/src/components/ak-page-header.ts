@@ -34,18 +34,18 @@ export interface SidebarToggleEventDetail {
 @customElement("ak-page-header")
 export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: String })
-    header?: string;
+    public header?: string;
 
     @property({ type: String })
-    description?: string;
+    public description?: string;
 
     @property({ type: String })
-    icon?: string;
+    public icon?: string;
 
     @property({ type: Boolean })
-    iconImage = false;
+    public iconImage = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 display: none;
@@ -53,7 +53,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         `,
     ];
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
 
         AKPageNavbar.setNavbarDetails({
@@ -64,7 +64,7 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
         });
     }
 
-    updated(): void {
+    public override updated(): void {
         AKPageNavbar.setNavbarDetails({
             header: this.header,
             description: this.description,

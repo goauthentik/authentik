@@ -29,15 +29,15 @@ interface RoleAssignData {
 @customElement("ak-rbac-role-object-permission-form")
 export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> {
     @property()
-    model?: ModelEnum;
+    public model?: ModelEnum;
 
     @property()
-    objectPk?: string;
+    public objectPk?: string;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
         this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
@@ -46,15 +46,15 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         });
     }
 
-    loadInstance(): Promise<RoleAssignData> {
+    protected loadInstance(): Promise<RoleAssignData> {
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
-    send(data: RoleAssignData): Promise<unknown> {
+    protected send(data: RoleAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: data.role,
             permissionAssignRequest: {
@@ -65,7 +65,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         if (!this.modelPermissions) {
             return html``;
         }

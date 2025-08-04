@@ -16,12 +16,12 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         return new AuthenticatorsApi(DEFAULT_CONFIG)
             .authenticatorsAdminAllList({
                 user: this.userId,
@@ -42,7 +42,7 @@ export class UserDeviceTable extends Table<Device> {
             });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         // prettier-ignore
         return [
             msg("Name"),
@@ -54,7 +54,7 @@ export class UserDeviceTable extends Table<Device> {
         ].map((th) => new TableColumn(th, ""));
     }
 
-    async deleteWrapper(device: Device) {
+    protected async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
@@ -76,7 +76,7 @@ export class UserDeviceTable extends Table<Device> {
         }
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}
@@ -91,7 +91,7 @@ export class UserDeviceTable extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html` <ak-spinner-button
             .callAction=${() => {
                 return this.fetch();
@@ -102,7 +102,7 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    protected row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>

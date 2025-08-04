@@ -11,7 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-charts-admin-login-authorization")
 export class AdminLoginAuthorizeChart extends EventChart {
-    async apiRequest(): Promise<EventVolume[]> {
+    protected async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             actions: [
                 EventActions.AuthorizeApplication,
@@ -21,7 +21,7 @@ export class AdminLoginAuthorizeChart extends EventChart {
         });
     }
 
-    getChartData(data: EventVolume[]): ChartData {
+    protected getChartData(data: EventVolume[]): ChartData {
         const optsMap = new Map<EventActions, Partial<ChartDataset>>();
         optsMap.set(EventActions.AuthorizeApplication, {
             label: msg("Authorizations"),

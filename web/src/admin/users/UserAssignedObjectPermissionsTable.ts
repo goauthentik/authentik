@@ -15,25 +15,27 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-assigned-object-permissions-table")
 export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPermission> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ExtraUserObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsUsersList({
             ...(await this.defaultEndpointConfig()),
             userId: this.userId || 0,
         });
     }
 
-    groupBy(items: ExtraUserObjectPermission[]): [string, ExtraUserObjectPermission[]][] {
+    public override groupBy(
+        items: ExtraUserObjectPermission[],
+    ): [string, ExtraUserObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -42,7 +44,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
@@ -72,7 +74,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraUserObjectPermission): TemplateResult[] {
+    protected row(item: ExtraUserObjectPermission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

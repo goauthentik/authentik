@@ -7,15 +7,12 @@ import "#elements/wizard/TypeCreateWizardPage";
 import { applicationWizardProvidersContext } from "../ContextIdentity.js";
 import { type LocalTypeCreate } from "./ProviderChoices.js";
 
-import { bound } from "#elements/decorators/bound";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
 
 import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
 
 import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
-
-import { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
@@ -24,15 +21,15 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose a Provider");
+    public override label = msg("Choose a Provider");
 
     @state()
-    failureMessage = "";
+    protected failureMessage = "";
 
     @consume({ context: applicationWizardProvidersContext, subscribe: true })
     public providerModelsList!: LocalTypeCreate[];
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", destination: "provider" },
             { kind: "back", destination: "application" },
@@ -40,7 +37,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         this.failureMessage = "";
         if (button.kind === "next") {
             if (!this.wizard.providerModel) {
@@ -54,14 +51,7 @@ export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(Appl
         super.handleButton(button);
     }
 
-    @bound
-    onSelect(ev: CustomEvent<LocalTypeCreate>) {
-        ev.stopPropagation();
-        const detail: TypeCreate = ev.detail;
-        this.handleUpdate({ providerModel: detail.modelName });
-    }
-
-    renderMain() {
+    protected override renderMain() {
         const selectedTypes = this.providerModelsList.filter(
             (t) => t.modelName === this.wizard.providerModel,
         );

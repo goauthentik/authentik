@@ -11,7 +11,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-secret-text-input")
 export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     @property({ type: Boolean, reflect: true })
     public revealed = false;

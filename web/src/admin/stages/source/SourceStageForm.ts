@@ -21,13 +21,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-source-form")
 export class SourceStageForm extends BaseStageForm<SourceStage> {
-    loadInstance(pk: string): Promise<SourceStage> {
+    protected loadInstance(pk: string): Promise<SourceStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesSourceRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: SourceStage): Promise<SourceStage> {
+    protected async send(data: SourceStage): Promise<SourceStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesSourceUpdate({
                 stageUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <span
                 >${msg(

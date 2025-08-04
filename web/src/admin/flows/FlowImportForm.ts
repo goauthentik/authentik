@@ -18,15 +18,15 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-flow-import-form")
 export class FlowImportForm extends Form<Flow> {
     @state()
-    result?: FlowImportResult;
+    protected result?: FlowImportResult;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported flow.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async send(): Promise<FlowImportResult> {
+    protected async send(): Promise<FlowImportResult> {
         const file = this.files().get("flow");
         if (!file) {
             throw new SentryIgnoredError("No form data");
@@ -41,7 +41,7 @@ export class FlowImportForm extends Form<Flow> {
         return result;
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Successful")}>
                 <div class="pf-c-form__group-label">
@@ -64,7 +64,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">

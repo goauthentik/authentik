@@ -19,12 +19,12 @@ export class BaseDeviceStage<
     Tout,
 > extends BaseStage<Tin, Tout> {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public showBackButton = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -42,11 +42,11 @@ export class BaseDeviceStage<
         `,
     ];
 
-    submit(payload: Tin): Promise<boolean> {
+    public submit(payload: Tin): Promise<boolean> {
         return this.host?.submit(payload) || Promise.resolve();
     }
 
-    renderReturnToDevicePicker() {
+    protected renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }

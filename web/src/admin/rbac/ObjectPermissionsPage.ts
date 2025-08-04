@@ -22,17 +22,17 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @property({ type: Boolean })
-    embedded = false;
+    public embedded = false;
 
-    static styles = [PFBase, PFGrid, PFPage, PFCard];
+    public static override styles = [PFBase, PFGrid, PFPage, PFCard];
 
-    render() {
+    public override render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
             ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
                 ? this.renderCoreUser()
@@ -85,7 +85,7 @@ export class ObjectPermissionPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderCoreUser() {
+    protected renderCoreUser() {
         return html`
             <div
                 slot="page-assigned-global-permissions"
@@ -132,7 +132,7 @@ export class ObjectPermissionPage extends AKElement {
         `;
     }
 
-    renderRbacRole() {
+    protected renderRbacRole() {
         return html`
             <div
                 slot="page-assigned-global-permissions"

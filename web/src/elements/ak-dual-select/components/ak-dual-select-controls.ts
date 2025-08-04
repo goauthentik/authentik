@@ -19,7 +19,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-dual-select-controls")
 export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         css`
@@ -44,14 +44,14 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
      * Set to true if any *visible* elements can be added to the selected list.
      */
     @property({ attribute: "add-active", type: Boolean })
-    addActive = false;
+    public addActive = false;
 
     /**
      * Set to true if any elements can be removed from the selected list (essentially,
      * if the selected list is not empty)
      */
     @property({ attribute: "remove-active", type: Boolean })
-    removeActive = false;
+    public removeActive = false;
 
     /**
      * Set to true if *all* the currently visible elements can be moved
@@ -59,7 +59,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
      * not currently selected).
      */
     @property({ attribute: "add-all-active", type: Boolean })
-    addAllActive = false;
+    public addAllActive = false;
 
     /**
      * Set to true if *any* of the elements currently visible in the available
@@ -67,28 +67,28 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
      * all of those specific elements be moved out of the selected list.
      */
     @property({ attribute: "remove-all-active", type: Boolean })
-    removeAllActive = false;
+    public removeAllActive = false;
 
     /**
      * if deleteAll is enabled, set to true to show that there are elements in the
      * selected list that can be deleted.
      */
     @property({ attribute: "delete-all-active", type: Boolean })
-    enableDeleteAll = false;
+    public enableDeleteAll = false;
 
     /**
      * Set to true if you want the `...AllActive` buttons made available.
      */
     @property({ attribute: "enable-select-all", type: Boolean })
-    selectAll = false;
+    public selectAll = false;
 
     /**
      * Set to true if you want the `ClearAllSelected` button made available
      */
     @property({ attribute: "enable-delete-all", type: Boolean })
-    deleteAll = false;
+    public deleteAll = false;
 
-    renderButton(
+    protected renderButton(
         label: string,
         eventType: DualSelectEventType,
         active: boolean,
@@ -111,7 +111,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
         </div>`;
     }
 
-    render() {
+    public override render() {
         return html`
             <div class="ak-dual-list-selector__controls">
                 ${this.renderButton(

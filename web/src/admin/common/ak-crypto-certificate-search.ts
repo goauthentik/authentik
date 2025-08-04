@@ -34,13 +34,13 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
 @customElement("ak-crypto-certificate-search")
 export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
-    certificate?: string;
+    public certificate?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<CertificateKeyPair>;
+    protected search!: SearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name: string | null | undefined;
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
@@ -48,7 +48,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
-    noKey = false;
+    public noKey = false;
 
     /**
      * Set this to true if, should there be only one certificate available, you want the system to
@@ -57,22 +57,22 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * @attr
      */
     @property({ type: Boolean, attribute: "singleton" })
-    singleton = false;
+    public singleton = false;
 
-    selectedKeypair?: CertificateKeyPair;
+    public selectedKeypair?: CertificateKeyPair;
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
         this.fetchObjects = this.fetchObjects.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    get value() {
+    public get value() {
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {
@@ -85,13 +85,13 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         }
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    protected handleSearchUpdate(ev: CustomEvent) {
         ev.stopPropagation();
         this.selectedKeypair = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    async fetchObjects(query?: string): Promise<CertificateKeyPair[]> {
+    protected async fetchObjects(query?: string): Promise<CertificateKeyPair[]> {
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
             hasKey: !this.noKey,
@@ -106,14 +106,14 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         return certificates.results;
     }
 
-    selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
+    protected selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
         return (
             (this.singleton && !this.certificate && items.length === 1) ||
             (!!this.certificate && this.certificate === item.pk)
         );
     }
 
-    render() {
+    public override render() {
         return html`
             <ak-search-select
                 name=${ifDefined(this.name ?? undefined)}

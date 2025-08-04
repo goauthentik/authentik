@@ -16,7 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
-    async loadInstance(pk: string): Promise<EmailStage> {
+    protected async loadInstance(pk: string): Promise<EmailStage> {
         const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
             stageUuid: pk,
         });
@@ -24,16 +24,16 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         return stage;
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
     }
 
-    templates?: TypeCreate[];
+    protected templates?: TypeCreate[];
 
     @property({ type: Boolean })
-    showConnectionSettings = false;
+    public showConnectionSettings = false;
 
-    async send(data: EmailStage): Promise<EmailStage> {
+    protected async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -45,7 +45,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         });
     }
 
-    renderConnectionSettings(): TemplateResult {
+    protected renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
             return html``;
         }
@@ -133,7 +133,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",

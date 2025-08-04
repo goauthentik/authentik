@@ -1,8 +1,6 @@
 import { type ISimpleTable, SimpleTable } from "./ak-simple-table.js";
 import type { TableRow } from "./types.js";
 
-import { bound } from "#elements/decorators/bound";
-
 import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
@@ -94,62 +92,61 @@ export class SelectTable extends SimpleTable {
     // WARNING: This property and `set selected` must mirror each other perfectly.
     @property({ type: String, attribute: true, reflect: true })
     public set value(value: string) {
-        this._value = value;
-        this._selected = value.split(this.valueSep).filter((v) => v.trim() !== "");
+        this.#value = value;
+        this.#selected = value.split(this.valueSep).filter((v) => v.trim() !== "");
     }
 
     public get value() {
-        return this._value;
+        return this.#value;
     }
 
-    private _value: string = "";
+    #value: string = "";
 
     @property({ type: Boolean, attribute: true })
-    multiple = false;
+    public multiple = false;
 
     @property({ type: String, attribute: true })
-    valueSep = ";";
+    public valueSep = ";";
 
     // WARNING: This property and `set value` must mirror each other perfectly.
     @property({ attribute: false })
     public set selected(selected: string[]) {
-        this._selected = selected;
-        this._value = this._selected.toSorted().join(this.valueSep);
+        this.#selected = selected;
+        this.#value = this.#selected.toSorted().join(this.valueSep);
     }
 
     @queryAll('input[data-ouia-component-role="select"]')
-    selectCheckboxesOnPage!: HTMLInputElement[];
+    protected selectCheckboxesOnPage!: HTMLInputElement[];
 
     public get selected() {
-        return this._selected;
+        return this.#selected;
     }
 
     public json() {
-        return this._selected;
+        return this.#selected;
     }
 
-    private get valuesOnPage() {
+    get #valuesOnPage() {
         return Array.from(this.selectCheckboxesOnPage).map((checkbox) => checkbox.value);
     }
 
-    private get checkedValuesOnPage() {
+    get #checkedValuesOnPage() {
         return Array.from(this.selectCheckboxesOnPage)
             .filter((checkbox) => checkbox.checked)
             .map((checkbox) => checkbox.value);
     }
 
-    private get selectedOnPage() {
-        return this.checkedValuesOnPage.filter((value) => this._selected.includes(value));
+    get #selectedOnPage() {
+        return this.#checkedValuesOnPage.filter((value) => this.#selected.includes(value));
     }
 
     public clear() {
         this.selected = [];
     }
 
-    private _selected: string[] = [];
+    #selected: string[] = [];
 
-    @bound
-    private onSelect(ev: InputEvent) {
+    #selectListener = (ev: InputEvent) => {
         ev.stopPropagation();
         const value = (ev.target as HTMLInputElement).value;
         if (this.multiple) {
@@ -160,7 +157,7 @@ export class SelectTable extends SimpleTable {
             this.selected = this.selected.includes(value) ? [] : [value];
         }
         this.dispatchEvent(new Event("change"));
-    }
+    };
 
     protected override ouiaTypeDeclaration() {
         this.setAttribute("data-ouia-component-type", "ak-select-table");
@@ -177,7 +174,7 @@ export class SelectTable extends SimpleTable {
         // via onSelect() or other change to `this.selected`. Done here instead of in `updated` as
         // changes here cannot trigger an update. See:
         // https://lit.dev/docs/components/lifecycle/#willupdate
-        this.setAttribute("value", this._value);
+        this.setAttribute("value", this.#value);
     }
 
     public renderCheckbox(key: string | undefined) {
@@ -198,15 +195,14 @@ export class SelectTable extends SimpleTable {
                 value=${key}
                 ?checked=${checked}
                 .checked=${checked}
-                @click=${this.onSelect}
+                @click=${this.#selectListener}
             />
         </td>`;
     }
 
     // Without the `bound`, Lit's `map()` will pick up the parent class's `renderRow()`.  This
     // override makes room for the select checkbox.
-    @bound
-    public override renderRow(row: TableRow, _rowidx: number) {
+    protected override renderRow = (row: TableRow, _rowidx: number) => {
         return html` <tr part="row">
             ${this.renderCheckbox(row.key)}
             ${map(
@@ -214,15 +210,16 @@ export class SelectTable extends SimpleTable {
                 (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
             )}
         </tr>`;
-    }
+    };
 
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    protected renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
-            this.selectedOnPage.length && this.selectedOnPage.length === this.valuesOnPage.length;
+            this.#selectedOnPage.length &&
+            this.#selectedOnPage.length === this.#valuesOnPage.length;
 
         const onInput = (ev: InputEvent) => {
             const selected = [...this.selected];
-            const values = this.valuesOnPage;
+            const values = this.#valuesOnPage;
             // The behavior preserves the `selected` elements that are not currently visible; its
             // purpose is to preserve the complete value list locally in case clients want to
             // implement pagination.  To clear the entire list, call `clear()` on the component.

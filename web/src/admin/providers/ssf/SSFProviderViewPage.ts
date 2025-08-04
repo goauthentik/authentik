@@ -40,7 +40,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersSsfRetrieve({
                 id: value,
@@ -51,9 +51,9 @@ export class SSFProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: SSFProvider;
+    public provider?: SSFProvider;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -67,7 +67,7 @@ export class SSFProviderViewPage extends AKElement {
         PFDivider,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -75,7 +75,7 @@ export class SSFProviderViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -107,7 +107,7 @@ export class SSFProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

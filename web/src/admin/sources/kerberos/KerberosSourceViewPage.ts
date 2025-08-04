@@ -41,7 +41,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesKerberosRetrieve({
                 slug: slug,
@@ -52,9 +52,9 @@ export class KerberosSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source!: KerberosSource;
+    public source!: KerberosSource;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -66,7 +66,7 @@ export class KerberosSourceViewPage extends AKElement {
         PFList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
@@ -74,7 +74,7 @@ export class KerberosSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

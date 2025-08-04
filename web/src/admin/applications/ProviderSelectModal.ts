@@ -13,33 +13,33 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-select-table")
 export class ProviderSelectModal extends TableModal<Provider> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property({ type: Boolean })
-    backchannel = false;
+    public backchannel = false;
 
     @property()
-    confirm!: (selectedItems: Provider[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Provider[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
             ...(await this.defaultEndpointConfig()),
             backchannel: this.backchannel,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "username"), new TableColumn(msg("Type"))];
     }
 
-    row(item: Provider): TemplateResult[] {
+    protected row(item: Provider): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -48,11 +48,11 @@ export class ProviderSelectModal extends TableModal<Provider> {
         ];
     }
 
-    renderSelectedChip(item: Provider): TemplateResult {
+    protected override renderSelectedChip(item: Provider): TemplateResult {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

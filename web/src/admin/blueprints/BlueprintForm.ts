@@ -30,9 +30,9 @@ enum blueprintSource {
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     @state()
-    source: blueprintSource = blueprintSource.file;
+    protected source: blueprintSource = blueprintSource.file;
 
-    async loadInstance(pk: string): Promise<BlueprintInstance> {
+    protected async loadInstance(pk: string): Promise<BlueprintInstance> {
         const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });
@@ -45,15 +45,15 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         return inst;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated instance.")
             : msg("Successfully created instance.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    async send(data: BlueprintInstance): Promise<BlueprintInstance> {
+    protected async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
             return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUpdate({
                 instanceUuid: this.instance.pk,
@@ -65,7 +65,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

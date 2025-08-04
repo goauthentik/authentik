@@ -17,7 +17,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-flow-search-no-default")
 export class AkFlowSearchNoDefault<T extends Flow> extends FlowSearch<T> {
-    render() {
+    public override render() {
         return html`
             <ak-search-select
                 .fetchObjects=${this.fetchObjects}

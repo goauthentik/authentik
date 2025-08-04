@@ -13,13 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
-    loadInstance(pk: string): Promise<UserDeleteStage> {
+    protected loadInstance(pk: string): Promise<UserDeleteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: UserDeleteStage): Promise<UserDeleteStage> {
+    protected async send(data: UserDeleteStage): Promise<UserDeleteStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
                 stageUuid: this.instance.pk || "",
@@ -31,7 +31,7 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Delete the currently pending user. CAUTION, this stage does not ask for confirmation. Use a consent stage to ensure the user is aware of their actions.",

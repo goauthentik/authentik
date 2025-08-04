@@ -18,20 +18,20 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-outpost-health-simple")
 export class OutpostHealthSimpleElement extends AKElement {
     @property()
-    outpostId?: string;
+    public outpostId?: string;
 
     @state()
-    outpostHealths: OutpostHealth[] = [];
+    protected outpostHealths: OutpostHealth[] = [];
 
     @property({ attribute: false })
-    loaded = false;
+    public loaded = false;
 
     @property({ attribute: false })
-    showVersion = true;
+    public showVersion = true;
 
-    static styles: CSSResult[] = [PFBase];
+    public static override styles: CSSResult[] = [PFBase];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_REFRESH, () => {
             this.outpostHealths = [];
@@ -39,7 +39,7 @@ export class OutpostHealthSimpleElement extends AKElement {
         });
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         if (!this.outpostId) return;
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesHealthList({
@@ -51,7 +51,7 @@ export class OutpostHealthSimpleElement extends AKElement {
             });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.outpostId || !this.loaded) {
             return html`<ak-spinner></ak-spinner>`;
         }

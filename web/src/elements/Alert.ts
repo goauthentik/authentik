@@ -54,7 +54,7 @@ export class AKAlert extends AKElement implements IAlert {
      * @attr
      */
     @property()
-    level: Level | Levels = Level.Warning;
+    public level: Level | Levels = Level.Warning;
 
     /**
      * Icon to display
@@ -64,7 +64,7 @@ export class AKAlert extends AKElement implements IAlert {
     @property()
     public icon = "fa-exclamation-circle";
 
-    static styles = [
+    public static override styles = [
         PFBase,
         PFAlert,
         css`
@@ -74,7 +74,7 @@ export class AKAlert extends AKElement implements IAlert {
         `,
     ];
 
-    get classmap() {
+    public get classmap() {
         const level = levelNames.includes(this.level)
             ? `pf-m-${this.level}`
             : (this.level as string);
@@ -87,7 +87,7 @@ export class AKAlert extends AKElement implements IAlert {
         };
     }
 
-    render() {
+    public override render() {
         return html`<div class="${classMap(this.classmap)}">
             <div class="pf-c-alert__icon">
                 <i aria-hidden="true" class="fas ${this.icon}"></i>

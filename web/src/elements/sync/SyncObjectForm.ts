@@ -25,16 +25,16 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-sync-object-form")
 export class SyncObjectForm extends Form<SyncObjectRequest> {
     @property({ type: Number })
-    provider?: number;
+    public provider?: number;
 
     @property()
-    model: SyncObjectModelEnum = SyncObjectModelEnum.UnknownDefaultOpenApi;
+    public model: SyncObjectModelEnum = SyncObjectModelEnum.UnknownDefaultOpenApi;
 
     @property({ attribute: false })
-    result?: SyncObjectResult;
+    public result?: SyncObjectResult;
 
     @property({ attribute: false })
-    sync: (
+    public sync: (
         requestParameters: {
             id: number;
             syncObjectRequest: SyncObjectRequest;
@@ -44,11 +44,11 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         return Promise.reject();
     };
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully triggered sync.");
     }
 
-    async send(data: SyncObjectRequest): Promise<void> {
+    protected async send(data: SyncObjectRequest): Promise<void> {
         data.syncObjectModel = this.model;
         this.result = await this.sync({
             id: this.provider || 0,
@@ -56,7 +56,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         });
     }
 
-    renderSelectUser() {
+    protected renderSelectUser() {
         return html`<ak-form-element-horizontal label=${msg("User")} name="syncObjectId">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -83,7 +83,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderSelectGroup() {
+    protected renderSelectGroup() {
         return html` <ak-form-element-horizontal label=${msg("Group")} name="syncObjectId">
             <ak-search-select
                 .fetchObjects=${async (query?: string): Promise<Group[]> => {
@@ -107,7 +107,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Log messages")}>
             <div class="pf-c-form__group-label">
                 <div class="c-form__horizontal-group">
@@ -119,7 +119,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
         </ak-form-element-horizontal> `;
     }
 
-    renderForm() {
+    protected override renderForm() {
         return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
                 ? this.renderSelectUser()
                 : nothing}

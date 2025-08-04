@@ -18,13 +18,15 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
-    loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: AuthenticatorEndpointGDTCStage): Promise<AuthenticatorEndpointGDTCStage> {
+    protected async send(
+        data: AuthenticatorEndpointGDTCStage,
+    ): Promise<AuthenticatorEndpointGDTCStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -36,9 +38,9 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
         });
     }
 
-    static styles = [...super.styles, PFBanner];
+    public static override styles = [...super.styles, PFBanner];
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-c-banner pf-m-info">
                 ${msg("Endpoint Google Chrome Device Trust is in preview.")}
                 <a href="mailto:hello+feature/gdtc@goauthentik.io">${msg("Send us feedback!")}</a>

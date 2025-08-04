@@ -17,32 +17,32 @@ import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
-    static styles: CSSResult[] = [...AwadStyles];
+    public static override styles: CSSResult[] = [...AwadStyles];
 
-    label = "";
-
-    @property({ type: Object, attribute: false })
-    wizard!: ApplicationWizardState;
+    public label = "";
 
     @property({ type: Object, attribute: false })
-    errors: Record<string | number | symbol, string> = {};
+    public wizard!: ApplicationWizardState;
+
+    @property({ type: Object, attribute: false })
+    public errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
-    get formValues() {
+    public get formValues() {
         return serializeForm([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),
         ]);
     }
 
-    get valid() {
+    public get valid() {
         this.errors = {};
         return this.form.checkValidity();
     }
 
-    errorMessages(name: string) {
+    protected errorMessages(name: string) {
         return name in this.errors
             ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
@@ -50,7 +50,7 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
                   []);
     }
 
-    isValid(name: keyof T) {
+    protected isValid(name: keyof T) {
         return !(
             (this.wizard.errors?.provider?.[name as string] ?? []).length > 0 ||
             this.errors?.[name] !== undefined

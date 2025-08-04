@@ -83,9 +83,9 @@ export class MessageContainer extends AKElement {
     protected messages: APIMessage[] = [];
 
     @property()
-    alignment: "top" | "bottom" = "top";
+    public alignment: "top" | "bottom" = "top";
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFAlertGroup,
         css`
@@ -100,7 +100,7 @@ export class MessageContainer extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
 
         // Note: This seems to be susceptible to race conditions.
@@ -131,7 +131,7 @@ export class MessageContainer extends AKElement {
         this.messages = this.messages.filter((v) => v !== message);
     };
 
-    render() {
+    public override render() {
         return html`<ul
             role="region"
             aria-label="${msg("Status messages")}"

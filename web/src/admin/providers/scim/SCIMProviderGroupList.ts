@@ -20,17 +20,17 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -48,7 +48,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("SCIM Group(s)")}
@@ -65,18 +65,18 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
-    row(item: SCIMProviderGroup): TemplateResult[] {
+    protected row(item: SCIMProviderGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -84,7 +84,8 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             html`${item.id}`,
         ];
     }
-    renderExpanded(item: SCIMProviderGroup): TemplateResult {
+
+    protected override renderExpanded(item: SCIMProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

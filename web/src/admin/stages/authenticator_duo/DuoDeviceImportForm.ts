@@ -25,17 +25,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
 export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string> {
-    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported device.");
     }
 
-    async send(data: AuthenticatorDuoStage): Promise<void> {
+    protected async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate({
             stageUuid: this.instance?.pk || "",
@@ -43,14 +43,14 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
             : html``}
         ${this.renderFormManual()}`;
     }
 
-    renderFormManual(): TemplateResult {
+    protected renderFormManual(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="username">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
@@ -87,7 +87,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
             </ak-form-element-horizontal>`;
     }
 
-    renderFormAutomatic(): TemplateResult {
+    protected renderFormAutomatic(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Automatic import")}>
                 <ak-action-button

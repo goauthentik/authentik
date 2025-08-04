@@ -12,14 +12,14 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-active-form")
 export class UserActiveForm extends DeleteForm {
-    onSuccess(): void {
+    protected override onSuccess(): void {
         showMessage({
             message: msg(str`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
             level: MessageLevel.success,
         });
     }
 
-    onError(error: unknown): Promise<void> {
+    protected override onError(error: unknown): Promise<void> {
         return parseAPIResponseError(error).then((parsedError) => {
             showMessage({
                 message: msg(
@@ -30,7 +30,7 @@ export class UserActiveForm extends DeleteForm {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg(str`Update ${this.objectLabel}`)}</h1>

@@ -14,13 +14,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-uniqueness-form")
 export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolicy> {
-    async loadInstance(pk: string): Promise<UniquePasswordPolicy> {
+    protected async loadInstance(pk: string): Promise<UniquePasswordPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: UniquePasswordPolicy): Promise<UniquePasswordPolicy> {
+    protected async send(data: UniquePasswordPolicy): Promise<UniquePasswordPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordUpdate({
                 policyUuid: this.instance.pk || "",
@@ -32,7 +32,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",

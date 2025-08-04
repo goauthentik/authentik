@@ -32,7 +32,7 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
      * @attr
      */
     @property({ attribute: false })
-    promise?: Promise<Record<string, unknown>>;
+    public promise?: Promise<Record<string, unknown>>;
 
     /**
      * The error message if the promise is rejected or throws an exception.
@@ -40,9 +40,9 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
      * @attr
      */
     @property()
-    failureMessage = msg("Operation failed to complete");
+    public failureMessage = msg("Operation failed to complete");
 
-    async promiseProxy(): Promise<TemplateResult | typeof nothing> {
+    protected async promiseProxy(): Promise<TemplateResult | typeof nothing> {
         if (!this.promise) {
             return nothing;
         }
@@ -55,7 +55,7 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         }
     }
 
-    renderInner(): TemplateResult {
+    protected override renderInner(): TemplateResult {
         return html`<p class="center-value">
             ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
         </p>`;

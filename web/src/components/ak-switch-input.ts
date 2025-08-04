@@ -15,31 +15,31 @@ export class AkSwitchInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Boolean })
-    checked: boolean = false;
+    public checked: boolean = false;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
     @query("input.pf-c-switch__input[type=checkbox]")
-    checkbox!: HTMLInputElement;
+    protected checkbox!: HTMLInputElement;
 
     #fieldID: string = IDGenerator.randomID();
 
-    render() {
+    public override render() {
         const doCheck = this.checked ? this.checked : undefined;
         const helpText = this.help.trim();
 

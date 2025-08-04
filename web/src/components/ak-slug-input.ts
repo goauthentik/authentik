@@ -1,7 +1,5 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
-import { bound } from "#elements/decorators/bound";
-
 import { kebabCase } from "change-case";
 
 import { html } from "lit";
@@ -45,10 +43,10 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
     public source = "[name='name']";
 
     @property({ type: String, reflect: true })
-    public value = "";
+    public override value = "";
 
     @query("input")
-    private input!: HTMLInputElement;
+    protected input!: HTMLInputElement;
 
     #origin?: HTMLInputElement | null;
 
@@ -70,8 +68,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         }
     }
 
-    @bound
-    protected slugify(ev: Event) {
+    protected slugify = (ev: Event) => {
         if (!(ev && ev.target && ev.target instanceof HTMLInputElement)) {
             return;
         }
@@ -114,7 +111,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
                 cancelable: true,
             }),
         );
-    }
+    };
 
     public override disconnectedCallback() {
         if (this.#origin) {

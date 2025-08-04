@@ -46,35 +46,38 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Blueprints");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Automate and template configuration within authentik.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Status"), "status"),
@@ -84,7 +87,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Blueprint(s)")}
@@ -109,7 +112,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderExpanded(item: BlueprintInstance): TemplateResult {
+    protected override renderExpanded(item: BlueprintInstance): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -145,7 +148,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </td>`;
     }
 
-    row(item: BlueprintInstance): TemplateResult[] {
+    protected row(item: BlueprintInstance): TemplateResult[] {
         let description = undefined;
         const descKey = "blueprints.goauthentik.io/description";
         if (
@@ -201,7 +204,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

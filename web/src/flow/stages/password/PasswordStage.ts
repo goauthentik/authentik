@@ -23,7 +23,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFInputGroup,
@@ -33,12 +33,12 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         PFTitle,
     ];
 
-    hasError(field: string): boolean {
+    protected hasError(field: string): boolean {
         const errors = (this.challenge?.responseErrors || {})[field];
         return (errors || []).length > 0;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static

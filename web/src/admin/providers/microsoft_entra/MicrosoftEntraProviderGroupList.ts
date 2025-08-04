@@ -20,15 +20,15 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-microsoft-entra-groups-list")
 export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProviderGroup> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
@@ -48,7 +48,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Microsoft Entra Group(s)")}
@@ -65,18 +65,18 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<MicrosoftEntraProviderGroup>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
     }
 
-    row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
+    protected row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -85,7 +85,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         ];
     }
 
-    renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
+    protected override renderExpanded(item: MicrosoftEntraProviderGroup): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

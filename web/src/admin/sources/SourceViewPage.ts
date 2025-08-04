@@ -21,7 +21,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesAllRetrieve({
                 slug: slug,
@@ -32,9 +32,9 @@ export class SourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: Source;
+    public source?: Source;
 
-    renderSource(): TemplateResult {
+    protected renderSource(): TemplateResult {
         if (!this.source) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -68,7 +68,7 @@ export class SourceViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-middleware"
                 header=${ifDefined(this.source?.name)}

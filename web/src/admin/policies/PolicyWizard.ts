@@ -31,30 +31,30 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ type: Boolean })
-    showBindingPage = false;
+    public showBindingPage = false;
 
     @property()
-    bindingTarget?: string;
+    public bindingTarget?: string;
 
     @property({ attribute: false })
-    policyTypes: TypeCreate[] = [];
+    public policyTypes: TypeCreate[] = [];
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         new PoliciesApi(DEFAULT_CONFIG).policiesAllTypesList().then((types) => {
             this.policyTypes = types;
         });
     }
 
-    selectListener = ({ detail }: CustomEvent<TypeCreate>) => {
+    protected selectListener = ({ detail }: CustomEvent<TypeCreate>) => {
         if (!this.wizard) return;
 
         const { component, modelName } = detail;
@@ -69,7 +69,7 @@ export class PolicyWizard extends AKElement {
         this.wizard.isValid = true;
     };
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}

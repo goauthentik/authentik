@@ -14,15 +14,15 @@ import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
     @property()
-    pageIdentifier = "page";
+    public pageIdentifier = "page";
 
     @property()
-    currentPage?: string;
+    public currentPage?: string;
 
     @property({ type: Boolean })
-    vertical = false;
+    public vertical = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFGlobal,
         PFTabs,
         css`
@@ -44,16 +44,16 @@ export class Tabs extends AKElement {
         `,
     ];
 
-    observer: MutationObserver;
+    protected observer: MutationObserver;
 
-    constructor() {
+    public constructor() {
         super();
         this.observer = new MutationObserver(() => {
             this.requestUpdate();
         });
     }
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.observer.observe(this, {
             attributes: true,
@@ -62,12 +62,12 @@ export class Tabs extends AKElement {
         });
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         this.observer.disconnect();
         super.disconnectedCallback();
     }
 
-    onClick(slot?: string): void {
+    protected onClick(slot?: string): void {
         this.currentPage = slot;
         const params: { [key: string]: string | undefined } = {};
         params[this.pageIdentifier] = slot;
@@ -78,7 +78,7 @@ export class Tabs extends AKElement {
         page.dispatchEvent(new CustomEvent("activate"));
     }
 
-    renderTab(page: Element): TemplateResult {
+    protected renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
             <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
@@ -87,7 +87,7 @@ export class Tabs extends AKElement {
         </li>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();

@@ -34,7 +34,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
-    async loadInstance(pk: string): Promise<PlexSource> {
+    protected async loadInstance(pk: string): Promise<PlexSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
             slug: pk,
         });
@@ -45,21 +45,21 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     }
 
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
     @property()
-    plexToken?: string;
+    public plexToken?: string;
 
     @property({ attribute: false })
-    plexResources?: PlexResource[];
+    public plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    public override get defaultInstance(): PlexSource | undefined {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
     }
 
-    async send(data: PlexSource): Promise<PlexSource> {
+    protected async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
         if (this.instance?.pk) {
@@ -92,7 +92,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         return source;
     }
 
-    async doAuth(): Promise<void> {
+    protected async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
@@ -102,14 +102,14 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         });
     }
 
-    async loadServers(): Promise<void> {
+    protected async loadServers(): Promise<void> {
         if (!this.plexToken) {
             return;
         }
         this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
     }
 
-    renderSettings(): TemplateResult {
+    protected renderSettings(): TemplateResult {
         if (!this.plexToken) {
             return html` <button
                 class="pf-c-button pf-m-primary"
@@ -174,7 +174,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

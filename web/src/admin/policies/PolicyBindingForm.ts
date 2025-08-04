@@ -32,7 +32,7 @@ export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: stri
 
 @customElement("ak-policy-binding-form")
 export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
-    async loadInstance(pk: string): Promise<PolicyBinding> {
+    protected async loadInstance(pk: string): Promise<PolicyBinding> {
         const binding = await new PoliciesApi(DEFAULT_CONFIG).policiesBindingsRetrieve({
             policyBindingUuid: pk,
         });
@@ -50,40 +50,40 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;
+    protected policyGroupUser: PolicyBindingCheckTarget = PolicyBindingCheckTarget.policy;
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
+    public allowedTypes: PolicyBindingCheckTarget[] = [
         PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
         return msg("Successfully created binding.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         // Overwrite the default for policyGroupUser with the first allowed type,
         // as this function is called when the correct parameters are set
         this.policyGroupUser = this.allowedTypes[0];
     }
 
-    send(data: PolicyBinding): Promise<unknown> {
+    protected send(data: PolicyBinding): Promise<unknown> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
@@ -113,7 +113,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         });
     }
 
-    async getOrder(): Promise<number> {
+    protected async getOrder(): Promise<number> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
@@ -127,7 +127,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderModeSelector(): TemplateResult {
+    protected renderModeSelector(): TemplateResult {
         return html` <ak-toggle-group
             value=${this.policyGroupUser}
             @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
@@ -145,7 +145,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         </ak-toggle-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">

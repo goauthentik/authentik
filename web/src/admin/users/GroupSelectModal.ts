@@ -16,28 +16,28 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    confirm!: (selectedItems: Group[]) => Promise<unknown>;
+    public confirm!: (selectedItems: Group[]) => Promise<unknown>;
 
-    order = "name";
+    public override order = "name";
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Superuser"), "is_superuser"),
@@ -45,7 +45,7 @@ export class GroupSelectModal extends TableModal<Group> {
         ];
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -55,11 +55,11 @@ export class GroupSelectModal extends TableModal<Group> {
         ];
     }
 
-    renderSelectedChip(item: Group): TemplateResult {
+    protected override renderSelectedChip(item: Group): TemplateResult {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">

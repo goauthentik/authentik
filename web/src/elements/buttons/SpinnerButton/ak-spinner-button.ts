@@ -25,7 +25,7 @@ export class SpinnerButton extends BaseTaskButton {
      * @attr
      */
     @property({ type: Object, attribute: false })
-    callAction!: () => Promise<unknown>;
+    public override callAction!: () => Promise<unknown>;
 }
 
 export default SpinnerButton;

@@ -12,15 +12,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-ldap-connectivity")
 export class LDAPSourceConnectivity extends AKElement {
     @property()
-    connectivity?: {
+    public connectivity?: {
         [key: string]: {
             [key: string]: string;
         };
     };
 
-    static styles: CSSResult[] = [PFBase, PFList];
+    public static override styles: CSSResult[] = [PFBase, PFList];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.connectivity) {
             return html``;
         }

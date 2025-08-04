@@ -80,7 +80,7 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
-    static styles = [
+    public static styles = [
         ...ApplicationWizardStep.styles,
         PFBullseye,
         PFEmptyState,
@@ -95,12 +95,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `,
     ];
 
-    label = msg("Review and Submit Application");
+    public override label = msg("Review and Submit Application");
 
     @state()
-    state: SubmitStates = "reviewing";
+    protected state: SubmitStates = "reviewing";
 
-    async send() {
+    protected async send() {
         const app = this.wizard.app;
         const provider = this.wizard.provider as ModelRequest;
 
@@ -177,7 +177,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    override handleButton(button: WizardButton) {
+    protected override handleButton(button: WizardButton) {
         match([button.kind, this.state])
             .with([P.union("back", "cancel"), P._], () => {
                 super.handleButton(button);
@@ -198,7 +198,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             });
     }
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         const forReview: WizardButton[] = [
             { kind: "next", label: msg("Submit"), destination: "here" },
             { kind: "back", destination: "bindings" },
@@ -214,7 +214,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
             .exhaustive();
     }
 
-    renderInfo(
+    protected renderInfo(
         state: string,
         label: string,
         icons: string[],
@@ -235,7 +235,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         </div>`;
     }
 
-    renderError() {
+    protected renderError() {
         const { errors } = this.wizard;
 
         if (Object.keys(errors).length === 0) return nothing;
@@ -295,7 +295,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                 )}`;
     }
 
-    renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
+    protected renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.wizard.providerModel);
         if (!renderer) {
             throw new Error(
@@ -338,7 +338,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         `;
     }
 
-    renderMain() {
+    protected override renderMain() {
         const app = this.wizard.app;
         const provider = this.wizard.provider;
         if (!(this.wizard && app && provider)) {

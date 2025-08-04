@@ -24,34 +24,37 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Reputation scores");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "fa fa-ban";
     }
 
     @property()
-    order = "identifier";
+    public override order = "identifier";
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Identifier"), "identifier"),
             new TableColumn(msg("IP"), "ip"),
@@ -61,7 +64,7 @@ export class ReputationListPage extends TablePage<Reputation> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Reputation")}
@@ -83,7 +86,7 @@ export class ReputationListPage extends TablePage<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    protected row(item: Reputation): TemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country

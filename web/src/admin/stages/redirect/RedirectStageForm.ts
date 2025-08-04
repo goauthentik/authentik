@@ -21,9 +21,9 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-redirect-form")
 export class RedirectStageForm extends BaseStageForm<RedirectStage> {
     @property({ type: String })
-    mode: string = RedirectStageModeEnum.Static;
+    public mode: string = RedirectStageModeEnum.Static;
 
-    loadInstance(pk: string): Promise<RedirectStage> {
+    protected loadInstance(pk: string): Promise<RedirectStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesRedirectRetrieve({
                 stageUuid: pk,
@@ -34,7 +34,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
             });
     }
 
-    async send(data: RedirectStage): Promise<RedirectStage> {
+    protected async send(data: RedirectStage): Promise<RedirectStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesRedirectUpdate({
                 stageUuid: this.instance.pk || "",
@@ -46,7 +46,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg("Redirect the user to another flow, potentially with all gathered context")}
             </span>

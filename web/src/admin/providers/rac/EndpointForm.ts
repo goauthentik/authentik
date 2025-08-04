@@ -22,21 +22,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-rac-endpoint-form")
 export class EndpointForm extends ModelForm<Endpoint, string> {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
-    loadInstance(pk: string): Promise<Endpoint> {
+    protected loadInstance(pk: string): Promise<Endpoint> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
             pbmUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated endpoint.")
             : msg("Successfully created endpoint.");
     }
 
-    async send(data: Endpoint): Promise<Endpoint> {
+    protected async send(data: Endpoint): Promise<Endpoint> {
         data.authMode = AuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;
@@ -54,7 +54,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input

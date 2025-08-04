@@ -20,17 +20,17 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-scim-users-list")
 export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
@@ -48,7 +48,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("SCIM User(s)")}
@@ -65,18 +65,18 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    row(item: SCIMProviderUser): TemplateResult[] {
+    protected row(item: SCIMProviderUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -85,7 +85,8 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             html`${item.id}`,
         ];
     }
-    renderExpanded(item: SCIMProviderUser): TemplateResult {
+
+    protected override renderExpanded(item: SCIMProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

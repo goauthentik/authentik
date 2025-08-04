@@ -13,7 +13,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-pagination")
 export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFButton,
         PFPagination,
@@ -32,13 +32,13 @@ export class AkPagination extends CustomEmitterElement<DualSelectEventType>(AKEl
     ];
 
     @property({ attribute: false })
-    pages?: BasePagination;
+    public pages?: BasePagination;
 
     #clickListener = (nav: number = 0) => {
         this.dispatchCustomEvent(DualSelectEventType.NavigateTo, nav);
     };
 
-    render() {
+    public override render() {
         const { pages } = this;
 
         if (!pages) return nothing;

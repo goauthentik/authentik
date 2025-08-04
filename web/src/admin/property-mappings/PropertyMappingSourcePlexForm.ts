@@ -11,17 +11,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-plex-form")
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
+    protected async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexUpdate({
                 pmUuid: this.instance.pk,

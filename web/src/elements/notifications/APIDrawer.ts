@@ -18,9 +18,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-api-drawer")
 export class APIDrawer extends AKElement {
     @property({ attribute: false })
-    requests: RequestInfo[] = [];
+    public requests: RequestInfo[] = [];
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFNotificationDrawer,
         PFButton,
@@ -52,7 +52,7 @@ export class APIDrawer extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
             this.requests.push(e.detail);
@@ -64,7 +64,7 @@ export class APIDrawer extends AKElement {
         }) as EventListener);
     }
 
-    renderItem(item: RequestInfo): TemplateResult {
+    protected renderItem(item: RequestInfo): TemplateResult {
         return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
             <div class="pf-c-notification-drawer__list-item-header">
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
@@ -83,7 +83,7 @@ export class APIDrawer extends AKElement {
         </li>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">

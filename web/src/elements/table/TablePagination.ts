@@ -15,15 +15,15 @@ export type TablePageChangeListener = (page: number) => void;
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
     @property({ type: String })
-    label?: string;
+    public label?: string;
 
     @property({ attribute: false })
-    pages?: Pagination;
+    public pages?: Pagination;
 
     @property({ attribute: false })
-    onPageChange?: TablePageChangeListener;
+    public onPageChange?: TablePageChangeListener;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPagination,
@@ -46,7 +46,7 @@ export class TablePagination extends AKElement {
         this.onPageChange?.(this.pages?.next || 0);
     };
 
-    render() {
+    public override render() {
         if (!this.pages) {
             return nothing;
         }

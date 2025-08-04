@@ -19,7 +19,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
-    async loadInstance(pk: string): Promise<SCIMSource> {
+    protected async loadInstance(pk: string): Promise<SCIMSource> {
         return new SourcesApi(DEFAULT_CONFIG)
             .sourcesScimRetrieve({
                 slug: pk,
@@ -29,7 +29,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
             });
     }
 
-    async send(data: SCIMSource): Promise<SCIMSource> {
+    protected async send(data: SCIMSource): Promise<SCIMSource> {
         if (this.instance?.slug) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesScimPartialUpdate({
                 slug: this.instance.slug,
@@ -41,7 +41,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

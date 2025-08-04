@@ -20,32 +20,35 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Prompts");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Single Prompts that can be used for Prompt Stages.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-plugged";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Field"), "field_key"),
@@ -56,7 +59,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Prompt(s)")}
@@ -78,7 +81,7 @@ export class PromptListPage extends TablePage<Prompt> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Prompt): TemplateResult[] {
+    protected row(item: Prompt): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<code>${item.fieldKey}</code>`,
@@ -105,7 +108,7 @@ export class PromptListPage extends TablePage<Prompt> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal size=${PFSize.XLarge}>
                 <span slot="submit"> ${msg("Create")} </span>

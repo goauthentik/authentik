@@ -33,7 +33,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFButton,
         PFPage,
@@ -52,7 +52,7 @@ export class AdminSettingsPage extends AKElement {
     @state()
     protected settings?: Settings;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.#refresh();
@@ -74,7 +74,7 @@ export class AdminSettingsPage extends AKElement {
         return this.form?.reset();
     };
 
-    render() {
+    public override render() {
         if (!this.settings) return nothing;
 
         return html`

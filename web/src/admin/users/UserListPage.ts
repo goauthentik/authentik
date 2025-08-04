@@ -85,40 +85,43 @@ const recoveryButtonStyles = css`
 
 @customElement("ak-user-list")
 export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePage<User>)) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
-    supportsQL = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override supportsQL = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Users");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return "";
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-user";
     }
 
     @property()
-    order = "last_login";
+    public override order = "last_login";
 
     @property()
-    activePath;
+    public activePath;
 
     @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
 
     @state()
-    userPaths?: UserPath;
+    protected userPaths?: UserPath;
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...TablePage.styles,
         PFDescriptionList,
         PFCard,
@@ -126,7 +129,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         recoveryButtonStyles,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         const defaultPath = new DefaultUIConfig().defaults.userPath;
         this.activePath = getURLParam<string>("path", defaultPath);
@@ -137,7 +140,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         });
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
@@ -151,7 +154,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return users;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -161,7 +164,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
@@ -208,7 +211,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         </ak-forms-delete-bulk>`;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
@@ -239,7 +242,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -286,7 +289,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -394,7 +397,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -413,7 +416,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         `;
     }
 
-    protected renderSidebarBefore(): TemplateResult {
+    protected override renderSidebarBefore(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("User folders")}</div>

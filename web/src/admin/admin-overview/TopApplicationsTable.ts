@@ -15,11 +15,11 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
-    topN?: EventTopPerUser[];
+    public topN?: EventTopPerUser[];
 
-    static styles: CSSResult[] = [PFTable];
+    public static override styles: CSSResult[] = [PFTable];
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)
             .eventsEventsTopPerUserList({
                 action: "authorize_application",
@@ -30,7 +30,7 @@ export class TopApplicationsTable extends AKElement {
             });
     }
 
-    renderRow(event: EventTopPerUser): TemplateResult {
+    protected renderRow(event: EventTopPerUser): TemplateResult {
         return html`<tr role="row">
             <td role="cell">${event.application.name}</td>
             <td role="cell">${event.countedEvents}</td>
@@ -43,7 +43,7 @@ export class TopApplicationsTable extends AKElement {
         </tr>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<table class="pf-c-table pf-m-compact" role="grid">
             <thead>
                 <tr role="row">

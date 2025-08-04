@@ -18,7 +18,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFGrid,
         PFPage,
         PFContent,
@@ -34,7 +34,7 @@ export class DashboardUserPage extends AKElement {
         `,
     ];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User Statistics")}>
             </ak-page-header>
             <section class="pf-c-page__main-section">

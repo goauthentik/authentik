@@ -12,21 +12,21 @@ type StatusContent = { icon: string; message: TemplateResult };
 
 @customElement("ak-admin-fips-status-system")
 export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
 
     @state()
-    statusSummary?: string;
+    protected statusSummary?: string;
 
-    async getPrimaryValue(): Promise<SystemInfo> {
+    protected async getPrimaryValue(): Promise<SystemInfo> {
         return await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
     }
 
-    setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
+    protected setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {
         this.statusSummary = summary;
         return Promise.resolve<AdminStatus>(content);
     }
 
-    getStatus(value: SystemInfo): Promise<AdminStatus> {
+    protected getStatus(value: SystemInfo): Promise<AdminStatus> {
         return value.runtime.opensslFipsEnabled
             ? this.setStatus(msg("OK"), {
                   icon: "fa fa-check-circle pf-m-success",
@@ -38,11 +38,11 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
               });
     }
 
-    renderHeader(): TemplateResult {
+    protected override renderHeader(): TemplateResult {
         return html`${msg("FIPS Status")}`;
     }
 
-    renderValue(): TemplateResult {
+    protected override renderValue(): TemplateResult {
         return html`${this.statusSummary}`;
     }
 }

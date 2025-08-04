@@ -19,7 +19,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .icon-description {
@@ -33,7 +33,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         `,
     ];
 
-    deviceMessage(): string {
+    protected deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email: {
                 const email = this.deviceChallenge.challenge?.email;
@@ -52,7 +52,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return msg("Enter the code from your authenticator device.");
     }
 
-    deviceIcon(): string {
+    protected deviceIcon(): string {
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email:
                 return "fa-envelope";
@@ -67,7 +67,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return "fa-mobile-alt";
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
             <div class="icon-description">

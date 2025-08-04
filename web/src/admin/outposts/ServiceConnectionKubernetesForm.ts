@@ -20,19 +20,19 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     KubernetesServiceConnection,
     string
 > {
-    loadInstance(pk: string): Promise<KubernetesServiceConnection> {
+    protected loadInstance(pk: string): Promise<KubernetesServiceConnection> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
             uuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
     }
 
-    async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
+    protected async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
                 uuid: this.instance.pk || "",
@@ -44,7 +44,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

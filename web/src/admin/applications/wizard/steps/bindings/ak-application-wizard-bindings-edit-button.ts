@@ -1,5 +1,4 @@
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -9,13 +8,12 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 @customElement("ak-application-wizard-binding-step-edit-button")
 export class ApplicationWizardBindingStepEditButton extends AKElement {
-    static styles = [PFButton];
+    public static override styles = [PFButton];
 
     @property({ type: Number })
-    value = -1;
+    public value = -1;
 
-    @bound
-    onClick(ev: Event) {
+    #clickListener = (ev: Event) => {
         ev.stopPropagation();
         this.dispatchEvent(
             new CustomEvent<number>("click-edit", {
@@ -24,10 +22,10 @@ export class ApplicationWizardBindingStepEditButton extends AKElement {
                 detail: this.value,
             }),
         );
-    }
+    };
 
-    render() {
-        return html`<button class="pf-c-button pf-c-secondary" @click=${this.onClick}>
+    public override render() {
+        return html`<button class="pf-c-button pf-c-secondary" @click=${this.#clickListener}>
             ${msg("Edit")}
         </button>`;
     }

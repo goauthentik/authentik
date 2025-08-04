@@ -29,38 +29,41 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-invitation-list")
 export class InvitationListPage extends TablePage<Invitation> {
-    expandable = true;
+    public override expandable = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Invitations");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-migration";
     }
 
-    static styles: CSSResult[] = [...super.styles, PFBanner];
+    public static override styles: CSSResult[] = [...super.styles, PFBanner];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "expires";
+    public override order = "expires";
 
     @state()
-    invitationStageExists = false;
+    protected invitationStageExists = false;
 
     @state()
-    multipleEnrollmentFlows = false;
+    protected multipleEnrollmentFlows = false;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Invitation>> {
         try {
             // Check if any invitation stages exist
             const stages = await new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesList({
@@ -84,7 +87,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Created by"), "created_by"),
@@ -93,7 +96,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Invitation(s)")}
@@ -115,7 +118,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): TemplateResult[] {
+    protected row(item: Invitation): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows
@@ -147,7 +150,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         ];
     }
 
-    renderExpanded(item: Invitation): TemplateResult {
+    protected override renderExpanded(item: Invitation): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
@@ -160,7 +163,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -171,7 +174,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         `;
     }
 
-    render(): HTMLTemplateResult {
+    public override render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

@@ -21,19 +21,19 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
-    loadInstance(): Promise<unknown> {
+    protected loadInstance(): Promise<unknown> {
         return Promise.resolve();
     }
-    send(): Promise<unknown> {
+    protected send(): Promise<unknown> {
         return Promise.resolve();
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-rbac-object-permission-page
             .model=${this.model}
             .objectPk=${this.objectPk}
@@ -46,14 +46,14 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
                 <span slot="header"> ${msg("Update Permissions")} </span>

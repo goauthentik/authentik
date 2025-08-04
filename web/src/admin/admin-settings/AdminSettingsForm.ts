@@ -33,19 +33,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     // Custom property accessors in Lit 2 require a manual call to requestUpdate(). See:
     // https://lit.dev/docs/v2/components/properties/#accessors-custom
     //
-    set settings(value: Settings | undefined) {
-        this._settings = value;
+    public set settings(value: Settings | undefined) {
+        this.#settings = value;
         this.requestUpdate();
     }
 
     @property({ type: Object })
-    get settings() {
-        return this._settings;
+    public get settings() {
+        return this.#settings;
     }
 
-    private _settings?: Settings;
+    #settings?: Settings;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFList,
         css`
@@ -55,11 +55,11 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         `,
     ];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully updated settings.");
     }
 
-    async send(data: SettingsRequest): Promise<Settings> {
+    protected async send(data: SettingsRequest): Promise<Settings> {
         const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest: data,
         });
@@ -67,12 +67,12 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         return result;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
-                value="${ifDefined(this._settings?.avatars)}"
+                value="${ifDefined(this.#settings?.avatars)}"
                 input-hint="code"
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
@@ -139,21 +139,21 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-switch-input
                 name="defaultUserChangeName"
                 label=${msg("Allow users to change name")}
-                ?checked="${this._settings?.defaultUserChangeName}"
+                ?checked="${this.#settings?.defaultUserChangeName}"
                 help=${msg("Enable the ability for users to change their name.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeEmail"
                 label=${msg("Allow users to change email")}
-                ?checked="${this._settings?.defaultUserChangeEmail}"
+                ?checked="${this.#settings?.defaultUserChangeEmail}"
                 help=${msg("Enable the ability for users to change their email.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeUsername"
                 label=${msg("Allow users to change username")}
-                ?checked="${this._settings?.defaultUserChangeUsername}"
+                ?checked="${this.#settings?.defaultUserChangeUsername}"
                 help=${msg("Enable the ability for users to change their username.")}
             >
             </ak-switch-input>
@@ -162,14 +162,14 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Event retention")}
                 input-hint="code"
                 required
-                value="${ifDefined(this._settings?.eventRetention)}"
+                value="${ifDefined(this.#settings?.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                         ${msg("Duration after which events will be deleted from the database.")}
                     </p>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             html`When using an external logging solution for archiving, this can be
-                                set to <code>minutes=5</code>.`,
+                                public set to <code>minutes=5</code>.`,
                         )}
                     </p>
                     <p class="pf-c-form__helper-text">
@@ -184,19 +184,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Reputation: lower limit")}
                 required
                 name="reputationLowerLimit"
-                value="${this._settings?.reputationLowerLimit ?? DEFAULT_REPUTATION_LOWER_LIMIT}"
+                value="${this.#settings?.reputationLowerLimit ?? DEFAULT_REPUTATION_LOWER_LIMIT}"
                 help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
             ></ak-number-input>
             <ak-number-input
                 label=${msg("Reputation: upper limit")}
                 required
                 name="reputationUpperLimit"
-                value="${this._settings?.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
+                value="${this.#settings?.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
                 help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
-                    .items=${this._settings?.footerLinks ?? []}
+                    .items=${this.#settings?.footerLinks ?? []}
                     .newItem=${() => ({ name: "", href: "" })}
                     .row=${(f?: FooterLink) =>
                         akFooterLinkInput({
@@ -215,7 +215,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-switch-input
                 name="gdprCompliance"
                 label=${msg("GDPR compliance")}
-                ?checked="${this._settings?.gdprCompliance}"
+                ?checked="${this.#settings?.gdprCompliance}"
                 help=${msg(
                     "When enabled, all the events caused by a user will be deleted upon the user's deletion.",
                 )}
@@ -224,14 +224,14 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-switch-input
                 name="impersonation"
                 label=${msg("Impersonation")}
-                ?checked="${this._settings?.impersonation}"
+                ?checked="${this.#settings?.impersonation}"
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="impersonationRequireReason"
                 label=${msg("Require reason for impersonation")}
-                ?checked="${this._settings?.impersonationRequireReason}"
+                ?checked="${this.#settings?.impersonationRequireReason}"
                 help=${msg("Require administrators to provide a reason for impersonating a user.")}
             >
             </ak-switch-input>
@@ -240,7 +240,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Default token duration")}
                 input-hint="code"
                 required
-                value="${ifDefined(this._settings?.defaultTokenDuration)}"
+                value="${ifDefined(this.#settings?.defaultTokenDuration)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                         ${msg("Default duration for generated tokens")}
                     </p>
@@ -251,7 +251,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Default token length")}
                 required
                 name="defaultTokenLength"
-                value="${this._settings?.defaultTokenLength ?? 60}"
+                value="${this.#settings?.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
         `;

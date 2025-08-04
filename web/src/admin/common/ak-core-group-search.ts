@@ -44,27 +44,27 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
      * @attr
      */
     @property({ type: String, reflect: true })
-    group?: string;
+    public group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<Group>;
+    protected search!: SearchSelect<Group>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name: string | null | undefined;
 
-    selectedGroup?: Group;
+    protected selectedGroup?: Group;
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    get value() {
+    public get value() {
         return this.selectedGroup ? renderValue(this.selectedGroup) : undefined;
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {
@@ -77,17 +77,17 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         }
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    protected handleSearchUpdate(ev: CustomEvent) {
         ev.stopPropagation();
         this.selectedGroup = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    selected(group: Group) {
+    protected selected(group: Group) {
         return this.group === group.pk;
     }
 
-    render() {
+    public override render() {
         return html`
             <ak-search-select
                 .fetchObjects=${fetchObjects}

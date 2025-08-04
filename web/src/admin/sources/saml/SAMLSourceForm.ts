@@ -38,9 +38,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
-    async loadInstance(pk: string): Promise<SAMLSource> {
+    protected async loadInstance(pk: string): Promise<SAMLSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
@@ -48,7 +48,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         return source;
     }
 
-    async send(data: SAMLSource): Promise<SAMLSource> {
+    protected async send(data: SAMLSource): Promise<SAMLSource> {
         let source: SAMLSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
@@ -81,7 +81,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         return source;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

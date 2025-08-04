@@ -12,18 +12,18 @@ export interface RouteArgs {
 }
 
 export class Route {
-    url: RegExp;
+    public url: RegExp;
 
-    private element?: TemplateResult;
-    private callback?: (args: RouteArgs) => Promise<TemplateResult>;
+    #element?: TemplateResult;
+    #callback?: (args: RouteArgs) => Promise<TemplateResult>;
 
-    constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
+    public constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
         this.url = url;
-        this.callback = callback;
+        this.#callback = callback;
     }
 
-    redirect(to: string, raw = false): Route {
-        this.callback = async () => {
+    public redirect(to: string, raw = false): Route {
+        this.#callback = async () => {
             console.debug(`authentik/router: redirecting ${to}`);
             if (!raw) {
                 window.location.hash = `#${to}`;
@@ -35,32 +35,32 @@ export class Route {
         return this;
     }
 
-    then(render: (args: RouteArgs) => TemplateResult): Route {
-        this.callback = async (args) => {
+    protected then(render: (args: RouteArgs) => TemplateResult): Route {
+        this.#callback = async (args) => {
             return render(args);
         };
         return this;
     }
 
-    thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
-        this.callback = render;
+    protected thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
+        this.#callback = render;
         return this;
     }
 
-    render(args: RouteArgs): TemplateResult {
-        if (this.callback) {
+    public render(args: RouteArgs): TemplateResult {
+        if (this.#callback) {
             return html`${until(
-                this.callback(args),
+                this.#callback(args),
                 html`<ak-empty-state loading></ak-empty-state>`,
             )}`;
         }
-        if (this.element) {
-            return this.element;
+        if (this.#element) {
+            return this.#element;
         }
         throw new Error("Route does not have callback or element");
     }
 
-    toString(): string {
-        return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
+    protected toString(): string {
+        return `<Route url=${this.url} callback=${this.#callback ? "true" : "false"}>`;
     }
 }

@@ -20,16 +20,16 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     @property()
-    defaultPath: string = "users";
+    public defaultPath: string = "users";
 
-    static get defaultUserAttributes(): { [key: string]: unknown } {
+    public static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {
@@ -41,13 +41,13 @@ export class UserForm extends ModelForm<User, number> {
         `,
     ];
 
-    loadInstance(pk: number): Promise<User> {
+    protected loadInstance(pk: number): Promise<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
             id: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
         }
@@ -57,7 +57,7 @@ export class UserForm extends ModelForm<User, number> {
         return msg("Successfully created user.");
     }
 
-    async send(data: User): Promise<User> {
+    protected async send(data: User): Promise<User> {
         if (data.attributes === null) {
             data.attributes = UserForm.defaultUserAttributes;
         }
@@ -84,7 +84,7 @@ export class UserForm extends ModelForm<User, number> {
         return user;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"

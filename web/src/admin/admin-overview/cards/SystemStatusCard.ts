@@ -12,14 +12,14 @@ import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-admin-status-system")
 export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
-    now?: Date;
+    protected now?: Date;
 
-    icon = "pf-icon pf-icon-server";
+    public override icon = "pf-icon pf-icon-server";
 
     @state()
-    statusSummary?: string;
+    protected statusSummary?: string;
 
-    async getPrimaryValue(): Promise<SystemInfo> {
+    protected async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         if (
@@ -38,7 +38,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
 
     // Called on fresh installations and whenever the embedded outpost is deleted
     // automatically send the login URL when the user first visits the admin dashboard.
-    async setOutpostHost(): Promise<void> {
+    protected async setOutpostHost(): Promise<void> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
             managedIexact: "goauthentik.io/outposts/embedded",
         });
@@ -53,7 +53,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    getStatus(value: SystemInfo): Promise<AdminStatus> {
+    protected getStatus(value: SystemInfo): Promise<AdminStatus> {
         if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
@@ -84,11 +84,11 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
         });
     }
 
-    renderHeader(): SlottedTemplateResult {
+    protected override renderHeader(): SlottedTemplateResult {
         return msg("System status");
     }
 
-    renderValue(): SlottedTemplateResult {
+    protected override renderValue(): SlottedTemplateResult {
         return this.statusSummary ? html`${this.statusSummary}` : nothing;
     }
 }

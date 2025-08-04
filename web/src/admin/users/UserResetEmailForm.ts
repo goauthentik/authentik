@@ -22,18 +22,18 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-reset-email-form")
 export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
     @property({ attribute: false })
-    user!: User;
+    public user!: User;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
+    protected async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Email stage")}
             required

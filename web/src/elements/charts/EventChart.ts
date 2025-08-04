@@ -65,7 +65,7 @@ export function actionToColor(action: EventActions): string {
 }
 
 export abstract class EventChart extends AKChart<EventVolume[]> {
-    eventVolume(
+    protected eventVolume(
         data: EventVolume[],
         options?: {
             optsMap?: Map<EventActions, Partial<ChartDataset>>;

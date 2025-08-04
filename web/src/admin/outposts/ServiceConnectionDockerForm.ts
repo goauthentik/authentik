@@ -15,19 +15,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
-    loadInstance(pk: string): Promise<DockerServiceConnection> {
+    protected loadInstance(pk: string): Promise<DockerServiceConnection> {
         return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerRetrieve({
             uuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
     }
 
-    async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
+    protected async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
                 uuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

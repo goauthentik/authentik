@@ -13,14 +13,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-chip")
 export class Chip extends AKElement {
     @property()
-    value?: number | string;
+    public value?: number | string;
 
     @property({ type: Boolean })
-    removable = false;
+    public removable = false;
 
-    static styles: CSSResult[] = [PFBase, PFButton, PFChip];
+    public static override styles: CSSResult[] = [PFBase, PFButton, PFChip];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<li class="pf-c-chip-group__list-item">
             <div class="pf-c-chip">
                 <span class="pf-c-chip__text">

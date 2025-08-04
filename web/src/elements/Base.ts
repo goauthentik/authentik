@@ -24,7 +24,7 @@ export interface AKElementProps {
 export class AKElement extends LitElement implements AKElementProps {
     //#region Static Properties
 
-    public static styles?: Array<CSSResult | CSSModule>;
+    public static override styles?: Array<CSSResult | CSSModule>;
 
     protected static override finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
         if (!styles) return [$AKBase];
@@ -42,7 +42,7 @@ export class AKElement extends LitElement implements AKElementProps {
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         super();
 
         const { brand } = globalAK();

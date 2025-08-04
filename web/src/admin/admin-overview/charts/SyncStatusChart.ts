@@ -29,11 +29,11 @@ export interface SummarizedSyncStatus {
 
 @customElement("ak-admin-status-chart-sync")
 export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
-    getChartType(): string {
+    public override getChartType(): string {
         return "doughnut";
     }
 
-    getOptions(): ChartOptions {
+    public override getOptions(): ChartOptions {
         return {
             plugins: {
                 legend: {
@@ -44,7 +44,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async fetchStatus<T>(
+    protected async fetchStatus<T>(
         listObjects: () => Promise<PaginatedResponse<T>>,
         fetchSyncStatus: (element: T) => Promise<SyncStatus>,
         label: string,
@@ -92,7 +92,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         };
     }
 
-    async apiRequest(): Promise<SummarizedSyncStatus[]> {
+    protected async apiRequest(): Promise<SummarizedSyncStatus[]> {
         const statuses = [
             await this.fetchStatus(
                 () => {
@@ -158,7 +158,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
         return statuses;
     }
 
-    getChartData(data: SummarizedSyncStatus[]): ChartData {
+    protected getChartData(data: SummarizedSyncStatus[]): ChartData {
         return {
             labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {

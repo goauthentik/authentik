@@ -15,7 +15,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {
-    loadInstance(pk: string): Promise<ConsentStage> {
+    protected loadInstance(pk: string): Promise<ConsentStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesConsentRetrieve({
                 stageUuid: pk,
@@ -27,9 +27,9 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     }
 
     @property({ type: Boolean })
-    showExpiresIn = false;
+    public showExpiresIn = false;
 
-    async send(data: ConsentStage): Promise<ConsentStage> {
+    protected async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
@@ -41,7 +41,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",

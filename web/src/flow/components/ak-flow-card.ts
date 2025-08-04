@@ -23,12 +23,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-card")
 export class FlowCard extends AKElement {
     @property({ type: Object })
-    challenge?: ChallengeTypes;
+    public challenge?: ChallengeTypes;
 
     @property({ type: Boolean })
-    loading = false;
+    public loading = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFTitle,
@@ -52,7 +52,7 @@ export class FlowCard extends AKElement {
         `,
     ];
 
-    render() {
+    public override render() {
         let inner = html`<slot></slot>`;
         if (!this.challenge || this.loading) {
             inner = html`<ak-empty-state loading default-label></ak-empty-state>`;

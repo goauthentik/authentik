@@ -10,12 +10,12 @@ import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 @customElement("ak-form-static")
 export class FormStatic extends AKElement {
     @property()
-    userAvatar?: string;
+    public userAvatar?: string;
 
     @property()
-    user?: string;
+    public user?: string;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFAvatar,
         css`
             /* Form with user */
@@ -40,7 +40,7 @@ export class FormStatic extends AKElement {
         `,
     ];
 
-    render() {
+    public override render() {
         if (!this.user) {
             return nothing;
         }

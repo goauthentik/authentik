@@ -60,9 +60,9 @@ export function oauth2ProviderSelector(instanceProviders: number[] | undefined) 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
-    showClientSecret = true;
+    protected showClientSecret = true;
 
-    static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             ak-array-input {
@@ -71,7 +71,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         `,
     ];
 
-    async loadInstance(pk: number): Promise<OAuth2Provider> {
+    protected async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
             id: pk,
         });
@@ -79,7 +79,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         return provider;
     }
 
-    async send(data: OAuth2Provider): Promise<OAuth2Provider> {
+    protected async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
                 id: this.instance.pk,
@@ -91,7 +91,7 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         });
     }
 
-    renderForm() {
+    protected override renderForm() {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };

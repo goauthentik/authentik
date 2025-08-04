@@ -14,9 +14,9 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {
     @property({ type: Number })
-    instancePk?: number;
+    public instancePk?: number;
 
-    async send(data: ImpersonationRequest): Promise<void> {
+    protected async send(data: ImpersonationRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG)
             .coreUsersImpersonateCreate({
                 id: this.instancePk || 0,
@@ -27,7 +27,7 @@ export class UserImpersonateForm extends Form<ImpersonationRequest> {
             });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-text-input
             name="reason"
             label=${msg("Reason")}

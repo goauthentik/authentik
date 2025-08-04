@@ -15,11 +15,11 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully imported provider.");
     }
 
-    async send(data: SAMLProvider): Promise<void> {
+    protected async send(data: SAMLProvider): Promise<void> {
         const file = this.files().get("metadata");
         if (!file) {
             throw new SentryIgnoredError("No form data");
@@ -32,7 +32,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>

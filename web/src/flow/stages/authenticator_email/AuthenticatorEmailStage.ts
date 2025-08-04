@@ -27,7 +27,7 @@ export class AuthenticatorEmailStage extends BaseStage<
     AuthenticatorEmailChallenge,
     AuthenticatorEmailChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFLogin,
@@ -37,7 +37,7 @@ export class AuthenticatorEmailStage extends BaseStage<
         PFButton,
     ];
 
-    renderEmailInput(): TemplateResult {
+    protected renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static
@@ -77,7 +77,7 @@ export class AuthenticatorEmailStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    renderEmailOTPInput(): TemplateResult {
+    protected renderEmailOTPInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <ak-form-static
                 class="pf-c-form__group"
@@ -121,7 +121,7 @@ export class AuthenticatorEmailStage extends BaseStage<
         </ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.challenge.emailRequired) {
             return this.renderEmailInput();
         }

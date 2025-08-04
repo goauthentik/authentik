@@ -27,12 +27,12 @@ export const stageToAuthenticatorName = (stage: UserSetting) =>
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
-    userSettings?: UserSetting[];
+    public userSettings?: UserSetting[];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Device>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
         return {
             pagination: {
@@ -48,7 +48,7 @@ export class MFADevicesPage extends Table<Device> {
         };
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         // prettier-ignore
         return [
             msg("Name"),
@@ -59,7 +59,7 @@ export class MFADevicesPage extends Table<Device> {
         ].map((th) => new TableColumn(th, ""));
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         const settings = (this.userSettings || []).filter((stage) => {
             if (stage.component === "ak-user-settings-password") {
                 return false;
@@ -91,7 +91,7 @@ export class MFADevicesPage extends Table<Device> {
             ${super.renderToolbar()}`;
     }
 
-    async deleteWrapper(device: Device) {
+    protected async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
         const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
@@ -114,7 +114,7 @@ export class MFADevicesPage extends Table<Device> {
         }
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Device(s)")}
@@ -129,7 +129,7 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Device): TemplateResult[] {
+    protected row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>

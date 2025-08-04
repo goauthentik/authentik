@@ -78,12 +78,12 @@ export function isForward(mode: ProxyMode): boolean {
 @customElement("ak-provider-proxy-view")
 export class ProxyProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: ProxyProvider;
+    protected provider?: ProxyProvider;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -102,7 +102,7 @@ export class ProxyProviderViewPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -110,19 +110,19 @@ export class ProxyProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersProxyRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    renderConfig(): TemplateResult {
+    protected renderConfig(): TemplateResult {
         const servers = [
             {
                 label: msg("Nginx (Ingress)"),
@@ -194,7 +194,7 @@ export class ProxyProviderViewPage extends AKElement {
         >`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -229,7 +229,7 @@ export class ProxyProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabAuthentication(): TemplateResult {
+    protected renderTabAuthentication(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -260,7 +260,7 @@ export class ProxyProviderViewPage extends AKElement {
         </div>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

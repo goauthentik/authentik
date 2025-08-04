@@ -22,18 +22,18 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-rbac-user-object-permission-table")
 export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectPermission> {
     @property()
-    model?: RbacPermissionsAssignedByUsersListModelEnum;
+    public model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
-    objectPk?: string | number;
+    public objectPk?: string | number;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
@@ -53,7 +53,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return perms;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         const baseColumns = [new TableColumn(msg("User"), "user")];
         // We don't check pagination since models shouldn't need to have that many permissions?
         this.modelPermissions?.results.forEach((perm) => {
@@ -62,7 +62,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return baseColumns;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
             <span slot="submit"> ${msg("Assign")} </span>
             <span slot="header"> ${msg("Assign permission to user")} </span>
@@ -78,7 +78,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         </ak-forms-modal>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.filter((item) => item.isSuperuser).length > 0;
@@ -112,7 +112,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserAssignedObjectPermission): TemplateResult[] {
+    protected row(item: UserAssignedObjectPermission): TemplateResult[] {
         const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
         this.modelPermissions?.results.forEach((perm) => {
             let cell = html`<i class="fas fa-times pf-m-danger"></i>`;

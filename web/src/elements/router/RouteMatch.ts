@@ -5,17 +5,17 @@ import { Route } from "#elements/router/Route";
 import { TemplateResult } from "lit";
 
 export class RouteMatch {
-    route: Route;
-    arguments: { [key: string]: string };
-    fullURL: string;
+    public route: Route;
+    public arguments: { [key: string]: string };
+    public fullURL: string;
 
-    constructor(route: Route, fullUrl: string) {
+    public constructor(route: Route, fullUrl: string) {
         this.route = route;
         this.arguments = {};
         this.fullURL = fullUrl;
     }
 
-    render(): TemplateResult {
+    public render(): TemplateResult {
         return this.route.render(this.arguments);
     }
 
@@ -25,7 +25,7 @@ export class RouteMatch {
      *
      * @returns The sanitized URL for logging/tracing.
      */
-    sanitizedURL() {
+    public sanitizedURL() {
         let cleanedURL = this.fullURL;
         for (const match of Object.keys(this.arguments)) {
             const value = this.arguments[match];
@@ -34,7 +34,7 @@ export class RouteMatch {
         return cleanedURL;
     }
 
-    toString(): string {
+    protected toString(): string {
         return `<RouteMatch url=${this.sanitizedURL()} route=${this.route} arguments=${JSON.stringify(
             this.arguments,
         )}>`;

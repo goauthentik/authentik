@@ -37,7 +37,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesScimRetrieve({
                 slug: value,
@@ -48,9 +48,9 @@ export class SCIMSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: SCIMSource;
+    public source?: SCIMSource;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -62,7 +62,7 @@ export class SCIMSourceViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
@@ -70,7 +70,7 @@ export class SCIMSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

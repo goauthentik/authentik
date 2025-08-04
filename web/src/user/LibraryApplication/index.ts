@@ -28,18 +28,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-library-app")
 export class LibraryApplication extends AKElement {
     @property({ attribute: false })
-    application?: Application;
+    public application?: Application;
 
     @property({ type: Boolean })
-    selected = false;
+    public selected = false;
 
     @property()
-    background = "";
+    public background = "";
 
     @query("ak-library-rac-endpoint-launch")
-    racEndpointLaunch?: RACLaunchEndpointModal;
+    protected racEndpointLaunch?: RACLaunchEndpointModal;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,
@@ -72,7 +72,7 @@ export class LibraryApplication extends AKElement {
         `,
     ];
 
-    renderExpansion(application: Application) {
+    protected renderExpansion(application: Application) {
         const { me, uiConfig } = rootInterface<UserInterface>();
 
         return html`<ak-expand textOpen=${msg("Fewer details")} textClosed=${msg("More details")}>
@@ -94,7 +94,7 @@ export class LibraryApplication extends AKElement {
         </ak-expand>`;
     }
 
-    renderLaunch(): TemplateResult {
+    protected renderLaunch(): TemplateResult {
         if (!this.application) {
             return html``;
         }
@@ -145,7 +145,7 @@ export class LibraryApplication extends AKElement {
             </div>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }

@@ -72,7 +72,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
-    public json() {
+    public override json() {
         return this.value;
     }
 
@@ -102,7 +102,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.addCustomListener(DualSelectEventType.NavigateTo, this.#navigationListener);
         this.addCustomListener(DualSelectEventType.Change, this.#changeListener);
@@ -111,7 +111,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         this.#fetch(1);
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("selected") && !this.#didFirstUpdate) {
             this.#didFirstUpdate = true;
             this.#selected = this.selected;
@@ -179,7 +179,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     //#endregion
 
-    render() {
+    public override render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}

@@ -27,37 +27,37 @@ export interface VisibilityToggleProps {
  */
 @customElement("ak-visibility-toggle")
 export class VisibilityToggle extends AKElement implements VisibilityToggleProps {
-    static styles = [PFBase, PFButton];
+    public static override styles = [PFBase, PFButton];
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    disabled = false;
+    public disabled = false;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "show-message" })
-    showMessage = msg("Show field content");
+    public showMessage = msg("Show field content");
 
     /**
      * @property
      * @attribute
      */
     @property({ type: String, attribute: "hide-message" })
-    hideMessage = msg("Hide field content");
+    public hideMessage = msg("Hide field content");
 
-    render() {
+    public override render() {
         const [label, icon] = this.open
             ? [this.hideMessage, "fa-eye"]
             : [this.showMessage, "fa-eye-slash"];

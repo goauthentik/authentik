@@ -121,7 +121,7 @@ const customStyles = css`
 @customElement("ak-interface-user-presentation")
 // @ts-ignore
 class UserInterfacePresentation extends WithBrandConfig(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFDisplay,
         PFBrand,
@@ -135,21 +135,21 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
     ];
 
     @property({ type: Object })
-    uiConfig!: UIConfig;
+    public uiConfig!: UIConfig;
 
     @property({ type: Object })
-    me!: SessionUser;
+    public me!: SessionUser;
 
     @property({ type: Boolean, reflect: true })
-    notificationDrawerOpen = false;
+    public notificationDrawerOpen = false;
 
     @property({ type: Boolean, reflect: true })
-    apiDrawerOpen = false;
+    public apiDrawerOpen = false;
 
     @property({ type: Number })
-    notificationsCount = 0;
+    public notificationsCount = 0;
 
-    get canAccessAdmin() {
+    public get canAccessAdmin() {
         return (
             this.me.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
@@ -157,11 +157,11 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
         );
     }
 
-    get isFullyConfigured() {
+    public get isFullyConfigured() {
         return Boolean(this.uiConfig && this.me && this.brand);
     }
 
-    renderAdminInterfaceLink() {
+    protected renderAdminInterfaceLink() {
         if (!this.canAccessAdmin) {
             return nothing;
         }
@@ -182,7 +182,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
             </a>`;
     }
 
-    render() {
+    public override render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
         // that the contract we promised is being honored, and the rest of the code that depends on
@@ -264,21 +264,21 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
 @customElement("ak-interface-user")
 export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @state()
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    protected apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     @state()
-    notificationsCount = 0;
+    protected notificationsCount = 0;
 
     @state()
-    me: SessionUser | null = null;
+    public me: SessionUser | null = null;
 
     @state()
-    uiConfig: UIConfig | null = null;
+    public uiConfig: UIConfig | null = null;
 
-    constructor() {
+    public constructor() {
         configureSentry(true);
 
         super();
@@ -291,7 +291,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
     }
 
-    async connectedCallback() {
+    public override async connectedCallback() {
         super.connectedCallback();
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
@@ -299,7 +299,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
     }
 
-    disconnectedCallback() {
+    public override disconnectedCallback() {
         super.disconnectedCallback();
 
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
@@ -309,21 +309,21 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         WebsocketClient.close();
     }
 
-    toggleNotificationDrawer() {
+    protected toggleNotificationDrawer() {
         this.notificationDrawerOpen = !this.notificationDrawerOpen;
         updateURLParams({
             notificationDrawerOpen: this.notificationDrawerOpen,
         });
     }
 
-    toggleApiDrawer() {
+    protected toggleApiDrawer() {
         this.apiDrawerOpen = !this.apiDrawerOpen;
         updateURLParams({
             apiDrawerOpen: this.apiDrawerOpen,
         });
     }
 
-    fetchConfigurationDetails() {
+    protected fetchConfigurationDetails() {
         me().then((session: SessionUser) => {
             this.me = session;
             this.uiConfig = getConfigForUser(session.user);
@@ -341,7 +341,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
         });
     }
 
-    render() {
+    public override render() {
         if (!this.me) {
             console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
 

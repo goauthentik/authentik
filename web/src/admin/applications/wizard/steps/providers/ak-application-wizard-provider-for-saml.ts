@@ -14,12 +14,12 @@ import { html } from "lit";
 
 @customElement("ak-application-wizard-provider-for-saml")
 export class ApplicationWizardProviderSamlForm extends ApplicationWizardProviderForm<SAMLProvider> {
-    label = msg("Configure SAML Provider");
+    public override label = msg("Configure SAML Provider");
 
     @state()
-    hasSigningKp = false;
+    protected hasSigningKp = false;
 
-    renderForm() {
+    protected renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
@@ -37,7 +37,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
             </form>`;
     }
 
-    render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("SAML Provider Step received uninitialized wizard context.");
         }

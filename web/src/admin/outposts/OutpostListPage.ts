@@ -51,24 +51,27 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 
 @customElement("ak-outpost-list")
 export class OutpostListPage extends TablePage<Outpost> {
-    expandable = true;
+    public override expandable = true;
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Outposts");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-zone";
     }
-    searchEnabled(): boolean {
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
             await this.defaultEndpointConfig(),
         );
@@ -87,9 +90,9 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     @state()
-    health: { [key: string]: OutpostHealth[] } = {};
+    protected health: { [key: string]: OutpostHealth[] } = {};
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type"), "type"),
@@ -100,15 +103,15 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    row(item: Outpost): TemplateResult[] {
+    protected row(item: Outpost): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
@@ -162,7 +165,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    renderExpanded(item: Outpost): TemplateResult {
+    protected override renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
         return html`<td role="cell" colspan="7">
             <div class="pf-c-table__expandable-row-content">
@@ -218,7 +221,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Outpost(s)")}
@@ -240,7 +243,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

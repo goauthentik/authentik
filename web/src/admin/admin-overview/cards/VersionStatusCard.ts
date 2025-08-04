@@ -10,13 +10,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    icon = "pf-icon pf-icon-bundle";
+    public override icon = "pf-icon pf-icon-bundle";
 
-    getPrimaryValue(): Promise<Version> {
+    protected getPrimaryValue(): Promise<Version> {
         return new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
     }
 
-    getStatus(value: Version): Promise<AdminStatus> {
+    protected getStatus(value: Version): Promise<AdminStatus> {
         if (value.buildHash) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
@@ -48,11 +48,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         });
     }
 
-    renderHeader(): TemplateResult {
+    protected override renderHeader(): TemplateResult {
         return html`${msg("Version")}`;
     }
 
-    renderValue(): TemplateResult {
+    protected override renderValue(): TemplateResult {
         let text = this.value?.versionCurrent;
         const versionFamily = this.value?.versionCurrent.split(".");
         versionFamily?.pop();

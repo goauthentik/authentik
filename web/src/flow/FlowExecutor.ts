@@ -54,7 +54,7 @@ export class FlowExecutor
 {
     //#region Styles
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFDrawer,
@@ -192,7 +192,7 @@ export class FlowExecutor
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         configureSentry();
 
         super();
@@ -228,13 +228,13 @@ export class FlowExecutor
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
         WebsocketClient.close();
     }
 
-    public async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
@@ -277,7 +277,7 @@ export class FlowExecutor
     }
 
     // DOM post-processing has to happen after the render.
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("flowInfo") && this.flowInfo) {
             this.#setShadowStyles(this.flowInfo);
         }
@@ -351,7 +351,7 @@ export class FlowExecutor
 
     //#region Render
 
-    getLayout(): string {
+    protected getLayout(): string {
         const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
@@ -359,7 +359,7 @@ export class FlowExecutor
         return prefilledFlow;
     }
 
-    getLayoutClass(): string {
+    protected getLayoutClass(): string {
         const layout = this.getLayout();
 
         switch (layout) {
@@ -373,7 +373,7 @@ export class FlowExecutor
         }
     }
 
-    async renderChallenge(): Promise<TemplateResult> {
+    protected async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
             return html`<ak-flow-card loading></ak-flow-card>`;
         }
@@ -534,7 +534,7 @@ export class FlowExecutor
         }
     }
 
-    async renderInspector() {
+    protected async renderInspector() {
         if (!this.inspectorOpen) {
             return nothing;
         }
@@ -548,7 +548,7 @@ export class FlowExecutor
         );
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <ak-locale-context>
             <div class="pf-c-background-image"></div>
             <div class="pf-c-page__drawer">

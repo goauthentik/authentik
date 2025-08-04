@@ -41,9 +41,9 @@ export class AKPageNavbar
 {
     //#region Static Properties
 
-    private static elementRef: AKPageNavbar | null = null;
+    protected static elementRef: AKPageNavbar | null = null;
 
-    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
+    public static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
         const { elementRef } = AKPageNavbar;
         if (!elementRef) {
             console.debug(
@@ -61,7 +61,7 @@ export class AKPageNavbar
         elementRef.hasIcon = !!icon;
     };
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -259,19 +259,19 @@ export class AKPageNavbar
     //#region Properties
 
     @state()
-    icon?: string;
+    public icon?: string;
 
     @state()
-    iconImage = false;
+    public iconImage = false;
 
     @state()
-    header?: string;
+    public header?: string;
 
     @state()
-    description?: string;
+    public description?: string;
 
     @state()
-    hasIcon = true;
+    public hasIcon = true;
 
     @property({
         type: Boolean,
@@ -317,7 +317,7 @@ export class AKPageNavbar
 
     //#region Lifecycle
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         AKPageNavbar.elementRef = this;
 
@@ -326,18 +326,18 @@ export class AKPageNavbar
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         AKPageNavbar.elementRef = null;
     }
 
-    public async firstUpdated() {
+    public override async firstUpdated() {
         this.session = await me();
         this.uiConfig = getConfigForUser(this.session.user);
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
-    willUpdate() {
+    public override willUpdate() {
         // Always update title, even if there's no header value set,
         // as in that case we still need to return to the generic title
         this.#setTitle(this.header);
@@ -347,7 +347,7 @@ export class AKPageNavbar
 
     //#region Render
 
-    renderIcon() {
+    protected renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
                 return html`<img
@@ -365,7 +365,7 @@ export class AKPageNavbar
         return nothing;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <slot></slot>
             <div role="banner" aria-label="Main" class="main-content">
                 <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">

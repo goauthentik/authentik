@@ -44,24 +44,27 @@ const PASS_FAIL = [
 
 @customElement("ak-application-wizard-edit-binding-step")
 export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
-    label = msg("Edit Binding");
+    public override label = msg("Edit Binding");
 
-    hide = true;
+    public override hide = true;
 
     @query("form#bindingform")
-    form!: HTMLFormElement;
+    protected override form!: HTMLFormElement;
 
     @query(".policy-search-select")
-    searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;
+    protected searchSelect!:
+        | SearchSelectBase<Policy>
+        | SearchSelectBase<Group>
+        | SearchSelectBase<User>;
 
     @state()
-    policyGroupUser: target = target.policy;
+    protected policyGroupUser: target = target.policy;
 
-    instanceId = -1;
+    protected instanceId = -1;
 
-    instance?: PolicyBinding;
+    protected instance?: PolicyBinding;
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [
             { kind: "next", label: msg("Save Binding"), destination: "bindings" },
             { kind: "back", destination: "bindings" },
@@ -69,7 +72,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         ];
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.form.checkValidity()) {
                 return;
@@ -98,7 +101,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
 
     // The search select configurations for the three different types of fetches that we care about,
     // policy, user, and group, all using the SearchSelectEZ protocol.
-    searchSelectConfigs(kind: target) {
+    protected searchSelectConfigs(kind: target) {
         switch (kind) {
             case target.policy:
                 return {
@@ -151,7 +154,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         }
     }
 
-    renderSearch(title: string, policyKind: target) {
+    protected renderSearch(title: string, policyKind: target) {
         if (policyKind !== this.policyGroupUser) {
             return nothing;
         }
@@ -165,7 +168,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(instance?: PolicyBinding) {
+    protected renderForm(instance?: PolicyBinding) {
         return html`<ak-wizard-title>${msg("Create a Policy/User/Group Binding")}</ak-wizard-title>
             <form id="bindingform" class="pf-c-form pf-m-horizontal" slot="form">
                 <div class="pf-c-card pf-m-selectable pf-m-selected">
@@ -218,7 +221,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    renderMain() {
+    protected override renderMain() {
         if (!(this.wizard.bindings && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

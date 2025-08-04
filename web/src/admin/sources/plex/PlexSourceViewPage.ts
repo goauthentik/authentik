@@ -35,7 +35,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesPlexRetrieve({
                 slug: value,
@@ -46,9 +46,9 @@ export class PlexSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: PlexSource;
+    public source?: PlexSource;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -58,7 +58,7 @@ export class PlexSourceViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
@@ -66,7 +66,7 @@ export class PlexSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

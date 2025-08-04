@@ -20,7 +20,7 @@ export class ConfigContextController implements ReactiveController {
     #host: ReactiveElementHost<AKConfigMixin>;
     #context: ContextProvider<AuthentikConfigContext>;
 
-    constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
+    public constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
         this.#host = host;
 
         this.#context = new ContextProvider(this.#host, {

@@ -41,7 +41,7 @@ const LAYOUTS = new Map<string, [string, string]>([
  */
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFEmptyState,
         PFContent,
@@ -55,18 +55,18 @@ export class LibraryPageApplicationList extends AKElement {
     ];
 
     @property({ attribute: true })
-    layout = "row" as LayoutType;
+    public layout = "row" as LayoutType;
 
     @property({ attribute: true })
-    background: string | undefined = undefined;
+    public background: string | undefined = undefined;
 
     @property({ attribute: true })
-    selected = "";
+    public selected = "";
 
     @property({ attribute: false })
-    apps: AppGroupList = [];
+    public apps: AppGroupList = [];
 
-    get currentLayout(): Pair {
+    public get currentLayout(): Pair {
         const layout = LAYOUTS.get(this.layout);
         if (!layout) {
             console.warn(`Unrecognized layout: ${this.layout || "-undefined-"}`);
@@ -75,7 +75,7 @@ export class LibraryPageApplicationList extends AKElement {
         return layout;
     }
 
-    render() {
+    public override render() {
         const [groupClass, groupGrid] = this.currentLayout;
 
         return html`<div class="pf-l-grid pf-m-gutter">

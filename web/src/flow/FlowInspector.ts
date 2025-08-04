@@ -24,15 +24,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {
     @property()
-    flowSlug?: string;
+    public flowSlug?: string;
 
     @property({ attribute: false })
-    state?: FlowInspection;
+    public state?: FlowInspection;
 
     @property({ attribute: false })
-    error?: APIError;
+    public error?: APIError;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFStack,
@@ -56,17 +56,17 @@ export class FlowInspector extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
-        window.addEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
+        window.addEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_FLOW_ADVANCE, this.advanceHandler as EventListener);
+        window.removeEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }
 
-    advanceHandler = (): void => {
+    #advanceListener = (): void => {
         new FlowsApi(DEFAULT_CONFIG)
             .flowsInspectorGet({
                 flowSlug: this.flowSlug || "",
@@ -83,7 +83,7 @@ export class FlowInspector extends AKElement {
     };
 
     // getStage return a stage without flowSet, for brevity
-    getStage(stage?: Stage): unknown {
+    protected getStage(stage?: Stage): unknown {
         if (!stage) {
             return stage;
         }
@@ -91,7 +91,7 @@ export class FlowInspector extends AKElement {
         return stage;
     }
 
-    renderHeader() {
+    protected renderHeader() {
         return html` <div class="pf-c-notification-drawer__header">
             <div class="text">
                 <h1 class="pf-c-notification-drawer__header-title">${msg("Flow inspector")}</h1>
@@ -118,7 +118,7 @@ export class FlowInspector extends AKElement {
         </div>`;
     }
 
-    renderAccessDenied(): TemplateResult {
+    protected renderAccessDenied(): TemplateResult {
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 ${this.renderHeader()}
@@ -135,12 +135,12 @@ export class FlowInspector extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.error) {
             return this.renderAccessDenied();
         }
         if (!this.state) {
-            this.advanceHandler();
+            this.#advanceListener();
             return html`<div class="pf-c-drawer__body pf-m-no-padding">
                 <div class="pf-c-notification-drawer">
                     ${this.renderHeader()}

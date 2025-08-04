@@ -21,9 +21,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-wizard-provider-for-rac")
 export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderForm<RACProvider> {
-    label = msg("Configure Remote Access Provider");
+    public override label = msg("Configure Remote Access Provider");
 
-    renderForm(provider: RACProvider) {
+    protected renderForm(provider: RACProvider) {
         return html`
             <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
@@ -80,7 +80,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
         `;
     }
 
-    render() {
+    public override render() {
         if (!(this.wizard.provider && this.wizard.errors)) {
             throw new Error("RAC Provider Step received uninitialized wizard context.");
         }

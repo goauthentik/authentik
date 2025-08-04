@@ -11,17 +11,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-oauth-form")
 export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAuthSourcePropertyMapping> {
-    docLink(): string {
+    public override docLink(): string {
         return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
-    loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
+    protected loadInstance(pk: string): Promise<OAuthSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
+    protected async send(data: OAuthSourcePropertyMapping): Promise<OAuthSourcePropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthUpdate({
                 pmUuid: this.instance.pk,

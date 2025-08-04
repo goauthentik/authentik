@@ -30,15 +30,15 @@ interface UserAssignData {
 @customElement("ak-rbac-user-object-permission-form")
 export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> {
     @property()
-    model?: ModelEnum;
+    public model?: ModelEnum;
 
     @property()
-    objectPk?: string;
+    public objectPk?: string;
 
     @state()
-    modelPermissions?: PaginatedPermissionList;
+    protected modelPermissions?: PaginatedPermissionList;
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
         this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
@@ -47,15 +47,15 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    loadInstance(): Promise<UserAssignData> {
+    protected loadInstance(): Promise<UserAssignData> {
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
-    send(data: UserAssignData): Promise<unknown> {
+    protected send(data: UserAssignData): Promise<unknown> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssign({
             id: data.user,
             permissionAssignRequest: {
@@ -66,7 +66,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         if (!this.modelPermissions) {
             return html``;
         }

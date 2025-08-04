@@ -31,6 +31,12 @@ export default tseslint.config(
     },
     {
         rules: {
+            "@typescript-eslint/explicit-member-accessibility": "warn",
+        },
+        files: ["src/**/*.{ts,tsx,mts,cts}"],
+    },
+    {
+        rules: {
             "no-void": "off",
             "no-implicit-coercion": "off",
             "prefer-template": "off",

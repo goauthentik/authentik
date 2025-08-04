@@ -20,25 +20,25 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
-    async loadInstance(pk: string): Promise<ApplicationEntitlement> {
+    protected async loadInstance(pk: string): Promise<ApplicationEntitlement> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsRetrieve({
             pbmUuid: pk,
         });
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
         }
         return msg("Successfully created entitlement.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFContent];
+    public static override styles: CSSResult[] = [...super.styles, PFContent];
 
-    send(data: ApplicationEntitlement): Promise<unknown> {
+    protected send(data: ApplicationEntitlement): Promise<unknown> {
         if (this.targetPk) {
             data.app = this.targetPk;
         }
@@ -53,7 +53,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

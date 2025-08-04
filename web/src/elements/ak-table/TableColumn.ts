@@ -1,5 +1,3 @@
-import { bound } from "#elements/decorators/bound";
-
 import { html } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -8,9 +6,9 @@ import { classMap } from "lit/directives/class-map.js";
 // the source TableColumn in some way.
 //
 export class TableSortEvent extends Event {
-    static readonly eventName = "tablesort";
+    public static readonly eventName = "tablesort";
     public value: string;
-    constructor(value: string) {
+    public constructor(value: string) {
         super(TableSortEvent.eventName, { composed: true, bubbles: true });
         this.value = value;
     }
@@ -30,19 +28,19 @@ export class TableColumn {
     /**
      * The text to show in the column header
      */
-    value: string;
+    protected value: string;
 
     /**
      * If not undefined, the element that will first receive the `tablesort` event
      */
-    host?: HTMLElement;
+    public host?: HTMLElement;
 
     /**
      * If not undefined, show the sort indicator, and indicate the sort state
      */
-    orderBy?: string;
+    protected orderBy?: string;
 
-    constructor(value: string, orderBy?: string, host?: HTMLElement) {
+    public constructor(value: string, orderBy?: string, host?: HTMLElement) {
         this.value = value;
         this.orderBy = orderBy;
         if (host) {
@@ -50,14 +48,13 @@ export class TableColumn {
         }
     }
 
-    @bound
-    private onSort() {
+    #sortListener = () => {
         if (this.host && this.orderBy) {
             this.host.dispatchEvent(new TableSortEvent(this.orderBy));
         }
-    }
+    };
 
-    private sortIndicator(orderBy: string) {
+    #sortIndicator(orderBy: string) {
         // prettier-ignore
         switch(orderBy) {
             case this.orderBy:       return "fa-long-arrow-alt-down";
@@ -66,12 +63,12 @@ export class TableColumn {
         }
     }
 
-    private sortButton(orderBy: string) {
-        return html` <button class="pf-c-table__button" @click=${this.onSort}>
+    #sortButton(orderBy: string) {
+        return html` <button class="pf-c-table__button" @click=${this.#sortListener}>
             <div class="pf-c-table__button-content">
                 <span part="column-text" class="pf-c-table__text">${this.value}</span>
                 <span part="column-sort" class="pf-c-table__sort-indicator">
-                    <i class="fas ${this.sortIndicator(orderBy)}"></i>
+                    <i class="fas ${this.#sortIndicator(orderBy)}"></i>
                 </span>
             </div>
         </button>`;
@@ -91,7 +88,7 @@ export class TableColumn {
             scope="col"
             class="${classMap(classes)}"
         >
-            ${orderBy && this.orderBy ? this.sortButton(orderBy) : html`${this.value}`}
+            ${orderBy && this.orderBy ? this.#sortButton(orderBy) : html`${this.value}`}
         </td>`;
     }
 }

@@ -25,20 +25,20 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
-    async loadInstance(pk: number): Promise<RACProvider> {
+    protected async loadInstance(pk: number): Promise<RACProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
             id: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
         }
         return msg("Successfully created provider.");
     }
 
-    async send(data: RACProvider): Promise<RACProvider> {
+    protected async send(data: RACProvider): Promise<RACProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRacUpdate({
                 id: this.instance.pk,
@@ -50,7 +50,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

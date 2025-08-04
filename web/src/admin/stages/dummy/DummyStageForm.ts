@@ -13,13 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-dummy-form")
 export class DummyStageForm extends BaseStageForm<DummyStage> {
-    loadInstance(pk: string): Promise<DummyStage> {
+    protected loadInstance(pk: string): Promise<DummyStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesDummyRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: DummyStage): Promise<DummyStage> {
+    protected async send(data: DummyStage): Promise<DummyStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
                 stageUuid: this.instance.pk || "",
@@ -31,7 +31,7 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",

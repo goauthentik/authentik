@@ -23,11 +23,11 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
      * @attr
      */
     @property({ attribute: false })
-    selector?: DualSelectPairSource;
+    public selector?: DualSelectPairSource;
 
     #didFirstUpdate = false;
 
-    willUpdate(changed: PropertyValues<this>) {
+    public override willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
 
         // On the first update *only*, even before rendering, when the options are handed up, update
@@ -43,7 +43,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
         });
     }
 
-    render() {
+    public override render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}

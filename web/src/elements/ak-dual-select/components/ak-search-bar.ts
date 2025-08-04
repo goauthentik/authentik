@@ -12,7 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-bar")
 export class AkSearchbar extends CustomEmitterElement(AKElement) {
-    static styles = [PFBase, globalVariables, searchStyles];
+    public static styles = [PFBase, globalVariables, searchStyles];
 
     @property({ type: String, reflect: true })
     public value = "";
@@ -44,7 +44,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         });
     };
 
-    render() {
+    public override render() {
         return html`
             <div class="pf-c-text-input-group">
                 <div class="pf-c-text-input-group__main pf-m-icon">

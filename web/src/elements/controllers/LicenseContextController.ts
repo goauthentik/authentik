@@ -17,7 +17,7 @@ export class LicenseContextController implements ReactiveController {
     #host: ReactiveElementHost<LicenseMixin>;
     #context: ContextProvider<LicenseContext>;
 
-    constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
+    public constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
         this.#host = host;
         this.#context = new ContextProvider(this.#host, {
             context: LicenseContext,

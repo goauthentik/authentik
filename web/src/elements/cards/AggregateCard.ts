@@ -35,7 +35,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property()
-    icon?: string;
+    public icon?: string;
 
     /**
      * The title of the card.
@@ -43,7 +43,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property()
-    header?: string;
+    public header?: string;
 
     /**
      * If this is non-empty, a link icon will be shown in the upper-right corner of the card.
@@ -51,7 +51,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property()
-    headerLink?: string;
+    public headerLink?: string;
 
     /**
      * If this is non-empty, a small-text footer will be shown at the bottom of the card
@@ -59,7 +59,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property()
-    subtext?: string;
+    public subtext?: string;
 
     /**
      * If this is set, the contents of the card will be left-justified; otherwise they will be
@@ -68,9 +68,9 @@ export class AggregateCard extends AKElement implements IAggregateCard {
      * @attr
      */
     @property({ type: Boolean, attribute: "left-justified" })
-    leftJustified = false;
+    public leftJustified = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFFlex,
@@ -103,11 +103,11 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         `,
     ];
 
-    renderInner(): SlottedTemplateResult {
+    protected renderInner(): SlottedTemplateResult {
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): SlottedTemplateResult {
+    protected renderHeaderLink(): SlottedTemplateResult {
         if (!this.headerLink) {
             return nothing;
         }
@@ -117,11 +117,11 @@ export class AggregateCard extends AKElement implements IAggregateCard {
         </a>`;
     }
 
-    renderHeader(): SlottedTemplateResult {
+    protected renderHeader(): SlottedTemplateResult {
         return this.header ?? nothing;
     }
 
-    render(): SlottedTemplateResult {
+    public override render(): SlottedTemplateResult {
         return html`<div
             aria-label="${ifDefined(this.header)}"
             role="region"

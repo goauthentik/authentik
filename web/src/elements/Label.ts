@@ -39,15 +39,15 @@ export interface ILabel {
 @customElement("ak-label")
 export class Label extends AKElement implements ILabel {
     @property()
-    color: PFColor = PFColor.Grey;
+    public color: PFColor = PFColor.Grey;
 
     @property()
-    icon?: string;
+    public icon?: string;
 
     @property({ type: Boolean })
-    compact = false;
+    public compact = false;
 
-    static styles = [
+    public static override styles = [
         PFBase,
         PFLabel,
         css`
@@ -60,7 +60,7 @@ export class Label extends AKElement implements ILabel {
         `,
     ];
 
-    get classesAndIcon() {
+    public get classesAndIcon() {
         const chrome = chromeList.find(
             ([level, color]) => this.color === level || this.color === color,
         );
@@ -77,7 +77,7 @@ export class Label extends AKElement implements ILabel {
         };
     }
 
-    render() {
+    public override render() {
         const { classes, icon } = this.classesAndIcon;
 
         return html`<span class=${classMap(classes)}>

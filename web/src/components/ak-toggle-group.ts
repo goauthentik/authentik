@@ -25,7 +25,7 @@ type Pair = [string, string];
 
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
-    static styles = [
+    public static styles = [
         PFBase,
         PFToggleGroup,
         css`
@@ -41,13 +41,13 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
      * @attr
      */
     @property({ type: String, reflect: true })
-    value = "";
+    public value = "";
 
-    get rawOptions(): HTMLOptionElement[] {
+    public get rawOptions(): HTMLOptionElement[] {
         return Array.from(this.querySelectorAll("option") ?? []);
     }
 
-    get options(): Pair[] {
+    public get options(): Pair[] {
         return Array.from(this.rawOptions).map(
             (option: HTMLOptionElement): Pair => [
                 option.getAttribute("value") ?? "",
@@ -56,7 +56,7 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
         );
     }
 
-    render() {
+    public override render() {
         const last = this.options.length - 1;
         const mkClass = (v: string) => ({
             "pf-c-toggle-group__button": true,

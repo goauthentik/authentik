@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
 export class Loading extends AKElement {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFPage,
         PFSpinner,
@@ -26,18 +26,18 @@ export class Loading extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
 
         applyDocumentTheme(globalAK().brand.uiTheme);
     }
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<section
             class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl"
         >

@@ -30,13 +30,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
-    loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
+    protected loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraRetrieve({
             id: pk,
         });
     }
 
-    async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
+    protected async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraUpdate({
                 id: this.instance.pk,
@@ -48,7 +48,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

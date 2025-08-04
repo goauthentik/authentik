@@ -24,7 +24,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
     public size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    set open(nextValue: boolean) {
+    public set open(nextValue: boolean) {
         this.#open = nextValue;
 
         if (nextValue) {
@@ -32,13 +32,13 @@ export abstract class TableModal<T extends object> extends Table<T> {
         }
     }
 
-    get open(): boolean {
+    public get open(): boolean {
         return this.#open;
     }
 
     #open = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFModalBox,
         PFBullseye,
@@ -62,7 +62,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
         this.open = false;
     };
 
-    resetForms(): void {
+    protected resetForms(): void {
         for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
             form.reset?.();
         }
@@ -115,7 +115,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
         </div>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <slot name="trigger" @click=${this.show}></slot>
             ${this.open ? this.renderModal() : nothing}`;
     }

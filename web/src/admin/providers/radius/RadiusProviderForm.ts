@@ -12,13 +12,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<RadiusProvider>) {
-    loadInstance(pk: number): Promise<RadiusProvider> {
+    protected loadInstance(pk: number): Promise<RadiusProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRadiusRetrieve({
             id: pk,
         });
     }
 
-    async send(data: RadiusProvider): Promise<RadiusProvider> {
+    protected async send(data: RadiusProvider): Promise<RadiusProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRadiusUpdate({
                 id: this.instance.pk,
@@ -30,7 +30,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
         });
     }
 
-    renderForm() {
+    protected override renderForm() {
         return renderForm(this.instance ?? {}, [], this.brand);
     }
 }

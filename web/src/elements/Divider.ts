@@ -8,7 +8,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-divider")
 export class Divider extends AKElement {
-    static styles = [
+    public static override styles = [
         PFBase,
         css`
             .separator {
@@ -34,7 +34,7 @@ export class Divider extends AKElement {
         `,
     ];
 
-    render() {
+    public override render() {
         return html`<div class="separator">
             <slot></slot>
         </div>`;

@@ -22,7 +22,7 @@ type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
-    static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             .show-disabled-toggle-group {
@@ -31,24 +31,24 @@ export class MemberSelectTable extends TableModal<User> {
         `,
     ];
 
-    checkbox = true;
-    checkboxChip = true;
+    public override checkbox = true;
+    public override checkboxChip = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    confirm!: (selectedItems: User[]) => Promise<unknown>;
+    public confirm!: (selectedItems: User[]) => Promise<unknown>;
 
-    userListFilter: UserListFilter = "active";
+    protected userListFilter: UserListFilter = "active";
 
-    order = "username";
+    public override order = "username";
 
     // The `userListRequestFilter` clause is necessary because the back-end for searches is
     // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
     // inactive users; only when it's _missing_ will you get all users.
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const userListRequestFilter: UserListRequestFilter = match(this.userListFilter)
             .with("all", () => ({}))
             .with("active", () => ({ isActive: true }))
@@ -61,7 +61,7 @@ export class MemberSelectTable extends TableModal<User> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -69,7 +69,7 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    renderToolbarAfter() {
+    protected override renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {
             this.userListFilter = this.userListFilter === "all" ? "active" : "all";
             this.page = 1;
@@ -99,7 +99,7 @@ export class MemberSelectTable extends TableModal<User> {
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
@@ -111,11 +111,11 @@ export class MemberSelectTable extends TableModal<User> {
         ];
     }
 
-    renderSelectedChip(item: User): TemplateResult {
+    protected override renderSelectedChip(item: User): TemplateResult {
         return html`${item.username}`;
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select users to add")}</h1>

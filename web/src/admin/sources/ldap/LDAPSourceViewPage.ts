@@ -38,7 +38,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(slug: string) {
+    public set sourceSlug(slug: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesLdapRetrieve({
                 slug: slug,
@@ -49,9 +49,9 @@ export class LDAPSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source!: LDAPSource;
+    public source!: LDAPSource;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -62,7 +62,7 @@ export class LDAPSourceViewPage extends AKElement {
         PFList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;
@@ -70,7 +70,7 @@ export class LDAPSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

@@ -20,18 +20,18 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-provider-google-workspace-users-list")
 export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProviderUser> {
     @property({ type: Number })
-    providerId?: number;
+    public providerId?: number;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
+    public override expandable = true;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
@@ -51,7 +51,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             ${super.renderToolbar()}`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Google Workspace User(s)")}
@@ -68,18 +68,18 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         </ak-forms-delete-bulk>`;
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
     }
 
-    row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
+    protected row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
@@ -89,7 +89,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         ];
     }
 
-    renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
+    protected override renderExpanded(item: GoogleWorkspaceProviderUser): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>

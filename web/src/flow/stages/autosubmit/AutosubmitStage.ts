@@ -22,17 +22,24 @@ export class AutosubmitStage extends BaseStage<
     AutoSubmitChallengeResponseRequest
 > {
     @query("form")
-    private form?: HTMLFormElement;
+    protected form?: HTMLFormElement;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
-    updated(): void {
+    public override updated(): void {
         if (this.challenge.url !== undefined) {
             this.form?.submit();
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         let title = msg("Loading");
         if (this.challenge.title && this.challenge.title !== "") {
             title = this.challenge.title;

@@ -11,13 +11,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-notification-form")
 export class PropertyMappingNotification extends BasePropertyMappingForm<NotificationWebhookMapping> {
-    loadInstance(pk: string): Promise<NotificationWebhookMapping> {
+    protected loadInstance(pk: string): Promise<NotificationWebhookMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationRetrieve({
             pmUuid: pk,
         });
     }
 
-    async send(data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> {
+    protected async send(data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationUpdate({
                 pmUuid: this.instance.pk,

@@ -19,19 +19,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
-    loadInstance(pk: string): Promise<Invitation> {
+    protected loadInstance(pk: string): Promise<Invitation> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsRetrieve({
             inviteUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated invitation.")
             : msg("Successfully created invitation.");
     }
 
-    async send(data: Invitation): Promise<Invitation> {
+    protected async send(data: Invitation): Promise<Invitation> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsUpdate({
                 inviteUuid: this.instance.pk || "",
@@ -43,7 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const checkSlug = (ev: InputEvent) => {
             if (ev && ev.target && ev.target instanceof HTMLInputElement) {
                 ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");

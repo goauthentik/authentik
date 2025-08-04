@@ -47,7 +47,7 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallenge,
     IdentificationChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFAlert,
         PFInputGroup,
@@ -120,7 +120,7 @@ export class IdentificationStage extends BaseStage<
 
     //#region Lifecycle
 
-    public updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.#autoRedirect();
             this.#createHelperForm();
@@ -237,17 +237,17 @@ export class IdentificationStage extends BaseStage<
 
     //#endregion
 
-    onSubmitSuccess(): void {
+    protected override onSubmitSuccess(): void {
         this.#form?.remove();
     }
 
-    onSubmitFailure(): void {
+    protected override onSubmitFailure(): void {
         this.captchaRefreshedAt = new Date();
     }
 
     //#region Render
 
-    renderSource(source: LoginSource): TemplateResult {
+    protected renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
         return html`<li class="pf-c-login__main-footer-links-item">
             <button
@@ -264,7 +264,7 @@ export class IdentificationStage extends BaseStage<
         </li>`;
     }
 
-    renderFooter() {
+    protected renderFooter() {
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return nothing;
         }
@@ -285,7 +285,7 @@ export class IdentificationStage extends BaseStage<
         </div>`;
     }
 
-    renderInput(): TemplateResult {
+    protected renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
@@ -380,7 +380,7 @@ export class IdentificationStage extends BaseStage<
                 : nothing}`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.applicationPre

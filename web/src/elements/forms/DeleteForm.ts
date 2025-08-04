@@ -18,21 +18,21 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static styles: CSSResult[] = [...super.styles, PFList];
+    public static override styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
-    obj?: Record<string, unknown>;
+    public obj?: Record<string, unknown>;
 
     @property()
-    objectLabel?: string;
+    public objectLabel?: string;
 
     @property({ attribute: false })
-    usedBy?: () => Promise<UsedBy[]>;
+    public usedBy?: () => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: () => Promise<unknown>;
+    public delete!: () => Promise<unknown>;
 
-    confirm(): Promise<void> {
+    protected confirm(): Promise<void> {
         return this.delete()
             .then(() => {
                 this.onSuccess();
@@ -52,14 +52,14 @@ export class DeleteForm extends ModalButton {
             });
     }
 
-    onSuccess(): void {
+    protected onSuccess(): void {
         showMessage({
             message: msg(str`Successfully deleted ${this.objectLabel} ${this.obj?.name}`),
             level: MessageLevel.success,
         });
     }
 
-    onError(error: unknown): Promise<void> {
+    protected onError(error: unknown): Promise<void> {
         return parseAPIResponseError(error).then((parsedError) => {
             showMessage({
                 message: msg(
@@ -70,7 +70,7 @@ export class DeleteForm extends ModalButton {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         let objName = this.obj?.name;
         if (objName) {
             objName = ` "${objName}"`;

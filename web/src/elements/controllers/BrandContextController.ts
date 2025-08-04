@@ -17,7 +17,7 @@ export class BrandingContextController implements ReactiveController {
     #host: ReactiveElementHost<BrandingMixin>;
     #context: ContextProvider<BrandingContext>;
 
-    constructor(host: ReactiveElementHost<BrandingMixin>, initialValue: CurrentBrand) {
+    public constructor(host: ReactiveElementHost<BrandingMixin>, initialValue: CurrentBrand) {
         this.#host = host;
         this.#context = new ContextProvider(this.#host, {
             context: BrandingContext,

@@ -67,7 +67,7 @@ export class AuthenticatorValidateStage
     >
     implements StageHost
 {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -77,27 +77,27 @@ export class AuthenticatorValidateStage
         customCSS,
     ];
 
-    flowSlug = "";
+    public flowSlug = "";
 
-    set loading(value: boolean) {
+    public set loading(value: boolean) {
         this.host.loading = value;
     }
 
-    get loading(): boolean {
+    public get loading(): boolean {
         return this.host.loading;
     }
 
-    get brand(): CurrentBrand | undefined {
+    public get brand(): CurrentBrand | undefined {
         return this.host.brand;
     }
 
     @state()
-    _firstInitialized: boolean = false;
+    protected _firstInitialized: boolean = false;
 
     @state()
-    _selectedDeviceChallenge?: DeviceChallenge;
+    protected _selectedDeviceChallenge?: DeviceChallenge;
 
-    set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+    public set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
         if (value === undefined || value === previousChallenge) {
@@ -116,18 +116,18 @@ export class AuthenticatorValidateStage
         });
     }
 
-    get selectedDeviceChallenge(): DeviceChallenge | undefined {
+    public get selectedDeviceChallenge(): DeviceChallenge | undefined {
         return this._selectedDeviceChallenge;
     }
 
-    submit(
+    public submit(
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {
         return this.host?.submit(payload, options) || Promise.resolve();
     }
 
-    willUpdate(_changed: PropertyValues<this>) {
+    public override willUpdate(_changed: PropertyValues<this>) {
         if (this._firstInitialized || !this.challenge) {
             return;
         }
@@ -162,7 +162,7 @@ export class AuthenticatorValidateStage
         }
     }
 
-    renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
+    protected renderDevicePickerSingle(deviceChallenge: DeviceChallenge) {
         switch (deviceChallenge.deviceClass) {
             case DeviceClassesEnum.Duo:
                 return html`<i class="fas fa-mobile-alt"></i>
@@ -206,7 +206,7 @@ export class AuthenticatorValidateStage
         return nothing;
     }
 
-    renderDevicePicker(): TemplateResult {
+    protected renderDevicePicker(): TemplateResult {
         return html`<ul>
             ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
@@ -224,7 +224,7 @@ export class AuthenticatorValidateStage
         </ul>`;
     }
 
-    renderStagePicker(): TemplateResult {
+    protected renderStagePicker(): TemplateResult {
         return html`<ul>
             ${this.challenge?.configurationStages.map((stage) => {
                 return html`<li>
@@ -248,7 +248,7 @@ export class AuthenticatorValidateStage
         </ul>`;
     }
 
-    renderDeviceChallenge() {
+    protected renderDeviceChallenge() {
         if (!this.selectedDeviceChallenge) {
             return nothing;
         }
@@ -284,7 +284,7 @@ export class AuthenticatorValidateStage
         return nothing;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()

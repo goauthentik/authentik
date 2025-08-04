@@ -26,26 +26,29 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
-    expandable = true;
-    supportsQL = true;
+    public override expandable = true;
+    public override supportsQL = true;
 
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Event Log");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return;
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-catalog";
     }
-    searchEnabled(): boolean {
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "-created";
+    public override order = "-created";
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         ...TablePage.styles,
         PFGrid,
         css`
@@ -55,11 +58,11 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         `,
     ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "user"),
@@ -70,7 +73,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    renderSectionBefore(): TemplateResult {
+    protected override renderSectionBefore(): TemplateResult {
         if (this.hasEnterpriseLicense) {
             return html`<div
                 class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
@@ -104,7 +107,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         </div>`;
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
@@ -122,7 +125,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         ];
     }
 
-    renderExpanded(item: Event): TemplateResult {
+    protected override renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>

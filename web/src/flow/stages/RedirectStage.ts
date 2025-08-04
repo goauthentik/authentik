@@ -18,12 +18,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
     @property({ type: Boolean })
-    promptUser = false;
+    public promptUser = false;
 
     @state()
-    startedRedirect = false;
+    protected startedRedirect = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -37,11 +37,11 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         `,
     ];
 
-    getURL(): string {
+    protected getURL(): string {
         return new URL(this.challenge.to, document.baseURI).toString();
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         if (this.promptUser) {
             document.addEventListener("keydown", (ev) => {
                 if (ev.key === "Enter") {
@@ -53,7 +53,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    redirect() {
+    protected redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,
@@ -62,7 +62,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.startedRedirect = true;
     }
 
-    renderLoading(): TemplateResult {
+    protected renderLoading(): TemplateResult {
         const url = new URL(this.getURL());
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
@@ -78,7 +78,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return html`<ak-flow-card .challenge=${this.challenge} loading></ak-flow-card>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }

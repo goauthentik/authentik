@@ -34,42 +34,40 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
-    target?: string;
+    public target?: string;
 
     @property()
-    policyEngineMode: string = "";
+    public policyEngineMode: string = "";
 
     @property({ type: Array })
-    allowedTypes: PolicyBindingCheckTarget[] = [
+    public allowedTypes: PolicyBindingCheckTarget[] = [
         PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
     ];
 
     @property({ type: Array })
-    typeNotices: PolicyBindingNotice[] = [];
+    public typeNotices: PolicyBindingNotice[] = [];
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    order = "order";
+    public override order = "order";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFSpacing);
-    }
+    public static override styles: CSSResult[] = [...super.styles, PFSpacing];
 
-    get allowedTypesLabel(): string {
+    public get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
     }
 
-    async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<PolicyBinding>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Order"), "order"),
             new TableColumn(this.allowedTypesLabel),
@@ -79,7 +77,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    getPolicyUserGroupRowLabel(item: PolicyBinding): string {
+    protected getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
             return msg(str`Policy ${item.policyObj?.name}`);
         } else if (item.group) {
@@ -90,7 +88,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return msg("-");
     }
 
-    getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
+    protected getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
             return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
@@ -101,7 +99,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${label}`;
     }
 
-    getObjectEditButton(item: PolicyBinding): TemplateResult {
+    protected getObjectEditButton(item: PolicyBinding): TemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
@@ -140,7 +138,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html``;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Policy binding(s)")}
@@ -171,7 +169,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PolicyBinding): TemplateResult[] {
+    protected row(item: PolicyBinding): TemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
@@ -201,7 +199,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No Policies bound.")}</span>
@@ -231,7 +229,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         );
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
@@ -255,7 +253,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal> `;
     }
 
-    renderPolicyEngineMode() {
+    protected renderPolicyEngineMode() {
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
@@ -268,7 +266,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </p>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }

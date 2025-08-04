@@ -27,33 +27,36 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Notification Rules");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Send notifications whenever a specific Event is created and matched by policies.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-attention-bell";
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<NotificationRule>> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Enabled")),
             new TableColumn(msg("Name"), "name"),
@@ -63,7 +66,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification rule(s)")}
@@ -85,7 +88,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationRule): TemplateResult[] {
+    protected row(item: NotificationRule): TemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
             html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,
@@ -115,7 +118,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -126,7 +129,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         `;
     }
 
-    renderExpanded(item: NotificationRule): TemplateResult {
+    protected override renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
         return html` <td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">

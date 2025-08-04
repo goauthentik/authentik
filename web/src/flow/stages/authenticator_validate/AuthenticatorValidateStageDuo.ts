@@ -19,15 +19,15 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public override deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public override showBackButton = false;
 
     @state()
-    authenticating = false;
+    protected authenticating = false;
 
-    updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             this.authenticating = true;
             this.host
@@ -46,7 +46,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }

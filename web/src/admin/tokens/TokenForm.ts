@@ -17,9 +17,9 @@ import { customElement, state } from "lit/decorators.js";
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
     @state()
-    showExpiry = true;
+    protected showExpiry = true;
 
-    async loadInstance(pk: string): Promise<Token> {
+    protected async loadInstance(pk: string): Promise<Token> {
         const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
@@ -27,13 +27,13 @@ export class TokenForm extends ModelForm<Token, string> {
         return token;
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated token.")
             : msg("Successfully created token.");
     }
 
-    async send(data: Token): Promise<Token> {
+    protected async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
                 identifier: this.instance.identifier,
@@ -45,7 +45,7 @@ export class TokenForm extends ModelForm<Token, string> {
         });
     }
 
-    renderExpiry(): TemplateResult {
+    protected renderExpiry(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Expires on")} name="expires">
             <input
                 type="datetime-local"
@@ -56,7 +56,7 @@ export class TokenForm extends ModelForm<Token, string> {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 name="identifier"

@@ -52,7 +52,7 @@ const authorizationCodeAuthMethodOptions = [
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
-    async loadInstance(pk: string): Promise<OAuthSource> {
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
             slug: pk,
         });
@@ -61,18 +61,18 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         return source;
     }
 
-    _modelName?: string;
+    protected _modelName?: string;
 
     @property()
-    modelName?: string;
+    public modelName?: string;
 
     @property({ attribute: false })
-    providerType: SourceType | null = null;
+    public providerType: SourceType | null = null;
 
     @state()
-    clearIcon = false;
+    protected clearIcon = false;
 
-    async send(data: OAuthSource): Promise<OAuthSource> {
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
@@ -106,7 +106,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         return source;
     }
 
-    fetchProviderType(v: string | undefined) {
+    protected fetchProviderType(v: string | undefined) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthSourceTypesList({
                 name: v?.replace("oauthsource", ""),
@@ -116,13 +116,13 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("modelName")) {
             this.fetchProviderType(this.modelName);
         }
     }
 
-    renderUrlOptions(): TemplateResult {
+    protected renderUrlOptions(): TemplateResult {
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
@@ -258,7 +258,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         </ak-form-group>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

@@ -35,7 +35,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
     @property({ type: String })
-    set groupId(id: string) {
+    public set groupId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
             .coreGroupsRetrieve({
                 groupUuid: id,
@@ -47,9 +47,9 @@ export class GroupViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -62,7 +62,7 @@ export class GroupViewPage extends AKElement {
         PFSizing,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.group?.pk) return;
@@ -70,7 +70,7 @@ export class GroupViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-users"
                 header=${msg(str`Group ${this.group?.name || ""}`)}
@@ -80,7 +80,7 @@ export class GroupViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderBody(): TemplateResult {
+    protected renderBody(): TemplateResult {
         if (!this.group) {
             return html``;
         }

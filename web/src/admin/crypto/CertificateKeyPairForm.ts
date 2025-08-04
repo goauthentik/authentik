@@ -15,19 +15,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-crypto-certificate-form")
 export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {
-    loadInstance(pk: string): Promise<CertificateKeyPair> {
+    protected loadInstance(pk: string): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
             kpUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated certificate-key pair.")
             : msg("Successfully created certificate-key pair.");
     }
 
-    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
+    protected async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {
             return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
                 kpUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"

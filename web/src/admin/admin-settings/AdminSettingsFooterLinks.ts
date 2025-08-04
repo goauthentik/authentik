@@ -24,7 +24,7 @@ const hasLegalScheme = (url: string) =>
 
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AkControlElement<FooterLink> {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFInputGroup,
         PFFormControl,
@@ -37,26 +37,26 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
     ];
 
     @property({ type: Object, attribute: false })
-    footerLink: FooterLink = {
+    public footerLink: FooterLink = {
         name: "",
         href: "",
     };
 
     @queryAll(".ak-form-control")
-    controls?: HTMLInputElement[];
+    protected controls?: HTMLInputElement[];
 
-    json() {
+    public override json() {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as FooterLink;
     }
 
-    get isValid() {
+    public override get isValid() {
         const href = this.json()?.href ?? "";
         return hasLegalScheme(href) && URL.canParse(href);
     }
 
-    render() {
+    public override render() {
         const onChange = () => {
             this.dispatchEvent(new Event("change", { composed: true, bubbles: true }));
         };

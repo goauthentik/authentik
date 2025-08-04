@@ -28,30 +28,30 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 class PreviewStageHost implements StageHost {
-    challenge = undefined;
-    flowSlug = undefined;
-    loading = false;
-    brand = undefined;
-    async submit(payload: unknown): Promise<boolean> {
+    public challenge = undefined;
+    public flowSlug = undefined;
+    public loading = false;
+    public brand = undefined;
+    public async submit(payload: unknown): Promise<boolean> {
         this.promptForm.previewResult = payload;
         return false;
     }
 
-    constructor(private promptForm: PromptForm) {}
+    public constructor(private promptForm: PromptForm) {}
 }
 
 @customElement("ak-prompt-form")
 export class PromptForm extends ModelForm<Prompt, string> {
     @state()
-    preview?: PromptChallenge;
+    protected preview?: PromptChallenge;
 
     @state()
-    previewError?: string[];
+    protected previewError?: string[];
 
     @state()
-    previewResult: unknown;
+    public previewResult: unknown;
 
-    send(data: Prompt): Promise<unknown> {
+    protected send(data: Prompt): Promise<unknown> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUpdate({
                 promptUuid: this.instance.pk || "",
@@ -63,7 +63,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         });
     }
 
-    async loadInstance(pk: string): Promise<Prompt> {
+    protected async loadInstance(pk: string): Promise<Prompt> {
         const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
@@ -71,7 +71,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         return prompt;
     }
 
-    async refreshPreview(prompt?: Prompt): Promise<void> {
+    protected async refreshPreview(prompt?: Prompt): Promise<void> {
         if (!prompt) {
             prompt = this.serialize();
             if (!prompt) {
@@ -96,36 +96,36 @@ export class PromptForm extends ModelForm<Prompt, string> {
             });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated prompt.")
             : msg("Successfully created prompt.");
     }
 
-    static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
+    public static override styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 
-    _shouldRefresh = false;
-    _timer = 0;
+    #shouldRefresh = false;
+    #timer = 0;
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
         const minUpdateDelay = 1000;
-        this._timer = setInterval(() => {
-            if (this._shouldRefresh) {
+        this.#timer = setInterval(() => {
+            if (this.#shouldRefresh) {
                 this.refreshPreview();
-                this._shouldRefresh = false;
+                this.#shouldRefresh = false;
             }
         }, minUpdateDelay) as unknown as number;
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        clearTimeout(this._timer);
+        clearTimeout(this.#timer);
     }
 
-    renderTypes(): TemplateResult {
+    protected renderTypes(): TemplateResult {
         // prettier-ignore
         const promptTypesWithLabels = [
             [PromptTypeEnum.Text, msg("Text: Simple Text input")],
@@ -157,7 +157,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         )}`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
             <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">
                 ${this.renderEditForm()}
@@ -166,7 +166,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         </div> `;
     }
 
-    renderPreview(): TemplateResult {
+    protected renderPreview(): TemplateResult {
         return html`
             <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
@@ -203,7 +203,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
         `;
     }
 
-    renderEditForm(): TemplateResult {
+    protected renderEditForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
@@ -211,7 +211,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -227,7 +227,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     spellcheck="false"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -246,7 +246,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -257,7 +257,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                     ${this.renderTypes()}
@@ -270,7 +270,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${this.instance?.required ?? false}
                         @change=${() => {
-                            this._shouldRefresh = true;
+                            this.#shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -288,7 +288,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${this.instance?.placeholderExpression ?? false}
                         @change=${() => {
-                            this._shouldRefresh = true;
+                            this.#shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -312,7 +312,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode=${CodeMirrorMode.Python}
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>
@@ -366,7 +366,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode=${CodeMirrorMode.HTML}
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>

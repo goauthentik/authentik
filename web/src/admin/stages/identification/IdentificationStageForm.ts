@@ -30,7 +30,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-identification-form")
 export class IdentificationStageForm extends BaseStageForm<IdentificationStage> {
-    static styles = [
+    public static override styles = [
         ...super.styles,
         css`
             ak-checkbox-group::part(checkbox-group) {
@@ -39,13 +39,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         `,
     ];
 
-    loadInstance(pk: string): Promise<IdentificationStage> {
+    protected loadInstance(pk: string): Promise<IdentificationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: IdentificationStage): Promise<IdentificationStage> {
+    protected async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
@@ -58,7 +58,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         });
     }
 
-    isUserFieldSelected(field: UserFieldsEnum): boolean {
+    protected isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (
             (this.instance?.userFields || []).filter((isField) => {
                 return field === isField;
@@ -66,7 +66,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         );
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const userSelectFields = [
             { name: UserFieldsEnum.Username, label: msg("Username") },
             { name: UserFieldsEnum.Email, label: msg("Email") },

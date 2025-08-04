@@ -26,17 +26,17 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     //#region Properties
 
     @property({ attribute: false })
-    types: TypeCreate[] = [];
+    public types: TypeCreate[] = [];
 
     @property({ attribute: false })
-    selectedType?: TypeCreate;
+    public selectedType?: TypeCreate;
 
     @property({ type: String })
-    layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+    public layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
 
     //#endregion
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFGrid,
@@ -55,29 +55,29 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     //#region Refs
 
-    formRef: Ref<HTMLFormElement> = createRef();
+    protected formRef: Ref<HTMLFormElement> = createRef();
 
     //#endregion
 
-    public sidebarLabel = () => msg("Select type");
+    public override sidebarLabel = () => msg("Select type");
 
-    public reset = () => {
+    public override reset = () => {
         super.reset();
         this.selectedType = undefined;
         this.formRef.value?.reset();
     };
 
-    activeCallback = (): void => {
+    public override activeCallback = (): void => {
         const form = this.formRef.value;
 
         this.host.isValid = form?.checkValidity() ?? false;
 
         if (this.selectedType) {
-            this.selectDispatch(this.selectedType);
+            this.#selectDispatch(this.selectedType);
         }
     };
 
-    private selectDispatch(type: TypeCreate) {
+    #selectDispatch(type: TypeCreate) {
         this.dispatchEvent(
             new CustomEvent("select", {
                 detail: type,
@@ -87,7 +87,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         );
     }
 
-    renderGrid(): TemplateResult {
+    protected renderGrid(): TemplateResult {
         return html`<div
             class="pf-l-grid pf-m-gutter"
             data-ouid-component-type="ak-type-create-grid"
@@ -113,7 +113,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                     @click=${() => {
                         if (requiresEnterprise) return;
 
-                        this.selectDispatch(type);
+                        this.#selectDispatch(type);
                         this.selectedType = type;
                     }}
                 >
@@ -136,7 +136,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         </div>`;
     }
 
-    renderList(): TemplateResult {
+    protected renderList(): TemplateResult {
         return html`<form
             ${ref(this.formRef)}
             class="pf-c-form pf-m-horizontal"
@@ -156,7 +156,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
                         @change=${() => {
-                            this.selectDispatch(type);
+                            this.#selectDispatch(type);
                         }}
                         ?disabled=${requiresEnterprise}
                     />
@@ -174,7 +174,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         </form>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         switch (this.layout) {
             case TypeCreateWizardPageLayouts.grid:
                 return this.renderGrid();

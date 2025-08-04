@@ -17,9 +17,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends AKElement {
     @property({ attribute: false })
-    outpostHealth?: OutpostHealth;
+    public outpostHealth?: OutpostHealth;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFDescriptionList,
         css`
@@ -29,7 +29,7 @@ export class OutpostHealthElement extends AKElement {
         `,
     ];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.outpostHealth) {
             return html`<ak-spinner></ak-spinner>`;
         }

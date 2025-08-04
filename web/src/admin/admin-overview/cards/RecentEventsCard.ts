@@ -25,19 +25,19 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
     @property()
-    order = "-created";
+    public override order = "-created";
 
     @property({ type: Number })
-    pageSize = 10;
+    public pageSize = 10;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
         });
     }
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFCard,
         css`
@@ -52,7 +52,7 @@ export class RecentEventsCard extends Table<Event> {
         `,
     ];
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Action"), "action"),
             new TableColumn(msg("User"), "user"),
@@ -62,13 +62,13 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
             <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    protected row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
@@ -81,7 +81,7 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         if (this.error) {
             return super.renderEmpty(inner);
         }

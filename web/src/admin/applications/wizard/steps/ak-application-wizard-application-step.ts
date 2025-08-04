@@ -34,21 +34,21 @@ const isStr = (v: any): v is string => typeof v === "string";
 
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
-    label = msg("Application");
+    public override label = msg("Application");
 
     @state()
-    errors = new Map<string, string>();
+    protected errors = new Map<string, string>();
 
     @query("form#applicationform")
-    form!: HTMLFormElement;
+    protected override form!: HTMLFormElement;
 
-    constructor() {
+    public constructor() {
         super();
         // This is the first step. Ensure it is always enabled.
         this.enabled = true;
     }
 
-    errorMessages(name: string) {
+    protected errorMessages(name: string) {
         return this.errors.has(name)
             ? [this.errors.get(name)]
             : (this.wizard.errors?.app?.[name] ??
@@ -56,11 +56,11 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                   []);
     }
 
-    get buttons(): WizardButton[] {
+    public override get buttons(): WizardButton[] {
         return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
     }
 
-    get valid() {
+    public get valid() {
         this.errors = new Map();
         const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 
@@ -81,7 +81,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         return this.errors.size === 0;
     }
 
-    override handleButton(button: NavigableButton) {
+    protected override handleButton(button: NavigableButton) {
         if (button.kind === "next") {
             if (!this.valid) {
                 this.handleEnabling({
@@ -109,7 +109,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         super.handleButton(button);
     }
 
-    renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
+    protected renderForm(app: Partial<ApplicationRequest>, errors: ValidationRecord) {
         return html` <ak-wizard-title>${msg("Configure The Application")}</ak-wizard-title>
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
@@ -177,7 +177,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             </form>`;
     }
 
-    renderMain() {
+    protected override renderMain() {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }

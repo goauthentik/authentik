@@ -49,18 +49,18 @@ const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
  */
 
 export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
-    eventPrefix = "ak-button";
+    protected eventPrefix = "ak-button";
 
-    static styles = [...buttonStyles];
+    public static styles = [...buttonStyles];
 
-    callAction!: () => Promise<unknown>;
+    protected callAction!: () => Promise<unknown>;
 
-    actionTask: Task;
+    protected actionTask: Task;
 
     @property({ type: Boolean })
-    disabled = false;
+    public disabled = false;
 
-    constructor() {
+    public constructor() {
         super();
         this.onSuccess = this.onSuccess.bind(this);
         this.onError = this.onError.bind(this);
@@ -68,7 +68,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.actionTask = this.buildTask();
     }
 
-    buildTask() {
+    protected buildTask() {
         return new Task(this, {
             task: () => this.callAction(),
             args: () => [],
@@ -78,7 +78,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         });
     }
 
-    onComplete() {
+    protected onComplete() {
         setTimeout(() => {
             this.dispatchCustomEvent(`${this.eventPrefix}-reset`);
             // set-up for the next task...
@@ -87,21 +87,21 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         }, SPINNER_TIMEOUT);
     }
 
-    onSuccess(r: unknown) {
+    protected onSuccess(r: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
             result: r,
         });
         this.onComplete();
     }
 
-    onError(error: unknown) {
+    protected onError(error: unknown) {
         this.dispatchCustomEvent(`${this.eventPrefix}-failure`, {
             error,
         });
         this.onComplete();
     }
 
-    onClick() {
+    protected onClick() {
         // Don't accept clicks when a task is in progress..
         if (this.actionTask.status === TaskStatus.PENDING) {
             return;
@@ -110,11 +110,11 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
         this.actionTask.run();
     }
 
-    private spinner = html`<span class="pf-c-button__progress">
+    #spinner = html`<span class="pf-c-button__progress">
         <ak-spinner size=${PFSize.Medium}></ak-spinner>
     </span>`;
 
-    get buttonClasses() {
+    public get buttonClasses() {
         return [
             ...this.classList,
             StatusMap.get(this.actionTask.status),
@@ -124,7 +124,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             .trim();
     }
 
-    render() {
+    public override render() {
         return html`<button
             id="spinner-button"
             part="spinner-button"
@@ -132,7 +132,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             @click=${this.onClick}
             ?disabled=${this.disabled}
         >
-            ${this.actionTask.render({ pending: () => this.spinner })}
+            ${this.actionTask.render({ pending: () => this.#spinner })}
             <slot></slot>
         </button>`;
     }

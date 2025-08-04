@@ -24,20 +24,20 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    public override deviceChallenge?: DeviceChallenge;
 
     @property()
-    errorMessage?: string;
+    public errorMessage?: string;
 
     @property({ type: Boolean })
-    showBackButton = false;
+    public override showBackButton = false;
 
     @state()
-    authenticating = false;
+    protected authenticating = false;
 
-    transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
+    protected transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
-    async authenticate(): Promise<void> {
+    protected async authenticate(): Promise<void> {
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
@@ -74,7 +74,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             // convert certain members of the PublicKeyCredentialRequestOptions into
             // byte arrays as expected by the spec.
@@ -86,7 +86,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    async authenticateWrapper(): Promise<void> {
+    protected async authenticateWrapper(): Promise<void> {
         if (this.authenticating) {
             return;
         }
@@ -104,7 +104,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html` <form class="pf-c-form">
             ${this.renderUserInfo()}
             <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">

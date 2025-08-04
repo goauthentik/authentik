@@ -7,12 +7,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-number-input")
 export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
-    value = NaN;
+    public override value = NaN;
 
     @property({ type: Number, reflect: true })
-    min = NaN;
+    public min = NaN;
 
-    renderControl() {
+    protected override renderControl() {
         const setValue = (ev: InputEvent) => {
             const value = (ev.target as HTMLInputElement).value;
             this.value = value.trim() === "" ? NaN : parseInt(value, 10);

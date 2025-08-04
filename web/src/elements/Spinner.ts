@@ -11,11 +11,11 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 @customElement("ak-spinner")
 export class Spinner extends AKElement {
     @property()
-    size: PFSize = PFSize.Medium;
+    public size: PFSize = PFSize.Medium;
 
-    static styles: CSSResult[] = [PFSpinner];
+    public static override styles: CSSResult[] = [PFSpinner];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<span
             class="pf-c-spinner ${this.size.toString()}"
             role="progressbar"

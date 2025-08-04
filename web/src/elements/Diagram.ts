@@ -17,16 +17,16 @@ import { until } from "lit/directives/until.js";
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
     @property({ attribute: false })
-    diagram?: string;
+    public diagram?: string;
 
-    refreshHandler = (): void => {
+    protected refreshHandler = (): void => {
         if (!this.textContent) return;
         this.diagram = this.textContent;
     };
 
-    handlerBound = false;
+    protected handlerBound = false;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 display: flex;
@@ -35,9 +35,9 @@ export class Diagram extends AKElement {
         `,
     ];
 
-    config: MermaidConfig;
+    protected config: MermaidConfig;
 
-    constructor() {
+    public constructor() {
         super();
         this.config = {
             // The type definition for this says number
@@ -55,7 +55,7 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
@@ -70,12 +70,12 @@ export class Diagram extends AKElement {
         this.refreshHandler();
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         this.querySelectorAll("*").forEach((el) => {
             try {
                 el.remove();

@@ -19,12 +19,12 @@ export interface RequestInfo {
 }
 
 export class LoggingMiddleware implements Middleware {
-    brand: CurrentBrand;
-    constructor(brand: CurrentBrand) {
+    protected brand: CurrentBrand;
+    public constructor(brand: CurrentBrand) {
         this.brand = brand;
     }
 
-    post(context: ResponseContext): Promise<Response | void> {
+    public post(context: ResponseContext): Promise<Response | void> {
         let msg = `authentik/api[${this.brand.matchedDomain}]: `;
         // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
         msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
@@ -38,7 +38,7 @@ export class LoggingMiddleware implements Middleware {
 }
 
 export class CSRFMiddleware implements Middleware {
-    pre?(context: RequestContext): Promise<FetchParams | void> {
+    public pre?(context: RequestContext): Promise<FetchParams | void> {
         context.init.headers = {
             ...context.init.headers,
             [CSRFHeaderName]: getCookie("authentik_csrf"),
@@ -49,7 +49,7 @@ export class CSRFMiddleware implements Middleware {
 }
 
 export class EventMiddleware implements Middleware {
-    post?(context: ResponseContext): Promise<Response | void> {
+    public post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {
             time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),

@@ -18,32 +18,36 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Groups");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Group users together and give them permissions based on the membership.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-users";
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             includeUsers: false,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Parent"), "parent"),
@@ -53,7 +57,7 @@ export class GroupListPage extends TablePage<Group> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Group(s)")}
@@ -75,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
@@ -94,7 +98,7 @@ export class GroupListPage extends TablePage<Group> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

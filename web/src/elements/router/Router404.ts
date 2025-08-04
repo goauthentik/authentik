@@ -11,11 +11,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-router-404")
 export class Router404 extends AKElement {
     @property()
-    url = "";
+    public url = "";
 
-    static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
+    public static override styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-question-circle pf-c-empty-state__icon" aria-hidden="true"></i>

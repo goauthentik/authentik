@@ -13,7 +13,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T extends object> extends Table<T> {
-    static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
+    public static override styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
 
     //#region Abstract methods
 
@@ -21,19 +21,19 @@ export abstract class TablePage<T extends object> extends Table<T> {
      * The title of the page.
      * @abstract
      */
-    abstract pageTitle(): string;
+    protected abstract pageTitle(): string;
 
     /**
      * The description of the page.
      * @abstract
      */
-    abstract pageDescription(): string | undefined;
+    protected abstract pageDescription(): string | undefined;
 
     /**
      * The icon to display in the page header.
      * @abstract
      */
-    abstract pageIcon(): string;
+    protected abstract pageIcon(): string;
 
     /**
      * Render content before the sidebar.
@@ -62,7 +62,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     /**
      * Render the empty state.
      */
-    protected renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -105,7 +105,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
         </button>`;
     }
 
-    render() {
+    public override render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

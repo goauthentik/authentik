@@ -13,15 +13,15 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class WizardForm extends Form {
-    viewportCheck = false;
+    public override viewportCheck = false;
 
     @property({ attribute: false })
-    nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
+    public nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
 
     /* Override the traditional behavior of the form and instead simply serialize the form and push
      * it's contents to the next page.
      */
-    async submit(): Promise<boolean | undefined> {
+    public override async submit(): Promise<boolean | undefined> {
         const data = this.serialize();
 
         if (!data) return;
@@ -36,7 +36,7 @@ export abstract class WizardForm extends Form {
 }
 
 export class WizardFormPage extends WizardPage {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFCard,
         PFButton,
@@ -46,7 +46,7 @@ export class WizardFormPage extends WizardPage {
         PFFormControl,
     ];
 
-    inputCallback(): void {
+    protected inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
 
         if (!form) return;
@@ -55,7 +55,7 @@ export class WizardFormPage extends WizardPage {
         this.host.isValid = state;
     }
 
-    nextCallback = async (): Promise<boolean> => {
+    public override nextCallback = async (): Promise<boolean> => {
         const form = this.shadowRoot?.querySelector<WizardForm>("ak-wizard-form");
 
         if (!form) {
@@ -68,20 +68,20 @@ export class WizardFormPage extends WizardPage {
         return Boolean(response);
     };
 
-    nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
+    protected nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
         async (): Promise<boolean> => {
             return false;
         };
 
-    renderForm(): TemplateResult {
+    protected renderForm(): TemplateResult {
         return html``;
     }
 
-    activeCallback = async () => {
+    public override activeCallback = async () => {
         this.inputCallback();
     };
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard-form
                 .nextDataCallback=${this.nextDataCallback}

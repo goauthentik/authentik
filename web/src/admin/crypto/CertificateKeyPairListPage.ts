@@ -27,37 +27,40 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Certificate-Key Pairs");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg(
             "Import certificates of external providers or create certificates to sign requests with.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-key";
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Private key available?")),
@@ -66,7 +69,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Certificate-Key Pair(s)")}
@@ -94,7 +97,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: CertificateKeyPair): TemplateResult[] {
+    protected row(item: CertificateKeyPair): TemplateResult[] {
         let managedSubText = msg("Managed by authentik");
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");
@@ -140,7 +143,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         ];
     }
 
-    renderExpanded(item: CertificateKeyPair): TemplateResult {
+    protected override renderExpanded(item: CertificateKeyPair): TemplateResult {
         return html`<td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -210,7 +213,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             <td></td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Import")} </span>

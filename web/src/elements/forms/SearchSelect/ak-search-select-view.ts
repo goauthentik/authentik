@@ -5,7 +5,6 @@ import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from 
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { randomId } from "#elements/utils/randomId";
 
@@ -70,7 +69,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
+    public static override styles = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
@@ -79,16 +78,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    set options(options: SelectOptions) {
+    public set options(options: SelectOptions) {
         this._options = groupOptions(options);
         this.flatOptions = optionsToFlat(this._options);
     }
 
-    get options() {
+    public get options() {
         return this._options;
     }
 
-    _options!: GroupedOptions;
+    protected _options!: GroupedOptions;
 
     /**
      * The current value.  Must be one of the keys in the options group above.
@@ -96,7 +95,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @prop
      */
     @property({ type: String, reflect: true })
-    value?: string;
+    public value?: string;
 
     /**
      * Whether or not the dropdown is open
@@ -104,7 +103,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, reflect: true })
-    open = false;
+    public open = false;
 
     /**
      * If set to true, this object MAY return undefined in no value is passed in and none is set
@@ -113,7 +112,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     /**
      * If not managed, make the matcher case-sensitive during interaction.  If managed,
@@ -122,7 +121,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: Boolean, attribute: "case-sensitive" })
-    caseSensitive = false;
+    public caseSensitive = false;
 
     /**
      * The name of the input, for forms
@@ -130,7 +129,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    name?: string;
+    public name?: string;
 
     /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
@@ -139,7 +138,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property({ type: String })
-    placeholder: string = msg("Select an object.");
+    public placeholder: string = msg("Select an object.");
 
     /**
      * If true, the component only sends an input message up to a parent component. If false, the
@@ -149,7 +148,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *@attr
      */
     @property({ type: Boolean })
-    managed = false;
+    public managed = false;
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -158,38 +157,38 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @attr
      */
     @property()
-    emptyOption = "---------";
+    public emptyOption = "---------";
 
     // Handle the behavior of the drop-down when the :host scrolls off the page.
-    scrollHandler?: () => void;
+    protected scrollHandler?: () => void;
 
     // observer: IntersectionObserver;
 
     @state()
-    displayValue = "";
+    protected displayValue = "";
 
     // Tracks when the inputRef is populated, so we can safely reschedule the
     // render of the dropdown with respect to it.
     @state()
-    inputRefIsAvailable = false;
+    protected inputRefIsAvailable = false;
 
     /**
      * Permanent identity with the portal so focus events can be checked.
      */
-    menuRef: Ref<ListSelect> = createRef();
+    protected menuRef: Ref<ListSelect> = createRef();
 
     /**
      * Permanent identify for the input object, so the floating portal can find where to anchor
      * itself.
      */
-    inputRef: Ref<HTMLInputElement> = createRef();
+    protected inputRef: Ref<HTMLInputElement> = createRef();
 
     /**
      *  Maps a value from the portal to labels to be put into the <input> field>
      */
-    flatOptions: [string, SelectOption][] = [];
+    protected flatOptions: [string, SelectOption][] = [];
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
@@ -199,17 +198,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     // If the user has changed the content of the input box, they are manipulating the *Label*, not
     // the value. We'll have to retroactively decide the value and publish it to any listeners.
-    settleValue() {
+    protected settleValue() {
         // TODO
     }
 
-    @bound
-    onClick(_ev: Event) {
+    #clickListener = (_ev: Event) => {
         this.open = !this.open;
         this.inputRef.value?.focus();
-    }
+    };
 
-    setFromMatchList(value: string | undefined) {
+    protected setFromMatchList(value: string | undefined) {
         if (value === undefined) {
             return;
         }
@@ -219,8 +217,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    @bound
-    onKeydown(event: KeyboardEvent) {
+    #keydownListener = (event: KeyboardEvent) => {
         if (event.code === "Escape") {
             event.stopPropagation();
             this.open = false;
@@ -233,10 +230,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             this.setFromMatchList(this.value);
             this.menuRef.value?.currentElement?.focus();
         }
-    }
+    };
 
-    @bound
-    onListBlur(event: FocusEvent) {
+    #listBlurListener = (event: FocusEvent) => {
         // If we lost focus but the menu got it, don't do anything;
         const relatedTarget = event.relatedTarget as HTMLElement | undefined;
         if (
@@ -255,14 +251,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             }
             this.setValue(undefined);
         }
-    }
+    };
 
-    setValue(newValue: string | undefined) {
+    protected setValue(newValue: string | undefined) {
         this.value = newValue;
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
     }
 
-    findValueForInput() {
+    protected findValueForInput() {
         const value = this.inputRef.value?.value;
         if (value === undefined || value.trim() === "") {
             this.setValue(undefined);
@@ -281,17 +277,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    @bound
-    onInput(_ev: InputEvent) {
+    #inputListener = (_ev: InputEvent) => {
         if (!this.managed) {
             this.findValueForInput();
             this.requestUpdate();
         }
         this.open = true;
-    }
+    };
 
-    @bound
-    onListKeydown(event: KeyboardEvent) {
+    #listKeydownListener = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
             this.open = false;
             this.inputRef.value?.focus();
@@ -300,10 +294,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             event.preventDefault();
             this.inputRef.value?.focus();
         }
-    }
+    };
 
-    @bound
-    onListChange(event: InputEvent) {
+    #listChangeListener = (event: InputEvent) => {
         if (!event.target) {
             return;
         }
@@ -318,9 +311,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
         this.open = false;
         this.setValue(value);
-    }
+    };
 
-    findDisplayForValue(value: string) {
+    protected findDisplayForValue(value: string) {
         const newDisplayValue = this.flatOptions.find((option) => option[0] === value);
         return newDisplayValue ? newDisplayValue[1][1] : undefined;
     }
@@ -339,11 +332,11 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     }
 
-    get rawValue() {
+    public get rawValue() {
         return this.inputRef.value?.value ?? "";
     }
 
-    get managedOptions() {
+    public get managedOptions() {
         return this.managed
             ? this._options
             : findOptionsSubset(this._options, this.rawValue, this.caseSensitive);
@@ -364,10 +357,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             ${ref(this.inputRef)}
                             placeholder=${this.placeholder}
                             spellcheck="false"
-                            @input=${this.onInput}
-                            @click=${this.onClick}
-                            @blur=${this.onListBlur}
-                            @keydown=${this.onKeydown}
+                            @input=${this.#inputListener}
+                            @click=${this.#clickListener}
+                            @blur=${this.#listBlurListener}
+                            @keydown=${this.#keydownListener}
                             value=${this.displayValue}
                         />
                     </div>
@@ -385,10 +378,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                               ${ref(this.menuRef)}
                               .options=${this.managedOptions}
                               value=${ifDefined(this.value)}
-                              @change=${this.onListChange}
-                              @blur=${this.onListBlur}
+                              @change=${this.#listChangeListener}
+                              @blur=${this.#listBlurListener}
                               emptyOption=${ifDefined(emptyOption)}
-                              @keydown=${this.onListKeydown}
+                              @keydown=${this.#listKeydownListener}
                           ></ak-list-select>
                       </ak-portal>
                   `

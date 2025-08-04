@@ -41,7 +41,7 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
             })
             public readonly licenseSummary: LicenseSummary | null = null;
 
-            get hasEnterpriseLicense() {
+            public get hasEnterpriseLicense() {
                 return (
                     this.licenseSummary?.status === LicenseSummaryStatusEnum.Valid ||
                     this.licenseSummary?.status === LicenseSummaryStatusEnum.ExpirySoon

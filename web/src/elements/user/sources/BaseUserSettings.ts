@@ -10,10 +10,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export abstract class BaseUserSettings extends AKElement {
     @property()
-    objectId!: string;
+    public objectId!: string;
 
     @property()
-    configureUrl?: string;
+    public configureUrl?: string;
 
-    static styles: CSSResult[] = [PFBase, PFButton, PFForm, PFFormControl];
+    public static override styles: CSSResult[] = [PFBase, PFButton, PFForm, PFFormControl];
 }

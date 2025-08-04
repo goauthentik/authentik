@@ -49,7 +49,7 @@ export abstract class Table<T extends object>
     extends WithLicenseSummary(AKElement)
     implements TableLike
 {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFTable,
         PFBullseye,
@@ -86,9 +86,11 @@ export abstract class Table<T extends object>
         `,
     ];
 
-    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    abstract columns(): TableColumn[];
-    abstract row(item: T): SlottedTemplateResult[];
+    protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+
+    protected abstract columns(): TableColumn[];
+
+    protected abstract row(item: T): SlottedTemplateResult[];
 
     #loading = false;
 
@@ -185,7 +187,7 @@ export abstract class Table<T extends object>
         this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
+    protected override willUpdate(changedProperties: PropertyValues<this>): void {
         if (changedProperties.has("page")) {
             updateURLParams({
                 [this.#pageParam]: this.page,
@@ -198,13 +200,13 @@ export abstract class Table<T extends object>
         }
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.fetch();
     }
 
     //#endregion
 
-    async defaultEndpointConfig() {
+    protected async defaultEndpointConfig() {
         return {
             ordering: this.order,
             page: this.page,
@@ -338,7 +340,7 @@ export abstract class Table<T extends object>
         return msg(str`${name}`);
     }
 
-    private renderRows(): TemplateResult[] | undefined {
+    protected renderRows(): TemplateResult[] | undefined {
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
@@ -368,7 +370,7 @@ export abstract class Table<T extends object>
         return groupBy(items, () => "");
     }
 
-    renderExpanded(_item: T): SlottedTemplateResult {
+    protected renderExpanded(_item: T): SlottedTemplateResult {
         if (this.expandable) {
             throw new Error("Expandable is enabled but renderExpanded is not overridden!");
         }
@@ -376,7 +378,7 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    private renderRowGroup(items: T[]): TemplateResult[] {
+    protected renderRowGroup(items: T[]): TemplateResult[] {
         const columns = this.columns();
 
         return items.map((item) => {
@@ -565,7 +567,7 @@ export abstract class Table<T extends object>
      * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
-    renderAllOnThisPageCheckbox(): TemplateResult {
+    protected renderAllOnThisPageCheckbox(): TemplateResult {
         const checked =
             this.selectedElements.length === this.data?.results.length &&
             this.selectedElements.length > 0;
@@ -598,7 +600,7 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    get needChipGroup() {
+    public get needChipGroup() {
         return this.checkbox && this.checkboxChip;
     }
 
@@ -651,7 +653,7 @@ export abstract class Table<T extends object>
             ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return this.renderTable();
     }
 }

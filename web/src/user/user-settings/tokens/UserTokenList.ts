@@ -24,18 +24,18 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "expires";
+    public override order = "expires";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Token>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Token>> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList({
             ...(await this.defaultEndpointConfig()),
             managed: "",
@@ -45,13 +45,13 @@ export class UserTokenList extends Table<Token> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
@@ -74,7 +74,7 @@ export class UserTokenList extends Table<Token> {
         `;
     }
 
-    renderExpanded(item: Token): TemplateResult {
+    protected override renderExpanded(item: Token): TemplateResult {
         return html` <td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -131,7 +131,7 @@ export class UserTokenList extends Table<Token> {
             <td></td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Token(s)")}
@@ -148,7 +148,7 @@ export class UserTokenList extends Table<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Token): TemplateResult[] {
+    protected row(item: Token): TemplateResult[] {
         return [
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`

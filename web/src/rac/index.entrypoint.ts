@@ -47,7 +47,7 @@ const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
 export class RacInterface extends WithBrandConfig(Interface) {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFContent,
@@ -73,38 +73,38 @@ export class RacInterface extends WithBrandConfig(Interface) {
         `,
     ];
 
-    client?: Guacamole.Client;
-    tunnel?: Guacamole.Tunnel;
+    protected client?: Guacamole.Client;
+    protected tunnel?: Guacamole.Tunnel;
 
     @state()
-    container?: HTMLElement;
+    protected container?: HTMLElement;
 
     @state()
-    clientState?: GuacClientState;
+    protected clientState?: GuacClientState;
 
     @state()
-    clientStatus?: Guacamole.Status;
+    protected clientStatus?: Guacamole.Status;
 
     @state()
-    reconnectingMessage = "";
+    protected reconnectingMessage = "";
 
     @property()
-    token?: string;
+    public token?: string;
 
     @property()
-    endpointName?: string;
+    public endpointName?: string;
 
     @state()
-    clipboardWatcherTimer = 0;
+    protected clipboardWatcherTimer = 0;
 
-    _previousClipboardValue: unknown;
+    #previousClipboardValue: unknown;
 
     // Set to `true` if we've successfully connected once
-    hasConnected = false;
+    #hasConnected = false;
     // Keep track of current connection attempt
-    connectionAttempt = 0;
+    #connectionAttempt = 0;
 
-    static domSize(): { width: number; height: number } {
+    public static domSize(): { width: number; height: number } {
         const size = document.body.getBoundingClientRect();
         return {
             width: size.width,
@@ -112,7 +112,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.initKeyboard();
         this.checkClipboard();
@@ -122,7 +122,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         ) as unknown as number;
     }
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener(
             "focus",
@@ -141,12 +141,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         });
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         clearInterval(this.clipboardWatcherTimer);
     }
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
@@ -178,7 +178,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
                     data += text;
                 };
                 reader.onend = () => {
-                    this._previousClipboardValue = data;
+                    this.#previousClipboardValue = data;
                     navigator.clipboard.writeText(data);
                 };
             } else {
@@ -204,25 +204,25 @@ export class RacInterface extends WithBrandConfig(Interface) {
         this.client.connect(params.toString());
     }
 
-    reconnect(): void {
+    protected reconnect(): void {
         this.clientState = undefined;
-        this.connectionAttempt += 1;
-        if (!this.hasConnected) {
+        this.#connectionAttempt += 1;
+        if (!this.#hasConnected) {
             // Check connection attempts if we haven't had a successful connection
-            if (this.connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
-                this.hasConnected = true;
+            if (this.#connectionAttempt >= RECONNECT_ATTEMPTS_INITIAL) {
+                this.#hasConnected = true;
                 this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
+                    str`Connection failed after ${this.#connectionAttempt} attempts.`,
                 );
                 return;
             }
-        } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+        } else if (this.#connectionAttempt >= RECONNECT_ATTEMPTS) {
             this.reconnectingMessage = msg(
-                str`Connection failed after ${this.connectionAttempt} attempts.`,
+                str`Connection failed after ${this.#connectionAttempt} attempts.`,
             );
             return;
         }
-        const delay = 500 * this.connectionAttempt;
+        const delay = 500 * this.#connectionAttempt;
         this.reconnectingMessage = msg(
             str`Re-connecting in ${Math.max(1, delay / 1000)} second(s).`,
         );
@@ -231,7 +231,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         }, delay);
     }
 
-    updateTitle(): void {
+    protected updateTitle(): void {
         let title = this.brandingTitle;
 
         if (this.endpointName) {
@@ -241,12 +241,12 @@ export class RacInterface extends WithBrandConfig(Interface) {
         document.title = `${title}`;
     }
 
-    onConnected(): void {
+    protected onConnected(): void {
         console.debug("authentik/rac: connected");
         if (!this.client) {
             return;
         }
-        this.hasConnected = true;
+        this.#hasConnected = true;
         this.clientStatus = undefined;
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
@@ -256,7 +256,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         );
     }
 
-    initMouse(container: HTMLElement): void {
+    protected initMouse(container: HTMLElement): void {
         const mouse = new Guacamole.Mouse(container);
         const handler = (mouseState: Guacamole.Mouse.State, scaleMouse = false) => {
             if (!this.client) return;
@@ -279,7 +279,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         });
     }
 
-    initAudioInput(): void {
+    protected initAudioInput(): void {
         const stream = this.client?.createAudioStream(AUDIO_INPUT_MIMETYPE);
         if (!stream) return;
         // Guacamole.AudioPlayer
@@ -294,7 +294,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         recorder.onclose = this.initAudioInput.bind(this);
     }
 
-    initKeyboard(): void {
+    protected initKeyboard(): void {
         const keyboard = new Guacamole.Keyboard(document);
         keyboard.onkeydown = (keysym) => {
             this.client?.sendKeyEvent(1, keysym);
@@ -304,17 +304,17 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    async checkClipboard(): Promise<void> {
+    protected async checkClipboard(): Promise<void> {
         try {
-            if (!this._previousClipboardValue) {
-                this._previousClipboardValue = await navigator.clipboard.readText();
+            if (!this.#previousClipboardValue) {
+                this.#previousClipboardValue = await navigator.clipboard.readText();
                 return;
             }
             const newValue = await navigator.clipboard.readText();
-            if (newValue !== this._previousClipboardValue) {
+            if (newValue !== this.#previousClipboardValue) {
                 console.debug(`authentik/rac: new clipboard value: ${newValue}`);
-                this._previousClipboardValue = newValue;
-                this.writeClipboard(newValue);
+                this.#previousClipboardValue = newValue;
+                this.#writeClipboard(newValue);
             }
         } catch (ex) {
             // The error is most likely caused by the document not being in focus
@@ -326,7 +326,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         }
     }
 
-    private writeClipboard(value: string) {
+    #writeClipboard(value: string) {
         if (!this.client) {
             return;
         }
@@ -337,7 +337,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         console.debug("authentik/rac: Sent clipboard");
     }
 
-    renderOverlay() {
+    protected renderOverlay() {
         if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
@@ -345,7 +345,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
-        if (this.hasConnected) {
+        if (this.#hasConnected) {
             message = html`${this.reconnectingMessage}`;
         }
         if (this.clientStatus?.message) {
@@ -363,7 +363,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         `;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             ${this.renderOverlay()}
             <div class="container">${this.container}</div>

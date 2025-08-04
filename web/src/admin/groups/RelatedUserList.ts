@@ -41,16 +41,16 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
     @property({ attribute: false })
-    group?: Group;
+    public group?: Group;
 
     @state()
-    usersToAdd: User[] = [];
+    protected usersToAdd: User[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user(s).");
     }
 
-    async send(data: { users: number[] }): Promise<{ users: number[] }> {
+    protected async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((user) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -64,7 +64,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Users to add")} name="users">
             <div class="pf-c-input-group">
                 <ak-group-member-select-table
@@ -104,29 +104,29 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
 
 @customElement("ak-user-related-list")
 export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Table<User>)) {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property({ attribute: false })
-    targetGroup?: Group;
+    public targetGroup?: Group;
 
     @property()
-    order = "last_login";
+    public override order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    public hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
-    static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
+    public static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
 
-    async apiEndpoint(): Promise<PaginatedResponse<User>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
@@ -139,7 +139,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return users;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
             new TableColumn(msg("Active"), "is_active"),
@@ -148,7 +148,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -180,7 +180,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: User): TemplateResult[] {
+    protected row(item: User): TemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -226,7 +226,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         ];
     }
 
-    renderExpanded(item: User): TemplateResult {
+    protected override renderExpanded(item: User): TemplateResult {
         return html`<td role="cell" colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
@@ -374,7 +374,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             <td></td>`;
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             ${this.targetGroup
                 ? html`<ak-forms-modal>
@@ -450,7 +450,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         `;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

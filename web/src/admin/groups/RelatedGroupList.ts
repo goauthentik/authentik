@@ -22,16 +22,16 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     @property({ attribute: false })
-    user?: User;
+    public user?: User;
 
     @state()
-    groupsToAdd: Group[] = [];
+    protected groupsToAdd: Group[] = [];
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully added user to group(s).");
     }
 
-    async send(data: { groups: string[] }): Promise<unknown> {
+    protected async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -45,7 +45,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
             <div class="pf-c-input-group">
                 <ak-user-group-select-table
@@ -85,19 +85,20 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 
 @customElement("ak-group-related-list")
 export class RelatedGroupList extends Table<Group> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
-    targetUser?: User;
+    public targetUser?: User;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ...(await this.defaultEndpointConfig()),
             membersByPk: this.targetUser ? [this.targetUser.pk] : [],
@@ -105,7 +106,7 @@ export class RelatedGroupList extends Table<Group> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Parent"), "parent"),
@@ -114,7 +115,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Group(s)")}
@@ -140,7 +141,7 @@ export class RelatedGroupList extends Table<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    protected row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
@@ -158,7 +159,7 @@ export class RelatedGroupList extends Table<Group> {
         ];
     }
 
-    renderToolbar(): TemplateResult {
+    protected override renderToolbar(): TemplateResult {
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>

@@ -76,7 +76,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 @customElement("ak-source-oauth-view")
 export class OAuthSourceViewPage extends AKElement {
     @property({ type: String })
-    set sourceSlug(value: string) {
+    public set sourceSlug(value: string) {
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthRetrieve({
                 slug: value,
@@ -87,9 +87,9 @@ export class OAuthSourceViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    source?: OAuthSource;
+    public source?: OAuthSource;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -99,7 +99,7 @@ export class OAuthSourceViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;
@@ -107,7 +107,7 @@ export class OAuthSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.source) {
             return html``;
         }

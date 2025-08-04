@@ -3,7 +3,6 @@ import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./ty
 import { convertContent } from "./utils.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 import { randomId } from "#elements/utils/randomId";
 
 import { css, html, TemplateResult } from "lit";
@@ -74,7 +73,7 @@ export interface ISimpleTable {
 
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFTable,
         css`
@@ -94,21 +93,21 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     ];
 
     @property({ type: String, attribute: true, reflect: true })
-    order?: string;
+    public order?: string;
 
     @property({ type: Array, attribute: false })
-    columns: Column[] = [];
+    public columns: Column[] = [];
 
     @property({ type: Object, attribute: false })
-    set content(content: ContentType) {
-        this._content = convertContent(content);
+    public set content(content: ContentType) {
+        this.#content = convertContent(content);
     }
 
-    get content(): TableGrouped | TableFlat {
-        return this._content;
+    public get content(): TableGrouped | TableFlat {
+        return this.#content;
     }
 
-    private _content: TableGrouped | TableFlat = {
+    #content: TableGrouped | TableFlat = {
         kind: "flat",
         content: [],
     };
@@ -143,7 +142,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         super.performUpdate();
     }
 
-    public renderRow(row: TableRow, _rownum: number) {
+    protected renderRow(row: TableRow, _rownum: number) {
         return html` <tr part="row">
             ${map(
                 row.content,
@@ -152,14 +151,13 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         </tr>`;
     }
 
-    public renderRows(rows: TableRow[]) {
+    protected renderRows(rows: TableRow[]) {
         return html`<tbody part="body">
             ${repeat(rows, (row) => row.key, this.renderRow)}
         </tbody>`;
     }
 
-    @bound
-    public renderRowGroup({ group, content }: TableGroup) {
+    protected renderRowGroup = ({ group, content }: TableGroup) => {
         return html`<thead part="group-header">
                 <tr part="group-row">
                     <td role="columnheader" scope="row" colspan="200" part="group-head">
@@ -168,27 +166,26 @@ export class SimpleTable extends AKElement implements ISimpleTable {
                 </tr>
             </thead>
             ${this.renderRows(content)}`;
-    }
+    };
 
-    @bound
-    public renderRowGroups(rowGroups: TableGroup[]) {
+    protected renderRowGroups = (rowGroups: TableGroup[]) => {
         return html`${map(rowGroups, this.renderRowGroup)}`;
-    }
+    };
 
-    public renderBody() {
+    protected renderBody() {
         // prettier-ignore
-        return this.content.kind === 'flat' 
+        return this.content.kind === 'flat'
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }
 
-    public renderColumnHeaders() {
+    protected renderColumnHeaders() {
         return html`<tr part="column-row" role="row">
             ${map(this.icolumns, (col) => col.render(this.order))}
         </tr>`;
     }
 
-    public renderTable() {
+    protected renderTable() {
         return html`
             <table part="table" class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead part="column-header">
@@ -199,7 +196,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
         `;
     }
 
-    public render() {
+    public override render() {
         return this.renderTable();
     }
 

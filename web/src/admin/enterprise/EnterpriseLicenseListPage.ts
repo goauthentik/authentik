@@ -36,35 +36,38 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Licenses");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Manage enterprise licenses");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-key";
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
     @state()
-    forecast?: LicenseForecast;
+    protected forecast?: LicenseForecast;
 
     @state()
-    summary?: LicenseSummary;
+    protected summary?: LicenseSummary;
 
     @state()
-    installID?: string;
+    protected installID?: string;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         PFGrid,
         PFBanner,
@@ -81,7 +84,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `,
     ];
 
-    async apiEndpoint(): Promise<PaginatedResponse<License>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({
             cached: false,
@@ -94,7 +97,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Users")),
@@ -105,7 +108,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    protected override renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
@@ -119,7 +122,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `);
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("License(s)")}
@@ -147,7 +150,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderSectionBefore(): TemplateResult {
+    protected override renderSectionBefore(): TemplateResult {
         return html`
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -199,7 +202,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `;
     }
 
-    row(item: License): TemplateResult[] {
+    protected row(item: License): TemplateResult[] {
         let color = PFColor.Green;
         if (item.expiry) {
             const now = new Date();
@@ -236,7 +239,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         ];
     }
 
-    renderGetLicenseCard() {
+    protected renderGetLicenseCard() {
         const renderSpinner = () =>
             html` <div class="pf-c-card__body">
                 <ak-spinner></ak-spinner>
@@ -273,7 +276,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         </div> `;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Install")} </span>

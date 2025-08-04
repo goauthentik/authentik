@@ -27,30 +27,30 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
     @property()
-    createText = msg("Create");
+    public createText = msg("Create");
 
     @property({ attribute: false })
-    providerTypes: TypeCreate[] = [];
+    public providerTypes: TypeCreate[] = [];
 
     @property({ attribute: false })
-    finalHandler: () => Promise<void> = () => {
+    public finalHandler: () => Promise<void> = () => {
         return Promise.resolve();
     };
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    protected wizard?: Wizard;
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((providerTypes) => {
             this.providerTypes = providerTypes;
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-wizard
                 .steps=${["initial"]}

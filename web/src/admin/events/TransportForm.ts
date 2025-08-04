@@ -23,7 +23,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {
-    loadInstance(pk: string): Promise<NotificationTransport> {
+    protected loadInstance(pk: string): Promise<NotificationTransport> {
         return new EventsApi(DEFAULT_CONFIG)
             .eventsTransportsRetrieve({
                 uuid: pk,
@@ -35,15 +35,15 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     @property({ type: Boolean })
-    showWebhook = false;
+    public showWebhook = false;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated transport.")
             : msg("Successfully created transport.");
     }
 
-    async send(data: NotificationTransport): Promise<NotificationTransport> {
+    protected async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
@@ -55,7 +55,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         });
     }
 
-    onModeChange(mode: string | undefined): void {
+    protected onModeChange(mode: string | undefined): void {
         if (
             mode === NotificationTransportModeEnum.Webhook ||
             mode === NotificationTransportModeEnum.WebhookSlack
@@ -66,7 +66,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         }
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

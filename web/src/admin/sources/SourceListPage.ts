@@ -24,32 +24,35 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Federation and Social login");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-middleware";
     }
-    searchEnabled(): boolean {
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Source>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Source>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type")),
@@ -57,7 +60,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled =
             this.selectedElements.length < 1 ||
             this.selectedElements.some((item) => item.component === "");
@@ -82,7 +85,7 @@ export class SourceListPage extends TablePage<Source> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Source): TemplateResult[] {
+    protected row(item: Source): TemplateResult[] {
         if (item.component === "") {
             return this.rowInbuilt(item);
         }
@@ -116,7 +119,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    rowInbuilt(item: Source): TemplateResult[] {
+    protected rowInbuilt(item: Source): TemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -127,7 +130,7 @@ export class SourceListPage extends TablePage<Source> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-source-wizard> </ak-source-wizard> `;
     }
 }

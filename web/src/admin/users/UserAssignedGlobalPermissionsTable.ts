@@ -18,25 +18,25 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-assigned-global-permissions-table")
 export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId || 0,
         });
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    public override groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Model"), "model"),
             new TableColumn(msg("Permission"), ""),
@@ -44,7 +44,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Assign")} </span>
@@ -58,7 +58,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         `;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
@@ -83,7 +83,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    protected row(item: Permission): TemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

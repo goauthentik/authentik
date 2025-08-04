@@ -27,27 +27,27 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
-    eventTransports?: PaginatedNotificationTransportList;
+    protected eventTransports?: PaginatedNotificationTransportList;
 
-    loadInstance(pk: string): Promise<NotificationRule> {
+    protected loadInstance(pk: string): Promise<NotificationRule> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
             pbmUuid: pk,
         });
     }
 
-    async load(): Promise<void> {
+    public override async load(): Promise<void> {
         this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
             ordering: "name",
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated rule.")
             : msg("Successfully created rule.");
     }
 
-    async send(data: NotificationRule): Promise<NotificationRule> {
+    protected async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",
@@ -59,7 +59,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

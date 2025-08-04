@@ -25,23 +25,23 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {
-    expandable = true;
-    checkbox = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider?: RACProvider;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         return new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
@@ -49,7 +49,7 @@ export class EndpointListPage extends Table<Endpoint> {
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Host"), "host"),
@@ -57,7 +57,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Endpoint(s)")}
@@ -85,7 +85,7 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    protected row(item: Endpoint): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.host}`,
@@ -108,7 +108,7 @@ export class EndpointListPage extends Table<Endpoint> {
         ];
     }
 
-    renderExpanded(item: Endpoint): TemplateResult {
+    protected override renderExpanded(item: Endpoint): TemplateResult {
         return html` <td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
@@ -124,7 +124,7 @@ export class EndpointListPage extends Table<Endpoint> {
             </td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

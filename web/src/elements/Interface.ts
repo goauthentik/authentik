@@ -12,9 +12,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * The base interface element for the application.
  */
 export abstract class Interface extends AKElement {
-    static styles = [PFBase];
+    public static override styles = [PFBase];
 
-    constructor() {
+    public constructor() {
         super();
 
         const { config, brand } = globalAK();
@@ -26,7 +26,7 @@ export abstract class Interface extends AKElement {
         this.addController(new ModalOrchestrationController());
     }
 
-    public connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
     }

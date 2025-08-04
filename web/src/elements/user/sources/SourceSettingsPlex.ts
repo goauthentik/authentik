@@ -18,12 +18,12 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-user-settings-source-plex")
 export class SourceSettingsPlex extends BaseUserSettings {
     @property()
-    title!: string;
+    public override title!: string;
 
     @property({ type: Number })
-    connectionPk = 0;
+    public connectionPk = 0;
 
-    async doPlex(): Promise<void> {
+    protected async doPlex(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.configureUrl || "");
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
         PlexAPIClient.pinPoll(this.configureUrl || "", authInfo.pin.id).then((token) => {
@@ -43,7 +43,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         );
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (this.connectionPk === -1) {
             return html`<ak-spinner></ak-spinner>`;
         }

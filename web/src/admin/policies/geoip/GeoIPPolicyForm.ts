@@ -23,13 +23,13 @@ function countryToPair(country: DetailedCountry): DualSelectPair {
 
 @customElement("ak-policy-geoip-form")
 export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
-    loadInstance(pk: string): Promise<GeoIPPolicy> {
+    protected loadInstance(pk: string): Promise<GeoIPPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipRetrieve({
             policyUuid: pk,
         });
     }
 
-    async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
+    protected async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
         if (data.asns?.toString() === "") {
             data.asns = [];
         } else {
@@ -47,7 +47,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<span>
                 ${msg(
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",

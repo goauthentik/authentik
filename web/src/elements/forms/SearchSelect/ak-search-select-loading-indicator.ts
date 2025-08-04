@@ -25,16 +25,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-select-loading-indicator")
 export class SearchSelectLoadingIndicator extends AKElement {
-    static styles = [PFBase, PFFormControl, PFSelect];
+    public static override styles = [PFBase, PFFormControl, PFSelect];
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-loading-indicator");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    render() {
+    public override render() {
         return html`
             <div class="pf-c-select" part="ak-search-select">
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">

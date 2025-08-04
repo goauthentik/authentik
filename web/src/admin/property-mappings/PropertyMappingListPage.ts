@@ -35,36 +35,39 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Property Mappings");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Control how authentik exposes and interprets information.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-blueprint";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
             ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Type"), "type"),
@@ -72,7 +75,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Property Mapping(s)")}
@@ -94,7 +97,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PropertyMapping): TemplateResult[] {
+    protected row(item: PropertyMapping): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
@@ -131,11 +134,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-property-mapping-wizard></ak-property-mapping-wizard> `;
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">

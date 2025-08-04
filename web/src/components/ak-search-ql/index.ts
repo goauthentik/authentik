@@ -15,50 +15,50 @@ import PFSearchInput from "@patternfly/patternfly/components/SearchInput/search-
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export class QL extends DjangoQL {
-    createCompletionElement() {
+    public override createCompletionElement() {
         this.completionEnabled = !!this.options.completionEnabled;
         return;
     }
-    logError(message: string): void {
+    public override logError(message: string): void {
         console.warn(`authentik/ql: ${message}`);
     }
-    textareaResize() {}
+    public override textareaResize() {}
 }
 
 @customElement("ak-search-ql")
 export class QLSearch extends AKElement {
     @property()
-    value?: string;
+    public value?: string;
 
     @query("[name=search]")
-    searchElement?: HTMLTextAreaElement;
+    protected searchElement?: HTMLTextAreaElement;
 
     @state()
-    menuOpen = false;
+    protected menuOpen = false;
 
     @property()
-    onSearch?: (value: string) => void;
+    public onSearch?: (value: string) => void;
 
     @state()
-    selected?: number;
+    protected selected?: number;
 
     @state()
-    cursorX: number = 0;
+    protected cursorX: number = 0;
 
     @state()
-    cursorY: number = 0;
+    protected cursorY: number = 0;
 
-    ql?: QL;
-    canvas?: CanvasRenderingContext2D;
+    protected ql?: QL;
+    protected canvas?: CanvasRenderingContext2D;
 
-    set apiResponse(value: PaginatedResponse<unknown> | undefined) {
+    public set apiResponse(value: PaginatedResponse<unknown> | undefined) {
         if (!value || !value.autocomplete || !this.ql) {
             return;
         }
         this.ql.loadIntrospections(value.autocomplete as unknown as Introspections);
     }
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFFormControl,
         PFSearchInput,
@@ -99,7 +99,7 @@ export class QLSearch extends AKElement {
         `,
     ];
 
-    firstUpdated() {
+    public override firstUpdated() {
         if (!this.searchElement) {
             return;
         }
@@ -122,7 +122,7 @@ export class QLSearch extends AKElement {
         this.canvas = context;
     }
 
-    refreshCompletions() {
+    protected refreshCompletions() {
         this.value = this.searchElement?.value;
         if (!this.ql) {
             return;
@@ -137,7 +137,7 @@ export class QLSearch extends AKElement {
         this.requestUpdate();
     }
 
-    updateDropdownPosition() {
+    protected updateDropdownPosition() {
         if (!this.searchElement) {
             return;
         }
@@ -179,7 +179,7 @@ export class QLSearch extends AKElement {
         this.cursorY = bcr.y + paddingTop + relY * lineHeight;
     }
 
-    onKeyDown(ev: KeyboardEvent) {
+    protected onKeyDown(ev: KeyboardEvent) {
         this.updateDropdownPosition();
         if (ev.key === "Enter" && ev.metaKey && this.onSearch && this.searchElement) {
             this.onSearch(this.searchElement?.value);
@@ -241,7 +241,7 @@ export class QLSearch extends AKElement {
         }
     }
 
-    renderMenu() {
+    protected renderMenu() {
         if (!this.menuOpen || !this.ql) {
             return nothing;
         }
@@ -276,7 +276,7 @@ export class QLSearch extends AKElement {
         `;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-search-input">
             <div class="pf-c-search-input__bar">
                 <span class="pf-c-search-input__text">

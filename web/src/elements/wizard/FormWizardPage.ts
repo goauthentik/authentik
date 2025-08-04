@@ -10,16 +10,16 @@ import { customElement } from "lit/decorators.js";
  */
 @customElement("ak-wizard-page-form")
 export class FormWizardPage extends WizardPage {
-    activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
+    protected activePageCallback: (context: FormWizardPage) => Promise<void> = async () => {
         return Promise.resolve();
     };
 
-    activeCallback = async () => {
+    public override activeCallback = async () => {
         this.host.isValid = true;
         this.activePageCallback(this);
     };
 
-    nextCallback = async (): Promise<boolean> => {
+    public override nextCallback = async (): Promise<boolean> => {
         const form = this.querySelector<Form<unknown>>("*");
 
         if (!form) {

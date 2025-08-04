@@ -18,35 +18,39 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-initial-permissions-list")
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
-    checkbox = true;
-    clearOnRefresh = true;
-    searchEnabled(): boolean {
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Initial Permissions");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Set initial permissions for newly created objects.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "fa fa-lock";
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<InitialPermissions>> {
         return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Initial Permissions")}
@@ -68,7 +72,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): HTMLTemplateResult {
+    public override render(): HTMLTemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
@@ -80,7 +84,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             </section>`;
     }
 
-    row(item: InitialPermissions): TemplateResult[] {
+    protected row(item: InitialPermissions): TemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>
@@ -97,7 +101,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

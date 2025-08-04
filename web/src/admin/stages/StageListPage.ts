@@ -44,32 +44,35 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    pageTitle(): string {
+    protected pageTitle(): string {
         return msg("Stages");
     }
-    pageDescription(): string | undefined {
+
+    protected pageDescription(): string | undefined {
         return msg(
             "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
         );
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-plugged";
     }
-    searchEnabled(): boolean {
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Stage>> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Flows")),
@@ -77,7 +80,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Stage(s)")}
@@ -99,7 +102,7 @@ export class StageListPage extends TablePage<Stage> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderStageActions(stage: Stage) {
+    protected renderStageActions(stage: Stage) {
         return stage.component === "ak-stage-authenticator-duo-form"
             ? html`<ak-forms-modal>
                   <span slot="submit">${msg("Import")}</span>
@@ -118,7 +121,7 @@ export class StageListPage extends TablePage<Stage> {
             : nothing;
     }
 
-    row(item: Stage): TemplateResult[] {
+    protected row(item: Stage): TemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,
@@ -154,7 +157,7 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`<ak-stage-wizard></ak-stage-wizard> `;
     }
 }

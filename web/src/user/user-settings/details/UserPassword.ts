@@ -17,11 +17,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-user-settings-password")
 export class UserSettingsPassword extends AKElement {
     @property()
-    configureUrl?: string;
+    public configureUrl?: string;
 
-    static styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
+    public static override styles: CSSResult[] = [PFBase, PFCard, PFButton, PFForm, PFFormControl];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         // For this stage we don't need to check for a configureFlow,
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">

@@ -82,9 +82,9 @@ Add any other context about the problem here.
 @customElement("ak-event-info")
 export class EventInfo extends AKElement {
     @property({ attribute: false })
-    event!: EventWithContext;
+    public event!: EventWithContext;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFFlex,
@@ -112,7 +112,7 @@ export class EventInfo extends AKElement {
         `,
     ];
 
-    renderDescriptionGroup([term, description]: FieldLabelTuple) {
+    protected renderDescriptionGroup([term, description]: FieldLabelTuple) {
         return html` <div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">
                 <span class="pf-c-description-list__text">${term}</span>
@@ -123,7 +123,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getModelInfo(context: EventModel): TemplateResult {
+    protected getModelInfo(context: EventModel): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -142,7 +142,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getEmailInfo(context: EventContext): SlottedTemplateResult {
+    protected getEmailInfo(context: EventContext): SlottedTemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
@@ -165,7 +165,7 @@ export class EventInfo extends AKElement {
         </dl>`;
     }
 
-    renderDefaultResponse(): TemplateResult {
+    protected renderDefaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Context")}</div>
@@ -182,7 +182,7 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    buildGitHubIssueUrl(context: EventContext): string {
+    protected buildGitHubIssueUrl(context: EventContext): string {
         const httpRequest = this.event.context.http_request as EventContext;
         const title = httpRequest ? `${httpRequest?.method} ${httpRequest?.path}` : "";
 
@@ -200,7 +200,7 @@ export class EventInfo extends AKElement {
     // however, putting this return type creates a virtuous check of *all* the subrenderers to
     // ensure that all of them return what we're expecting.
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.event) {
             return html`<ak-spinner size=${PFSize.Medium}></ak-spinner>`;
         }
@@ -257,7 +257,7 @@ export class EventInfo extends AKElement {
         }
     }
 
-    renderModelChanged() {
+    protected renderModelChanged() {
         const diff = this.event.context.diff as unknown as {
             [key: string]: {
                 new_value: unknown;
@@ -334,7 +334,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
         `;
     }
 
-    renderAuthorizeApplication() {
+    protected renderAuthorizeApplication() {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Authorized application:")}</div>
@@ -367,7 +367,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderEmailSent() {
+    protected renderEmailSent() {
         let body = this.event.context.body as string;
         body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
@@ -377,12 +377,12 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             </ak-expand>`;
     }
 
-    renderSecretView() {
+    protected renderSecretView() {
         return html` <div class="pf-c-card__title">${msg("Secret:")}</div>
             ${this.getModelInfo(this.event.context.secret as EventModel)}`;
     }
 
-    renderSystemException() {
+    protected renderSystemException() {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Exception")}</div>
@@ -403,7 +403,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderPropertyMappingException() {
+    protected renderPropertyMappingException() {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Exception")}</div>
@@ -421,7 +421,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderPolicyException() {
+    protected renderPolicyException() {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Binding")}</div>
@@ -462,7 +462,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderPolicyExecution() {
+    protected renderPolicyExecution() {
         return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
                     <div class="pf-c-card__title">${msg("Binding")}</div>
@@ -519,12 +519,12 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderConfigurationError() {
+    protected renderConfigurationError() {
         return html`<div class="pf-c-card__title">${this.event.context.message}</div>
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderUpdateAvailable() {
+    protected renderUpdateAvailable() {
         let url = `https://github.com/goauthentik/authentik/releases/tag/version%2F${this.event.context.new_version}`;
         if (this.event.context.changelog) {
             url = this.event.context.changelog as string;
@@ -535,7 +535,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
             </div>`;
     }
 
-    renderLogin() {
+    protected renderLogin() {
         if ("using_source" in this.event.context) {
             return html`<div class="pf-l-flex">
                 <div class="pf-l-flex__item">
@@ -547,21 +547,21 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
         return this.renderDefaultResponse();
     }
 
-    renderLoginFailed() {
+    protected renderLoginFailed() {
         return html` <div class="pf-c-card__title">
                 ${msg(str`Attempted to log in as ${this.event.context.username}`)}
             </div>
             <ak-expand>${this.renderDefaultResponse()}</ak-expand>`;
     }
 
-    renderLogout() {
+    protected renderLogout() {
         if (Object.keys(this.event.context).length === 0) {
             return html`<span>${msg("No additional data available.")}</span>`;
         }
         return this.renderDefaultResponse();
     }
 
-    renderSystemTaskException() {
+    protected renderSystemTaskException() {
         return html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
                 <div class="pf-c-card__title">${msg("Exception")}</div>

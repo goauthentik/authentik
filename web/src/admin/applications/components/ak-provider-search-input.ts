@@ -34,38 +34,38 @@ export class AkProviderInput extends AKElement {
     // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
     // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
     // general.
-    protected createRenderRoot() {
+    protected override createRenderRoot() {
         return this;
     }
 
     @property({ type: String })
-    name!: string;
+    public name!: string;
 
     @property({ type: String })
-    label = "";
+    public label = "";
 
     @property({ type: Number })
-    value?: number;
+    public value?: number;
 
     @property({ type: Boolean })
-    required = false;
+    public required = false;
 
     @property({ type: Boolean })
-    blankable = false;
+    public blankable = false;
 
     @property({ type: String })
-    help = "";
+    public help = "";
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
     }
 
-    selected(item: Provider) {
+    protected selected(item: Provider) {
         return this.value !== undefined && this.value === item.pk;
     }
 
-    render() {
+    public override render() {
         return html` <ak-form-element-horizontal label=${this.label} name=${this.name}>
             <ak-search-select
                 .selected=${this.selected}

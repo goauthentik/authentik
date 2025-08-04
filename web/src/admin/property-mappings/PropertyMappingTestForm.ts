@@ -30,19 +30,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-property-mapping-test-form")
 export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     @property({ attribute: false })
-    mapping?: PropertyMapping;
+    public mapping?: PropertyMapping;
 
     @property({ attribute: false })
-    result?: PropertyMappingTestResult;
+    public result?: PropertyMappingTestResult;
 
     @property({ attribute: false })
-    request?: PropertyMappingTestRequest;
+    public request?: PropertyMappingTestRequest;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
+    protected async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;
         const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
@@ -52,7 +52,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         return (this.result = result);
     }
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
@@ -71,7 +71,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         </ak-form-element-horizontal>`;
     }
 
-    renderExampleButtons() {
+    protected renderExampleButtons() {
         return this.mapping?.metaModelName ===
             RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
             ? html`<p>${msg("Example context data")}</p>
@@ -79,7 +79,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             : nothing;
     }
 
-    renderExampleLDAP(): TemplateResult {
+    protected renderExampleLDAP(): TemplateResult {
         return html`
             <button
                 class="pf-c-button pf-m-secondary"
@@ -126,7 +126,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
                     blankable

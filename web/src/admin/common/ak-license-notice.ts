@@ -11,7 +11,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
 export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
-    static styles = [$PFBase];
+    public static styles = [$PFBase];
 
     @property()
     public label = msg("Enterprise only");
@@ -19,7 +19,7 @@ export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
     @property()
     public description = msg("Learn more about the enterprise license.");
 
-    render() {
+    public override render() {
         if (this.hasEnterpriseLicense) {
             return nothing;
         }

@@ -14,17 +14,17 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-forms-confirm")
 export class ConfirmationForm extends ModalButton {
     @property()
-    successMessage!: string;
+    public successMessage!: string;
     @property()
-    errorMessage!: string;
+    public errorMessage!: string;
 
     @property()
-    action!: string;
+    public action!: string;
 
     @property({ attribute: false })
-    onConfirm!: () => Promise<unknown>;
+    public onConfirm!: () => Promise<unknown>;
 
-    confirm(): Promise<void> {
+    protected confirm(): Promise<void> {
         return this.onConfirm()
             .then(() => {
                 this.onSuccess();
@@ -42,14 +42,14 @@ export class ConfirmationForm extends ModalButton {
             });
     }
 
-    onSuccess(): void {
+    protected onSuccess(): void {
         showMessage({
             message: this.successMessage,
             level: MessageLevel.success,
         });
     }
 
-    onError(error: unknown): Promise<void> {
+    protected onError(error: unknown): Promise<void> {
         return parseAPIResponseError(error).then((parsedError) => {
             showMessage({
                 message: msg(str`${this.errorMessage}: ${pluckErrorDetail(parsedError)}`),
@@ -58,7 +58,7 @@ export class ConfirmationForm extends ModalButton {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">

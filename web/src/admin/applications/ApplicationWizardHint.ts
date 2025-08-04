@@ -35,7 +35,7 @@ const closeButtonIcon = html`<svg
 
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
-    static styles = [
+    public static override styles = [
         PFBase,
         PFButton,
         PFPage,
@@ -51,14 +51,14 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
     ];
 
     @property({ type: Boolean, attribute: "show-hint" })
-    forceHint: boolean = false;
+    public forceHint: boolean = false;
 
     @state()
-    showHint: boolean = true;
+    public showHint: boolean = true;
 
-    showHintController: ShowHintController;
+    public showHintController: ShowHintController;
 
-    constructor() {
+    public constructor() {
         super();
         this.showHintController = new ShowHintController(
             this,
@@ -66,7 +66,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         );
     }
 
-    renderReminder() {
+    protected renderReminder() {
         const sectionStyles = {
             paddingBottom: "0",
             marginBottom: "-0.5rem",
@@ -98,7 +98,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         </section>`;
     }
 
-    renderHint() {
+    protected renderHint() {
         return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
                 <ak-hint-body>
@@ -122,7 +122,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
         </section>`;
     }
 
-    render() {
+    public override render() {
         return this.showHint || this.forceHint ? this.renderHint() : this.renderReminder();
     }
 }

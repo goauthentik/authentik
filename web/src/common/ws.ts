@@ -50,7 +50,7 @@ export class WebsocketClient extends WebSocket implements Disposable {
 
     //#region Lifecycle
 
-    constructor(url: string | URL) {
+    public constructor(url: string | URL) {
         super(url);
 
         this.addEventListener("open", this.#openListener);

@@ -44,21 +44,22 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export abstract class AKChart<T> extends AKElement {
-    abstract apiRequest(): Promise<T>;
-    abstract getChartData(data: T): ChartData;
+    protected abstract apiRequest(): Promise<T>;
+
+    protected abstract getChartData(data: T): ChartData;
 
     @state()
-    chart?: Chart;
+    protected chart?: Chart;
 
     @state()
-    error?: APIError;
+    protected error?: APIError;
 
     @property()
-    centerText?: string;
+    public centerText?: string;
 
-    fontColour = FONT_COLOUR_LIGHT_MODE;
+    protected fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             .container {
                 height: 100%;
@@ -82,7 +83,7 @@ export abstract class AKChart<T> extends AKElement {
         `,
     ];
 
-    connectedCallback(): void {
+    public override connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
@@ -96,13 +97,13 @@ export abstract class AKChart<T> extends AKElement {
         }) as EventListener);
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener("resize", this.resizeHandler);
         this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
     }
 
-    refreshHandler(): void {
+    protected refreshHandler(): void {
         this.apiRequest().then((r: T) => {
             if (!this.chart) return;
             this.chart.data = this.getChartData(r);
@@ -110,14 +111,14 @@ export abstract class AKChart<T> extends AKElement {
         });
     }
 
-    resizeHandler(): void {
+    protected resizeHandler(): void {
         if (!this.chart) {
             return;
         }
         this.chart.resize();
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.apiRequest()
             .then((r) => {
                 const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
@@ -142,20 +143,20 @@ export abstract class AKChart<T> extends AKElement {
             });
     }
 
-    getChartType(): string {
+    protected getChartType(): string {
         return "bar";
     }
 
-    getPlugins(): Plugin[] {
+    protected getPlugins(): Plugin[] {
         return [];
     }
 
-    timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
+    protected timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
         return formatElapsedTime(new Date(valueStamp.value));
     }
 
-    getOptions(): ChartOptions {
+    protected getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
             responsive: true,
@@ -188,7 +189,7 @@ export abstract class AKChart<T> extends AKElement {
         } as ChartOptions;
     }
 
-    configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
+    protected configureChart(data: T, ctx: CanvasRenderingContext2D): Chart {
         const config = {
             type: this.getChartType(),
             data: this.getChartData(data),
@@ -198,7 +199,7 @@ export abstract class AKChart<T> extends AKElement {
         return new Chart(ctx, config as ChartConfiguration);
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <div class="container">
                 ${this.error

@@ -79,7 +79,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     //#region Styles
 
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFButton,
@@ -126,7 +126,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         configureSentry(true);
 
         super();
@@ -137,7 +137,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
 
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
@@ -159,14 +159,14 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         });
     }
 
-    public disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
 
         WebsocketClient.close();
     }
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         me().then((session) => {
             this.user = session;
 
@@ -181,7 +181,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         const sidebarClasses = {
             "pf-c-page__sidebar": true,
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,

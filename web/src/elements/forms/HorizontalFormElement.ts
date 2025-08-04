@@ -48,7 +48,7 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFForm,
         PFFormControl,
@@ -86,14 +86,14 @@ export class HorizontalFormElement extends AKElement {
     @property({ attribute: false })
     public errorMessages: string[] | string[][] = [];
 
-    _invalid = false;
+    #invalid = false;
 
     /* If this property changes, we want to make sure the parent control is "opened" so
      * that users can see the change.[1]
      */
     @property({ type: Boolean })
-    set invalid(v: boolean) {
-        this._invalid = v;
+    public set invalid(v: boolean) {
+        this.#invalid = v;
         // check if we're in a form group, and expand that form group
         const parent = this.parentElement?.parentElement;
 
@@ -101,8 +101,8 @@ export class HorizontalFormElement extends AKElement {
             parent.open = true;
         }
     }
-    get invalid(): boolean {
-        return this._invalid;
+    public get invalid(): boolean {
+        return this.#invalid;
     }
 
     @property({ type: String })
@@ -114,11 +114,11 @@ export class HorizontalFormElement extends AKElement {
     })
     public flowDirection: "row" | "column" = "column";
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.updated();
     }
 
-    updated(): void {
+    public override updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
@@ -136,7 +136,7 @@ export class HorizontalFormElement extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         this.updated();
         return html`<div
             class="pf-c-form__group"

@@ -23,31 +23,29 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
-    expandable = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "next_run";
+    public override order = "next_run";
 
     @property()
-    relObjAppLabel?: string;
+    public relObjAppLabel?: string;
     @property()
-    relObjModel?: string;
+    public relObjModel?: string;
     @property()
-    relObjId?: string;
+    public relObjId?: string;
 
     @property({ type: Boolean })
-    showOnlyStandalone: boolean = true;
+    public showOnlyStandalone: boolean = true;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
         const relObjIdIsnull =
             typeof this.relObjId !== "undefined"
                 ? undefined
@@ -69,7 +67,7 @@ export class ScheduleList extends Table<Schedule> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Schedule"), "actor_name"),
             new TableColumn(msg("Crontab"), "crontab"),
@@ -79,7 +77,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    renderToolbarAfter(): TemplateResult {
+    protected override renderToolbarAfter(): TemplateResult {
         if (this.relObjId !== undefined) {
             return html``;
         }
@@ -108,7 +106,7 @@ export class ScheduleList extends Table<Schedule> {
             </div>`;
     }
 
-    row(item: Schedule): TemplateResult[] {
+    protected row(item: Schedule): TemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
@@ -156,7 +154,7 @@ export class ScheduleList extends Table<Schedule> {
         ];
     }
 
-    renderExpanded(item: Schedule): TemplateResult {
+    protected override renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
         return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">

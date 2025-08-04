@@ -15,21 +15,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-user-token-form")
 export class UserTokenForm extends ModelForm<Token, string> {
     @property()
-    intent: IntentEnum = IntentEnum.Api;
+    public intent: IntentEnum = IntentEnum.Api;
 
-    loadInstance(pk: string): Promise<Token> {
+    protected loadInstance(pk: string): Promise<Token> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated token.")
             : msg("Successfully created token.");
     }
 
-    async send(data: Token): Promise<Token> {
+    protected async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         const now = new Date();
         const expiringDate = this.instance?.expires
             ? new Date(this.instance.expires.getTime())

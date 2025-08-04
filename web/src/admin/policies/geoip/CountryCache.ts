@@ -3,18 +3,18 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { DetailedCountry, PoliciesApi } from "@goauthentik/api";
 
 class CountryCache {
-    countries: DetailedCountry[];
-    lastReceivedAt?: number;
-    TTL: number;
+    protected countries: DetailedCountry[];
+    protected lastReceivedAt?: number;
+    protected TTL: number;
 
-    constructor() {
+    public constructor() {
         this.countries = [];
         this.lastReceivedAt = undefined;
         // 1 minute
         this.TTL = 60 * 1000;
     }
 
-    async getCountries() {
+    public async getCountries() {
         const shouldInvalidate =
             this.lastReceivedAt === undefined ||
             new Date().getTime() - this.lastReceivedAt > this.TTL;

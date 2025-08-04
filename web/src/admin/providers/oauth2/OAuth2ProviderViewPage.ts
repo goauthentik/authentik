@@ -60,7 +60,7 @@ export function TypeToLabel(type?: ClientTypeEnum): string {
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
-    set providerID(value: number) {
+    public set providerID(value: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersOauth2Retrieve({
                 id: value,
@@ -71,18 +71,18 @@ export class OAuth2ProviderViewPage extends AKElement {
     }
 
     @property({ attribute: false })
-    provider?: OAuth2Provider;
+    public provider?: OAuth2Provider;
 
     @state()
-    providerUrls?: OAuth2ProviderSetupURLs;
+    protected providerUrls?: OAuth2ProviderSetupURLs;
 
     @state()
-    preview?: PropertyMappingPreview;
+    protected preview?: PropertyMappingPreview;
 
     @state()
-    previewUser?: User;
+    protected previewUser?: User;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFPage,
@@ -96,7 +96,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         PFDivider,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -104,7 +104,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         });
     }
 
-    fetchPreview(): void {
+    protected fetchPreview(): void {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersOauth2PreviewUserRetrieve({
                 id: this.provider?.pk || 0,
@@ -113,7 +113,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             .then((preview) => (this.preview = preview));
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -166,7 +166,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -378,7 +378,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             </div>`;
     }
 
-    renderTabPreview(): TemplateResult {
+    protected renderTabPreview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

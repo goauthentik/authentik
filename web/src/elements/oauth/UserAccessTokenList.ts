@@ -18,24 +18,24 @@ import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
 @customElement("ak-user-oauth-access-token-list")
 export class UserOAuthAccessTokenList extends Table<TokenModel> {
-    expandable = true;
+    public override expandable = true;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    static styles: CSSResult[] = [...super.styles, PFFlex];
+    public static override styles: CSSResult[] = [...super.styles, PFFlex];
 
-    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
             ...(await this.defaultEndpointConfig()),
             user: this.userId,
         });
     }
 
-    checkbox = true;
-    order = "-expires";
+    public override checkbox = true;
+    public override order = "-expires";
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Provider"), "provider"),
             new TableColumn(msg("Revoked?"), "revoked"),
@@ -44,7 +44,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         ];
     }
 
-    renderExpanded(item: TokenModel): TemplateResult {
+    protected override renderExpanded(item: TokenModel): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-l-flex">
@@ -59,7 +59,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
             <td></td>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Access Tokens(s)")}
@@ -81,7 +81,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: TokenModel): TemplateResult[] {
+    protected row(item: TokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label

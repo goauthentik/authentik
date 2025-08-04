@@ -15,7 +15,7 @@ export class DeviceCodeFinish extends BaseStage<
     OAuthDeviceCodeFinishChallenge,
     OAuthDeviceCodeFinishChallenge
 > {
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <ak-empty-state icon="fas fa-check">
                 <span>${msg("You may close this page now.")}</span>

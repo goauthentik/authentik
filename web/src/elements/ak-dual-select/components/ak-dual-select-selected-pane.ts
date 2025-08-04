@@ -36,13 +36,13 @@ const hostAttributes = [
  */
 @customElement("ak-dual-select-selected-pane")
 export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
+    public static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
     //#region Properties
 
     /* The array of key/value pairs that are in the selected list. ALL of them. */
     @property({ type: Array })
-    readonly selected: DualSelectPair[] = [];
+    public readonly selected: DualSelectPair[] = [];
 
     //#endregion
 
@@ -62,7 +62,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
     //#endregion
 
     //#region Lifecycle
-    public connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
 
         for (const [attr, value] of hostAttributes) {
@@ -116,7 +116,7 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
 
     //#region Render
 
-    render() {
+    public override render() {
         return html`
             <div class="pf-c-dual-list-selector__menu">
                 <ul class="pf-c-dual-list-selector__list">

@@ -16,19 +16,19 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
-    loadInstance(pk: string): Promise<Role> {
+    protected loadInstance(pk: string): Promise<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({
             uuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated role.")
             : msg("Successfully created role.");
     }
 
-    async send(data: Role): Promise<Role> {
+    protected async send(data: Role): Promise<Role> {
         if (this.instance?.pk) {
             return new RbacApi(DEFAULT_CONFIG).rbacRolesPartialUpdate({
                 uuid: this.instance.pk,
@@ -40,7 +40,7 @@ export class RoleForm extends ModelForm<Role, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
             <input
                 type="text"

@@ -20,7 +20,7 @@ export type WizardPageNextCallback = () => boolean | Promise<boolean>;
 
 @customElement("ak-wizard-page")
 export class WizardPage extends AKElement {
-    static styles: CSSResult[] = [PFBase];
+    public static override styles: CSSResult[] = [PFBase];
 
     /**
      * The label to display in the sidebar for this page.
@@ -29,11 +29,11 @@ export class WizardPage extends AKElement {
      * @todo: Should this be a getter or static property?
      */
     @property()
-    sidebarLabel = (): string => {
+    public sidebarLabel = (): string => {
         return "UNNAMED";
     };
 
-    get host(): Wizard {
+    public get host(): Wizard {
         return this.parentElement as Wizard;
     }
 
@@ -49,7 +49,7 @@ export class WizardPage extends AKElement {
     /**
      * Called when this is the page brought into view.
      */
-    activeCallback: WizardPageActiveCallback = () => {
+    public activeCallback: WizardPageActiveCallback = () => {
         this.host.isValid = false;
     };
 
@@ -60,11 +60,11 @@ export class WizardPage extends AKElement {
      *
      * @returns `true` if the wizard can proceed to the next page, `false` otherwise.
      */
-    nextCallback: WizardPageNextCallback = () => {
+    public nextCallback: WizardPageNextCallback = () => {
         return Promise.resolve(true);
     };
 
-    requestUpdate(
+    public override requestUpdate(
         name?: PropertyKey,
         oldValue?: unknown,
         options?: PropertyDeclaration<unknown, unknown>,
@@ -77,7 +77,7 @@ export class WizardPage extends AKElement {
         return super.requestUpdate(name, oldValue, options);
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

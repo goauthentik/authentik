@@ -4,7 +4,6 @@ import { wizardStepContext } from "./WizardContexts.js";
 import { type WizardStep } from "./WizardStep.js";
 
 import { AKElement } from "#elements/Base";
-import { bound } from "#elements/decorators/bound";
 
 import { ContextProvider } from "@lit/context";
 import { html, nothing } from "lit";
@@ -26,13 +25,13 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
-    currentStep?: string;
+    public currentStep?: string;
 
-    wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
+    protected wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
 
-    slots: WizardStep[] = [];
+    protected slots: WizardStep[] = [];
 
-    constructor() {
+    public constructor() {
         super();
         this.wizardStepContext = new ContextProvider(this, {
             context: wizardStepContext,
@@ -41,15 +40,15 @@ export class WizardStepsManager extends AKElement {
                 stepLabels: [],
             },
         });
-        this.addEventListener(WizardNavigationEvent.eventName, this.onNavigation);
-        this.addEventListener("slotchange", this.onSlotchange);
+        this.addEventListener(WizardNavigationEvent.eventName, this.#navigationListener);
+        this.addEventListener("slotchange", this.#slotChangeListener);
     }
 
-    findSlots() {
+    protected findSlots() {
         this.slots = Array.from(this.querySelectorAll("[slot]")) as WizardStep[];
     }
 
-    findSlot(name?: string) {
+    protected findSlot(name?: string) {
         const target = this.slots.find((slot) => slot.slot === name);
         if (!target) {
             throw new Error(`Request for wizard panel that does not exist: ${name}`);
@@ -57,7 +56,7 @@ export class WizardStepsManager extends AKElement {
         return target;
     }
 
-    get stepLabels() {
+    public get stepLabels() {
         return this.slots
             .filter((slot) => !slot.hide)
             .map((slot) => ({
@@ -68,14 +67,14 @@ export class WizardStepsManager extends AKElement {
             }));
     }
 
-    findStepLabels() {
+    protected findStepLabels() {
         this.wizardStepContext.setValue({
             ...this.wizardStepContext.value,
             stepLabels: this.stepLabels,
         });
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.findSlots();
         this.findStepLabels();
@@ -92,13 +91,12 @@ export class WizardStepsManager extends AKElement {
         }
     }
 
-    @bound
-    onSlotchange(ev: Event) {
+    #slotChangeListener = (ev: Event) => {
         ev.stopPropagation();
         this.findSlots();
         this.findSlot(this.currentStep);
         this.findStepLabels();
-    }
+    };
 
     // This event sequence handles the following possibilities:
     // - The user on a step validated and wants to move forward. We want to make sure the *next*
@@ -108,7 +106,7 @@ export class WizardStepsManager extends AKElement {
     //   through the entire wizard," but since the user invalidated a prior, that shouldn't be
     //   unexpected.  None of the data will have been lost.
 
-    updateStepAvailability(details: NavigationEventInit) {
+    protected updateStepAvailability(details: NavigationEventInit) {
         const asArr = (v?: string[] | string) =>
             v === undefined ? [] : Array.isArray(v) ? v : [v];
         const enabled = asArr(details.enable);
@@ -129,8 +127,7 @@ export class WizardStepsManager extends AKElement {
         }
     }
 
-    @bound
-    onNavigation(ev: WizardNavigationEvent) {
+    #navigationListener = (ev: WizardNavigationEvent) => {
         ev.stopPropagation();
         const { destination, details } = ev;
 
@@ -157,13 +154,13 @@ export class WizardStepsManager extends AKElement {
             stepLabels: this.stepLabels,
             currentStep: target.slot,
         });
-    }
+    };
 
-    render() {
+    public override render() {
         return this.currentStep ? html`<slot name=${this.currentStep}></slot>` : nothing;
     }
 
-    firstUpdated() {
+    public override firstUpdated() {
         this.findStepLabels();
     }
 }

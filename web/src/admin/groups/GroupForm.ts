@@ -27,7 +27,7 @@ export function rbacRolePair(item: Role): DualSelectPair {
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         ...super.styles,
         css`
             .pf-c-button.pf-m-control {
@@ -39,20 +39,20 @@ export class GroupForm extends ModelForm<Group, string> {
         `,
     ];
 
-    loadInstance(pk: string): Promise<Group> {
+    protected loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
             groupUuid: pk,
             includeUsers: false,
         });
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
     }
 
-    async send(data: Group): Promise<Group> {
+    protected async send(data: Group): Promise<Group> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
@@ -65,7 +65,7 @@ export class GroupForm extends ModelForm<Group, string> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

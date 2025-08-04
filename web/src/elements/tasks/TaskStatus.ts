@@ -19,13 +19,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-task-status")
 export class TaskStatus extends AKElement {
     @property()
-    status?: TaskAggregatedStatusEnum | TasksTasksListAggregatedStatusEnum | LastTaskStatusEnum;
+    public status?:
+        | TaskAggregatedStatusEnum
+        | TasksTasksListAggregatedStatusEnum
+        | LastTaskStatusEnum;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
+    public static override styles: CSSResult[] = [PFBase, PFButton];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         switch (this.status) {
             case TasksTasksListAggregatedStatusEnum.Queued:
             case TaskAggregatedStatusEnum.Queued:

@@ -28,7 +28,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
-    loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
+    protected loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
         return new StagesApi(DEFAULT_CONFIG)
             .stagesAuthenticatorSmsRetrieve({
                 stageUuid: pk,
@@ -41,12 +41,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     }
 
     @property({ attribute: false })
-    provider: ProviderEnum = ProviderEnum.Twilio;
+    public provider: ProviderEnum = ProviderEnum.Twilio;
 
     @property({ attribute: false })
-    authType?: AuthTypeEnum;
+    public authType?: AuthTypeEnum;
 
-    async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
+    protected async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
                 stageUuid: this.instance.pk || "",
@@ -58,7 +58,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         });
     }
 
-    renderProviderTwillio(): TemplateResult {
+    protected renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Twilio Account SID")}
                 required
@@ -91,7 +91,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>`;
     }
 
-    renderProviderGeneric(): TemplateResult {
+    protected renderProviderGeneric(): TemplateResult {
         return html`
             <ak-form-element-horizontal
                 label=${msg("Authentication Type")}
@@ -164,7 +164,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>

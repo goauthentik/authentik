@@ -37,25 +37,25 @@ export enum CodeMirrorMode {
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
     @property({ type: Boolean })
-    readOnly = false;
+    public readOnly = false;
 
     @property()
-    mode: CodeMirrorMode = CodeMirrorMode.YAML;
+    public mode: CodeMirrorMode = CodeMirrorMode.YAML;
 
     @property()
-    name?: string;
+    public name?: string;
 
     @property({ type: Boolean })
-    parseValue = true;
+    public parseValue = true;
 
-    editor?: EditorView;
+    #editor?: EditorView;
 
-    _value?: string;
+    #value?: string;
 
-    theme: Compartment = new Compartment();
-    syntaxHighlighting: Compartment = new Compartment();
+    #theme: Compartment = new Compartment();
+    #syntaxHighlighting: Compartment = new Compartment();
 
-    themeLight = EditorView.theme(
+    #themeLight = EditorView.theme(
         {
             "&": {
                 backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
@@ -63,11 +63,11 @@ export class CodeMirrorTextarea<T> extends AKElement {
         },
         { dark: false },
     );
-    themeDark = oneDark;
-    syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
-    syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
+    #themeDark = oneDark;
+    #syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
+    #syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         // Better alignment with patternfly components
         css`
             .cm-editor {
@@ -84,7 +84,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
     ];
 
     @property()
-    set value(v: T | string) {
+    public set value(v: T | string) {
         if (v === null || v === undefined) {
             return;
         }
@@ -104,41 +104,45 @@ export class CodeMirrorTextarea<T> extends AKElement {
                     break;
             }
         }
-        if (this.editor) {
-            this.editor.dispatch({
-                changes: { from: 0, to: this.editor.state.doc.length, insert: textValue as string },
+        if (this.#editor) {
+            this.#editor.dispatch({
+                changes: {
+                    from: 0,
+                    to: this.#editor.state.doc.length,
+                    insert: textValue as string,
+                },
             });
         } else {
-            this._value = textValue as string;
+            this.#value = textValue as string;
         }
     }
 
-    get value(): T | string {
+    public get value(): T | string {
         if (!this.parseValue) {
-            return this.getInnerValue();
+            return this.#getInnerValue();
         }
         try {
             switch (this.mode) {
                 case CodeMirrorMode.YAML:
-                    return YAML.parse(this.getInnerValue());
+                    return YAML.parse(this.#getInnerValue());
                 case CodeMirrorMode.JavaScript:
-                    return JSON.parse(this.getInnerValue());
+                    return JSON.parse(this.#getInnerValue());
                 default:
-                    return this.getInnerValue();
+                    return this.#getInnerValue();
             }
         } catch (_e: unknown) {
-            return this.getInnerValue();
+            return this.#getInnerValue();
         }
     }
 
-    private getInnerValue(): string {
-        if (!this.editor) {
+    #getInnerValue(): string {
+        if (!this.#editor) {
             return "";
         }
-        return this.editor.state.doc.toString();
+        return this.#editor.state.doc.toString();
     }
 
-    getLanguageExtension(): LanguageSupport | undefined {
+    protected getLanguageExtension(): LanguageSupport | undefined {
         switch (this.mode.toLowerCase()) {
             case CodeMirrorMode.XML:
                 return xml();
@@ -156,20 +160,20 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
-                this.editor?.dispatch({
+                this.#editor?.dispatch({
                     effects: [
-                        this.theme.reconfigure(this.themeDark),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
+                        this.#theme.reconfigure(this.#themeDark),
+                        this.#syntaxHighlighting.reconfigure(this.#syntaxHighlightingDark),
                     ],
                 });
             } else {
-                this.editor?.dispatch({
+                this.#editor?.dispatch({
                     effects: [
-                        this.theme.reconfigure(this.themeLight),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
+                        this.#theme.reconfigure(this.#themeLight),
+                        this.#syntaxHighlighting.reconfigure(this.#syntaxHighlightingLight),
                     ],
                 });
             }
@@ -196,17 +200,17 @@ export class CodeMirrorTextarea<T> extends AKElement {
             }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            this.syntaxHighlighting.of(
-                dark ? this.syntaxHighlightingDark : this.syntaxHighlightingLight,
+            this.#syntaxHighlighting.of(
+                dark ? this.#syntaxHighlightingDark : this.#syntaxHighlightingLight,
             ),
-            this.theme.of(dark ? this.themeDark : this.themeLight),
+            this.#theme.of(dark ? this.#themeDark : this.#themeLight),
         ];
-        this.editor = new EditorView({
+        this.#editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],
             root: this.shadowRoot || document,
-            doc: this._value,
+            doc: this.#value,
         });
-        this.shadowRoot?.appendChild(this.editor.dom);
+        this.shadowRoot?.appendChild(this.#editor.dom);
     }
 }
 

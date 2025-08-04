@@ -13,13 +13,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {
-    loadInstance(pk: string): Promise<InvitationStage> {
+    protected loadInstance(pk: string): Promise<InvitationStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: InvitationStage): Promise<InvitationStage> {
+    protected async send(data: InvitationStage): Promise<InvitationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
                 stageUuid: this.instance.pk || "",
@@ -31,7 +31,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>

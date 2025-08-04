@@ -30,20 +30,20 @@ export class ActionButton extends BaseTaskButton {
      */
 
     @property({ attribute: false })
-    apiRequest: () => Promise<unknown> = () => {
+    public apiRequest: () => Promise<unknown> = () => {
         throw new Error();
     };
 
-    constructor() {
+    public constructor() {
         super();
         this.onError = this.onError.bind(this);
     }
 
-    callAction = (): Promise<unknown> => {
+    public override callAction = (): Promise<unknown> => {
         return this.apiRequest();
     };
 
-    async onError(error: Error | Response) {
+    protected override async onError(error: Error | Response) {
         super.onError(error);
         const message = error instanceof Error ? error.toString() : await error.text();
         showMessage({

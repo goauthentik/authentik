@@ -30,19 +30,19 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-policy-test-form")
 export class PolicyTestForm extends Form<PolicyTestRequest> {
     @property({ attribute: false })
-    policy?: Policy;
+    public policy?: Policy;
 
     @state()
-    result?: PolicyTestResult;
+    protected result?: PolicyTestResult;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    public request?: PolicyTestRequest;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
+    protected async send(data: PolicyTestRequest): Promise<PolicyTestResult> {
         this.request = data;
         const result = await new PoliciesApi(DEFAULT_CONFIG).policiesAllTestCreate({
             policyUuid: this.policy?.pk || "",
@@ -51,9 +51,9 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return (this.result = result);
     }
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    renderResult(): TemplateResult {
+    protected renderResult(): TemplateResult {
         return html`
             <ak-form-element-horizontal label=${msg("Passing")}>
                 <div class="pf-c-form__group-label">
@@ -94,7 +94,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         `;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {

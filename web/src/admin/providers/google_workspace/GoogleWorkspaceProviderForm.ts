@@ -32,13 +32,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-google-workspace-form")
 export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWorkspaceProvider> {
-    loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
+    protected loadInstance(pk: number): Promise<GoogleWorkspaceProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceRetrieve({
             id: pk,
         });
     }
 
-    async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
+    protected async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUpdate({
                 id: this.instance.pk,
@@ -50,7 +50,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

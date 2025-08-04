@@ -17,17 +17,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully generated certificate-key pair.");
     }
 
-    async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
+    protected async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({
             certificateGenerationRequest: data,
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("Common Name")}
                 name="commonName"

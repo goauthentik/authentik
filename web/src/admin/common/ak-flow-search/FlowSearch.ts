@@ -43,7 +43,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: String })
-    flowType?: FlowsInstancesListDesignationEnum;
+    public flowType?: FlowsInstancesListDesignationEnum;
 
     /**
      * The id of the current flow, if any. For stages where the flow is already defined.
@@ -51,7 +51,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: String })
-    currentFlow?: string | undefined;
+    public currentFlow?: string | undefined;
 
     /**
      * If true, it is not valid to leave the flow blank.
@@ -59,10 +59,10 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: Boolean })
-    required?: boolean = false;
+    public required?: boolean = false;
 
     @query("ak-search-select")
-    search!: SearchSelect<T>;
+    protected search!: SearchSelect<T>;
 
     /**
      * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
@@ -70,31 +70,31 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property()
-    defaultFlowSlug?: string;
+    public defaultFlowSlug?: string;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name: string | null | undefined;
 
-    selectedFlow?: T;
+    protected selectedFlow?: T;
 
-    get value() {
+    public get value() {
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.fetchObjects = this.fetchObjects.bind(this);
         this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    protected handleSearchUpdate(ev: CustomEvent) {
         ev.stopPropagation();
         this.selectedFlow = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    async fetchObjects(query?: string): Promise<Flow[]> {
+    protected async fetchObjects(query?: string): Promise<Flow[]> {
         const args: FlowsInstancesListRequest = {
             ordering: "slug",
             designation: this.flowType,
@@ -108,7 +108,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * use this method, but several have more complex needs, such as relating to the brand, or just
      * returning false.
      */
-    selected(flow: Flow): boolean {
+    protected selected(flow: Flow): boolean {
         let selected = this.currentFlow === flow.pk;
         if (!this.currentFlow && this.defaultFlowSlug && flow.slug === this.defaultFlowSlug) {
             selected = true;
@@ -116,7 +116,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return selected;
     }
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         const horizontalContainer = this.closest("ak-form-element-horizontal[name]");
         if (!horizontalContainer) {
@@ -129,7 +129,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         }
     }
 
-    render() {
+    public override render() {
         return html`
             <ak-search-select
                 .fetchObjects=${this.fetchObjects}

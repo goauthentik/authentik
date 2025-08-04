@@ -19,7 +19,7 @@ export interface SidebarItemProperties {
 
 @customElement("ak-sidebar-item")
 export class SidebarItem extends AKElement {
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFPage,
         PFNav,
@@ -80,7 +80,7 @@ export class SidebarItem extends AKElement {
     @property({ type: String })
     public label?: string;
 
-    activeMatchers: RegExp[] = [];
+    protected activeMatchers: RegExp[] = [];
 
     @property({ type: Boolean })
     public expanded = false;
@@ -109,20 +109,20 @@ export class SidebarItem extends AKElement {
         });
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.onHashChange();
         window.addEventListener("hashchange", () => this.onHashChange());
     }
 
-    onHashChange(): void {
+    protected onHashChange(): void {
         const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
             this.expandParentRecursive(activePath, item);
         });
-        this.current = this.matchesPath(activePath);
+        this.current = this.#matchesPath(activePath);
     }
 
-    private matchesPath(path: string): boolean {
+    #matchesPath(path: string): boolean {
         if (!this.path) {
             return false;
         }
@@ -133,19 +133,19 @@ export class SidebarItem extends AKElement {
         return pathIsWholePath || pathIsAnActivePath;
     }
 
-    expandParentRecursive(activePath: string, item: SidebarItem): void {
-        if (item.matchesPath(activePath) && item.parent) {
+    protected expandParentRecursive(activePath: string, item: SidebarItem): void {
+        if (item.#matchesPath(activePath) && item.parent) {
             item.parent.expanded = true;
             this.requestUpdate();
         }
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return this.renderInner();
     }
 
-    renderWithChildren() {
+    protected renderWithChildren() {
         return html`<li
             aria-label=${ifDefined(this.label)}
             role="heading"
@@ -183,7 +183,7 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
-    renderWithPathAndChildren() {
+    protected renderWithPathAndChildren() {
         return html`<li
             role="presentation"
             aria-label=${ifDefined(this.label)}
@@ -214,7 +214,7 @@ export class SidebarItem extends AKElement {
         </li>`;
     }
 
-    renderWithPath() {
+    protected renderWithPath() {
         return html`
             <a
                 id="sidebar-nav-link-${this.path}"
@@ -227,11 +227,11 @@ export class SidebarItem extends AKElement {
         `;
     }
 
-    renderWithLabel() {
+    protected renderWithLabel() {
         return html` <span class="pf-c-nav__link"> ${this.label} </span> `;
     }
 
-    renderInner() {
+    protected renderInner() {
         if (this.childItems.length > 0) {
             return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }

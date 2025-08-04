@@ -24,7 +24,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
-    async loadInstance(pk: string): Promise<FlowStageBinding> {
+    protected async loadInstance(pk: string): Promise<FlowStageBinding> {
         const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
@@ -33,19 +33,19 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     @property()
-    targetPk?: string;
+    public targetPk?: string;
 
     @state()
-    defaultOrder = 0;
+    protected defaultOrder = 0;
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
         }
         return msg("Successfully created binding.");
     }
 
-    send(data: FlowStageBinding): Promise<unknown> {
+    protected send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsPartialUpdate({
                 fsbUuid: this.instance.pk,
@@ -60,7 +60,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         });
     }
 
-    async getOrder(): Promise<number> {
+    protected async getOrder(): Promise<number> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
@@ -74,7 +74,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    protected renderTarget(): TemplateResult {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
@@ -87,7 +87,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         </ak-form-element-horizontal>`;
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select

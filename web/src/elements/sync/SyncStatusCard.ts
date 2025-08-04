@@ -23,19 +23,23 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
     @state()
-    syncState?: SyncStatus;
+    protected syncState?: SyncStatus;
 
     @state()
-    loading = false;
+    protected loading = false;
 
     @property({ attribute: false })
-    fetch!: () => Promise<SyncStatus>;
+    public fetch!: () => Promise<SyncStatus>;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFCard, PFDescriptionList, PFStack];
-    }
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFCard,
+        PFDescriptionList,
+        PFStack,
+    ];
 
-    firstUpdated() {
+    public override firstUpdated() {
         this.loading = true;
         this.fetch().then((status) => {
             this.syncState = status;
@@ -43,7 +47,7 @@ export class SyncStatusCard extends AKElement {
         });
     }
 
-    renderSyncStatus(): TemplateResult {
+    protected renderSyncStatus(): TemplateResult {
         if (this.loading) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }
@@ -91,7 +95,7 @@ export class SyncStatusCard extends AKElement {
         `;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<div class="pf-c-card">
             <div class="pf-c-card__header">
                 <div class="pf-c-card__actions">

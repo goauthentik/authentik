@@ -22,9 +22,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {
-    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
+    public static override styles: CSSResult[] = [PFBase, PFCard, PFPage, PFGrid, PFButton];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`
             <ak-page-header icon="pf-icon pf-icon-user" header="Debug"> </ak-page-header>
             <section class="pf-c-page__main-section">

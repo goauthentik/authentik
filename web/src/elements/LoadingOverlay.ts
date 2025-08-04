@@ -45,15 +45,15 @@ export interface ILoadingOverlay {
 export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     // Do not camelize: https://www.merriam-webster.com/dictionary/topmost
     @property({ type: Boolean, attribute: "topmost" })
-    topmost = false;
+    public topmost = false;
 
     @property({ type: Boolean, attribute: "no-spinner" })
-    noSpinner = false;
+    public noSpinner = false;
 
     @property({ type: String })
-    icon?: string;
+    public icon?: string;
 
-    static styles = [
+    public static override styles = [
         PFBase,
         css`
             :host {
@@ -74,7 +74,7 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
         `,
     ];
 
-    render() {
+    public override render() {
         // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...
         return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifDefined(this.icon)}>
             ${this.hasSlotted(null) ? html`<span><slot></slot></span>` : nothing}

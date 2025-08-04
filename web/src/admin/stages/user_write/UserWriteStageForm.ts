@@ -24,13 +24,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
-    loadInstance(pk: string): Promise<UserWriteStage> {
+    protected loadInstance(pk: string): Promise<UserWriteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: UserWriteStage): Promise<UserWriteStage> {
+    protected async send(data: UserWriteStage): Promise<UserWriteStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
                 stageUuid: this.instance.pk || "",
@@ -42,7 +42,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
                     `Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user

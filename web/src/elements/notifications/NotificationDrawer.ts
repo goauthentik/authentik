@@ -28,12 +28,12 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {
     @property({ attribute: false })
-    notifications?: PaginatedResponse<Notification>;
+    public notifications?: PaginatedResponse<Notification>;
 
     @property({ type: Number })
-    unread = 0;
+    public unread = 0;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFNotificationDrawer,
@@ -62,7 +62,7 @@ export class NotificationDrawer extends AKElement {
         `,
     ];
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         me().then((user) => {
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
@@ -77,7 +77,7 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
-    renderItem(item: Notification): TemplateResult {
+    protected renderItem(item: Notification): TemplateResult {
         let level = "";
         switch (item.severity) {
             case "notice":
@@ -147,7 +147,7 @@ export class NotificationDrawer extends AKElement {
         </li>`;
     }
 
-    clearNotifications() {
+    protected clearNotifications() {
         new EventsApi(DEFAULT_CONFIG).eventsNotificationsMarkAllSeenCreate().then(() => {
             showMessage({
                 level: MessageLevel.success,
@@ -169,14 +169,14 @@ export class NotificationDrawer extends AKElement {
         });
     }
 
-    renderEmpty() {
+    protected renderEmpty() {
         return html`<ak-empty-state
             ><span>${msg("No notifications found.")}</span>
             <div slot="body">${msg("You don't have any notifications currently.")}</div>
         </ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.notifications) {
             return html``;
         }

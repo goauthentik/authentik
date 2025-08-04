@@ -19,15 +19,15 @@ export interface IExpand {
 @customElement("ak-expand")
 export class Expand extends AKElement implements IExpand {
     @property({ type: Boolean })
-    expanded = false;
+    public expanded = false;
 
     @property({ type: String, attribute: "text-open" })
-    textOpen = msg("Show less");
+    public textOpen = msg("Show less");
 
     @property({ type: String, attribute: "text-closed" })
-    textClosed = msg("Show more");
+    public textClosed = msg("Show more");
 
-    static styles = [
+    public static override styles = [
         PFBase,
         PFExpandableSection,
         css`
@@ -37,7 +37,7 @@ export class Expand extends AKElement implements IExpand {
         `,
     ];
 
-    render() {
+    public override render() {
         return html`<div
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"

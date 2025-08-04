@@ -26,26 +26,33 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
     @property({ type: String })
-    eventID?: string;
+    public eventID?: string;
 
     @state()
-    event!: EventWithContext;
+    protected event!: EventWithContext;
 
-    static styles: CSSResult[] = [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFGrid,
+        PFDescriptionList,
+        PFPage,
+        PFContent,
+        PFCard,
+    ];
 
-    fetchEvent(eventUuid: string) {
+    protected fetchEvent(eventUuid: string) {
         new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {
             this.event = ev as EventWithContext;
         });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("eventID") && this.eventID) {
             this.fetchEvent(this.eventID);
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.event) {
             return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${msg("Loading")}>
             </ak-page-header> `;

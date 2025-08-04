@@ -16,14 +16,14 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
     @property({ attribute: false })
-    logs?: LogEvent[] = [];
+    public logs?: LogEvent[] = [];
 
-    expandable = true;
-    paginated = false;
+    public override expandable = true;
+    public override paginated = false;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
             pagination: {
                 next: 0,
@@ -38,13 +38,13 @@ export class LogViewer extends Table<LogEvent> {
         };
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): TemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
-    renderExpanded(item: LogEvent): TemplateResult {
+    protected override renderExpanded(item: LogEvent): TemplateResult {
         return html`<td role="cell" colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
@@ -73,11 +73,11 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    protected override renderToolbarContainer(): TemplateResult {
         return html``;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Time")),
             new TableColumn(msg("Level")),
@@ -86,7 +86,7 @@ export class LogViewer extends Table<LogEvent> {
         ];
     }
 
-    statusForItem(item: LogEvent): string {
+    protected statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
             case LogLevelEnum.Critical:
             case LogLevelEnum.Error:
@@ -100,7 +100,7 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    protected row(item: LogEvent): TemplateResult[] {
         return [
             html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label

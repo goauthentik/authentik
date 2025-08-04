@@ -54,7 +54,7 @@ export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
 > extends AKElement {
-    host!: StageHost;
+    protected host!: StageHost;
 
     @property({ attribute: false })
     public challenge!: Tin;
@@ -89,7 +89,7 @@ export abstract class BaseStage<
         });
     };
 
-    renderNonFieldErrors() {
+    protected renderNonFieldErrors() {
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
@@ -108,7 +108,7 @@ export abstract class BaseStage<
         </div>`;
     }
 
-    renderUserInfo() {
+    protected renderUserInfo() {
         if (!this.challenge.pendingUser || !this.challenge.pendingUserAvatar) {
             return nothing;
         }
@@ -133,11 +133,12 @@ export abstract class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
+    protected onSubmitSuccess(): void {
         // Method that can be overridden by stages
         return;
     }
-    onSubmitFailure(): void {
+
+    protected onSubmitFailure(): void {
         // Method that can be overridden by stages
         return;
     }

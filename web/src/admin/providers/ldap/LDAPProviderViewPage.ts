@@ -40,15 +40,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends AKElement {
     @property({ type: Number })
-    providerID?: number;
+    public providerID?: number;
 
     @state()
-    provider?: LDAPProvider;
+    protected provider?: LDAPProvider;
 
     @state()
-    me?: SessionUser;
+    protected me?: SessionUser;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFButton,
         PFBanner,
@@ -62,7 +62,7 @@ export class LDAPProviderViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
@@ -73,19 +73,19 @@ export class LDAPProviderViewPage extends AKElement {
         });
     }
 
-    fetchProvider(id: number) {
+    protected fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG)
             .providersLdapRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("providerID") && this.providerID) {
             this.fetchProvider(this.providerID);
         }
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         if (!this.provider) {
             return html``;
         }
@@ -117,7 +117,7 @@ export class LDAPProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    protected renderTabOverview(): TemplateResult {
         if (!this.provider) {
             return html``;
         }

@@ -15,13 +15,13 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
-    loadInstance(pk: string): Promise<UserLoginStage> {
+    protected loadInstance(pk: string): Promise<UserLoginStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserLoginRetrieve({
             stageUuid: pk,
         });
     }
 
-    async send(data: UserLoginStage): Promise<UserLoginStage> {
+    protected async send(data: UserLoginStage): Promise<UserLoginStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
                 stageUuid: this.instance.pk || "",
@@ -33,7 +33,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <span>${msg("Log the currently pending user in.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input

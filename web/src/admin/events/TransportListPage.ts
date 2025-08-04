@@ -25,33 +25,36 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Notification Transports");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Define how notifications are sent to users, like Email or Webhook.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-export";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
-    expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override expandable = true;
 
     @property()
-    order = "name";
+    public override order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<NotificationTransport>> {
         return new EventsApi(DEFAULT_CONFIG).eventsTransportsList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Mode"), "mode"),
@@ -59,7 +62,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Notification transport(s)")}
@@ -81,7 +84,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationTransport): TemplateResult[] {
+    protected row(item: NotificationTransport): TemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
@@ -117,7 +120,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         ];
     }
 
-    renderExpanded(item: NotificationTransport): TemplateResult {
+    protected override renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
@@ -141,7 +144,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </td>`;
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

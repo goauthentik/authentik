@@ -30,9 +30,16 @@ export class AuthenticatorDuoStage extends BaseStage<
     AuthenticatorDuoChallenge,
     AuthenticatorDuoChallengeResponseRequest
 > {
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+    ];
 
-    updated(changedProperties: PropertyValues<this>) {
+    public override updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
             const i = setInterval(() => {
                 this.checkEnrollStatus().then((shouldStop) => {
@@ -44,7 +51,7 @@ export class AuthenticatorDuoStage extends BaseStage<
         }
     }
 
-    async checkEnrollStatus(): Promise<boolean> {
+    protected async checkEnrollStatus(): Promise<boolean> {
         const status = await new StagesApi(
             DEFAULT_CONFIG,
         ).stagesAuthenticatorDuoEnrollmentStatusCreate({
@@ -63,7 +70,7 @@ export class AuthenticatorDuoStage extends BaseStage<
         return false;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 <ak-form-static

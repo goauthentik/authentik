@@ -56,18 +56,18 @@ export function navigate(url: string, params?: { [key: string]: unknown }): void
 @customElement("ak-router-outlet")
 export class RouterOutlet extends AKElement {
     @property({ attribute: false })
-    current?: RouteMatch;
+    public current?: RouteMatch;
 
     @property()
-    defaultUrl?: string;
+    public defaultUrl?: string;
 
     @property({ attribute: false })
-    routes: Route[] = [];
+    public routes: Route[] = [];
 
-    private sentryClient?: BrowserClient;
-    private pageLoadSpan?: Span;
+    #sentryClient?: BrowserClient;
+    #pageLoadSpan?: Span;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         css`
             :host {
                 background-color: transparent !important;
@@ -78,12 +78,12 @@ export class RouterOutlet extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener("hashchange", (ev: HashChangeEvent) => this.navigate(ev));
-        this.sentryClient = getClient();
-        if (this.sentryClient) {
-            this.pageLoadSpan = startBrowserTracingPageLoadSpan(this.sentryClient, {
+        this.#sentryClient = getClient();
+        if (this.#sentryClient) {
+            this.#pageLoadSpan = startBrowserTracingPageLoadSpan(this.#sentryClient, {
                 name: window.location.pathname,
                 attributes: {
                     [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "url",
@@ -92,11 +92,11 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.navigate();
     }
 
-    navigate(ev?: HashChangeEvent): void {
+    protected navigate(ev?: HashChangeEvent): void {
         let activeUrl = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         if (ev) {
             // Check if we've actually changed paths
@@ -133,16 +133,16 @@ export class RouterOutlet extends AKElement {
         this.current = matchedRoute;
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
+    public override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
-        if (!this.sentryClient) return;
+        if (!this.#sentryClient) return;
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
-        if (this.pageLoadSpan) {
-            this.pageLoadSpan.updateName(this.current.sanitizedURL());
-            this.pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
-            this.pageLoadSpan = undefined;
+        if (this.#pageLoadSpan) {
+            this.#pageLoadSpan.updateName(this.current.sanitizedURL());
+            this.#pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
+            this.#pageLoadSpan = undefined;
         } else {
-            startBrowserTracingNavigationSpan(this.sentryClient, {
+            startBrowserTracingNavigationSpan(this.#sentryClient, {
                 op: "navigation",
                 name: this.current.sanitizedURL(),
                 attributes: {
@@ -152,7 +152,7 @@ export class RouterOutlet extends AKElement {
         }
     }
 
-    render(): TemplateResult | undefined {
+    public override render(): TemplateResult | undefined {
         return this.current?.render();
     }
 }

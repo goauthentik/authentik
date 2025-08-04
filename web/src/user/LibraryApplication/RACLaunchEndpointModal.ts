@@ -11,12 +11,13 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
-    clickable = true;
-    searchEnabled(): boolean {
+    public override clickable = true;
+
+    protected override searchEnabled(): boolean {
         return true;
     }
 
-    clickHandler = (item: Endpoint) => {
+    public override clickHandler = (item: Endpoint) => {
         if (!item.launchUrl) {
             return;
         }
@@ -28,9 +29,9 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     };
 
     @property({ attribute: false })
-    app?: Application;
+    public app?: Application;
 
-    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
             ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
@@ -42,15 +43,15 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         return endpoints;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [new TableColumn(msg("Name"))];
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    protected row(item: Endpoint): TemplateResult[] {
         return [html`${item.name}`];
     }
 
-    renderModalInner(): TemplateResult {
+    protected override renderModalInner(): TemplateResult {
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select endpoint to connect to")}</h1>

@@ -33,9 +33,9 @@ export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallengeResponseRequest
 > {
     @state()
-    authUrl?: string;
+    protected authUrl?: string;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFForm,
@@ -45,7 +45,7 @@ export class PlexLoginInit extends BaseStage<
         PFDivider,
     ];
 
-    async firstUpdated(): Promise<void> {
+    public override async firstUpdated(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.challenge?.clientId || "");
         this.authUrl = authInfo.authUrl;
         const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
@@ -73,7 +73,7 @@ export class PlexLoginInit extends BaseStage<
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Plex...")}</span>
             <form class="pf-c-form">

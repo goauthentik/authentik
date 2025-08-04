@@ -18,11 +18,18 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {
     @property({ type: Boolean })
-    isModalShown = false;
+    public isModalShown = false;
 
-    static styles: CSSResult[] = [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+    public static override styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFForm,
+        PFFormControl,
+        PFButton,
+        PFTitle,
+    ];
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         const appleAuth = document.createElement("script");
         appleAuth.src =
             "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
@@ -50,7 +57,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
         });
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Apple...")}</span>
             <form class="pf-c-form">

@@ -23,22 +23,22 @@ interface RolePermissionAssign {
 @customElement("ak-role-permission-form")
 export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
-    permissionsToAdd: Permission[] = [];
+    protected permissionsToAdd: Permission[] = [];
 
     @property()
-    roleUuid?: string;
+    public roleUuid?: string;
 
-    async load(): Promise<void> {}
+    public override async load(): Promise<void> {}
 
-    loadInstance(): Promise<RolePermissionAssign> {
+    protected loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
-    getSuccessMessage(): string {
+    public override getSuccessMessage(): string {
         return msg("Successfully assigned permission.");
     }
 
-    async send(data: RolePermissionAssign) {
+    protected async send(data: RolePermissionAssign) {
         await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssign({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
@@ -48,7 +48,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         this.permissionsToAdd = [];
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Permissions to add")} name="permissions">
                 <div class="pf-c-input-group">

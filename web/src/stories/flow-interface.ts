@@ -8,16 +8,16 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-storybook-interface-flow")
 export class StoryFlowInterface extends FlowExecutor {
-    async firstUpdated() {}
+    public override async firstUpdated() {}
 
-    submit = async (
+    public override submit = async (
         payload?: FlowChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> => {
         return true;
     };
 
-    async renderChallenge(): Promise<TemplateResult> {
+    protected override async renderChallenge(): Promise<TemplateResult> {
         return html`<slot></slot>`;
     }
 }

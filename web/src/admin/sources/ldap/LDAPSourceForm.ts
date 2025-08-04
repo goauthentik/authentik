@@ -29,13 +29,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
-    loadInstance(pk: string): Promise<LDAPSource> {
+    protected loadInstance(pk: string): Promise<LDAPSource> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesLdapRetrieve({
             slug: pk,
         });
     }
 
-    async send(data: LDAPSource): Promise<LDAPSource> {
+    protected async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
@@ -48,7 +48,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         });
     }
 
-    renderForm(): TemplateResult {
+    protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"

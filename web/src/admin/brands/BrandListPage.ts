@@ -19,30 +19,33 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    protected pageTitle(): string {
         return msg("Brands");
     }
-    pageDescription(): string {
+
+    protected pageDescription(): string {
         return msg("Configure visual settings and defaults for different domains.");
     }
-    pageIcon(): string {
+
+    protected pageIcon(): string {
         return "pf-icon pf-icon-tenant";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "domain";
+    public override order = "domain";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<Brand>> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         return [
             new TableColumn(msg("Domain"), "domain"),
             new TableColumn(msg("Brand name"), "branding_title"),
@@ -51,7 +54,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Brand(s)")}
@@ -76,7 +79,7 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): TemplateResult[] {
+    protected row(item: Brand): TemplateResult[] {
         return [
             html`${item.domain}`,
             html`${item.brandingTitle}`,
@@ -100,7 +103,7 @@ export class BrandListPage extends TablePage<Brand> {
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    protected override renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>

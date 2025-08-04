@@ -17,25 +17,25 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
-    checkbox = true;
-    clearOnRefresh = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
 
-    searchEnabled(): boolean {
+    protected override searchEnabled(): boolean {
         return true;
     }
 
     @property()
-    order = "name";
+    public override order = "name";
 
     @property({ attribute: false })
-    provider?: RACProvider;
+    public provider?: RACProvider;
 
     @property({ type: Number })
-    userId?: number;
+    public userId?: number;
 
-    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+    public static override styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
-    async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
             ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
@@ -43,7 +43,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         });
     }
 
-    renderToolbarSelected(): TemplateResult {
+    protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Connection Token(s)")}
@@ -71,7 +71,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    columns(): TableColumn[] {
+    protected columns(): TableColumn[] {
         if (this.provider) {
             return [
                 new TableColumn(msg("Endpoint"), "endpoint__name"),
@@ -84,7 +84,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         ];
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    protected row(item: ConnectionToken): TemplateResult[] {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }

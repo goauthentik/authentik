@@ -32,7 +32,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         PFBase,
         PFLogin,
         PFAlert,
@@ -50,7 +50,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         `,
     ];
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
+    protected renderPromptInner(prompt: StagePrompt): TemplateResult {
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return html`<input
@@ -220,14 +220,14 @@ ${prompt.initialValue}</textarea
         }
     }
 
-    renderPromptHelpText(prompt: StagePrompt) {
+    protected renderPromptHelpText(prompt: StagePrompt) {
         if (prompt.subText === "") {
             return nothing;
         }
         return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
-    shouldRenderInWrapper(prompt: StagePrompt): boolean {
+    protected shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
         return !(
             prompt.type === PromptTypeEnum.Static ||
@@ -236,7 +236,7 @@ ${prompt.initialValue}</textarea
         );
     }
 
-    renderField(prompt: StagePrompt): TemplateResult {
+    protected renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
@@ -268,7 +268,7 @@ ${prompt.initialValue}</textarea
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
 
-    renderContinue(): TemplateResult {
+    protected renderContinue(): TemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
             <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
@@ -276,7 +276,7 @@ ${prompt.initialValue}</textarea
         </div>`;
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
                 ${this.challenge.fields.map((prompt) => {

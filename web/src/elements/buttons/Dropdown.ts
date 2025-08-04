@@ -7,21 +7,22 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-dropdown")
 export class DropdownButton extends AKElement {
-    menu: HTMLElement | null = null;
+    protected menu: HTMLElement | null = null;
 
-    constructor() {
+    public constructor() {
         super();
-        window.addEventListener(EVENT_REFRESH, this.clickHandler);
+        window.addEventListener(EVENT_REFRESH, this.#clickListener);
     }
 
-    clickHandler = (): void => {
+    #clickListener = (): void => {
         if (!this.menu) {
             return;
         }
+
         this.menu.hidden = true;
     };
 
-    connectedCallback() {
+    public override connectedCallback() {
         super.connectedCallback();
         this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
         this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
@@ -34,12 +35,12 @@ export class DropdownButton extends AKElement {
         });
     }
 
-    disconnectedCallback(): void {
+    public override disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_REFRESH, this.clickHandler);
+        window.removeEventListener(EVENT_REFRESH, this.#clickListener);
     }
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         return html`<slot></slot>`;
     }
 }

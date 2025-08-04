@@ -20,15 +20,15 @@ export interface IAppIcon {
 @customElement("ak-app-icon")
 export class AppIcon extends AKElement implements IAppIcon {
     @property({ type: String })
-    name?: string;
+    public name?: string;
 
     @property({ type: String })
-    icon?: string;
+    public icon?: string;
 
     @property({ reflect: true })
-    size: PFSize = PFSize.Medium;
+    public size: PFSize = PFSize.Medium;
 
-    static styles: CSSResult[] = [
+    public static override styles: CSSResult[] = [
         PFFAIcons,
         PFAvatar,
         css`
@@ -74,7 +74,7 @@ export class AppIcon extends AKElement implements IAppIcon {
         `,
     ];
 
-    render(): TemplateResult {
+    public override render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
             .with([undefined, undefined],
