@@ -16,6 +16,7 @@ import {
     FlowsInstancesListDesignationEnum,
     PropertymappingsApi,
     PropertymappingsProviderSamlListRequest,
+    SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
     SAMLProvider,
     SpBindingEnum,
@@ -85,9 +86,8 @@ export function renderForm(
             </p>
         </ak-form-element-horizontal>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="acsUrl"
                     label=${msg("ACS URL")}
@@ -123,9 +123,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     name="authenticationFlow"
@@ -158,9 +157,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Signing Certificate")} name="signingKp">
                     <ak-crypto-certificate-search
                         .certificate=${provider?.signingKp}
@@ -317,6 +315,54 @@ export function renderForm(
                         "When using IDP-initiated logins, the relay state will be set to this value.",
                     )}
                 ></ak-text-input>
+                <ak-form-element-horizontal
+                    label=${msg("Default NameID Policy")}
+                    required
+                    name="defaultNameIdPolicy"
+                >
+                    <select class="pf-c-form-control">
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                        >
+                            ${msg("Persistent")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                        >
+                            ${msg("Email address")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                        >
+                            ${msg("Windows")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                        >
+                            ${msg("X509 Subject")}
+                        </option>
+                        <option
+                            value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                            ?selected=${provider?.defaultNameIdPolicy ===
+                            SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                        >
+                            ${msg("Transient")}
+                        </option>
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
 
                 <ak-radio-input
                     name="digestAlgorithm"

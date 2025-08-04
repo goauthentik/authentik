@@ -1,0 +1,123 @@
+name: authentik-ci-docs
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - prettier-check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        working-directory: website/
+        run: npm ci
+      - name: Lint
+        working-directory: website/
+        run: npm run ${{ matrix.command }}
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        name: Install Dependencies
+        run: npm ci
+      - name: Build Documentation via Docusaurus
+        working-directory: website/
+        run: npm run build
+  build-integrations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: website/package.json
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        name: Install Dependencies
+        run: npm ci
+      - name: Build Integrations via Docusaurus
+        working-directory: website/
+        run: npm run build -w integrations
+  build-container:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
+    runs-on: ubuntu-latest
+    permissions:
+      # Needed to upload container images to ghcr.io
+      packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3.6.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        with:
+          image-name: ghcr.io/goauthentik/dev-docs
+      - name: Login to Container Registry
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker Image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          tags: ${{ steps.ev.outputs.imageTags }}
+          file: website/Dockerfile
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
+          platforms: linux/amd64,linux/arm64
+          context: .
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+  ci-website-mark:
+    if: always()
+    needs:
+      - lint
+      - build-docs
+      - build-integrations
+      - build-container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+          allowed-skips: ${{ github.repository == 'goauthentik/authentik-internal' && 'build-container' || '[]' }}

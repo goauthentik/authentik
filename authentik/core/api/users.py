@@ -5,7 +5,7 @@ from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import AnonymousUser, Permission
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -456,6 +456,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
+        self.request._request.user = AnonymousUser()
         try:
             plan = planner.plan(
                 self.request._request,

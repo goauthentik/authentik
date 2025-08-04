@@ -14,7 +14,7 @@ const metadata: Meta<VisibilityToggleProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Visibility Toggle Component
 
 A straightforward two-state iconic button for toggling the visibility of sensitive content such as passwords, private keys, or other secret information.

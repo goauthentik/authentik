@@ -190,6 +190,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "sign_response",
             "sp_binding",
             "default_relay_state",
+            "default_name_id_policy",
             "url_download_metadata",
             "url_sso_post",
             "url_sso_redirect",

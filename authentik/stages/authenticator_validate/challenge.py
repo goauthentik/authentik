@@ -124,7 +124,7 @@ def select_challenge(request: HttpRequest, device: Device):
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
-    device.stage.send(device.token, device)
+    device.stage.send(request, device.token, device)
 
 
 def select_challenge_email(request: HttpRequest, device: EmailDevice):

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.6.3 Blueprint schema",
+    "title": "authentik 2025.6.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -4224,6 +4224,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_tasks_schedules.schedule"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_tenants.domain"
                         },
                         "id": {
@@ -4649,6 +4689,14 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Children"
                 }
             },
             "required": []
@@ -4933,13 +4981,11 @@
                             "authentik_events.delete_notificationrule",
                             "authentik_events.delete_notificationtransport",
                             "authentik_events.delete_notificationwebhookmapping",
-                            "authentik_events.run_task",
                             "authentik_events.view_event",
                             "authentik_events.view_notification",
                             "authentik_events.view_notificationrule",
                             "authentik_events.view_notificationtransport",
                             "authentik_events.view_notificationwebhookmapping",
-                            "authentik_events.view_systemtask",
                             "authentik_flows.add_flow",
                             "authentik_flows.add_flowstagebinding",
                             "authentik_flows.add_flowtoken",
@@ -5414,6 +5460,11 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
+                            "authentik_tasks.retry_task",
+                            "authentik_tasks.view_task",
+                            "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.send_schedule",
+                            "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
                             "authentik_tenants.change_domain",
@@ -7288,9 +7339,11 @@
                     "enum": [
                         null,
                         "authentik.tenants",
+                        "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
+                        "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
                         "authentik.policies.dummy",
@@ -7338,6 +7391,7 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
+                        "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.core",
@@ -7350,8 +7404,7 @@
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
                         "authentik.enterprise.stages.mtls",
-                        "authentik.enterprise.stages.source",
-                        "authentik.events"
+                        "authentik.enterprise.stages.source"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -7365,6 +7418,11 @@
                         null,
                         "authentik_tenants.domain",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_events.event",
+                        "authentik_events.notificationtransport",
+                        "authentik_events.notification",
+                        "authentik_events.notificationrule",
+                        "authentik_events.notificationwebhookmapping",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
                         "authentik_outposts.dockerserviceconnection",
@@ -7445,6 +7503,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
+                        "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
@@ -7461,12 +7520,7 @@
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
                         "authentik_stages_mtls.mutualtlsstage",
-                        "authentik_stages_source.sourcestage",
-                        "authentik_events.event",
-                        "authentik_events.notificationtransport",
-                        "authentik_events.notification",
-                        "authentik_events.notificationrule",
-                        "authentik_events.notificationwebhookmapping"
+                        "authentik_stages_source.sourcestage"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -9241,6 +9295,18 @@
                     "type": "string",
                     "title": "Default relay state",
                     "description": "Default relay_state value for IDP-initiated logins"
+                },
+                "default_name_id_policy": {
+                    "type": "string",
+                    "enum": [
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    ],
+                    "title": "Default name id policy"
                 }
             },
             "required": []
@@ -9580,13 +9646,11 @@
                             "authentik_events.delete_notificationrule",
                             "authentik_events.delete_notificationtransport",
                             "authentik_events.delete_notificationwebhookmapping",
-                            "authentik_events.run_task",
                             "authentik_events.view_event",
                             "authentik_events.view_notification",
                             "authentik_events.view_notificationrule",
                             "authentik_events.view_notificationtransport",
                             "authentik_events.view_notificationwebhookmapping",
-                            "authentik_events.view_systemtask",
                             "authentik_flows.add_flow",
                             "authentik_flows.add_flowstagebinding",
                             "authentik_flows.add_flowtoken",
@@ -10061,6 +10125,11 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
+                            "authentik_tasks.retry_task",
+                            "authentik_tasks.view_task",
+                            "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.send_schedule",
+                            "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
                             "authentik_tenants.change_domain",
@@ -11665,7 +11734,8 @@
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
-                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
                     ],
                     "title": "Name id policy",
                     "description": "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
@@ -15847,6 +15917,56 @@
                             "change_userwritestage",
                             "delete_userwritestage",
                             "view_userwritestage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_tasks_schedules.schedule": {
+            "type": "object",
+            "properties": {
+                "rel_obj_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Rel obj id"
+                },
+                "crontab": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Crontab",
+                    "description": "When to schedule tasks"
+                },
+                "paused": {
+                    "type": "boolean",
+                    "title": "Paused",
+                    "description": "Pause this schedule"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_tasks_schedules.schedule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "change_schedule",
+                            "send_schedule",
+                            "view_schedule"
                         ]
                     },
                     "user": {

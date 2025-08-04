@@ -74,21 +74,17 @@ fi
 
 if [[ "$1" == "server" ]]; then
     set_mode "server"
-    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
-    # sync, so that we can sure the first start actually has working bootstrap
-    # credentials
-    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
-        python -m manage bootstrap_tasks
-    fi
     run_authentik
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
     shift
-    check_if_root "python -m manage worker $@"
-elif [[ "$1" == "worker-status" ]]; then
-    wait_for_db
-    celery -A authentik.root.celery flower \
-        --port=9000
+    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
+    # sync, so that we can sure the first start actually has working bootstrap
+    # credentials
+    if [[ -n "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || -n "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
+        python -m manage apply_blueprint system/bootstrap.yaml || true
+    fi
+    check_if_root "python -m manage worker --pid-file ${TMPDIR}/authentik-worker.pid $@"
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
