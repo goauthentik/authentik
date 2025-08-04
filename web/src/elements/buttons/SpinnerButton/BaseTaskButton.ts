@@ -60,7 +60,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     @property({ type: Boolean })
     public disabled = false;
 
-    constructor() {
+    public constructor() {
         super();
         this.onSuccess = this.onSuccess.bind(this);
         this.onError = this.onError.bind(this);

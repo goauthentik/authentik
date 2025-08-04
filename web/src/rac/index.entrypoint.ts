@@ -112,7 +112,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
         };
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.initKeyboard();
         this.checkClipboard();

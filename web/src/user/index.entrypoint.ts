@@ -278,7 +278,7 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @state()
     public uiConfig: UIConfig | null = null;
 
-    constructor() {
+    public constructor() {
         configureSentry(true);
 
         super();

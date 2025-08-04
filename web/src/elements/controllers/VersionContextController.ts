@@ -17,7 +17,7 @@ export class VersionContextController implements ReactiveController {
     #host: ReactiveElementHost<VersionMixin>;
     #context: ContextProvider<VersionContext>;
 
-    constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
+    public constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
         this.#host = host;
         this.#context = new ContextProvider(this.#host, {
             context: VersionContext,

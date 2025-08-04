@@ -17,7 +17,7 @@ export class Route {
     private element?: TemplateResult;
     private callback?: (args: RouteArgs) => Promise<TemplateResult>;
 
-    constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
+    public constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
         this.url = url;
         this.callback = callback;
     }

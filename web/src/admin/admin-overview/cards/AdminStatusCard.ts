@@ -36,7 +36,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     abstract getPrimaryValue(): Promise<T>;
     abstract getStatus(value: T): Promise<AdminStatus>;
 
-    constructor() {
+    public constructor() {
         super();
         // Register refresh event listener
         this.addEventListener(EVENT_REFRESH, this.#fetchData);

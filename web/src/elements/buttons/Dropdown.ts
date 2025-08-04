@@ -9,7 +9,7 @@ import { customElement } from "lit/decorators.js";
 export class DropdownButton extends AKElement {
     menu: HTMLElement | null = null;
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_REFRESH, this.#clickListener);
     }

@@ -26,7 +26,7 @@ export class Loading extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
 
         applyDocumentTheme(globalAK().brand.uiTheme);

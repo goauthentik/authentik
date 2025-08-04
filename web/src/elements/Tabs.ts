@@ -46,7 +46,7 @@ export class Tabs extends AKElement {
 
     observer: MutationObserver;
 
-    constructor() {
+    public constructor() {
         super();
         this.observer = new MutationObserver(() => {
             this.requestUpdate();

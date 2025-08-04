@@ -31,7 +31,7 @@ export class WizardStepsManager extends AKElement {
 
     slots: WizardStep[] = [];
 
-    constructor() {
+    public constructor() {
         super();
         this.wizardStepContext = new ContextProvider(this, {
             context: wizardStepContext,

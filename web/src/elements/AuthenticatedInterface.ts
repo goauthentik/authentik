@@ -3,7 +3,7 @@ import { VersionContextController } from "#elements/controllers/VersionContextCo
 import { Interface } from "#elements/Interface";
 
 export class AuthenticatedInterface extends Interface {
-    constructor() {
+    public constructor() {
         super();
 
         this.addController(new LicenseContextController(this));

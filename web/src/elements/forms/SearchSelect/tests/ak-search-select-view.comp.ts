@@ -23,7 +23,7 @@ browser.addCommand(
  */
 
 export class AkSearchSelectViewDriver {
-    constructor(
+    public constructor(
         public element: WebdriverIO.Element,
         public menu: WebdriverIO.Element,
     ) {

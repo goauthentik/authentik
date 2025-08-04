@@ -62,7 +62,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         return undefined;
     }
 
-    constructor() {
+    public constructor() {
         super();
 
         this.addEventListener(EVENT_REFRESH, () => {

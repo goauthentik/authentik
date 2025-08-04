@@ -126,7 +126,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         recoveryButtonStyles,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         const defaultPath = new DefaultUIConfig().defaults.userPath;
         this.activePath = getURLParam<string>("path", defaultPath);

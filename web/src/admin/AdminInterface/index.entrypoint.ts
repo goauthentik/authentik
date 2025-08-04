@@ -126,7 +126,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         configureSentry(true);
 
         super();

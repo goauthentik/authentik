@@ -58,7 +58,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
 
     showHintController: ShowHintController;
 
-    constructor() {
+    public constructor() {
         super();
         this.showHintController = new ShowHintController(
             this,

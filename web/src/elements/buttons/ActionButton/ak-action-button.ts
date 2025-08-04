@@ -34,7 +34,7 @@ export class ActionButton extends BaseTaskButton {
         throw new Error();
     };
 
-    constructor() {
+    public constructor() {
         super();
         this.onError = this.onError.bind(this);
     }

@@ -62,7 +62,7 @@ export class LDAPSourceViewPage extends AKElement {
         PFList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.slug) return;

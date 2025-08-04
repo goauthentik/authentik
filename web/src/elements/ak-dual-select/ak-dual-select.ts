@@ -112,7 +112,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         super();
 
         for (const eventName of DelegatedEvents) {

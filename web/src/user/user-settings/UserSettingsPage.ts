@@ -79,7 +79,7 @@ export class UserSettingsPage extends AKElement {
     @state()
     protected userSettings?: UserSetting[];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             this.firstUpdated();

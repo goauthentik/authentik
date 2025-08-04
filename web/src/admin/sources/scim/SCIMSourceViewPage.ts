@@ -62,7 +62,7 @@ export class SCIMSourceViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.source?.pk) return;

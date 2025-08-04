@@ -31,7 +31,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
     public static styles: CSSResult[] = [PFBase];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_REFRESH, () => {
             this.outpostHealths = [];

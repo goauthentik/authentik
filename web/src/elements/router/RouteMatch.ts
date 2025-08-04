@@ -9,7 +9,7 @@ export class RouteMatch {
     arguments: { [key: string]: string };
     fullURL: string;
 
-    constructor(route: Route, fullUrl: string) {
+    public constructor(route: Route, fullUrl: string) {
         this.route = route;
         this.arguments = {};
         this.fullURL = fullUrl;

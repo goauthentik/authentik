@@ -52,7 +52,7 @@ export class APIDrawer extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_REQUEST_POST, ((e: CustomEvent<RequestInfo>) => {
             this.requests.push(e.detail);

@@ -11,7 +11,7 @@ export class TableColumn {
 
     onClick?: () => void;
 
-    constructor(title: string, orderBy?: string) {
+    public constructor(title: string, orderBy?: string) {
         this.title = title;
         this.orderBy = orderBy;
     }

@@ -90,7 +90,7 @@ export class DefaultUIConfig implements UIConfig {
         userPath: "users",
     };
 
-    constructor() {
+    public constructor() {
         this.enabledFeatures.apiDrawer = !isUserRoute();
     }
 }

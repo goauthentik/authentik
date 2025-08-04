@@ -28,7 +28,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
     @state()
     protected oauthSources?: PaginatedOAuthSourceList;
 
-    constructor() {
+    public constructor() {
         super();
         new SourcesApi(DEFAULT_CONFIG)
             .sourcesOauthList({

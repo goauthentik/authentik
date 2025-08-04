@@ -93,7 +93,7 @@ export class SAMLProviderViewPage extends AKElement {
         PFBanner,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;

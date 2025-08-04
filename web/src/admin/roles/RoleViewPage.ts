@@ -65,7 +65,7 @@ export class RoleViewPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this._role?.pk) return;

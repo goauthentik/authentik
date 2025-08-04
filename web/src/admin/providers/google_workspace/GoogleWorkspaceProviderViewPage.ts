@@ -61,7 +61,7 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         PFDescriptionList,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;

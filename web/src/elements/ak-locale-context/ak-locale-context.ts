@@ -38,7 +38,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
 
     setLocale: LocaleSetter;
 
-    constructor(code = DEFAULT_LOCALE) {
+    public constructor(code = DEFAULT_LOCALE) {
         super();
         this.notifyApplication = this.notifyApplication.bind(this);
         this.updateLocaleHandler = this.updateLocaleHandler.bind(this);

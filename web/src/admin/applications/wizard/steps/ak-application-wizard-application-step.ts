@@ -42,7 +42,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     @query("form#applicationform")
     protected form!: HTMLFormElement;
 
-    constructor() {
+    public constructor() {
         super();
         // This is the first step. Ensure it is always enabled.
         this.enabled = true;

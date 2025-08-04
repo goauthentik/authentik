@@ -102,7 +102,7 @@ export class ProxyProviderViewPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;

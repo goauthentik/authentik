@@ -6,7 +6,7 @@ interface ModalElement extends LitElement {
 
 export class ModalShowEvent extends Event {
     modal: ModalElement;
-    constructor(modal: ModalElement) {
+    public constructor(modal: ModalElement) {
         super("ak-modal-show", { bubbles: true, composed: true });
         this.modal = modal;
     }
@@ -14,7 +14,7 @@ export class ModalShowEvent extends Event {
 
 export class ModalHideEvent extends Event {
     modal: ModalElement;
-    constructor(modal: ModalElement) {
+    public constructor(modal: ModalElement) {
         super("ak-modal-hide", { bubbles: true, composed: true });
         this.modal = modal;
     }

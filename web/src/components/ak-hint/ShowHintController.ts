@@ -24,7 +24,7 @@ export class ShowHintController implements ReactiveController {
 
     hintToken: string;
 
-    constructor(host: ShowHintControllerHost, hintToken: string) {
+    public constructor(host: ShowHintControllerHost, hintToken: string) {
         (this.host = host).addController(this);
         this.hintToken = hintToken;
         this.hide = this.hide.bind(this);

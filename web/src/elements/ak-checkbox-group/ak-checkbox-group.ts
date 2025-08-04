@@ -131,7 +131,7 @@ export class CheckboxGroup extends AkElementWithCustomEvents {
         return entries;
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.onClick = this.onClick.bind(this);
     }

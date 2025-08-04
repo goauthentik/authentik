@@ -37,7 +37,7 @@ export class Diagram extends AKElement {
 
     config: MermaidConfig;
 
-    constructor() {
+    public constructor() {
         super();
         this.config = {
             // The type definition for this says number

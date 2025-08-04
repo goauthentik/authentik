@@ -45,7 +45,7 @@ export async function popupCenterScreen(
 export class PlexAPIClient {
     token: string;
 
-    constructor(token: string) {
+    public constructor(token: string) {
         this.token = token;
     }
 

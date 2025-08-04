@@ -9,7 +9,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-application-wizard")
 export class AkApplicationWizard extends ModalButton {
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(WizardCloseEvent.eventName, this.#closeListener);
     }

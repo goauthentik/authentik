@@ -62,7 +62,7 @@ export class GroupViewPage extends AKElement {
         PFSizing,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.group?.pk) return;

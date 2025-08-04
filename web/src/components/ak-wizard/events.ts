@@ -16,7 +16,7 @@ export class WizardNavigationEvent<D extends string = string> extends Event {
     public readonly destination?: D;
     public readonly details?: NavigationEventInit;
 
-    constructor(destination?: D, init?: NavigationEventInit) {
+    public constructor(destination?: D, init?: NavigationEventInit) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
         this.details = init;
@@ -45,7 +45,7 @@ export class WizardUpdateEvent<T> extends Event {
 
     public readonly content: T;
 
-    constructor(content: T) {
+    public constructor(content: T) {
         super(WizardUpdateEvent.eventName, { bubbles: true, composed: true });
         this.content = content;
     }
@@ -54,7 +54,7 @@ export class WizardUpdateEvent<T> extends Event {
 export class WizardCloseEvent extends Event {
     public static readonly eventName = "ak-wizard-close";
 
-    constructor() {
+    public constructor() {
         super(WizardCloseEvent.eventName, { bubbles: true, composed: true });
     }
 }

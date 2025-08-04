@@ -8,7 +8,7 @@ import { classMap } from "lit/directives/class-map.js";
 export class TableSortEvent extends Event {
     public static readonly eventName = "tablesort";
     public value: string;
-    constructor(value: string) {
+    public constructor(value: string) {
         super(TableSortEvent.eventName, { composed: true, bubbles: true });
         this.value = value;
     }
@@ -40,7 +40,7 @@ export class TableColumn {
      */
     orderBy?: string;
 
-    constructor(value: string, orderBy?: string, host?: HTMLElement) {
+    public constructor(value: string, orderBy?: string, host?: HTMLElement) {
         this.value = value;
         this.orderBy = orderBy;
         if (host) {

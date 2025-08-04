@@ -72,7 +72,7 @@ export class LibraryPageApplicationSearch extends AKElement {
 
     fuse: Fuse<Application>;
 
-    constructor() {
+    public constructor() {
         super();
         this.fuse = new Fuse([], {
             keys: [

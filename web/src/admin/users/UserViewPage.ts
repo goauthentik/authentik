@@ -119,7 +119,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.user?.pk) return;

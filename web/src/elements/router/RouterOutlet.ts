@@ -78,7 +78,7 @@ export class RouterOutlet extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener("hashchange", (ev: HashChangeEvent) => this.navigate(ev));
         this.sentryClient = getClient();

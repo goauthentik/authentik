@@ -31,7 +31,7 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
     @property({ type: String })
     public instanceId: string | undefined;
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
     }

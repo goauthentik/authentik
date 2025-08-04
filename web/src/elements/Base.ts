@@ -42,7 +42,7 @@ export class AKElement extends LitElement implements AKElementProps {
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         super();
 
         const { brand } = globalAK();

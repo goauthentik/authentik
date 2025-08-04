@@ -56,7 +56,7 @@ export class AkProviderInput extends AKElement {
     @property({ type: String })
     public help = "";
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
     }

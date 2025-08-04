@@ -54,7 +54,7 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
 
     selectedGroup?: Group;
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);

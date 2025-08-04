@@ -192,7 +192,7 @@ export class FlowExecutor
 
     //#region Lifecycle
 
-    constructor() {
+    public constructor() {
         configureSentry();
 
         super();

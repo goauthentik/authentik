@@ -42,7 +42,7 @@ export class AkApplicationWizardMain extends AKElement {
         initialValue: [],
     });
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(WizardUpdateEvent.eventName, this.handleUpdate);
     }

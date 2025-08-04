@@ -37,7 +37,7 @@ class PreviewStageHost implements StageHost {
         return false;
     }
 
-    constructor(private promptForm: PromptForm) {}
+    public constructor(private promptForm: PromptForm) {}
 }
 
 @customElement("ak-prompt-form")

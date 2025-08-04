@@ -56,7 +56,7 @@ export class FlowInspector extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         window.addEventListener(EVENT_FLOW_ADVANCE, this.#advanceListener as EventListener);
     }

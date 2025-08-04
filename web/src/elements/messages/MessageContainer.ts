@@ -100,7 +100,7 @@ export class MessageContainer extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
 
         // Note: This seems to be susceptible to race conditions.

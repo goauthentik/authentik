@@ -14,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export abstract class Interface extends AKElement {
     public static styles = [PFBase];
 
-    constructor() {
+    public constructor() {
         super();
 
         const { config, brand } = globalAK();

@@ -39,7 +39,7 @@ export class TokenCopyButton extends BaseTaskButton {
     @property()
     public identifier?: string;
 
-    constructor() {
+    public constructor() {
         super();
         this.onSuccess = this.onSuccess.bind(this);
         this.onError = this.onError.bind(this);

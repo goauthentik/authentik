@@ -21,7 +21,7 @@ export class AkRememberMeController implements ReactiveController {
 
     rememberingUsername: boolean = false;
 
-    constructor(private host: RememberMeHost) {
+    public constructor(private host: RememberMeHost) {
         this.trackRememberMe = this.trackRememberMe.bind(this);
         this.toggleRememberMe = this.toggleRememberMe.bind(this);
         this.host.addController(this);

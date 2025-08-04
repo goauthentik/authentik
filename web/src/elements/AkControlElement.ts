@@ -9,7 +9,7 @@ import { AKElement } from "#elements/Base";
  *
  */
 export class AkControlElement<T = string | string[]> extends AKElement {
-    constructor() {
+    public constructor() {
         super();
         this.dataset.akControl = "true";
     }

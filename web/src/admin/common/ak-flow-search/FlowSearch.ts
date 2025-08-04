@@ -81,7 +81,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
     }
 
-    constructor() {
+    public constructor() {
         super();
         this.fetchObjects = this.fetchObjects.bind(this);
         this.selected = this.selected.bind(this);

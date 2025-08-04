@@ -50,7 +50,7 @@ export class LibraryPage extends AKElement {
     @state()
     protected uiConfig: PageUIConfig;
 
-    constructor() {
+    public constructor() {
         super();
         const { uiConfig } = rootInterface<UserInterface>();
 

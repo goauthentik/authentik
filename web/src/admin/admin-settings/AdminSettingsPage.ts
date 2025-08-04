@@ -52,7 +52,7 @@ export class AdminSettingsPage extends AKElement {
     @state()
     protected settings?: Settings;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.#refresh();

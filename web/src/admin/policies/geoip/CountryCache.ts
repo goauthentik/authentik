@@ -7,7 +7,7 @@ class CountryCache {
     lastReceivedAt?: number;
     TTL: number;
 
-    constructor() {
+    public constructor() {
         this.countries = [];
         this.lastReceivedAt = undefined;
         // 1 minute

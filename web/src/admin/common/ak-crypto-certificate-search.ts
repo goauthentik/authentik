@@ -61,7 +61,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
 
     selectedKeypair?: CertificateKeyPair;
 
-    constructor() {
+    public constructor() {
         super();
         this.selected = this.selected.bind(this);
         this.fetchObjects = this.fetchObjects.bind(this);

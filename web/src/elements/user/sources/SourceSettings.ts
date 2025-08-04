@@ -53,7 +53,7 @@ export class UserSourceSettingsPage extends AKElement {
         `,
     ];
 
-    constructor() {
+    public constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             this.firstUpdated();
