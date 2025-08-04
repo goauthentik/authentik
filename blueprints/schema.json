@@ -4689,6 +4689,14 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Children"
                 }
             },
             "required": []

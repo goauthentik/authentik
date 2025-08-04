@@ -4719,6 +4719,11 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_users
         schema:
           type: boolean
@@ -4840,6 +4845,11 @@ paths:
           format: uuid
         description: A UUID string identifying this Group.
         required: true
+      - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
       - in: query
         name: include_users
         schema:
@@ -46478,13 +46488,50 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        children:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupChild'
+          readOnly: true
+          nullable: true
       required:
+      - children_obj
       - name
       - num_pk
       - parent_name
       - pk
       - roles_obj
       - users_obj
+    GroupChild:
+      type: object
+      description: Stripped down group serializer to show relevant children for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -46802,6 +46849,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -53685,6 +53737,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
