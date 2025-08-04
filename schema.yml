@@ -5665,6 +5665,21 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: date_joined
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: email
         schema:
           type: string
@@ -5698,6 +5713,21 @@ paths:
         name: is_superuser
         schema:
           type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: name
         schema:
@@ -61151,11 +61181,16 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
       - date_joined
       - groups_obj
       - is_superuser
+      - last_updated
       - name
       - password_change_date
       - pk
