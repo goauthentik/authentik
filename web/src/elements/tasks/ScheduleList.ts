@@ -115,7 +115,7 @@ export class ScheduleList extends Table<Schedule> {
             html`${item.crontab}`,
             html`
                 ${item.paused
-                    ? html`Paused`
+                    ? html`${msg("Paused")}`
                     : html`
                           <div>${formatElapsedTime(item.nextRun)}</div>
                           <small>${item.nextRun.toLocaleString()}</small>
@@ -158,7 +158,7 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
                     <ak-task-list

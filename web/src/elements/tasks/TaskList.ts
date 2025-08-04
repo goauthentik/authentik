@@ -21,10 +21,12 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -52,7 +54,7 @@ export class TaskList extends Table<Task> {
     order = "-mtime";
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+        return super.styles.concat(PFDescriptionList, PFSpacing, PFTitle);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
@@ -125,7 +127,7 @@ export class TaskList extends Table<Task> {
                                       ${msg("Show only standalone tasks")}
                                   </span>
                               </label>`
-                            : html``}
+                            : nothing}
                         <label class="pf-c-switch">
                             <input
                                 class="pf-c-switch__input"
@@ -183,12 +185,14 @@ export class TaskList extends Table<Task> {
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
-                    <p>Current execution logs</p>
+                    <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
                     <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
-                    <p>Previous executions logs</p>
+                    <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
+                        ${msg("Previous executions logs")}
+                    </p>
                     <ak-log-viewer .logs=${item?.previousMessages}></ak-log-viewer>
                 </div>
             </div>

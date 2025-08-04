@@ -56,6 +56,14 @@ export default createDocusaurusConfig(
                     path: "pages",
                 },
                 docs: {
+                    exclude: [
+                        /**
+                         * Exclude previously generated API docs.
+                         *
+                         * @expires 2025-12-01
+                         */
+                        "**/developer-docs/api/reference/**",
+                    ],
                     routeBasePath: "/docs",
                     path: ".",
 

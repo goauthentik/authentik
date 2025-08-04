@@ -1,43 +1,49 @@
 # Fallback
-*                               @goauthentik/backend @goauthentik/frontend
+*                                       @goauthentik/backend @goauthentik/frontend
 # Backend
-authentik/                      @goauthentik/backend
-blueprints/                     @goauthentik/backend
-cmd/                            @goauthentik/backend
-internal/                       @goauthentik/backend
-lifecycle/                      @goauthentik/backend
-schemas/                        @goauthentik/backend
-scripts/                        @goauthentik/backend
-tests/                          @goauthentik/backend
-pyproject.toml                  @goauthentik/backend
-uv.lock                         @goauthentik/backend
-go.mod                          @goauthentik/backend
-go.sum                          @goauthentik/backend
+authentik/                              @goauthentik/backend
+blueprints/                             @goauthentik/backend
+cmd/                                    @goauthentik/backend
+internal/                               @goauthentik/backend
+lifecycle/                              @goauthentik/backend
+schemas/                                @goauthentik/backend
+scripts/                                @goauthentik/backend
+tests/                                  @goauthentik/backend
+pyproject.toml                          @goauthentik/backend
+uv.lock                                 @goauthentik/backend
+go.mod                                  @goauthentik/backend
+go.sum                                  @goauthentik/backend
 # Infrastructure
-.github/                        @goauthentik/infrastructure
-lifecycle/aws/                  @goauthentik/infrastructure
-Dockerfile                      @goauthentik/infrastructure
-*Dockerfile                     @goauthentik/infrastructure
-.dockerignore                   @goauthentik/infrastructure
-docker-compose.yml              @goauthentik/infrastructure
-Makefile                        @goauthentik/infrastructure
-.editorconfig                   @goauthentik/infrastructure
-CODEOWNERS                      @goauthentik/infrastructure
+.github/                                @goauthentik/infrastructure
+lifecycle/aws/                          @goauthentik/infrastructure
+Dockerfile                              @goauthentik/infrastructure
+*Dockerfile                             @goauthentik/infrastructure
+.dockerignore                           @goauthentik/infrastructure
+docker-compose.yml                      @goauthentik/infrastructure
+Makefile                                @goauthentik/infrastructure
+.editorconfig                           @goauthentik/infrastructure
+CODEOWNERS                              @goauthentik/infrastructure
+# Backend packages
+packages/django-dramatiq-postgres       @goauthentik/backend
 # Web packages
-packages/                       @goauthentik/frontend
+packages/docusaurus-config              @goauthentik/frontend
+packages/esbuild-plugin-live-reload     @goauthentik/frontend
+packages/eslint-config                  @goauthentik/frontend
+packages/prettier-config                @goauthentik/frontend
+packages/tsconfig                       @goauthentik/frontend
 # Web
-web/                            @goauthentik/frontend
-tests/wdio/                     @goauthentik/frontend
+web/                                    @goauthentik/frontend
+tests/wdio/                             @goauthentik/frontend
 # Locale
-locale/                         @goauthentik/backend @goauthentik/frontend
-web/xliff/                      @goauthentik/backend @goauthentik/frontend
+locale/                                 @goauthentik/backend @goauthentik/frontend
+web/xliff/                              @goauthentik/backend @goauthentik/frontend
 # Docs & Website
-docs/                           @goauthentik/docs
+docs/                                   @goauthentik/docs
 # TODO Remove after moving website to docs
-website/                        @goauthentik/docs
-CODE_OF_CONDUCT.md              @goauthentik/docs
+website/                                @goauthentik/docs
+CODE_OF_CONDUCT.md                      @goauthentik/docs
 # Security
-SECURITY.md                     @goauthentik/security @goauthentik/docs
+SECURITY.md                             @goauthentik/security @goauthentik/docs
 # TODO Remove after moving website to docs
-website/security/               @goauthentik/security @goauthentik/docs
-docs/security/                  @goauthentik/security @goauthentik/docs
+website/security/                       @goauthentik/security @goauthentik/docs
+docs/security/                          @goauthentik/security @goauthentik/docs
