@@ -77,7 +77,7 @@ class GroupSerializer(ModelSerializer):
             return None
         return GroupMemberSerializer(instance.users, many=True).data
 
-    def validate_parent(self, parent: Group | None):
+    def validate_parent(self, parent: Group | None) -> None:
         """Validate group parent (if set), ensuring the parent isn't itself"""
         if not self.instance or not parent:
             return parent
@@ -85,7 +85,7 @@ class GroupSerializer(ModelSerializer):
             raise ValidationError(_("Cannot set group as parent of itself."))
         return parent
 
-    def validate_is_superuser(self, superuser: bool):
+    def validate_is_superuser(self, superuser: bool) -> bool:
         """Ensure that the user creating this group has permissions to set the superuser flag"""
         request: Request = self.context.get("request", None)
         if not request:
@@ -210,7 +210,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             OpenApiParameter("include_users", bool, default=True),
         ]
     )
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
     @extend_schema(
@@ -218,7 +218,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
             OpenApiParameter("include_users", bool, default=True),
         ]
     )
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request: Request, *args, **kwargs) -> Response:
         return super().retrieve(request, *args, **kwargs)
 
     @permission_required("authentik_core.add_user_to_group")

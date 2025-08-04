@@ -1,6 +1,7 @@
 """authentik sessions engine"""
 
 import pickle  # nosec
+from typing import Any
 
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
@@ -9,13 +10,19 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from structlog.stdlib import get_logger
 
+from authentik.core.models import Session
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
 
 
 class SessionStore(SessionBase):
-    def __init__(self, session_key=None, last_ip=None, last_user_agent=""):
+    def __init__(
+        self,
+        session_key: str | None = None,
+        last_ip: str | None = None,
+        last_user_agent: str = "",
+    ):
         super().__init__(session_key)
         self._create_kwargs = {
             "last_ip": last_ip or ClientIPMiddleware.default_ip,
@@ -23,16 +30,16 @@ class SessionStore(SessionBase):
         }
 
     @classmethod
-    def get_model_class(cls):
+    def get_model_class(cls) -> type[Session]:
         from authentik.core.models import Session
 
         return Session
 
     @cached_property
-    def model_fields(self):
+    def model_fields(self) -> list[str]:
         return [k.value for k in self.model.Keys]
 
-    def _get_session_from_db(self):
+    def _get_session_from_db(self) -> Session:
         try:
             return (
                 self.model.objects.select_related(
@@ -74,10 +81,10 @@ class SessionStore(SessionBase):
                 LOGGER.warning(str(exc))
             self._session_key = None
 
-    def encode(self, session_dict):
+    def encode(self, session_dict: dict[str, Any]) -> bytes:
         return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)
 
-    def decode(self, session_data):
+    def decode(self, session_data: bytes) -> dict[str, Any]:
         try:
             return pickle.loads(session_data)  # nosec
         except pickle.PickleError:
@@ -86,7 +93,7 @@ class SessionStore(SessionBase):
             pass
         return {}
 
-    def load(self):
+    def load(self) -> dict[str, Any]:
         s = self._get_session_from_db()
         if s:
             return {
@@ -108,7 +115,7 @@ class SessionStore(SessionBase):
         else:
             return {}
 
-    def create_model_instance(self, data):
+    def create_model_instance(self, data: dict[str, Any]) -> Session:
         args = {
             "session_key": self._get_or_create_session_key(),
             "expires": self.get_expiry_date(),

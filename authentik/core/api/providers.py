@@ -5,6 +5,7 @@ from django.db.models.query import Q
 from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
+from model_utils.managers import InheritanceQuerySet
 from rest_framework import mixins
 from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
@@ -99,5 +100,5 @@ class ProviderViewSet(
         "application__name",
     ]
 
-    def get_queryset(self):  # pragma: no cover
+    def get_queryset(self) -> InheritanceQuerySet:  # pragma: no cover
         return Provider.objects.select_subclasses()

@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 
 from drf_spectacular.utils import OpenApiResponse, extend_schema
+from model_utils.managers import InheritanceQuerySet
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -88,7 +89,7 @@ class SourceViewSet(
     search_fields = ["slug", "name"]
     filterset_fields = ["slug", "name", "managed", "pbm_uuid"]
 
-    def get_queryset(self):  # pragma: no cover
+    def get_queryset(self) -> InheritanceQuerySet:  # pragma: no cover
         return Source.objects.select_subclasses()
 
     @permission_required("authentik_core.change_source")

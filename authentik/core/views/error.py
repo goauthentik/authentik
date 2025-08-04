@@ -3,6 +3,7 @@
 from django.http.response import (
     HttpResponseBadRequest,
     HttpResponseForbidden,
+    HttpResponseNotAllowed,
     HttpResponseNotFound,
     HttpResponseServerError,
 )
@@ -61,6 +62,6 @@ class ServerErrorView(TemplateView):
     response_class = ServerErrorTemplateResponse
     template_name = "if/error.html"
 
-    def dispatch(self, *args, **kwargs):  # pragma: no cover
+    def dispatch(self, *args, **kwargs) -> HttpResponseNotAllowed:  # pragma: no cover
         """Little wrapper so django accepts this function"""
         return super().dispatch(*args, **kwargs)

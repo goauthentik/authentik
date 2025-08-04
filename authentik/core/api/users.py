@@ -21,6 +21,7 @@ from django_filters.filters import (
     UUIDFilter,
 )
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
     OpenApiParameter,
@@ -72,8 +73,10 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserQuerySet,
     UserTypes,
 )
+from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -349,7 +352,7 @@ class UsersFilter(FilterSet):
         queryset=Group.objects.all().order_by("name"),
     )
 
-    def filter_is_superuser(self, queryset, name, value):
+    def filter_is_superuser(self, queryset: UserQuerySet, name: str, value: bool) -> UserQuerySet:
         if value:
             return queryset.filter(ak_groups__is_superuser=True).distinct()
         return queryset.exclude(ak_groups__is_superuser=True).distinct()
@@ -395,7 +398,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     filterset_class = UsersFilter
     search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
 
-    def get_ql_fields(self):
+    def get_ql_fields(self) -> list[StrField | BoolField | ChoiceSearchField | JSONSearchField]:
         from djangoql.schema import BoolField, StrField
 
         from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
@@ -410,7 +413,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             JSONSearchField(User, "attributes", suggest_nested=False),
         ]
 
-    def get_queryset(self):
+    def get_queryset(self) -> UserQuerySet:
         base_qs = User.objects.all().exclude_anonymous()
         if self.serializer_class(context={"request": self.request})._should_include_groups:
             base_qs = base_qs.prefetch_related("ak_groups")
@@ -421,10 +424,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             OpenApiParameter("include_groups", bool, default=True),
         ]
     )
-    def list(self, request, *args, **kwargs):
+    def list(self, request: Request, *args, **kwargs) -> Response:
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(self, for_email: bool = False) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand

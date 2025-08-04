@@ -8,12 +8,15 @@ from uuid import uuid4
 from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpRequest, HttpResponse
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
+
+from authentik.core.models import User
 
 SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
 SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"
@@ -26,7 +29,7 @@ CTX_HOST = ContextVar[str | None](STRUCTLOG_KEY_PREFIX + "host", default=None)
 CTX_AUTH_VIA = ContextVar[str | None](STRUCTLOG_KEY_PREFIX + KEY_AUTH_VIA, default=None)
 
 
-def get_user(request):
+def get_user(request: WSGIRequest) -> AnonymousUser | User:
     if not hasattr(request, "_cached_user"):
         user = None
         if (authenticated_session := request.session.get("authenticatedsession", None)) is not None:
@@ -47,7 +50,7 @@ async def aget_user(request):
 
 
 class AuthenticationMiddleware(MiddlewareMixin):
-    def process_request(self, request):
+    def process_request(self, request: WSGIRequest):
         if not hasattr(request, "session"):
             raise ImproperlyConfigured(
                 "The Django authentication middleware requires session "
