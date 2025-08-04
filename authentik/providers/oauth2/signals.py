@@ -22,7 +22,6 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
     )
 
     backchannel_logout_notification_dispatch.send(
-        sender=None,
         revocations=[
             (token.provider_id, token.id_token.iss, token.session.user.uid)
             for token in access_tokens

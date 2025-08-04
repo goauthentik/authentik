@@ -12,7 +12,6 @@ from requests.exceptions import HTTPError, Timeout
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.events.models import Event
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -21,10 +20,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     RefreshToken,
 )
-from authentik.providers.oauth2.tasks import (
-    send_backchannel_logout_notification,
-    send_backchannel_logout_request,
-)
+from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -232,55 +228,3 @@ class TestBackChannelLogout(OAuthTestCase):
             send_backchannel_logout_request(
                 self.provider.pk, "http://testserver", sub="test-user-uid"
             )
-
-        # Scenario 7: Event creation
-        mock_session.post.side_effect = None
-        mock_session.post.reset_mock()
-        mock_response.status_code = 200
-        mock_session.post.return_value = mock_response
-
-        initial_event_count = Event.objects.count()
-        send_backchannel_logout_request(self.provider.pk, "http://testserver", sub="test-user-uid")
-
-        self.assertEqual(Event.objects.count(), initial_event_count + 1)
-        event = Event.objects.latest("created")
-        self.assertEqual(event.action, "custom_backchannel_logout")
-        self.assertIn("Back-channel logout notification sent", event.context.get("message", ""))
-
-    @patch("authentik.providers.oauth2.tasks.send_backchannel_logout_request.send")
-    def test_send_backchannel_logout_notification_scenarios(self, mock_task):
-        """Test various scenarios for backchannel logout notification task"""
-        # Scenario 1: With session and both access and refresh tokens
-        session = self._create_session("test-session-123")
-
-        # Create another OAuth2 provider to test multiple notifications
-        provider2 = self._create_provider("provider2")
-
-        # Create tokens for both providers
-        self._create_token(self.provider, self.user, session, "access")
-        self._create_token(provider2, self.user, session, "access")
-        self._create_token(self.provider, self.user, session, "refresh")
-        self._create_token(provider2, self.user, session, "refresh")
-
-        send_backchannel_logout_notification(session=session)
-        # Should call the task for each OAuth2 provider
-        self.assertEqual(mock_task.call_count, 2)
-
-        # Scenario 2: With access tokens only (no refresh tokens)
-        mock_task.reset_mock()
-        session2 = self._create_session("test-session-456")
-
-        # Create ONLY access tokens
-        self._create_token(self.provider, self.user, session2, "access")
-        self._create_token(provider2, self.user, session2, "access")
-
-        # Verify no refresh tokens exist
-        self.assertEqual(RefreshToken.objects.filter(session=session2).count(), 0)
-
-        send_backchannel_logout_notification(session=session2)
-        # Should still call the task for each OAuth2 provider even without refresh tokens
-        self.assertEqual(mock_task.call_count, 2)
-
-        # Scenario 4: With no parameters
-        mock_task.reset_mock()
-        send_backchannel_logout_notification()

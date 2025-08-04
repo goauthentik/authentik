@@ -1,8 +1,10 @@
 """OAuth2/OpenID Utils"""
 
 import re
+import uuid
 from base64 import b64decode
 from binascii import Error
+from time import time
 from typing import Any
 from urllib.parse import urlparse
 
@@ -14,6 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.errors import BearerTokenError
+from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 LOGGER = get_logger()
@@ -220,10 +223,6 @@ def create_logout_token(
 
     As per https://openid.net/specs/openid-connect-backchannel-1_0.html
     """
-    import uuid
-    from time import time
-
-    from authentik.providers.oauth2.id_token import hash_session_key
 
     LOGGER.debug("Creating logout token", provider=provider, session_key=session_key, sub=sub)
 

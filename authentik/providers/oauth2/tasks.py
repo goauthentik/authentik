@@ -5,8 +5,6 @@ from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession
-from authentik.events.models import Event
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.utils import create_logout_token
@@ -42,11 +40,7 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
 
     backchannel_logout_uri = provider.backchannel_logout_uri
     if not backchannel_logout_uri:
-        self.info(
-            "No back-channel logout URI found for provider",
-            provider=provider.name,
-            client_id=provider.client_id,
-        )
+        self.info("No back-channel logout URI found for provider")
         return
 
     # Send the back-channel logout request
@@ -54,22 +48,11 @@ def send_backchannel_logout_request(provider_pk: int, iss: str, sub: str = None)
         backchannel_logout_uri,
         data={"logout_token": logout_token},
         headers={"Content-Type": "application/x-www-form-urlencoded"},
+        allow_redirects=True,
     )
     response.raise_for_status()
 
-    self.info(
-        "Back-channel logout successful",
-        provider=provider.name,
-        client_id=provider.client_id,
-        sub=sub,
-    )
-    Event.new(
-        "backchannel_logout",
-        message="Back-channel logout notification sent",
-        provider=provider,
-        client_id=provider.client_id,
-        sub=sub,
-    ).save()
+    self.info("Back-channel logout successful", sub=sub)
     return True
 
 
@@ -82,45 +65,4 @@ def backchannel_logout_notification_dispatch(revocations: list, **kwargs):
         send_backchannel_logout_request.send_with_options(
             args=(provider_pk, iss, sub),
             rel_obj=provider,
-        )
-
-
-def send_backchannel_logout_notification(session: AuthenticatedSession = None) -> None:
-    """Send back-channel logout notifications to all relevant OAuth2 providers
-
-    This function should be called when a user's session is terminated.
-
-    Args:
-        session: The authenticated session that was terminated
-    """
-    LOGGER.debug("Sending back-channel logout notifications for session", session=session)
-    if not session:
-        LOGGER.warning("No session provided for back-channel logout notification")
-        return
-
-    # Per OpenID Connect Back-Channel Logout 1.0 spec section 2.3:
-    # "OPs supporting back-channel logout need to keep track of the set of logged-in RPs"
-    # We track all OAuth2 providers that have active sessions with the user,
-    # regardless of token type or flow (authorization code, implicit, hybrid)
-    # Refresh tokens issued without the offline_access property to a session being logged out
-    # SHOULD be revoked. Refresh tokens issued with the offline_access property
-    # normally SHOULD NOT be revoked.
-    from authentik.providers.oauth2.models import AccessToken
-
-    # Get all OAuth2 providers that have issued tokens for this session
-    access_tokens = AccessToken.objects.select_related("provider").filter(session=session)
-    LOGGER.debug(
-        "back-channel: Found access tokens for session",
-        session=session,
-        access_tokens=access_tokens,
-    )
-    for token in access_tokens:
-        LOGGER.debug(
-            "back-channel: Sending back-channel logout notification for token", token=token
-        )
-        # Send back-channel logout notifications to all tokens
-        send_backchannel_logout_request.send(
-            provider_pk=token.provider.pk,
-            iss=token.id_token.iss,
-            sub=token.id_token.sub,
         )
