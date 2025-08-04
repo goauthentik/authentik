@@ -104,25 +104,25 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     public static styles: CSSResult[] = [...super.styles, PFGrid, PFTitle];
 
-    _shouldRefresh = false;
-    _timer = 0;
+    #shouldRefresh = false;
+    #timer = 0;
 
     public connectedCallback(): void {
         super.connectedCallback();
         // Only check if we should update once a second, to prevent spamming API requests
         // when many fields are edited
         const minUpdateDelay = 1000;
-        this._timer = setInterval(() => {
-            if (this._shouldRefresh) {
+        this.#timer = setInterval(() => {
+            if (this.#shouldRefresh) {
                 this.refreshPreview();
-                this._shouldRefresh = false;
+                this.#shouldRefresh = false;
             }
         }, minUpdateDelay) as unknown as number;
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        clearTimeout(this._timer);
+        clearTimeout(this.#timer);
     }
 
     protected renderTypes(): TemplateResult {
@@ -211,7 +211,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -227,7 +227,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     spellcheck="false"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -246,7 +246,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -257,7 +257,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                     ${this.renderTypes()}
@@ -270,7 +270,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${this.instance?.required ?? false}
                         @change=${() => {
-                            this._shouldRefresh = true;
+                            this.#shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -288,7 +288,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${this.instance?.placeholderExpression ?? false}
                         @change=${() => {
-                            this._shouldRefresh = true;
+                            this.#shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -312,7 +312,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode=${CodeMirrorMode.Python}
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>
@@ -366,7 +366,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode=${CodeMirrorMode.HTML}
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
-                        this._shouldRefresh = true;
+                        this.#shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>

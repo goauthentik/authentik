@@ -101,7 +101,7 @@ export class HorizontalFormElement extends AKElement {
             parent.open = true;
         }
     }
-    get invalid(): boolean {
+    public get invalid(): boolean {
         return this.#invalid;
     }
 
