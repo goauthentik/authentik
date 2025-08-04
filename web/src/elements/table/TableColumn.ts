@@ -6,10 +6,10 @@ import { classMap } from "lit/directives/class-map.js";
 type ARIASort = "ascending" | "descending" | "none" | "other";
 
 export class TableColumn {
-    title: string;
-    orderBy?: string;
+    public title: string;
+    public orderBy?: string;
 
-    onClick?: () => void;
+    public onClick?: () => void;
 
     public constructor(title: string, orderBy?: string) {
         this.title = title;

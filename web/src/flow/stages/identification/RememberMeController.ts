@@ -29,7 +29,7 @@ export class AkRememberMeController implements ReactiveController {
 
     // Record a stable token that we can use between requests to track if we've
     // been here before.  If we can't, clear out the username.
-    hostConnected() {
+    public hostConnected() {
         try {
             const sessionId = localStorage.getItem("authentik-remember-me-session");
             if (!!this.localSession && sessionId === this.localSession) {
@@ -92,7 +92,7 @@ export class AkRememberMeController implements ReactiveController {
     }
 
     // Before the page is updated, try to extract the username from localstorage.
-    hostUpdate() {
+    public hostUpdate() {
         if (!this.isEnabled) {
             return;
         }
@@ -106,7 +106,7 @@ export class AkRememberMeController implements ReactiveController {
     }
 
     // After the page is updated, if everything is ready to go, do the autosubmit.
-    hostUpdated() {
+    public hostUpdated() {
         if (this.isEnabled && this.canAutoSubmit) {
             this.submitButton?.click();
         }

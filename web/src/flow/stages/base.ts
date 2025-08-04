@@ -54,7 +54,7 @@ export abstract class BaseStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge & ResponseErrorsChallenge,
     Tout,
 > extends AKElement {
-    host!: StageHost;
+    protected host!: StageHost;
 
     @property({ attribute: false })
     public challenge!: Tin;
