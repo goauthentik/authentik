@@ -59,7 +59,7 @@ OAUTH_REDIRECT_URL = 'https://seafile.company/oauth/callback/'
 
 OAUTH_PROVIDER = 'authentik'
 
-OAUTH_PROVIDER_DOMAIN = 'https:/authentik.company'
+OAUTH_PROVIDER_DOMAIN = 'https://authentik.company'
 OAUTH_AUTHORIZATION_URL = 'https://authentik.company/application/o/authorize/'
 OAUTH_TOKEN_URL = 'https://authentik.company/application/o/token/'
 OAUTH_USER_INFO_URL = 'https://authentik.company/application/o/userinfo/'

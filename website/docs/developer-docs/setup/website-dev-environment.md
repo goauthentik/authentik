@@ -8,7 +8,7 @@ tags:
     - docusaurus
 ---
 
-If you want to only make changes to the website, you only need node.
+If you want to only make changes to the documentation, you only need Node.js.
 
 ### Prerequisites
 

@@ -84,9 +84,8 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
                         <ak-checkbox-group
                             class="user-field-select"
@@ -193,9 +192,8 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     ></ak-switch-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Source settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Source settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
@@ -231,9 +229,8 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Flow settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Passwordless flow")}
                         name="passwordlessFlow"

@@ -17,7 +17,7 @@ export interface LicenseMixin {
     /**
      * Summary of the current license.
      */
-    readonly licenseSummary: LicenseSummary;
+    readonly licenseSummary: LicenseSummary | null;
 
     /**
      * Whether or not the current license is an enterprise license.
@@ -39,10 +39,13 @@ export const WithLicenseSummary = createMixin<LicenseMixin>(
                 context: LicenseContext,
                 subscribe,
             })
-            public readonly licenseSummary!: LicenseSummary;
+            public readonly licenseSummary: LicenseSummary | null = null;
 
             get hasEnterpriseLicense() {
-                return this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+                return (
+                    this.licenseSummary?.status === LicenseSummaryStatusEnum.Valid ||
+                    this.licenseSummary?.status === LicenseSummaryStatusEnum.ExpirySoon
+                );
             }
         }
 

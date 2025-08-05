@@ -9,15 +9,16 @@
 # Marcelo Elizeche Landó, 2025
 # Jens L. <jens@goauthentik.io>, 2025
 # Iamanaws, 2025
+# Rafa Perez, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-05 00:10+0000\n"
+"POT-Creation-Date: 2025-07-15 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Iamanaws, 2025\n"
+"Last-Translator: Rafa Perez, 2025\n"
 "Language-Team: Spanish (https://app.transifex.com/authentik/teams/119923/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2718,6 +2719,14 @@ msgstr "Fuente de OAuth de Azure AD"
 #: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
 msgstr "Fuentes de OAuth de Azure AD"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr "Fuente OAuth de ID de entrada"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr "Fuentes de OAuth de Entra ID"
 
 #: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"

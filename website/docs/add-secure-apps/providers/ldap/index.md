@@ -37,12 +37,13 @@ The following fields are currently sent for users:
 - `ak-active`: "true" if the account is active, otherwise "false"
 - `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
-The following fields are current set for groups:
+The following fields are currently set for groups:
 
 - `cn`: The group's name
 - `uid`: Unique group identifier
 - `gidNumber`: A unique numeric identifier for the group
-- `member`: A list of all DNs of the groups members
+- `member`: A list of all DNs of the group's members, including groups which have this group as their parent group
+- `memberOf`: The DN of the parent group if this group has a parent group
 - `objectClass`: A list of these strings:
     - "group"
     - "goauthentik.io/ldap/group"
@@ -70,7 +71,7 @@ This enables you to bind on port 636 using LDAPS.
 
 ## Integrations
 
-See the integration guide for [sssd](/integrations/services/sssd) for an example guide.
+See the integration guide for [sssd](/integrations/services/sssd/) for an example guide.
 
 ## Binding & Bind Modes
 

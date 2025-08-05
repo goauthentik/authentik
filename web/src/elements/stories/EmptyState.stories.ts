@@ -20,7 +20,7 @@ const metadata: Meta<StoryArgs> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Empty State Component
 
 The EmptyState is an in-page element to indicate that something is either loading or unavailable.

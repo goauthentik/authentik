@@ -31,6 +31,7 @@ import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -54,8 +55,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     @property({ type: Boolean })
     public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    protected readonly ws: WebsocketClient;
 
     @property({ type: Object, attribute: false })
     public user?: SessionUser;
@@ -129,8 +128,11 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     constructor() {
         configureSentry(true);
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
@@ -160,19 +162,23 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     public disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+
+        WebsocketClient.close();
     }
 
     async firstUpdated(): Promise<void> {
-        this.user = await me();
+        me().then((session) => {
+            this.user = session;
 
-        const canAccessAdmin =
-            this.user.user.isSuperuser ||
-            // TODO: somehow add `access_admin_interface` to the API schema
-            this.user.user.systemPermissions.includes("access_admin_interface");
+            const canAccessAdmin =
+                this.user.user.isSuperuser ||
+                // TODO: somehow add `access_admin_interface` to the API schema
+                this.user.user.systemPermissions.includes("access_admin_interface");
 
-        if (!canAccessAdmin && this.user.user.pk > 0) {
-            window.location.assign("/if/user/");
-        }
+            if (!canAccessAdmin && this.user.user.pk > 0) {
+                window.location.assign("/if/user/");
+            }
+        });
     }
 
     render(): TemplateResult {
@@ -191,13 +197,14 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
+            <ak-skip-to-content></ak-skip-to-content>
             <div class="pf-c-page">
                 <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar class="${classMap(sidebarClasses)}">
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
@@ -209,9 +216,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                                    <div class="pf-c-page__main">
                                         <ak-router-outlet
                                             role="main"
+                                            aria-label="${msg("Main content")}"
                                             class="pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
@@ -219,7 +227,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
-                                    </main>
+                                    </div>
                                 </div>
                             </div>
                             <ak-notification-drawer

@@ -1,41 +1,49 @@
 """Event notification tasks"""
 
+from uuid import UUID
+
 from django.db.models.query_utils import Q
+from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.middleware import CurrentTask
+from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.events.models import (
     Event,
     Notification,
     NotificationRule,
     NotificationTransport,
-    NotificationTransportError,
-    TaskStatus,
 )
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
-def event_notification_handler(event_uuid: str):
-    """Start task for each trigger definition"""
+@actor(description=_("Dispatch new event notifications."))
+def event_trigger_dispatch(event_uuid: UUID):
     for trigger in NotificationRule.objects.all():
-        event_trigger_handler.apply_async(args=[event_uuid, trigger.name], queue="authentik_events")
+        event_trigger_handler.send_with_options(args=(event_uuid, trigger.name), rel_obj=trigger)
 
 
-@CELERY_APP.task()
-def event_trigger_handler(event_uuid: str, trigger_name: str):
+@actor(
+    description=_(
+        "Check if policies attached to NotificationRule match event "
+        "and dispatch notification tasks."
+    )
+)
+def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
+    self: Task = CurrentTask.get_task()
+
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
     if not event:
-        LOGGER.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
+        self.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
         return
+
     trigger: NotificationRule | None = NotificationRule.objects.filter(name=trigger_name).first()
     if not trigger:
         return
@@ -71,57 +79,46 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
+    count = 0
     for transport in trigger.transports.all():
         for user in trigger.destination_users(event):
-            LOGGER.debug("created notification")
-            notification_transport.apply_async(
-                args=[
+            notification_transport.send_with_options(
+                args=(
                     transport.pk,
-                    str(event.pk),
+                    event.pk,
                     user.pk,
-                    str(trigger.pk),
-                ],
-                queue="authentik_events",
+                    trigger.pk,
+                ),
+                rel_obj=transport,
             )
+            count += 1
             if transport.send_once:
                 break
+    self.info(f"Created {count} notification tasks")
 
 
-@CELERY_APP.task(
-    bind=True,
-    autoretry_for=(NotificationTransportError,),
-    retry_backoff=True,
-    base=SystemTask,
-)
-def notification_transport(
-    self: SystemTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
-):
+@actor(description=_("Send notification."))
+def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
-    self.save_on_success = False
-    try:
-        event = Event.objects.filter(pk=event_pk).first()
-        if not event:
-            return
-        user = User.objects.filter(pk=user_pk).first()
-        if not user:
-            return
-        trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
-        if not trigger:
-            return
-        notification = Notification(
-            severity=trigger.severity, body=event.summary, event=event, user=user
-        )
-        transport = NotificationTransport.objects.filter(pk=transport_pk).first()
-        if not transport:
-            return
-        transport.send(notification)
-        self.set_status(TaskStatus.SUCCESSFUL)
-    except (NotificationTransportError, PropertyMappingExpressionException) as exc:
-        self.set_error(exc)
-        raise exc
+    event = Event.objects.filter(pk=event_pk).first()
+    if not event:
+        return
+    user = User.objects.filter(pk=user_pk).first()
+    if not user:
+        return
+    trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
+    if not trigger:
+        return
+    notification = Notification(
+        severity=trigger.severity, body=event.summary, event=event, user=user
+    )
+    transport: NotificationTransport = NotificationTransport.objects.filter(pk=transport_pk).first()
+    if not transport:
+        return
+    transport.send(notification)
 
 
-@CELERY_APP.task()
+@actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
@@ -129,12 +126,12 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def notification_cleanup(self: SystemTask):
+@actor(description=_("Cleanup seen notifications and notifications whose event expired."))
+def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
+    self: Task = CurrentTask.get_task()
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
-    self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")
+    self.info(f"Expired {amount} Notifications")

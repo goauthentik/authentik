@@ -114,12 +114,14 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
+                    autocomplete="off"
+                    placeholder=${msg("Application name")}
                     value=${ifDefined(app.name)}
                     label=${msg("Name")}
                     required
                     ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
-                    help=${msg("Application's display Name.")}
+                    help=${msg("The name displayed in the application library.")}
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
@@ -149,12 +151,12 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
-                <ak-form-group aria-label=${msg("UI Settings")}>
-                    <span slot="header"> ${msg("UI Settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group label=${msg("UI Settings")}>
+                    <div class="pf-c-form">
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
+                            placeholder="https://..."
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
                             .errorMessages=${errors.metaLaunchUrl ??

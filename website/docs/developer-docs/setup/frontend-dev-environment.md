@@ -45,7 +45,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 
     :::
 
-2. From the cloned repository, follow the Docker Compose [installation instructions](../../install-config/install/docker-compose).
+2. From the cloned repository, follow the Docker Compose [installation instructions](../../install-config/install/docker-compose.mdx).
 
 3. Create a Docker Compose override to mount the local configuration file (`local.env.yml`) and ESBuild's output directory (`web`).
 

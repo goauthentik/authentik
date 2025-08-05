@@ -29,7 +29,7 @@ const metadata: Meta<AkHint> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
