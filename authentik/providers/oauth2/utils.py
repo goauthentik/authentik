@@ -217,7 +217,10 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
 
 
 def create_logout_token(
-    iss: str, provider: OAuth2Provider, session_key: str = None, sub: str = None
+    iss: str,
+    provider: OAuth2Provider,
+    session_key: str | None = None,
+    sub: str | None = None,
 ) -> str:
     """Create a logout token for Back-Channel Logout
 

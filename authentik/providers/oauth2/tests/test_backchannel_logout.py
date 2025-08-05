@@ -1,7 +1,5 @@
 """Test OAuth2 Back-Channel Logout implementation"""
 
-import uuid
-from time import time
 from unittest.mock import Mock, patch
 
 import jwt
@@ -14,6 +12,7 @@ from requests.exceptions import HTTPError, Timeout
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import (
     AccessToken,
     OAuth2Provider,
@@ -23,6 +22,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tasks import send_backchannel_logout_request
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.utils import create_logout_token
 
 
 class TestBackChannelLogout(OAuthTestCase):
@@ -90,7 +90,12 @@ class TestBackChannelLogout(OAuthTestCase):
         )
         return provider
 
-    def _create_logout_token(self, provider=None, session_id=None, sub=None):
+    def _create_logout_token(
+        self,
+        provider: OAuth2Provider | None = None,
+        session_id: str | None = None,
+        sub: str | None = None,
+    ):
         """Create a logout token with the given parameters"""
         provider = provider or self.provider
 
@@ -98,25 +103,12 @@ class TestBackChannelLogout(OAuthTestCase):
         # Use the same request object that will be used in the test
         request = self.factory.post("/backchannel_logout")
 
-        # Create the logout token payload
-        payload = {
-            "iss": provider.get_issuer(request),
-            "aud": provider.client_id,
-            "iat": int(time()),
-            "jti": str(uuid.uuid4()),
-            "events": {
-                "http://schemas.openid.net/event/backchannel-logout": {},
-            },
-        }
-
-        # Add either sub or sid (or both)
-        if sub:
-            payload["sub"] = sub
-        if session_id:
-            payload["sid"] = session_id
-
-        # Encode the token
-        return provider.encode(payload)
+        return create_logout_token(
+            iss=provider.get_issuer(request),
+            provider=provider,
+            session_key=session_id,
+            sub=sub,
+        )
 
     def _decode_token(self, token, provider=None):
         """Helper to decode and validate a JWT token"""
@@ -139,7 +131,7 @@ class TestBackChannelLogout(OAuthTestCase):
         self.assertEqual(decoded1["aud"], self.provider.client_id)
         self.assertIn("iat", decoded1)
         self.assertIn("jti", decoded1)
-        self.assertEqual(decoded1["sid"], session_id)
+        self.assertEqual(decoded1["sid"], hash_session_key(session_id))
         self.assertIn("events", decoded1)
         self.assertIn("http://schemas.openid.net/event/backchannel-logout", decoded1["events"])
         self.assertNotIn("sub", decoded1)
@@ -158,7 +150,7 @@ class TestBackChannelLogout(OAuthTestCase):
         token3 = self._create_logout_token(session_id=session_id, sub=sub)
         decoded3 = self._decode_token(token3)
 
-        self.assertEqual(decoded3["sid"], session_id)
+        self.assertEqual(decoded3["sid"], hash_session_key(session_id))
         self.assertEqual(decoded3["sub"], sub)
         self.assertIn("events", decoded3)
 
