@@ -25,9 +25,11 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -51,6 +53,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     clearOnRefresh = true;
 
     order = "order";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFSpacing);
+    }
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
@@ -256,7 +262,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p>
+        return html`<p class="pf-u-ml-md">
             ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
         </p>`;

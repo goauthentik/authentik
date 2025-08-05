@@ -1,7 +1,7 @@
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -20,15 +20,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
-    @property({ type: Boolean, reflect: true })
-    public open = false;
-
-    @property({ type: String, reflect: true })
-    public label = msg("Details");
-
-    @property({ type: String, reflect: true })
-    public description?: string;
-
     static styles: CSSResult[] = [
         PFBase,
         PFForm,
@@ -46,27 +37,6 @@ export class AKFormGroup extends AKElement {
             }
 
             details {
-                &::details-content {
-                    height: 0;
-                    overflow: clip;
-                    transition-behavior: normal, allow-discrete;
-                    transition-duration: var(--pf-global--TransitionDuration);
-                    transition-timing-function: var(--pf-global--TimingFunction);
-                    transition-property: height, content-visibility;
-
-                    @media (prefers-reduced-motion) {
-                        transition-duration: 0;
-                    }
-                }
-
-                @supports (interpolate-size: allow-keywords) {
-                    interpolate-size: allow-keywords;
-
-                    &[open]::details-content {
-                        height: auto;
-                    }
-                }
-
                 &::details-content {
                     padding-inline-start: var(
                         --pf-c-form__field-group--GridTemplateColumns--toggle
@@ -102,12 +72,39 @@ export class AKFormGroup extends AKElement {
         `,
     ];
 
-    formRef = createRef<HTMLFormElement>();
+    //region Properties
 
-    scrollAnimationFrame = -1;
+    @property({ type: Boolean, reflect: true })
+    public open = false;
 
-    scrollIntoView = (): void => {
-        this.formRef.value?.scrollIntoView({
+    @property({ type: String, reflect: true })
+    public label = msg("Details");
+
+    @property({ type: String, reflect: true })
+    public description?: string;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        const previousOpen = changedProperties.get("open");
+
+        if (typeof previousOpen !== "boolean") return;
+
+        if (this.open && this.open !== previousOpen) {
+            cancelAnimationFrame(this.#scrollAnimationFrame);
+
+            this.#scrollAnimationFrame = requestAnimationFrame(this.#scrollIntoView);
+        }
+    }
+
+    #detailsRef = createRef<HTMLDetailsElement>();
+
+    #scrollAnimationFrame = -1;
+
+    #scrollIntoView = (): void => {
+        this.#detailsRef.value?.scrollIntoView({
             behavior: "smooth",
         });
     };
@@ -117,19 +114,16 @@ export class AKFormGroup extends AKElement {
      */
     public toggle = (event: Event): void => {
         event.preventDefault();
-        cancelAnimationFrame(this.scrollAnimationFrame);
 
         this.open = !this.open;
-
-        if (this.open) {
-            this.scrollAnimationFrame = requestAnimationFrame(this.scrollIntoView);
-        }
     };
+
+    //#region Render
 
     public render(): TemplateResult {
         return html`
             <details
-                ${ref(this.formRef)}
+                ${ref(this.#detailsRef)}
                 ?open=${this.open}
                 ?aria-expanded="${this.open}"
                 role="group"
@@ -167,6 +161,8 @@ export class AKFormGroup extends AKElement {
             </details>
         `;
     }
+
+    //#endregion
 }
 
 declare global {

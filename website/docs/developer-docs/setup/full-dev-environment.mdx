@@ -177,11 +177,21 @@ make web
 
 ## 5. Running authentik
 
-With both backend and frontend set up, start the application:
+Now that the backend and frontend have been set up and built, you can start authentik.
+
+Start the server by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-make run
+make run-server   # Starts authentik server
 ```
+
+Start the worker by running the following command in the same directory as your local authentik git repository:
+
+```shell
+make run-worker   # Starts authentik worker
+```
+
+Both processes need to run to get a fully functioning authentik development environment.
 
 authentik will be accessible at http://localhost:9000.
 
@@ -197,6 +207,10 @@ To define a password for the default admin (called **akadmin**), you can manuall
 
 In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
 :::
+
+### Hot-reloading
+
+When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environment), the authentik server automatically reloads whenever changes are made to the code. However, due to instabilities in the reloading process of the worker, that behavior is turned off for the worker. You can enable code reloading in the worker by manually running `uv run ak worker --watch`.
 
 ## End-to-End (E2E) Setup
 
