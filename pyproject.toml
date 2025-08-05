@@ -6,7 +6,7 @@ authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
     "argon2-cffi==25.1.0",
-    "channels==4.2.2",
+    "channels==4.3.0",
     "channels-redis==4.3.0",
     "cryptography==45.0.5",
     "dacite==1.9.2",
@@ -80,7 +80,7 @@ dev = [
     "bandit==1.8.3",
     "black==25.1.0",
     "bump2version==1.0.1",
-    "channels[daphne]==4.2.2",
+    "channels[daphne]==4.3.0",
     "codespell==2.4.1",
     "colorama==0.4.6",
     "constructs==10.4.2",

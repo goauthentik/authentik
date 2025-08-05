@@ -552,7 +552,7 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
-                            "users-sources/sources/social-logins/azure-ad/index",
+                            "users-sources/sources/social-logins/entra-id/index",
                             "users-sources/sources/social-logins/discord/index",
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
