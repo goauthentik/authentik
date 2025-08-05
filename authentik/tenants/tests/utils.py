@@ -1,6 +1,9 @@
 from django.core.management import call_command
 from django.db import connection, connections
+from django_tenants.utils import get_public_schema_name, get_tenant_base_schema, schema_context
 from rest_framework.test import APITransactionTestCase
+
+from authentik.tenants.models import Tenant
 
 
 class TenantAPITestCase(APITransactionTestCase):
@@ -17,7 +20,12 @@ class TenantAPITestCase(APITransactionTestCase):
         super()._fixture_teardown()
 
     def setUp(self):
-        call_command("migrate_schemas", schema="template", tenant=True)
+        with schema_context(get_public_schema_name()):
+            Tenant.objects.update_or_create(
+                defaults={"name": "Template", "ready": False},
+                schema_name=get_tenant_base_schema(),
+            )
+        call_command("migrate_schemas", schema=get_tenant_base_schema(), tenant=True)
 
     def assertSchemaExists(self, schema_name):
         with connection.cursor() as cursor:
@@ -28,7 +36,8 @@ class TenantAPITestCase(APITransactionTestCase):
             self.assertEqual(cursor.rowcount, 1)
 
             cursor.execute(
-                "SELECT * FROM information_schema.tables WHERE table_schema = 'template'"
+                "SELECT * FROM information_schema.tables WHERE table_schema = %(schema_name)s",
+                {"schema_name": get_tenant_base_schema()},
             )
             expected_tables = cursor.rowcount
             cursor.execute(

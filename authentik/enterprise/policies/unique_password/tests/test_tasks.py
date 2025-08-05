@@ -76,7 +76,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
         self.assertTrue(UserPasswordHistory.objects.exists())
 
         # Run the task - should purge since no policy is in use
-        check_and_purge_password_history()
+        check_and_purge_password_history.send()
 
         # Verify the table is empty
         self.assertFalse(UserPasswordHistory.objects.exists())
@@ -99,7 +99,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
         self.assertTrue(UserPasswordHistory.objects.exists())
 
         # Run the task - should NOT purge since a policy is in use
-        check_and_purge_password_history()
+        check_and_purge_password_history.send()
 
         # Verify the entries still exist
         self.assertTrue(UserPasswordHistory.objects.exists())
@@ -142,7 +142,7 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         user_pwd_history_qs = UserPasswordHistory.objects.filter(user=self.user)
         self.assertEqual(len(user_pwd_history_qs), 1)
 
@@ -159,7 +159,7 @@ class TestTrimPasswordHistory(TestCase):
             enabled=False,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())
 
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
@@ -174,5 +174,5 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_password_histories.delay()
+        trim_password_histories.send()
         self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())

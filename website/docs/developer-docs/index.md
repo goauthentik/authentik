@@ -64,6 +64,7 @@ authentik
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root django application, contains global settings and routes
 ├── sources
+│   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
 │   ├── oauth - OAuth1 and OAuth2 Source
 │   ├── plex - Plex source
@@ -87,12 +88,13 @@ authentik
 │   ├── user_login - Login the currently pending user
 │   ├── user_logout - Logout the currently pending user
 │   └── user_write - Write any currently pending data to the user.
+├── tasks - Background tasks
 └── tenants - Soft tennancy, configure defaults and branding per domain
 ```
 
 This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to go.
 
-There are also several background tasks which run in Celery, the root celery application is defined in `authentik.root.celery`.
+There are also several background tasks that run in Dramatiq, via the `django-dramatiq-postgres` package, with some additional helpers in `authentik.tasks`.
 
 ## How can I contribute?
 

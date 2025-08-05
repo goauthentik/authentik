@@ -76,7 +76,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 4: Download uv
-FROM ghcr.io/astral-sh/uv:0.8.3 AS uv
+FROM ghcr.io/astral-sh/uv:0.8.4 AS uv
 # Stage 5: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.13.5-slim-bookworm-fips AS python-base
 
@@ -123,6 +123,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
+    --mount=type=bind,target=packages,src=packages \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
@@ -133,11 +134,16 @@ ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url=https://goauthentik.io
-LABEL org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info."
-LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.description="goauthentik.io Main server image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik server image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 WORKDIR /
 
@@ -168,6 +174,7 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
+COPY ./packages/ /ak-root/packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/

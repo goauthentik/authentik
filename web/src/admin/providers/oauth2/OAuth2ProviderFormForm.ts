@@ -113,6 +113,19 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
     (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
 )}`;
 
+const backchannelLogoutUriHelpMessages = [
+    msg(
+        "URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
+    ),
+    msg(
+        "These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.",
+    ),
+];
+
+export const backchannelLogoutUriHelp = html`${backchannelLogoutUriHelpMessages.map(
+    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+)}`;
+
 type ShowClientSecret = (show: boolean) => void;
 const defaultShowClientSecret: ShowClientSecret = (_show) => undefined;
 
@@ -192,6 +205,17 @@ export function renderForm(
                     >
                     </ak-array-input>
                     ${redirectUriHelp}
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    flow-direction="row"
+                    label=${msg("Back-Channel Logout URI")}
+                >
+                    <ak-text-input
+                        name="backchannelLogoutUri"
+                        value="${provider?.backchannelLogoutUri ?? ""}"
+                        placeholder=${msg("URL")}
+                    ></ak-text-input>
+                    ${backchannelLogoutUriHelp}
                 </ak-form-element-horizontal>
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
