@@ -8473,6 +8473,10 @@
                     },
                     "title": "Redirect uris"
                 },
+                "backchannel_logout_uri": {
+                    "type": "string",
+                    "title": "Back-Channel Logout URI"
+                },
                 "sub_mode": {
                     "type": "string",
                     "enum": [

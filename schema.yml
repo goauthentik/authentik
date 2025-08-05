@@ -49503,6 +49503,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -49610,6 +49614,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -54519,6 +54527,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
