@@ -2,21 +2,29 @@
 title: Blueprints
 ---
 
-Blueprints offer a new way to template, automate and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage config as code without any external tools, and to distribute application configs.
+Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage config as code without any external tools, and to distribute application configurations. Blueprints are yaml files, whose format is described further in [File structure](./v1/structure).
 
-## Types
+Blueprints are used to manage authentik default flows and other system objects. For example, authentik's `default-authentication-flow` is, under the covers, a blueprint.
 
-Blueprints are yaml files, whose format is described further in [File structure](./v1/structure). Blueprints can be applied in one of two ways:
+Custom blueprints can be used to replace or modify default blueprints in certain circumstances. For example, you could modify the `default-authentication-flow` to change the layout of the login panel from the center to one side of the page.
 
-- As a Blueprint instance, which is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+## Types of blueprints
+
+Blueprints can be applied in one of two ways:
+
+- As a _Blueprint instance_, which is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
 
     :::info
-    Starting with authentik 2022.12.1, authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
+    authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
+
+    Be aware of how blueprint modifications impact the saved file. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow plus any changes you made. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default, you have to first delete the modified flow, and then [apply the desired default blueprint](#how-to-apply-a-blueprint).
     :::
 
-- As a Flow import, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied.
+- As a _Flow import_, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied. For more information see [Import and Export flows](../../add-secure-apps/flows-stages/flow/#import-and-export-flows).
 
-Starting with authentik 2022.8, blueprints are used to manage authentik default flows and other system objects. These blueprints can be disabled/replaced with custom blueprints in certain circumstances.
+## How to apply a blueprint
+
+...words here about how to go to the Admin interface, select a blueprint, and click the Apply icon.. this adds it back to the list of flows. Yay...
 
 ## Storage - File
 

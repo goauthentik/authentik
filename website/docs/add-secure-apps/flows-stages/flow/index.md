@@ -28,7 +28,7 @@ Flows can have [policies](../stages/index.md) assigned to them. These policies d
 
 Keep in mind that in certain circumstances, policies cannot match against users and groups as there is no authenticated user yet.
 
-## Import & Export
+## Import and export flows
 
 Flows can be imported and exported to share with other people, the community, and for troubleshooting. Flows can be imported to apply new functionality and apply existing workflows.
 
