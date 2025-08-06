@@ -103,7 +103,7 @@ type ContentValue = SlottedTemplateResult | undefined;
  */
 export function akLoadingOverlay(
     properties: ILoadingOverlay = {},
-    content: ILoadingOverlayContent = {},
+    content: string | ILoadingOverlayContent = {},
 ) {
     // `heading` here is an Object.key of ILoadingOverlayContent, not the obsolete
     // slot-name.
