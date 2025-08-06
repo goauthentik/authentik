@@ -58,10 +58,6 @@ export class HorizontalFormElement extends AKElement {
                 grid-template-columns:
                     var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
                     var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-
-                &[data-flow-direction="row"] {
-                    grid-template-columns: 1fr;
-                }
             }
 
             .pf-c-form__group-label {
