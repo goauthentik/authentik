@@ -155,7 +155,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      * @property
      */
     @property({ type: String, reflect: false })
-    protected fieldID?: string;
+    public fieldID?: string;
 
     /**
      * If true, the component only sends an input message up to a parent component. If false, the
