@@ -50,7 +50,13 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
 }
 
 function renderRACOverview(rawProvider: OneOfProvider) {
-    const _provider = rawProvider as RACProvider;
+    const provider = rawProvider as RACProvider;
+    return renderSummary("RAC", provider.name, [
+        [msg("Connection expiry"), provider.connectionExpiry ?? "-"],
+        [msg("Property mappings"), Array.isArray(provider.propertyMappings) && provider.propertyMappings.length > 0
+            ? provider.propertyMappings.join(", ")
+            : msg("None")],
+    ]);
 }
 
 function formatRedirectUris(uris: RedirectURI[] = []) {
