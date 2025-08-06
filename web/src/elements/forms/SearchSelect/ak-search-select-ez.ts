@@ -7,7 +7,7 @@ export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => string;
+    value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
 }
@@ -50,7 +50,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
     public fetchObjects!: (query?: string) => Promise<T[]>;
     public renderElement!: (element: T) => string;
     public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
-    public value!: (element?: T | undefined) => string;
+    public value!: (element: T | null) => string;
     public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
     @property({ type: Object, attribute: false })
