@@ -80,7 +80,7 @@ export abstract class WizardStep extends AKElement {
     ];
 
     @property({ type: Boolean, attribute: true, reflect: true })
-    enabled = false;
+    public enabled?: boolean;
 
     /**
      * The name. Should match the slot. Reflected if not present.
@@ -89,7 +89,7 @@ export abstract class WizardStep extends AKElement {
     name?: string;
 
     @consume({ context: wizardStepContext, subscribe: true })
-    wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
+    protected wizardStepState: WizardStepState = { currentStep: undefined, stepLabels: [] };
 
     /**
      * What appears in the titlebar of the Wizard. Usually, but not necessarily, the same for all
@@ -263,7 +263,7 @@ export abstract class WizardStep extends AKElement {
             });
     }
 
-    renderHeaderCancelIcon() {
+    protected renderHeaderCancelIcon() {
         return html`<button
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
