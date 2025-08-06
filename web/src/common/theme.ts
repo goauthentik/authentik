@@ -292,7 +292,7 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
  * @todo Can this be handled with a Lit Mixin?
  */
 export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
-    const element = document.body.querySelector<T>("[data-ak-interface-root]");
+    const element = document.body.querySelector<T>("[data-test-id=interface-root]");
 
     if (!element) {
         throw new Error(
