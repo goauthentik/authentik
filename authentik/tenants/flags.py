@@ -5,11 +5,9 @@ from typing import Any, Literal
 from django.db import DatabaseError, InternalError, ProgrammingError
 
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.tenants.utils import get_current_tenant
 
 
 class Flag[T]:
-
     default: T | None = None
     visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] = "none"
 
@@ -46,6 +44,7 @@ def patch_flag[T](flag: Flag[T], value: T):
 
     def wrapper_outer(func: Callable):
         """Set a flag for a test"""
+        from authentik.tenants.utils import get_current_tenant
 
         @wraps(func)
         def wrapper(*args, **kwargs):
