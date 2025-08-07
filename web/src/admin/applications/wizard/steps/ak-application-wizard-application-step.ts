@@ -114,12 +114,14 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             <form id="applicationform" class="pf-c-form pf-m-horizontal" slot="form">
                 <ak-text-input
                     name="name"
+                    autocomplete="off"
+                    placeholder=${msg("Application name")}
                     value=${ifDefined(app.name)}
                     label=${msg("Name")}
                     required
                     ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
-                    help=${msg("Application's display Name.")}
+                    help=${msg("The name displayed in the application library.")}
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
@@ -154,6 +156,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}
+                            placeholder="https://..."
                             value=${ifDefined(app.metaLaunchUrl)}
                             ?invalid=${this.errors.has("metaLaunchUrl")}
                             .errorMessages=${errors.metaLaunchUrl ??

@@ -4,6 +4,7 @@ import "#components/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
+import "#elements/tasks/TaskList";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
@@ -19,6 +20,7 @@ import {
     ClientTypeEnum,
     CoreApi,
     CoreUsersListRequest,
+    ModelEnum,
     OAuth2Provider,
     OAuth2ProviderSetupURLs,
     PropertyMappingPreview,
@@ -170,6 +172,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
         return html` ${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -243,6 +246,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                                                 </li>`;
                                             })}
                                         </ul>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Back-Channel Logout URI")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text pf-m-monospace">
+                                        ${this.provider.backchannelLogoutUri}
                                     </div>
                                 </dd>
                             </div>
@@ -353,6 +368,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                         </form>
+                    </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                >
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+                        <div class="pf-c-card__title">${msg("Tasks")}</div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
                     </div>
                 </div>
                 <div
