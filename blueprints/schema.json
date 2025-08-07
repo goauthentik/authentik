@@ -8473,6 +8473,10 @@
                     },
                     "title": "Redirect uris"
                 },
+                "backchannel_logout_uri": {
+                    "type": "string",
+                    "title": "Back-Channel Logout URI"
+                },
                 "sub_mode": {
                     "type": "string",
                     "enum": [
@@ -14332,6 +14336,18 @@
                     "type": "boolean",
                     "title": "Activate user on success",
                     "description": "Activate users upon completion of stage."
+                },
+                "recovery_max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Recovery max attempts"
+                },
+                "recovery_cache_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Recovery cache timeout",
+                    "description": "The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
             "required": []

@@ -623,7 +623,7 @@ export abstract class Table<T extends object>
             <ak-table-pagination
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
-                .pageChangeHandler=${handler}
+                .onPageChange=${handler}
             >
             </ak-table-pagination>
         `;
