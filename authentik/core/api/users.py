@@ -410,7 +410,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     ordering = ["username", "date_joined", "last_updated"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    search_fields = ["username", "name", "email"]
+    search_fields = ["email", "name", "uuid", "username"]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
