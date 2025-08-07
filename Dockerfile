@@ -50,6 +50,7 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY ./cmd /go/src/goauthentik.io/cmd
 COPY ./authentik/lib /go/src/goauthentik.io/authentik/lib
 COPY ./web/static.go /go/src/goauthentik.io/web/static.go
+COPY --from=node-builder /work/web/initializing.html /go/src/goauthentik.io/web/initializing.html
 COPY --from=node-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
 COPY --from=node-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
 COPY ./internal /go/src/goauthentik.io/internal
