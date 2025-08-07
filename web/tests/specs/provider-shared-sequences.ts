@@ -1,5 +1,3 @@
-import { ascii_letters, digits, randomId, randomString } from "../utils/index.js";
-
 import {
     checkIsPresent,
     clickButton,
@@ -13,7 +11,8 @@ import {
     setTypeCreate,
     type TestProvider,
     type TestSequence,
-} from "pageobjects/controls.js";
+} from "../pageobjects/controls.js";
+import { ascii_letters, digits, randomId, randomString } from "../utils/index.js";
 
 const newObjectName = (prefix: string) => `${prefix} - ${randomId()}`;
 
