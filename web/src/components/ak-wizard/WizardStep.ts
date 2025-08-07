@@ -96,17 +96,17 @@ export class WizardStep extends AKElement {
      * steps. Recommendation: Set this, the description, and `canCancel` in a subclass, and stop
      * worrying about them.
      */
-    wizardTitle = "--unset--";
+    protected wizardTitle = "--unset--";
 
     /**
      * The text for a descriptive subtitle for the wizard
      */
-    wizardDescription?: string;
+    protected wizardDescription?: string;
 
     /**
      * Show the [Cancel] icon and offer the [Cancel] button
      */
-    canCancel = false;
+    public canCancel = false;
 
     /**
      * The ID of the current step.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-06 00:11+0000\n"
+"POT-Creation-Date: 2025-08-07 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3251,6 +3251,13 @@ msgid "Account Confirmation"
 msgstr ""
 
 #: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr ""
 
@@ -3272,6 +3279,13 @@ msgstr ""
 
 #: authentik/stages/email/stage.py
 msgid "Email sent."
+msgstr ""
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
 msgstr ""
 
 #: authentik/stages/email/stage.py
