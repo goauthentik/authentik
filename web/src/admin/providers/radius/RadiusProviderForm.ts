@@ -1,4 +1,4 @@
-import { renderForm } from "./RadiusProviderFormForm.js";
+import { renderRADIUSForm } from "./RadiusProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -31,7 +31,7 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, [], this.brand);
+        return renderRADIUSForm({ provider: this.instance, brand: this.brand });
     }
 }
 

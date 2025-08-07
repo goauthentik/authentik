@@ -7,7 +7,7 @@ import { WizardUpdateEvent } from "#components/ak-wizard/events";
 import { ValidationRecord } from "#admin/applications/wizard/types";
 import {
     ProxyModeValue,
-    renderForm,
+    renderProxyProviderForm,
     type SetMode,
     type SetShowHttpBasic,
 } from "#admin/providers/proxy/ProxyProviderFormForm";
@@ -42,11 +42,15 @@ export class ApplicationWizardProxyProviderForm extends ApplicationWizardProvide
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors ?? [], {
-                    mode: this.wizard.proxyMode ?? ProxyMode.Proxy,
-                    onSetMode,
-                    showHttpBasic: this.showHttpBasic,
-                    onSetShowHttpBasic,
+                ${renderProxyProviderForm({
+                    provider,
+                    errors,
+                    args: {
+                        mode: this.wizard.proxyMode ?? ProxyMode.Proxy,
+                        onSetMode,
+                        showHttpBasic: this.showHttpBasic,
+                        onSetShowHttpBasic,
+                    },
                 })}
             </form>`;
     }

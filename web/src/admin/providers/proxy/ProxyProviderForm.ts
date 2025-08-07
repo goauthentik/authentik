@@ -1,7 +1,7 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 
-import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
+import { renderProxyProviderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -61,11 +61,14 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
             this.showHttpBasic = el.checked;
         };
 
-        return renderForm(this.instance ?? {}, [], {
-            mode: this.mode,
-            onSetMode,
-            showHttpBasic: this.showHttpBasic,
-            onSetShowHttpBasic,
+        return renderProxyProviderForm({
+            provider: this.instance ?? {},
+            args: {
+                mode: this.mode,
+                onSetMode,
+                showHttpBasic: this.showHttpBasic,
+                onSetShowHttpBasic,
+            },
         });
     }
 }

@@ -1,4 +1,4 @@
-import { renderForm } from "./SAMLProviderFormForm.js";
+import { renderSAMLProviderForm } from "./SAMLProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -41,7 +41,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             this.hasSigningKp = !!target.selectedKeypair;
         };
 
-        return renderForm(this.instance ?? {}, [], setHasSigningKp, this.hasSigningKp);
+        return renderSAMLProviderForm({
+            provider: this.instance,
+            setHasSigningKp,
+            hasSigningKp: this.hasSigningKp,
+        });
     }
 }
 

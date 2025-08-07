@@ -3,7 +3,7 @@ import "#elements/forms/FormGroup";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
-import { renderForm } from "#admin/providers/scim/SCIMProviderFormForm";
+import { renderSCIMProviderForm } from "#admin/providers/scim/SCIMProviderFormForm";
 
 import { PaginatedSCIMMappingList, type SCIMProvider } from "@goauthentik/api";
 
@@ -21,10 +21,10 @@ export class ApplicationWizardSCIMProvider extends ApplicationWizardProviderForm
     render() {
         return html`<ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    (this.wizard.provider as SCIMProvider) ?? {},
-                    this.wizard.errors.provider,
-                )}
+                ${renderSCIMProviderForm({
+                    provider: this.wizard.provider as SCIMProvider,
+                    errors: this.wizard.errors.provider,
+                })}
             </form>`;
     }
 }

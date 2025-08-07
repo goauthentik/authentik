@@ -5,7 +5,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { renderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
+import { renderOAuth2ProviderForm } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 
 import {
     type OAuth2Provider,
@@ -46,12 +46,12 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
         };
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    provider ?? {},
-                    errors.provider ?? {},
-                    this.showClientSecret,
+                ${renderOAuth2ProviderForm({
+                    provider,
+                    errors,
+                    showClientSecret: this.showClientSecret,
                     showClientSecretCallback,
-                )}
+                })}
             </form>`;
     }
 

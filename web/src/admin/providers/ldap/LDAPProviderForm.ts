@@ -1,7 +1,7 @@
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 
-import { renderForm } from "./LDAPProviderFormForm.js";
+import { renderLDAPProviderForm } from "./LDAPProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -34,7 +34,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, [], this.brand);
+        return renderLDAPProviderForm({ provider: this.instance, brand: this.brand });
     }
 }
 
