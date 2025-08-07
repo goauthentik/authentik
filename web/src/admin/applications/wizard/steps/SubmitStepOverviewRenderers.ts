@@ -55,7 +55,7 @@ function renderRACOverview(rawProvider: OneOfProvider) {
         [msg("Connection expiry"), provider.connectionExpiry ?? "-"],
         [
             msg("Property mappings"),
-            Array.isArray(provider.propertyMappings) && provider.propertyMappings.length > 0
+            Array.isArray(provider.propertyMappings) && provider.propertyMappings.length
                 ? provider.propertyMappings.join(", ")
                 : msg("None"),
         ],
