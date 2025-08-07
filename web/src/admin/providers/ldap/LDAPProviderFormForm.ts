@@ -51,7 +51,7 @@ export function renderForm(
             placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
             help=${msg("Method's display Name.")}
         ></ak-text-input>
@@ -87,7 +87,7 @@ export function renderForm(
                     label=${msg("Bind flow")}
                     required
                     name="authorizationFlow"
-                    .errorMessages=${errors?.authorizationFlow ?? []}
+                    .errorMessages=${errors?.authorizationFlow}
                 >
                     <ak-branded-flow-search
                         label=${msg("Bind flow")}
@@ -111,7 +111,7 @@ export function renderForm(
                         .currentFlow=${provider?.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
                         defaultFlowSlug="default-invalidation-flow"
-                        .errorMessages=${errors?.invalidationFlow ?? []}
+                        .errorMessages=${errors?.invalidationFlow}
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
@@ -127,7 +127,7 @@ export function renderForm(
                     required
                     value="${provider?.baseDn ?? "DC=ldap,DC=goauthentik,DC=io"}"
                     input-hint="code"
-                    .errorMessages=${errors?.baseDn ?? []}
+                    .errorMessages=${errors?.baseDn}
                     help=${msg(
                         "LDAP DN under which bind requests and search requests can be made.",
                     )}
@@ -137,7 +137,7 @@ export function renderForm(
                 <ak-form-element-horizontal
                     label=${msg("Certificate")}
                     name="certificate"
-                    .errorMessages=${errors?.certificate ?? []}
+                    .errorMessages=${errors?.certificate}
                 >
                     <ak-crypto-certificate-search
                         certificate=${ifDefined(provider?.certificate ?? nothing)}
@@ -151,7 +151,7 @@ export function renderForm(
                     label=${msg("TLS Server name")}
                     name="tlsServerName"
                     value="${provider?.tlsServerName ?? ""}"
-                    .errorMessages=${errors?.tlsServerName ?? []}
+                    .errorMessages=${errors?.tlsServerName}
                     help=${tlsServerNameHelp}
                     input-hint="code"
                 ></ak-text-input>
@@ -161,7 +161,7 @@ export function renderForm(
                     required
                     name="uidStartNumber"
                     value="${provider?.uidStartNumber ?? 2000}"
-                    .errorMessages=${errors?.uidStartNumber ?? []}
+                    .errorMessages=${errors?.uidStartNumber}
                     help=${uidStartNumberHelp}
                 ></ak-number-input>
 
@@ -170,7 +170,7 @@ export function renderForm(
                     required
                     name="gidStartNumber"
                     value="${provider?.gidStartNumber ?? 4000}"
-                    .errorMessages=${errors?.gidStartNumber ?? []}
+                    .errorMessages=${errors?.gidStartNumber}
                     help=${gidStartNumberHelp}
                 ></ak-number-input>
             </div>

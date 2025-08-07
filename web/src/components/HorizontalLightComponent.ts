@@ -4,6 +4,8 @@ import { SlottedTemplateResult } from "../elements/types";
 
 import { AKElement, type AKElementProps } from "#elements/Base";
 
+import { ErrorProp } from "#components/ak-field-errors";
+
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing, TemplateResult } from "lit";
@@ -18,7 +20,7 @@ export interface HorizontalLightComponentProps<T> extends AKElementProps {
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
     hidden?: boolean;
     invalid?: boolean;
-    errorMessages?: string[];
+    errorMessages?: ErrorProp[];
     value?: T;
     inputHint?: string;
 }

@@ -28,7 +28,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             name="name"
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
             help=${msg("Method's display Name.")}
         ></ak-text-input>
@@ -38,7 +38,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     name="url"
                     label=${msg("URL")}
                     value="${provider?.url ?? ""}"
-                    .errorMessages=${errors?.url ?? []}
+                    .errorMessages=${errors?.url}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
                     input-hint="code"
@@ -55,7 +55,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     name="token"
                     label=${msg("Token")}
                     value="${provider?.token ?? ""}"
-                    .errorMessages=${errors?.token ?? []}
+                    .errorMessages=${errors?.token}
                     required
                     help=${msg(
                         "Token to authenticate with. Currently only bearer authentication is supported.",

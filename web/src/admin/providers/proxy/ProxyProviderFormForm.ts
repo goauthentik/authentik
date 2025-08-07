@@ -88,7 +88,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             label=${msg("External host")}
             value="${ifDefined(provider?.externalHost)}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
@@ -99,7 +99,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             label=${msg("Internal host")}
             value="${ifDefined(provider?.internalHost)}"
             required
-            .errorMessages=${errors?.internalHost ?? []}
+            .errorMessages=${errors?.internalHost}
             help=${msg("Upstream host that the requests are forwarded to.")}
             input-hint="code"
         ></ak-text-input>
@@ -124,7 +124,7 @@ function renderForwardSingleSettings(provider: Partial<ProxyProvider>, errors?: 
             label=${msg("External host")}
             value="${ifDefined(provider?.externalHost)}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
@@ -154,7 +154,7 @@ function renderForwardDomainSettings(provider: Partial<ProxyProvider>, errors?: 
             label=${msg("Authentication URL")}
             value="${provider?.externalHost ?? window.location.origin}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
             )}
@@ -165,7 +165,7 @@ function renderForwardDomainSettings(provider: Partial<ProxyProvider>, errors?: 
             name="cookieDomain"
             value="${ifDefined(provider?.cookieDomain)}"
             required
-            .errorMessages=${errors?.cookieDomain ?? []}
+            .errorMessages=${errors?.cookieDomain}
             help=${msg(
                 "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
             )}
@@ -196,7 +196,7 @@ export function renderForm(
             name="name"
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
         ></ak-text-input>
 
@@ -224,7 +224,7 @@ export function renderForm(
             label=${msg("Token validity")}
             name="accessTokenValidity"
             value="${provider?.accessTokenValidity ?? "hours=24"}"
-            .errorMessages=${errors?.accessTokenValidity ?? []}
+            .errorMessages=${errors?.accessTokenValidity}
             required
             .help=${msg("Configure how long tokens are valid for.")}
             input-hint="code"
