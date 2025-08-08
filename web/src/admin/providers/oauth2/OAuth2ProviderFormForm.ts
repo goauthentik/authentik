@@ -20,6 +20,8 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 
 import { ascii_letters, digits, randomString } from "#common/utils";
 
+import { RadioOption } from "#elements/forms/Radio";
+
 import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
@@ -35,7 +37,7 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export const clientTypeOptions = [
+export const clientTypeOptions: RadioOption<ClientTypeEnum>[] = [
     {
         label: msg("Confidential"),
         value: ClientTypeEnum.Confidential,
@@ -53,7 +55,7 @@ export const clientTypeOptions = [
     },
 ];
 
-export const subjectModeOptions = [
+export const subjectModeOptions: RadioOption<SubModeEnum>[] = [
     {
         label: msg("Based on the User's hashed ID"),
         value: SubModeEnum.HashedUserId,
@@ -85,7 +87,7 @@ export const subjectModeOptions = [
     },
 ];
 
-export const issuerModeOptions = [
+export const issuerModeOptions: RadioOption<IssuerModeEnum>[] = [
     {
         label: msg("Each provider has a different issuer, based on the application slug"),
         value: IssuerModeEnum.PerProvider,
@@ -97,7 +99,7 @@ export const issuerModeOptions = [
     },
 ];
 
-const redirectUriHelpMessages = [
+const redirectUriHelpMessages: string[] = [
     msg(
         "Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.",
     ),
@@ -109,11 +111,7 @@ const redirectUriHelpMessages = [
     ),
 ];
 
-export const redirectUriHelp = html`${redirectUriHelpMessages.map(
-    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
-)}`;
-
-const backchannelLogoutUriHelpMessages = [
+const backchannelLogoutUriHelpMessages: string[] = [
     msg(
         "URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.",
     ),
@@ -121,10 +119,6 @@ const backchannelLogoutUriHelpMessages = [
         "These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.",
     ),
 ];
-
-export const backchannelLogoutUriHelp = html`${backchannelLogoutUriHelpMessages.map(
-    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
-)}`;
 
 type ShowClientSecret = (show: boolean) => void;
 const defaultShowClientSecret: ShowClientSecret = (_show) => undefined;
@@ -190,7 +184,6 @@ export function renderForm(
                 >
                 </ak-hidden-text-input>
                 <ak-form-element-horizontal
-                    flow-direction="row"
                     label=${msg("Redirect URIs/Origins (RegEx)")}
                     name="redirectUris"
                 >
@@ -207,19 +200,21 @@ export function renderForm(
                         }}
                     >
                     </ak-array-input>
-                    ${redirectUriHelp}
+                    ${redirectUriHelpMessages.map(
+                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    )}
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    flow-direction="row"
+
+                <ak-text-input
                     label=${msg("Back-Channel Logout URI")}
-                >
-                    <ak-text-input
-                        name="backchannelLogoutUri"
-                        value="${provider?.backchannelLogoutUri ?? ""}"
-                        placeholder=${msg("URL")}
-                    ></ak-text-input>
-                    ${backchannelLogoutUriHelp}
-                </ak-form-element-horizontal>
+                    name="backchannelLogoutUri"
+                    value="${provider?.backchannelLogoutUri ?? ""}"
+                    input-hint="code"
+                    placeholder="https://..."
+                    .help=${backchannelLogoutUriHelpMessages.map(
+                        (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+                    )}
+                ></ak-text-input>
 
                 <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                     <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
