@@ -1,6 +1,6 @@
-import { TemplateResult } from "lit";
-
 import { Pagination } from "@goauthentik/api";
+
+import { TemplateResult } from "lit";
 
 export const DualSelectEventType = {
     AddSelected: "ak-dual-select-add",
@@ -34,7 +34,7 @@ export type DualSelectPair<T = unknown> = [
     /**
      * A string to sort by. If not provided, the key will be used.
      */
-    sortBy: string,
+    sortBy?: string,
     /**
      * A local mapping of the key to the object. This is used by some specific apps.
      *

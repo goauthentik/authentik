@@ -1,4 +1,4 @@
-.PHONY: gen dev-reset all clean test web website
+.PHONY: gen dev-reset all clean test web docs
 
 SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
@@ -6,7 +6,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.generate_semver)
-PY_SOURCES = authentik tests scripts lifecycle .github
+PY_SOURCES = authentik packages tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = gen-ts-api
@@ -59,8 +59,11 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm i && npm run aws-cfn
 
-run:  ## Run the main authentik server process
+run-server:  ## Run the main authentik server process
 	uv run ak server
+
+run-worker:  ## Run the main authentik worker process
+	uv run ak worker
 
 core-i18n-extract:
 	uv run ak makemessages \
@@ -73,7 +76,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -86,7 +89,11 @@ dev-create-db:
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
 
-bump:
+update-test-mmdb:  ## Update test GeoIP and ASN Databases
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
+	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
+
+bump:  ## Bump authentik version. Usage: version=20xx.xx.xx make bump
 	uv version $(version)
 	$(MAKE) gen-build
 	$(MAKE) gen-compose
@@ -103,7 +110,7 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak make_blueprint_schema > blueprints/schema.json
+		uv run ak make_blueprint_schema --file blueprints/schema.json
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
@@ -129,7 +136,7 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
+gen-clean-ts:  ## Remove generated API client for TypeScript
 	rm -rf ${PWD}/${GEN_API_TS}/
 	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
@@ -158,9 +165,9 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ${PWD}/${GEN_API_TS} && npm i
-	\cp -rf ${PWD}/${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+	cd ${PWD}/${GEN_API_TS} && npm link
+	cd ${PWD}/web && npm link @goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
@@ -192,16 +199,21 @@ gen-dev-config:  ## Generate a local development config file
 gen: gen-build gen-client-ts
 
 #########################
+## Node.js
+#########################
+
+node-install:  ## Install the necessary libraries to build Node.js packages
+	npm ci
+	npm ci --prefix web
+
+#########################
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
+web-build: node-install  ## Build the Authentik UI
 	cd web && npm run build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
-
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
 
 web-test: ## Run tests for the Authentik UI
 	cd web && npm run test
@@ -229,22 +241,40 @@ web-i18n-extract:
 	cd web && npm run extract-locales
 
 #########################
-## Website
+## Docs
 #########################
 
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
+docs: docs-lint-fix docs-build  ## Automatically fix formatting issues in the Authentik docs source code, lint the code, and compile it
 
-website-install:
-	cd website && npm ci
+docs-install:
+	npm ci --prefix website
 
-website-lint-fix: lint-codespell
-	cd website && npm run prettier
+docs-lint-fix: lint-codespell
+	npm run prettier --prefix website
 
-website-build:
-	cd website && npm run build
+docs-build:
+	npm run build --prefix website
 
-website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+docs-watch:  ## Build and watch the topics documentation
+	npm run start --prefix website
+
+integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
+
+integrations-build:
+	npm run build --prefix website -w integrations
+
+integrations-watch:  ## Build and watch the Integrations documentation
+	npm run start --prefix website -w integrations
+
+docs-api-build:
+	npm run build --prefix website -w api
+
+docs-api-watch:  ## Build and watch the API documentation
+	npm run build:api --prefix website -w api
+	npm run start --prefix website -w api
+
+docs-api-clean: ## Clean generated API documentation
+	npm run build:api:clean --prefix website -w api
 
 #########################
 ## Docker

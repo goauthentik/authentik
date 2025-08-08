@@ -16,7 +16,7 @@ from authentik.stages.authenticator.models import Device
 
 
 class AuthenticatorEndpointGDTCStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Setup Google Chrome Device-trust connection"""
+    """Setup Google Chrome Device Trust connection"""
 
     credentials = models.JSONField()
 

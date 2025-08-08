@@ -74,13 +74,18 @@ func (a *Application) proxyModifyRequest(ou *url.URL) func(req *http.Request) {
 		r.URL.Scheme = ou.Scheme
 		r.URL.Host = ou.Host
 		claims := a.getClaimsFromSession(r)
-		if claims != nil && claims.Proxy != nil && claims.Proxy.BackendOverride != "" {
-			u, err := url.Parse(claims.Proxy.BackendOverride)
-			if err != nil {
-				a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
-			} else {
-				r.URL.Scheme = u.Scheme
-				r.URL.Host = u.Host
+		if claims != nil && claims.Proxy != nil {
+			if claims.Proxy.BackendOverride != "" {
+				u, err := url.Parse(claims.Proxy.BackendOverride)
+				if err != nil {
+					a.log.WithField("backend_override", claims.Proxy.BackendOverride).WithError(err).Warning("failed parse user backend override")
+				} else {
+					r.URL.Scheme = u.Scheme
+					r.URL.Host = u.Host
+				}
+			}
+			if claims.Proxy.HostHeader != "" {
+				r.Host = claims.Proxy.HostHeader
 			}
 		}
 		a.log.WithField("upstream_url", r.URL.String()).Trace("final upstream url")

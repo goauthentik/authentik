@@ -7,7 +7,7 @@ Translation in authentik is done in two places. Most of the text is defined in t
 The frontend uses [@lit/localize](https://lit.dev/docs/localization/overview/), and the backend uses the built-in django translation tools.
 
 :::info
-Please review the [Writing documentation](./docs/writing-documentation) guidelines as they apply to documentation too.
+Please review the [Writing documentation](./docs/writing-documentation.md) guidelines as they apply to documentation too.
 :::
 
 ## Online translation
@@ -21,6 +21,8 @@ To simplify translation you can use https://www.transifex.com/authentik/authenti
 - Node (any recent version should work, we use 16.x to build)
 - Make (again, any recent version should work)
 - Docker
+
+### Frontend
 
 Run `npm i` in the `/web` folder to install all dependencies.
 
@@ -42,3 +44,17 @@ Afterwards, run `make web-i18n-extract` to generate a base .xlf file.
 The .xlf files can be edited by any text editor, or using a tool such as [POEdit](https://poedit.net/).
 
 To see the change, run `make web-watch` in the root directory of the repository.
+
+### Backend
+
+Backend translations are handled by `core-i18n-extract`.
+
+Use Django's translation utility to declare the string, e.g.:
+
+```python
+from django.utils.translation import gettext as _
+
+_("New text to be translated.")
+```
+
+Afterwards, run `make core-i18n-extract` to generate the updated translation files.

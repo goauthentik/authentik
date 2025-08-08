@@ -2,13 +2,10 @@
 
 import os
 from hashlib import sha512
-from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from cryptography.hazmat.backends.openssl.backend import backend
-from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import authentik_full_version
@@ -18,6 +15,7 @@ from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from authentik.root.setup import setup
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
@@ -28,20 +26,17 @@ if TYPE_CHECKING:
 
     from authentik.root.asgi import AuthentikAsgi
 
-defuse_stdlib()
-
-if CONFIG.get_bool("compliance.fips.enabled", False):
-    backend._enable_fips()
+setup()
 
 wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
+worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
-makedirs(worker_tmp_dir, exist_ok=True)
-makedirs(prometheus_tmp_dir, exist_ok=True)
+os.makedirs(worker_tmp_dir, exist_ok=True)
+os.makedirs(prometheus_tmp_dir, exist_ok=True)
 
 bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 

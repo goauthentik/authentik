@@ -1,9 +1,5 @@
-import {
-    ConstructorWithMixin,
-    LitElementConstructor,
-    createMixin,
-} from "@goauthentik/elements/types";
-import { CustomEventDetail, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
+import { ConstructorWithMixin, createMixin, LitElementConstructor } from "#elements/types";
+import { CustomEventDetail, isCustomEvent } from "#elements/utils/customEvents";
 
 export interface CustomEventEmitterMixin<EventType extends string = string> {
     dispatchCustomEvent<D extends CustomEventDetail>(

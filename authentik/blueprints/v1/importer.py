@@ -57,7 +57,6 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDeviceConnection,
 )
 from authentik.events.logs import LogEvent, capture_logs
-from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
@@ -77,6 +76,7 @@ from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
+from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
@@ -118,7 +118,7 @@ def excluded_models() -> list[type[Model]]:
         SCIMProviderGroup,
         SCIMProviderUser,
         Tenant,
-        SystemTask,
+        Task,
         ConnectionToken,
         AuthorizationCode,
         AccessToken,
@@ -384,7 +384,7 @@ class Importer:
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
-        for entry in self._import.entries:
+        for entry in self._import.iter_entries():
             model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)

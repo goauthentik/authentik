@@ -37,6 +37,9 @@ class WebsocketMessageInstruction(IntEnum):
     # Provider specific message
     PROVIDER_SPECIFIC = 3
 
+    # Session ended
+    SESSION_END = 4
+
 
 @dataclass(slots=True)
 class WebsocketMessage:
@@ -143,6 +146,14 @@ class OutpostConsumer(JsonWebsocketConsumer):
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
             asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
+        )
+
+    def event_session_end(self, event):
+        """Event handler which is called when a session is ended"""
+        self.send_json(
+            asdict(
+                WebsocketMessage(instruction=WebsocketMessageInstruction.SESSION_END, args=event)
+            )
         )
 
     def event_provider_specific(self, event):

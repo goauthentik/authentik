@@ -8,7 +8,7 @@ tags:
     - provider
 ---
 
-The workflow to implement an SSF provider as a [backchannel provider](../../applications/manage_apps#backchannel-providers) for an application/provider pair is as follows:
+The workflow to implement an SSF provider as a [backchannel provider](../../applications/manage_apps.mdx#backchannel-providers) for an application/provider pair is as follows:
 
 1. Create the SSF provider (which serves as the backchannel provider).
 2. Create an OIDC provider (which serves as the protocol provider for the application).
@@ -43,7 +43,6 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 2. Click **Create**.
 
 3. Define the settings for the application:
-
     - **Name**: define a descriptive name of the application.
     - **Slug**: optionally define the internal application name used in URLs.
     - **Group**: optionally select a group that you want to have access to this application.

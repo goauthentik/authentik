@@ -27,8 +27,8 @@ jobs:
       - name: Publish package
         working-directory: gen-ts-api/
         run: |
-          npm ci
-          npm publish
+          npm i
+          npm publish --tag generated
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
       - name: Upgrade /web

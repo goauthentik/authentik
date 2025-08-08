@@ -4,7 +4,6 @@ from json import loads
 from pathlib import Path
 from time import sleep
 from unittest import skip
-from unittest.mock import patch
 
 from selenium.webdriver.common.by import By
 
@@ -13,12 +12,10 @@ from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
-from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TestProviderProxyForward(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
@@ -124,7 +121,8 @@ class TestProviderProxyForward(SeleniumTestCase):
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
     @skip("Flaky test")
@@ -159,7 +157,8 @@ class TestProviderProxyForward(SeleniumTestCase):
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
     @retry()
@@ -192,7 +191,8 @@ class TestProviderProxyForward(SeleniumTestCase):
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
     @retry()
@@ -228,5 +228,6 @@ class TestProviderProxyForward(SeleniumTestCase):
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)

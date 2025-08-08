@@ -17,6 +17,7 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+from authentik.stages.user_login.stage import PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE
 
 # Header we get from chrome that initiates verified access
 HEADER_DEVICE_TRUST = "X-Device-Trust"
@@ -26,6 +27,8 @@ HEADER_ACCESS_CHALLENGE = "X-Verified-Access-Challenge"
 HEADER_ACCESS_CHALLENGE_RESPONSE = "X-Verified-Access-Challenge-Response"
 # Header value for x-device-trust that initiates the flow
 DEVICE_TRUST_VERIFIED_ACCESS = "VerifiedAccess"
+
+PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS = "endpoints"
 
 
 @method_decorator(xframe_options_sameorigin, name="dispatch")
@@ -81,7 +84,14 @@ class GoogleChromeDeviceTrustConnector(View):
             )
             flow_plan.context.setdefault(PLAN_CONTEXT_METHOD, "trusted_endpoint")
             flow_plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
-            flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault("endpoints", [])
-            flow_plan.context[PLAN_CONTEXT_METHOD_ARGS]["endpoints"].append(response)
+            flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault(
+                PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS, []
+            )
+            flow_plan.context[PLAN_CONTEXT_METHOD_ARGS][PLAN_CONTEXT_METHOD_ARGS_ENDPOINTS].append(
+                response
+            )
+            flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault(
+                PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE, True
+            )
             request.session[SESSION_KEY_PLAN] = flow_plan
         return TemplateResponse(request, "stages/authenticator_endpoint/google_chrome_dtc.html")

@@ -46,8 +46,10 @@ class InterfaceView(TemplateView):
     """Base interface view"""
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        brand = CurrentBrandSerializer(self.request.brand)
         kwargs["config_json"] = dumps(ConfigView(request=Request(self.request)).get_config().data)
-        kwargs["brand_json"] = dumps(CurrentBrandSerializer(self.request.brand).data)
+        kwargs["ui_theme"] = brand.data["ui_theme"]
+        kwargs["brand_json"] = dumps(brand.data)
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
         kwargs["build"] = authentik_build_hash()

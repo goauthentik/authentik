@@ -1,11 +1,11 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { AKElement } from "#elements/Base";
+import { AKFormGroup } from "#elements/forms/FormGroup";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -29,11 +29,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * 3. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
  *    it being written on-demand when the child is written? Because it's slotted... despite there
  *    being very few unique uses.
- * 4. There is some very specific use-case around the `writeOnly` boolean; this seems to be a case
- *    where the field isn't available for the user to view unless they explicitly request to be able
- *    to see the content; otherwise, a dead password field is shown. There are 10 uses of this
- *    feature.
- *
  */
 
 const isAkControl = (el: unknown): boolean =>
@@ -54,42 +49,43 @@ const nameables = new Set([
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFFormControl,
-            css`
-                .pf-c-form__group {
-                    display: grid;
-                    grid-template-columns:
-                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
-                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
-                }
-                .pf-c-form__group-label {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFFormControl,
+        css`
+            .pf-c-form__group {
+                display: grid;
+                grid-template-columns:
+                    var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                    var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
+            }
 
-    @property()
-    label = "";
+            .pf-c-form__group-label {
+                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+            }
+
+            .pf-c-form__label[aria-required] .pf-c-form__label-text::after {
+                content: "*";
+                user-select: none;
+                margin-left: var(--pf-c-form__label-required--MarginLeft);
+                font-size: var(--pf-c-form__label-required--FontSize);
+                color: var(--pf-c-form__label-required--Color);
+            }
+        `,
+    ];
+
+    @property({ type: String, reflect: false })
+    public fieldID?: string;
+
+    @property({ type: String })
+    public label = "";
 
     @property({ type: Boolean })
-    required = false;
-
-    @property({ type: Boolean })
-    writeOnly = false;
-
-    @property({ type: Boolean })
-    writeOnlyActivated = false;
+    public required = false;
 
     @property({ attribute: false })
-    errorMessages: string[] | string[][] = [];
-
-    @property({ type: Boolean })
-    slugMode = false;
+    public errorMessages?: ErrorProp[];
 
     _invalid = false;
 
@@ -101,16 +97,23 @@ export class HorizontalFormElement extends AKElement {
         this._invalid = v;
         // check if we're in a form group, and expand that form group
         const parent = this.parentElement?.parentElement;
-        if (parent && "expanded" in parent) {
-            (parent as FormGroup).expanded = true;
+
+        if (parent instanceof AKFormGroup || parent instanceof HTMLDetailsElement) {
+            parent.open = true;
         }
     }
     get invalid(): boolean {
         return this._invalid;
     }
 
-    @property()
-    name = "";
+    @property({ type: String })
+    public name = "";
+
+    @property({
+        type: String,
+        attribute: "flow-direction",
+    })
+    public flowDirection: "row" | "column" = "column";
 
     firstUpdated(): void {
         this.updated();
@@ -120,17 +123,9 @@ export class HorizontalFormElement extends AKElement {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
         });
-        if (this.name === "slug" || this.slugMode) {
-            this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
-                input.addEventListener("keyup", () => {
-                    input.value = formatSlug(input.value);
-                });
-            });
-        }
         this.querySelectorAll("*").forEach((input) => {
             if (isAkControl(input) && !input.getAttribute("name")) {
                 input.setAttribute("name", this.name);
-                // This is fine; writeOnly won't apply to anything built this way.
                 return;
             }
 
@@ -139,64 +134,31 @@ export class HorizontalFormElement extends AKElement {
             } else {
                 return;
             }
-
-            if (this.writeOnly && !this.writeOnlyActivated) {
-                const i = input as HTMLInputElement;
-                i.setAttribute("hidden", "true");
-                const handler = () => {
-                    i.removeAttribute("hidden");
-                    this.writeOnlyActivated = true;
-                    i.parentElement?.removeEventListener("click", handler);
-                };
-                i.parentElement?.addEventListener("click", handler);
-            }
         });
     }
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group">
+        return html`<div
+            class="pf-c-form__group"
+            role="group"
+            aria-label="${this.label}"
+            data-flow-direction="${this.flowDirection}"
+        >
             <div class="pf-c-form__group-label">
-                <label class="pf-c-form__label">
+                <label
+                    id="group-label"
+                    class="pf-c-form__label"
+                    ?aria-required=${this.required}
+                    for="${ifDefined(this.fieldID)}"
+                >
                     <span class="pf-c-form__label-text">${this.label}</span>
-                    ${this.required
-                        ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
-                        : html``}
                 </label>
             </div>
             <div class="pf-c-form__group-control">
-                ${this.writeOnly && !this.writeOnlyActivated
-                    ? html`<div class="pf-c-form__horizontal-group">
-                          <input
-                              class="pf-c-form-control"
-                              type="password"
-                              disabled
-                              value="**************"
-                          />
-                      </div>`
-                    : html``}
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.writeOnly
-                        ? html`<p class="pf-c-form__helper-text" aria-live="polite">
-                              ${msg("Click to change value")}
-                          </p>`
-                        : html``}
-                    ${this.errorMessages.map((message) => {
-                        if (message instanceof Object) {
-                            return html`${Object.entries(message).map(([field, errMsg]) => {
-                                return html`<p
-                                    class="pf-c-form__helper-text pf-m-error"
-                                    aria-live="polite"
-                                >
-                                    ${msg(str`${field}: ${errMsg}`)}
-                                </p>`;
-                            })}`;
-                        }
-                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${message}
-                        </p>`;
-                    })}
+                    ${AKFormErrors({ errors: this.errorMessages })}
                 </div>
             </div>
         </div>`;

@@ -49,10 +49,10 @@ After you are connected, execute these commands to create a database backup:
 cd /bitnami/postgresql/
 
 # Set the PostgreSQL password from environment variable
-export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
+export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Create a full database dump
-pg_dump -U $POSTGRES_USER $POSTGRES_DB > /bitnami/postgresql/dump.sql
+pg_dump -U $POSTGRES_USER $POSTGRES_DATABASE > /bitnami/postgresql/dump.sql
 ```
 
 :::tip
@@ -117,10 +117,10 @@ cd /bitnami/postgresql/
 ls -lh dump.sql
 
 # Set the PostgreSQL password
-export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
+export PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)
 
 # Import the database dump
-psql -U $POSTGRES_USER $POSTGRES_DB < dump.sql
+psql -U $POSTGRES_USER $POSTGRES_DATABASE < dump.sql
 ```
 
 ## Restart authentik services

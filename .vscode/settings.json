@@ -6,13 +6,18 @@
         "!Context scalar",
         "!Enumerate sequence",
         "!Env scalar",
+        "!Env sequence",
+        "!File scalar",
+        "!File sequence",
         "!Find sequence",
+        "!FindObject sequence",
         "!Format sequence",
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
         "!Value scalar",
-        "!AtIndex scalar"
+        "!AtIndex scalar",
+        "!ParseJSON scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
@@ -29,6 +34,10 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": ["-count=1"],
-    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
+    "go.testFlags": [
+        "-count=1"
+    ],
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/ci-main.yml"
+    ]
 }

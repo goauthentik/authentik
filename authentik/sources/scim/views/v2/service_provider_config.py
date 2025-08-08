@@ -33,7 +33,7 @@ class ServiceProviderConfigView(SCIMView):
             {
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
                 "authenticationSchemes": auth_schemas,
-                "patch": {"supported": False},
+                "patch": {"supported": True},
                 "bulk": {"supported": False, "maxOperations": 0, "maxPayloadSize": 0},
                 "filter": {
                     "supported": True,

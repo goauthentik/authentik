@@ -5,33 +5,32 @@ import "#elements/ak-locale-context/index";
 import { CSRFHeaderName } from "#common/api/middleware";
 import { EVENT_THEME_CHANGE } from "#common/constants";
 import { getCookie } from "#common/utils";
+
 import { Interface } from "#elements/Interface";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { themeImage } from "#elements/utils/images";
 
+import { UiThemeEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-api-browser")
 export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                img.logo {
-                    width: 100%;
-                    padding: 1rem 0.5rem 1.5rem 0.5rem;
-                    min-height: 48px;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            img.logo {
+                width: 100%;
+                padding: 1rem 0.5rem 1.5rem 0.5rem;
+                min-height: 48px;
+            }
+        `,
+    ];
 
     @state()
     bgColor = "#000000";
