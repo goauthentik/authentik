@@ -1,5 +1,5 @@
 ---
-name: authentik-on-release
+name: Release - On publish
 
 on:
   release:
