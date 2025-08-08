@@ -1,4 +1,5 @@
-name: authentik-ci-web
+---
+name: CI - Web
 
 on:
   push:

@@ -1,4 +1,5 @@
-name: "authentik-repo-mirror"
+---
+name: Repo - Mirror to internal
 
 on: [push, delete]
 

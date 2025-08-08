@@ -1,5 +1,6 @@
+---
 # Re-usable workflow for a single-architecture build
-name: Single-arch Container build
+name: Reusable - Single-arch Container build
 
 on:
   workflow_call:

@@ -1,4 +1,5 @@
-name: "CodeQL"
+---
+name: QA - CodeQL
 
 on:
   push:
