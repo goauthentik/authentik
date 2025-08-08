@@ -31,13 +31,9 @@ class WorkerView(APIView):
     def get(self, request: Request) -> Response:
         response = []
         our_version = parse(authentik_full_version())
-        for status in WorkerStatus.objects.filter(
-            last_seen__gt=now() - timedelta(minutes=2)
-        ):
+        for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(minutes=2)):
             lock_id = f"goauthentik.io/worker/status/{status.pk}"
-            with pglock.advisory(
-                lock_id, timeout=0, side_effect=pglock.Return
-            ) as acquired:
+            with pglock.advisory(lock_id, timeout=0, side_effect=pglock.Return) as acquired:
                 # The worker doesn't hold the lock, it isn't running
                 if acquired:
                     continue

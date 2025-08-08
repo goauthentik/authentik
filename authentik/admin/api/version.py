@@ -38,7 +38,7 @@ class VersionSerializer(PassiveSerializer):
     def get_version_latest(self, _) -> str:
         """Get latest version from cache"""
         if get_current_tenant().schema_name == get_public_schema_name():
-            return __version__
+            return authentik_version()
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover
             update_latest_version.send()
@@ -51,9 +51,7 @@ class VersionSerializer(PassiveSerializer):
 
     def get_outdated(self, instance) -> bool:
         """Check if we're running the latest version"""
-        return parse(self.get_version_current(instance)) < parse(
-            self.get_version_latest(instance)
-        )
+        return parse(self.get_version_current(instance)) < parse(self.get_version_latest(instance))
 
     def get_outpost_outdated(self, _) -> bool:
         """Check if any outpost is outdated/has a version mismatch"""

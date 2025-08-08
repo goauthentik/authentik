@@ -1,4 +1,5 @@
 """Helper script to get the actual branch name, docker safe"""
+
 import os
 from importlib.metadata import version as package_version
 from json import dumps

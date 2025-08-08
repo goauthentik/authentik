@@ -47,9 +47,7 @@ class RelObjMiddleware(Middleware):
 
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         if "rel_obj" in message.options:
-            message.options["model_defaults"]["rel_obj"] = message.options.pop(
-                "rel_obj"
-            )
+            message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
 
 
 class MessagesMiddleware(Middleware):
@@ -125,9 +123,7 @@ class LoggingMiddleware(Middleware):
         )
 
     def before_process_message(self, broker: Broker, message: Message):
-        self.logger.info(
-            "Task started", task_id=message.message_id, task_name=message.actor_name
-        )
+        self.logger.info("Task started", task_id=message.message_id, task_name=message.actor_name)
 
     def after_process_message(
         self,
@@ -145,9 +141,7 @@ class LoggingMiddleware(Middleware):
         )
 
     def after_skip_message(self, broker: Broker, message: Message):
-        self.logger.info(
-            "Task skipped", task_id=message.message_id, task_name=message.actor_name
-        )
+        self.logger.info("Task skipped", task_id=message.message_id, task_name=message.actor_name)
 
 
 class DescriptionMiddleware(Middleware):
