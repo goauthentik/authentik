@@ -1,6 +1,7 @@
+---
 # Rename transifex pull requests to have a correct naming
 # Also enables auto squash-merge
-name: authentik-translation-transifex-rename
+name: Translation - Auto-rename Transifex PRs
 
 on:
   pull_request:
