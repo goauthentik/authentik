@@ -1,5 +1,7 @@
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
@@ -74,16 +76,15 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                 <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
                 <p>${this.deviceMessage()}</p>
             </div>
-            <ak-form-element
-                label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                    ? msg("Static token")
-                    : msg("Authentication code")}"
-                required
-                class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {}).code}
-            >
-                <!-- @ts-ignore -->
+            <div class="pf-c-form__group">
+                ${AKLabel(
+                    { required: true, htmlFor: "validation-code-input" },
+                    this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                        ? msg("Static token")
+                        : msg("Authentication code"),
+                )}
                 <input
+                    id="validation-code-input"
                     type="text"
                     name="code"
                     inputmode="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
@@ -99,7 +100,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     value="${PasswordManagerPrefill.totp || ""}"
                     required
                 />
-            </ak-form-element>
+                ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+            </div>
 
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
