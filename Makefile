@@ -94,6 +94,7 @@ update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
 
 bump:  ## Bump authentik version. Usage: version=20xx.xx.xx make bump
+	if [ -z "$(version)" ]; then echo "Usage: version=20xx.xx.xx make bump" && exit 1; fi
 	uv version $(version)
 	$(MAKE) gen-build
 	$(MAKE) gen-compose
