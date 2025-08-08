@@ -1,11 +1,13 @@
+import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
 import { AKFormGroup } from "#elements/forms/FormGroup";
+import { isNameableElement } from "#elements/utils/inputs";
 
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -31,22 +33,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *    being very few unique uses.
  */
 
-const isAkControl = (el: unknown): boolean =>
-    el instanceof HTMLElement &&
-    "dataset" in el &&
-    el.dataset instanceof DOMStringMap &&
-    "akControl" in el.dataset;
-
-const nameables = new Set([
-    "input",
-    "textarea",
-    "select",
-    "ak-codemirror",
-    "ak-chip-group",
-    "ak-search-select",
-    "ak-radio",
-]);
-
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static styles: CSSResult[] = [
@@ -63,14 +49,25 @@ export class HorizontalFormElement extends AKElement {
         `,
     ];
 
+    //#region Properties
+
+    /**
+     * A unique ID to associate with the input and label.
+     */
     @property({ type: String, reflect: false })
     public fieldID?: string;
 
+    /**
+     * The label for the input control
+     * @property
+     * @attribute
+     * @deprecated Labels cannot associate with inputs across DOM roots. Use the slotted `label` element instead.
+     */
     @property({ type: String })
-    public label = "";
+    public label?: string;
 
     @property({ type: Boolean })
-    public required = false;
+    public required?: boolean;
 
     @property({ attribute: false })
     public errorMessages?: ErrorProp[];
@@ -95,47 +92,50 @@ export class HorizontalFormElement extends AKElement {
     }
 
     @property({ type: String })
-    public name = "";
+    public name?: string;
 
     //#endregion
 
     //#region Lifecycle
 
-    firstUpdated(): void {
+    public override firstUpdated(): void {
         this.updated();
     }
 
-    updated(): void {
-        this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
-            input.focus();
-        });
-        this.querySelectorAll("*").forEach((input) => {
-            if (isAkControl(input) && !input.getAttribute("name")) {
-                input.setAttribute("name", this.name);
-                return;
-            }
+    /**
+     * Ensure that all inputs have a name attribute.
+     *
+     * TODO: Swap with `HTMLElement.prototype.attachInternals`.
+     */
+    public override updated(): void {
+        // If we don't have a name, we can't do anything.
+        if (!this.name) return;
 
-            if (nameables.has(input.tagName.toLowerCase())) {
-                input.setAttribute("name", this.name);
-            } else {
-                return;
-            }
-        });
+        for (const element of this.querySelectorAll("*")) {
+            // Is this element capable of being named?
+            if (!isControlElement(element) && !isNameableElement(element)) continue;
+            // And does the element already match the name?
+            if (element.getAttribute("name") === this.name) continue;
+
+            element.setAttribute("name", this.name);
+        }
     }
+
+    //#endregion
+
+    //#region Rendering
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group" role="group" aria-label="${this.label}">
-            <div class="pf-c-form__group-label">
-                <label
-                    id="group-label"
-                    class="pf-c-form__label"
-                    ?aria-required=${this.required}
-                    for="${ifDefined(this.fieldID)}"
-                >
-                    <span class="pf-c-form__label-text">${this.label}</span>
-                </label>
-            </div>
+
+        return html`<div class="pf-c-form__group" role="group">
+            ${this.label
+                ? html`<div class="pf-c-form__group-label">
+                      ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+                  </div>`
+                : nothing}
+            <slot name="label"></slot>
+
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
@@ -144,6 +144,8 @@ export class HorizontalFormElement extends AKElement {
             </div>
         </div>`;
     }
+
+    //#endregion
 }
 
 declare global {
