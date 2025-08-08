@@ -12,4 +12,4 @@ See: https://semver.org/#spec-item-9 (Pre-release spec)
 """
 pre_release_timestamp = int(time())
 
-print(f"{package_version}-{pre_release_timestamp}")
+print(f"{package_version()}-{pre_release_timestamp}")
