@@ -212,3 +212,4 @@ source_docs/
 
 ### Docker ###
 docker-compose.override.yml
+tests/openid_conformance/exports/*.zip
