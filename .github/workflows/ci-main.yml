@@ -19,6 +19,12 @@ env:
   POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
+permissions:
+  # Needed for checkout
+  contents: read
+  # Needed for codecov OIDC token
+  id-token: write
+
 jobs:
   lint:
     strategy:
