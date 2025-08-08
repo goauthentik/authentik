@@ -96,9 +96,7 @@ update-test-mmdb:  ## Update test GeoIP and ASN Databases
 bump:  ## Bump authentik version. Usage: version=20xx.xx.xx make bump
 	if [ -z "$(version)" ]; then echo "Usage: version=20xx.xx.xx make bump" && exit 1; fi
 	uv version $(version)
-	$(MAKE) gen-build
-	$(MAKE) gen-compose
-	$(MAKE) aws-cfn
+	$(MAKE) gen-build gen-compose aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
 	echo $(version) > ${PWD}/internal/constants/VERSION
