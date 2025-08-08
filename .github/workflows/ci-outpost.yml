@@ -11,6 +11,8 @@ on:
     branches:
       - main
       - version-*
+    paths-ignore:
+      - website/**
 
 jobs:
   lint-golint:
