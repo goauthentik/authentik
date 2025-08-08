@@ -57,7 +57,7 @@ runs:
     - name: Setup authentik env
       uses: ./.github/actions/setup
       with:
-        with_runtime_deps: "false"
+        dependencies: "python"
     - name: Generate config
       id: ev
       shell: bash
