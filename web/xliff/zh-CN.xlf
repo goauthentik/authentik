@@ -357,7 +357,7 @@
   <source>Successful Logins</source>
 </trans-unit>
 <trans-unit id="s0382d73823585617">
-  <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+  <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
 </trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
