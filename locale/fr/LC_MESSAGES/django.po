@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 16:09+0000\n"
+"POT-Creation-Date: 2025-08-07 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1664,29 +1664,29 @@ msgstr "Rechercher dans l'annuaire LDAP complet"
 msgid "Invalid Regex Pattern: {url}"
 msgstr "Pattern de regex invalide : {url}"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
 msgstr "Basé sur le hash de l'ID utilisateur"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user ID"
 msgstr "Basé sur l'ID de l'utilisateur"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user UUID"
 msgstr "Basé sur le UUID de l'utilisateur"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the username"
 msgstr "Basé sur le nom d'utilisateur"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 "Basé sur le courriel utilisateur. Ceci est recommandé par rapport à la "
 "méthode UPN."
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
@@ -1808,6 +1808,10 @@ msgstr "Secret du client"
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
 msgstr "URIs de redirection"
+
+#: authentik/providers/oauth2/models.py
+msgid "Back-Channel Logout URI"
+msgstr "URI de déconnexion Back-Channel"
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
@@ -1936,6 +1940,15 @@ msgstr "Jeton d'équipement"
 #: authentik/providers/oauth2/models.py
 msgid "Device Tokens"
 msgstr "Jetons d'équipement"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr "Envoyer une requête de déconnexion Back-Channel au client enregistré"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr ""
+"Gérer les notifications de déconnexion Back-Channel envoyées via un signal"
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
@@ -3599,6 +3612,17 @@ msgid "Account Confirmation"
 msgstr "Confirmation du Compte"
 
 #: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"La fenêtre de temps utilisée pour compter les tentatives récentes de "
+"récupération de compte. Si le nombre de tentatives dépasse "
+"recovery_max_attempts au cours de cette période, les tentatives "
+"supplémentaires seront limitées. (Format : hours=1;minutes=2;seconds=3)."
+
+#: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "Activer les utilisateurs à la complétion de l'étape."
 
@@ -3621,6 +3645,15 @@ msgstr "Pas d'utilisateurs en attente."
 #: authentik/stages/email/stage.py
 msgid "Email sent."
 msgstr "Email envoyé."
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
+msgstr ""
+"Trop de tentatives de vérification de compte. Veuillez réessayer après "
+"{minutes} minutes."
 
 #: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
