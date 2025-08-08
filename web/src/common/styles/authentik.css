@@ -35,6 +35,24 @@
     --ak-navbar--height: 7rem;
 }
 
+.pf-c-form__group {
+    --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: minmax(max-content, 9.375rem);
+    column-gap: var(--pf-global--spacer--md);
+}
+
+.pf-c-form__group-label {
+    user-select: none;
+    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+}
+
+.pf-c-form__label[aria-required] .pf-c-form__label-text::after {
+    content: "*";
+    user-select: none;
+    margin-left: var(--pf-c-form__label-required--MarginLeft);
+    font-size: var(--pf-c-form__label-required--FontSize);
+    color: var(--pf-c-form__label-required--Color);
+}
+
 @supports selector(::-webkit-scrollbar) {
     ::-webkit-scrollbar {
         width: 5px;

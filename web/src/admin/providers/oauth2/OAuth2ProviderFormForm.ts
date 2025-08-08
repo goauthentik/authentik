@@ -195,7 +195,7 @@ export function renderForm(
                                 .redirectURI=${redirectURI}
                                 name="oauth2-redirect-uri"
                                 style="width: 100%"
-                                inputID="redirect-uri-${idx}"
+                                input-id="redirect-uri-${idx}"
                             ></ak-provider-oauth2-redirect-uri>`;
                         }}
                     >

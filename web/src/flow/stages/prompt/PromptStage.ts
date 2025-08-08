@@ -1,9 +1,11 @@
 import "#elements/Divider";
-import "#elements/forms/FormElement";
 import "#flow/components/ak-flow-card";
 
 import { LOCALES } from "#elements/ak-locale-context/definitions";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -24,6 +26,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -38,6 +41,7 @@ export class PromptStage extends WithCapabilitiesConfig(
         PFAlert,
         PFForm,
         PFFormControl,
+        PFInputGroup,
         PFTitle,
         PFButton,
         PFCheck,
@@ -256,14 +260,19 @@ ${prompt.initialValue}</textarea
             </div>`;
         }
         if (this.shouldRenderInWrapper(prompt)) {
-            return html`<ak-form-element
-                label="${prompt.label}"
-                ?required="${prompt.required}"
-                class="pf-c-form__group"
-                .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
-            >
+            const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
+
+            return html`<div class="pf-c-form__group">
+                ${AKLabel(
+                    {
+                        required: prompt.required,
+                        htmlFor: `field-${prompt.fieldKey}`,
+                    },
+                    prompt.label,
+                )}
                 ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
-            </ak-form-element>`;
+                ${AKFormErrors({ errors })}
+            </div>`;
         }
         return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
     }
