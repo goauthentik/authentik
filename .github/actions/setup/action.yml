@@ -57,7 +57,7 @@ runs:
         docker compose -f .github/actions/setup/docker-compose.yml up -d
         cd web && npm ci
     - name: Generate config
-      if: ${{ contains(inputs.dependencies, 'runtime') }}
+      if: ${{ contains(inputs.dependencies, 'python') && contains(inputs.dependencies, 'runtime') }}
       shell: uv run python {0}
       run: |
         from authentik.lib.generators import generate_id

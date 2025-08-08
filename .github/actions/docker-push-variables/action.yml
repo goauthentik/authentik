@@ -68,4 +68,4 @@ runs:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         REF: ${{ github.ref }}
       run: |
-        python3 ${{ github.action_path }}/push_vars.py
+        uv run python3 ${{ github.action_path }}/push_vars.py
