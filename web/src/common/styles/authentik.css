@@ -41,8 +41,15 @@
 }
 
 .pf-c-form__group-label {
+    display: flex;
     user-select: none;
     padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+
+    /* Increase the pressable area of the label. */
+    .pf-c-form__label {
+        display: block;
+        flex: 1 1 auto;
+    }
 }
 
 .pf-c-form__label[aria-required] .pf-c-form__label-text::after {
