@@ -71,7 +71,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             this.errors.set("name", msg("An application name is required"));
         }
 
-        if (!values.metaLaunchUrl || !URL.canParse(values.metaLaunchUrl)) {
+        if (values.metaLaunchUrl && !URL.canParse(values.metaLaunchUrl)) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
 
