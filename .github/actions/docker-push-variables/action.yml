@@ -54,6 +54,8 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup authentik env
+      uses: ./.github/actions/setup
     - name: Generate config
       id: ev
       shell: bash
