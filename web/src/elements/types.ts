@@ -54,6 +54,19 @@ export type LitPropertyRecord<T extends object> = {
  */
 export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
 
+/**
+ * A React-like functional component. Used to render a component in a template.
+ *
+ * @template P The type of the props object.
+ * @param props The props object.
+ * @param children The children to render.
+ * @returns The rendered template.
+ */
+export type LitFC<P> = (
+    props: P,
+    children?: SlottedTemplateResult,
+) => SlottedTemplateResult | SlottedTemplateResult[];
+
 //#endregion
 
 //#region Host/Controller

@@ -14,6 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export interface RadioOption<T> {
     label: string;
     description?: TemplateResult;
+    className?: string;
     default?: boolean;
     value: T;
     disabled?: boolean;
@@ -100,7 +101,9 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                 .checked=${option.value === this.value}
                 .disabled=${option.disabled}
             />
-            <label class="pf-c-radio__label" for=${id}>${option.label}</label>
+            <label class="pf-c-radio__label ${option.className ?? ""}" for=${id}
+                >${option.label}</label
+            >
             ${option.description
                 ? html`<span class="pf-c-radio__description">${option.description}</span>`
                 : nothing}

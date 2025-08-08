@@ -173,6 +173,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
+                            "add-secure-apps/providers/oauth2/backchannel-logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },
@@ -551,7 +552,7 @@ const items = [
                         },
                         items: [
                             "users-sources/sources/social-logins/apple/index",
-                            "users-sources/sources/social-logins/azure-ad/index",
+                            "users-sources/sources/social-logins/entra-id/index",
                             "users-sources/sources/social-logins/discord/index",
                             "users-sources/sources/social-logins/facebook/index",
                             "users-sources/sources/social-logins/github/index",
