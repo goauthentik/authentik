@@ -45,6 +45,7 @@ export function renderForm(
         <ak-text-input
             name="name"
             label=${msg("Name")}
+            placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             .errorMessages=${errors?.name}
             required
@@ -58,6 +59,8 @@ export function renderForm(
             .errorMessages=${errors?.authorizationFlow}
         >
             <ak-branded-flow-search
+                label=${msg("Authentication flow")}
+                placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
                 .currentFlow=${provider?.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
