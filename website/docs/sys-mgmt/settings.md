@@ -40,6 +40,14 @@ Enable the ability for users to change their usernames, defaults to `false`.
 
 Configure how long [Events](./events/index.md) are retained for within authentik. Default value is `days=365`. When forwarding events to an external application, this value can be decreased. When changing this value, only new events are affected.
 
+### Reputation: lower limit
+
+Configure a lower limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `-5`.
+
+### Reputation: upper limit
+
+Configure an upper limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `5`.
+
 ### Footer links
 
 This option allows you to add linked text (footer links) on the bottom of flow pages. You can also use this setting to display additional static text to the flow pages, even if no URL is provided.
