@@ -28,12 +28,12 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(
-                    (this.wizard.provider as SAMLProvider) ?? {},
-                    this.wizard.errors?.provider ?? {},
+                ${renderForm({
+                    provider: this.wizard.provider as SAMLProvider,
+                    errors: this.wizard.errors?.provider,
                     setHasSigningKp,
-                    this.hasSigningKp,
-                )}
+                    hasSigningKp: this.hasSigningKp,
+                })}
             </form>`;
     }
 

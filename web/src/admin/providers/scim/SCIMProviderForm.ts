@@ -29,7 +29,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, []);
+        return renderForm({ provider: this.instance });
     }
 }
 
