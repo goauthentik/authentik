@@ -14,6 +14,7 @@ import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
 import { readBuildIdentifier } from "@goauthentik/core/version/node";
 
+import { createAndUploadReport } from "@codecov/bundle-analyzer";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { copy } from "esbuild-plugin-copy";
@@ -205,6 +206,54 @@ async function doBuild() {
     await esbuild.build(buildOptions);
 
     console.log("Build complete");
+
+    if (process.env.ACTIONS_ID_TOKEN_REQUEST_URL) {
+        await doBundleSizeReport(buildOptions);
+    }
+}
+
+/**
+ * @param {esbuild.BuildOptions} buildOpts
+ */
+async function doBundleSizeReport(buildOpts) {
+    /**
+     * @type {import("@codecov/bundle-analyzer").BundleAnalyzerOptions}
+     */
+    const bundleAnalyzerOpts = {
+        ignorePatterns: ["*.map"],
+    };
+
+    /**
+     * @type {import("@codecov/bundle-analyzer").Options}
+     */
+    const coreOpts = {
+        enableBundleAnalysis: true,
+        gitService: "github",
+        oidc: {
+            useGitHubOIDC: true,
+        },
+    };
+    console.group(`${logPrefix} 🚀 Uploading bundle report:`);
+
+    await Promise.all(
+        Object.entries(EntryPoint)
+            .filter(([id]) => id !== "Polyfill")
+            .map(([entrypointID, target]) => {
+                return createAndUploadReport(
+                    [path.dirname(target.out)],
+                    deepmerge(coreOpts, {
+                        bundleName: `@goauthentik/authentik-web-${entrypointID.toLowerCase()}`,
+                    }),
+                    bundleAnalyzerOpts,
+                )
+                    .then((reportAsJson) =>
+                        console.log(`Report successfully generated and uploaded: ${reportAsJson}`),
+                    )
+                    .catch((error) => console.error("Failed to generate or upload report:", error));
+            }),
+    );
+
+    console.groupEnd();
 }
 
 async function doProxy() {
