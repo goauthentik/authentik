@@ -5,6 +5,10 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     restart: always
+    ports:
+      - 4444:4444
+      - 5900:5900
+      - 7900:7900
     extra_hosts:
       host.docker.internal: host-gateway
   mailpit:
