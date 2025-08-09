@@ -99,9 +99,11 @@ class DockerTestCase(TestCase):
         specs["extra_hosts"] = {
             "host.docker.internal": "host-gateway",
         }
-        if hasattr(self, "live_server_url"):
+        if hasattr(self, "server_thread"):
             specs.setdefault("environment", {})
-            specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
+            specs["environment"][
+                "AUTHENTIK_HOST"
+            ] = f"http://host.docker.internal:{self.server_thread.port}"
         container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})
@@ -199,7 +201,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::endgroup::")
         self.driver.quit()
 
-    def wait_for_url(self, desired_url):
+    def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
         self.wait.until(
             lambda driver: driver.current_url == desired_url,
