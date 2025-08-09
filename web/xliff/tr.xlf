@@ -9751,6 +9751,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="sede4ad68849ce0c5">
   <source>The time window used to count recent account recovery attempts.</source>
 </trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
