@@ -44,7 +44,7 @@ type WebServer struct {
 	ProxyServer *proxyv2.ProxyServer
 	BrandTLS    *brand_tls.Watcher
 
-	g              *gounicorn.GoUnicorn
+	g              *gounicorn.Process
 	gunicornReady  bool
 	mainRouter     *mux.Router
 	loggingRouter  *mux.Router
@@ -99,7 +99,7 @@ func NewWebServer() *WebServer {
 		ws.mainRouter.Path("/").Handler(http.RedirectHandler(sp, http.StatusFound))
 	}
 	hcUrl := fmt.Sprintf("%s%s-/health/live/", ws.upstreamURL.String(), config.Get().Web.Path)
-	ws.g = gounicorn.New(func() bool {
+	ws.g = gounicorn.NewGunicorn(func() bool {
 		req, err := http.NewRequest(http.MethodGet, hcUrl, nil)
 		if err != nil {
 			ws.log.WithError(err).Warning("failed to create request for healthcheck")
@@ -199,7 +199,7 @@ func (ws *WebServer) attemptStartBackend() {
 	}
 }
 
-func (ws *WebServer) Core() *gounicorn.GoUnicorn {
+func (ws *WebServer) Core() *gounicorn.Process {
 	return ws.g
 }
 
