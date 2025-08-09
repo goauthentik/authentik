@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
+	staticWeb "goauthentik.io/web"
 )
 
 var (
@@ -91,6 +92,17 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 	if !errors.Is(err, ErrAuthentikStarting) {
 		ws.log.WithError(err).Warning("failed to proxy to backend")
 	}
+
+	if errors.Is(err, ErrAuthentikStarting) {
+		rw.Header().Set("Content-Type", "text/html; charset=utf-8")
+		rw.WriteHeader(http.StatusServiceUnavailable)
+		_, writeErr := rw.Write(staticWeb.InitializingHtml)
+		if writeErr != nil {
+			ws.log.WithError(writeErr).Warning("failed to write initializing HTML")
+		}
+		return
+	}
+
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
 	// return json if the client asks for json
