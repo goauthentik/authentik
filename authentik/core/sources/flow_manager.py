@@ -77,7 +77,7 @@ class SourceFlowManager:
     matcher: SourceMatcher
     request: HttpRequest
 
-    identifier: str
+    identifier: str | None
 
     user_connection_type: type[UserSourceConnection]
     group_connection_type: type[GroupSourceConnection]
@@ -91,7 +91,6 @@ class SourceFlowManager:
         self,
         source: Source,
         request: HttpRequest,
-        identifier: str,
         user_info: dict[str, Any],
         policy_context: dict[str, Any],
     ) -> None:
@@ -101,9 +100,7 @@ class SourceFlowManager:
             self.source, self.user_connection_type, self.group_connection_type
         )
         self.request = request
-        self.identifier = identifier
         self.user_info = user_info
-        self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = policy_context
 
         self.user_properties = self.mapper.build_object_properties(
@@ -121,8 +118,19 @@ class SourceFlowManager:
         }
         del self.user_properties["groups"]
 
+        self.identifier = self.user_properties.pop("id", None)
+
+        self._logger = get_logger().bind(source=source, identifier=self.identifier)
+
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
+        if not self.identifier:
+            self._logger.warning(
+                "Refusing to use empty/None identifier",
+                identifier=self.identifier,
+            )
+            return Action.DENY, None
+
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
             new_connection = self.user_connection_type(
