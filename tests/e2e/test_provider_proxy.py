@@ -88,15 +88,6 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
         self.driver.get("http://localhost:9000/api")
@@ -170,15 +161,6 @@ class TestProviderProxy(SeleniumTestCase):
 
         self.start_proxy(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
         sleep(5)
 
         self.driver.get("http://localhost:9000/api")

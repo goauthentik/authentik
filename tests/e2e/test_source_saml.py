@@ -86,7 +86,9 @@ class TestSourceSAML(SeleniumTestCase):
             ),
             volumes={
                 str(
-                    (Path(__file__).parent / Path("test-saml-idp/saml20-sp-remote.php")).absolute()
+                    (
+                        Path(__file__).parent / Path("source_saml_idp/saml20-sp-remote.php")
+                    ).absolute()
                 ): {
                     "bind": "/var/www/simplesamlphp/metadata/saml20-sp-remote.php",
                     "mode": "ro",

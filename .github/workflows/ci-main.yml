@@ -160,7 +160,7 @@ jobs:
         uses: helm/kind-action@v1.12.0
       - name: run integration
         run: |
-          uv run coverage run manage.py test tests/integration
+          uv run coverage run manage.py test --no-capture tests/integration
           uv run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
@@ -219,7 +219,7 @@ jobs:
           npm run build:sfe
       - name: run e2e
         run: |
-          uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage run manage.py test --no-capture ${{ matrix.job.glob }}
           uv run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5

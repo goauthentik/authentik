@@ -1,7 +1,6 @@
 """authentik e2e testing utilities"""
 
 import json
-import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
 from os import environ
@@ -40,13 +39,6 @@ from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
-
-
-def get_local_ip() -> str:
-    """Get the local machine's IP"""
-    hostname = socket.gethostname()
-    ip_addr = socket.gethostbyname(hostname)
-    return ip_addr
 
 
 class DockerTestCase(TestCase):
@@ -104,9 +96,14 @@ class DockerTestCase(TestCase):
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
-        if hasattr(self, "live_server_url"):
+        specs["extra_hosts"] = {
+            "host.docker.internal": "host-gateway",
+        }
+        if hasattr(self, "server_thread"):
             specs.setdefault("environment", {})
-            specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
+            specs["environment"][
+                "AUTHENTIK_HOST"
+            ] = f"http://host.docker.internal:{self.server_thread.port}"
         container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})
@@ -146,7 +143,7 @@ class DockerTestCase(TestCase):
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
-    host = get_local_ip()
+    host = "0.0.0.0"  # nosec Required for containers to reach us directly on the host
     wait_timeout: int
     user: User
 
@@ -204,12 +201,21 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::endgroup::")
         self.driver.quit()
 
-    def wait_for_url(self, desired_url):
+    def wait_for_url(self, desired_url: str):
         """Wait until URL is `desired_url`."""
         self.wait.until(
             lambda driver: driver.current_url == desired_url,
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
+
+    def host_url(self, view, query: dict | None = None, **kwargs) -> str:
+        """reverse `view` with `**kwargs` into full URL using live_server_url"""
+        url = f"http://host.docker.internal:{self.server_thread.port}" + reverse(
+            view, kwargs=kwargs
+        )
+        if query:
+            return url + "?" + urlencode(query)
+        return url
 
     def url(self, view, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""

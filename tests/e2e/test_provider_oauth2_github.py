@@ -47,10 +47,12 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_AUTH_URL": self.url(
                     "authentik_providers_oauth2_root:github-authorize"
                 ),
-                "GF_AUTH_GITHUB_TOKEN_URL": self.url(
+                "GF_AUTH_GITHUB_TOKEN_URL": self.host_url(
                     "authentik_providers_oauth2_root:github-access-token"
                 ),
-                "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_root:github-user"),
+                "GF_AUTH_GITHUB_API_URL": self.host_url(
+                    "authentik_providers_oauth2_root:github-user"
+                ),
                 "GF_LOG_LEVEL": "debug",
             },
         )
