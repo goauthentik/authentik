@@ -8,7 +8,7 @@ from packaging.version import parse
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
@@ -19,16 +19,16 @@ LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
 VERSION_CACHE_KEY = "authentik_latest_version"
 VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
-LOCAL_VERSION = parse(__version__)
+LOCAL_VERSION = parse(authentik_version())
 
 
 def _set_prom_info():
     """Set prometheus info for version"""
     PROM_INFO.info(
         {
-            "version": __version__,
+            "version": authentik_version(),
             "latest": cache.get(VERSION_CACHE_KEY, ""),
-            "build_hash": get_build_hash(),
+            "build_hash": authentik_build_hash(),
         }
     )
 

@@ -198,7 +198,7 @@ func (a *APIController) OnRefresh() error {
 
 func (a *APIController) getEventPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
-		"version":        constants.VERSION,
+		"version":        constants.VERSION(),
 		"buildHash":      constants.BUILD(""),
 		"uuid":           a.instanceUUID.String(),
 		"golangVersion":  runtime.Version(),
@@ -218,7 +218,7 @@ func (a *APIController) StartBackgroundTasks() error {
 		"outpost_name": a.Outpost.Name,
 		"outpost_type": a.Server.Type(),
 		"uuid":         a.instanceUUID.String(),
-		"version":      constants.VERSION,
+		"version":      constants.VERSION(),
 		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {

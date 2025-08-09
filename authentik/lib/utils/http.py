@@ -5,7 +5,7 @@ from uuid import uuid4
 from requests.sessions import PreparedRequest, Session
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
@@ -13,7 +13,7 @@ LOGGER = get_logger()
 
 def authentik_user_agent() -> str:
     """Get a common user agent"""
-    return f"authentik@{get_full_version()}"
+    return f"authentik@{authentik_full_version()}"
 
 
 class TimeoutSession(Session):
