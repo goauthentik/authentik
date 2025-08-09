@@ -7,10 +7,11 @@ from os import environ, system
 from pathlib import Path
 from typing import Any
 
-from psycopg import Connection, Cursor, connect
+from psycopg import Connection, Cursor
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG, django_db_config
+from lifecycle.wait_for_db import get_postgres
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -71,17 +72,7 @@ def release_lock(cursor: Cursor):
 
 
 def run_migrations():
-    conn = connect(
-        dbname=CONFIG.get("postgresql.name"),
-        user=CONFIG.get("postgresql.user"),
-        password=CONFIG.get("postgresql.password"),
-        host=CONFIG.get("postgresql.host"),
-        port=CONFIG.get_int("postgresql.port"),
-        sslmode=CONFIG.get("postgresql.sslmode"),
-        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
-        sslcert=CONFIG.get("postgresql.sslcert"),
-        sslkey=CONFIG.get("postgresql.sslkey"),
-    )
+    conn = get_postgres()
     curr = conn.cursor()
     try:
         wait_for_lock(curr)

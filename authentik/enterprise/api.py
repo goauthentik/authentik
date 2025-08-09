@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 
+from django.http import HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
@@ -10,17 +11,21 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import BaseRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User, UserTypes
+from authentik.enterprise.bundle import generate_support_bundle
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
 from authentik.enterprise.models import License
 from authentik.rbac.decorators import permission_required
+from authentik.rbac.permissions import HasPermission
 from authentik.tenants.utils import get_unique_identifier
 
 
@@ -147,3 +152,24 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         )
         response.is_valid(raise_exception=True)
         return Response(response.data)
+
+
+class BinaryRenderer(BaseRenderer):
+    media_type = "application/gzip"
+    format = "bin"
+
+
+class SupportBundleView(APIView):
+    """Generate a support bundle."""
+
+    permission_classes = [HasPermission("authentik_rbac.view_system_info")]
+    pagination_class = None
+    filter_backends = []
+    renderer_classes = [BinaryRenderer]
+
+    @extend_schema(responses=bytes, request=None)
+    def post(self, request: Request) -> Response:
+        """Generate a support bundle."""
+        response = HttpResponse(generate_support_bundle(), content_type=BinaryRenderer.media_type)
+        response["Content-Disposition"] = 'attachment; filename="authentik_support.tgz"'
+        return response
