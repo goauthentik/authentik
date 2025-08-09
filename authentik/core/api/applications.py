@@ -6,6 +6,7 @@ from copy import copy
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -65,6 +66,29 @@ class ApplicationSerializer(ModelSerializer):
         if "request" in self.context:
             user = self.context["request"].user
         return app.get_launch_url(user)
+
+    def validate(self, attrs):
+        """Validate application data"""
+        attrs = super().validate(attrs)
+
+        # Reserved slugs that would clash with OAuth2 provider endpoints
+        reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
+
+        # Get the slug being used
+        slug = attrs.get("slug", getattr(self.instance, "slug", None))
+
+        # Block reserved slugs
+        if slug in reserved_slugs:
+            raise ValidationError(
+                {
+                    "slug": _(
+                        "The slug '%(slug)s' is reserved and cannot be used for applications."
+                    )
+                    % {"slug": slug}
+                }
+            )
+
+        return attrs
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
