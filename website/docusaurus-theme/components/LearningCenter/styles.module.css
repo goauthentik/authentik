@@ -1,0 +1,176 @@
+.learningCenter {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+}
+
+.header {
+    margin-bottom: 2.5rem;
+    text-align: left;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    color: var(--ifm-color-primary);
+    letter-spacing: -0.01em;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: var(--ifm-color-emphasis-700);
+    max-width: 800px;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+}
+
+.sectionGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+}
+
+.sectionCard {
+    border-radius: 12px;
+    border: 2px solid var(--ifm-color-emphasis-200);
+    background-color: var(--ifm-background-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease;
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.sectionCard:hover {
+    border-color: var(--ifm-color-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+}
+
+.sectionContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+}
+
+.sectionTitle {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ifm-heading-color);
+}
+
+.sectionDescription {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--ifm-color-emphasis-700);
+    line-height: 1.6;
+    flex-grow: 1;
+}
+
+.sectionLinks {
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    width: 100%;
+}
+
+.sectionLink {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: var(--ifm-color-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.sectionLink:hover {
+    color: var(--ifm-color-primary-darker);
+    text-decoration: none;
+    background-color: var(--ifm-color-emphasis-100);
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.sectionLink svg,
+.sectionLink i {
+    margin-right: 0.75rem;
+    font-size: 0.875rem;
+    transition: transform 0.2s ease;
+}
+
+.sectionLink:hover svg,
+.sectionLink:hover i {
+    transform: translateX(2px);
+}
+
+:global(.learning-center-container) {
+    margin: 0 -1rem 2rem -1rem;
+    padding: 2rem;
+    border-radius: 16px;
+}
+
+:global(.learning-center-container) > p {
+    font-size: 1.1rem;
+    color: var(--ifm-color-emphasis-700);
+    max-width: 800px;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+}
+
+@media (min-width: 997px) {
+    :global(.learning-center-container) {
+        margin-left: -1.5rem;
+        margin-right: -1.5rem;
+        padding: 2.5rem;
+    }
+
+    .sectionGrid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: 1fr;
+    }
+}
+
+@media (max-width: 996px) {
+    .sectionGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    :global(.learning-center-container) {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sectionGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .description {
+        font-size: 1rem;
+    }
+
+    :global(.learning-center-container) {
+        padding: 1.25rem;
+    }
+
+    :global(.learning-center-container) > p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
