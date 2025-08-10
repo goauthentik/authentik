@@ -11,13 +11,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 // The 'const ... as const' construction will throw a compilation error if the const variable is
 // only ever used to generate the type information, so the `_` (ignore unused variable) prefix must
 // be used here.
-const _statusNames = ["error", "warning", "info"] as const;
+const _statusNames = ["error", "warning", "info", "neutral"] as const;
 type StatusName = (typeof _statusNames)[number];
 
 const statusToDetails = new Map<StatusName, [string, string]>([
     ["error", ["pf-m-red", "fa-times"]],
     ["warning", ["pf-m-orange", "fa-exclamation-triangle"]],
     ["info", ["pf-m-gray", "fa-info-circle"]],
+    ["neutral", ["pf-m-gray", "fa-times"]],
 ]);
 
 const styles = css`
@@ -64,6 +65,7 @@ const styles = css`
  * - type="error" (default): A Red ✖
  * - type="warning" An orange ⚠
  * - type="info" A grey ⓘ
+ * - type="neutral" A grey ✖
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.
