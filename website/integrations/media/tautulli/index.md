@@ -21,7 +21,9 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Setup
+## authentik configuration
+
+To support the integration of `Tautulli` with authentik, you need to create an application/provider pair in authentik.
 
 Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
 
@@ -32,7 +34,20 @@ tautulli_password: password
 
 Add all Tautulli users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-Create an application in authentik. Create a Proxy provider with the following parameters:
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
+    - **Choose a Provider type**: _If there is a specific provider type required, state that here._
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/chat-communication-collaboration/owncloud/index.md) for a complex requirements example._
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Tautulli Setup
 
 - Internal host
 
@@ -43,15 +58,23 @@ Create an application in authentik. Create a Proxy provider with the following p
 - External host
 
     Set this to the external URL you will be accessing Tautulli from.
+    
+    Basic authentication settings have been removed from the UI and are now available in config.ini.  For basic auth to work, do the following:
 
-Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `tautulli_user` and `tautulli_password` respectively. These values can be chosen freely, `tautulli_` is just used as a prefix for clarity.
+1. shut down Tautulli
 
-## Tautulli Setup
+2. Set/Change the following in the config file:
+```yaml
+http_basic_auth = 1
+http_hash_password = 0
+http_hashed_password = 1
+http_password = `<enter your password>`
+```
+3. Save the changes and then restart Tautulli
 
-In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigate to "Web Interface" on the sidebar, and ensure the Option `Use Basic Authentication` is checked.
+4. Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/)
+Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
 
-![](./tautulli.png)
+## Configuration verification
 
-Save the settings, and restart Tautulli if prompted.
-
-Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](../sonarr/)
+To confirm that authentik is properly configured with `Tautulli`, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli.  You should bypass the login prompt if setup correctly.
