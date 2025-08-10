@@ -17,6 +17,7 @@ from structlog.stdlib import get_logger
 
 from authentik import get_full_version
 from authentik.events.models import Event, EventAction
+from authentik.lib.sentry import should_ignore_exception
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
@@ -88,17 +89,19 @@ class MessagesMiddleware(Middleware):
         task: Task = message.options["task"]
         if exception is None:
             task.log(str(type(self)), TaskStatus.INFO, "Task finished processing without errors")
-        else:
-            task.log(
-                str(type(self)),
-                TaskStatus.ERROR,
-                exception,
-            )
-            Event.new(
-                EventAction.SYSTEM_TASK_EXCEPTION,
-                message=f"Task {task.actor_name} encountered an error",
-                actor=task.actor_name,
-            ).with_exception(exception).save()
+            return
+        if should_ignore_exception(exception):
+            return
+        task.log(
+            str(type(self)),
+            TaskStatus.ERROR,
+            exception,
+        )
+        Event.new(
+            EventAction.SYSTEM_TASK_EXCEPTION,
+            message=f"Task {task.actor_name} encountered an error",
+            actor=task.actor_name,
+        ).with_exception(exception).save()
 
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
