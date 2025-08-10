@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of `Tautulli` with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Tautulli with authentik, you need to create an application/provider pair in authentik.
 
 Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
 
