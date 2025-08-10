@@ -10,10 +10,12 @@ from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
+from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST
+from authentik.tenants.flags import patch_flag
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -532,6 +534,7 @@ class TestProviderSAML(SeleniumTestCase):
         "system/providers-saml.yaml",
     )
     @reconcile_app("authentik_crypto")
+    @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_sp_initiated_implicit_post_buffer(self):
         """test SAML Provider flow SP-initiated flow (implicit consent)"""
         # Bootstrap all needed objects

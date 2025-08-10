@@ -11,6 +11,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
+from authentik.policies.apps import BufferedPolicyAccessViewFlag
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
@@ -26,6 +27,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
+from authentik.tenants.flags import patch_flag
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -419,6 +421,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
     @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
     @apply_blueprint("system/providers-oauth2.yaml")
     @reconcile_app("authentik_crypto")
+    @patch_flag(BufferedPolicyAccessViewFlag, True)
     def test_authorization_consent_implied_parallel(self):
         """test OpenID Provider flow (default authorization flow with implied consent)"""
         # Bootstrap all needed objects
