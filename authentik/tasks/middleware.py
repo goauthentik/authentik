@@ -23,6 +23,7 @@ from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
+HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 
 
 class TenantMiddleware(Middleware):
@@ -148,6 +149,17 @@ class DescriptionMiddleware(Middleware):
 
 
 class _healthcheck_handler(BaseHTTPRequestHandler):
+
+    def log_request(self, code="-", size="-"):
+        HEALTHCHECK_LOGGER.info(
+            self.path,
+            method=self.command,
+            status=code,
+        )
+
+    def log_error(self, format, *args):
+        HEALTHCHECK_LOGGER.warning(format, *args)
+
     def do_HEAD(self):
         try:
             for db_conn in connections.all():
