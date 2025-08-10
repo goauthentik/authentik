@@ -1,4 +1,3 @@
-import os
 import sys
 from argparse import Namespace
 
@@ -37,9 +36,10 @@ class Command(BaseCommand):
         **options,
     ):
         worker = Conf().worker
+        setup, modules = self._discover_tasks_modules()
         args = Namespace(
-            broker="authentik.tasks.setup",
-            modules=self._discover_tasks_modules(),
+            broker=setup,
+            modules=modules,
             path=["."],
             queues=None,
             log_file=None,
@@ -68,21 +68,12 @@ class Command(BaseCommand):
 
         args.verbose = verbosity - 1
 
-        main(args)
+        sys.exit(main(args))
 
-    def _resolve_executable(self, exec_name: str):
-        bin_dir = os.path.dirname(sys.executable)
-        if bin_dir:
-            for d in [bin_dir, os.path.join(bin_dir, "Scripts")]:
-                exec_path = os.path.join(d, exec_name)
-                if os.path.isfile(exec_path):
-                    return exec_path
-        return exec_name
-
-    def _discover_tasks_modules(self) -> list[str]:
+    def _discover_tasks_modules(self) -> tuple[str, list[str]]:
         # Does not support a tasks directory
         autodiscovery = Conf().autodiscovery
-        modules = [autodiscovery["setup_module"]]
+        modules = []
 
         if autodiscovery["enabled"]:
             for app in apps.get_app_configs():
@@ -100,4 +91,4 @@ class Command(BaseCommand):
                 else import_string(modules_callback)
             )
             modules.extend(callback())
-        return modules
+        return autodiscovery["setup_module"], modules
