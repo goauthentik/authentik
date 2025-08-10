@@ -551,6 +551,8 @@ export abstract class Table<T extends object>
                 label=${ifDefined(this.searchLabel)}
                 placeholder=${ifDefined(this.searchPlaceholder)}
                 .onSearch=${this.#searchListener}
+                ?supportsQL=${this.supportsQL}
+                .apiResponse=${this.data}
             >
             </ak-table-search>
         </div>`;

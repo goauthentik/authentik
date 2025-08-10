@@ -27,9 +27,9 @@ export class AKFormGroup extends AKElement {
         PFFormControl,
 
         css`
-            :host {
+            :host([theme="dark"]) {
                 --marker-color: var(--pf-global--Color--200);
-                --marker-color-hover: var(--pf-global--Color--100);
+                --marker-color-hover: var(--ak-dark-foreground-darker);
             }
 
             .pf-c-form__field-group-header-description {
@@ -53,7 +53,7 @@ export class AKFormGroup extends AKElement {
                     user-select: none;
 
                     &::marker {
-                        color: var(--marker-color);
+                        color: var(--marker-color, var(--pf-global--Color--200));
                         transition: var(--pf-c-form__field-group-toggle-icon--Transition);
                         font-family: "Font Awesome 5 Free";
                         font-weight: 900;
@@ -61,7 +61,7 @@ export class AKFormGroup extends AKElement {
 
                     &:hover::marker {
                         outline: 1px dashed red;
-                        color: var(--marker-color-hover);
+                        color: var(--marker-color-hover, var(--pf-global--Color--100));
                     }
                 }
 
@@ -125,9 +125,8 @@ export class AKFormGroup extends AKElement {
             <details
                 ${ref(this.#detailsRef)}
                 ?open=${this.open}
-                ?aria-expanded="${this.open}"
+                aria-expanded=${this.open ? "true" : "false"}
                 role="group"
-                aria-owns="form-group-expandable-content"
                 aria-labelledby="form-group-header-title"
                 aria-describedby="form-group-expandable-content-description"
             >

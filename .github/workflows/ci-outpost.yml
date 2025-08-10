@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-outpost
+name: CI - Outpost
 
 on:
   push:

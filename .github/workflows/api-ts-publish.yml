@@ -1,10 +1,13 @@
-name: authentik-api-ts-publish
+---
+name: API - Publish Typescript client
+
 on:
   push:
     branches: [main]
     paths:
       - "schema.yml"
   workflow_dispatch:
+
 jobs:
   build:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}

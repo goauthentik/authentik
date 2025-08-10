@@ -1,7 +1,8 @@
 import { AKElement } from "#elements/Base";
 import { AKFormGroup } from "#elements/forms/FormGroup";
 
-import { msg, str } from "@lit/localize";
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -59,18 +60,6 @@ export class HorizontalFormElement extends AKElement {
                     var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
                     var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
             }
-
-            .pf-c-form__group-label {
-                padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
-            }
-
-            .pf-c-form__label[aria-required] .pf-c-form__label-text::after {
-                content: "*";
-                user-select: none;
-                margin-left: var(--pf-c-form__label-required--MarginLeft);
-                font-size: var(--pf-c-form__label-required--FontSize);
-                color: var(--pf-c-form__label-required--Color);
-            }
         `,
     ];
 
@@ -84,7 +73,7 @@ export class HorizontalFormElement extends AKElement {
     public required = false;
 
     @property({ attribute: false })
-    public errorMessages: string[] | string[][] = [];
+    public errorMessages?: ErrorProp[];
 
     _invalid = false;
 
@@ -108,11 +97,9 @@ export class HorizontalFormElement extends AKElement {
     @property({ type: String })
     public name = "";
 
-    @property({
-        type: String,
-        attribute: "flow-direction",
-    })
-    public flowDirection: "row" | "column" = "column";
+    //#endregion
+
+    //#region Lifecycle
 
     firstUpdated(): void {
         this.updated();
@@ -138,12 +125,7 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div
-            class="pf-c-form__group"
-            role="group"
-            aria-label="${this.label}"
-            data-flow-direction="${this.flowDirection}"
-        >
+        return html`<div class="pf-c-form__group" role="group" aria-label="${this.label}">
             <div class="pf-c-form__group-label">
                 <label
                     id="group-label"
@@ -157,21 +139,7 @@ export class HorizontalFormElement extends AKElement {
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.errorMessages.map((message) => {
-                        if (message instanceof Object) {
-                            return html`${Object.entries(message).map(([field, errMsg]) => {
-                                return html`<p
-                                    class="pf-c-form__helper-text pf-m-error"
-                                    aria-live="polite"
-                                >
-                                    ${msg(str`${field}: ${errMsg}`)}
-                                </p>`;
-                            })}`;
-                        }
-                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
-                            ${message}
-                        </p>`;
-                    })}
+                    ${AKFormErrors({ errors: this.errorMessages })}
                 </div>
             </div>
         </div>`;
