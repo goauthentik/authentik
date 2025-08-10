@@ -46,7 +46,9 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     protected updated(_changedProperties: PropertyValues<this>): void {
         if (!this.hasInitializedInstance && this.instance !== undefined) {
             this.hasInitializedInstance = true;
-            this.revealPrivateKey = false;
+            if ((this.instance as Partial<CaptchaStage>).pk) {
+                this.revealPrivateKey = false;
+            }
         }
     }
 
