@@ -1,9 +1,11 @@
 import os
 import sys
+from argparse import Namespace
 
 from django.apps.registry import apps
 from django.core.management.base import BaseCommand
 from django.utils.module_loading import import_string, module_has_submodule
+from dramatiq.__main__ import main
 
 from django_dramatiq_postgres.conf import Conf
 
@@ -35,37 +37,38 @@ class Command(BaseCommand):
         **options,
     ):
         worker = Conf().worker
-        executable_name = "dramatiq-gevent" if worker["use_gevent"] else "dramatiq"
-        executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", worker["watch_folder"]] if watch else []
-        if watch_args and worker["watch_use_polling"]:
-            watch_args.append("--watch-use-polling")
+        args = Namespace(
+            broker="authentik.tasks.setup",
+            modules=self._discover_tasks_modules(),
+            path=["."],
+            queues=None,
+            log_file=None,
+            skip_logging=True,
+            use_spawn=False,
+            forks=[],
+            worker_shutdown_timeout=600000,
+            watch=None,
+            watch_use_polling=False,
+            include_patterns=["**.py"],
+            exclude_patterns=None,
+            verbose=0,
+        )
+        if watch:
+            args.watch = worker["watch_folder"]
+            if worker["watch_use_polling"]:
+                args.watch_use_polling = True
 
-        parallel_args = []
         if processes := worker["processes"]:
-            parallel_args.extend(["--processes", str(processes)])
+            args.processes = processes
         if threads := worker["threads"]:
-            parallel_args.extend(["--threads", str(threads)])
+            args.threads = threads
 
-        pid_file_args = []
         if pid_file is not None:
-            pid_file_args = ["--pid-file", pid_file]
+            args.pid_file = pid_file
 
-        verbosity_args = ["-v"] * (verbosity - 1)
+        args.verbose = verbosity - 1
 
-        tasks_modules = self._discover_tasks_modules()
-        process_args = [
-            executable_name,
-            "--path",
-            ".",
-            *parallel_args,
-            *watch_args,
-            *pid_file_args,
-            *verbosity_args,
-            *tasks_modules,
-        ]
-
-        os.execvp(executable_path, process_args)  # nosec
+        main(args)
 
     def _resolve_executable(self, exec_name: str):
         bin_dir = os.path.dirname(sys.executable)
