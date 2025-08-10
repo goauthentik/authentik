@@ -10,6 +10,7 @@ from authentik.lib.utils.reflection import all_subclasses
 class Flag[T]:
     default: T | None = None
     visibility: Literal["none"] | Literal["public"] | Literal["authenticated"] = "none"
+    description: str | None = None
 
     def __init_subclass__(cls, key: str, **kwargs):
         cls.__key = key
