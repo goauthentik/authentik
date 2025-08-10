@@ -11,7 +11,7 @@ import { BaseStageForm } from "#admin/stages/BaseStageForm";
 import { CaptchaStage, CaptchaStageRequest, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, TemplateResult, PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -20,9 +20,10 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
     @state()
     private selectedPreset: PresetKey = "custom";
 
-    firstUpdated(): void {
-        this.selectedPreset = inferPreset(this.instance);
-    }
+    @state()
+    private revealPrivateKey = true;
+
+    private hasInitializedInstance = false;
 
     loadInstance(pk: string): Promise<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaRetrieve({
@@ -40,6 +41,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
             captchaStageRequest: data as unknown as CaptchaStageRequest,
         });
+    }
+
+    protected updated(_changedProperties: PropertyValues<this>): void {
+        if (!this.hasInitializedInstance && this.instance !== undefined) {
+            this.hasInitializedInstance = true;
+            this.revealPrivateKey = false;
+        }
     }
 
     renderForm(): TemplateResult {
@@ -151,20 +159,50 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         label=${msg("Private Key")}
                         input-hint="code"
                         required
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${this.revealPrivateKey}
                         help=${providerPrivateKeyHelp(this.selectedPreset)}
                     ></ak-secret-text-input>
 
                     <ak-switch-input
                         name="interactive"
                         label=${msg("Interactive")}
-                        ?checked="${this.instance?.interactive}"
+                        ?checked=${this.instance?.interactive}
                         help=${msg(
                             "Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.",
                         )}
                         @change=${() => updateEnterpriseJsFromPublicKey(this.instance?.publicKey)}
                     >
                     </ak-switch-input>
+                    <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
+                        <input
+                            type="url"
+                            value="${ifDefined(this.instance?.jsUrl || "" )}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "URL to fetch JavaScript from. Can be replaced with any compatible alternative.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("API URL")} required name="apiUrl">
+                        <input
+                            type="url"
+                            value="${ifDefined(this.instance?.apiUrl || "" )}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "URL used to validate captcha response. Can be replaced with any compatible alternative.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-number-input
                         label=${msg("Score minimum threshold")}
                         required
@@ -198,46 +236,6 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group label="${msg("Advanced settings")}">
-                <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
-                        <input
-                            type="url"
-                            value="${ifDefined(
-                                this.instance?.jsUrl ||
-                                    "https://www.recaptcha.net/recaptcha/api.js",
-                            )}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("API URL")} required name="apiUrl">
-                        <input
-                            type="url"
-                            value="${ifDefined(
-                                this.instance?.apiUrl ||
-                                    "https://www.recaptcha.net/recaptcha/api/siteverify",
-                            )}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -340,18 +338,6 @@ function renderPresetOptions(selected: PresetKey) {
     ${option("recaptcha_enterprise", PRESETS.recaptcha_enterprise.label)}
     ${option("hcaptcha", PRESETS.hcaptcha.label)} ${option("turnstile", PRESETS.turnstile.label)}
     ${option("custom", "Custom")}`;
-}
-
-function inferPreset(current?: Partial<CaptchaStage>): PresetKey {
-    if (!current) return "custom";
-    const js = (current.jsUrl || "").toLowerCase();
-    if (js.includes("hcaptcha.com")) return "hcaptcha";
-    if (js.includes("turnstile")) return "turnstile";
-    if (js.includes("recaptcha/enterprise.js")) return "recaptcha_enterprise";
-    if (js.includes("recaptcha/api.js")) {
-        return current.interactive ? "recaptcha_v2" : "recaptcha_v3";
-    }
-    return "custom";
 }
 
 function providerPublicKeyHelp(preset: PresetKey): string {
