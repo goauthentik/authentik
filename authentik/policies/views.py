@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, Provider, User
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
@@ -125,6 +126,7 @@ class PolicyAccessView(AccessMixin, View):
         """Check if user has access to application."""
         user = user or self.request.user
         policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)
+        policy_engine.empty_result = AppAccessWithoutBindings().get()
         policy_engine.use_cache = False
         policy_engine.request = self.modify_policy_request(policy_engine.request)
         policy_engine.build()

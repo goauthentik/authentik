@@ -2,6 +2,13 @@
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tenants.flags import Flag
+
+
+class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
+
+    default = True
+    visibility = "none"
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
