@@ -10,10 +10,19 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
+from authentik.tenants.flags import Flag
 
 
 class TestBrands(APITestCase):
     """Test brands"""
+
+    def setUp(self):
+        super().setUp()
+        self.default_flags = {}
+        for flag in Flag.available():
+            _flag = flag()
+            if _flag.visibility == "public":
+                self.default_flags[_flag.key] = _flag.get()
 
     def test_current_brand(self):
         """Test Current brand API"""
@@ -29,6 +38,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
@@ -49,6 +59,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
@@ -70,6 +81,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
@@ -87,6 +99,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
@@ -167,6 +180,7 @@ class TestBrands(APITestCase):
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
+                "flags": self.default_flags,
             },
         )
 
