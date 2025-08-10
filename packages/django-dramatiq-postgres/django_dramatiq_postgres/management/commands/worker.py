@@ -3,6 +3,7 @@ from argparse import Namespace
 
 from django.apps.registry import apps
 from django.core.management.base import BaseCommand
+from django.db import connections
 from django.utils.module_loading import import_string, module_has_submodule
 from dramatiq.__main__ import main
 
@@ -68,6 +69,7 @@ class Command(BaseCommand):
 
         args.verbose = verbosity - 1
 
+        connections.close_all()
         sys.exit(main(args))
 
     def _discover_tasks_modules(self) -> tuple[str, list[str]]:
