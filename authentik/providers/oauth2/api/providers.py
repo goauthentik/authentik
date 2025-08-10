@@ -70,6 +70,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "signing_key",
             "encryption_key",
             "redirect_uris",
+            "backchannel_logout_uri",
             "sub_mode",
             "property_mappings",
             "issuer_mode",

@@ -1,4 +1,6 @@
-name: authentik-semgrep
+---
+name: QA - Semgrep
+
 on:
   workflow_dispatch: {}
   pull_request: {}
@@ -7,10 +9,11 @@ on:
       - main
       - master
     paths:
-      - .github/workflows/semgrep.yml
+      - .github/workflows/qa-semgrep.yml
   schedule:
     # random HH:MM to avoid a load spike on GitHub Actions at 00:00
     - cron: '12 15 * * *'
+
 jobs:
   semgrep:
     name: semgrep/ci

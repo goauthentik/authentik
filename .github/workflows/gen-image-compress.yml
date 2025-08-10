@@ -1,5 +1,5 @@
 ---
-name: authentik-compress-images
+name: Gen - Compress images
 
 on:
   push:

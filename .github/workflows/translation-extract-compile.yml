@@ -1,5 +1,6 @@
 ---
-name: authentik-translate-extract-compile
+name: Translation - Extract and compile
+
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight

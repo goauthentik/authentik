@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main-daily
+name: CI - Main daily
 
 on:
   workflow_dispatch:

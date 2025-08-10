@@ -1,4 +1,6 @@
-name: authentik-packages-npm-publish
+---
+name: Packages - Publish NPM packages
+
 on:
   push:
     branches: [main]
@@ -9,6 +11,7 @@ on:
       - packages/tsconfig/**
       - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
+
 jobs:
   publish:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}

@@ -1,4 +1,5 @@
-name: authentik-publish-source-docs
+---
+name: CI - Source code docs
 
 on:
   push:

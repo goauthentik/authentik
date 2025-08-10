@@ -70,6 +70,12 @@ When you create a new OAuth 2.0 provider and app in authentik and you leave the 
 
 For advanced use cases, an authentik admin can use regular expressions (regex) instead of a redirect URL. For example, if you want to list ten different applications, instead of listing them all individually, you can create an expression with wildcards. When using regex, be aware that authentik uses a dot as a separator in the URL, but in regex a dot means "one of any character", a wildcard. You should therefore escape the dot with `\.` to prevent its interpretation as a wildcard.
 
+### OAuth2/OpenID Connect back-channel logout
+
+Using back-channel logout (a server-to-server notification mechanism) allows an identity provider to notify connected OAuth2/OpenID clients whenever a user's session is terminated.
+
+For more information, see our [OAuth2/OpenID Connect back-channel logout](./backchannel-logout.mdx) documentation.
+
 ## OAuth 2.0 flows and grant types
 
 There are three general flows of OAuth 2.0:
