@@ -53,6 +53,7 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     async send(data: Group): Promise<Group> {
+        data.attributes ??= {};
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
