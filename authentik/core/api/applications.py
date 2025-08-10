@@ -67,28 +67,14 @@ class ApplicationSerializer(ModelSerializer):
             user = self.context["request"].user
         return app.get_launch_url(user)
 
-    def validate(self, attrs):
-        """Validate application data"""
-        attrs = super().validate(attrs)
-
-        # Reserved slugs that would clash with OAuth2 provider endpoints
-        reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
-
-        # Get the slug being used
-        slug = attrs.get("slug", getattr(self.instance, "slug", None))
-
-        # Block reserved slugs
-        if slug in reserved_slugs:
+    def validate_slug(self, slug: str) -> str:
+        if slug in Application.reserved_slugs:
             raise ValidationError(
-                {
-                    "slug": _(
-                        "The slug '%(slug)s' is reserved and cannot be used for applications."
-                    )
-                    % {"slug": slug}
-                }
+                _("The slug '{slug}' is reserved and cannot be used for applications.").format(
+                    slug=slug
+                )
             )
-
-        return attrs
+        return slug
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
