@@ -39,7 +39,8 @@ type WebServer struct {
 	Bind    string
 	BindTLS bool
 
-	stop chan struct{} // channel for waiting shutdown
+	ctx    context.Context
+	cancel context.CancelFunc
 
 	ProxyServer *proxyv2.ProxyServer
 	BrandTLS    *brand_tls.Watcher
@@ -92,6 +93,7 @@ func NewWebServer() *WebServer {
 		upstreamClient: upstreamClient,
 		upstreamURL:    u,
 	}
+	ws.ctx, ws.cancel = context.WithCancel(context.Background())
 	ws.configureStatic()
 	ws.configureProxy()
 	// Redirect for sub-folder
@@ -176,6 +178,11 @@ func (ws *WebServer) Start() {
 
 func (ws *WebServer) attemptStartBackend() {
 	for {
+		select {
+		case <-ws.ctx.Done():
+			return
+		default:
+		}
 		if ws.gunicornReady {
 			return
 		}
@@ -219,7 +226,7 @@ func (ws *WebServer) Shutdown() {
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to remove ipc key file")
 	}
-	ws.stop <- struct{}{}
+	ws.cancel()
 }
 
 func (ws *WebServer) listenPlain() {
@@ -249,7 +256,7 @@ func (ws *WebServer) serve(listener net.Listener) {
 	// See https://golang.org/pkg/net/http/#Server.Shutdown
 	idleConnsClosed := make(chan struct{})
 	go func() {
-		<-ws.stop // wait notification for stopping server
+		<-ws.ctx.Done() // wait notification for stopping server
 
 		// We received an interrupt signal, shut down.
 		if err := srv.Shutdown(context.Background()); err != nil {
