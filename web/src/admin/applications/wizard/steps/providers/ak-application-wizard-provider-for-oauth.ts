@@ -48,7 +48,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
                 ${renderForm(
                     provider ?? {},
-                    errors,
+                    errors.provider ?? {},
                     this.showClientSecret,
                     showClientSecretCallback,
                 )}
