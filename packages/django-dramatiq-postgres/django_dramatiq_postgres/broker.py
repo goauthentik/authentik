@@ -325,7 +325,7 @@ class _PostgresConsumer(Consumer):
         )
         return [Notify(pid=0, channel=self.postgres_channel, payload=item) for item in notifies]
 
-    def _poll_for_notify(self):
+    def _poll_for_notify(self) -> list[Notify]:
         with self.listen_connection.cursor() as cursor:
             notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
             self.logger.debug(
@@ -333,7 +333,7 @@ class _PostgresConsumer(Consumer):
                 notifies=len(notifies),
                 channel=self.postgres_channel,
             )
-            self.notifies += notifies
+            return notifies
 
     def _get_message_lock_id(self, message_id: str) -> int:
         return _cast_lock_id(
@@ -364,17 +364,20 @@ class _PostgresConsumer(Consumer):
     @raise_connection_error
     def __next__(self) -> MessageProxy | None:
         # This method is called every second
+        notifies = []
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
         if self._listen_connection is None:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
-            self.notifies = self._fetch_pending_notifies()
+            notifies = self._fetch_pending_notifies()
             self.logger.debug(
                 "Found pending messages in queue",
-                notifies=len(self.notifies),
+                notifies=len(notifies),
                 queue=self.queue_name,
             )
+            # Force creation of listen connection
+            _ = self.listen_connection
 
         processing = len(self.in_processing)
         if processing >= self.prefetch:
@@ -388,15 +391,15 @@ class _PostgresConsumer(Consumer):
             time.sleep(backoff_ms / 1000)
             return None
 
-        if not self.notifies:
-            self._poll_for_notify()
+        if not notifies:
+            notifies = self._poll_for_notify()
 
-        if not self.notifies:
-            self.notifies[:] = self._fetch_pending_notifies()
+        if not notifies:
+            notifies = self._fetch_pending_notifies()
 
         # If we have some notifies, loop to find one to do
-        while self.notifies:
-            notify = self.notifies.pop(0)
+        while notifies:
+            notify = notifies.pop(0)
             task: TaskBase | None = (
                 self.query_set.defer(None).defer("result").filter(message_id=notify.payload).first()
             )
