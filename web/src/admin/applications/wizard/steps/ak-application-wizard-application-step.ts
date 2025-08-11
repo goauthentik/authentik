@@ -123,7 +123,6 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     value=${ifDefined(app.name)}
                     label=${msg("Name")}
                     required
-                    ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("The name displayed in the application library.")}
                 ></ak-text-input>

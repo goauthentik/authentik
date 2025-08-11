@@ -5,11 +5,14 @@ import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
+
+import { ErrorProp } from "#components/ak-field-errors";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
@@ -248,7 +251,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     public reportValidity(): boolean {
-        return !!this.form?.reportValidity?.();
+        const form = this.form;
+
+        if (!form) {
+            console.warn("authentik/forms: unable to check validity, no form found", this);
+            return false;
+        }
+
+        return reportValidityDeep(form);
     }
 
     /**
@@ -294,11 +304,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             .catch(async (error: unknown) => {
                 if (error instanceof PreventFormSubmit && error.element) {
                     error.element.errorMessages = [error.message];
-                    error.element.invalid = true;
                 }
 
                 const parsedError = await parseAPIResponseError(error);
                 let errorMessage = pluckErrorDetail(error);
+                let focused = false;
 
                 if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
@@ -315,13 +325,22 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                         if (!elementName) continue;
 
                         const snakeProperty = snakeCase(elementName);
+                        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
 
-                        if (snakeProperty in parsedError) {
-                            element.errorMessages = parsedError[snakeProperty];
-                            element.invalid = true;
-                        } else {
-                            element.errorMessages = [];
-                            element.invalid = false;
+                        element.errorMessages = errorMessages;
+                        const { controlledElement } = element;
+
+                        if (!focused && Array.isArray(errorMessages) && errorMessages.length) {
+                            if (
+                                controlledElement?.checkVisibility() &&
+                                controlledElement instanceof HTMLElement
+                            ) {
+                                focused = true;
+
+                                requestAnimationFrame(() => {
+                                    return controlledElement.focus?.();
+                                });
+                            }
                         }
                     }
 
