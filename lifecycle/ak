@@ -96,6 +96,9 @@ elif [[ "$1" == "healthcheck" ]]; then
 elif [[ "$1" == "dump_config" ]]; then
     shift
     exec python -m authentik.lib.config $@
+elif [[ "$1" == "support" ]]; then
+    wait_for_db
+    exec python -m lifecycle.support
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
 else

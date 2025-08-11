@@ -42,7 +42,11 @@ class Exporter:
             if model in self.excluded_models:
                 continue
             for obj in self.get_model_instances(model):
-                yield BlueprintEntry.from_model(obj)
+                yield BlueprintEntry.from_model(self.alter_model(obj))
+
+    def alter_model(self, model: Model):
+        """Hook to modify the model before exporting"""
+        return model
 
     def get_model_instances(self, model: type[Model]) -> QuerySet:
         """Return a queryset for `model`. Can be used to filter some

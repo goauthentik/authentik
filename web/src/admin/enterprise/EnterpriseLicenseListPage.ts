@@ -262,6 +262,16 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__body">
+                <ak-action-button
+                    class="pf-m-secondary pf-m-block"
+                    .apiRequest=${() => {
+                        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseSupportBundleCreate();
+                    }}
+                >
+                    ${msg("Create support bundle")}
+                </ak-action-button>
+            </div>
+            <div class="pf-c-card__body">
                 <a target="_blank" href="https://docs.goauthentik.io/docs/enterprise/get-started"
                     >${msg("Learn more")}</a
                 >

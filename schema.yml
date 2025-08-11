@@ -7018,6 +7018,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /enterprise/support_bundle/:
+    post:
+      operationId: enterprise_support_bundle_create
+      description: Generate a support bundle.
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /events/events/:
     get:
       operationId: events_events_list
