@@ -1,10 +1,13 @@
-name: authentik-api-py-publish
+---
+name: API - Publish Python client
+
 on:
   push:
     branches: [main]
     paths:
       - "schema.yml"
   workflow_dispatch:
+
 jobs:
   build:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}

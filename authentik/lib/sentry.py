@@ -10,6 +10,7 @@ from django.db import DatabaseError, InternalError, OperationalError, Programmin
 from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
+from dramatiq.errors import Retry
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from psycopg.errors import Error
@@ -68,6 +69,8 @@ ignored_classes = (
     LocalProtocolError,
     # rest_framework error
     APIException,
+    # dramatiq errors
+    Retry,
     # custom baseclass
     SentryIgnoredException,
     # ldap errors

@@ -1,5 +1,6 @@
+---
 # Re-usable workflow for a multi-architecture build
-name: Multi-arch container build
+name: Reusable - Multi-arch container build
 
 on:
   workflow_call:

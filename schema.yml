@@ -104,6 +104,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SettingsRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -41459,7 +41460,9 @@ components:
       - authentik.tasks
       - authentik.admin
       - authentik.api
+      - authentik.core
       - authentik.crypto
+      - authentik.enterprise
       - authentik.events
       - authentik.flows
       - authentik.outposts
@@ -41511,8 +41514,6 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
-      - authentik.core
-      - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -44165,12 +44166,21 @@ components:
         default_locale:
           type: string
           readOnly: true
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+          readOnly: true
       required:
       - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
       - default_locale
+      - flags
       - matched_domain
       - ui_footer_links
       - ui_theme
@@ -48981,7 +48991,13 @@ components:
     ModelEnum:
       enum:
       - authentik_tenants.domain
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.applicationentitlement
+      - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
       - authentik_events.notification
@@ -49070,12 +49086,6 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
-      - authentik_core.group
-      - authentik_core.user
-      - authentik_core.application
-      - authentik_core.applicationentitlement
-      - authentik_core.token
-      - authentik_enterprise.license
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -55822,6 +55832,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -60043,6 +60060,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -60096,6 +60122,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SeverityEnum:
       enum:
       - notice
