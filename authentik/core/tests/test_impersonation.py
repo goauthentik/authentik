@@ -59,7 +59,7 @@ class TestImpersonation(APITestCase):
             ),
             data={"reason": "some reason"},
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -80,7 +80,7 @@ class TestImpersonation(APITestCase):
             ),
             data={"reason": "some reason"},
         )
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 204)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -137,10 +137,10 @@ class TestImpersonation(APITestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}),
+            reverse("authentik_api:user-impersonate", kwargs={"pk": self.other_user.pk}),
             data={"reason": ""},
         )
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
