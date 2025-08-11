@@ -548,6 +548,9 @@ class Application(SerializerModel, PolicyBindingModel):
 
     objects = ApplicationQuerySet.as_manager()
 
+    # Reserved slugs that would clash with OAuth2 provider endpoints
+    reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
+
     @property
     def serializer(self) -> Serializer:
         from authentik.core.api.applications import ApplicationSerializer

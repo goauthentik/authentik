@@ -4,7 +4,7 @@ import json
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
-from os import environ
+from os import environ, getenv
 from sys import stderr
 from time import sleep
 from typing import Any
@@ -44,6 +44,8 @@ RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
 
 def get_local_ip() -> str:
     """Get the local machine's IP"""
+    if local_ip := getenv("LOCAL_IP"):
+        return local_ip
     hostname = socket.gethostname()
     ip_addr = socket.gethostbyname(hostname)
     return ip_addr

@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = "==3.13.*"
 
 [manifest]
@@ -945,6 +945,7 @@ dependencies = [
     { name = "django" },
     { name = "django-pgtrigger" },
     { name = "dramatiq", extra = ["watch"] },
+    { name = "structlog" },
     { name = "tenacity" },
 ]
 
@@ -954,6 +955,7 @@ requires-dist = [
     { name = "django", specifier = ">=4.2,<6.0" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
     { name = "dramatiq", extras = ["watch"], specifier = ">=1.17,<1.18" },
+    { name = "structlog", specifier = ">=25,<26" },
     { name = "tenacity", specifier = ">=9,<10" },
 ]
 
