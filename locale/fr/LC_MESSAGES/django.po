@@ -9,9 +9,9 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
-# Tina, 2024
 # Charles Leclerc, 2025
 # nerdinator <florian.dupret@gmail.com>, 2025
+# Tina, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 00:12+0000\n"
+"POT-Creation-Date: 2025-08-11 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -147,6 +147,13 @@ msgstr "Marques"
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
 msgstr "L'utilisateur n'a pas accès à l'application."
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr ""
+"Le slug '{slug}' est réservé et ne peut pas être utilisé pour les "
+"applications."
 
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
@@ -1565,6 +1572,22 @@ msgstr "Score de Réputation"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Scores de Réputation"
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr "En attente de l'authentification..."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+"Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
+"se rafraîchira lorsque l'authentification sera terminée."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr "S'authentifier dans cet onglet"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -4223,6 +4246,11 @@ msgstr "Déclencher manuellement une planification"
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
 msgstr "Supprime les anciens statuts des workers."
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr "La valeur de la balise {flag_key} doit être de type {type}."
 
 #: authentik/tenants/models.py
 msgid ""
