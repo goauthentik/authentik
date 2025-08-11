@@ -59,7 +59,7 @@ export class HorizontalFormElement extends AKElement {
     @property({ type: String })
     public label?: string;
 
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: false })
     public required?: boolean;
 
     @property({ attribute: false })
