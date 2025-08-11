@@ -124,7 +124,8 @@ class RACPropertyMapping(PropertyMapping):
         for key, value in self.static_settings.items():
             if value and value != "":
                 settings[key] = value
-        always_merger.merge(settings, super().evaluate(user, request, **kwargs))
+        if self.expression != "":
+            always_merger.merge(settings, super().evaluate(user, request, **kwargs))
         return settings
 
     @property
