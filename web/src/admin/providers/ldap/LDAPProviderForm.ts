@@ -34,7 +34,7 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, [], this.brand);
+        return renderForm({ provider: this.instance, brand: this.brand });
     }
 }
 

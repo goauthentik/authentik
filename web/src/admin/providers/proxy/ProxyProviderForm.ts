@@ -61,11 +61,14 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
             this.showHttpBasic = el.checked;
         };
 
-        return renderForm(this.instance ?? {}, [], {
-            mode: this.mode,
-            onSetMode,
-            showHttpBasic: this.showHttpBasic,
-            onSetShowHttpBasic,
+        return renderForm({
+            provider: this.instance ?? {},
+            args: {
+                mode: this.mode,
+                onSetMode,
+                showHttpBasic: this.showHttpBasic,
+                onSetShowHttpBasic,
+            },
         });
     }
 }
