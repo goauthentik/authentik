@@ -288,24 +288,27 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 
 1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top right corner.
 2. Under **App bundles**, install the **SSO & SAML authentication** bundle.
-3. Click your profile picture in the top right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click on **Use built-in SAML authentication**.
-4. Configure the following settings in the **General** section:
+3. Click your profile picture in the top right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
+4. In the **General** section, set:
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
-
-    :::danger
-    Using the UID attribute as username is **not recommended** because of its mutable nature. If you map to the username instead, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) and set the UID attribute to `http://schemas.goauthentik.io/2021/02/saml/username`.
-    :::
     - **Optional display name**: `authentik`
 
-5. Configure the following settings in the **Identity Provider Data** section:
+    :::danger
+    Using the UID attribute as username is **not recommended** because of its mutable nature. If you map to the username instead, [disable username changing](/docs/sys-mgmt/settings#allow-users-to-change-username) and set the UID attribute to `http://schemas.goauthentik.io/2021/02/saml/username`.
+    :::
+
+5. In the **Identity Provider Data** section, set:
     - **Identifier of the IdP entity**: `https://authentik.company`
     - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
 
     Under _Show optional Identity Provider settings_:
     - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
-    - **X.509 certificate of the IdP**: Paste the contents of your certificate file.
+    - **X.509 certificate of the IdP**: paste the contents of your certificate file
 
-6. Configure the following settings in the **Attribute mapping** section: - **Attribute to map the displayname to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` - **Attribute to map the users groups to**: `http://schemas.xmlsoap.org/claims/Group`
+6. In the **Attribute mapping** section, set:
+    - **Attribute to map the display name to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Attribute to map the user's groups to**: `http://schemas.xmlsoap.org/claims/Group`
 
 :::note
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
