@@ -76,11 +76,18 @@ var rootCmd = &cobra.Command{
 					l.WithError(err).Warning("failed to start worker")
 				}
 			}()
+			defer func() {
+				if w == nil {
+					return
+				}
+				l.Info("Shutting down worker")
+				w.Kill()
+			}()
 		}
 		ws.Start()
 		defer func() {
 			l.Info("shutting down webserver")
-			go ws.Shutdown()
+			ws.Shutdown()
 		}()
 		<-ex
 	},
