@@ -22,6 +22,8 @@ import (
 	"goauthentik.io/internal/web"
 )
 
+var debugWorker = true
+
 var rootCmd = &cobra.Command{
 	Use:              "authentik",
 	Short:            "Start authentik instance",
@@ -64,7 +66,7 @@ var rootCmd = &cobra.Command{
 			}
 			go attemptProxyStart(ws, u)
 		})
-		if config.Get().Debug {
+		if config.Get().Debug && debugWorker {
 			w := gounicorn.NewWorker(func() bool {
 				return true
 			})
@@ -76,9 +78,11 @@ var rootCmd = &cobra.Command{
 			}()
 		}
 		ws.Start()
+		defer func() {
+			l.Info("shutting down webserver")
+			go ws.Shutdown()
+		}()
 		<-ex
-		l.Info("shutting down webserver")
-		go ws.Shutdown()
 	},
 }
 
@@ -117,5 +121,11 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 		} else {
 			select {}
 		}
+	}
+}
+
+func init() {
+	if config.Get().Debug {
+		rootCmd.PersistentFlags().BoolVarP(&debugWorker, "with-worker", "w", true, "Whether to run a worker process in debug mode")
 	}
 }
