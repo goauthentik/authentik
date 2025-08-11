@@ -1,4 +1,6 @@
-name: authentik-packages-npm-publish
+---
+name: Packages - Publish NPM packages
+
 on:
   push:
     branches: [main]
@@ -7,8 +9,9 @@ on:
       - packages/eslint-config/**
       - packages/prettier-config/**
       - packages/tsconfig/**
-      - web/packages/esbuild-plugin-live-reload/**
+      - packages/esbuild-plugin-live-reload/**
   workflow_dispatch:
+
 jobs:
   publish:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
@@ -21,7 +24,7 @@ jobs:
           - packages/eslint-config
           - packages/prettier-config
           - packages/tsconfig
-          - web/packages/esbuild-plugin-live-reload
+          - packages/esbuild-plugin-live-reload
     steps:
       - uses: actions/checkout@v4
         with:

@@ -1,17 +1,21 @@
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import type { RadioOption } from "#elements/forms/Radio";
 
 import { PolicyEngineMode } from "@goauthentik/api";
 
-export const policyEngineModes = [
+import { msg } from "@lit/localize";
+import { html } from "lit";
+
+export const policyEngineModes: RadioOption<PolicyEngineMode>[] = [
     {
-        label: "any",
+        label: "ANY",
+        className: "pf-m-monospace",
         value: PolicyEngineMode.Any,
         default: true,
         description: html`${msg("Any policy must match to grant access")}`,
     },
     {
-        label: "all",
+        label: "ALL",
+        className: "pf-m-monospace",
         value: PolicyEngineMode.All,
         description: html`${msg("All policies must match to grant access")}`,
     },

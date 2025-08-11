@@ -1,3 +1,15 @@
+import "#components/ak-nav-buttons";
+import "#elements/ak-locale-context/ak-locale-context";
+import "#elements/banner/EnterpriseStatusBanner";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/messages/MessageContainer";
+import "#elements/notifications/APIDrawer";
+import "#elements/notifications/NotificationDrawer";
+import "#elements/router/RouterOutlet";
+import "#elements/sidebar/Sidebar";
+import "#elements/sidebar/SidebarItem";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
@@ -6,27 +18,19 @@ import {
 } from "#common/constants";
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
-import { UIConfig, getConfigForUser } from "#common/ui/config";
-import { DefaultBrand } from "#common/ui/config";
+import { DefaultBrand, getConfigForUser, UIConfig } from "#common/ui/config";
 import { me } from "#common/users";
 import { WebsocketClient } from "#common/ws";
-import "#components/ak-nav-buttons";
+
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { AKElement } from "#elements/Base";
-import "#elements/ak-locale-context/ak-locale-context";
-import "#elements/banner/EnterpriseStatusBanner";
-import "#elements/buttons/ActionButton/ak-action-button";
-import "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import "#elements/notifications/APIDrawer";
-import "#elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import "#elements/router/RouterOutlet";
-import "#elements/sidebar/Sidebar";
-import "#elements/sidebar/SidebarItem";
 import { themeImage } from "#elements/utils/images";
+
 import { ROUTES } from "#user/Routes";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -41,8 +45,6 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { EventsApi, SessionUser } from "@goauthentik/api";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
@@ -222,7 +224,6 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                                 <div class="pf-c-drawer__body">
                                     <main class="pf-c-page__main">
                                         <ak-router-outlet
-                                            role="main"
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
@@ -268,8 +269,6 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @state()
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    ws: WebsocketClient;
-
     @state()
     notificationsCount = 0;
 
@@ -281,8 +280,11 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
 
     constructor() {
         configureSentry(true);
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.fetchConfigurationDetails();
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
@@ -298,11 +300,13 @@ export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
+
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
 
-        super.disconnectedCallback();
+        WebsocketClient.close();
     }
 
     toggleNotificationDrawer() {

@@ -1,21 +1,18 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import "#components/ak-hidden-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
-} from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-hidden-text-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers";
 
 import {
     CoreApi,
@@ -25,6 +22,11 @@ import {
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
@@ -55,9 +57,8 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
                         <input
                             type="text"
@@ -72,6 +73,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     <ak-hidden-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
+                        autocomplete="off"
                         value="${this.instance?.clientSecret ?? ""}"
                         input-hint="code"
                         required
@@ -157,9 +159,8 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header">${msg("User filtering")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("User filtering")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
                         <label class="pf-c-switch">
                             <input
@@ -210,9 +211,8 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"

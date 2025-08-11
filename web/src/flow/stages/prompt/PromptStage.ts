@@ -1,12 +1,21 @@
+import "#elements/Divider";
+import "#elements/forms/FormElement";
+import "#flow/components/ak-flow-card";
+
+import { LOCALES } from "#elements/ak-locale-context/definitions";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
-import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    PromptChallenge,
+    PromptChallengeResponseRequest,
+    PromptTypeEnum,
+    StagePrompt,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -19,36 +28,27 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    PromptChallenge,
-    PromptChallengeResponseRequest,
-    PromptTypeEnum,
-    StagePrompt,
-} from "@goauthentik/api";
-
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(
     BaseStage<PromptChallenge, PromptChallengeResponseRequest>,
 ) {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFAlert,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            PFCheck,
-            css`
-                textarea {
-                    min-height: 4em;
-                    max-height: 15em;
-                    resize: vertical;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFAlert,
+        PFForm,
+        PFFormControl,
+        PFTitle,
+        PFButton,
+        PFCheck,
+        css`
+            textarea {
+                min-height: 4em;
+                max-height: 15em;
+                resize: vertical;
+            }
+        `,
+    ];
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
         switch (prompt.type) {
@@ -277,28 +277,14 @@ ${prompt.initialValue}</textarea
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
-        }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                <form
-                    class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
-                >
-                    ${this.challenge.fields.map((prompt) => {
-                        return this.renderField(prompt);
-                    })}
-                    ${this.renderNonFieldErrors()} ${this.renderContinue()}
-                </form>
-            </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+        return html`<ak-flow-card .challenge=${this.challenge}>
+            <form class="pf-c-form" @submit=${this.submitForm}>
+                ${this.challenge.fields.map((prompt) => {
+                    return this.renderField(prompt);
+                })}
+                ${this.renderNonFieldErrors()} ${this.renderContinue()}
+            </form>
+        </ak-flow-card>`;
     }
 }
 

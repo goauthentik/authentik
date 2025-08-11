@@ -257,3 +257,35 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(
             Application.objects.with_provider().get(slug=slug).get_provider(), provider
         )
+
+    def test_create_application_with_reserved_slug(self):
+        """Test creating an application with a reserved slug"""
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:application-list"),
+            {
+                "name": "Test Application",
+                "slug": Application.reserved_slugs[0],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("slug", response.data)
+        self.assertIn("reserved", response.data["slug"][0])
+
+    def test_update_application_with_reserved_slug(self):
+        """Test updating an application to use a reserved slug"""
+        self.client.force_login(self.user)
+        app = Application.objects.create(
+            name="Test Application",
+            slug="valid-slug",
+        )
+
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": app.slug}),
+            {
+                "slug": Application.reserved_slugs[0],
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("slug", response.data)
+        self.assertIn("reserved", response.data["slug"][0])

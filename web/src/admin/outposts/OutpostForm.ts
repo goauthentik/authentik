@@ -1,32 +1,35 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvider, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import YAML from "yaml";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-import { map } from "lit/directives/map.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+import { groupBy } from "#common/utils";
+
+import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+import { PaginatedResponse } from "#elements/table/Table";
 
 import {
     Outpost,
     OutpostDefaultConfig,
-    OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
+    OutpostTypeEnum,
     ProvidersApi,
     ServiceConnection,
 } from "@goauthentik/api";
+
+import YAML from "yaml";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { map } from "lit/directives/map.js";
 
 interface ProviderBase {
     pk: number;
@@ -231,9 +234,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     selected-label="${msg("Selected Applications")}"
                 ></ak-dual-select-provider>
             </ak-form-element-horizontal>
-            <ak-form-group aria-label=${msg("Advanced settings")}>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Configuration")} name="config">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}

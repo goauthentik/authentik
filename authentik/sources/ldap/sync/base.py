@@ -10,22 +10,23 @@ from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.ldap.models import LDAPSource, flatten
+from authentik.tasks.models import Task
 
 
 class BaseLDAPSynchronizer:
     """Sync LDAP Users and groups into authentik"""
 
     _source: LDAPSource
+    _task: Task
     _logger: BoundLogger
     _connection: Connection
-    _messages: list[str]
     mapper: SourceMapper
     manager: PropertyMappingManager
 
-    def __init__(self, source: LDAPSource):
+    def __init__(self, source: LDAPSource, task: Task):
         self._source = source
+        self._task = task
         self._connection = source.connection()
-        self._messages = []
         self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
 
     @staticmethod
@@ -47,11 +48,6 @@ class BaseLDAPSynchronizer:
         raise NotImplementedError()
 
     @property
-    def messages(self) -> list[str]:
-        """Get all UI messages"""
-        return self._messages
-
-    @property
     def base_dn_users(self) -> str:
         """Shortcut to get full base_dn for user lookups"""
         if self._source.additional_user_dn:
@@ -64,14 +60,6 @@ class BaseLDAPSynchronizer:
         if self._source.additional_group_dn:
             return f"{self._source.additional_group_dn},{self._source.base_dn}"
         return self._source.base_dn
-
-    def message(self, *args, **kwargs):
-        """Add message that is later added to the System Task and shown to the user"""
-        formatted_message = " ".join(args)
-        if "dn" in kwargs:
-            formatted_message += f"; DN: {kwargs['dn']}"
-        self._messages.append(formatted_message)
-        self._logger.warning(*args, **kwargs)
 
     def get_objects(self, **kwargs) -> Generator:
         """Get objects from LDAP, implemented in subclass"""

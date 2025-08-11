@@ -144,6 +144,16 @@ export function composeResponseErrorDescriptor(descriptor: ResponseErrorDescript
     return `${descriptor.headline}: ${descriptor.reason}`;
 }
 
+export const ErrorFieldFallbackKeys = [
+    // ---
+    "detail", // OpenAPI
+    "non_field_errors", // ValidationError.non_field_errors
+    "message", // Error.prototype.message
+    "string", // OpenAPI
+] as const;
+
+export type FallbackError = Record<(typeof ErrorFieldFallbackKeys)[number], string | undefined>;
+
 /**
  * Attempts to pluck a human readable error message from a {@linkcode ValidationError}.
  */
@@ -172,12 +182,14 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
         return fallback;
     }
 
-    if ("detail" in errorLike && typeof errorLike.detail === "string") {
-        return errorLike.detail;
-    }
+    for (const fieldKey of ErrorFieldFallbackKeys) {
+        if (!(fieldKey in errorLike)) continue;
 
-    if ("message" in errorLike && typeof errorLike.message === "string") {
-        return errorLike.message;
+        const value = (errorLike as FallbackError)[fieldKey];
+
+        if (typeof value === "string" && value) {
+            return value;
+        }
     }
 
     return fallback;

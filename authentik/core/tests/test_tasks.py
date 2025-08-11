@@ -36,7 +36,7 @@ class TestTasks(APITestCase):
             expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
         )
         key = token.key
-        clean_expired_models.delay().get()
+        clean_expired_models.send()
         token.refresh_from_db()
         self.assertNotEqual(key, token.key)
 
@@ -50,5 +50,5 @@ class TestTasks(APITestCase):
                 USER_ATTRIBUTE_EXPIRES: mktime(now().timetuple()),
             },
         )
-        clean_temporary_users.delay().get()
+        clean_temporary_users.send()
         self.assertFalse(User.objects.filter(username=username))

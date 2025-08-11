@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -19,127 +19,153 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * trigger the `expanded` property as needed.
  */
 @customElement("ak-form-group")
-export class FormGroup extends AKElement {
-    @property({ type: Boolean, reflect: true })
-    expanded = false;
+export class AKFormGroup extends AKElement {
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFButton,
+        PFFormControl,
 
-    @property({ type: String, attribute: "aria-label", reflect: true })
-    ariaLabel = msg("Details");
+        css`
+            :host([theme="dark"]) {
+                --marker-color: var(--pf-global--Color--200);
+                --marker-color-hover: var(--ak-dark-foreground-darker);
+            }
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            css`
-                /**
-                 * Workaround to trigger the hover effect on the button when the header is hovered.
-                 *
-                 * Alternatively, we group the expander button and header, but the grid would have to be
-                 * restructured to allow for this.
-                 */
-                .pf-c-form__field-group:has(.pf-c-form__field-group-header:hover) .pf-c-button {
-                    color: var(--pf-c-button--m-plain--hover--Color) !important;
+            .pf-c-form__field-group-header-description {
+                text-wrap: balance;
+            }
+
+            details {
+                &::details-content {
+                    padding-inline-start: var(
+                        --pf-c-form__field-group--GridTemplateColumns--toggle
+                    );
                 }
 
-                /**
-                 * Transition ensuring a smooth animation when the body is expanded/collapsed.
-                 */
-                slot[name="body"] {
-                    transition-behavior: allow-discrete;
-                    transition-property: opacity, display, transform;
-                    transition-duration: var(--pf-global--TransitionDuration);
-                    transition-timing-function: var(--pf-global--TimingFunction);
-                    display: block;
-                    opacity: 1;
-                    transform: scaleY(1);
-                    transform-origin: top left;
-                    will-change: opacity, display, transform;
-                }
+                & > summary {
+                    list-style-position: outside;
+                    margin-inline-start: 2em;
+                    padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
+                    padding: var(--pf-global--spacer--md);
+                    list-style-type: "\\f105";
+                    cursor: pointer;
+                    user-select: none;
 
-                slot[name="body"][hidden] {
-                    opacity: 0 !important;
-                    display: none !important;
-                    transform: scaleY(0) !important;
-                }
+                    &::marker {
+                        color: var(--marker-color, var(--pf-global--Color--200));
+                        transition: var(--pf-c-form__field-group-toggle-icon--Transition);
+                        font-family: "Font Awesome 5 Free";
+                        font-weight: 900;
+                    }
 
-                @media (prefers-reduced-motion) {
-                    slot[name="body"] {
-                        transition-duration: 0s;
+                    &:hover::marker {
+                        outline: 1px dashed red;
+                        color: var(--marker-color-hover, var(--pf-global--Color--100));
                     }
                 }
-            `,
-        ];
+
+                &[open] summary {
+                    list-style-type: "\\f107";
+                }
+            }
+        `,
+    ];
+
+    //region Properties
+
+    @property({ type: Boolean, reflect: true })
+    public open = false;
+
+    @property({ type: String, reflect: true })
+    public label = msg("Details");
+
+    @property({ type: String, reflect: true })
+    public description?: string;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        const previousOpen = changedProperties.get("open");
+
+        if (typeof previousOpen !== "boolean") return;
+
+        if (this.open && this.open !== previousOpen) {
+            cancelAnimationFrame(this.#scrollAnimationFrame);
+
+            this.#scrollAnimationFrame = requestAnimationFrame(this.#scrollIntoView);
+        }
     }
 
-    formRef = createRef<HTMLFormElement>();
+    #detailsRef = createRef<HTMLDetailsElement>();
 
-    scrollAnimationFrame = -1;
+    #scrollAnimationFrame = -1;
 
-    scrollIntoView = (): void => {
-        this.formRef.value?.scrollIntoView({
+    #scrollIntoView = (): void => {
+        this.#detailsRef.value?.scrollIntoView({
             behavior: "smooth",
         });
     };
 
-    toggleExpanded = (): void => {
-        cancelAnimationFrame(this.scrollAnimationFrame);
+    /**
+     * Toggle the open state of the form group.
+     */
+    public toggle = (event: Event): void => {
+        event.preventDefault();
 
-        this.expanded = !this.expanded;
-
-        if (this.expanded) {
-            this.scrollAnimationFrame = requestAnimationFrame(this.scrollIntoView);
-        }
+        this.open = !this.open;
     };
 
-    render(): TemplateResult {
-        return html`<div class="pf-c-form" ${ref(this.formRef)}>
-            <div class="pf-c-form__field-group ${this.expanded ? "pf-m-expanded" : ""}">
-                <div class="pf-c-form__field-group-toggle">
-                    <div class="pf-c-form__field-group-toggle-button">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            aria-expanded="${this.expanded}"
-                            aria-label=${this.ariaLabel}
-                            @click=${this.toggleExpanded}
-                        >
-                            <span class="pf-c-form__field-group-toggle-icon">
-                                <i class="fas fa-angle-right" aria-hidden="true"></i>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div
-                    class="pf-c-form__field-group-header pf-m-pressable"
-                    @click=${this.toggleExpanded}
-                    aria-expanded=${this.expanded}
-                    aria-role="button"
-                >
+    //#region Render
+
+    public render(): TemplateResult {
+        return html`
+            <details
+                ${ref(this.#detailsRef)}
+                ?open=${this.open}
+                aria-expanded=${this.open ? "true" : "false"}
+                role="group"
+                aria-labelledby="form-group-header-title"
+                aria-describedby="form-group-expandable-content-description"
+            >
+                <summary @click=${this.toggle}>
                     <div class="pf-c-form__field-group-header-main">
-                        <div class="pf-c-form__field-group-header-title">
-                            <div class="pf-c-form__field-group-header-title-text">
+                        <header class="pf-c-form__field-group-header-title">
+                            <div
+                                class="pf-c-form__field-group-header-title-text"
+                                id="form-group-header-title"
+                                role="heading"
+                                aria-level="3"
+                            >
+                                ${this.label}
                                 <slot name="header"></slot>
                             </div>
-                        </div>
-                        <div class="pf-c-form__field-group-header-description">
+                        </header>
+
+                        <div
+                            class="pf-c-form__field-group-header-description"
+                            data-test-id="form-group-header-description"
+                            id="form-group-expandable-content-description"
+                        >
+                            ${this.description}
                             <slot name="description"></slot>
                         </div>
                     </div>
+                </summary>
+                <div id="form-group-expandable-content">
+                    <slot></slot>
                 </div>
-                <slot
-                    ?hidden=${!this.expanded}
-                    class="pf-c-form__field-group-body"
-                    name="body"
-                ></slot>
-            </div>
-        </div>`;
+            </details>
+        `;
     }
+
+    //#endregion
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-form-group": FormGroup;
+        "ak-form-group": AKFormGroup;
     }
 }

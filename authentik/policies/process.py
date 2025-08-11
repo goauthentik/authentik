@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
@@ -95,10 +95,13 @@ class PolicyProcess(PROCESS_CLASS):
         except PolicyException as exc:
             # Either use passed original exception or whatever we have
             src_exc = exc.src_exc if exc.src_exc else exc
-            error_string = exception_to_string(src_exc)
             # Create policy exception event, only when we're not debugging
             if not self.request.debug:
-                self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
+                self.create_event(
+                    EventAction.POLICY_EXCEPTION,
+                    message="Policy failed to execute",
+                    exception=exception_to_dict(src_exc),
+                )
             LOGGER.debug("P_ENG(proc): error, using failure result", exc=src_exc)
             policy_result = PolicyResult(self.binding.failure_result, str(src_exc))
         policy_result.source_binding = self.binding
@@ -143,5 +146,5 @@ class PolicyProcess(PROCESS_CLASS):
         try:
             self.connection.send(self.profiling_wrapper())
         except Exception as exc:
-            LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
+            LOGGER.warning("Policy failed to run", exc=exc)
             self.connection.send(PolicyResult(False, str(exc)))

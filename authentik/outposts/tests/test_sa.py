@@ -37,6 +37,7 @@ class OutpostTests(TestCase):
 
         # We add a provider, user should only have access to outpost and provider
         outpost.providers.add(provider)
+        provider.refresh_from_db()
         permissions = UserObjectPermission.objects.filter(user=outpost.user).order_by(
             "content_type__model"
         )

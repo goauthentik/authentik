@@ -1,15 +1,17 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/Alert";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/Alert";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import { GeoipBindingEnum, NetworkBindingEnum, StagesApi, UserLoginStage } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-user-login-form")
 export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
@@ -41,9 +43,8 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Session duration")}
                         required
@@ -91,6 +92,26 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 'If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.',
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Remember device")}
+                        required
+                        name="rememberDevice"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.rememberDevice ?? "days=30"}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.",
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>

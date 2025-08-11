@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"strings"
-	"time"
+	"syscall"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -14,9 +15,7 @@ import (
 	"goauthentik.io/internal/utils/web"
 )
 
-var workerHeartbeat = path.Join(os.TempDir(), "authentik-worker")
-
-const workerThreshold = 30
+var workerPidFile = path.Join(os.TempDir(), "authentik-worker.pid")
 
 var healthcheckCmd = &cobra.Command{
 	Use: "healthcheck",
@@ -61,16 +60,79 @@ func checkServer() int {
 	return 0
 }
 
+func splitHostPort(address string) (host, port string) {
+	lastColon := strings.LastIndex(address, ":")
+	if lastColon == -1 {
+		return address, ""
+	}
+
+	host = address[:lastColon]
+	port = address[lastColon+1:]
+
+	if strings.HasPrefix(host, "[") && strings.HasSuffix(host, "]") {
+		host = host[1 : len(host)-1]
+	}
+
+	return host, port
+}
+
 func checkWorker() int {
-	stat, err := os.Stat(workerHeartbeat)
+	pidB, err := os.ReadFile(workerPidFile)
 	if err != nil {
-		log.WithError(err).Warning("failed to check worker heartbeat file")
+		log.WithError(err).Warning("failed to check worker PID file")
 		return 1
 	}
-	delta := time.Since(stat.ModTime()).Seconds()
-	if delta > workerThreshold {
-		log.WithField("threshold", workerThreshold).WithField("delta", delta).Warning("Worker hasn't updated heartbeat in threshold")
+	pidS := strings.TrimSpace(string(pidB[:]))
+	pid, err := strconv.Atoi(pidS)
+	if err != nil {
+		log.WithError(err).Warning("failed to find worker process PID")
 		return 1
 	}
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		log.WithError(err).Warning("failed to find worker process")
+		return 1
+	}
+	err = process.Signal(syscall.Signal(0))
+	if err != nil {
+		log.WithError(err).Warning("failed to signal worker process")
+		return 1
+	}
+	h := &http.Client{
+		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
+	}
+
+	host, port := splitHostPort(config.Get().Listen.HTTP)
+
+	if host == "0.0.0.0" || host == "::" {
+		url := fmt.Sprintf("http://%s:%s/-/health/ready/", "::1", port)
+		_, err := h.Head(url)
+		if err != nil {
+			log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
+			url := fmt.Sprintf("http://%s:%s/-/health/ready/", "127.0.0.1", port)
+			res, err := h.Head(url)
+			if err != nil {
+				log.WithError(err).WithField("url", url).Warning("failed to send healthcheck request")
+				return 1
+			}
+			if res.StatusCode >= 400 {
+				log.WithField("status", res.StatusCode).Warning("unhealthy status code")
+				return 1
+			}
+		}
+	} else {
+		url := fmt.Sprintf("http://%s:%s/-/health/ready/", host, port)
+		res, err := h.Head(url)
+		if err != nil {
+			log.WithError(err).Warning("failed to send healthcheck request")
+			return 1
+		}
+		if res.StatusCode >= 400 {
+			log.WithField("status", res.StatusCode).Warning("unhealthy status code")
+			return 1
+		}
+	}
+
+	log.Debug("successfully checked health")
 	return 0
 }

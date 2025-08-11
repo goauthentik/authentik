@@ -23,8 +23,9 @@ export const DefaultIgnorePatterns = [
     "**/out",
     "**/dist",
     "**/.wireit",
-    "website/build/**",
-    "website/.docusaurus/**",
+    // TODO: Replace after moving to `docs` directory.
+    "website/**/build/**",
+    "website/**/.docusaurus/**",
     "**/node_modules",
     "**/coverage",
     "**/storybook-static",

@@ -1,10 +1,12 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../Label.js";
+
+import { akLabel, PFColor } from "../Label.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import "../Label.js";
-import { PFColor, akLabel } from "../Label.js";
 
 describe("ak-label", () => {
     it("should render a label with the enum", async () => {

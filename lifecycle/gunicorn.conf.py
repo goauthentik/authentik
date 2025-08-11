@@ -2,7 +2,6 @@
 
 import os
 from hashlib import sha512
-from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
@@ -33,11 +32,11 @@ wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
-worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
+worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
 prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
-makedirs(worker_tmp_dir, exist_ok=True)
-makedirs(prometheus_tmp_dir, exist_ok=True)
+os.makedirs(worker_tmp_dir, exist_ok=True)
+os.makedirs(prometheus_tmp_dir, exist_ok=True)
 
 bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 

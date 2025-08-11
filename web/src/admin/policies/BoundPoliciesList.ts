@@ -1,34 +1,35 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/policies/PolicyBindingForm";
-import { PolicyBindingNotice } from "@goauthentik/admin/policies/PolicyBindingForm";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import "@goauthentik/admin/policies/PolicyWizard";
-import {
-    PolicyBindingCheckTarget,
-    PolicyBindingCheckTargetToLabel,
-} from "@goauthentik/admin/policies/utils";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import "@goauthentik/admin/users/UserForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/groups/GroupForm";
+import "#admin/policies/PolicyBindingForm";
+import "#admin/policies/PolicyWizard";
+import "#admin/rbac/ObjectPermissionModal";
+import "#admin/users/UserForm";
+import "#components/ak-status-label";
+import "#elements/Tabs";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
 
 import {
     PoliciesApi,
     PolicyBinding,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -52,6 +53,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     clearOnRefresh = true;
 
     order = "order";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFSpacing);
+    }
 
     get allowedTypesLabel(): string {
         return this.allowedTypes.map((ct) => PolicyBindingCheckTargetToLabel(ct)).join(" / ");
@@ -257,7 +262,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         if (policyEngineMode === undefined) {
             return nothing;
         }
-        return html`<p>
+        return html`<p class="pf-u-ml-md">
             ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
         </p>`;

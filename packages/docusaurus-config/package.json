@@ -25,7 +25,7 @@
         "@docusaurus/theme-common": "^3.8.1",
         "@docusaurus/theme-search-algolia": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@goauthentik/prettier-config": "^2.0.0",
+        "@goauthentik/prettier-config": "^3.1.0",
         "@goauthentik/tsconfig": "^1.0.4",
         "@types/react": "^19.1.6",
         "@types/react-dom": "^19.1.5",

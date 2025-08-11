@@ -1,4 +1,6 @@
-name: authentik-gen-update-webauthn-mds
+---
+name: Gen - Webauthn MDS
+
 on:
   workflow_dispatch:
   schedule:

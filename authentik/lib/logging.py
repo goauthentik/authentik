@@ -14,7 +14,7 @@ LOG_PRE_CHAIN = [
     # is not from structlog.
     structlog.stdlib.add_log_level,
     structlog.stdlib.add_logger_name,
-    structlog.processors.TimeStamper(),
+    structlog.processors.TimeStamper(fmt="iso", utc=False),
     structlog.processors.StackInfoRenderer(),
 ]
 
@@ -88,7 +88,6 @@ def get_logger_config():
         "authentik": global_level,
         "django": "WARNING",
         "django.request": "ERROR",
-        "celery": "WARNING",
         "selenium": "WARNING",
         "docker": "WARNING",
         "urllib3": "WARNING",

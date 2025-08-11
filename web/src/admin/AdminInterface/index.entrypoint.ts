@@ -1,28 +1,38 @@
 import "#admin/AdminInterface/AboutModal";
-import type { AboutModal } from "#admin/AdminInterface/AboutModal";
-import { ROUTES } from "#admin/Routes";
-import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
-import { configureSentry } from "#common/sentry/index";
-import { me } from "#common/users";
-import { WebsocketClient } from "#common/ws";
-import { SidebarToggleEventDetail } from "#components/ak-page-header";
-import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
-import "#elements/banner/EnterpriseStatusBanner";
-import "#elements/banner/VersionBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
-import "#elements/messages/MessageContainer";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import {
+    AdminSidebarEnterpriseEntries,
+    AdminSidebarEntries,
+    renderSidebarItems,
+} from "./AdminSidebar.js";
+
+import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
+import { configureSentry } from "#common/sentry/index";
+import { me } from "#common/users";
+import { WebsocketClient } from "#common/ws";
+
+import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+
+import { SidebarToggleEventDetail } from "#components/ak-page-header";
+
+import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { ROUTES } from "#admin/Routes";
+
+import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -31,14 +41,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
-
-import {
-    AdminSidebarEnterpriseEntries,
-    AdminSidebarEntries,
-    renderSidebarItems,
-} from "./AdminSidebar.js";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
@@ -53,8 +55,6 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     @property({ type: Boolean })
     public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
-
-    protected readonly ws: WebsocketClient;
 
     @property({ type: Object, attribute: false })
     public user?: SessionUser;
@@ -128,8 +128,11 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
 
     constructor() {
         configureSentry(true);
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
@@ -159,19 +162,23 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     public disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
+
+        WebsocketClient.close();
     }
 
     async firstUpdated(): Promise<void> {
-        this.user = await me();
+        me().then((session) => {
+            this.user = session;
 
-        const canAccessAdmin =
-            this.user.user.isSuperuser ||
-            // TODO: somehow add `access_admin_interface` to the API schema
-            this.user.user.systemPermissions.includes("access_admin_interface");
+            const canAccessAdmin =
+                this.user.user.isSuperuser ||
+                // TODO: somehow add `access_admin_interface` to the API schema
+                this.user.user.systemPermissions.includes("access_admin_interface");
 
-        if (!canAccessAdmin && this.user.user.pk > 0) {
-            window.location.assign("/if/user/");
-        }
+            if (!canAccessAdmin && this.user.user.pk > 0) {
+                window.location.assign("/if/user/");
+            }
+        });
     }
 
     render(): TemplateResult {
@@ -190,13 +197,14 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
+            <ak-skip-to-content></ak-skip-to-content>
             <div class="pf-c-page">
                 <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar class="${classMap(sidebarClasses)}">
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
@@ -208,9 +216,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                                    <div class="pf-c-page__main">
                                         <ak-router-outlet
                                             role="main"
+                                            aria-label="${msg("Main content")}"
                                             class="pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
@@ -218,7 +227,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
-                                    </main>
+                                    </div>
                                 </div>
                             </div>
                             <ak-notification-drawer

@@ -1,17 +1,41 @@
+import "../AggregatePromiseCard.js";
+
+import { AggregatePromiseCard, type IAggregatePromiseCard } from "../AggregatePromiseCard.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { AggregatePromiseCard, type IAggregatePromiseCard } from "../AggregatePromiseCard.js";
-import "../AggregatePromiseCard.js";
-
 const metadata: Meta<AggregatePromiseCard> = {
     title: "Elements/<ak-aggregate-card-promise>",
     component: "ak-aggregate-card-promise",
+    tags: ["autodocs"],
     parameters: {
         docs: {
-            description: "A specialized card for displaying information after a fetch",
+            description: {
+                component: /* md */ `
+# Aggregate Promise Cards
+
+Aggregate Promise Cards are Aggregate Cards that take a promise from client code and either display
+the contents of that promise or a pre-configured failure notice. The contents must be compliant with
+and produce a meaningful result via the \`.toString()\` API. HTML in the string will currently be
+escaped.
+
+## Usage
+
+\`\`\`Typescript
+import "#elements/cards/AggregatePromiseCard";
+\`\`\`
+
+\`\`\`html
+<ak-aggregate-card-promise
+    header="Some title"
+    .promise="\${somePromise}"
+></ak-aggregate-card-promise>
+\`\`\`
+`,
+            },
         },
     },
     argTypes: {
@@ -44,7 +68,7 @@ export const DefaultStory: StoryObj = {
         const runThis = (timeout: number, value: string) =>
             new Promise((resolve) => setTimeout(resolve, timeout, value));
 
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`>
             <style>
                 ak-aggregate-card-promise {
                     display: inline-block;
@@ -60,8 +84,7 @@ export const DefaultStory: StoryObj = {
                 ?left-justified=${leftJustified}
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
-            </ak-aggregate-card-promise>
-        </div>`;
+            </ak-aggregate-card-promise> `;
     },
 };
 
@@ -85,7 +108,7 @@ export const PromiseRejected: StoryObj = {
         const runThis = (timeout: number, value: string) =>
             new Promise((_resolve, reject) => setTimeout(reject, timeout, value));
 
-        return html` <div style="background-color: #f0f0f0; padding: 1rem;">
+        return html`
             <style>
                 ak-aggregate-card-promise {
                     display: inline-block;
@@ -103,6 +126,6 @@ export const PromiseRejected: StoryObj = {
                 .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
-        </div>`;
+        `;
     },
 };

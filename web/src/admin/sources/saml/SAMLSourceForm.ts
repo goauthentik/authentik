@@ -1,39 +1,39 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-slug-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-slug-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
+
+import { config, DEFAULT_CONFIG } from "#common/api/config";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     BindingTypeEnum,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
-    NameIdPolicyEnum,
+    SAMLNameIDPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
@@ -62,7 +62,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles().icon;
+            const icon = this.files().get("icon");
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -233,9 +233,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
                         <input
                             type="text"
@@ -321,9 +320,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="allowIdpInitiated">
                         <label class="pf-c-switch">
                             <input
@@ -353,37 +351,37 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                value=${SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -493,9 +491,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("SAML Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("SAML Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -530,9 +527,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Pre-authentication flow")}
                         required

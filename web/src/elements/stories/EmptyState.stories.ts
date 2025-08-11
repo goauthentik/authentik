@@ -1,10 +1,11 @@
+import "../EmptyState.js";
+
+import { akEmptyState, type IEmptyState } from "../EmptyState.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../EmptyState.js";
-import { type EmptyState, type IEmptyState, akEmptyState } from "../EmptyState.js";
 
 type StoryArgs = IEmptyState & {
     headingText?: string | TemplateResult;
@@ -19,7 +20,7 @@ const metadata: Meta<StoryArgs> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Empty State Component
 
 The EmptyState is an in-page element to indicate that something is either loading or unavailable.

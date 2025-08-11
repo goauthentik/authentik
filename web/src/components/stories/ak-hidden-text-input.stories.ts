@@ -1,10 +1,11 @@
+import "../ak-hidden-text-input.js";
+
+import { type AkHiddenTextInput, type AkHiddenTextInputProps } from "../ak-hidden-text-input.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import "../ak-hidden-text-input";
-import { type AkHiddenTextInput, type AkHiddenTextInputProps } from "../ak-hidden-text-input.js";
 
 const metadata: Meta<AkHiddenTextInputProps> = {
     title: "Components / <ak-hidden-text-input>",
@@ -13,7 +14,7 @@ const metadata: Meta<AkHiddenTextInputProps> = {
     parameters: {
         docs: {
             description: {
-                component: `
+                component: /* md */ `
 # Hidden Text Input Component
 
 A text-input field with a visibility control, so you can show/hide sensitive fields.
