@@ -308,7 +308,7 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 6. In the **Attribute mapping** section, set:
     - **Attribute to map the display name to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-    - **Attribute to map the user's groups to**: `http://schemas.xmlsoap.org/claims/Group`
+    - **Attribute to map the user's groups to**: `http://schemas.xmlsoap.org/claims/Group` _(optional)_
 
 :::note
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
