@@ -62481,4 +62481,4 @@ components:
       type: http
       scheme: bearer
 servers:
-- url: /api/v3/
+- url: /api/v3
