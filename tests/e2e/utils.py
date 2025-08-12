@@ -54,7 +54,7 @@ def get_local_ip() -> str:
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 45
 
     __client: DockerClient
     __network: Network
