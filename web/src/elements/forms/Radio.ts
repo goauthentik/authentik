@@ -43,8 +43,8 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
                     var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
                 );
             }
-            .pf-c-radio label,
-            .pf-c-radio span {
+            .pf-c-radio {
+                cursor: pointer;
                 user-select: none;
             }
 

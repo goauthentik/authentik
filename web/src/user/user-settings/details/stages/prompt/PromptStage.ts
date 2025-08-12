@@ -35,7 +35,6 @@ export class UserSettingsPromptStage extends PromptStage {
                     label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
-                    ?invalid=${!!errors}
                     .errorMessages=${errors}
                 >
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
