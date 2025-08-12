@@ -7,6 +7,7 @@ type Config struct {
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
 	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Telemetry      TelemetryConfig      `yaml:"telemetry" env:", prefix=AUTHENTIK_TELEMETRY__"`
 
 	// Config for core and embedded outpost
 	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
@@ -76,4 +77,19 @@ type OutpostConfig struct {
 
 type WebConfig struct {
 	Path string `yaml:"path" env:"PATH, overwrite"`
+}
+
+type TelemetryConfig struct {
+	OTLP OTLPConfig `yaml:"otlp" env:", prefix=OTLP__"`
+}
+
+type OTLPConfig struct {
+	Enabled            bool              `yaml:"enabled" env:"ENABLED, overwrite"`
+	Endpoint           string            `yaml:"endpoint" env:"ENDPOINT, overwrite"`
+	Protocol           string            `yaml:"protocol" env:"PROTOCOL, overwrite"`
+	Headers            map[string]string `yaml:"headers" env:"HEADERS, overwrite"`
+	TracesSampleRate   float64           `yaml:"traces_sample_rate" env:"TRACES_SAMPLE_RATE, overwrite"`
+	ServiceName        string            `yaml:"service_name" env:"SERVICE_NAME, overwrite"`
+	ServiceVersion     string            `yaml:"service_version" env:"SERVICE_VERSION, overwrite"`
+	ResourceAttributes map[string]string `yaml:"resource_attributes" env:"RESOURCE_ATTRIBUTES, overwrite"`
 }
