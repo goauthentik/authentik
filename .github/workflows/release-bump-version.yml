@@ -1,0 +1,57 @@
+---
+name: Release - Bump version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+        type: string
+      release_reason:
+        description: Release reason
+        required: true
+        type: choice
+        options:
+          - bugfix
+          - feature
+          - security
+          - other
+          - prerelease
+
+jobs:
+  check-inputs:
+    name: Check inputs validty
+    runs-on: ubuntu-latest
+    steps:
+      - id: check
+        run: |
+          echo "${{ inputs.version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}\.[0-9]+(-rc[0-9]+)?$"
+          echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+    outputs:
+      major_version: "${{ steps.check.outputs.major_version }}"
+  bump-version:
+    name: Bump version
+    needs:
+      - check-inputs
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v5
+        with:
+          ref: "version/${{ needs.check-inputs.outputs.major_version }}"
+          token: "${{ steps.generate_token.outputs.token }}"
+      - name: Bump version
+        run: "make bump version=${{ inputs.version }}"
+      - name: Commit and push
+        run: |
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          git config --global user.name "authentik-automation[bot]"
+          git config --global user.email "<135050075+authentik-automation[bot]@users.noreply.github.com>"
+          git commit -a -m "release: ${{ inputs.version }}" --allow-empty
+          git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
+          git push --follow-tags
