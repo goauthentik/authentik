@@ -13,7 +13,7 @@ runs:
   using: "composite"
   steps:
     - name: Install apt deps
-      if: ${{ contains(inputs.dependencies, 'system') }}
+      if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
       run: |
         sudo apt-get update
@@ -57,7 +57,7 @@ runs:
         docker compose -f .github/actions/setup/docker-compose.yml up -d
         cd web && npm ci
     - name: Generate config
-      if: ${{ contains(inputs.dependencies, 'python') && contains(inputs.dependencies, 'runtime') }}
+      if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}
       run: |
         from authentik.lib.generators import generate_id
