@@ -55,8 +55,6 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-        with:
-          dependencies: python,node
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
       - name: Create pull request
