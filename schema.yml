@@ -6023,7 +6023,7 @@ paths:
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Create a temporary link that a user can use to recover their account
       parameters:
       - in: path
         name: id
@@ -6057,7 +6057,7 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Send an email with a temporary link that a user can use to recover their account
       parameters:
       - in: query
         name: email_stage
