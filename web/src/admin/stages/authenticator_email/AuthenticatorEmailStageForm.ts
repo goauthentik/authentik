@@ -81,7 +81,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 <ak-secret-text-input
                     name="password"
                     label=${msg("SMTP Password")}
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
 
                 <ak-form-element-horizontal name="useTls">

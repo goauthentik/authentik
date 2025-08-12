@@ -251,7 +251,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
