@@ -189,7 +189,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     //#endregion
 
     public get form(): HTMLFormElement | null {
-        return this.shadowRoot?.querySelector("form") || null;
+        return this.renderRoot?.querySelector("form") || null;
     }
 
     @state()
