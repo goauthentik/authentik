@@ -21,7 +21,7 @@ import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 function trimMany<T extends object, K extends keyof T>(target: T, keys: K[]): Pick<T, K> {
@@ -43,8 +43,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     @state()
     errors = new Map<keyof ApplicationRequest, string>();
 
-    @query("form#applicationform")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form#applicationform");
+    }
 
     constructor() {
         super();
