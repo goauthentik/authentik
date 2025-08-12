@@ -58,7 +58,7 @@ jobs:
         with:
           dependencies: python,node
       - name: Bump version
-        run: "version=${{ inputs.next_version }}.0-rc1 make bump"
+        run: "make bump version=${{ inputs.next_version }}.0-rc1"
       - name: Create pull request
         uses: peter-evans/create-pull-request@v7
         with:
