@@ -95,10 +95,11 @@ update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
 
 bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
-	ifndef version
+ifndef version
 	$(error Usage: make bump version=20xx.xx.xx )
-	endif
-	uv version $(version)
+endif
+	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
+	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
 	$(MAKE) gen-build gen-compose aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
