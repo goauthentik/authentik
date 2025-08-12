@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.8.0-rc1
+  version: 2025.10.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -6057,7 +6057,8 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Send an email with a temporary link that a user can use to recover their account
+      description: Send an email with a temporary link that a user can use to recover
+        their account
       parameters:
       - in: query
         name: email_stage
