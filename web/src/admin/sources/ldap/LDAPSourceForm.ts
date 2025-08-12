@@ -266,7 +266,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-secret-text-input
                         label=${msg("Bind Password")}
                         name="bindPassword"
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                     <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input

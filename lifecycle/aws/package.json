@@ -10,7 +10,7 @@
         "node": ">=20"
     },
     "devDependencies": {
-        "aws-cdk": "^2.1023.0",
+        "aws-cdk": "^2.1024.0",
         "cross-env": "^10.0.0"
     }
 }

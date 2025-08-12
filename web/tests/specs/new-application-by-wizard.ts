@@ -1,5 +1,6 @@
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
+import type { TestProvider, TestSequence } from "../pageobjects/controls.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
 import {
@@ -26,7 +27,6 @@ import {
 // via `defineProperties` is how we installed the OUID finders for the various
 // wizard types.
 import { expect } from "@wdio/globals";
-import type { TestProvider, TestSequence } from "pageobjects/controls.js";
 
 const SUCCESS_MESSAGE = "Your application has been saved";
 

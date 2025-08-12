@@ -13,9 +13,9 @@ from django.db import (
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
-from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware.middleware import Middleware
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase

@@ -2,17 +2,21 @@ import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
-import { camelToSnake } from "#common/utils";
 
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
+import { ErrorProp } from "#components/ak-field-errors";
+
 import { instanceOfValidationError } from "@goauthentik/api";
+
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -185,7 +189,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     //#endregion
 
     public get form(): HTMLFormElement | null {
-        return this.shadowRoot?.querySelector("form") || null;
+        return this.renderRoot?.querySelector("form") || null;
     }
 
     @state()
@@ -247,7 +251,14 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     }
 
     public reportValidity(): boolean {
-        return !!this.form?.reportValidity?.();
+        const form = this.form;
+
+        if (!form) {
+            console.warn("authentik/forms: unable to check validity, no form found", this);
+            return false;
+        }
+
+        return reportValidityDeep(form);
     }
 
     /**
@@ -293,11 +304,11 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             .catch(async (error: unknown) => {
                 if (error instanceof PreventFormSubmit && error.element) {
                     error.element.errorMessages = [error.message];
-                    error.element.invalid = true;
                 }
 
                 const parsedError = await parseAPIResponseError(error);
                 let errorMessage = pluckErrorDetail(error);
+                let focused = false;
 
                 if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
@@ -306,22 +317,32 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                             "ak-form-element-horizontal",
                         ) || [];
 
-                    elements.forEach((element) => {
+                    for (const element of elements) {
                         element.requestUpdate();
 
                         const elementName = element.name;
-                        if (!elementName) return;
 
-                        const snakeProperty = camelToSnake(elementName);
+                        if (!elementName) continue;
 
-                        if (snakeProperty in parsedError) {
-                            element.errorMessages = parsedError[snakeProperty];
-                            element.invalid = true;
-                        } else {
-                            element.errorMessages = [];
-                            element.invalid = false;
+                        const snakeProperty = snakeCase(elementName);
+                        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
+
+                        element.errorMessages = errorMessages;
+                        const { controlledElement } = element;
+
+                        if (!focused && Array.isArray(errorMessages) && errorMessages.length) {
+                            if (
+                                controlledElement?.checkVisibility() &&
+                                controlledElement instanceof HTMLElement
+                            ) {
+                                focused = true;
+
+                                requestAnimationFrame(() => {
+                                    return controlledElement.focus?.();
+                                });
+                            }
                         }
-                    });
+                    }
 
                     if (parsedError.nonFieldErrors) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
