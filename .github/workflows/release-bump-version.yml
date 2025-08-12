@@ -21,7 +21,7 @@ on:
 
 jobs:
   check-inputs:
-    name: Check inputs validty
+    name: Check inputs validity
     runs-on: ubuntu-latest
     steps:
       - id: check
