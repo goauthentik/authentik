@@ -54,7 +54,7 @@ def get_local_ip() -> str:
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 45
 
     __client: DockerClient
     __network: Network
@@ -88,7 +88,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
-                self.failureException("Container failed to start")
+                raise self.failureException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""

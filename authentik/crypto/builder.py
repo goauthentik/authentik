@@ -12,7 +12,7 @@ from cryptography.x509.oid import NameOID
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.crypto.models import CertificateKeyPair
 
 
@@ -85,7 +85,7 @@ class CertificateBuilder:
             .issuer_name(
                 x509.Name(
                     [
-                        x509.NameAttribute(NameOID.COMMON_NAME, f"authentik {__version__}"),
+                        x509.NameAttribute(NameOID.COMMON_NAME, f"authentik {authentik_version()}"),
                     ]
                 )
             )

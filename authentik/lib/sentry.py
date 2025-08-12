@@ -30,7 +30,7 @@ from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
@@ -117,11 +117,11 @@ def sentry_init(**sentry_init_kwargs):
         ],
         before_send=before_send,
         traces_sampler=traces_sampler,
-        release=f"authentik@{__version__}",
+        release=f"authentik@{authentik_version()}",
         transport=SentryTransport,
         **kwargs,
     )
-    set_tag("authentik.build_hash", get_build_hash("tagged"))
+    set_tag("authentik.build_hash", authentik_build_hash("tagged"))
     set_tag("authentik.env", get_env())
     set_tag("authentik.component", "backend")
 
