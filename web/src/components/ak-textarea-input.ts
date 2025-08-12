@@ -17,6 +17,7 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
         // Prevent the leading spaces added by Prettier's whitespace algo
         // prettier-ignore
         return html`<textarea
+            id=${ifDefined(this.fieldID)}
             @input=${setValue}
             class="pf-c-form-control"
             ?required=${this.required}
