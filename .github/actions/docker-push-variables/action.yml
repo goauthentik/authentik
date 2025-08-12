@@ -54,6 +54,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup authentik env
+      uses: ./.github/actions/setup
+      with:
+        dependencies: "python"
     - name: Generate config
       id: ev
       shell: bash
@@ -64,4 +68,4 @@ runs:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         REF: ${{ github.ref }}
       run: |
-        python3 ${{ github.action_path }}/push_vars.py
+        uv run python3 ${{ github.action_path }}/push_vars.py

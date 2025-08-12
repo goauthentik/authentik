@@ -17,6 +17,7 @@ type LDAPGroup struct {
 	Uid            string
 	GidNumber      string
 	Member         []string
+	MemberOf       []string
 	IsSuperuser    bool
 	IsVirtualGroup bool
 	Attributes     map[string]interface{}
@@ -38,6 +39,7 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 		"ak-superuser":   {strconv.FormatBool(lg.IsSuperuser)},
 		"objectClass":    objectClass,
 		"member":         lg.Member,
+		"memberOf":       lg.MemberOf,
 		"cn":             {lg.CN},
 		"uid":            {lg.Uid},
 		"sAMAccountName": {lg.CN},
@@ -52,7 +54,8 @@ func FromAPIGroup(g api.Group, si server.LDAPServerInstance) *LDAPGroup {
 		CN:             g.Name,
 		Uid:            string(g.Pk),
 		GidNumber:      si.GetGroupGidNumber(g),
-		Member:         si.UsersForGroup(g),
+		Member:         si.MembersForGroup(g),
+		MemberOf:       si.MemberOfForGroup(g),
 		IsVirtualGroup: false,
 		IsSuperuser:    *g.IsSuperuser,
 		Attributes:     g.Attributes,

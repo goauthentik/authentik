@@ -1,5 +1,5 @@
 ---
-name: authentik-on-tag
+name: Release - On tag
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     name: Create Release from Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Pre-release test
         run: |
           make test-docker

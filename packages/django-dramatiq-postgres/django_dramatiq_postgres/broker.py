@@ -23,7 +23,6 @@ from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
-from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware import (
     Middleware,
@@ -31,6 +30,7 @@ from dramatiq.middleware import (
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
 from psycopg.errors import AdminShutdown
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
@@ -146,7 +146,9 @@ class PostgresBroker(Broker):
             )
 
         self.declare_queue(canonical_queue_name)
-        self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
+        self.logger.debug(
+            "Enqueueing message on queue", message_id=message.message_id, queue=queue_name
+        )
 
         message.options["model_defaults"] = self.model_defaults(message)
         self.emit_before("enqueue", message, delay)
@@ -310,7 +312,7 @@ class _PostgresConsumer(Consumer):
         self._purge_locks()
 
     def _fetch_pending_notifies(self) -> list[Notify]:
-        self.logger.debug(f"Polling for lost messages in {self.queue_name}")
+        self.logger.debug("Polling for lost messages", queue=self.queue_name)
         notifies = (
             self.query_set.filter(
                 state__in=(TaskState.QUEUED, TaskState.CONSUMED),
@@ -323,13 +325,15 @@ class _PostgresConsumer(Consumer):
         )
         return [Notify(pid=0, channel=self.postgres_channel, payload=item) for item in notifies]
 
-    def _poll_for_notify(self):
+    def _poll_for_notify(self) -> list[Notify]:
         with self.listen_connection.cursor() as cursor:
             notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
             self.logger.debug(
-                f"Received {len(notifies)} postgres notifies on channel {self.postgres_channel}"
+                "Received postgres notifies on channel",
+                notifies=len(notifies),
+                channel=self.postgres_channel,
             )
-            self.notifies += notifies
+            return notifies
 
     def _get_message_lock_id(self, message_id: str) -> int:
         return _cast_lock_id(
@@ -338,7 +342,7 @@ class _PostgresConsumer(Consumer):
 
     def _consume_one(self, message: Message) -> bool:
         if message.message_id in self.in_processing:
-            self.logger.debug(f"Message {message.message_id} already consumed by self")
+            self.logger.debug("Message already consumed by self", message_id=message.message_id)
             return False
 
         result = (
@@ -362,29 +366,35 @@ class _PostgresConsumer(Consumer):
         # This method is called every second
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
-        if self._listen_connection is None:
+        if self._listen_connection is None and not self.notifies:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
             self.notifies = self._fetch_pending_notifies()
             self.logger.debug(
-                f"Found {len(self.notifies)} pending messages in queue {self.queue_name}"
+                "Found pending messages in queue",
+                notifies=len(self.notifies),
+                queue=self.queue_name,
             )
+            # Force creation of listen connection
+            _ = self.listen_connection
 
         processing = len(self.in_processing)
         if processing >= self.prefetch:
             # Wait and don't consume the message, other worker will be faster
             self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)
             self.logger.debug(
-                f"Too many messages in processing: {processing}. Sleeping {backoff_ms} ms"
+                "Too many messages in processing, Sleeping",
+                processing=processing,
+                backoff_ms=backoff_ms,
             )
             time.sleep(backoff_ms / 1000)
             return None
 
         if not self.notifies:
-            self._poll_for_notify()
+            self.notifies += self._poll_for_notify()
 
         if not self.notifies:
-            self.notifies[:] = self._fetch_pending_notifies()
+            self.notifies += self._fetch_pending_notifies()
 
         # If we have some notifies, loop to find one to do
         while self.notifies:
@@ -400,7 +410,9 @@ class _PostgresConsumer(Consumer):
                 self.in_processing.add(message.message_id)
                 return MessageProxy(message)
             else:
-                self.logger.debug(f"Message {message.message_id} already consumed. Skipping.")
+                self.logger.debug(
+                    "Message already consumed. Skipping.", message_id=message.message_id
+                )
 
         # No message to process
         self._purge_locks()
@@ -415,7 +427,7 @@ class _PostgresConsumer(Consumer):
                 message_id = self.unlock_queue.get(block=False)
             except Empty:
                 return
-            self.logger.debug(f"Unlocking message {message_id}")
+            self.logger.debug("Unlocking message", message_id=message_id)
             with self.connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT pg_advisory_unlock(%s)", (self._get_message_lock_id(message_id),)
@@ -431,7 +443,7 @@ class _PostgresConsumer(Consumer):
             mtime__lte=timezone.now() - timezone.timedelta(seconds=Conf().task_purge_interval),
             result_expiry__lte=timezone.now(),
         ).delete()
-        self.logger.info(f"Purged {count} messages in all queues")
+        self.logger.info("Purged messages in all queues", count=count)
 
     def _scheduler(self):
         if not self.scheduler:

@@ -35,6 +35,30 @@
     --ak-navbar--height: 7rem;
 }
 
+.pf-c-form__group {
+    column-gap: var(--pf-global--spacer--md);
+}
+
+.pf-c-form__group-label {
+    display: flex;
+    user-select: none;
+    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+
+    /* Increase the pressable area of the label. */
+    .pf-c-form__label {
+        display: block;
+        flex: 1 1 auto;
+    }
+}
+
+.pf-c-form__label[aria-required] .pf-c-form__label-text::after {
+    content: "*";
+    user-select: none;
+    margin-left: var(--pf-c-form__label-required--MarginLeft);
+    font-size: var(--pf-c-form__label-required--FontSize);
+    color: var(--pf-c-form__label-required--Color);
+}
+
 @supports selector(::-webkit-scrollbar) {
     ::-webkit-scrollbar {
         width: 5px;

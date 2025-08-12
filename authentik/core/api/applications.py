@@ -6,6 +6,7 @@ from copy import copy
 from django.core.cache import cache
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -65,6 +66,15 @@ class ApplicationSerializer(ModelSerializer):
         if "request" in self.context:
             user = self.context["request"].user
         return app.get_launch_url(user)
+
+    def validate_slug(self, slug: str) -> str:
+        if slug in Application.reserved_slugs:
+            raise ValidationError(
+                _("The slug '{slug}' is reserved and cannot be used for applications.").format(
+                    slug=slug
+                )
+            )
+        return slug
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
