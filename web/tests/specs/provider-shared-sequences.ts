@@ -228,10 +228,10 @@ export const completeSCIMProviderForm: TestProvider = () => [
     [setFormGroup, /Protocol settings/, "open"],
     [setFormGroup, /User filtering/, "open"],
     [setToggle, "excludeUsersServiceAccount", false],
-    [setSearchSelect, "filterGroup", /authentik Admins/],
     [setFormGroup, /Attribute mapping/, "open"],
     [checkIsPresent, '[name="propertyMappings"]'],
     [checkIsPresent, '[name="propertyMappingsGroup"]'],
+    [checkIsPresent, '[name="groupFilters"]'],
 ];
 
 // provider_components.schemas.ProxyProviderRequest.yml
