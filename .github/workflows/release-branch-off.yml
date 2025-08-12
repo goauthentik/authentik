@@ -64,9 +64,9 @@ jobs:
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: release-bump-${{ inputs.next_version }}
-          commit-message: "release: bump to ${{ inputs.next_version }}.0-rc1"
-          title: "release: bump to ${{ inputs.next_version }}.0-rc1"
-          body: "release: bump to ${{ inputs.next_version }}.0-rc1"
+          commit-message: "root: bump version to ${{ inputs.next_version }}.0-rc1"
+          title: "root: bump version to ${{ inputs.next_version }}.0-rc1"
+          body: "root: bump version to ${{ inputs.next_version }}.0-rc1"
           delete-branch: true
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
