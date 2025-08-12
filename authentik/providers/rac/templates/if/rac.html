@@ -3,7 +3,7 @@
 {% load authentik_core %}
 
 {% block head %}
-<script src="{% versioned_script 'dist/rac/index-%v.js' %}" type="module"></script>
+<script src="{% versioned_script 'dist/rac/index.js' %}" type="module"></script>
 <link rel="icon" href="{{ tenant.branding_favicon_url }}">
 <link rel="shortcut icon" href="{{ tenant.branding_favicon_url }}">
 {% include "base/header_js.html" %}

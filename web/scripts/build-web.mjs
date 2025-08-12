@@ -1,3 +1,9 @@
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -12,7 +18,6 @@ import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
-import { readBuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
@@ -29,7 +34,7 @@ const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
  * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
-    entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
+    entryNames: `[dir]/[name]`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     outdir: DistDirectory,
