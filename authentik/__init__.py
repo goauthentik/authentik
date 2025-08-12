@@ -1,15 +1,15 @@
 """authentik root module"""
 
 from functools import lru_cache
-from importlib.metadata import version
 from os import environ
 
+VERSION = "2025.8.0-rc1"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"
 
 
 @lru_cache
 def authentik_version() -> str:
-    return version("authentik")
+    return VERSION
 
 
 @lru_cache
