@@ -58,6 +58,8 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - name: Run migrations
+        run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.version }}"
       - name: Commit and push
