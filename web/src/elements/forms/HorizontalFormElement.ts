@@ -5,7 +5,7 @@ import { isNameableElement, NamedElement } from "#elements/utils/inputs";
 import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
-import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -117,12 +117,13 @@ export class HorizontalFormElement extends AKElement {
         this.#synchronizeAttributes();
 
         return html`<div class="pf-c-form__group" role="group">
-            ${this.label
-                ? html`<div class="pf-c-form__group-label">
+            <div class="pf-c-form__group-label">
+                ${this.label
+                    ? html`
                       ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
                   </div>`
-                : nothing}
-            <slot name="label"></slot>
+                    : html`<slot name="label"></slot>`}
+            </div>
 
             <div class="pf-c-form__group-control">
                 <slot class="pf-c-form__horizontal-group"></slot>
