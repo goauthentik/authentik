@@ -9,6 +9,11 @@ on:
         required: true
         type: string
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   check-inputs:
     name: Check inputs validity
