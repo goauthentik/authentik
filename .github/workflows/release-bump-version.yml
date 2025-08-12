@@ -97,7 +97,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          branch: bump-${{ inputs.next_version }}
+          branch: bump-${{ inputs.version }}
           commit-message: "charts/authentik: bump to ${{ inputs.version }}"
           title: "charts/authentik: bump to ${{ inputs.version }}"
           body: "charts/authentik: bump to ${{ inputs.version }}"
@@ -152,7 +152,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          branch: bump-${{ inputs.next_version }}
+          branch: bump-${{ inputs.version }}
           commit-message: "version: bump to ${{ inputs.version }}"
           title: "version: bump to ${{ inputs.version }}"
           body: "version: bump to ${{ inputs.version }}"
