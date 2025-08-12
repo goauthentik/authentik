@@ -89,7 +89,7 @@ class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
             pass
 
     @pytest.mark.timeout(120)
-    @CONFIG.patch("outposts.container_image_base", "ghcr.io/goauthentik/proxy:gh-main")
+    @CONFIG.patch("outposts.container_image_base", "ghcr.io/goauthentik/dev-proxy:gh-main")
     def test_docker_controller(self):
         """test that deployment requires update"""
         controller = DockerController(self.outpost, self.service_connection)
