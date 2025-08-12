@@ -16,6 +16,7 @@ GEN_API_GO = gen-go-api
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
@@ -79,10 +80,10 @@ core-i18n-extract:
 install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
-	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	redis-cli -n 0 flushall
+	redis-cli -n ${redis_db} flushall
 
 dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -93,13 +94,15 @@ update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
 
-bump:  ## Bump authentik version. Usage: version=20xx.xx.xx make bump
-	if [ -z "$(version)" ]; then echo "Usage: version=20xx.xx.xx make bump" && exit 1; fi
+bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
+ifndef version
+$(error Usage: make bump version=20xx.xx.xx )
+endif
 	uv version $(version)
 	$(MAKE) gen-build gen-compose aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
-	echo $(version) > ${PWD}/internal/constants/VERSION
+	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
