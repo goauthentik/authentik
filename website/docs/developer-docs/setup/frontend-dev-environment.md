@@ -32,20 +32,16 @@ Depending on platform, some native dependencies might be required. On macOS, run
     cd authentik
     ```
 
-    :::info Beta images
-    By default, authentik will use the latest stable Docker images.
-    You can opt into using beta images during development by creating a `.env` file in the root of the repository with the following variables:
+2. From the cloned repository, follow the Docker Compose [installation instructions](../../install-config/install/docker-compose.mdx).
+
+    Additionally, run the following:
 
     ```shell
-    AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
-    AUTHENTIK_TAG=gh-next
-    AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-next
-    AUTHENTIK_LOG_LEVEL=debug
+    echo AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server >> .env
+    echo AUTHENTIK_TAG=gh-next >> .env
+    echo AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-next >> .env
+    echo AUTHENTIK_LOG_LEVEL=debug >> .env
     ```
-
-    :::
-
-2. From the cloned repository, follow the Docker Compose [installation instructions](../../install-config/install/docker-compose.mdx).
 
 3. Create a Docker Compose override to mount the local configuration file (`local.env.yml`) and ESBuild's output directory (`web`).
 
