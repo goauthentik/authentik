@@ -481,7 +481,10 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             console.debug(`authentik/stages/captcha: Rendering interactive.`);
 
             const captchaElement = handler.interactive();
-            const template = iframeTemplate(captchaElement, this.challenge.jsUrl);
+            const template = iframeTemplate(captchaElement, {
+                challengeURL: this.challenge.jsUrl,
+                theme: this.activeTheme,
+            });
 
             URL.revokeObjectURL(this.#iframeSource);
 
