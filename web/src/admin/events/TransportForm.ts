@@ -116,7 +116,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 value="${this.instance?.webhookUrl || ""}"
                 input-hint="code"
                 ?hidden=${!this.showWebhook}
-                required
+                ?required=${this.showWebhook}
             >
             </ak-hidden-text-input>
             <ak-form-element-horizontal
@@ -187,6 +187,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
                 label=${msg("Email Template")}
                 name="emailTemplate"
             >
