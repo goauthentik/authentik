@@ -174,7 +174,8 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
-COPY ./packages/ /packages
+COPY ./packages/ /ak-root/packages
+RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=node-builder /work/web/dist/ /web/dist/
 COPY --from=node-builder /work/web/authentik/ /web/authentik/
