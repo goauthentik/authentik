@@ -1449,11 +1449,6 @@
         <target>找不到表單</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>表單提交時沒有回傳一個 promise 物件</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>選擇類型</target>
