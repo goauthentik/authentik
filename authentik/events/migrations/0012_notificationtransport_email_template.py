@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="notificationtransport",
             name="email_template",
-            field=models.TextField(default="email/event_notification.html", null=True),
+            field=models.TextField(default=None, null=True),
         ),
     ]

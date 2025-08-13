@@ -119,6 +119,7 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
             return Response(response.data)
         except NotificationTransportError as exc:
             return Response(str(exc.__cause__ or None), status=500)
+
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def templates(self, request: Request) -> Response:

@@ -14,6 +14,8 @@ import {
     NotificationWebhookMapping,
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
+    StagesApi,
+    TypeCreate,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -33,6 +35,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 return transport;
             });
     }
+    async load(): Promise<void> {
+        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showWebhook = false;
@@ -177,6 +184,16 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     blankable
                 >
                 </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Email Template")} name="emailTemplate">
+                <select name="users" class="pf-c-form-control">
+                    ${this.templates?.map((template) => {
+                        const selected = this.instance?.emailTemplate === template.name;
+                        return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
+                            ${template.description}
+                        </option>`;
+                    })}
+                </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
                 <label class="pf-c-switch">

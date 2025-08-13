@@ -297,7 +297,7 @@ class NotificationTransport(TasksModel, SerializerModel):
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
-    email_template = models.TextField(default=EmailTemplates.EMAIL_NOTIFICATION, null=True)
+    email_template = models.TextField(default=None, null=True)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(
@@ -496,7 +496,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             subject=subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name=self.email_template if self.email_template else EmailTemplates.EMAIL_NOTIFICATION,
+            template_name=(
+                self.email_template if self.email_template else EmailTemplates.EMAIL_NOTIFICATION
+            ),
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
