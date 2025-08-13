@@ -157,7 +157,7 @@ jobs:
         with:
           repository: "${{ github.repository_owner }}/version"
           token: "${{ steps.app-token.outputs.token }}"
-      - name: Bump feature version
+      - name: Bump version
         if: "${{ inputs.release_reason == 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}"
@@ -167,7 +167,7 @@ jobs:
             --arg changelog_url "${changelog_url}" \
             '.stable.version = $version | .stable.changelog = $changelog | .stable.changelog_url = $changelog_url' version.json > version.new.json
           mv version.new.json version.json
-      - name: Bump feature version
+      - name: Bump version
         if: "${{ inputs.release_reason != 'feature' }}"
         run: |
           changelog_url="https://docs.goauthentik.io/docs/releases/${{ needs.check-inputs.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version}} | sed 's/\.//g')"
