@@ -11,6 +11,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import (
@@ -23,12 +24,25 @@ from authentik.events.models import (
 )
 from authentik.events.utils import get_user
 from authentik.rbac.decorators import permission_required
+from authentik.stages.email.models import get_template_choices
 
 
 class NotificationTransportSerializer(ModelSerializer):
     """NotificationTransport Serializer"""
 
     mode_verbose = SerializerMethodField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email_template"].choices = get_template_choices()
+
+    def validate_template(self, value: str) -> str:
+        """Check validity of template"""
+        choices = get_template_choices()
+        for path, _ in choices:
+            if path == value:
+                return value
+        raise ValidationError(f"Invalid template '{value}' specified.")
 
     def get_mode_verbose(self, instance: NotificationTransport) -> str:
         """Return selected mode with a UI Label"""
@@ -52,6 +66,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "webhook_url",
             "webhook_mapping_body",
             "webhook_mapping_headers",
+            "email_template",
             "send_once",
         ]
 
@@ -104,3 +119,18 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
             return Response(response.data)
         except NotificationTransportError as exc:
             return Response(str(exc.__cause__ or None), status=500)
+    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
+    @action(detail=False, pagination_class=None, filter_backends=[])
+    def templates(self, request: Request) -> Response:
+        """Get all available templates, including custom templates"""
+        choices = []
+        for value, label in get_template_choices():
+            choices.append(
+                {
+                    "name": value,
+                    "description": label,
+                    "component": "",
+                    "model_name": "",
+                }
+            )
+        return Response(TypeCreateSerializer(choices, many=True).data)
