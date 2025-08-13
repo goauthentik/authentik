@@ -1467,11 +1467,6 @@
         <target>Aucun formulaire trouvé</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Le formulaire n'a pas retourné de promesse de soumission</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>Sélectionnez le type</target>

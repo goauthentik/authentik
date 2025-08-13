@@ -1467,11 +1467,6 @@
         <target>Форма не найдена</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Форма не вернула обещание отправить</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>Выбрать тип</target>
