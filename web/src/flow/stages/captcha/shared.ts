@@ -4,6 +4,17 @@ import { createDocumentTemplate } from "#elements/utils/iframe";
 
 import { html, TemplateResult } from "lit";
 
+/**
+ * Mapping of captcha provider names to their respective JS API global.
+ */
+export const CaptchaProvider = {
+    reCAPTCHA: "grecaptcha",
+    hCaptcha: "hcaptcha",
+    Turnstile: "turnstile",
+} as const satisfies Record<string, string>;
+
+export type CaptchaProvider = (typeof CaptchaProvider)[keyof typeof CaptchaProvider];
+
 export interface CaptchaHandler {
     interactive(): TemplateResult;
     execute(): Promise<void>;
