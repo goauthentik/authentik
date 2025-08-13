@@ -66,11 +66,23 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     onModeChange(mode: string | undefined): void {
-        this.showWebhook = [
-            NotificationTransportModeEnum.Webhook,
-            NotificationTransportModeEnum.WebhookSlack,
-        ].includes(mode || "");
-        this.showEmail = mode === NotificationTransportModeEnum.Email;
+        // Reset all flags
+        this.showWebhook = false;
+        this.showEmail = false;
+
+        switch (mode) {
+            case NotificationTransportModeEnum.Webhook:
+            case NotificationTransportModeEnum.WebhookSlack:
+                this.showWebhook = true;
+                break;
+            case NotificationTransportModeEnum.Email:
+                this.showEmail = true;
+                break;
+            case NotificationTransportModeEnum.Local:
+            default:
+                // Both flags remain false
+                break;
+        }
     }
 
     renderForm(): TemplateResult {
