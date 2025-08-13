@@ -442,8 +442,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         name="consumerSecret"
                         input-hint="code"
                         help=${msg("Also known as Client Secret.")}
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                     ></ak-secret-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
