@@ -36,8 +36,8 @@ class NotificationTransportSerializer(ModelSerializer):
         super().__init__(*args, **kwargs)
         self.fields["email_template"].choices = get_template_choices()
 
-    def validate_template(self, value: str) -> str:
-        """Check validity of template"""
+    def validate_email_template(self, value: str) -> str:
+        """Check validity of email template"""
         choices = get_template_choices()
         for path, _ in choices:
             if path == value:

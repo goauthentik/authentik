@@ -15,4 +15,9 @@ class Migration(migrations.Migration):
             name="email_template",
             field=models.TextField(default=None, null=True),
         ),
+        migrations.AddField(
+            model_name="notificationtransport",
+            name="email_subject_prefix",
+            field=models.TextField(blank=True, default=None, null=True),
+        ),
     ]
