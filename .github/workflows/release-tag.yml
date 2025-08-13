@@ -28,8 +28,17 @@ jobs:
         run: |
           echo "${{ inputs.version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}\.[0-9]+(-rc[0-9]+)?$"
           echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+      - id: changelog-url
+        run: |
+          if [ "${{ inputs.release_reason }}" == "feature"]; then
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}"
+          else
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major_version }}#fixed-in-$(echo -n ${{ inputs.version }} | sed 's/\.//g')"
+          fi
+          echo "changelog_url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:
       major_version: "${{ steps.check.outputs.major_version }}"
+      changelog_url: "${{ steps.changelog-url.outputs.changelog_url }}"
   test:
     name: Pre-release test
     runs-on: ubuntu-latest
@@ -73,14 +82,16 @@ jobs:
           git tag "version/${{ inputs.version }}" HEAD -m "version/${{ inputs.version }}"
           git push --follow-tags
       - name: Create Release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: "${{ steps.app-token.outputs.token }}"
+        uses: softprops/action-gh-release@v2
         with:
+          token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ inputs.version }}"
-          release_name: Release ${{ inputs.version }}
+          name: Release ${{ inputs.version }}
           draft: true
           prerelease: ${{ inputs.release_reason == 'prerelease' }}
+          generate_release_notes: true
+          body: |
+            See ${{ needs.check-inputs.outputs.changelog_url }}
   bump-helm:
     name: Bump Helm version
     if: ${{ inputs.release_reason != 'prerelease' }}
