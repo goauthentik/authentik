@@ -22,6 +22,7 @@ from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.dramatiq import DramatiqIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
@@ -109,11 +110,12 @@ def sentry_init(**sentry_init_kwargs):
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
-            StdlibIntegration(),
             DjangoIntegration(transaction_style="function_name", cache_spans=True),
+            DramatiqIntegration(),
             RedisIntegration(),
-            ThreadingIntegration(propagate_hub=True),
             SocketIntegration(),
+            StdlibIntegration(),
+            ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
         traces_sampler=traces_sampler,
