@@ -49374,6 +49374,9 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+          nullable: true
         email_template:
           type: string
           nullable: true
@@ -49416,6 +49419,9 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+          nullable: true
         email_template:
           type: string
           nullable: true
@@ -54517,6 +54523,9 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+          nullable: true
         email_template:
           type: string
           nullable: true

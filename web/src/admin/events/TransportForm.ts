@@ -200,6 +200,22 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             <ak-form-element-horizontal
                 ?hidden=${!this.showEmail}
                 ?required=${this.showEmail}
+                label=${msg("Email Subject Prefix")}
+                name="emailSubjectPrefix"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(
+                        this.instance?.emailSubjectPrefix || "authentik Notification: ",
+                    )}"
+                    class="pf-c-form-control"
+                    ?hidden=${!this.showEmail}
+                    ?required=${this.showEmail}
+                />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                ?required=${this.showEmail}
                 label=${msg("Email Template")}
                 name="emailTemplate"
             >

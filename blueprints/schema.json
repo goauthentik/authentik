@@ -6753,6 +6753,13 @@
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
+                "email_subject_prefix": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Email subject prefix"
+                },
                 "email_template": {
                     "type": [
                         "string",

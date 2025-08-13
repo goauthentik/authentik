@@ -297,6 +297,7 @@ class NotificationTransport(TasksModel, SerializerModel):
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
+    email_subject_prefix = models.TextField(default=None, null=True, blank=True)
     email_template = models.TextField(default=None, null=True)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
@@ -465,7 +466,9 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
             return None
-        subject_prefix = "authentik Notification: "
+        subject_prefix = (
+            self.email_subject_prefix if self.email_subject_prefix else "authentik Notification: "
+        )
         context = {
             "key_value": {
                 "user_email": notification.user.email,

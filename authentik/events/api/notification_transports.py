@@ -66,6 +66,7 @@ class NotificationTransportSerializer(ModelSerializer):
             "webhook_url",
             "webhook_mapping_body",
             "webhook_mapping_headers",
+            "email_subject_prefix",
             "email_template",
             "send_once",
         ]
