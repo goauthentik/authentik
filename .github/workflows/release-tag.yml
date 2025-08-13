@@ -26,7 +26,7 @@ jobs:
     steps:
       - id: check
         run: |
-          echo "${{ inputs.version }}" | grep -E "^[0-9]{4}\.[0-9]{1,2}\.[0-9]+(-rc[0-9]+)?$"
+          echo "${{ inputs.version }}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
           echo "major_version=${{ inputs.version }}" | grep -oE "^major_version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
