@@ -18,7 +18,7 @@ import { instanceOfValidationError } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -246,6 +246,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return createFileMap<T>(this.shadowRoot?.querySelectorAll("ak-form-element-horizontal"));
     }
 
+    //#region Validation
+
     public checkValidity(): boolean {
         return !!this.form?.checkValidity?.();
     }
@@ -261,6 +263,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return reportValidityDeep(form);
     }
 
+    //#endregion
+
+    //#region Submission
+
     /**
      * Convert the elements of the form to JSON.[4]
      */
@@ -273,6 +279,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         return serializeForm<T>(elements);
     }
+
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
@@ -310,6 +317,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 let errorMessage = pluckErrorDetail(error);
                 let focused = false;
 
+                //#region Validation errors
+
                 if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
                     const elements =
@@ -346,6 +355,23 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
                     if (parsedError.nonFieldErrors) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
+                    } else if (!focused) {
+                        // It's possible that the API has returned a field error that we're
+                        // not aware of. We can still show the error message, to at least
+                        // give the user some feedback.
+                        for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
+                            if (Array.isArray(fieldErrors)) {
+                                this.nonFieldErrors = [
+                                    msg(str`${fieldName}: ${fieldErrors.join(", ")}`),
+                                ];
+                                break;
+                            }
+                        }
+
+                        console.error(
+                            "authentik/forms: API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                            parsedError,
+                        );
                     }
 
                     errorMessage = msg("Invalid update request.");
@@ -357,6 +383,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     }
                 }
 
+                //#endregion
+
                 showMessage({
                     message: errorMessage,
                     level: MessageLevel.error,
@@ -366,6 +394,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 throw error;
             });
     }
+
+    //#endregion
 
     //#endregion
 
