@@ -6057,7 +6057,8 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Send an email with a temporary link that a user can use to recover their account
+      description: Send an email with a temporary link that a user can use to recover
+        their account
       parameters:
       - in: query
         name: email_stage
@@ -8389,6 +8390,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /events/transports/templates/:
+    get:
+      operationId: events_transports_templates_list
+      description: Get all available templates, including custom templates
+      tags:
+      - events
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TypeCreate'
           description: ''
         '400':
           content:
@@ -49344,6 +49374,9 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_template:
+          type: string
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49383,6 +49416,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_template:
+          type: string
+          nullable: true
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -54480,6 +54517,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_template:
+          type: string
+          nullable: true
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
