@@ -44,6 +44,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     @property({ type: Boolean })
     showWebhook = false;
 
+    @property({ type: Boolean })
+    showEmail = false;
+
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated transport.")
@@ -63,14 +66,11 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     onModeChange(mode: string | undefined): void {
-        if (
-            mode === NotificationTransportModeEnum.Webhook ||
-            mode === NotificationTransportModeEnum.WebhookSlack
-        ) {
-            this.showWebhook = true;
-        } else {
-            this.showWebhook = false;
-        }
+        this.showWebhook = [
+            NotificationTransportModeEnum.Webhook,
+            NotificationTransportModeEnum.WebhookSlack,
+        ].includes(mode || "");
+        this.showEmail = mode === NotificationTransportModeEnum.Email;
     }
 
     renderForm(): TemplateResult {
@@ -185,10 +185,17 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Email Template")} name="emailTemplate">
+            <ak-form-element-horizontal
+                ?hidden=${!this.showEmail}
+                label=${msg("Email Template")}
+                name="emailTemplate"
+            >
                 <select name="users" class="pf-c-form-control">
                     ${this.templates?.map((template) => {
-                        const selected = this.instance?.emailTemplate === template.name;
+                        const selected =
+                            this.instance?.emailTemplate === template.name ||
+                            (!this.instance?.emailTemplate &&
+                                template.name === "email/event_notification.html");
                         return html`<option value=${ifDefined(template.name)} ?selected=${selected}>
                             ${template.description}
                         </option>`;
