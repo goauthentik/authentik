@@ -57,7 +57,7 @@ export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
             ${this.result?.successful
                 ? html`<ak-codemirror
                       mode=${CodeMirrorMode.JavaScript}
-                      readOnly
+                      readonly
                       value="${ifDefined(this.result?.result)}"
                   >
                   </ak-codemirror>`
