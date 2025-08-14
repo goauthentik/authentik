@@ -7910,6 +7910,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
 </trans-unit>
+<trans-unit id="s32fc592c4a264edd">
+  <source>Account Recovery Max Attempts</source>
+</trans-unit>
+<trans-unit id="s8341dba451980abe">
+  <source>Account Recovery Cache Timeout</source>
+</trans-unit>
+<trans-unit id="sede4ad68849ce0c5">
+  <source>The time window used to count recent account recovery attempts.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
