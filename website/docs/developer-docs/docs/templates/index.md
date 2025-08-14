@@ -14,7 +14,7 @@ The most common types are:
 
 - [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commonly APIs.
 
-- [**Tutorial**](./tutorial-template.mdx): these are comprehensive, step-by-step guides that walk users through completing specific tasks from start to finish. Tutorials are more detailed than procedural docs and focus on learning by doing.
+- [**Tutorial**](./tutorial-template.mdx): these are comprehensive, step-by-step guides that walk users through completing specific tasks from start to finish. Tutorials are structured around a specific task and goal, are less generic than procedural docs, and focus on learning by doing.
 
 ### Add a new integration
 
