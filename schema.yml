@@ -6006,20 +6006,12 @@ paths:
       responses:
         '204':
           description: Successfully started impersonation
+        '400':
+          description: Bad request
         '401':
           description: Access denied
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
         '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Forbidden
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
