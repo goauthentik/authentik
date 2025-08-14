@@ -6,3 +6,4 @@ coverage
 node_modules
 help
 static
+scripts/docsmg/target/
