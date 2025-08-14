@@ -198,7 +198,11 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             return {"error": "", "count": created}
         except RuntimeError as exc:
             LOGGER.warning("failed to get users from duo", exc=exc)
-            return {"error": "An internal error occurred while importing devices.", "count": created}
+            return {
+                "error": "An internal error occurred while importing devices.",
+                "count": created,
+            }
+
 
 class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
