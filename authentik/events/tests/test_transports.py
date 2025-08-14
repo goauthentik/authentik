@@ -5,6 +5,7 @@ from unittest.mock import PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
+from django.urls import reverse
 from requests_mock import Mocker
 
 from authentik import authentik_full_version
@@ -198,7 +199,7 @@ class TestEventTransports(TestCase):
     def test_templates_api_endpoint(self):
         """Test templates API endpoint returns valid templates"""
         self.client.force_login(self.user)
-        response = self.client.get("/api/v3/stages/email/templates/")
+        response = self.client.get(reverse("authentik_api:emailstage-templates"))
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
