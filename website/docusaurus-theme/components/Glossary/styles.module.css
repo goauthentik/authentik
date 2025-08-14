@@ -1,0 +1,284 @@
+.glossary {
+    margin: 0;
+    padding: 0;
+}
+
+.termList {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section {
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    padding-top: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--ifm-color-primary-darker);
+}
+
+.sectionTerms {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.termItem {
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--ifm-background-surface-color);
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.termItem:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.termHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.termTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--ifm-color-primary);
+}
+
+.expandButton {
+    cursor: pointer;
+    color: var(--ifm-color-primary);
+    font-weight: 500;
+    user-select: none;
+    background: none;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: 1px solid var(--ifm-color-primary);
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+
+.expandButton:hover {
+    background-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.shortDefinition {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--ifm-color-emphasis-800);
+}
+
+.fullDefinition {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--ifm-color-emphasis-300);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.simplifiedSection {
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    padding-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.simplifiedTerms {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.simplifiedTermItem {
+    margin-bottom: 1rem;
+}
+
+.simplifiedTermTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--ifm-color-primary);
+}
+
+.simplifiedDefinition {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--ifm-color-emphasis-800);
+}
+
+.simplifiedExpandButton {
+    background: none;
+    border: none;
+    color: var(--ifm-color-primary);
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+}
+
+.simplifiedExpandButton:hover {
+    text-decoration: underline;
+}
+
+.simplifiedFullDefinition {
+    margin-top: 0.5rem;
+    padding-left: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ifm-color-emphasis-700);
+}
+
+.filter {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--ifm-color-emphasis-100);
+    border-radius: 8px;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filterInput {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 4px;
+    background-color: var(--ifm-background-color);
+}
+
+.filterInput:focus {
+    outline: none;
+    border-color: var(--ifm-color-primary);
+    box-shadow: 0 0 0 2px var(--ifm-color-primary-lighter);
+}
+
+.viewToggleContainer {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.viewTogglePrompt {
+    margin: 0;
+    font-weight: 500;
+}
+
+.viewToggle {
+    padding: 0.5rem 1rem;
+    background-color: var(--ifm-color-emphasis-200);
+    color: var(--ifm-color-emphasis-700);
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.viewToggle:hover {
+    background-color: var(--ifm-color-emphasis-300);
+}
+
+.viewToggleActive {
+    background-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.sectionNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.sectionButton {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background-color: var(--ifm-color-emphasis-100);
+    color: var(--ifm-color-emphasis-700);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.sectionButton:hover {
+    background-color: var(--ifm-color-emphasis-200);
+    color: var(--ifm-color-emphasis-900);
+}
+
+.sectionButton.active {
+    background-color: var(--ifm-color-primary);
+    color: white;
+}
+
+.clearButton {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: var(--ifm-color-emphasis-300);
+    color: var(--ifm-color-emphasis-800);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    margin-left: 0.5rem;
+}
+
+.clearButton:hover {
+    background-color: var(--ifm-color-emphasis-400);
+    color: var(--ifm-color-emphasis-900);
+}
+
+.noResults {
+    padding: 3rem;
+    text-align: center;
+    color: var(--ifm-color-emphasis-600);
+    font-style: italic;
+    background-color: var(--ifm-color-emphasis-100);
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .sectionTerms {
+        grid-template-columns: 1fr;
+    }
+
+    .filter {
+        flex-direction: column;
+    }
+
+    .viewToggleContainer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .viewToggle {
+        width: 100%;
+    }
+}
