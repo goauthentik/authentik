@@ -86,13 +86,34 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html`
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="sendOnce">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.sendOnce ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Send once")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Only send notification once, for example when sending a webhook into a chat channel.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
@@ -231,26 +252,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     })}
                 </select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.sendOnce ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
-                </label>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Only send notification once, for example when sending a webhook into a chat channel.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+        `;
     }
 }
 
