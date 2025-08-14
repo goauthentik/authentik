@@ -198,7 +198,7 @@ class TestEventTransports(TestCase):
     def test_templates_api_endpoint(self):
         """Test templates API endpoint returns valid templates"""
         self.client.force_login(self.user)
-        response = self.client.get("/api/v3/events/transports/templates/")
+        response = self.client.get("/api/v3/stages/email/templates/")
         self.assertEqual(response.status_code, 200)
 
         data = response.json()
