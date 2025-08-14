@@ -124,7 +124,7 @@
         "@types/guacamole-common-js": "^1.5.3",
         "@types/mocha": "^10.0.10",
         "@types/node": "^24.2.1",
-        "@types/react": "^19.1.8",
+        "@types/react": "^19.1.10",
         "@types/react-dom": "^19.1.7",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
