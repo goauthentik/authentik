@@ -518,9 +518,6 @@
 <trans-unit id="sd5903cc8de68b3fc">
   <source>No form found</source>
 </trans-unit>
-<trans-unit id="s45935843b1b5b496">
-  <source>Form didn't return a promise for submitting</source>
-</trans-unit>
 <trans-unit id="s1a0e95458b44d7f8">
   <source>Any policy must match to grant access</source>
 </trans-unit>

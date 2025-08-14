@@ -1456,11 +1456,6 @@
         <target>Form bulunamadı</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Form göndermek için bir söz vermedi</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>Tür seçin</target>
