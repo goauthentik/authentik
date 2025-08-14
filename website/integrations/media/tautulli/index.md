@@ -58,23 +58,25 @@ Add all Tautulli users to the Group. You should also create a Group Membership P
 - External host
 
     Set this to the external URL you will be accessing Tautulli from.
-    
-    Basic authentication settings have been removed from the UI and are now available in config.ini.  For basic auth to work, do the following:
+
+    Basic authentication settings have been removed from the UI and are now available in config.ini. For basic auth to work, do the following:
 
 1. shut down Tautulli
 
 2. Set/Change the following in the config file:
+
 ```yaml
 http_basic_auth = 1
 http_hash_password = 0
 http_hashed_password = 1
 http_password = `<enter your password>`
 ```
+
 3. Save the changes and then restart Tautulli
 
 4. Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/)
-Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
+   Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with `Tautulli`, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli.  You should bypass the login prompt if setup correctly.
+To confirm that authentik is properly configured with `Tautulli`, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli. You should bypass the login prompt if setup correctly.
