@@ -8403,35 +8403,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /events/transports/templates/:
-    get:
-      operationId: events_transports_templates_list
-      description: Get all available templates, including custom templates
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TypeCreate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /flows/bindings/:
     get:
       operationId: flows_bindings_list
@@ -49379,7 +49350,6 @@ components:
           nullable: true
         email_template:
           type: string
-          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49424,7 +49394,6 @@ components:
           nullable: true
         email_template:
           type: string
-          nullable: true
           minLength: 1
         send_once:
           type: boolean
@@ -54528,7 +54497,6 @@ components:
           nullable: true
         email_template:
           type: string
-          nullable: true
           minLength: 1
         send_once:
           type: boolean

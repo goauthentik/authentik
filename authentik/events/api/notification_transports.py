@@ -11,7 +11,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import (
@@ -120,19 +119,3 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
             return Response(response.data)
         except NotificationTransportError as exc:
             return Response(str(exc.__cause__ or None), status=500)
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def templates(self, request: Request) -> Response:
-        """Get all available templates, including custom templates"""
-        choices = []
-        for value, label in get_template_choices():
-            choices.append(
-                {
-                    "name": value,
-                    "description": label,
-                    "component": "",
-                    "model_name": "",
-                }
-            )
-        return Response(TypeCreateSerializer(choices, many=True).data)
