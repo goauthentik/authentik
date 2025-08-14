@@ -49,12 +49,12 @@ jobs:
       tags: ${{ steps.ev.outputs.imageTagsJSON }}
       shouldPush: ${{ steps.ev.outputs.shouldPush }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ${{ inputs.image_name }}
   merge-server:
@@ -69,20 +69,20 @@ jobs:
       matrix:
         tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ${{ inputs.image_name }}
       - name: Login to Docker Hub
         if: ${{ inputs.registry_dockerhub }}
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_CORP_USERNAME }}
+          password: ${{ secrets.DOCKER_CORP_PASSWORD }}
       - name: Login to GitHub Container Registry
         if: ${{ inputs.registry_ghcr }}
         uses: docker/login-action@v3

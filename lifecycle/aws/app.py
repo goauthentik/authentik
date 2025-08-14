@@ -34,7 +34,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from authentik import __version__
+from authentik import authentik_version as ak_version
 
 
 class AuthentikStack(Stack):
@@ -88,7 +88,7 @@ class AuthentikStack(Stack):
             self,
             "AuthentikVersion",
             type="String",
-            default=__version__,
+            default=ak_version(),
             description="authentik Docker image tag",
         )
 

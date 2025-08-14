@@ -1,9 +1,11 @@
-import os
 import sys
+from argparse import Namespace
 
 from django.apps.registry import apps
 from django.core.management.base import BaseCommand
+from django.db import connections
 from django.utils.module_loading import import_string, module_has_submodule
+from dramatiq.__main__ import main
 
 from django_dramatiq_postgres.conf import Conf
 
@@ -35,51 +37,45 @@ class Command(BaseCommand):
         **options,
     ):
         worker = Conf().worker
-        executable_name = "dramatiq-gevent" if worker["use_gevent"] else "dramatiq"
-        executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", worker["watch_folder"]] if watch else []
-        if watch_args and worker["watch_use_polling"]:
-            watch_args.append("--watch-use-polling")
+        setup, modules = self._discover_tasks_modules()
+        args = Namespace(
+            broker=setup,
+            modules=modules,
+            path=["."],
+            queues=None,
+            log_file=None,
+            skip_logging=True,
+            use_spawn=False,
+            forks=[],
+            worker_shutdown_timeout=600000,
+            watch=None,
+            watch_use_polling=False,
+            include_patterns=["**.py"],
+            exclude_patterns=None,
+            verbose=0,
+        )
+        if watch:
+            args.watch = worker["watch_folder"]
+            if worker["watch_use_polling"]:
+                args.watch_use_polling = True
 
-        parallel_args = []
         if processes := worker["processes"]:
-            parallel_args.extend(["--processes", str(processes)])
+            args.processes = processes
         if threads := worker["threads"]:
-            parallel_args.extend(["--threads", str(threads)])
+            args.threads = threads
 
-        pid_file_args = []
         if pid_file is not None:
-            pid_file_args = ["--pid-file", pid_file]
+            args.pid_file = pid_file
 
-        verbosity_args = ["-v"] * (verbosity - 1)
+        args.verbose = verbosity - 1
 
-        tasks_modules = self._discover_tasks_modules()
-        process_args = [
-            executable_name,
-            "--path",
-            ".",
-            *parallel_args,
-            *watch_args,
-            *pid_file_args,
-            *verbosity_args,
-            *tasks_modules,
-        ]
+        connections.close_all()
+        sys.exit(main(args))
 
-        os.execvp(executable_path, process_args)  # nosec
-
-    def _resolve_executable(self, exec_name: str):
-        bin_dir = os.path.dirname(sys.executable)
-        if bin_dir:
-            for d in [bin_dir, os.path.join(bin_dir, "Scripts")]:
-                exec_path = os.path.join(d, exec_name)
-                if os.path.isfile(exec_path):
-                    return exec_path
-        return exec_name
-
-    def _discover_tasks_modules(self) -> list[str]:
+    def _discover_tasks_modules(self) -> tuple[str, list[str]]:
         # Does not support a tasks directory
         autodiscovery = Conf().autodiscovery
-        modules = [autodiscovery["setup_module"]]
+        modules = []
 
         if autodiscovery["enabled"]:
             for app in apps.get_app_configs():
@@ -97,4 +93,4 @@ class Command(BaseCommand):
                 else import_string(modules_callback)
             )
             modules.extend(callback())
-        return modules
+        return autodiscovery["setup_module"], modules

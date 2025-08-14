@@ -174,6 +174,10 @@ export function pluckErrorDetail(error: Error, fallback?: string): string;
  */
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string;
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string {
+    if (typeof errorLike === "string" && errorLike) {
+        return errorLike;
+    }
+
     fallback ||= composeResponseErrorDescriptor(
         ResponseErrorMessages[HTTPStatusCode.InternalServiceError],
     );

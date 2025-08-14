@@ -9,7 +9,7 @@ from django.http.request import HttpRequest
 from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
@@ -44,5 +44,5 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "brand_css": brand_css,
         "footer_links": tenant.footer_links,
         "html_meta": {**get_http_meta()},
-        "version": get_full_version(),
+        "version": authentik_full_version(),
     }

@@ -58,6 +58,10 @@ sequenceDiagram
 | JWKS                 | `/application/o/<application slug>/jwks/`                            |
 | OpenID Configuration | `/application/o/<application slug>/.well-known/openid-configuration` |
 
+:::caution Reserved application slugs
+Due to how the OAuth2 provider endpoints are structured, you cannot create applications that use the slugs `authorize`, `token`, `userinfo`, or `revoke` as these would conflict with the global OAuth2 endpoints.
+:::
+
 ### Additional configuration options with Redirect URIs
 
 When using an OAuth 2.0 provider in authentik, the OP must validate the provided redirect URI by the RP. An authentik admin can configure a list in the **Redirect URI** field on the Provider.
