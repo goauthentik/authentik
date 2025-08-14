@@ -49347,10 +49347,8 @@ components:
             a dictionary of key-value pairs
         email_subject_prefix:
           type: string
-          nullable: true
         email_template:
           type: string
-          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49392,10 +49390,8 @@ components:
             a dictionary of key-value pairs
         email_subject_prefix:
           type: string
-          nullable: true
         email_template:
           type: string
-          nullable: true
           minLength: 1
         send_once:
           type: boolean
@@ -54496,10 +54492,8 @@ components:
             a dictionary of key-value pairs
         email_subject_prefix:
           type: string
-          nullable: true
         email_template:
           type: string
-          nullable: true
           minLength: 1
         send_once:
           type: boolean

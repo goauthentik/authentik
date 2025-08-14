@@ -303,10 +303,8 @@ class NotificationTransport(TasksModel, SerializerModel):
         ),
     )
 
-    email_subject_prefix = models.TextField(
-        default="authentik Notification: ", null=True, blank=True
-    )
-    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION, null=True)
+    email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
+    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(

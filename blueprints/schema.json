@@ -6754,17 +6754,11 @@
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
                 "email_subject_prefix": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": "string",
                     "title": "Email subject prefix"
                 },
                 "email_template": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                    "type": "string",
                     "minLength": 1,
                     "title": "Email template"
                 },
