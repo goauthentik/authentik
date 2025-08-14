@@ -24,12 +24,7 @@ def clean_expired_models():
     self: Task = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
-        objects = (
-            cls.objects.all().exclude(expiring=False).exclude(expiring=True, expires__gt=now())
-        )
-        amount = objects.count()
-        for obj in objects:
-            obj.expire_action()
+        amount = cls.delete_expired()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
 
