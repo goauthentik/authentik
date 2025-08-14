@@ -296,9 +296,17 @@ class NotificationTransport(TasksModel, SerializerModel):
 
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
+    send_once = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only send notification once, for example when sending a webhook into a chat channel."
+        ),
+    )
 
-    email_subject_prefix = models.TextField(default=None, null=True, blank=True)
-    email_template = models.TextField(default=None, null=True)
+    email_subject_prefix = models.TextField(
+        default="authentik Notification: ", null=True, blank=True
+    )
+    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION, null=True)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(
@@ -321,12 +329,6 @@ class NotificationTransport(TasksModel, SerializerModel):
         help_text=_(
             "Configure additional headers to be sent. "
             "Mapping should return a dictionary of key-value pairs"
-        ),
-    )
-    send_once = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Only send notification once, for example when sending a webhook into a chat channel."
         ),
     )
 
@@ -466,9 +468,6 @@ class NotificationTransport(TasksModel, SerializerModel):
                 notification=notification,
             )
             return None
-        subject_prefix = (
-            self.email_subject_prefix if self.email_subject_prefix else "authentik Notification: "
-        )
         context = {
             "key_value": {
                 "user_email": notification.user.email,
@@ -496,12 +495,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 "from": self.name,
             }
         mail = TemplateEmailMessage(
-            subject=subject_prefix + context["title"],
+            subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name=(
-                self.email_template if self.email_template else EmailTemplates.EVENT_NOTIFICATION
-            ),
+            template_name=self.email_template,
             template_context=context,
         )
         send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)

@@ -226,9 +226,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             >
                 <input
                     type="text"
-                    value="${ifDefined(
-                        this.instance?.emailSubjectPrefix || "authentik Notification: ",
-                    )}"
+                    value="${this.instance?.emailSubjectPrefix || "authentik Notification: "}"
                     class="pf-c-form-control"
                     ?hidden=${!this.showEmail}
                     ?required=${this.showEmail}

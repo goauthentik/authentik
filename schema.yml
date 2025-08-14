@@ -49350,6 +49350,7 @@ components:
           nullable: true
         email_template:
           type: string
+          nullable: true
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49394,6 +49395,7 @@ components:
           nullable: true
         email_template:
           type: string
+          nullable: true
           minLength: 1
         send_once:
           type: boolean
@@ -54497,6 +54499,7 @@ components:
           nullable: true
         email_template:
           type: string
+          nullable: true
           minLength: 1
         send_once:
           type: boolean
