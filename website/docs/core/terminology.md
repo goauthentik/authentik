@@ -39,7 +39,7 @@ See [Applications](../add-secure-apps/applications/index.md).
 
 Sources are locations from which users can be added to authentik. For example, an LDAP Connection to import Users from Active Directory, or an OAuth2 Connection to allow Social Logins.
 
-See [Sources](../users-sources/sources/index.md)
+See [Sources](../users-sources/sources/index.md).
 
 ### Provider
 
