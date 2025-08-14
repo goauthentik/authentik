@@ -34,7 +34,7 @@ With the enterprise version, you can view recent events on both a world map view
 
 ## Advanced queries for event logs :ak-enterprise
 
-You can construct advanced queries, based on DjangoQL, to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Model/object**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brnad`, `context`, `created`
 
