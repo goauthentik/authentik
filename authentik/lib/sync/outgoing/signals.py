@@ -16,8 +16,18 @@ def register_signals(
     """Register sync signals"""
     uid = class_to_path(provider_type)
 
-    def model_post_save(sender: type[Model], instance: User | Group, created: bool, **_):
+    def model_post_save(
+        sender: type[Model],
+        instance: User | Group,
+        created: bool,
+        update_fields: list[str] | None = None,
+        **_,
+    ):
         """Post save handler"""
+        # Special case for user object; don't start sync task when we've only updated `last_login`
+        # This primarily happens during user login
+        if sender == User and update_fields == {"last_login"}:
+            return
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
             instance.pk,

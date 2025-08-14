@@ -5,17 +5,20 @@ import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/AkControlElement";
 import { AKElement } from "#elements/Base";
+import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
+import { ErrorProp } from "#components/ak-field-errors";
+
 import { instanceOfValidationError } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -186,7 +189,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
     //#endregion
 
     public get form(): HTMLFormElement | null {
-        return this.shadowRoot?.querySelector("form") || null;
+        return this.renderRoot?.querySelector("form") || null;
     }
 
     @state()
@@ -243,13 +246,26 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return createFileMap<T>(this.shadowRoot?.querySelectorAll("ak-form-element-horizontal"));
     }
 
+    //#region Validation
+
     public checkValidity(): boolean {
         return !!this.form?.checkValidity?.();
     }
 
     public reportValidity(): boolean {
-        return !!this.form?.reportValidity?.();
+        const form = this.form;
+
+        if (!form) {
+            console.warn("authentik/forms: unable to check validity, no form found", this);
+            return false;
+        }
+
+        return reportValidityDeep(form);
     }
+
+    //#endregion
+
+    //#region Submission
 
     /**
      * Convert the elements of the form to JSON.[4]
@@ -263,6 +279,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         return serializeForm<T>(elements);
     }
+
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
@@ -294,11 +311,13 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
             .catch(async (error: unknown) => {
                 if (error instanceof PreventFormSubmit && error.element) {
                     error.element.errorMessages = [error.message];
-                    error.element.invalid = true;
                 }
 
                 const parsedError = await parseAPIResponseError(error);
                 let errorMessage = pluckErrorDetail(error);
+                let focused = false;
+
+                //#region Validation errors
 
                 if (instanceOfValidationError(parsedError)) {
                     // assign all input-related errors to their elements
@@ -315,18 +334,44 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                         if (!elementName) continue;
 
                         const snakeProperty = snakeCase(elementName);
+                        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
 
-                        if (snakeProperty in parsedError) {
-                            element.errorMessages = parsedError[snakeProperty];
-                            element.invalid = true;
-                        } else {
-                            element.errorMessages = [];
-                            element.invalid = false;
+                        element.errorMessages = errorMessages;
+                        const { controlledElement } = element;
+
+                        if (!focused && Array.isArray(errorMessages) && errorMessages.length) {
+                            if (
+                                controlledElement?.checkVisibility() &&
+                                controlledElement instanceof HTMLElement
+                            ) {
+                                focused = true;
+
+                                requestAnimationFrame(() => {
+                                    return controlledElement.focus?.();
+                                });
+                            }
                         }
                     }
 
                     if (parsedError.nonFieldErrors) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
+                    } else if (!focused) {
+                        // It's possible that the API has returned a field error that we're
+                        // not aware of. We can still show the error message, to at least
+                        // give the user some feedback.
+                        for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
+                            if (Array.isArray(fieldErrors)) {
+                                this.nonFieldErrors = [
+                                    msg(str`${fieldName}: ${fieldErrors.join(", ")}`),
+                                ];
+                                break;
+                            }
+                        }
+
+                        console.error(
+                            "authentik/forms: API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                            parsedError,
+                        );
                     }
 
                     errorMessage = msg("Invalid update request.");
@@ -338,6 +383,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                     }
                 }
 
+                //#endregion
+
                 showMessage({
                     message: errorMessage,
                     level: MessageLevel.error,
@@ -347,6 +394,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 throw error;
             });
     }
+
+    //#endregion
 
     //#endregion
 

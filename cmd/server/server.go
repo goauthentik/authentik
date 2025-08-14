@@ -36,7 +36,7 @@ var rootCmd = &cobra.Command{
 				AttachStacktrace: true,
 				EnableTracing:    true,
 				TracesSampler:    sentryutils.SamplerFunc(config.Get().ErrorReporting.SampleRate),
-				Release:          fmt.Sprintf("authentik@%s", constants.VERSION),
+				Release:          fmt.Sprintf("authentik@%s", constants.VERSION()),
 				Environment:      config.Get().ErrorReporting.Environment,
 				HTTPTransport:    webutils.NewUserAgentTransport(constants.UserAgent(), http.DefaultTransport),
 				IgnoreErrors: []string{

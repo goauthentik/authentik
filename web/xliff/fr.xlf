@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -1465,11 +1465,6 @@
       <trans-unit id="sd5903cc8de68b3fc">
         <source>No form found</source>
         <target>Aucun formulaire trouvé</target>
-        
-      </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Le formulaire n'a pas retourné de promesse de soumission</target>
         
       </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
@@ -10072,33 +10067,47 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s6c973fe9014080fc">
   <source>Application name</source>
+  <target>Nom de l'application</target>
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
+  <target>Le nom affiché dans la bibliothèque d'applications.</target>
 </trans-unit>
 <trans-unit id="s418c59028ef6bc2a">
   <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+  <target>URI vers lesquelles envoyer les notifications de déconnexion Back-Channel lorsque les utilisateurs se déconnectent. Requis pour la fonctionnalité de déconnexion Back-Channel d'OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="sa091b3064afa00f5">
   <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+  <target>Ces URI sont appelées de serveur à serveur lorsqu'un utilisateur se déconnecte pour informer les clients OAuth2/OpenID de l'événement de déconnexion.</target>
 </trans-unit>
 <trans-unit id="s6d364031a996b540">
   <source>Back-Channel Logout URI</source>
+  <target>URI de déconnexion Back-Channel</target>
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>par ex. Collaboration, Communication, Interne, etc.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <target>Erreur lors de la récupération de l'application &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
   <source>Account Recovery Max Attempts</source>
+  <target>Nombre maximal de tentatives de récupération de compte</target>
 </trans-unit>
 <trans-unit id="s8341dba451980abe">
   <source>Account Recovery Cache Timeout</source>
+  <target>Délai d'expiration du cache de récupération de compte</target>
 </trans-unit>
 <trans-unit id="sede4ad68849ce0c5">
   <source>The time window used to count recent account recovery attempts.</source>
+  <target>La fenêtre de temps utilisée pour compter les tentatives récentes de récupération de compte.</target>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+  <target>None</target>
 </trans-unit>
     </body>
   </file>

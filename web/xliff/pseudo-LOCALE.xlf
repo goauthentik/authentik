@@ -548,7 +548,7 @@
 
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
   <target><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></target>
 
       </trans-unit>
@@ -1455,11 +1455,6 @@
       <trans-unit id="sd5903cc8de68b3fc">
         <source>No form found</source>
   <target>Ńō ƒōŕḿ ƒōũńď</target>
-
-      </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-  <target>Ƒōŕḿ ďĩďń'ţ ŕēţũŕń à ƥŕōḿĩśē ƒōŕ śũƀḿĩţţĩńĝ</target>
 
       </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
@@ -9694,5 +9689,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sede4ad68849ce0c5">
   <source>The time window used to count recent account recovery attempts.</source>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
 </trans-unit>
 </body></file></xliff>

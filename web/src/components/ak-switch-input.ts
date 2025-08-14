@@ -44,6 +44,8 @@ export class AkSwitchInput extends AKElement {
         const helpText = this.help.trim();
 
         return html` <ak-form-element-horizontal name=${this.name} ?required=${this.required}>
+            <div slot="label" class="pf-c-form__group-label"></div>
+
             <label class="pf-c-switch" for="${this.#fieldID}">
                 <input
                     id="${this.#fieldID}"

@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.models import User
 from authentik.events.middleware import should_log_model
 from authentik.events.models import Event, EventAction
@@ -19,7 +19,7 @@ from authentik.events.utils import model_to_dict
 
 
 def get_banner_text(shell_type="shell") -> str:
-    return f"""### authentik {shell_type} ({get_full_version()})
+    return f"""### authentik {shell_type} ({authentik_full_version()})
 ### Node {platform.node()} | Arch {platform.machine()} | Python {platform.python_version()} """
 
 

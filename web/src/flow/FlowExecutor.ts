@@ -580,7 +580,7 @@ export class FlowExecutor
                                 </div>
                             </div>
                         </div>
-                        ${this.inspectorAvailable || !this.inspectorOpen
+                        ${this.inspectorAvailable && !this.inspectorOpen
                             ? html`<button
                                   class="inspector-toggle pf-c-button pf-m-primary"
                                   @click=${() => {

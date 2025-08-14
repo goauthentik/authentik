@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 00:12+0000\n"
+"POT-Creation-Date: 2025-08-11 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,11 @@ msgstr ""
 
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
+msgstr ""
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
 #: authentik/core/api/groups.py
@@ -1400,6 +1405,20 @@ msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
@@ -3785,6 +3804,11 @@ msgstr ""
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
+msgstr ""
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr ""
 
 #: authentik/tenants/models.py

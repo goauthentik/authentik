@@ -139,7 +139,6 @@ export abstract class HorizontalLightComponent<T>
             ?hidden=${this.hidden}
             name=${this.name}
             .errorMessages=${this.errorMessages}
-            ?invalid=${this.invalid}
         >
             ${this.renderControl()} ${this.renderHelp()}
         </ak-form-element-horizontal> `;
