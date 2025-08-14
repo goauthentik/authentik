@@ -8,14 +8,18 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
+import "#elements/CodeMirror";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
+import { CodeMirrorMode } from "#elements/CodeMirror";
 import { Form } from "#elements/forms/Form";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
+
+import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -254,6 +258,16 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${this._settings?.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
+            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
+                <ak-codemirror
+                    mode=${CodeMirrorMode.YAML}
+                    value="${YAML.stringify(this._settings?.flags ?? {})}"
+                >
+                </ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Modify flags to opt into new authentik behaviours early.")}
+                </p>
+            </ak-form-element-horizontal>
         `;
     }
 }
