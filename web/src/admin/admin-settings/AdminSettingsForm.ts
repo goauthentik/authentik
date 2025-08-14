@@ -47,7 +47,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     }
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
-        settingsRequest.flags ??= this.settings.flags;
+        settingsRequest.flags = this.settings.flags ?? {};
 
         const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
             settingsRequest,
