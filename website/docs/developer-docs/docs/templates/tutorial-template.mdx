@@ -1,0 +1,146 @@
+---
+title: "Tutorial Template"
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+# Tutorial: [Title of the Tutorial]
+
+## Overview
+
+[A brief introduction explaining what this tutorial will cover and what the user will achieve by following it. Keep this to 2-3 sentences. Include why this task is valuable or important.]
+
+**Difficulty Level**: [Beginner/Intermediate/Advanced] **todo(dominic): hmm?**
+**Time to Complete**: [Approximate time, e.g., 15-30 minutes]
+
+## Stated Goals
+
+- Clearly define the outcome: [One-sentence description of what the user will achieve]
+- Success criteria:
+    - [Measurable signal #1]
+    - [Measurable signal #2]
+
+### Example Use Case
+
+As a [role, e.g., administrator], I need to [task, e.g., configure SSO for a new app] so that [benefit, e.g., users can sign in with their existing credentials and reduce support tickets]. This tutorial walks through [key action(s), e.g., creating the provider, mapping claims, and testing the flow] to achieve that outcome.
+
+## What You'll Learn
+
+[List of specific skills or knowledge points that the user will learn, linking to the relevant docs if available]
+
+- [Specific skill or knowledge point #1]
+- [Specific skill or knowledge point #2]
+- [Specific skill or knowledge point #3]
+- [Specific skill or knowledge point #4]
+
+## Prerequisites
+
+Before starting this tutorial, ensure that you have:
+
+- A working authentik installation (version X.Y.Z or higher)
+- [Any specific configuration requirements]
+- [Required permissions/access]
+- [External tools or services needed]
+- [Any required API keys or credentials]
+
+## Step 1: [First Major Task]
+
+[Brief description of what will be accomplished in this step and why it's important]
+
+1. **[Action]**: [Clear, action-oriented instruction with specific UI elements in bold]
+2. **[Action]**: [Clear, action-oriented instruction]
+3. **[Action]**: [Clear, action-oriented instruction]
+
+[Optional: Include a screenshot of the relevant UI with annotations if helpful]
+
+:::tip
+[Optional tip that might help users avoid common mistakes or provide additional context]
+:::
+
+## Step 2: [Second Major Task]
+
+[Brief description of what will be accomplished in this step]
+
+<Tabs groupId="deployment-type">
+    <TabItem value="docker" label="Docker" default>
+        `docker exec -it authentik /bin/bash`
+    </TabItem>
+    <TabItem value="kubernetes" label="Kubernetes">
+        `kubectl exec -it deployment/authentik -- /bin/bash`
+    </TabItem>
+</Tabs>
+
+[Additional instructions for this step]
+
+1. **[Action]**: [Clear instruction]
+2. **[Action]**: [Clear instruction]
+3. **[Action]**: [Clear instruction]
+
+### Configuration Example
+
+```yaml showLineNumbers title="example.yaml"
+# Example configuration with comments explaining each part
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: example-config # Give your config a descriptive name
+data:
+    # These settings control how the feature behaves
+    key: value # This setting enables X functionality
+    another_key: another_value # This controls Y behavior
+```
+
+:::warning
+[Important warning about potential issues or security considerations]
+:::
+
+## Step 3: [Testing Your Configuration]
+
+[Brief description of how to verify that everything is working correctly]
+
+1. **Navigate to**: [Specific location in authentik]
+2. **Check that**: [Expected result is visible]
+3. **Test by**: [Specific action that confirms functionality]
+
+[Describe what success looks like, including any expected outputs or behaviors]
+
+## Troubleshooting
+
+| Issue             | Possible Cause               | Solution                  |
+| ----------------- | ---------------------------- | ------------------------- |
+| [Common issue #1] | [What typically causes this] | [Detailed solution steps] |
+| [Common issue #2] | [What typically causes this] | [Detailed solution steps] |
+| [Common issue #3] | [What typically causes this] | [Detailed solution steps] |
+
+### Common Error Messages
+
+If you encounter these error messages, here's how to resolve them:
+
+- **"Error message text"**: [Explanation and solution]
+- **"Another error message"**: [Explanation and solution]
+
+## Security Considerations
+
+[Optional section for tutorials that involve security-sensitive configurations]
+
+When implementing this solution, keep these security best practices in mind:
+
+- [Security recommendation #1]
+- [Security recommendation #2]
+- [Security recommendation #3]
+
+## Next Steps
+
+Now that you've completed this tutorial, you might want to:
+
+- [Related tutorial or task with link if available]
+- [Related tutorial or task with link if available]
+- [Related tutorial or task with link if available]
+
+## Additional Resources
+
+- [Link to relevant documentation]
+- [Link to community forum discussions]
+- [Link to related tutorials]
+- [Link to GitHub examples or repositories]
