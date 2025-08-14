@@ -16,6 +16,7 @@ GEN_API_GO = gen-go-api
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
@@ -57,7 +58,7 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn:
-	cd lifecycle/aws && npm run aws-cfn
+	cd lifecycle/aws && npm i && uv run npm run aws-cfn
 
 run-server:  ## Run the main authentik server process
 	uv run ak server
@@ -79,10 +80,10 @@ core-i18n-extract:
 install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
-	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	redis-cli -n 0 flushall
+	redis-cli -n ${redis_db} flushall
 
 dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -92,6 +93,17 @@ dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik 
 update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
+
+bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
+ifndef version
+	$(error Usage: make bump version=20xx.xx.xx )
+endif
+	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
+	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(MAKE) gen-build gen-compose aws-cfn
+	npm version --no-git-tag-version --allow-same-version $(version)
+	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
@@ -106,6 +118,9 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		uv run ak spectacular --file schema.yml
+
+gen-compose:
+	uv run scripts/generate_docker_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md

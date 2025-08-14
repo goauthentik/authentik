@@ -6,7 +6,7 @@ The following topics are for the basic management of users: how to create, modif
 
 [Policies](../../customize/policies/index.md) can be used to further manage how users are authenticated. For example, by default authentik does not require email addresses be unique, but you can use a policy to [enforce unique email addresses](../../customize/policies/expression/unique_email.md).
 
-### Create a user
+## Create a user
 
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
 
@@ -33,7 +33,33 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-### View user details
+## Advanced queries for users:ak-enterprise {#tell-me-more}
+
+You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+
+<!--| Model/Object | Operators | Examples |
+| ---- | ---- | ----------- |
+| `username` | `=` | `username = "Joel Bonne"` |
+| `path` | !=  |  |
+| `name` | ~| |
+| `email` | !~ |
+| `path` | `startswith` |
+| `is_active` | `not startswith` |
+| `type` | `endswith` |
+| `attributes`| `endswith` |
+| | `not endswith` |
+| | `in` |
+| | `not in` |-->
+
+- **Model/object**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
+
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
+
+- **Values**: `True`, `False`, `None`
+
+- **Example queries**: `username = "Joel Bonne"`, `is_active = false`
+
+## View user details
 
 In the **Directory > Users** menu of the Admin interface, you can browse all the users in your authentik instance.
 
@@ -58,7 +84,7 @@ After the creation of the user, you can edit any parameter defined during the cr
 
 To modify a user object, go to **Directory > Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
 
-### Assign, modify, or remove permissions for a user
+## Assign, modify, or remove permissions for a user
 
 You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
 
@@ -86,7 +112,7 @@ This option is only available if a default recovery flow was configured for the 
 
 A pop-up will appear on your browser with the link for you to copy and to send to the user.
 
-### Email them a recovery link
+### Email a recovery link
 
 :::info
 This option is only available if a default recovery flow was configured for the currently active brand and if the configured flow has an [Email Stage](../../add-secure-apps/flows-stages/stages/email/index.mdx) bound to it.
@@ -100,7 +126,7 @@ You can send a link with the URL for the user to reset their password via Email.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
-### Reset the password for the user
+## Reset the password for the user
 
 As an Admin, you can simply reset the password for the user.
 
@@ -110,14 +136,14 @@ As an Admin, you can simply reset the password for the user.
 
 ## Deactivate or Delete user
 
-#### To deactivate a user:
+### To deactivate a user:
 
 1. Go into the user list or detail, and click **Deactivate**.
 2. Review the changes and click **Update**.
 
 The active sessions are revoked and the authentication of the user blocked. You can reactivate the account by following the same procedure.
 
-#### To delete a user:
+### To delete a user:
 
 :::caution
 This deletion is not reversible, so be sure you do not need to recover any identity data of the user.

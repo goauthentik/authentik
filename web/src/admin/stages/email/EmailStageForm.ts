@@ -77,7 +77,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 <ak-secret-text-input
                     label=${msg("SMTP Password")}
                     name="password"
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">

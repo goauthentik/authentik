@@ -251,7 +251,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
@@ -259,7 +259,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
@@ -287,7 +287,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-secret-textarea-input
                         name="spnegoKeytab"
                         label=${msg("SPNEGO keytab")}
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
