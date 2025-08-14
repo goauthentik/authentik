@@ -500,7 +500,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
             template_name=(
-                self.email_template if self.email_template else EmailTemplates.EMAIL_NOTIFICATION
+                self.email_template if self.email_template else EmailTemplates.EVENT_NOTIFICATION
             ),
             template_context=context,
         )

@@ -36,7 +36,7 @@ class EmailTemplates(models.TextChoices):
         "email/email_otp.html",
         _("Email OTP"),
     )  # nosec
-    EMAIL_NOTIFICATION = (
+    EVENT_NOTIFICATION = (
         "email/event_notification.html",
         _("Event Notification"),
     )
