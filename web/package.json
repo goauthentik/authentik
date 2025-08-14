@@ -140,7 +140,7 @@
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.2.6",
-        "esbuild": "^0.25.8",
+        "esbuild": "^0.25.9",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.1",
