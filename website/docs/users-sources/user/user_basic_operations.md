@@ -33,7 +33,7 @@ You should see a confirmation pop-up on the top-right of the screen that the use
 To create a super-user, you need to add the user to a group that has super-user permissions. For more information, refer to [Create a Group](../groups/manage_groups.mdx#create-a-group).
 :::
 
-## Advanced queries for users :ak-enterprise
+## Advanced queries for users:ak-enterprise {#tell-me-more}
 
 You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
