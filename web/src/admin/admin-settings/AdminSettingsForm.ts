@@ -261,7 +261,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
-                    value="${YAML.stringify(settings?.flags ?? {})}"
+                    value="${YAML.stringify(this._settings?.flags ?? {})}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
