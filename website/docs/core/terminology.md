@@ -33,7 +33,7 @@ graph LR
 
 An application links together Policies with a Provider, allowing you to control access. It also holds Information like UI Name, Icon and more.
 
-See [Applications](../add-secure-apps/applications/index.md)
+See [Applications](../add-secure-apps/applications/index.md).
 
 ### Source
 
