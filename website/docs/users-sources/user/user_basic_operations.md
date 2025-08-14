@@ -46,7 +46,7 @@ You can construct advanced queries to find specific users in the list under **Di
 - **Example queries**:
     - search user by status: `is_active = False`
     - search user by username: `username = "bob"`
-    - search user by email email = "bob@authentik.company"
+    - search user by email address: `email = "bob@authentik.company"`
     - search user by attribute: `attribute.my_custom_attribute = "foo"`
 
 ## View user details
