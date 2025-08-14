@@ -45,7 +45,7 @@ See [Sources](../users-sources/sources/index.md)
 
 A Provider is a way for other applications to authenticate against authentik. Common Providers are OpenID Connect (OIDC) and SAML.
 
-See [Providers](../add-secure-apps/providers/index.mdx)
+See [Providers](../add-secure-apps/providers/index.mdx).
 
 ### Policy
 
