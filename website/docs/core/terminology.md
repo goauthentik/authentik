@@ -49,7 +49,7 @@ See [Providers](../add-secure-apps/providers/index.mdx)
 
 ### Policy
 
-At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy type and settings. For example, a GeoIP Policy evaluates to True if the user's IP is geolocated in the specified country and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
+At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy type and settings. For example, a GeoIP Policy evaluates to True if the user's IP is geolocated in the specified country or False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
 
 See [Policies](../customize/policies/index.md)
 
