@@ -190,9 +190,9 @@
         "@rollup/rollup-darwin-arm64": "^4.46.2",
         "@rollup/rollup-linux-arm64-gnu": "^4.46.2",
         "@rollup/rollup-linux-x64-gnu": "^4.46.2",
-        "@wdio/browser-runner": "^9.19.0",
-        "@wdio/cli": "^9.19.0",
-        "@wdio/spec-reporter": "^9.19.0",
+        "@wdio/browser-runner": "^9.19.1",
+        "@wdio/cli": "^9.19.1",
+        "@wdio/spec-reporter": "^9.19.1",
         "@web/test-runner": "^0.20.2",
         "chromedriver": "^139.0.0"
     },
