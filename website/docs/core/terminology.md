@@ -75,4 +75,4 @@ See [Provider Property Mappings](../add-secure-apps/providers/property-mappings/
 
 An outpost is a separate component of authentik, which can be deployed anywhere, regardless of the authentik deployment. The outpost offers services that aren't implemented directly into the authentik core, e.g. Reverse Proxying.
 
-See [Outposts](../add-secure-apps/outposts/index.mdx)
+See [Outposts](../add-secure-apps/outposts/index.mdx).
