@@ -50,7 +50,7 @@ export class GroupSelectModal extends TableModal<Group> {
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html` <ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,
+            html` <ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`${(item.users || []).length}`,
         ];
     }
