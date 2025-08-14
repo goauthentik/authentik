@@ -249,7 +249,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
-            <ak-form-element-horizontal label=${msg("Flags")} name="flags">
+            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(settings?.flags ?? {})}"
