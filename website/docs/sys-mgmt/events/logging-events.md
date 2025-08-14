@@ -43,7 +43,7 @@ You can construct advanced queries to find specific event logs. In the Admin int
 - **Values**: `True`, `False`, `None`
 
 - **Example queries**:
-    - search application by name: `app startswith "N"`
+    - search event by application name: `app startswith "N"`
     - search event by action: `action = "login"`
     - search event by authorized application context: `authorized_application.name = "My app"`
     - search event by country: `context.geo.country = "Germany"`
