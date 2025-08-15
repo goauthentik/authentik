@@ -194,7 +194,7 @@
         "@wdio/cli": "^9.19.1",
         "@wdio/spec-reporter": "^9.19.1",
         "@web/test-runner": "^0.20.2",
-        "chromedriver": "^139.0.0"
+        "chromedriver": "^139.0.1"
     },
     "wireit": {
         "build": {
