@@ -67,7 +67,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
-                        return this.confirm(this.selectedElements).then(() => {
+                        return this.confirm(Array.from(this.selectedElements)).then(() => {
                             this.open = false;
                         });
                     }}
