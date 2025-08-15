@@ -49345,6 +49345,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49384,6 +49388,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -54481,6 +54490,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
