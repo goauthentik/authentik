@@ -31,6 +31,7 @@ import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -77,6 +78,12 @@ export class StageListPage extends TablePage<Stage> {
         ];
     }
 
+    groupBy(items: Stage[]): [string, Stage[]][] {
+        return groupBy(items, (stage) => {
+            return stage.verboseNamePlural;
+        });
+    }
+
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
@@ -120,8 +127,7 @@ export class StageListPage extends TablePage<Stage> {
 
     row(item: Stage): TemplateResult[] {
         return [
-            html`<div>${item.name}</div>
-                <small>${item.verboseName}</small>`,
+            html`<div>${item.name}</div>`,
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>
