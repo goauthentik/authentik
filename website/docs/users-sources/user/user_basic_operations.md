@@ -35,21 +35,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
-
-<!--| Model/Object | Operators | Examples |
-| ---- | ---- | ----------- |
-| `username` | `=` | `username = "Joel Bonne"` |
-| `path` | !=  |  |
-| `name` | ~| |
-| `email` | !~ |
-| `path` | `startswith` |
-| `is_active` | `not startswith` |
-| `type` | `endswith` |
-| `attributes`| `endswith` |
-| | `not endswith` |
-| | `in` |
-| | `not in` |-->
+You can construct advanced queries to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Model/object**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
@@ -57,7 +43,11 @@ You can construct advanced queries, based on [DjangoQL](https://github.com/ivelu
 
 - **Values**: `True`, `False`, `None`
 
-- **Example queries**: `username = "Joel Bonne"`, `is_active = false`
+- **Example queries**:
+    - search user by status: `is_active = False`
+    - search user by username: `username = "bob"`
+    - search user by email address: `email = "bob@authentik.company"`
+    - search user by attribute: `attribute.my_custom_attribute = "foo"`
 
 ## View user details
 
