@@ -1,3 +1,4 @@
+import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -93,6 +94,14 @@ export function renderForm(
                     help=${clientNetworksHelp}
                     input-hint="code"
                 ></ak-text-input>
+                <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                    <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
+                    <ak-crypto-certificate-search
+                        certificate=${ifDefined(provider?.certificate ?? undefined)}
+                        singleton
+                    ></ak-crypto-certificate-search>
+                    <p class="pf-c-form__helper-text">${msg("Certificate used for EAP-TLS.")}</p>
+                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"
