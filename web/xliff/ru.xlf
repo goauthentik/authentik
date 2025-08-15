@@ -9776,6 +9776,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s669b18c6d2d9c95b">
   <source>None</source>
 </trans-unit>
+<trans-unit id="s2de7890b100c4f4c">
+  <source>Flags</source>
+</trans-unit>
+<trans-unit id="sf0b34d32a602aee8">
+  <source>Modify flags to opt into new authentik behaviours early.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
