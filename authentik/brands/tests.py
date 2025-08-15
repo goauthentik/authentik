@@ -3,6 +3,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.models import Application
@@ -96,6 +97,65 @@ class TestBrands(APITestCase):
                 "branding_title": "authentik",
                 "branding_custom_css": "",
                 "matched_domain": "fallback",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    @apply_blueprint("default/default-brand.yaml")
+    def test_blueprint(self):
+        """Test Current brand API"""
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "authentik",
+                "branding_custom_css": "",
+                "flow_authentication": "default-authentication-flow",
+                "flow_invalidation": "default-invalidation-flow",
+                "flow_user_settings": "default-user-settings-flow",
+                "matched_domain": "authentik-default",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+
+    @apply_blueprint("default/default-brand.yaml")
+    def test_blueprint_with_other_brand(self):
+        """Test Current brand API"""
+        Brand.objects.create(domain="bar.baz", branding_title="custom")
+        self.assertJSONEqual(
+            self.client.get(reverse("authentik_api:brand-current")).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "authentik",
+                "branding_custom_css": "",
+                "flow_authentication": "default-authentication-flow",
+                "flow_invalidation": "default-invalidation-flow",
+                "flow_user_settings": "default-user-settings-flow",
+                "matched_domain": "authentik-default",
+                "ui_footer_links": [],
+                "ui_theme": Themes.AUTOMATIC,
+                "default_locale": "",
+                "flags": self.default_flags,
+            },
+        )
+        self.assertJSONEqual(
+            self.client.get(
+                reverse("authentik_api:brand-current"), HTTP_HOST="foo.bar.baz"
+            ).content.decode(),
+            {
+                "branding_logo": "/static/dist/assets/icons/icon_left_brand.svg",
+                "branding_favicon": "/static/dist/assets/icons/icon.png",
+                "branding_title": "custom",
+                "branding_custom_css": "",
+                "matched_domain": "bar.baz",
                 "ui_footer_links": [],
                 "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
