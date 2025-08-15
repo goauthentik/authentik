@@ -3,7 +3,7 @@
  */
 
 import { NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/core/environment/node";
-import { AuthentikVersion } from "@goauthentik/core/version/node";
+import { readAuthentikVersion } from "@goauthentik/core/version/node";
 
 /**
  * Creates a mapping of environment variables to their respective runtime constants.
@@ -17,7 +17,7 @@ export function createBundleDefinitions() {
      * @satisfies {Record<ESBuildImportEnvKey, string>}
      */
     const envRecord = {
-        AK_VERSION: AuthentikVersion,
+        AK_VERSION: readAuthentikVersion(),
         AK_API_BASE_PATH: process.env.AK_API_BASE_PATH ?? "",
     };
 

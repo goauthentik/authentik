@@ -5,16 +5,42 @@
  */
 import { MonoRepoRoot } from "#paths/node";
 import { execSync } from "node:child_process";
+import { parse as parseSemver } from "semver";
 
 // ts-import-sorter: disable
 import PackageJSON from "../../../../package.json" with { type: "json" };
 
 /**
- * The current version of authentik in SemVer format.
+ * A simplified semver string, omitting prerelease metadata.
+ *
+ * @typedef {`${number}.${number}.${number}`} SimpleSemver
+ */
+
+/**
+ * @type {SimpleSemver | undefined}
+ */
+let cachedSemver;
+
+/**
+ * Read current version of authentik in SemVer format.
  *
  * @runtime node
  */
-export const AuthentikVersion = /**@type {`${number}.${number}.${number}`} */ (PackageJSON.version);
+export function readAuthentikVersion() {
+    if (cachedSemver) return cachedSemver;
+
+    const parsed = parseSemver(PackageJSON.version);
+
+    if (!parsed) {
+        throw new TypeError(`Invalid semver version: ${PackageJSON.version}`);
+    }
+
+    cachedSemver = /** @type {SimpleSemver} */ (
+        [parsed.major, parsed.minor, parsed.patch].join(".")
+    );
+
+    return cachedSemver;
+}
 
 /**
  * Reads the last commit hash from the current git repository.
@@ -49,7 +75,12 @@ export function readGitBuildHash() {
 export function readBuildIdentifier() {
     const { GIT_BUILD_HASH } = process.env;
 
-    if (!GIT_BUILD_HASH) return AuthentikVersion;
+    const version = readAuthentikVersion();
 
-    return [AuthentikVersion, GIT_BUILD_HASH].join("+");
+    if (!GIT_BUILD_HASH) {
+        console.warn("GIT_BUILD_HASH is not set, falling back to authentik version.");
+        return version;
+    }
+
+    return [version, GIT_BUILD_HASH].join("+");
 }
