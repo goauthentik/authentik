@@ -64,7 +64,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${async () => {
-                        await this.confirm(this.selectedElements);
+                        await this.confirm(Array.from(this.selectedElements));
                         this.open = false;
                     }}
                     class="pf-m-primary"

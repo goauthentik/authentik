@@ -162,9 +162,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled = !this.selectedElements.size;
         const currentUser = rootInterface<AdminInterface>()?.user;
-        const shouldShowWarning = this.selectedElements.find((el) => {
+        const shouldShowWarning = Iterator.from(this.selectedElements).find((el) => {
             return el.pk === currentUser?.user.pk || el.pk === currentUser?.original?.pk;
         });
         return html`<ak-forms-delete-bulk
@@ -232,7 +232,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Hide deactivated user")}</span>
+                            <span class="pf-c-switch__label">${msg("Hide Deactivated")}</span>
                         </label>
                     </div>
                 </div>
