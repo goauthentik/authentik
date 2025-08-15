@@ -2,238 +2,287 @@ import "#elements/buttons/SpinnerButton/index";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-type BulkDeleteMetadata = { key: string; value: string }[];
+//#region Types
+
+export interface DestroyableAPIObject {
+    pk?: string;
+    name?: string;
+}
+
+export interface BulkDeleteMetadata {
+    key: string;
+    value: string;
+    className?: string;
+}
+
+export type BulkDeleteMetadataCallback<T extends DestroyableAPIObject = DestroyableAPIObject> = (
+    item: T,
+) => Iterable<BulkDeleteMetadata>;
+
+const ConsquenceLabel = {
+    [UsedByActionEnum.Cascade]: msg("Object will be DELETED"),
+    [UsedByActionEnum.CascadeMany]: msg("Connection will be deleted"),
+    [UsedByActionEnum.SetDefault]: msg("Reference will be reset to default value"),
+    [UsedByActionEnum.SetNull]: msg("Reference will be set to an empty value"),
+    [UsedByActionEnum.UnknownDefaultOpenApi]: msg("Unknown action"),
+} as const satisfies Record<UsedByActionEnum, string>;
+
+//#endregion
+
+//#region Table
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<T extends object> extends Table<T> {
-    paginated = false;
+export class DeleteObjectsTable<T extends DestroyableAPIObject> extends Table<T> {
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFList,
+        css`
+            .pf-c-table__expandable-row-content {
+                min-height: 1rem;
+            }
+        `,
+    ];
+
+    public override paginated = false;
 
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: Iterable<T> = [];
 
     @property({ attribute: false })
-    metadata!: (item: T) => BulkDeleteMetadata;
+    public metadata?: BulkDeleteMetadataCallback<T>;
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
+
+    //#region Lifecycle
 
     @state()
-    usedByData: Map<T, UsedBy[]> = new Map();
+    protected usedByCache: Map<T, UsedBy[]> = new Map();
 
-    static styles: CSSResult[] = [...super.styles, PFList];
+    protected override async apiEndpoint(): Promise<PaginatedResponse<T>> {
+        const results = Array.from(this.objects);
 
-    async apiEndpoint(): Promise<PaginatedResponse<T>> {
         return Promise.resolve({
             pagination: {
-                count: this.objects.length,
+                count: results.length,
                 current: 1,
                 totalPages: 1,
                 startIndex: 1,
-                endIndex: this.objects.length,
+                endIndex: results.length,
                 next: 0,
                 previous: 0,
             },
-            results: this.objects,
+            results,
         });
     }
 
-    columns(): TableColumn[] {
-        return this.metadata(this.objects[0]).map((element) => {
-            return new TableColumn(element.key);
+    #fetchRelations = async (item: T): Promise<UsedBy[]> => {
+        let relations = this.usedByCache.get(item);
+
+        if (!relations && this.usedBy) {
+            relations = await this.usedBy(item);
+            this.usedByCache.set(item, relations);
+        }
+
+        return relations || [];
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.expandable = !!this.usedBy;
+    }
+
+    //#endregion
+
+    //#region Render
+
+    protected override columns(): TableColumn[] {
+        const objects = Array.from(this.objects);
+
+        return Array.from(this.metadata?.(objects[0]) || [], ({ key }) => {
+            return new TableColumn(key);
         });
     }
 
-    row(item: T): TemplateResult[] {
-        return this.metadata(item).map((element) => {
-            return html`${element.value}`;
-        });
+    protected override row(item: T): TemplateResult[] {
+        return Array.from(
+            this.metadata?.(item) || [],
+            ({ value, className = "" }) => html` <span class="${className}"> ${value} </span>`,
+        );
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    protected override renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    firstUpdated(): void {
-        this.expandable = this.usedBy !== undefined;
-        super.firstUpdated();
-    }
-
-    renderExpanded(item: T): TemplateResult {
-        const handler = async () => {
-            if (!this.usedByData.has(item) && this.usedBy) {
-                this.usedByData.set(item, await this.usedBy(item));
-            }
-            return this.renderUsedBy(this.usedByData.get(item) || []);
-        };
+    protected override renderExpanded(item: T): TemplateResult {
         return html`<td role="cell" colspan="2">
             <div class="pf-c-table__expandable-row-content">
                 ${this.usedBy
-                    ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-                    : html``}
+                    ? until(
+                          this.#fetchRelations(item).then(this.#renderConsequences),
+                          html`<ak-spinner size=${PFSize.Large}></ak-spinner>`,
+                      )
+                    : nothing}
             </div>
         </td>`;
     }
 
-    renderUsedBy(usedBy: UsedBy[]): TemplateResult {
-        if (usedBy.length < 1) {
+    #renderConsequences = (usedBy: UsedBy[]): TemplateResult => {
+        if (usedBy.length === 0) {
             return html`<span>${msg("Not used by any other object.")}</span>`;
         }
+
         return html`<ul class="pf-c-list">
             ${usedBy.map((ub) => {
-                let consequence = "";
-                switch (ub.action) {
-                    case UsedByActionEnum.Cascade:
-                        consequence = msg("object will be DELETED");
-                        break;
-                    case UsedByActionEnum.CascadeMany:
-                        consequence = msg("connection will be deleted");
-                        break;
-                    case UsedByActionEnum.SetDefault:
-                        consequence = msg("reference will be reset to default value");
-                        break;
-                    case UsedByActionEnum.SetNull:
-                        consequence = msg("reference will be set to an empty value");
-                        break;
-                }
+                const consequence = ConsquenceLabel[ub.action];
+
                 return html`<li>${msg(str`${ub.name} (${consequence})`)}</li>`;
             })}
         </ul>`;
-    }
+    };
+
+    //#endregion
 }
 
+//#endregion
+
+//#region Form
+
 @customElement("ak-forms-delete-bulk")
-export class DeleteBulkForm<T> extends ModalButton {
+export class DeleteBulkForm<T extends DestroyableAPIObject> extends ModalButton {
+    //#region Properties
+
     @property({ attribute: false })
-    objects: T[] = [];
+    public objects: Iterable<T> = [];
 
     @property()
-    objectLabel?: string;
+    public objectLabel?: string;
 
     @property()
-    actionLabel?: string;
+    public actionLabel?: string;
 
     @property()
-    actionSubtext?: string;
+    public actionSubtext?: string;
 
     @property()
-    buttonLabel = msg("Delete");
+    public buttonLabel = msg("Delete");
 
     /**
      * Action shown in messages, for example `deleted` or `removed`
      */
     @property()
-    action = msg("deleted");
+    public action = msg("deleted");
 
     @property({ attribute: false })
-    metadata: (item: T) => BulkDeleteMetadata = (item: T) => {
-        const rec = item as Record<string, unknown>;
-        const meta = [];
-        if (Object.prototype.hasOwnProperty.call(rec, "name")) {
-            meta.push({ key: msg("Name"), value: rec.name as string });
+    public metadata?: BulkDeleteMetadataCallback<T> = (item: T) => {
+        const meta: BulkDeleteMetadata[] = [];
+
+        if (item.name) {
+            meta.push({ key: msg("Name"), value: item.name });
         }
-        if (Object.prototype.hasOwnProperty.call(rec, "pk")) {
-            meta.push({ key: msg("ID"), value: rec.pk as string });
+        if (item.pk) {
+            meta.push({ key: msg("ID"), value: item.pk, className: "pf-m-monospace" });
         }
+
         return meta;
     };
 
     @property({ attribute: false })
-    usedBy?: (item: T) => Promise<UsedBy[]>;
+    public usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: (item: T) => Promise<unknown>;
+    public delete!: (item: T) => Promise<unknown>;
 
-    async confirm(): Promise<void> {
-        try {
-            await Promise.all(
-                this.objects.map((item) => {
-                    return this.delete(item);
-                }),
-            );
-            this.onSuccess();
-            this.dispatchEvent(
-                new CustomEvent(EVENT_REFRESH, {
-                    bubbles: true,
-                    composed: true,
-                }),
-            );
-            this.open = false;
-        } catch (e) {
-            this.onError(e as Error);
-            throw e;
-        }
-    }
+    //#endregion
 
-    onSuccess(): void {
-        showMessage({
-            message: msg(str`Successfully deleted ${this.objects.length} ${this.objectLabel}`),
-            level: MessageLevel.success,
-        });
-    }
+    #send = (): Promise<void> => {
+        const objects = Array.from(this.objects, (item) => this.delete(item));
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
-            level: MessageLevel.error,
-        });
-    }
+        return Promise.all(objects)
+            .then(() => {
+                showMessage({
+                    message: msg(str`Successfully deleted ${objects.length} ${this.objectLabel}`),
+                    level: MessageLevel.success,
+                });
 
-    renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
+                this.dispatchEvent(
+                    new CustomEvent(EVENT_REFRESH, {
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+                this.open = false;
+            })
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
+                const detail = pluckErrorDetail(parsedError);
+
+                showMessage({
+                    message: msg(
+                        str`Failed to delete ${objects.length} ${this.objectLabel}: ${detail}`,
+                    ),
+                    level: MessageLevel.error,
+                });
+            });
+    };
+
+    //#region Render
+
+    protected override renderModalInner(): TemplateResult {
+        const objects = Array.from(this.objects);
+
+        return html`<header class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
-                        ${this.actionLabel
-                            ? this.actionLabel
-                            : msg(str`Delete ${this.objectLabel}`)}
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">
+                        ${this.actionLabel || msg(str`Confirm ${this.objectLabel} Deletion`)}
                     </h1>
                 </div>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">
-                <form class="pf-c-form pf-m-horizontal">
+            </header>
+            <div class="pf-c-modal-box__body pf-m-light">
+                <div class="pf-m-horizontal">
                     <p class="pf-c-title">
                         ${this.actionSubtext
                             ? this.actionSubtext
                             : msg(
-                                  str`Are you sure you want to delete ${this.objects.length} ${this.objectLabel}?`,
+                                  str`Are you sure you want to delete ${objects.length} ${this.objectLabel}?`,
                               )}
                     </p>
                     <slot name="notice"></slot>
-                </form>
-            </section>
-            <section class="pf-c-modal-box__body pf-m-light">
+                </div>
+            </div>
+            <div class="pf-c-modal-box__body pf-m-light">
                 <ak-delete-objects-table
+                    label=${msg(str`${this.objectLabel} to be deleted`)}
                     .objects=${this.objects}
                     .usedBy=${this.usedBy}
                     .metadata=${this.metadata}
                 >
                 </ak-delete-objects-table>
-            </section>
-            <footer class="pf-c-modal-box__footer">
-                <ak-spinner-button
-                    .callAction=${() => {
-                        return this.confirm();
-                    }}
-                    class="pf-m-danger"
-                >
-                    ${this.buttonLabel} </ak-spinner-button
+            </div>
+            <footer aria-label=${msg("Actions")} class="pf-c-modal-box__footer">
+                <ak-spinner-button .callAction=${this.#send} class="pf-m-danger">
+                    ${this.buttonLabel} ${objects.length.toLocaleString()} ${this.objectLabel} </ak-spinner-button
                 >&nbsp;
                 <ak-spinner-button
-                    .callAction=${async () => {
+                    .callAction=${() => {
                         this.open = false;
                     }}
                     class="pf-m-secondary"
@@ -243,6 +292,8 @@ export class DeleteBulkForm<T> extends ModalButton {
             </footer>`;
     }
 }
+
+//#endregion
 
 declare global {
     interface HTMLElementTagNameMap {

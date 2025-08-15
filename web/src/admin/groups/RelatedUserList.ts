@@ -149,7 +149,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled = !this.selectedElements.size;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
             actionLabel=${msg("Remove Users(s)")}

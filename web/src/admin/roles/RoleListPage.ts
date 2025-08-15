@@ -45,7 +45,7 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled = !this.selectedElements.size;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Role(s)")}
             .objects=${this.selectedElements}
