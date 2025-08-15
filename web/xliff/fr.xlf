@@ -10109,6 +10109,12 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>None</source>
   <target>None</target>
 </trans-unit>
+<trans-unit id="s2de7890b100c4f4c">
+  <source>Flags</source>
+</trans-unit>
+<trans-unit id="sf0b34d32a602aee8">
+  <source>Modify flags to opt into new authentik behaviours early.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
