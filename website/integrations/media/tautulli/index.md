@@ -66,4 +66,4 @@ http_password = `<enter your password>`
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with `Tautulli`, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli. You should bypass the login prompt if setup correctly.
+To confirm that authentik is properly configured with Tautulli, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli. You should bypass the login prompt if setup correctly.
