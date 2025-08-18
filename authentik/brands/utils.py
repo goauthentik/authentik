@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from django.db.models import F, Q
+from django.db.models import F
 from django.db.models import Value as V
 from django.db.models.functions import Length
 from django.http.request import HttpRequest
@@ -14,21 +14,40 @@ from authentik.brands.models import Brand
 from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
 
-_q_default = Q(default=True)
 DEFAULT_BRAND = Brand(domain="fallback")
 
 
 def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""
-    db_brands = (
-        Brand.objects.annotate(host_domain=V(request.get_host()), match_length=Length("domain"))
-        .filter(Q(host_domain__iendswith=F("domain")) | _q_default)
-        .order_by("-match_length", "default")
+    # annotations = {
+    #     "host_domain": V(request.get_host()),
+    #     "match_length": Length("domain"),
+    # }
+    # brand = (
+    #     Brand.objects.annotate(**annotations)
+    #     .filter(host_domain__iendswith=F("domain"))
+    #     .order_by("-match_length")
+    #     .first()
+    # )
+    # if not brand:
+    #     brand = Brand.objects.filter(default=True).first()
+    # if not brand:
+    #     return DEFAULT_BRAND
+    # return brand
+    annotations = {
+        "host_domain": V(request.get_host()),
+        "match_length": Length("domain"),
+    }
+    matching_brands = (
+        Brand.objects.annotate(**annotations)
+        .filter(host_domain__iendswith=F("domain"))
+        .order_by("-match_length")
     )
-    brands = list(db_brands.all())
-    if len(brands) < 1:
+    default_brand = Brand.objects.annotate(**annotations).filter(default=True)
+    brand = matching_brands.union(default_brand).first()
+    if not brand:
         return DEFAULT_BRAND
-    return brands[0]
+    return brand
 
 
 def context_processor(request: HttpRequest) -> dict[str, Any]:
