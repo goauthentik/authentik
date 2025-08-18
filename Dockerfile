@@ -81,7 +81,7 @@ FROM ghcr.io/astral-sh/uv:0.8.11 AS uv
 FROM ghcr.io/goauthentik/fips-python:3.13.6-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
-    PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
+    PATH="/ak-root/lifecycle:/ak-root/venv/bin:$PATH" \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_NATIVE_TLS=1 \
