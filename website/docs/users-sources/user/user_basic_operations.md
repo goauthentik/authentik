@@ -41,7 +41,7 @@ You can construct advanced queries to find specific users in the list under **Di
 
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
-- **Values**: `True`, `False`, `None`
+- **Values**: `True`, `False`, `None`, and more
 
 - **Example queries**:
     - search user by status: `is_active = False`

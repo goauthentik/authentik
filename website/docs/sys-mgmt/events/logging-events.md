@@ -40,7 +40,7 @@ You can construct advanced queries to find specific event logs. In the Admin int
 
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
-- **Values**: `True`, `False`, `None`
+- **Values**: `True`, `False`, `None`, and more
 
 - **Example queries**:
     - search event by application name: `app startswith "N"`
