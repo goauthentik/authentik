@@ -21,6 +21,22 @@ export const EscapeTrustPolicy = trustedTypes.createPolicy("authentik-escape", {
 });
 
 /**
+ * Trusted types policy that removes all HTML content.
+ *
+ *
+ * @returns {TrustedHTML} All remaining text content.
+ */
+export const StripHTMLTrustPolicy = trustedTypes.createPolicy("authentik-strip-html", {
+    createHTML: (untrustedHTML: string) => {
+        return DOMPurify.sanitize(untrustedHTML, {
+            RETURN_TRUSTED_TYPE: false,
+            ALLOWED_TAGS: [],
+            ALLOWED_ATTR: [],
+        });
+    },
+});
+
+/**
  * Trusted types policy, stripping all HTML content.
  *
  * @returns {TrustedHTML} Text content only, all HTML tags stripped.
@@ -105,7 +121,9 @@ export function renderStaticHTMLUnsafe(untrustedHTML: unknown): string {
 
     render(untrustedHTML, container);
 
-    const result = container.innerHTML;
-
+    const result = container.innerHTML
+        // Remove all comments as they can interfere with the styles.
+        .replaceAll("<!---->", "")
+        .replaceAll(/<!--\?lit\$\d+\$-->/g, "");
     return result;
 }

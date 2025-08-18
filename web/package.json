@@ -94,7 +94,7 @@
         "@floating-ui/dom": "^1.7.3",
         "@formatjs/intl-listformat": "^7.7.11",
         "@fortawesome/fontawesome-free": "^7.0.0",
-        "@goauthentik/api": "^2025.10.0-rc1-1755033451",
+        "@goauthentik/api": "^2025.10.0-rc1-1755254677",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.1.0",
         "@goauthentik/eslint-config": "^1.0.5",
@@ -113,7 +113,7 @@
         "@openlayers-elements/maps": "^0.4.0",
         "@patternfly/elements": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^10.3.0",
+        "@sentry/browser": "^10.5.0",
         "@spotlightjs/spotlight": "^3.0.2",
         "@storybook/addon-docs": "^9.1.2",
         "@storybook/addon-links": "^9.1.2",
@@ -194,7 +194,7 @@
         "@wdio/cli": "^9.19.1",
         "@wdio/spec-reporter": "^9.19.1",
         "@web/test-runner": "^0.20.2",
-        "chromedriver": "^139.0.0"
+        "chromedriver": "^139.0.1"
     },
     "wireit": {
         "build": {
