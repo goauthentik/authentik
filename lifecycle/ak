@@ -75,6 +75,10 @@ function migrate_container_change_root_dir {
     # In most installs this migration isn't required as no files are mounted into
     # these directories, however it is used if scripts are overwritten from the outside
     # or more commonly the flow background image is overwritten in `/web`
+    # Check if we're in a container
+    if [ ! -d /ak-root ]; then
+        return
+    fi
     if [ -d /authentik ]; then
         log "Legacy /authentik folder exist, migrating files"
         cp -rp /authentik/* /ak-root/authentik
