@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Headscale
 
-> [Headscale](https://github.com/juanfont/headscale) is an open source alternative to the Tailscale coordination server and can be self-hosted for a single tailnet. Headscale is a re-implemented version of the Tailscale coordination server, developed independently and completely separate from Tailscale, with its own independent community of users and developers.
+> Headscale is an open source alternative to the Tailscale coordination server and can be self-hosted for a single tailnet. Headscale is a re-implemented version of the Tailscale coordination server, developed independently and completely separate from Tailscale, with its own independent community of users and developers.
 >
 > -- https://headscale.net
 
