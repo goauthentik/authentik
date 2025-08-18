@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.http import HttpRequest
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
@@ -46,6 +47,11 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         if self.instance and self.instance.user_id:
             if user.pk != self.instance.user_id:
                 raise ValidationError("User cannot be changed")
+        request: HttpRequest = self.context.get("request")
+        if not request.user.has_perm("change_user", user) and not request.user.has_perm(
+            "authentik_core.change_user"
+        ):
+            raise ValidationError("Cannot create token for this user")
         return user
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
@@ -147,7 +153,6 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     def perform_create(self, serializer: TokenSerializer):
         if not self.request.user.is_superuser:
             instance = serializer.save(
-                user=self.request.user,
                 expiring=self.request.user.attributes.get(USER_ATTRIBUTE_TOKEN_EXPIRING, True),
             )
             assign_perm("authentik_core.view_token_key", self.request.user, instance)
