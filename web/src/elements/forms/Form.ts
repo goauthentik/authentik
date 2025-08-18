@@ -221,8 +221,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Properties
 
-    @property()
-    public successMessage = "";
+    @property({ type: String })
+    public successMessage?: string;
 
     @property({ type: String })
     public autocomplete?: AutoFill;
@@ -267,15 +267,31 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     /**
      * An overridable method for returning a success message after a successful submission.
+     *
+     * @deprecated Use `formatAPISuccessMessage` instead.
      */
-    protected getSuccessMessage(): string {
+    protected getSuccessMessage(): string | undefined {
         return this.successMessage;
+    }
+
+    /**
+     * An overridable method for returning a formatted message after a successful submission.
+     */
+    protected formatAPISuccessMessage(response: unknown): APIMessage | null {
+        const message = this.getSuccessMessage();
+
+        if (!message) return null;
+
+        return {
+            level: MessageLevel.success,
+            message,
+        };
     }
 
     /**
      * An overridable method for returning a formatted error message after a failed submission.
      */
-    protected formatAPIErrorMessage(error: APIError): APIMessage {
+    protected formatAPIErrorMessage(error: APIError): APIMessage | null {
         return {
             message: msg("There was an error submitting the form."),
             description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
@@ -346,10 +362,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         return this.send(data)
             .then((response) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: this.getSuccessMessage(),
-                });
+                showMessage(this.formatAPISuccessMessage(response));
 
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {

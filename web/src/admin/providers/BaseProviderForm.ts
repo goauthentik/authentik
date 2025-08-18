@@ -1,4 +1,5 @@
 import { APIError } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { APIMessage } from "#elements/messages/Message";
@@ -14,6 +15,7 @@ export abstract class BaseProviderForm<T> extends ModelForm<T, number> {
 
     protected override formatAPIErrorMessage(error: APIError): APIMessage {
         return {
+            level: MessageLevel.error,
             ...super.formatAPIErrorMessage(error),
             message: this.instance
                 ? msg("An error occurred while updating the provider.")
