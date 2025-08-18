@@ -50,7 +50,7 @@ Add all Tautulli users to the Group. You should also create a Group Membership P
 
 1. shut down Tautulli
 
-2. Set/Change the following in the config file:
+2. Set the following in the config file:
 
 ```yaml
 http_basic_auth = 1
