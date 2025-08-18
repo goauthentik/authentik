@@ -53,7 +53,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         for group in page_data:
             if self._source.lookup_groups_from_user:
                 group_dn = group.get("dn", {})
-                group_filter = f"({self._source.group_membership_field}={escape_filter_chars(group_dn)})"
+                escaped_dn = escape_filter_chars(group_dn)
+                group_filter = f"({self._source.group_membership_field}={escaped_dn})"
                 group_members = self._source.connection().extend.standard.paged_search(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,
