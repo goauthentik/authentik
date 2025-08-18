@@ -46,7 +46,7 @@ Add all Tautulli users to the Group. You should also create a Group Membership P
 
     Set this to the external URL you will be accessing Tautulli from.
 
-    Basic authentication settings have been removed from the UI and are now available in config.ini. For basic auth to work, do the following:
+    Basic authentication settings have been removed from the UI and are now available in the `config.ini` file. For basic auth to work, do the following:
 
 1. shut down Tautulli
 
