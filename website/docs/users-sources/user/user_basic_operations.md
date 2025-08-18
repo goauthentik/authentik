@@ -37,7 +37,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 You can construct advanced queries to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
-- **Model/object**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
+- **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
@@ -48,6 +48,12 @@ You can construct advanced queries to find specific users in the list under **Di
     - search user by username: `username = "bob"`
     - search user by email address: `email = "bob@authentik.company"`
     - search user by attribute: `attribute.my_custom_attribute = "foo"`
+
+:::info
+
+1. To dismiss an unwanted drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+   :::
 
 ## View user details
 

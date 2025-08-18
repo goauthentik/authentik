@@ -36,9 +36,9 @@ With the enterprise version, you can view recent events on both a world map view
 
 You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
-- **Model/object**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brnad`, `context`, `created`
+- **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
 
-- **Operators**: `=`, `!=`, `~`, `!~`
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
 - **Values**: `True`, `False`, `None`
 
@@ -49,3 +49,10 @@ You can construct advanced queries to find specific event logs. In the Admin int
     - search event by country: `context.geo.country = "Germany"`
     - search event by IP address: `client_ip = "10.0.0.1"`
     - search event by brand: `brand.name = "my brand"`
+    - search event by user: `user.username in ["ana", "akadmin"]`
+
+:::info
+
+1. To dismiss an unwanted drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+   :::
