@@ -3,7 +3,6 @@ package web
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/go-http-utils/etag"
 	"github.com/gorilla/mux"
@@ -18,9 +17,7 @@ func (ws *WebServer) configureStatic() {
 	// Setup routers
 	staticRouter := ws.loggingRouter.NewRoute().Subrouter()
 	staticRouter.Use(ws.staticHeaderMiddleware)
-	indexLessRouter := staticRouter.NewRoute().Subrouter()
-	// Specifically disable index
-	indexLessRouter.Use(web.DisableIndex)
+	staticRouter.Use(web.DisableIndex)
 
 	distFs := http.FileServer(http.Dir("./web/dist"))
 
@@ -32,47 +29,18 @@ func (ws *WebServer) configureStatic() {
 		return h
 	}
 
-	// Only serve existing files from dist; let others fall through to proxy (for consistent 404s)
-	indexLessRouter.PathPrefix(config.Get().Web.Path).
-		PathPrefix("/static/dist/").
-		MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
-			// Determine relative path under ./web/dist after stripping prefixes
-			p := r.URL.Path
-			// Strip configured web path prefix
-			if wp := config.Get().Web.Path; wp != "" && wp != "/" && len(p) >= len(wp) {
-				if p[:len(wp)] == wp {
-					p = p[len(wp):]
-				}
-			}
-			// Ensure we only consider paths under /static/dist/
-			const up = "/static/dist/"
-			if len(p) < len(up) || p[:len(up)] != up {
-				return false
-			}
-			// Relative file path inside dist
-			rel := p[len(up):]
-			if rel == "" || rel == "/" {
-				return false
-			}
-			// Check if file exists and is not a directory
-			fi, err := os.Stat("./web/dist/" + rel)
-			if err != nil || fi.IsDir() {
-				return false
-			}
-			return true
-		}).
-		Handler(pathStripper(
-			distFs,
-			"static/dist/",
-			config.Get().Web.Path,
-		))
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/authentik/").Handler(pathStripper(
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
+		distFs,
+		"static/dist/",
+		config.Get().Web.Path,
+	))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/authentik/").Handler(pathStripper(
 		http.FileServer(http.Dir("./web/authentik")),
 		"static/authentik/",
 		config.Get().Web.Path,
 	))
 
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
 		pathStripper(
@@ -81,9 +49,9 @@ func (ws *WebServer) configureStatic() {
 			config.Get().Web.Path,
 		).ServeHTTP(rw, r)
 	})
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/user/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/user", config.Get().Web.Path), distFs))
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/user/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/user", config.Get().Web.Path), distFs))
+	staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
 		pathStripper(
@@ -96,7 +64,7 @@ func (ws *WebServer) configureStatic() {
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {
 		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+		staticRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
 			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
 				fsMedia.ServeHTTP(w, r)
