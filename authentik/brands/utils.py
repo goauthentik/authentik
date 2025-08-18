@@ -4,7 +4,6 @@ from typing import Any
 
 from django.db.models import F, Q
 from django.db.models import Value as V
-from django.db.models.functions import Length
 from django.http.request import HttpRequest
 from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
@@ -21,9 +20,9 @@ DEFAULT_BRAND = Brand(domain="fallback")
 def get_brand_for_request(request: HttpRequest) -> Brand:
     """Get brand object for current request"""
     db_brands = (
-        Brand.objects.annotate(host_domain=V(request.get_host()), match_length=Length("domain"))
+        Brand.objects.annotate(host_domain=V(request.get_host()))
         .filter(Q(host_domain__iendswith=F("domain")) | _q_default)
-        .order_by("-match_length", "default")
+        .order_by("default")
     )
     brands = list(db_brands.all())
     if len(brands) < 1:
