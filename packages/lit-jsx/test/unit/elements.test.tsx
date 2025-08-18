@@ -1,6 +1,6 @@
 /** @jsxImportSource @goauthentik/lit-jsx */
 
-import { renderVariants } from "./utils.js";
+import { renderVariants } from "../utils.js";
 
 import { test } from "vitest";
 

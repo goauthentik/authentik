@@ -33,6 +33,10 @@
             "types": "./types/*"
         }
     },
+    "imports": {
+        "#e2e": "./e2e/index.ts",
+        "#e2e/*": "./e2e/*.ts"
+    },
     "devDependencies": {
         "@eslint/js": "^9.33.0",
         "@goauthentik/eslint-config": "^1.0.5",
@@ -40,6 +44,8 @@
         "@goauthentik/tsconfig": "^1.0.4",
         "@lit-labs/ssr": "^3.3.1",
         "@open-wc/lit-helpers": "^0.7.0",
+        "@playwright/experimental-ct-react": "^1.54.2",
+        "@playwright/test": "^1.54.2",
         "@types/jsdom": "^21.1.7",
         "@types/node": "^24.3.0",
         "@typescript-eslint/eslint-plugin": "^8.39.1",
@@ -48,7 +54,9 @@
         "eslint": "^9.33.0",
         "jsdom": "^26.1.0",
         "lit": "^3.3.1",
+        "lit-html": "^3.3.1",
         "npm-run-all": "^4.1.5",
+        "playwright": "^1.54.2",
         "prettier": "^3.6.2",
         "prettier-plugin-packagejson": "^2.5.19",
         "trusted-types": "^2.0.0",
