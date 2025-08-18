@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/go-http-utils/etag"
 	"github.com/gorilla/mux"
@@ -31,11 +32,40 @@ func (ws *WebServer) configureStatic() {
 		return h
 	}
 
-	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
-		distFs,
-		"static/dist/",
-		config.Get().Web.Path,
-	))
+	// Only serve existing files from dist; let others fall through to proxy (for consistent 404s)
+	indexLessRouter.PathPrefix(config.Get().Web.Path).
+		PathPrefix("/static/dist/").
+		MatcherFunc(func(r *http.Request, rm *mux.RouteMatch) bool {
+			// Determine relative path under ./web/dist after stripping prefixes
+			p := r.URL.Path
+			// Strip configured web path prefix
+			if wp := config.Get().Web.Path; wp != "" && wp != "/" && len(p) >= len(wp) {
+				if p[:len(wp)] == wp {
+					p = p[len(wp):]
+				}
+			}
+			// Ensure we only consider paths under /static/dist/
+			const up = "/static/dist/"
+			if len(p) < len(up) || p[:len(up)] != up {
+				return false
+			}
+			// Relative file path inside dist
+			rel := p[len(up):]
+			if rel == "" || rel == "/" {
+				return false
+			}
+			// Check if file exists and is not a directory
+			fi, err := os.Stat("./web/dist/" + rel)
+			if err != nil || fi.IsDir() {
+				return false
+			}
+			return true
+		}).
+		Handler(pathStripper(
+			distFs,
+			"static/dist/",
+			config.Get().Web.Path,
+		))
 	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/authentik/").Handler(pathStripper(
 		http.FileServer(http.Dir("./web/authentik")),
 		"static/authentik/",
