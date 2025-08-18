@@ -34,7 +34,7 @@ tautulli_password: password
 
 Add all Tautulli users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-## Tautulli Setup
+## Tautulli configuration
 
 - Internal host
 
