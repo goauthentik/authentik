@@ -70,7 +70,20 @@ export class HorizontalFormElement extends AKElement {
 
     //#endregion
 
-    public controlledElement: NamedElement | AkControlElement | null = null;
+    #controlledElement: AkControlElement | NamedElement | null = null;
+
+    /**
+     * The element that should be focused when the form is submitted.
+     */
+    public get focusTarget(): AkControlElement | NamedElement<HTMLElement> | null {
+        if (!(this.#controlledElement instanceof HTMLElement)) {
+            return null;
+        }
+
+        if (!this.#controlledElement.checkVisibility()) return null;
+
+        return this.#controlledElement;
+    }
 
     //#region Lifecycle
 
@@ -79,8 +92,8 @@ export class HorizontalFormElement extends AKElement {
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("errorMessages") && this.controlledElement) {
-            this.controlledElement.setAttribute(
+        if (changedProperties.has("errorMessages") && this.#controlledElement) {
+            this.#controlledElement.setAttribute(
                 "aria-invalid",
                 this.errorMessages?.length ? "true" : "false",
             );
@@ -100,7 +113,7 @@ export class HorizontalFormElement extends AKElement {
             // Is this element capable of being named?
             if (!isControlElement(element) && !isNameableElement(element)) continue;
 
-            this.controlledElement = element;
+            this.#controlledElement = element;
 
             if (element.getAttribute("name") !== this.name) {
                 element.setAttribute("name", this.name);
