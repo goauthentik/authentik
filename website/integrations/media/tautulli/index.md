@@ -61,7 +61,7 @@ http_password = `<enter your password>`
 
 3. Save the changes and then restart Tautulli.
 
-4. Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/)
+4. Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/).
    Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use
 
 ## Configuration verification
