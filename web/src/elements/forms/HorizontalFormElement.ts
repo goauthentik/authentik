@@ -99,12 +99,13 @@ export class HorizontalFormElement extends AKElement {
         for (const element of this.querySelectorAll("*")) {
             // Is this element capable of being named?
             if (!isControlElement(element) && !isNameableElement(element)) continue;
-            // And does the element already match the name?
-            if (element.getAttribute("name") === this.name) continue;
-
-            element.setAttribute("name", this.name);
 
             this.controlledElement = element;
+
+            if (element.getAttribute("name") !== this.name) {
+                element.setAttribute("name", this.name);
+            }
+
             break;
         }
     }
