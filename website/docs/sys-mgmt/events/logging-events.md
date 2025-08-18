@@ -52,6 +52,7 @@ You can construct advanced queries to find specific event logs. In the Admin int
     - search event by user: `user.username in ["ana", "akadmin"]`
 
 :::info
+
 1. To dismiss an unwanted drop-down menu option, click **ESC**.
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
-:::
+   :::
