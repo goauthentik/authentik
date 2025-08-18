@@ -48,7 +48,7 @@ Add all Tautulli users to the Group. You should also create a Group Membership P
 
     Basic authentication settings have been removed from the UI and are now available in the `config.ini` file. For basic auth to work, do the following:
 
-1. shut down Tautulli
+1. Close Tautulli.
 
 2. Set the following in the config file:
 
