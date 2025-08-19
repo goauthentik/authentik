@@ -34,12 +34,28 @@ With the enterprise version, you can view recent events on both a world map view
 
 ## Advanced queries for event logs:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
-- **Model/object**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brnad`, `context`, `created`
+- **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
 
-- **Operators**: `=`, `!=`, `~`, `!~`
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
-- **Values**: `True`, `False`, `None`
+- **Values**: `True`, `False`, `None`, and more
 
-- **Example queries**: `action = "login"`, `app startswith "N"`
+- **Example queries**:
+    - search event by application name: `app startswith "N"`
+    - search event by action: `action = "login"`
+    - search event by authorized application context: `authorized_application.name = "My app"`
+    - search event by country: `context.geo.country = "Germany"`
+    - search event by IP address: `client_ip = "10.0.0.1"`
+    - search event by brand: `brand.name = "my brand"`
+    - search event by user: `user.username in ["ana", "akadmin"]`
+
+For more examples, refer to the list of [Event actions](./event-actions.md) and the related examples for each type of event.
+
+:::info
+
+1. To dismiss the drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+3. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
+   :::
