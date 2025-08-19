@@ -35,29 +35,25 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
-<!--| Model/Object | Operators | Examples |
-| ---- | ---- | ----------- |
-| `username` | `=` | `username = "Joel Bonne"` |
-| `path` | !=  |  |
-| `name` | ~| |
-| `email` | !~ |
-| `path` | `startswith` |
-| `is_active` | `not startswith` |
-| `type` | `endswith` |
-| `attributes`| `endswith` |
-| | `not endswith` |
-| | `in` |
-| | `not in` |-->
-
-- **Model/object**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
+- **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
 - **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
 
-- **Values**: `True`, `False`, `None`
+- **Values**: `True`, `False`, `None`, and more
 
-- **Example queries**: `username = "Joel Bonne"`, `is_active = false`
+- **Example queries**:
+    - search user by status: `is_active = False`
+    - search user by username: `username = "bob"`
+    - search user by email address: `email = "bob@authentik.company"`
+    - search user by attribute: `attribute.my_custom_attribute = "foo"`
+
+:::info
+
+1. To dismiss the drop-down menu option, click **ESC**.
+2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+   :::
 
 ## View user details
 
