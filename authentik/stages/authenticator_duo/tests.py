@@ -197,9 +197,12 @@ class AuthenticatorDuoStageTests(FlowTestCase):
                 ),
             )
             self.assertEqual(response.status_code, 400)
-            self.assertEqual(
-                response.content.decode(),
-                '{"error":"An internal error occurred while importing devices.","count":0}',
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "An internal error occurred while importing devices.",
+                    "count": 0,
+                },
             )
 
     def test_api_import_automatic(self):
