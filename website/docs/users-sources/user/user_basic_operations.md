@@ -51,7 +51,7 @@ You can create advanced queries to locate specific users within the list shown u
 
 :::info
 
-1. To dismiss an unneeded drop-down menu option, click **ESC**.
+1. To dismiss the drop-down menu option, click **ESC**.
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
    :::
 
