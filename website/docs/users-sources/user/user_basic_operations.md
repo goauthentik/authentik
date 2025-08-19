@@ -35,7 +35,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries to find specific users in the list displayed on **Directory > Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
