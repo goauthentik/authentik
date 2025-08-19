@@ -35,7 +35,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries to find specific users in the list under **Directory > Users**. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can construct advanced queries to find specific users in the list displayed on **Directory > Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
@@ -51,7 +51,7 @@ You can construct advanced queries to find specific users in the list under **Di
 
 :::info
 
-1. To dismiss an unwanted drop-down menu option, click **ESC**.
+1. To dismiss an unneeded drop-down menu option, click **ESC**.
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
    :::
 
