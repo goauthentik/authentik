@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
     permissions:
+      contents: read
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
@@ -23,13 +24,14 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
       id-token: write
       attestations: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
       - name: Set up Docker Buildx
@@ -66,6 +68,7 @@ jobs:
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       # Needed to upload container images to ghcr.io
       packages: write
       # Needed for attestation
@@ -80,7 +83,7 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
@@ -143,7 +146,7 @@ jobs:
         goos: [linux, darwin]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-go@v5
         with:
           go-version-file: "go.mod"
@@ -183,7 +186,7 @@ jobs:
       AWS_REGION: eu-central-1
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
@@ -199,7 +202,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run test suite in final docker images
         run: |
           echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> .env
@@ -215,7 +218,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev

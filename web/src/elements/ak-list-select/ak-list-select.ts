@@ -154,11 +154,17 @@ export class ListSelect extends AKElement implements IListSelect {
         return elementCount === 0 ? -1 : checkIndex();
     }
 
+    /**
+     * Highlight the currently focused item.
+     *
+     * @todo
+     * This doesn't quite work as intended, but this component will likely
+     * be refined after the PatternFly upgrade.
+     */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
-            item.tabIndex = -1;
         });
         const currentElement = this.currentElement;
         if (!currentElement) {
@@ -168,7 +174,6 @@ export class ListSelect extends AKElement implements IListSelect {
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
-        currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
     @bound

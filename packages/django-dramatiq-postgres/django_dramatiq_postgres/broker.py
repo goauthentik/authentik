@@ -325,7 +325,7 @@ class _PostgresConsumer(Consumer):
         )
         return [Notify(pid=0, channel=self.postgres_channel, payload=item) for item in notifies]
 
-    def _poll_for_notify(self):
+    def _poll_for_notify(self) -> list[Notify]:
         with self.listen_connection.cursor() as cursor:
             notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
             self.logger.debug(
@@ -333,7 +333,7 @@ class _PostgresConsumer(Consumer):
                 notifies=len(notifies),
                 channel=self.postgres_channel,
             )
-            self.notifies += notifies
+            return notifies
 
     def _get_message_lock_id(self, message_id: str) -> int:
         return _cast_lock_id(
@@ -366,7 +366,7 @@ class _PostgresConsumer(Consumer):
         # This method is called every second
 
         # If we don't have a connection yet, fetch missed notifications from the table directly
-        if self._listen_connection is None:
+        if self._listen_connection is None and not self.notifies:
             # We might miss a notification between the initial query and the first time we wait for
             # notifications, it doesn't matter because we re-fetch for missed messages later on.
             self.notifies = self._fetch_pending_notifies()
@@ -375,6 +375,8 @@ class _PostgresConsumer(Consumer):
                 notifies=len(self.notifies),
                 queue=self.queue_name,
             )
+            # Force creation of listen connection
+            _ = self.listen_connection
 
         processing = len(self.in_processing)
         if processing >= self.prefetch:
@@ -389,10 +391,10 @@ class _PostgresConsumer(Consumer):
             return None
 
         if not self.notifies:
-            self._poll_for_notify()
+            self.notifies += self._poll_for_notify()
 
         if not self.notifies:
-            self.notifies[:] = self._fetch_pending_notifies()
+            self.notifies += self._fetch_pending_notifies()
 
         # If we have some notifies, loop to find one to do
         while self.notifies:

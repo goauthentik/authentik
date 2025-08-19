@@ -26,8 +26,20 @@ You can view audit details in the following areas of the authentik Admin interfa
 
 - **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
-## Viewing events in maps and charts :ak-enterprise :ak-version[2025.8]
+## Viewing events in maps and charts :ak-enterprise
 
 With the enterprise version, you can view recent events on both a world map view with pinpoints indicating where each event occurred and also a color-coded chart that highlights event types and volume.
 
 ![](./event-map-chart.png)
+
+## Advanced queries for event logs:ak-enterprise {#tell-me-more}
+
+You can construct advanced queries, based on [DjangoQL](https://github.com/ivelum/djangoql), to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+
+- **Model/object**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brnad`, `context`, `created`
+
+- **Operators**: `=`, `!=`, `~`, `!~`
+
+- **Values**: `True`, `False`, `None`
+
+- **Example queries**: `action = "login"`, `app startswith "N"`

@@ -19,7 +19,7 @@ jobs:
           - version-2025-4
           - version-2025-2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"

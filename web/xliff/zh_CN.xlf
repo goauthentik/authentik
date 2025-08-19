@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -707,11 +707,6 @@
         <target>描述</target>
         
       </trans-unit>
-      <trans-unit id="sa9b2a245441557dc">
-        <source>Last run</source>
-        <target>上次运行</target>
-        
-      </trans-unit>
       <trans-unit id="sad3e3c8146fc920f">
         <source>Status</source>
         <target>状态</target>
@@ -735,17 +730,6 @@
       <trans-unit id="sc592307ea80f16b9">
         <source>Unknown</source>
         <target>未知</target>
-        
-      </trans-unit>
-      <trans-unit id="s92921878e886e36d">
-        <source>Duration</source>
-        <target>时长</target>
-        
-      </trans-unit>
-      <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
-        <target>
-        <x id="0" equiv-text="${item.duration.toFixed(2)}"/> 秒</target>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -1728,11 +1712,6 @@
         <target>已成功创建应用程序。</target>
         
       </trans-unit>
-      <trans-unit id="s03907d7a66c6164e">
-        <source>Application's display Name.</source>
-        <target>应用的显示名称。</target>
-        
-      </trans-unit>
       <trans-unit id="s91f70424f5d5d23e">
         <source>Slug</source>
         <target>Slug</target>
@@ -2121,11 +2100,6 @@
       <trans-unit id="sc6c575c5ff64cdb1">
         <source>Update SCIM Provider</source>
         <target>更新 SCIM 提供程序</target>
-        
-      </trans-unit>
-      <trans-unit id="sbecf8dc03c978d15">
-        <source>Run sync again</source>
-        <target>再次运行同步</target>
         
       </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
@@ -3180,11 +3154,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s52b500138a2d2b8a">
         <source>Update LDAP Source</source>
         <target>更新 LDAP 源</target>
-        
-      </trans-unit>
-      <trans-unit id="s31a2d43bc1cf1790">
-        <source>Not synced yet.</source>
-        <target>尚未同步。</target>
         
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
@@ -4549,12 +4518,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Duo Admin API（可选）</target>
         
       </trans-unit>
-      <trans-unit id="s7f13f4a2d0370cf6">
-        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.</source>
-        <target>使用 Duo MFA 的 Access 或 Beyond 计划时，可以创建 Admin API 应用程序。
-这允许 authentik 自动导入设备。</target>
-      </trans-unit>
       <trans-unit id="s9a34d1520e320465">
         <source>Stage-specific settings</source>
         <target>阶段特定设置</target>
@@ -4633,11 +4596,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sa92398dba8b12d85">
         <source>Mapping</source>
         <target>映射</target>
-        
-      </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>修改发送到自定义提供程序的载荷。</target>
         
       </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
@@ -6555,11 +6513,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>重试</target>
         
       </trans-unit>
-      <trans-unit id="sc1589121ae2f5f92">
-        <source>Enter the code shown on your device.</source>
-        <target>请输入您设备上显示的代码。</target>
-        
-      </trans-unit>
       <trans-unit id="s67664f8ee9aea98d">
         <source>Please enter your Code</source>
         <target>请输入您的验证码</target>
@@ -6666,7 +6619,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
-        <source><x id="0" equiv-text="${prompt.label}"/></source>
+        <source><x id="0" equiv-text="${name}"/></source>
         <target>
           <x id="0" equiv-text="${prompt.label}"/>
         </target>
@@ -6988,10 +6941,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s9ba989e69344ff29">
   <source>Open Notification drawer</source>
   <target>打开通知抽屉</target>
-</trans-unit>
-<trans-unit id="s14bf17e2a1a2c381">
-  <source>Restart task</source>
-  <target>重新开始任务</target>
 </trans-unit>
 <trans-unit id="s19409e8712ddd369">
   <source>Add provider</source>
@@ -7413,14 +7362,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd21a971eea208533">
   <source>Vendor</source>
   <target>供应商</target>
-</trans-unit>
-<trans-unit id="sadadfe9dfa06d7dd">
-  <source>No sync status.</source>
-  <target>无同步状态。</target>
-</trans-unit>
-<trans-unit id="s2b1c81130a65a55b">
-  <source>Sync currently running.</source>
-  <target>当前正在同步。</target>
 </trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
@@ -8156,10 +8097,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Verifying...</source>
   <target>正在验证...</target>
 </trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
-  <target>请求失败。请稍后重试。</target>
-</trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
   <target>可用角色</target>
@@ -8296,18 +8233,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Update Microsoft Entra Provider</source>
   <target>更新 Microsoft Entra 提供程序</target>
 </trans-unit>
-<trans-unit id="saf4b498d81141878">
-  <source>Finished successfully</source>
-  <target>成功完成</target>
-</trans-unit>
-<trans-unit id="s46f1d86ffec6223c">
-  <source>Finished with errors</source>
-  <target>已完成但有错误</target>
-</trans-unit>
-<trans-unit id="sc3c334d642866997">
-  <source>Sync currently running</source>
-  <target>当前正在同步</target>
-</trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
   <target>Google Workspace 提供程序</target>
@@ -8423,10 +8348,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se3a34af2a05c5c98">
   <source>Internal Service account</source>
   <target>内部服务账户</target>
-</trans-unit>
-<trans-unit id="s681c086b8f7afcae">
-  <source>Global</source>
-  <target>全局</target>
 </trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
@@ -9626,10 +9547,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Task</source>
   <target>任务</target>
 </trans-unit>
-<trans-unit id="sbb99d4ec27fbb263">
-  <source>Finished</source>
-  <target>已完成</target>
-</trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
   <target>Webhook 主体映射</target>
@@ -9749,10 +9666,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
   <target>检查历史密码数量</target>
-</trans-unit>
-<trans-unit id="sdd66c5a2e706fb81">
-  <source>Toggle sidebar</source>
-  <target>切换侧边栏</target>
 </trans-unit>
 <trans-unit id="s7d4ec232535a36f0">
   <source>Choose a Provider</source>
@@ -9917,6 +9830,223 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
   <target>如果设置大于 0 的时长，则会以该时长存储一条 Cookie，使 authentik 知道用户是否从新设备登录。</target>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+  <target>此表单栏位中的元素不是一个表单</target>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+  <target>新密码</target>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+  <target>更新 <x id="0" equiv-text="${item.name || item.username}"/> 的密码</target>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
+  <target>修改发送到提供程序的载荷。</target>
+</trans-unit>
+<trans-unit id="s12d6dde9b30c3093">
+  <source>Dismiss</source>
+</trans-unit>
+<trans-unit id="sdea479482318489d">
+  <source>Status messages</source>
+</trans-unit>
+<trans-unit id="s05a4a4df6783d0cf">
+  <source>Provider name</source>
+</trans-unit>
+<trans-unit id="s19714b5520312d9a">
+  <source>Select an invalidation flow...</source>
+</trans-unit>
+<trans-unit id="sf1a3d030efd11f28">
+  <source>Open about dialog</source>
+</trans-unit>
+<trans-unit id="s95b96d7ead27527f">
+  <source>Product name</source>
+</trans-unit>
+<trans-unit id="s68b6d404c3349b18">
+  <source>Product version</source>
+</trans-unit>
+<trans-unit id="se0d7715f3211d220">
+  <source>Global navigation</source>
+</trans-unit>
+<trans-unit id="sd51d6a39208696cc">
+  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="scce64bcfb0a73ad7">
+  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sfe1fb536cab6c0f5">
+  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+</trans-unit>
+<trans-unit id="scbc2fd9f2bd26fdd">
+  <source>Main content</source>
+</trans-unit>
+<trans-unit id="sd2b106933823b754">
+  <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+</trans-unit>
+<trans-unit id="sd5e9b70ffb7a8b46">
+  <source>Skip to content</source>
+</trans-unit>
+<trans-unit id="s334b3924d2bd5d55">
+  <source>Kerberos Source</source>
+</trans-unit>
+<trans-unit id="sbcdf61483337948a">
+  <source>Successfully updated schedule.</source>
+</trans-unit>
+<trans-unit id="sd372fe5b712f6b30">
+  <source>Crontab</source>
+</trans-unit>
+<trans-unit id="s95bc8722b2708f8b">
+  <source>Paused</source>
+</trans-unit>
+<trans-unit id="se41af830054194bc">
+  <source>Pause this schedule</source>
+</trans-unit>
+<trans-unit id="sd091e43d5e99dea4">
+  <source>Waiting to run</source>
+</trans-unit>
+<trans-unit id="s85994a70cd39166c">
+  <source>Running</source>
+</trans-unit>
+<trans-unit id="sc7637275f670c938">
+  <source>Queue</source>
+</trans-unit>
+<trans-unit id="sb91d1be10eb2c7da">
+  <source>Last updated</source>
+</trans-unit>
+<trans-unit id="s911c2c952e64b223">
+  <source>Show only standalone tasks</source>
+</trans-unit>
+<trans-unit id="s14053a4609676b8b">
+  <source>Exclude successful tasks</source>
+</trans-unit>
+<trans-unit id="s8ff646d0515aab2a">
+  <source>Retry task</source>
+</trans-unit>
+<trans-unit id="s9b8dccb514a0e34c">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="sf92789320708efed">
+  <source>Next run</source>
+</trans-unit>
+<trans-unit id="s1aecc6c0d6cbf4ed">
+  <source>Last status</source>
+</trans-unit>
+<trans-unit id="s6089c283e28012fb">
+  <source>Show only standalone schedules</source>
+</trans-unit>
+<trans-unit id="s48006fb6e0b1860a">
+  <source>Run scheduled task now</source>
+</trans-unit>
+<trans-unit id="s6492593d534108e1">
+  <source>Update Schedule</source>
+</trans-unit>
+<trans-unit id="sf2d616b20d62240d">
+  <source>Schedules</source>
+</trans-unit>
+<trans-unit id="sc797fd9076cc136d">
+  <source>Tasks</source>
+</trans-unit>
+<trans-unit id="s3f63421908094590">
+  <source>Current status</source>
+</trans-unit>
+<trans-unit id="s4412853e1655ebb3">
+  <source>Sync is currently running.</source>
+</trans-unit>
+<trans-unit id="s08661004803c26b0">
+  <source>Sync is not currently running.</source>
+</trans-unit>
+<trans-unit id="s81d16aa9ec62262c">
+  <source>Last successful sync</source>
+</trans-unit>
+<trans-unit id="sd1eb8f8acdbcd1d3">
+  <source>No successful sync found.</source>
+</trans-unit>
+<trans-unit id="s6b0eeb3de1789c6e">
+  <source>Last sync status</source>
+</trans-unit>
+<trans-unit id="sac44b0f4dc14c227">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="s5e13dff03b580216">
+  <source>Previous executions logs</source>
+</trans-unit>
+<trans-unit id="s6abb1cd87fe0114e">
+  <source>Home</source>
+</trans-unit>
+<trans-unit id="se58e6ed983bf34b0">
+  <source>Collapse navigation</source>
+</trans-unit>
+<trans-unit id="sc6ef25894ed00175">
+  <source>Expand navigation</source>
+</trans-unit>
+<trans-unit id="s148b5e365440a7c1">
+  <source>Table pagination</source>
+</trans-unit>
+<trans-unit id="s5d929ff1619ac0c9">
+  <source>Search</source>
+</trans-unit>
+<trans-unit id="sd2c2366d13599d8c">
+  <source>Table actions</source>
+</trans-unit>
+<trans-unit id="s3d195621e562d805">
+  <source>Select row</source>
+</trans-unit>
+<trans-unit id="s572d21b6a41e24fa">
+  <source>Table of <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sa25b60b4fac481aa">
+  <source>Table content</source>
+</trans-unit>
+<trans-unit id="s5eba8fa19126f70a">
+  <source>Learn more about the enterprise license.</source>
+</trans-unit>
+<trans-unit id="s9db1679f3b234d4e">
+  <source>Search for providers…</source>
+</trans-unit>
+<trans-unit id="s76790480b7b28ad2">
+  <source>Edit provider</source>
+</trans-unit>
+<trans-unit id="s9839619155ed2cf6">
+  <source>Default NameID Policy</source>
+</trans-unit>
+<trans-unit id="s0c48c5f754275796">
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+</trans-unit>
+<trans-unit id="s6c973fe9014080fc">
+  <source>Application name</source>
+</trans-unit>
+<trans-unit id="s704091f8e3dbd721">
+  <source>The name displayed in the application library.</source>
+</trans-unit>
+<trans-unit id="s418c59028ef6bc2a">
+  <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+</trans-unit>
+<trans-unit id="sa091b3064afa00f5">
+  <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+</trans-unit>
+<trans-unit id="s6d364031a996b540">
+  <source>Back-Channel Logout URI</source>
+</trans-unit>
+<trans-unit id="sc22c7703fd074f5f">
+  <source>e.g. Collaboration, Communication, Internal, etc.</source>
+</trans-unit>
+<trans-unit id="sb6fcdabf769208a1">
+  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+</trans-unit>
+<trans-unit id="s32fc592c4a264edd">
+  <source>Account Recovery Max Attempts</source>
+</trans-unit>
+<trans-unit id="s8341dba451980abe">
+  <source>Account Recovery Cache Timeout</source>
+</trans-unit>
+<trans-unit id="sede4ad68849ce0c5">
+  <source>The time window used to count recent account recovery attempts.</source>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
 </trans-unit>
     </body>
   </file>

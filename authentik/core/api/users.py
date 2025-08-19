@@ -620,7 +620,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery(self, request: Request, pk: int) -> Response:
-        """Create a temporary link that a user can use to recover their accounts"""
+        """Create a temporary link that a user can use to recover their account"""
         link, _ = self._create_recovery_link()
         return Response({"link": link})
 
@@ -641,7 +641,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery_email(self, request: Request, pk: int) -> Response:
-        """Create a temporary link that a user can use to recover their accounts"""
+        """Send an email with a temporary link that a user can use to recover their account"""
         for_user: User = self.get_object()
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")

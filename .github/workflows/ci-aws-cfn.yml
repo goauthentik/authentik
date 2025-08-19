@@ -21,7 +21,7 @@ jobs:
   check-changes-applied:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - uses: actions/setup-node@v4

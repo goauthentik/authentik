@@ -7,7 +7,9 @@ import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import HTTPServer
-from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
+from django_dramatiq_postgres.middleware import (
+    MetricsMiddleware as BaseMetricsMiddleware,
+)
 from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
@@ -15,7 +17,7 @@ from dramatiq.middleware import Middleware
 from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import should_ignore_exception
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
@@ -208,7 +210,7 @@ class WorkerStatusMiddleware(Middleware):
     def run():
         status = WorkerStatus.objects.create(
             hostname=socket.gethostname(),
-            version=get_full_version(),
+            version=authentik_full_version(),
         )
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):

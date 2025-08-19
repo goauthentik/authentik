@@ -60,7 +60,7 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  * @fires WizardCloseEvent - request parent container (Wizard) to close the wizard
  */
 
-export class WizardStep extends AKElement {
+export abstract class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
     static styles = [
@@ -107,6 +107,20 @@ export class WizardStep extends AKElement {
      * Show the [Cancel] icon and offer the [Cancel] button
      */
     public canCancel = false;
+
+    /**
+     * Report the validity of the element, triggering client-side validation.
+     *
+     * @returns Whether the form is valid.
+     */
+    public abstract reportValidity(): boolean;
+
+    /**
+     * Check the validity of the element.
+     *
+     * @returns Whether the form is valid.
+     */
+    public abstract checkValidity(): boolean;
 
     /**
      * The ID of the current step.
@@ -177,9 +191,15 @@ export class WizardStep extends AKElement {
     @bound
     onWizardNavigationEvent(ev: Event, button: WizardButton) {
         ev.stopPropagation();
+
         if (!isNavigable(button)) {
             throw new Error("Non-navigable button sent to handleNavigationEvent");
         }
+
+        if (button.kind === "next" && !this.reportValidity()) {
+            return;
+        }
+
         this.handleButton(button);
     }
 

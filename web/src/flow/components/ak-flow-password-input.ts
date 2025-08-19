@@ -8,7 +8,6 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -89,13 +88,6 @@ export class InputPassword extends AKElement {
      */
     @property({ type: Object })
     errors: Record<string, string> = {};
-
-    /**
-     * Forwarded to the input tag's aria-invalid attribute, if set
-     * @attr
-     */
-    @property({ type: String })
-    invalid?: string;
 
     /**
      * Whether to allow the user to toggle the visibility of the password.
@@ -334,7 +326,7 @@ export class InputPassword extends AKElement {
                             "pf-m-caps-lock": this.capsLock,
                         })}"
                         required
-                        aria-invalid=${ifDefined(this.invalid)}
+                        aria-invalid=${this.errors?.length ? "true" : "false"}
                         value=${this.initialValue}
                         ${ref(this.inputRef)}
                     />

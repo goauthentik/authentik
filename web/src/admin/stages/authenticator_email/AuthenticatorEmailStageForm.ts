@@ -16,6 +16,7 @@ import {
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
+    TypeCreate,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -32,6 +33,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         this.showConnectionSettings = !stage.useGlobalSettings;
         return stage;
     }
+
+    async load(): Promise<void> {
+        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showConnectionSettings = false;
@@ -81,7 +88,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 <ak-secret-text-input
                     name="password"
                     label=${msg("SMTP Password")}
-                    ?revealed=${this.instance === undefined}
+                    ?revealed=${!this.instance}
                 ></ak-secret-text-input>
 
                 <ak-form-element-horizontal name="useTls">
@@ -260,6 +267,28 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             ${msg(
                                 "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Template")} name="template">
+                        <select
+                            class="pf-c-form-control"
+                            ?disabled=${!this.templates || this.templates.length === 0}
+                        >
+                            ${this.templates && this.templates.length > 0
+                                ? this.templates.map((template: TypeCreate) => {
+                                      return html`<option
+                                          value="${template.name}"
+                                          ?selected=${this.instance?.template === template.name ||
+                                          (!this.instance?.template &&
+                                              template.name === "email/email_otp.html")}
+                                      >
+                                          ${template.description}
+                                      </option>`;
+                                  })
+                                : html`<option value="">${msg("Loading templates...")}</option>`}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Template used for the verification email.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

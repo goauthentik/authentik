@@ -21,7 +21,7 @@ import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 function trimMany<T extends object, K extends keyof T>(target: T, keys: K[]): Pick<T, K> {
@@ -43,8 +43,9 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     @state()
     errors = new Map<keyof ApplicationRequest, string>();
 
-    @query("form#applicationform")
-    form!: HTMLFormElement;
+    public get form(): HTMLFormElement | null {
+        return this.renderRoot.querySelector("form#applicationform");
+    }
 
     constructor() {
         super();
@@ -71,7 +72,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
             this.errors.set("name", msg("An application name is required"));
         }
 
-        if (!values.metaLaunchUrl || !URL.canParse(values.metaLaunchUrl)) {
+        if (values.metaLaunchUrl && !URL.canParse(values.metaLaunchUrl)) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
 
@@ -123,7 +124,6 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     value=${ifDefined(app.name)}
                     label=${msg("Name")}
                     required
-                    ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("The name displayed in the application library.")}
                 ></ak-text-input>
