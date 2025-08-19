@@ -8620,9 +8620,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa82f8948649d0989">
   <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
 </trans-unit>
-<trans-unit id="s6506b7c69456b0d6">
-  <source>Invalid update request.</source>
-</trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
   <target>Группа синхронизации </target>
@@ -9793,6 +9790,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66401e0b2526acab">
   <source>Email Template</source>
+</trans-unit>
+<trans-unit id="sdaecc3c29a27c5c5">
+  <source>An unknown error occurred</source>
+</trans-unit>
+<trans-unit id="se84ba7f105934495">
+  <source>Please check the browser console for more details.</source>
+</trans-unit>
+<trans-unit id="s44872da71d5307c8">
+  <source>There was an error submitting the form.</source>
+</trans-unit>
+<trans-unit id="sc57b150b53a3b9e6">
+  <source>This field is required.</source>
+</trans-unit>
+<trans-unit id="sbe3756d568bb048e">
+  <source>Query suggestions</source>
+</trans-unit>
+<trans-unit id="s5638954badbd5b21">
+  <source>Table Search</source>
+</trans-unit>
+<trans-unit id="sfc238215103c6162">
+  <source>An error occurred while updating the provider.</source>
+</trans-unit>
+<trans-unit id="sc055fffc26e97237">
+  <source>An error occurred while creating the provider.</source>
+</trans-unit>
+<trans-unit id="s1fd02f07e4fa3312">
+  <source>Impersonating user...</source>
+</trans-unit>
+<trans-unit id="s12928f97c99f88db">
+  <source>This may take a few seconds.</source>
+</trans-unit>
+<trans-unit id="sbc4f2320a13d4dfd">
+  <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
 </trans-unit>
     </body>
   </file>
