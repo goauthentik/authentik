@@ -2,6 +2,8 @@
 title: Logging events
 ---
 
+import { KeyBindingsTable } from "@goauthentik/docusaurus-theme/components/KeyBindingsTable";
+
 Logs are a vital tool for system diagnostics, event auditing, user management, reporting, and more. They capture detailed information about each event including the client's IP address, the user involved, the date and time, and the specific action taken.
 
 Event logging in authentik is highly configurable. You can set the [retention period](./index.md#event-retention-and-forwarding) for storing and displaying events, specify which events should trigger a [notification](./notifications.md), and access low-level details about when and where each event occurred.
@@ -42,22 +44,68 @@ You can construct advanced queries to find specific event logs. In the Admin int
 
 - **Values**: `True`, `False`, `None`, and more
 
-- **Example queries**:
-    - search event by application name: `app startswith "N"`
-    - search event by action: `action = "login"`
-    - search event by authorized application context: `authorized_application.name = "My app"`
-    - search event by country: `context.geo.country = "Germany"`
-    - search event by IP address: `client_ip = "10.0.0.1"`
-    - search event by brand: `brand.name = "my brand"`
-    - search event by user: `user.username in ["ana", "akadmin"]`
+### Keyboard Interactions
+
+<KeyBindingsTable
+    aria-label="Keyboard shortcuts for the Query Language (QL) search"
+
+    bindings={[
+        [
+            "Autocomplete",
+            [
+                ["Select next suggestion", <kbd aria-label="Down arrow">↓</kbd>],
+                ["Select previous suggestion", <kbd aria-label="Up arrow">↑</kbd>],
+                ["Accept the current suggestion", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Dismiss suggestions", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+        [
+            "Search",
+            [
+                ["Submit the current query", <kbd aria-label="Enter key">Enter</kbd>],
+                ["Clear the current query", <kbd aria-label="Escape key">ESC</kbd>],
+            ],
+        ],
+    ]}
+
+/>
+
+### Example queries
+
+```sh title="Search event by application name"
+app startswith "N"
+```
+
+```sh title="Search event by action"
+action = "login"
+```
+
+```sh title="Search event by authorized application context"
+authorized_application.name = "My app"
+```
+
+```sh title="Search event by country"
+context.geo.country = "Germany"
+```
+
+```sh title="Search event by IP address"
+client_ip = "10.0.0.1"
+```
+
+```sh title="Search event by brand"
+brand.name = "my brand"
+```
+
+```sh title="Search event by user"
+user.username in ["ana", "akadmin"]
+```
 
 For more examples, refer to the list of [Event actions](./event-actions.md) and the related examples for each type of event.
 
 :::info
 
-1. To dismiss the drop-down menu option, click **ESC**.
-2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
-3. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
+1. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+2. For queries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.name`.
    :::
 
 ## Export events :ak-enterprise
