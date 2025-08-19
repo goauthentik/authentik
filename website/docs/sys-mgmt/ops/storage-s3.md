@@ -6,7 +6,7 @@ title: S3 storage setup
 
 First, create a user on your S3 storage provider and get access credentials (hereafter referred to as `access_key` and `secret_key`).
 
-You will also need the S3 API endpoint authentik will use (hereafter referred to as `https://s3.provider`). When using AWS S3, there’s no need to set the endpoint, but for S3-compatible services like Azure Blob Storage or Cloudflare R2, use the provider's endpoint URL.
+You will also need the S3 API endpoint that authentik will use (hereafter referred to as `https://s3.provider`). When using AWS S3, there’s no need to set the endpoint, but for S3-compatible services like Azure Blob Storage or Cloudflare R2, use the provider's endpoint URL.
 
 Create or pick a bucket for authentik media, for example `authentik-media`. Adjust the name to your provider’s bucket naming rules. We suffix with `-media` as authentik currently only stores media files (icons, etc.).
 
