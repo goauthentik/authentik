@@ -51,8 +51,11 @@ You can construct advanced queries to find specific event logs. In the Admin int
     - search event by brand: `brand.name = "my brand"`
     - search event by user: `user.username in ["ana", "akadmin"]`
 
+For more examples, refer to the list of [Event actions](./event-actions.md) and the related examples for each type of event.
+
 :::info
 
 1. To dismiss an unwanted drop-down menu option, click **ESC**.
 2. If the list of operators does not appear in a drop-down menu you will need to manually enter it.
+3. Wuesries that include `user`, `brand`, or `context` you need to use a compound term such as `user.username` or `brand.
    :::
