@@ -44,6 +44,7 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     async send(data: Brand): Promise<Brand> {
+        data.attributes ??= {};
         if (this.instance?.brandUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreBrandsUpdate({
                 brandUuid: this.instance.brandUuid,
