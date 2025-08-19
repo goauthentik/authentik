@@ -16,6 +16,7 @@ export const DefaultBrand = {
     flags: {
         policiesBufferedAccessView: false,
         flowsRefreshOthers: false,
+        coreDefaultAppAccess: true,
     },
 } as const satisfies CurrentBrand;
 

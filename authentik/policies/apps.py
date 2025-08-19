@@ -4,11 +4,11 @@ Every system policy should be its own Django app under the `policies` app.
 For example: The 'dummy' policy is available at `authentik.policies.dummy`.
 """
 
+from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tenants.flags import Flag
-from django.utils.translation import gettext_lazy as _
 
 GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
