@@ -1,5 +1,10 @@
 import { EVENT_REFRESH } from "#common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+    pluckFallbackFieldErrors,
+} from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 import { dateToUTC } from "#common/temporal";
 
@@ -8,13 +13,14 @@ import { AKElement } from "#elements/Base";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { APIMessage } from "#elements/messages/Message";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 import { createFileMap, isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 import { ErrorProp } from "#components/ak-field-errors";
 
-import { instanceOfValidationError } from "@goauthentik/api";
+import { instanceOfValidationError, ValidationError } from "@goauthentik/api";
 
 import { snakeCase } from "change-case";
 
@@ -143,6 +149,41 @@ export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AK
     return json as unknown as T;
 }
 
+//#region Validation Reporting
+
+/**
+ * Assign all input-related errors to their respective elements.
+ */
+function reportInvalidFields(
+    parsedError: ValidationError,
+    elements: Iterable<HorizontalFormElement>,
+): HorizontalFormElement[] {
+    const invalidFields: HorizontalFormElement[] = [];
+
+    for (const element of elements) {
+        element.requestUpdate();
+
+        const elementName = element.name;
+
+        if (!elementName) continue;
+
+        const snakeProperty = snakeCase(elementName);
+        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
+
+        element.errorMessages = errorMessages;
+
+        if (Array.isArray(errorMessages) && errorMessages.length) {
+            invalidFields.push(element);
+        }
+    }
+
+    return invalidFields;
+}
+
+//#endregion
+
+//#region Form
+
 /**
  * Form
  *
@@ -180,8 +221,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     //#region Properties
 
-    @property()
-    public successMessage = "";
+    @property({ type: String })
+    public successMessage?: string;
 
     @property({ type: String })
     public autocomplete?: AutoFill;
@@ -226,9 +267,36 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
     /**
      * An overridable method for returning a success message after a successful submission.
+     *
+     * @deprecated Use `formatAPISuccessMessage` instead.
      */
-    protected getSuccessMessage(): string {
+    protected getSuccessMessage(): string | undefined {
         return this.successMessage;
+    }
+
+    /**
+     * An overridable method for returning a formatted message after a successful submission.
+     */
+    protected formatAPISuccessMessage(response: unknown): APIMessage | null {
+        const message = this.getSuccessMessage();
+
+        if (!message) return null;
+
+        return {
+            level: MessageLevel.success,
+            message,
+        };
+    }
+
+    /**
+     * An overridable method for returning a formatted error message after a failed submission.
+     */
+    protected formatAPIErrorMessage(error: APIError): APIMessage | null {
+        return {
+            message: msg("There was an error submitting the form."),
+            description: pluckErrorDetail(error, pluckFallbackFieldErrors(error)[0]),
+            level: MessageLevel.error,
+        };
     }
 
     //#region Public methods
@@ -246,6 +314,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return createFileMap<T>(this.shadowRoot?.querySelectorAll("ak-form-element-horizontal"));
     }
 
+    //#region Validation
+
     public checkValidity(): boolean {
         return !!this.form?.checkValidity?.();
     }
@@ -261,6 +331,10 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         return reportValidityDeep(form);
     }
 
+    //#endregion
+
+    //#region Submission
+
     /**
      * Convert the elements of the form to JSON.[4]
      */
@@ -273,6 +347,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         return serializeForm<T>(elements);
     }
+
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
@@ -287,10 +362,7 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
 
         return this.send(data)
             .then((response) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: this.getSuccessMessage(),
-                });
+                showMessage(this.formatAPISuccessMessage(response));
 
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
@@ -307,65 +379,39 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
                 }
 
                 const parsedError = await parseAPIResponseError(error);
-                let errorMessage = pluckErrorDetail(error);
-                let focused = false;
 
                 if (instanceOfValidationError(parsedError)) {
-                    // assign all input-related errors to their elements
-                    const elements =
-                        this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
-                            "ak-form-element-horizontal",
-                        ) || [];
+                    const invalidFields = reportInvalidFields(
+                        parsedError,
+                        this.renderRoot.querySelectorAll("ak-form-element-horizontal"),
+                    );
 
-                    for (const element of elements) {
-                        element.requestUpdate();
+                    const focusTarget = Iterator.from(invalidFields)
+                        .map(({ focusTarget }) => focusTarget)
+                        .find(Boolean);
 
-                        const elementName = element.name;
-
-                        if (!elementName) continue;
-
-                        const snakeProperty = snakeCase(elementName);
-                        const errorMessages: ErrorProp[] = parsedError[snakeProperty] ?? [];
-
-                        element.errorMessages = errorMessages;
-                        const { controlledElement } = element;
-
-                        if (!focused && Array.isArray(errorMessages) && errorMessages.length) {
-                            if (
-                                controlledElement?.checkVisibility() &&
-                                controlledElement instanceof HTMLElement
-                            ) {
-                                focused = true;
-
-                                requestAnimationFrame(() => {
-                                    return controlledElement.focus?.();
-                                });
-                            }
-                        }
-                    }
-
-                    if (parsedError.nonFieldErrors) {
+                    if (focusTarget) {
+                        requestAnimationFrame(() => focusTarget.focus());
+                    } else if (Array.isArray(parsedError.nonFieldErrors)) {
                         this.nonFieldErrors = parsedError.nonFieldErrors;
-                    }
+                    } else {
+                        this.nonFieldErrors = pluckFallbackFieldErrors(parsedError);
 
-                    errorMessage = msg("Invalid update request.");
-
-                    // Only change the message when we have `detail`.
-                    // Everything else is handled in the form.
-                    if ("detail" in parsedError) {
-                        errorMessage = parsedError.detail;
+                        console.error(
+                            "authentik/forms: API rejected the form submission due to an invalid field that doesn't appear to be in the form. This is likely a bug in authentik.",
+                            parsedError,
+                        );
                     }
                 }
 
-                showMessage({
-                    message: errorMessage,
-                    level: MessageLevel.error,
-                });
+                showMessage(this.formatAPIErrorMessage(parsedError), true);
 
                 // Rethrow the error so the form doesn't close.
                 throw error;
             });
     }
+
+    //#endregion
 
     //#endregion
 

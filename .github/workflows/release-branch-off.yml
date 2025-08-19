@@ -9,6 +9,11 @@ on:
         required: true
         type: string
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   check-inputs:
     name: Check inputs validity
@@ -20,14 +25,19 @@ jobs:
     name: Branch-off
     needs:
       - check-inputs
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Checkout main
         uses: actions/checkout@v5
         with:
           ref: main
+          token: "${{ steps.app-token.outputs.token }}"
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -55,6 +65,8 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - name: Run migrations
+        run: make migrate
       - name: Bump version
         run: "make bump version=${{ inputs.next_version }}.0-rc1"
       - name: Create pull request

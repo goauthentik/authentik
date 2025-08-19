@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.8.0-rc1
+  version: 2025.10.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -6023,7 +6023,7 @@ paths:
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Create a temporary link that a user can use to recover their account
       parameters:
       - in: path
         name: id
@@ -6057,7 +6057,8 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Send an email with a temporary link that a user can use to recover
+        their account
       parameters:
       - in: query
         name: email_stage
@@ -49344,6 +49345,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49383,6 +49388,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -54480,6 +54490,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook

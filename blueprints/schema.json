@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.8.0-rc1 Blueprint schema",
+    "title": "authentik 2025.10.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6752,6 +6752,15 @@
                     "type": "integer",
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
+                },
+                "email_subject_prefix": {
+                    "type": "string",
+                    "title": "Email subject prefix"
+                },
+                "email_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Email template"
                 },
                 "send_once": {
                     "type": "boolean",

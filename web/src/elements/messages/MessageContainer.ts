@@ -27,7 +27,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *
  * @todo Consider making this a static method on singleton {@linkcode MessageContainer}
  */
-export function showMessage(message: APIMessage, unique = false): void {
+export function showMessage(message: APIMessage | null, unique = false): void {
+    if (!message) {
+        return;
+    }
+
     const container = document.querySelector<MessageContainer>("ak-message-container");
 
     if (!container) {
@@ -35,7 +39,10 @@ export function showMessage(message: APIMessage, unique = false): void {
     }
 
     if (!message.message.trim()) {
-        message.message = msg("Error");
+        console.warn("authentik/messages: `showMessage` received an empty message", message);
+
+        message.message = msg("An unknown error occurred");
+        message.description ??= msg("Please check the browser console for more details.");
     }
 
     container.addMessage(message, unique);
