@@ -1467,11 +1467,6 @@
         <target>Nenalezen žádný formulář</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Formulář nevrátil pro odeslání Promise</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>Vyberte typ</target>
@@ -6316,6 +6311,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
       </trans-unit>
       <trans-unit id="sbd19064fc3f405c1">
         <source>Check your Inbox for a verification email.</source>
+        <target>Ověřovací email najdete ve Vaší poštovní schránce.</target>
         
       </trans-unit>
       <trans-unit id="s8aff572e64b7936b">
@@ -7504,6 +7500,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sb864dc36a463a155">
   <source>Ignore server certificate</source>
+  <target>Ignorovat serverový certifikát</target>
 </trans-unit>
 <trans-unit id="s20366a8d1eaaca54">
   <source>Enable wallpaper</source>
@@ -8634,10 +8631,6 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
   <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
   <target>Shoduje se s IP adresou klienta události (přísné porovnávání, pro síťové porovnávání použijte zásadu výrazu).</target>
 </trans-unit>
-<trans-unit id="s6506b7c69456b0d6">
-  <source>Invalid update request.</source>
-  <target>Neplatný požadavek na aktualizaci.</target>
-</trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
   <target>Synchronizovat skupinu</target>
@@ -9754,267 +9747,423 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+  <target>Aktuálně vybraný policy engine je <x id="0" equiv-text="${policyEngineMode.label}"/>:</target>
 </trans-unit>
 <trans-unit id="se1d2545eda4b1600">
   <source>Import Existing Certificate-Key Pair</source>
+  <target>Importovat existující pár certifikátu a klíče</target>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+  <target>Vygenerovat nový pár certifikátu a klíče</target>
 </trans-unit>
 <trans-unit id="sf9686d31d28fcf7d">
   <source>Show field content</source>
+  <target>Zobrazit obsah pole</target>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+  <target>Skrýt obsah pole</target>
 </trans-unit>
 <trans-unit id="s4f820625804ed29b">
   <source>Re-authenticate with Plex</source>
+  <target>Znovu ověřit pomocí Plex</target>
 </trans-unit>
 <trans-unit id="s0433d667ea6eec1a">
   <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+  <target>Název pozvánky musí být jednoslovný: jsou povolena pouze malá písmena, číslice a pomlčky.</target>
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
+  <target>Vyberte uživatelskou skupinu, které se budou zasílat upozornění.</target>
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>Pokud není vybrána žádná skupina a 'Zasílat upozornění původci události' je vypnuto, pravidlo není aktivní.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
+  <target>Zasílat oznámení původci události</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Pokud je povoleno, oznámení se kromě uživatelů ve skupině výše odešle také původci události. Uživatel, který událost vyvolal, je vždy prvním příjemcem; pokud má být oznámení doručeno pouze jednou, je třeba v transportu notifikací zapnout volbu ‘Poslat jednou’.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
+  <target>Maximální počet pokusů o registraci</target>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>Maximální dovolený počet pokusů o registraci. Pokud je nastaven na 0, počet pokusů není omezen.</target>
 </trans-unit>
 <trans-unit id="sab4db6a3bd6abc1e">
   <source>This application does currently not have any application entitlements defined.</source>
+  <target>Tato aplikace nemá momentálně definována žádná oprávnění.</target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Přihlášen jako <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
+  <target>Zapamatovat zařízení</target>
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+  <target>Pokud je nastaveno na hodnotu vyšší než 0, dojde k uložení cookie na stanovenou dobu, což umožní authentiku zjistit, že se uživatel přihlašuje z nového zařízení.</target>
 </trans-unit>
 <trans-unit id="s059358bf402de018">
   <source>Element inside the form slot is not a Form</source>
+  <target>Prvek uvnitř formulářového slotu není formulář.</target>
 </trans-unit>
 <trans-unit id="s8563c5a14e9a42f2">
   <source>New Password</source>
+  <target>Nové heslo</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+  <target>Aktualizovat heslo uživatele <x id="0" equiv-text="${item.name || item.username}"/></target>
 </trans-unit>
 <trans-unit id="s3c619d54c995d4ab">
   <source>Modify the payload sent to the provider.</source>
+  <target>Upravit data posílaná poskytovateli.</target>
 </trans-unit>
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
+  <target>Skrýt</target>
 </trans-unit>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
+  <target>Stavové zprávy</target>
 </trans-unit>
 <trans-unit id="s05a4a4df6783d0cf">
   <source>Provider name</source>
+  <target>Jméno poskytovatele</target>
 </trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
+  <target>Vyberte tok zneplatnění...</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
+  <target>Otevřít dialog O programu</target>
 </trans-unit>
 <trans-unit id="s95b96d7ead27527f">
   <source>Product name</source>
+  <target>Název produktu</target>
 </trans-unit>
 <trans-unit id="s68b6d404c3349b18">
   <source>Product version</source>
+  <target>Verze produktu</target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
   <source>Global navigation</source>
+  <target>Globální navigace</target>
 </trans-unit>
 <trans-unit id="sd51d6a39208696cc">
   <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+  <target>Sbalit <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="scce64bcfb0a73ad7">
   <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+  <target>Rozbalit <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="sfe1fb536cab6c0f5">
   <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+  <target><x id="0" equiv-text="${this.label}"/> navigace</target>
 </trans-unit>
 <trans-unit id="scbc2fd9f2bd26fdd">
   <source>Main content</source>
+  <target>Hlavní obsah</target>
 </trans-unit>
 <trans-unit id="sd2b106933823b754">
   <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+  <target>Když používáte Duo MFA, Duo Access nebo Duo Beyond, můžete vytvořit aplikaci Admin API. Toto umožní authentiku automaticky importovat zařízení.</target>
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
   <source>Skip to content</source>
+  <target>Přeskočeit na hlavní obsah</target>
 </trans-unit>
 <trans-unit id="s334b3924d2bd5d55">
   <source>Kerberos Source</source>
+  <target>Zdroj Kerberos</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
+  <target>Plán byl úspěšně aktualizován.</target>
 </trans-unit>
 <trans-unit id="sd372fe5b712f6b30">
   <source>Crontab</source>
+  <target>Crontab</target>
 </trans-unit>
 <trans-unit id="s95bc8722b2708f8b">
   <source>Paused</source>
+  <target>Pozastavený</target>
 </trans-unit>
 <trans-unit id="se41af830054194bc">
   <source>Pause this schedule</source>
+  <target>Pozastavit tento plán</target>
 </trans-unit>
 <trans-unit id="sd091e43d5e99dea4">
   <source>Waiting to run</source>
+  <target>Čeká na spuštění</target>
 </trans-unit>
 <trans-unit id="s85994a70cd39166c">
   <source>Running</source>
+  <target>Běží</target>
 </trans-unit>
 <trans-unit id="sc7637275f670c938">
   <source>Queue</source>
+  <target>V pořadí</target>
 </trans-unit>
 <trans-unit id="sb91d1be10eb2c7da">
   <source>Last updated</source>
+  <target>Poslední aktualizace</target>
 </trans-unit>
 <trans-unit id="s911c2c952e64b223">
   <source>Show only standalone tasks</source>
+  <target>Ukázat pouze samostatné úlohy</target>
 </trans-unit>
 <trans-unit id="s14053a4609676b8b">
   <source>Exclude successful tasks</source>
+  <target>Vynechat úspěšné úlohy</target>
 </trans-unit>
 <trans-unit id="s8ff646d0515aab2a">
   <source>Retry task</source>
+  <target>Zopakovat úlohu</target>
 </trans-unit>
 <trans-unit id="s9b8dccb514a0e34c">
   <source>Schedule</source>
+  <target>Plán</target>
 </trans-unit>
 <trans-unit id="sf92789320708efed">
   <source>Next run</source>
+  <target>Příští spuštění</target>
 </trans-unit>
 <trans-unit id="s1aecc6c0d6cbf4ed">
   <source>Last status</source>
+  <target>Poslední stav</target>
 </trans-unit>
 <trans-unit id="s6089c283e28012fb">
   <source>Show only standalone schedules</source>
+  <target>Ukázat pouze samostatné plány</target>
 </trans-unit>
 <trans-unit id="s48006fb6e0b1860a">
   <source>Run scheduled task now</source>
+  <target>Spustit naplánovanou úlohu nyní</target>
 </trans-unit>
 <trans-unit id="s6492593d534108e1">
   <source>Update Schedule</source>
+  <target>Aktualizovat plán</target>
 </trans-unit>
 <trans-unit id="sf2d616b20d62240d">
   <source>Schedules</source>
+  <target>Pláy</target>
 </trans-unit>
 <trans-unit id="sc797fd9076cc136d">
   <source>Tasks</source>
+  <target>Úlohy</target>
 </trans-unit>
 <trans-unit id="s3f63421908094590">
   <source>Current status</source>
+  <target>Aktuální stav</target>
 </trans-unit>
 <trans-unit id="s4412853e1655ebb3">
   <source>Sync is currently running.</source>
+  <target>Probíhá synchronizace.</target>
 </trans-unit>
 <trans-unit id="s08661004803c26b0">
   <source>Sync is not currently running.</source>
+  <target>Synchronizace teď neprobíhá.</target>
 </trans-unit>
 <trans-unit id="s81d16aa9ec62262c">
   <source>Last successful sync</source>
+  <target>Poslední úspěšná synchronizace</target>
 </trans-unit>
 <trans-unit id="sd1eb8f8acdbcd1d3">
   <source>No successful sync found.</source>
+  <target>Žádná úspěšná synchronizace nenalezena.</target>
 </trans-unit>
 <trans-unit id="s6b0eeb3de1789c6e">
   <source>Last sync status</source>
+  <target>Stav poslední synchronizace</target>
 </trans-unit>
 <trans-unit id="sac44b0f4dc14c227">
   <source>Current execution logs</source>
+  <target>Aktuální logy běhu</target>
 </trans-unit>
 <trans-unit id="s5e13dff03b580216">
   <source>Previous executions logs</source>
+  <target>Předešlé logy běhu</target>
 </trans-unit>
 <trans-unit id="s6abb1cd87fe0114e">
   <source>Home</source>
+  <target>Domů</target>
 </trans-unit>
 <trans-unit id="se58e6ed983bf34b0">
   <source>Collapse navigation</source>
+  <target>Sbalit navigaci</target>
 </trans-unit>
 <trans-unit id="sc6ef25894ed00175">
   <source>Expand navigation</source>
+  <target>Rozbalit navigaci</target>
 </trans-unit>
 <trans-unit id="s148b5e365440a7c1">
   <source>Table pagination</source>
+  <target>Stránkování tabulky</target>
 </trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
+  <target>Hledat</target>
 </trans-unit>
 <trans-unit id="sd2c2366d13599d8c">
   <source>Table actions</source>
+  <target>Akce tabulky</target>
 </trans-unit>
 <trans-unit id="s3d195621e562d805">
   <source>Select row</source>
+  <target>Vybrat řádek</target>
 </trans-unit>
 <trans-unit id="s572d21b6a41e24fa">
   <source>Table of <x id="0" equiv-text="${this.label}"/></source>
+  <target>Tabulka <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
+  <target>Obsah tabulky</target>
 </trans-unit>
 <trans-unit id="s5eba8fa19126f70a">
   <source>Learn more about the enterprise license.</source>
+  <target>Dozvědět se více o podnikové licenci.</target>
 </trans-unit>
 <trans-unit id="s9db1679f3b234d4e">
   <source>Search for providers…</source>
+  <target>Hledat poskytovatele...</target>
 </trans-unit>
 <trans-unit id="s76790480b7b28ad2">
   <source>Edit provider</source>
+  <target>Upravit poskytovatele</target>
 </trans-unit>
 <trans-unit id="s9839619155ed2cf6">
   <source>Default NameID Policy</source>
+  <target>Výchozí NameID politika</target>
 </trans-unit>
 <trans-unit id="s0c48c5f754275796">
   <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+  <target>Nastavte výchozí zásadu NameID použitou během přihlášení inicializovaných poskytovatelem identit a také když příchozí Tvrzení (assertion) zásadu NameID nespecifikuje (používá se také při uživatelském mapování NameID).</target>
 </trans-unit>
 <trans-unit id="s6c973fe9014080fc">
   <source>Application name</source>
+  <target>Jméno aplikace</target>
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
+  <target>Zobrazované jméno v knihovně aplikací.</target>
 </trans-unit>
 <trans-unit id="s418c59028ef6bc2a">
   <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+  <target>URI, kam se pošle &quot;back-channel&quot; odhlašovací zpráva, kdy se uživatel odhlási. Vyžadováno pro &quot;back-chanel&quot; funkcionalitu protokolu OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="sa091b3064afa00f5">
   <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+  <target>Tato URI se volají na straně serveru při odhlášení uživatele, aby server předal OAuth2/OpenID klientům odhlašovací událost.</target>
 </trans-unit>
 <trans-unit id="s6d364031a996b540">
   <source>Back-Channel Logout URI</source>
+  <target>Back-Channel Logout URI</target>
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>např. Spolupráce, Komunikace, Interní, atd.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <target>Chyba při načítání aplikace &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
   <source>Account Recovery Max Attempts</source>
+  <target>Max. počet pokusů o obnovu účtu</target>
 </trans-unit>
 <trans-unit id="s8341dba451980abe">
   <source>Account Recovery Cache Timeout</source>
+  <target>Časový limit cache obnovy účtu</target>
 </trans-unit>
 <trans-unit id="sede4ad68849ce0c5">
   <source>The time window used to count recent account recovery attempts.</source>
+  <target>Časové okno použité pro počítání pokusů o obnovu přístupu k účtu.</target>
 </trans-unit>
 <trans-unit id="s669b18c6d2d9c95b">
   <source>None</source>
+  <target>Žádný</target>
+</trans-unit>
+<trans-unit id="s2de7890b100c4f4c">
+  <source>Flags</source>
+  <target>Příznaky</target>
+</trans-unit>
+<trans-unit id="sf0b34d32a602aee8">
+  <source>Modify flags to opt into new authentik behaviours early.</source>
+  <target>Upravte příznaky, abyste dříve získali přístup k novým chováním authentiku.</target>
+</trans-unit>
+<trans-unit id="s503217f10ebdc63e">
+  <source>Loading templates...</source>
+  <target>Načítám šablony...</target>
+</trans-unit>
+<trans-unit id="s6891d230751dd7bf">
+  <source>Template used for the verification email.</source>
+  <target>Šablona použitá pro ověřovací email.</target>
+</trans-unit>
+<trans-unit id="sf1fc82d7ae3f4d81">
+  <source>Email Subject Prefix</source>
+  <target>Předpona předmětu emailu</target>
+</trans-unit>
+<trans-unit id="s66401e0b2526acab">
+  <source>Email Template</source>
+  <target>Šablona emailu</target>
+</trans-unit>
+<trans-unit id="sdaecc3c29a27c5c5">
+  <source>An unknown error occurred</source>
+  <target>Došlo k neznámé chybě</target>
+</trans-unit>
+<trans-unit id="se84ba7f105934495">
+  <source>Please check the browser console for more details.</source>
+  <target>Pro více informací se podívejte do konzole prohlížeče.</target>
+</trans-unit>
+<trans-unit id="s44872da71d5307c8">
+  <source>There was an error submitting the form.</source>
+  <target>Při odesílání formuláře došlo k chybě.</target>
+</trans-unit>
+<trans-unit id="sc57b150b53a3b9e6">
+  <source>This field is required.</source>
+  <target>Toto pole je povinné.</target>
+</trans-unit>
+<trans-unit id="sbe3756d568bb048e">
+  <source>Query suggestions</source>
+  <target>Získat návrhy</target>
+</trans-unit>
+<trans-unit id="s5638954badbd5b21">
+  <source>Table Search</source>
+  <target>Hledat v tabulce</target>
+</trans-unit>
+<trans-unit id="sfc238215103c6162">
+  <source>An error occurred while updating the provider.</source>
+  <target>Při aktualizaci poskytovatele došlo k chybě.</target>
+</trans-unit>
+<trans-unit id="sc055fffc26e97237">
+  <source>An error occurred while creating the provider.</source>
+  <target>Při vytváření poskytovatele došlo k chybě.</target>
+</trans-unit>
+<trans-unit id="s1fd02f07e4fa3312">
+  <source>Impersonating user...</source>
+  <target>Zosobňuji uživatele...</target>
+</trans-unit>
+<trans-unit id="s12928f97c99f88db">
+  <source>This may take a few seconds.</source>
+  <target>Toto může trvat několik sekund.</target>
+</trans-unit>
+<trans-unit id="sbc4f2320a13d4dfd">
+  <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
+  <target>Krátké vysvětlení, proč zosobňujete daného uživatele. Zobrazí se v auditovacích záznamech.</target>
 </trans-unit>
     </body>
   </file>
