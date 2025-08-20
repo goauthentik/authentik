@@ -111,7 +111,7 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@openlayers-elements/core": "^0.4.0",
         "@openlayers-elements/maps": "^0.4.0",
-        "@patternfly/elements": "^4.1.0",
+        "@patternfly/elements": "^4.2.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^10.5.0",
         "@spotlightjs/spotlight": "^3.0.2",
