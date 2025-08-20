@@ -126,9 +126,11 @@ worker:
 
 ### Helm chart changes
 
-Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/83267) to availability of their container images, the Helm chart default values have been updated to instead use [docker.io/library/postgres](https://hub.docker.com/_/postgres) and [docker.io/library/redis](https://hub.docker.com/_/redis).
+Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/83267) to availability of their container images, the Helm chart default values have been updated to instead use [docker.io/library/postgres](https://hub.docker.com/_/postgres) and [docker.io/library/redis](https://hub.docker.com/_/redis). If you are setting custom values for either PostgreSQL or Redis, please review the [associated Helm chart changes](https://github.com/goauthentik/helm/pull/385) to update your values.
 
 Redis has also been updated from 8.0 to 8.2.
+
+From this point on, we recommend using the bundled PostgreSQL and Redis dependencies for demonstration and test purposes only. See our [installation documentation](../../install-config/install/kubernetes.md) for alternatives to run PostgreSQL in a production environment.
 
 ## New features and improvements
 
