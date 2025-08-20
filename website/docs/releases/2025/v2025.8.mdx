@@ -118,6 +118,24 @@ Instead, the following metrics are now available:
 - `authentik_tasks_delayed_in_progress`
 - `authentik_tasks_duration_milliseconds`
 
+### Prometheus metrics
+
+The tasks metrics are no longer exposed by the server, but by the worker. For Helm chart users, add the following values to enable a `ServiceMonitor` to scrape those metrics:
+
+```yaml
+worker:
+    metrics:
+        enabled: true
+        serviceMonitor:
+            enabled: true
+```
+
+### Helm chart changes
+
+Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/83267) to availability of their container images, the Helm chart default values have been updated to instead use [docker.io/library/postgres](https://hub.docker.com/_/postgres) and [docker.io/library/redis](https://hub.docker.com/_/redis).
+
+Redis has also been updated from 8.0 to 8.2.
+
 ## New features and improvements
 
 - **LDAP Provider improvements**:
