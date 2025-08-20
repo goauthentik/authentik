@@ -100,10 +100,15 @@ class MessagesMiddleware(Middleware):
             TaskStatus.ERROR,
             exception,
         )
+        event_kwargs = {
+            "actor": task.actor_name,
+        }
+        if task.rel_obj:
+            event_kwargs["rel_obj"] = task.rel_obj
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
             message=f"Task {task.actor_name} encountered an error",
-            actor=task.actor_name,
+            **event_kwargs,
         ).with_exception(exception).save()
 
     def after_skip_message(self, broker: Broker, message: Message):
@@ -151,7 +156,6 @@ class DescriptionMiddleware(Middleware):
 
 
 class _healthcheck_handler(BaseHTTPRequestHandler):
-
     def log_request(self, code="-", size="-"):
         HEALTHCHECK_LOGGER.info(
             self.path,
