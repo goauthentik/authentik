@@ -9787,7 +9787,7 @@ Vazby na skupiny/uživatele jsou kontrolovány vůči uživateli události.</tar
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
-  <target>Pokud je povoleno, oznámení se kromě uživatelů ve skupině výše odešle také původci události. Uživatel, který událost vyvolal (event user), je vždy prvním příjemcem; pokud má být oznámení doručeno pouze jednou, je třeba v transportu notifikací zapnout volbu ‘Poslat jednou’.</target>
+  <target>Pokud je povoleno, oznámení se kromě uživatelů ve skupině výše odešle také původci události. Uživatel, který událost vyvolal, je vždy prvním příjemcem; pokud má být oznámení doručeno pouze jednou, je třeba v transportu notifikací zapnout volbu ‘Poslat jednou’.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
