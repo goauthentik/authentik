@@ -3,7 +3,6 @@ import { AKElement } from "#elements/Base";
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 
@@ -18,24 +17,44 @@ export class FormStatic extends AKElement {
     static styles: CSSResult[] = [
         PFAvatar,
         css`
-            /* Form with user */
             .form-control-static {
-                margin-top: var(--pf-global--spacer--sm);
+                margin-block-start: var(--pf-global--spacer--sm);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-            }
-            .form-control-static .avatar {
-                display: flex;
-                align-items: center;
-            }
-            .form-control-static img {
-                margin-right: var(--pf-global--spacer--xs);
-            }
-            .form-control-static a {
-                padding-top: var(--pf-global--spacer--xs);
-                padding-bottom: var(--pf-global--spacer--xs);
-                line-height: var(--pf-global--spacer--xl);
+                gap: var(--pf-global--spacer--sm);
+
+                .pf-c-avatar {
+                    flex: 0 0 auto;
+                }
+
+                .primary-content {
+                    display: flex;
+                    align-items: center;
+                    flex: 1 1 auto;
+                    gap: 1rem;
+                }
+
+                .username {
+                    flex: 1 1 auto;
+                    text-align: left;
+                    max-width: 20rem;
+                    text-overflow: ellipsis;
+                    overflow-wrap: break-word;
+
+                    display: box;
+                    display: -webkit-box;
+                    line-clamp: 3;
+                    -webkit-line-clamp: 3;
+                    box-orient: vertical;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .links {
+                    flex: 0 0 auto;
+                    text-align: right;
+                }
             }
         `,
     ];
@@ -44,17 +63,22 @@ export class FormStatic extends AKElement {
         if (!this.user) {
             return nothing;
         }
+
         return html`
             <div class="form-control-static">
-                <div class="avatar">
-                    <img
-                        class="pf-c-avatar"
-                        src="${ifDefined(this.userAvatar)}"
-                        alt="${msg("User's avatar")}"
-                    />
-                    ${this.user}
+                <div class="primary-content">
+                    ${this.userAvatar
+                        ? html`<img
+                              class="pf-c-avatar"
+                              src=${this.userAvatar}
+                              alt=${msg("User's avatar")}
+                          />`
+                        : nothing}
+                    <div class="username" aria-label=${msg("Username")}>${this.user}</div>
                 </div>
-                <slot name="link"></slot>
+                <div class="links">
+                    <slot name="link"></slot>
+                </div>
             </div>
         `;
     }

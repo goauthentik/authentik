@@ -24,6 +24,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         css`
             .icon-description {
                 display: flex;
+                align-items: center;
             }
             .icon-description i {
                 font-size: 2em;
