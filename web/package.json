@@ -121,7 +121,7 @@
         "@storybook/web-components-vite": "^9.1.2",
         "@types/codemirror": "^5.60.16",
         "@types/grecaptcha": "^3.0.9",
-        "@types/guacamole-common-js": "^1.5.3",
+        "@types/guacamole-common-js": "^1.5.4",
         "@types/mocha": "^10.0.10",
         "@types/node": "^24.3.0",
         "@types/react": "^19.1.10",
