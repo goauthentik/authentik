@@ -2,7 +2,7 @@
  * @file Docusaurus Documentation config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
- * @import { ReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
 
@@ -16,12 +16,15 @@ import {
     createClassicPreset,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/utils";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const authentikModulePath = resolve(__dirname, "..", "..");
+
+const releaseEnvironment = prepareReleaseEnvironment();
 
 //#region Copy static files
 
@@ -53,6 +56,7 @@ export default createDocusaurusConfig(
 
         presets: [
             createClassicPreset({
+                pages: false,
                 docs: {
                     exclude: [
                         /**
@@ -88,13 +92,25 @@ export default createDocusaurusConfig(
         plugins: [
             [
                 "@goauthentik/docusaurus-theme/releases/plugin",
-                /** @type {ReleasesPluginOptions} */ ({
+                /** @type {AKReleasesPluginOptions} */ ({
                     docsDirectory: __dirname,
+                    environment: releaseEnvironment,
                 }),
             ],
             [
                 "@docusaurus/plugin-client-redirects",
                 /** @type {RedirectsPluginOptions} */ ({
+                    redirects: [
+                        {
+                            from: [
+                                "/api",
+                                "/docs/api",
+                                "/docs/developer-docs/api/",
+                                "/developer-docs/api/",
+                            ],
+                            to: releaseEnvironment.apiReferenceOrigin,
+                        },
+                    ],
                     createRedirects(existingPath) {
                         // Redirect to their respective path without the `docs/` prefix
                         return `/docs${existingPath}`;
