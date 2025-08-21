@@ -34,7 +34,7 @@ export class BaseDeviceStage<
         css`
             .pf-c-form__group.pf-m-action {
                 display: flex;
-                gap: 16px;
+                gap: 1rem;
                 margin-top: 0;
                 margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
                 flex-direction: column;
