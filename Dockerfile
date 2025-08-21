@@ -81,7 +81,7 @@ FROM ghcr.io/astral-sh/uv:0.8.12 AS uv
 FROM ghcr.io/goauthentik/fips-python:3.13.7-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
-    PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
+    PATH="/ak-root/lifecycle:/ak-root/venv/bin:$PATH" \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_NATIVE_TLS=1 \
@@ -145,8 +145,6 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.vendor="Authentik Security Inc." \
     org.opencontainers.image.version=${VERSION}
 
-WORKDIR /
-
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -157,28 +155,26 @@ RUN apt-get update && \
     pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
-    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
+    adduser --system --no-create-home --uid 1000 --group --home /ak-root authentik && \
     mkdir -p /certs /media /blueprints && \
-    mkdir -p /authentik/.ssh && \
-    mkdir -p /ak-root && \
-    chown authentik:authentik /certs /media /authentik/.ssh /ak-root
+    mkdir -p /ak-root/authentik/.ssh && \
+    chown authentik:authentik /certs /media /ak-root/authentik/.ssh /ak-root
 
-COPY ./authentik/ /authentik
-COPY ./pyproject.toml /
-COPY ./uv.lock /
-COPY ./schemas /schemas
-COPY ./locale /locale
-COPY ./tests /tests
-COPY ./manage.py /
+COPY ./authentik/ /ak-root/authentik
+COPY ./pyproject.toml /ak-root/
+COPY ./uv.lock /ak-root/
+COPY ./schemas /ak-root/schemas
+COPY ./locale /ak-root/locale
+COPY ./tests /ak-root/tests
+COPY ./manage.py /ak-root/
 COPY ./blueprints /blueprints
-COPY ./lifecycle/ /lifecycle
+COPY ./lifecycle/ /ak-root/lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
 COPY ./packages/ /ak-root/packages
-RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
-COPY --from=node-builder /work/web/dist/ /web/dist/
-COPY --from=node-builder /work/web/authentik/ /web/authentik/
+COPY --from=node-builder /work/web/dist/ /ak-root/web/dist/
+COPY --from=node-builder /work/web/authentik/ /ak-root/web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000
@@ -189,5 +185,7 @@ ENV TMPDIR=/dev/shm/ \
     GOFIPS=1
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
+
+WORKDIR /ak-root
 
 ENTRYPOINT [ "dumb-init", "--", "ak" ]

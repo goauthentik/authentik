@@ -68,9 +68,32 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
+function migrate_container_change_root_dir {
+    # With authentik 2025.10 we're moving the root directory of the authentik app
+    # into /ak-root, mainly to not clutter the root filesystem of the container
+    # and to make it possible to use devcontainers in the future.
+    # In most installs this migration isn't required as no files are mounted into
+    # these directories, however it is used if scripts are overwritten from the outside
+    # or more commonly the flow background image is overwritten in `/web`
+    # Check if we're in a container
+    if [ ! -d /ak-root ]; then
+        return
+    fi
+    if [ -d /authentik ]; then
+        log "Legacy /authentik folder exist, migrating files"
+        cp -rp /authentik/* /ak-root/authentik
+    fi
+    if [ ! -d /web ]; then
+        log "Legacy /web folder exist, migrating files"
+        cp -rp /web/* /ak-root/web
+    fi
+}
+
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
+
+migrate_container_change_root_dir
 
 if [[ "$1" == "server" ]]; then
     set_mode "server"
