@@ -33,15 +33,12 @@ wait_for_db()
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_gunicorn_tmp"))
-prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
 os.makedirs(worker_tmp_dir, exist_ok=True)
-os.makedirs(prometheus_tmp_dir, exist_ok=True)
 
 bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
 preload_app = True
 
