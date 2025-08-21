@@ -26,7 +26,7 @@ class HTTPServer(BaseHTTPServer):
         self.socket.close()
 
         host, port = self.server_address[:2]
-        if host == "0.0.0.0":  # nosec
+        if host == "0.0.0.0" and socket.has_dualstack_ipv6():  # nosec
             host = "::"  # nosec
 
         # Strip IPv6 brackets
@@ -36,7 +36,9 @@ class HTTPServer(BaseHTTPServer):
         self.server_address = (host, port)
 
         self.address_family = (
-            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+            socket.AF_INET6
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
+            else socket.AF_INET
         )
 
         self.socket = socket.create_server(
