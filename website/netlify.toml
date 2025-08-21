@@ -34,6 +34,12 @@
   to     = "https://integrations.goauthentik.io/:splat"
   status = 302
 
+# Fix path concatenation when moving across versioned domains
+[[redirects]]
+  from   = "/docs/*"
+  to     = "/:splat"
+  status = 302
+
 # Split Property Mappings docs between Providers and Sources
 [[redirects]]
   from   = "/property-mappings/"
@@ -979,31 +985,6 @@
 [[redirects]]
   from   = "/user-group-role/user/user_ref"
   to     = "/users-sources/user/user_ref"
-  status = 302
-  force  = true
-
-# Manual redirects, moved Dev Docs into regular docs Sept 2024
-[[redirects]]
-  from   = "/developer-docs/"
-  to     = "/developer-docs/"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/setup/full-dev-environment"
-  to     = "/developer-docs/setup/full-dev-environment"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/setup/frontend-dev-environment"
-  to     = "/developer-docs/setup/frontend-dev-environment"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/developer-docs/setup/website-dev-environment"
-  to     = "/developer-docs/setup/website-dev-environment"
   status = 302
   force  = true
 
