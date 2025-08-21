@@ -28,6 +28,8 @@ def register_signals(
         # This primarily happens during user login
         if sender == User and update_fields == {"last_login"}:
             return
+        if not provider_type.objects.exists():
+            return
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
             instance.pk,
@@ -39,6 +41,8 @@ def register_signals(
 
     def model_pre_delete(sender: type[Model], instance: User | Group, **_):
         """Pre-delete handler"""
+        if not provider_type.objects.exists():
+            return
         task_sync_direct_dispatch.send(
             class_to_path(instance.__class__),
             instance.pk,
@@ -53,6 +57,8 @@ def register_signals(
     ):
         """Sync group membership"""
         if action not in ["post_add", "post_remove"]:
+            return
+        if not provider_type.objects.exists():
             return
         task_sync_m2m_dispatch.send(instance.pk, action, list(pk_set), reverse)
 
