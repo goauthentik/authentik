@@ -2,6 +2,7 @@
  * @file Docusaurus config.
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  */
@@ -12,10 +13,12 @@ import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/utils";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
+const releaseEnvironment = prepareReleaseEnvironment();
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const authentikModulePath = resolve(__dirname, "..", "..");
@@ -67,6 +70,7 @@ export default createDocusaurusConfig({
                 theme: {
                     customCss: [require.resolve("@goauthentik/docusaurus-config/css/index.css")],
                 },
+                pages: false,
                 docs: {
                     routeBasePath: "/",
                     path: ".",
@@ -103,6 +107,13 @@ export default createDocusaurusConfig({
     //#region Plugins
 
     plugins: [
+        [
+            "@goauthentik/docusaurus-theme/releases/plugin",
+            /** @type {AKReleasesPluginOptions} */ ({
+                docsDirectory: __dirname,
+                environment: releaseEnvironment,
+            }),
+        ],
         [
             "docusaurus-plugin-openapi-docs",
             {

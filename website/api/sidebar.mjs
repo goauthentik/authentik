@@ -11,7 +11,9 @@ import "./ensure-reference-sidebar.mjs";
 // @ts-ignore - Allows for project-wide type checking when partially building docs.
 import apiReference from "./reference/sidebar";
 
-const DOCS_URL = process.env.DOCS_URL || "https://docs.goauthentik.io";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/utils";
+
+const releaseEnvironment = prepareReleaseEnvironment();
 
 /**
  * @type {SidebarItemConfig}
@@ -21,7 +23,7 @@ const sidebar = {
         {
             type: "link",
             label: "← Back to Developer Docs",
-            href: new URL("/developer-docs", DOCS_URL).href,
+            href: new URL("/developer-docs", releaseEnvironment.preReleaseOrigin).href,
             className: "navbar-sidebar__upwards",
         },
         {
