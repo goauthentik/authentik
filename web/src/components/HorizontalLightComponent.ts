@@ -5,12 +5,12 @@ import { SlottedTemplateResult } from "../elements/types";
 import { AKElement, type AKElementProps } from "#elements/Base";
 
 import { ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
@@ -40,6 +40,8 @@ export abstract class HorizontalLightComponent<T>
         return this;
     }
 
+    //#region Properties
+
     /**
      * The name attribute for the form element
      * @property
@@ -61,7 +63,7 @@ export abstract class HorizontalLightComponent<T>
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    required = false;
+    public required?: boolean;
 
     /**
      * Help text to display below the form element. Optional
@@ -96,10 +98,9 @@ export abstract class HorizontalLightComponent<T>
      * @property
      */
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    public errorMessages?: ErrorProp[];
 
     /**
-     * @attribute
      * @property
      */
     @property({ attribute: false })
@@ -114,11 +115,21 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, attribute: "input-hint" })
     inputHint?: string;
 
-    protected renderControl() {
-        throw new Error("Must be implemented in a subclass");
-    }
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
 
-    protected fieldID = IDGenerator.elementID().toString();
+    //#endregion
+
+    //#region Rendering
+
+    /**
+     * Render the control element, e.g. an input, textarea, select, etc.
+     */
+    protected abstract renderControl(): SlottedTemplateResult;
 
     protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
         const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
@@ -133,14 +144,19 @@ export abstract class HorizontalLightComponent<T>
 
     render() {
         return html`<ak-form-element-horizontal
-            fieldID=${this.fieldID}
-            label=${ifDefined(this.label)}
+            .fieldID=${this.fieldID}
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
             .errorMessages=${this.errorMessages}
         >
+            <div slot="label" class="pf-c-form__group-label">
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+            </div>
+
             ${this.renderControl()} ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }
+
+    //#endregion
 }

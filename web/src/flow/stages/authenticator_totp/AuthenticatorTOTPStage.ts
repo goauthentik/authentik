@@ -1,4 +1,3 @@
-import "#elements/forms/FormElement";
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 import "webcomponent-qr-code";
@@ -6,6 +5,9 @@ import "webcomponent-qr-code";
 import { MessageLevel } from "#common/messages";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+
+import { AKFormErrors } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
 
 import { BaseStage } from "#flow/stages/base";
 
@@ -22,6 +24,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -36,6 +39,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
         PFLogin,
         PFForm,
         PFFormControl,
+        PFInputGroup,
         PFTitle,
         PFButton,
         css`
@@ -62,7 +66,8 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     </div>
                 </ak-form-static>
                 <input type="hidden" name="otp_uri" value=${this.challenge.configUrl} />
-                <ak-form-element>
+
+                <div class="pf-c-form__group">
                     <div class="qr-container">
                         <qr-code data="${this.challenge.configUrl}"></qr-code>
                         <button
@@ -92,20 +97,16 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             ${msg("Copy")}
                         </button>
                     </div>
-                </ak-form-element>
+                </div>
                 <p>
                     ${msg(
                         "Please scan the QR code above using the Microsoft Authenticator, Google Authenticator, or other authenticator apps on your device, and enter the code the device displays below to finish setting up the MFA device.",
                     )}
                 </p>
-                <ak-form-element
-                    label="${msg("Code")}"
-                    required
-                    class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {}).code}
-                >
-                    <!-- @ts-ignore -->
+                <div class="pf-c-form__group">
+                    ${AKLabel({ required: true, htmlFor: "totp-code-input" }, msg("Code"))}
                     <input
+                        id="totp-code-input"
                         type="text"
                         name="code"
                         inputmode="numeric"
@@ -117,7 +118,8 @@ export class AuthenticatorTOTPStage extends BaseStage<
                         spellcheck="false"
                         required
                     />
-                </ak-form-element>
+                    ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
+                </div>
 
                 <div class="pf-c-form__group pf-m-action">
                     <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
