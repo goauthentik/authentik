@@ -53,10 +53,12 @@ export function useHostname() {
     return hostname;
 }
 
-export function useCachedVersionPluginData() {
-    return usePluginData("ak-releases-plugin", undefined, {
-        failfast: true,
-    }) as AKReleasesPluginData;
+export function useCachedVersionPluginData(): AKReleasesPluginData | null {
+    const pluginData = usePluginData("ak-releases-plugin", undefined) as
+        | AKReleasesPluginData
+        | undefined;
+
+    return pluginData ?? null;
 }
 
 function preferredPreReleaseOrigin(browser: boolean, fallback: string): string {
@@ -67,11 +69,13 @@ function preferredPreReleaseOrigin(browser: boolean, fallback: string): string {
     return fallback;
 }
 
-export function useVersionPluginData(): AKReleasesPluginData {
+export function useVersionPluginData(): AKReleasesPluginData | null {
     const browser = useIsBrowser();
     const cachedPluginData = useCachedVersionPluginData();
 
     return useMemo(() => {
+        if (!cachedPluginData) return null;
+
         const preReleaseOrigin = preferredPreReleaseOrigin(
             browser,
             cachedPluginData.env.preReleaseOrigin,

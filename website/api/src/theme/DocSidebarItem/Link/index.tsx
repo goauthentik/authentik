@@ -23,14 +23,17 @@ const DocSidebarItemLink: React.FC<Props> = ({
     const { href, label, className, autoAddBaseUrl } = item;
     const isActive = isActiveSidebarItem(item, activePath);
     const versionPluginData = useCachedVersionPluginData();
+    const apiReferenceOrigin = versionPluginData?.env.apiReferenceOrigin;
 
     const internalLink = useMemo(() => {
         if (isInternalUrl(href)) return true;
 
+        if (!apiReferenceOrigin) return false;
+
         const inputURL = new URL(href);
 
-        return inputURL.origin === versionPluginData.env.preReleaseOrigin;
-    }, [href, versionPluginData.env.apiReferenceOrigin]);
+        return inputURL.origin === apiReferenceOrigin;
+    }, [href, apiReferenceOrigin]);
 
     return (
         <li

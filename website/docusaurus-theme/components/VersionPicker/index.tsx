@@ -9,5 +9,7 @@ import { VersionPickerLoader } from "#components/VersionPicker/VersionPickerLoad
 export const VersionPicker: React.FC = () => {
     const pluginData = useVersionPluginData();
 
+    if (!pluginData) return null;
+
     return <VersionPickerLoader pluginData={pluginData} />;
 };
