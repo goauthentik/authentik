@@ -49,7 +49,7 @@ You can use Webook mappings to configure the request's payload and/or header. Th
 
 ##### Webhook body example
 
-An example of a webhook body mapping that sets a `foo` key with its value set to the body of the notificaiton:
+An example of a webhook body mapping that sets a `foo` key with its value set to the body of the notification:
 
 ```python
 return {
