@@ -217,17 +217,17 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
 
 
 def create_logout_token(
-    iss: str,
     provider: OAuth2Provider,
-    session_key: str | None = None,
+    iss: str,
     sub: str | None = None,
+    session_key: str | None = None,
 ) -> str:
     """Create a logout token for Back-Channel Logout
 
     As per https://openid.net/specs/openid-connect-backchannel-1_0.html
     """
 
-    LOGGER.debug("Creating logout token", provider=provider, session_key=session_key, sub=sub)
+    LOGGER.debug("Creating logout token", provider=provider, sub=sub)
 
     # Create the logout token payload
     payload = {
