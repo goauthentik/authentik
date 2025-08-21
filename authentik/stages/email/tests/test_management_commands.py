@@ -27,7 +27,7 @@ class TestEmailManagementCommands(TestCase):
             port=25,
         )
 
-        with patch('authentik.stages.email.models.EmailStage.backend_class', EmailBackend):
+        with patch("authentik.stages.email.models.EmailStage.backend_class", EmailBackend):
             out = StringIO()
             call_command("test_email", "test@example.com", stage="test-stage", stdout=out)
 
@@ -39,7 +39,7 @@ class TestEmailManagementCommands(TestCase):
     def test_test_email_command_with_global_settings(self):
         """Test test_email command with global settings"""
         # Mock the backend to use Django's locmem backend
-        with patch('authentik.stages.email.models.EmailStage.backend_class', EmailBackend):
+        with patch("authentik.stages.email.models.EmailStage.backend_class", EmailBackend):
             out = StringIO()
             call_command("test_email", "test@example.com", stdout=out)
 
@@ -66,7 +66,7 @@ class TestEmailManagementCommands(TestCase):
             port=25,
         )
 
-        with patch('authentik.stages.email.models.EmailStage.backend_class', EmailBackend):
+        with patch("authentik.stages.email.models.EmailStage.backend_class", EmailBackend):
             out = StringIO()
             call_command("test_email", "test@example.com", stage="test-stage", stdout=out)
 

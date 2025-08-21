@@ -5,6 +5,7 @@ from uuid import uuid4
 from django.core.management.base import no_translations
 
 from authentik.stages.email.models import EmailStage
+from authentik.stages.email.tasks import send_mail
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.management import TenantCommand
 
@@ -34,14 +35,10 @@ class Command(TenantCommand):
             template_context={},
         )
         try:
-
             if not stage.use_global_settings:
                 message.from_email = stage.from_address
 
-            # Get the email backend and send
-            backend = stage.backend
-            backend.open()
-            backend.send_messages([message])
+            send_mail.send(message.__dict__, stage.pk).get_result(block=True)
 
             self.stdout.write(self.style.SUCCESS(f"Test email sent to {options['to']}"))
         finally:
