@@ -17,7 +17,7 @@
 
 authentik is an open-source Identity Provider (IdP) for modern SSO. It supports SAML, OAuth2/OIDC, LDAP, RADIUS, and more, designed for self-hosting from small labs to large production clusters.
 
-An [enterprise offering](https://goauthentik.io/pricing?utm_source=github) is available for organizations looking to replace or consolidate existing IdPs (e.g., Okta/Auth0, Entra ID, Ping Identity) at scale.
+Our [enterprise offering](https://goauthentik.io/pricing?utm_source=github) is available for organizations to securely replace or consolidate existing IdPs such as Okta, Auth0, Entra ID, and Ping Identity for robust, large-scale identity management.
 
 ## Installation
 
@@ -32,17 +32,17 @@ An [enterprise offering](https://goauthentik.io/pricing?utm_source=github) is av
 | ![](https://docs.goauthentik.io/img/screen_apps_light.jpg)  | ![](https://docs.goauthentik.io/img/screen_apps_dark.jpg)  |
 | ![](https://docs.goauthentik.io/img/screen_admin_light.jpg) | ![](https://docs.goauthentik.io/img/screen_admin_dark.jpg) |
 
-## Development
+## Development and contributions
 
-See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github) and [CONTRIBUTING.md](CONTRIBUTING.md).
+See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github).
 
 ## Security
 
 Please see [SECURITY.md](SECURITY.md).
 
-## Adoption and Contributions
+## Adoption
 
-Using authentik? We'd love to hear your story and feature your logo. Say hello at [hello@goauthentik.io](mailto:hello@goauthentik.io)!
+Using authentik? We'd love to hear your story and feature your logo. Email us at [hello@goauthentik.io](mailto:hello@goauthentik.io) or open a GitHub Issue/PR!
 
 ## License
 
