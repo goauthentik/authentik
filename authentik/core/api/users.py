@@ -154,7 +154,8 @@ class UserSerializer(ModelSerializer):
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["password"] = CharField(required=False, allow_null=True)
             self.fields["permissions"] = ListField(
-                required=False, child=ChoiceField(choices=get_permission_choices())
+                required=False,
+                child=ChoiceField(choices=get_permission_choices()),
             )
 
     def create(self, validated_data: dict) -> User:
@@ -269,7 +270,10 @@ class UserSelfSerializer(ModelSerializer):
         ListSerializer(
             child=inline_serializer(
                 "UserSelfGroups",
-                {"name": CharField(read_only=True), "pk": CharField(read_only=True)},
+                {
+                    "name": CharField(read_only=True),
+                    "pk": CharField(read_only=True),
+                },
             )
         )
     )
@@ -317,7 +321,8 @@ class UserSelfSerializer(ModelSerializer):
 
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
-    and, if this user is being impersonated, the original user in the `original` property."""
+    and, if this user is being impersonated, the original user in the `original` property.
+    """
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
@@ -405,21 +410,15 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     ordering = ["username", "date_joined", "last_updated"]
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    search_fields = [
-        "username",
-        "name",
-        "is_active",
-        "email",
-        "uuid",
-        "attributes",
-        "date_joined",
-        "last_updated",
-    ]
+    search_fields = ["email", "name", "uuid", "username"]
 
     def get_ql_fields(self):
         from djangoql.schema import BoolField, StrField
 
-        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+        from authentik.enterprise.search.fields import (
+            ChoiceSearchField,
+            JSONSearchField,
+        )
 
         return [
             StrField(User, "username"),
@@ -514,7 +513,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             )
         },
     )
-    @action(detail=False, methods=["POST"], pagination_class=None, filter_backends=[])
+    @action(
+        detail=False,
+        methods=["POST"],
+        pagination_class=None,
+        filter_backends=[],
+    )
     def service_account(self, request: Request) -> Response:
         """Create a new user account that is marked as a service account"""
         username = request.data.get("name")
@@ -558,7 +562,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
+    @action(
+        url_path="me",
+        url_name="me",
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+    )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
@@ -610,7 +620,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery(self, request: Request, pk: int) -> Response:
-        """Create a temporary link that a user can use to recover their accounts"""
+        """Create a temporary link that a user can use to recover their account"""
         link, _ = self._create_recovery_link()
         return Response({"link": link})
 
@@ -631,7 +641,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def recovery_email(self, request: Request, pk: int) -> Response:
-        """Create a temporary link that a user can use to recover their accounts"""
+        """Send an email with a temporary link that a user can use to recover their account"""
         for_user: User = self.get_object()
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
@@ -684,14 +694,18 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not request.user.has_perm(
             "authentik_core.impersonate", user_to_be
         ) and not request.user.has_perm("authentik_core.impersonate"):
-            LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
+            LOGGER.debug(
+                "User attempted to impersonate without permissions",
+                user=request.user,
+            )
             return Response(status=401)
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
         if not reason and request.tenant.impersonation_require_reason:
             LOGGER.debug(
-                "User attempted to impersonate without providing a reason", user=request.user
+                "User attempted to impersonate without providing a reason",
+                user=request.user,
             )
             return Response(status=401)
 
@@ -730,7 +744,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses={
             200: inline_serializer(
-                "UserPathSerializer", {"paths": ListField(child=CharField(), read_only=True)}
+                "UserPathSerializer",
+                {"paths": ListField(child=CharField(), read_only=True)},
             )
         },
         parameters=[

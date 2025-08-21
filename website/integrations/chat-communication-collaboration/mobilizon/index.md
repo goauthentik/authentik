@@ -70,4 +70,4 @@ Restart mobilizon.service
 
 ## Additional Resources
 
-- https://docs.joinmobilizon.org/administration/configure/auth/
+- https://docs.mobilizon.org/3.%20System%20administration/configure/auth/#oauth

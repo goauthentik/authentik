@@ -21,7 +21,9 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Setup
+## authentik configuration
+
+To support the integration of Tautulli with authentik, you need to create an application/provider pair in authentik.
 
 Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP Basic Credentials in authentik. The recommended way to do this is to create a Group. Name the group "Tautulli Users", for example. For this group, add the following attributes:
 
@@ -32,7 +34,7 @@ tautulli_password: password
 
 Add all Tautulli users to the Group. You should also create a Group Membership Policy to limit access to the application.
 
-Create an application in authentik. Create a Proxy provider with the following parameters:
+## Tautulli configuration
 
 - Internal host
 
@@ -44,14 +46,24 @@ Create an application in authentik. Create a Proxy provider with the following p
 
     Set this to the external URL you will be accessing Tautulli from.
 
-Enable the `Set HTTP-Basic Authentication` option. Set and `HTTP-Basic Username` and `HTTP-Basic Password` to `tautulli_user` and `tautulli_password` respectively. These values can be chosen freely, `tautulli_` is just used as a prefix for clarity.
+    Basic authentication settings have been removed from the UI and are now available in the `config.ini` file. For basic auth to work, do the following:
 
-## Tautulli Setup
+1. Close Tautulli.
 
-In Tautulli, navigate to Settings and enable the "Show Advanced" option. Navigate to "Web Interface" on the sidebar, and ensure the Option `Use Basic Authentication` is checked.
+2. Set the following in the config file:
 
-![](./tautulli.png)
+```yaml
+http_basic_auth = 1
+http_hash_password = 0
+http_hashed_password = 1
+http_password = `<enter your password>`
+```
 
-Save the settings, and restart Tautulli if prompted.
+3. Save the changes and then restart Tautulli.
 
-Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](../sonarr/)
+4. Afterwards, you need to deploy an Outpost in front of Tautulli, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/).
+   Note: You can use the embedded outpost and simply add Tatulli to the list of applications to use.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Tautulli, log out and log back in via authentik (you can use private browsing mode to validate) and navigate to Tautulli. You should bypass the login prompt if setup correctly.

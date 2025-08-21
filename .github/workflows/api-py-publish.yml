@@ -1,10 +1,13 @@
-name: authentik-api-py-publish
+---
+name: API - Publish Python client
+
 on:
   push:
     branches: [main]
     paths:
       - "schema.yml"
   workflow_dispatch:
+
 jobs:
   build:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
@@ -17,7 +20,7 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Install poetry & deps

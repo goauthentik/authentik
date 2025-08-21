@@ -26,6 +26,9 @@ export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
+
+        /* Fixes issue where browser inherits cursor from parent, typically a button. */
+        cursor: initial;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;

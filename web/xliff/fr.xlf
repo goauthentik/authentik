@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -1465,11 +1465,6 @@
       <trans-unit id="sd5903cc8de68b3fc">
         <source>No form found</source>
         <target>Aucun formulaire trouvé</target>
-        
-      </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Le formulaire n'a pas retourné de promesse de soumission</target>
         
       </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
@@ -8644,10 +8639,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
   <target>Correspondance de l'adresse IP du client de l'évènement (correspondante stricte, pour un correspondance sur le réseau utiliser une politique d'expression).</target>
 </trans-unit>
-<trans-unit id="s6506b7c69456b0d6">
-  <source>Invalid update request.</source>
-  <target>Requête de mise à jour invalide.</target>
-</trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
   <target>Synchroniser le groupe</target>
@@ -10072,33 +10063,98 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s6c973fe9014080fc">
   <source>Application name</source>
+  <target>Nom de l'application</target>
 </trans-unit>
 <trans-unit id="s704091f8e3dbd721">
   <source>The name displayed in the application library.</source>
+  <target>Le nom affiché dans la bibliothèque d'applications.</target>
 </trans-unit>
 <trans-unit id="s418c59028ef6bc2a">
   <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+  <target>URI vers lesquelles envoyer les notifications de déconnexion Back-Channel lorsque les utilisateurs se déconnectent. Requis pour la fonctionnalité de déconnexion Back-Channel d'OpenID Connect.</target>
 </trans-unit>
 <trans-unit id="sa091b3064afa00f5">
   <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+  <target>Ces URI sont appelées de serveur à serveur lorsqu'un utilisateur se déconnecte pour informer les clients OAuth2/OpenID de l'événement de déconnexion.</target>
 </trans-unit>
 <trans-unit id="s6d364031a996b540">
   <source>Back-Channel Logout URI</source>
+  <target>URI de déconnexion Back-Channel</target>
 </trans-unit>
 <trans-unit id="sc22c7703fd074f5f">
   <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>par ex. Collaboration, Communication, Interne, etc.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
   <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <target>Erreur lors de la récupération de l'application &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
   <source>Account Recovery Max Attempts</source>
+  <target>Nombre maximal de tentatives de récupération de compte</target>
 </trans-unit>
 <trans-unit id="s8341dba451980abe">
   <source>Account Recovery Cache Timeout</source>
+  <target>Délai d'expiration du cache de récupération de compte</target>
 </trans-unit>
 <trans-unit id="sede4ad68849ce0c5">
   <source>The time window used to count recent account recovery attempts.</source>
+  <target>La fenêtre de temps utilisée pour compter les tentatives récentes de récupération de compte.</target>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+  <target>None</target>
+</trans-unit>
+<trans-unit id="s2de7890b100c4f4c">
+  <source>Flags</source>
+</trans-unit>
+<trans-unit id="sf0b34d32a602aee8">
+  <source>Modify flags to opt into new authentik behaviours early.</source>
+</trans-unit>
+<trans-unit id="s503217f10ebdc63e">
+  <source>Loading templates...</source>
+</trans-unit>
+<trans-unit id="s6891d230751dd7bf">
+  <source>Template used for the verification email.</source>
+</trans-unit>
+<trans-unit id="sf1fc82d7ae3f4d81">
+  <source>Email Subject Prefix</source>
+</trans-unit>
+<trans-unit id="s66401e0b2526acab">
+  <source>Email Template</source>
+</trans-unit>
+<trans-unit id="sdaecc3c29a27c5c5">
+  <source>An unknown error occurred</source>
+</trans-unit>
+<trans-unit id="se84ba7f105934495">
+  <source>Please check the browser console for more details.</source>
+</trans-unit>
+<trans-unit id="s44872da71d5307c8">
+  <source>There was an error submitting the form.</source>
+</trans-unit>
+<trans-unit id="sc57b150b53a3b9e6">
+  <source>This field is required.</source>
+</trans-unit>
+<trans-unit id="sbe3756d568bb048e">
+  <source>Query suggestions</source>
+</trans-unit>
+<trans-unit id="s5638954badbd5b21">
+  <source>Table Search</source>
+</trans-unit>
+<trans-unit id="sfc238215103c6162">
+  <source>An error occurred while updating the provider.</source>
+</trans-unit>
+<trans-unit id="sc055fffc26e97237">
+  <source>An error occurred while creating the provider.</source>
+</trans-unit>
+<trans-unit id="s1fd02f07e4fa3312">
+  <source>Impersonating user...</source>
+</trans-unit>
+<trans-unit id="s12928f97c99f88db">
+  <source>This may take a few seconds.</source>
+</trans-unit>
+<trans-unit id="sbc4f2320a13d4dfd">
+  <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
 </trans-unit>
     </body>
   </file>

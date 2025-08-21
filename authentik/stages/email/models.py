@@ -32,6 +32,14 @@ class EmailTemplates(models.TextChoices):
         "email/account_confirmation.html",
         _("Account Confirmation"),
     )
+    EMAIL_OTP = (
+        "email/email_otp.html",
+        _("Email OTP"),
+    )  # nosec
+    EVENT_NOTIFICATION = (
+        "email/event_notification.html",
+        _("Event Notification"),
+    )
 
 
 def get_template_choices():

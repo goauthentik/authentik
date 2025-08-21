@@ -13,9 +13,9 @@ from django.db import (
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
-from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware.middleware import Middleware
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
@@ -141,7 +141,6 @@ class MetricsMiddleware(Middleware):
     def __init__(
         self,
         prefix: str,
-        multiproc_dir: str,
         labels: list[str] | None = None,
     ):
         super().__init__()
@@ -150,9 +149,6 @@ class MetricsMiddleware(Middleware):
 
         self.delayed_messages = set()
         self.message_start_times = {}
-
-        os.makedirs(multiproc_dir, exist_ok=True)
-        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", multiproc_dir)
 
     @property
     def forks(self):

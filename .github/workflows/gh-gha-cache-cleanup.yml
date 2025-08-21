@@ -1,6 +1,7 @@
 ---
 # See https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries
-name: Cleanup cache after PR is closed
+name: GH - Cleanup actions cache after PR is closed
+
 on:
   pull_request:
     types:
@@ -15,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Cleanup
         run: |

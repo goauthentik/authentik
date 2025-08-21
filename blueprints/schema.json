@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.6.4 Blueprint schema",
+    "title": "authentik 2025.10.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6753,6 +6753,15 @@
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
+                "email_subject_prefix": {
+                    "type": "string",
+                    "title": "Email subject prefix"
+                },
+                "email_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Email template"
+                },
                 "send_once": {
                     "type": "boolean",
                     "title": "Send once",
@@ -7342,7 +7351,9 @@
                         "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
+                        "authentik.core",
                         "authentik.crypto",
+                        "authentik.enterprise",
                         "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
@@ -7394,8 +7405,6 @@
                         "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
-                        "authentik.core",
-                        "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
@@ -7417,7 +7426,13 @@
                     "enum": [
                         null,
                         "authentik_tenants.domain",
+                        "authentik_core.group",
+                        "authentik_core.user",
+                        "authentik_core.application",
+                        "authentik_core.applicationentitlement",
+                        "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -7506,12 +7521,6 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
-                        "authentik_core.group",
-                        "authentik_core.user",
-                        "authentik_core.application",
-                        "authentik_core.applicationentitlement",
-                        "authentik_core.token",
-                        "authentik_enterprise.license",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",

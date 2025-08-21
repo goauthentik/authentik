@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 00:12+0000\n"
+"POT-Creation-Date: 2025-08-18 00:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,6 +122,11 @@ msgstr ""
 
 #: authentik/core/api/application_entitlements.py
 msgid "User does not have access to application."
+msgstr ""
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
 msgstr ""
 
 #: authentik/core/api/groups.py
@@ -787,6 +792,12 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
@@ -795,12 +806,6 @@ msgstr ""
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Only send notification once, for example when sending a webhook into a chat "
-"channel."
 msgstr ""
 
 #: authentik/events/models.py
@@ -1400,6 +1405,20 @@ msgstr ""
 
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
@@ -2887,10 +2906,6 @@ msgid "Duo Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
-msgid "Email OTP"
-msgstr ""
-
-#: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
@@ -3248,6 +3263,14 @@ msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Account Confirmation"
+msgstr ""
+
+#: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr ""
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
 msgstr ""
 
 #: authentik/stages/email/models.py
@@ -3785,6 +3808,11 @@ msgstr ""
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
+msgstr ""
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr ""
 
 #: authentik/tenants/models.py

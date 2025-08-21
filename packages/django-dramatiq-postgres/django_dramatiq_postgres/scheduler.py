@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from dramatiq.broker import Broker
-from dramatiq.logging import get_logger
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import ScheduleBase
@@ -54,4 +54,4 @@ class Scheduler:
                 self.logger.debug("Could not acquire lock, skipping scheduling")
                 return
             count = self._run()
-            self.logger.info(f"Sent {count} scheduled tasks")
+            self.logger.info("Sent scheduled tasks", count=count)

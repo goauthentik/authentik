@@ -173,6 +173,7 @@ const items = [
                             "add-secure-apps/providers/oauth2/client_credentials",
                             "add-secure-apps/providers/oauth2/device_code",
                             "add-secure-apps/providers/oauth2/github-compatibility",
+                            "add-secure-apps/providers/oauth2/backchannel-logout",
                             "add-secure-apps/providers/oauth2/webfinger_support",
                         ],
                     },

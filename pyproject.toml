@@ -1,116 +1,115 @@
 [project]
 name = "authentik"
-version = "2025.6.4"
+version = "2025.10.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
-    "argon2-cffi==25.1.0",
-    "channels==4.3.0",
-    "channels-redis==4.3.0",
-    "cryptography==45.0.5",
-    "dacite==1.9.2",
-    "deepmerge==2.0",
-    "defusedxml==0.7.1",
-    "django==5.1.11",
-    "django-countries==7.6.1",
-    "django-cte==2.0.0",
-    "django-dramatiq-postgres",
-    "django-filter==25.1",
-    "django-guardian==3.0.3",
-    "django-model-utils==5.0.0",
-    "django-pglock==1.7.2",
-    "django-pgtrigger==4.15.2",
-    "django-prometheus==2.4.1",
-    "django-redis==6.0.0",
-    "django-storages[s3]==1.14.6",
-    "django-tenants==3.8.0",
-    "djangoql==0.18.1",
-    "djangorestframework-guardian==0.4.0",
-    "djangorestframework==3.16.0",
-    "docker==7.1.0",
-    "drf-orjson-renderer==1.7.3",
-    "drf-spectacular==0.28.0",
-    "dumb-init==1.2.5.post1",
-    "duo-client==5.5.0",
-    "fido2==2.0.0",
-    "geoip2==5.1.0",
-    "geopy==2.4.1",
-    "google-api-python-client==2.177.0",
-    "gssapi==1.9.0",
-    "gunicorn==23.0.0",
-    "jsonpatch==1.33",
-    "jwcrypto==1.5.6",
-    "kubernetes==33.1.0",
-    "ldap3==2.9.1",
-    "lxml==6.0.0",
-    "msgraph-sdk==1.39.0",
-    "opencontainers==0.0.15",
-    "packaging==25.0",
-    "paramiko==3.5.1",
-    "psycopg[c,pool]==3.2.9",
-    "pydantic==2.11.7",
-    "pydantic-scim==0.0.8",
-    "pyjwt==2.10.1",
-    "pyrad==2.4",
-    "python-kadmin-rs==0.6.1",
-    "pyyaml==6.0.2",
-    "requests-oauthlib==2.0.0",
-    "scim2-filter-parser==0.7.0",
-    "sentry-sdk==2.33.2",
-    "service-identity==24.2.0",
-    "setproctitle==1.3.6",
-    "structlog==25.4.0",
-    "swagger-spec-validator==3.0.4",
-    "twilio==9.7.0",
-    "ua-parser==1.0.1",
-    "unidecode==1.4.0",
-    "urllib3<3",
-    "uvicorn[standard]==0.35.0",
-    "watchdog==6.0.0",
-    "webauthn==2.6.0",
-    "wsproto==1.2.0",
-    "xmlsec==1.3.16",
-    "zxcvbn==4.5.0",
+  "argon2-cffi==25.1.0",
+  "channels==4.3.1",
+  "channels-redis==4.3.0",
+  "cryptography==45.0.5",
+  "dacite==1.9.2",
+  "deepmerge==2.0",
+  "defusedxml==0.7.1",
+  "django==5.1.11",
+  "django-countries==7.6.1",
+  "django-cte==2.0.0",
+  "django-dramatiq-postgres",
+  "django-filter==25.1",
+  "django-guardian==3.0.3",
+  "django-model-utils==5.0.0",
+  "django-pglock==1.7.2",
+  "django-pgtrigger==4.15.2",
+  "django-prometheus==2.4.1",
+  "django-redis==6.0.0",
+  "django-storages[s3]==1.14.6",
+  "django-tenants==3.8.0",
+  "djangoql==0.18.1",
+  "djangorestframework-guardian==0.4.0",
+  "djangorestframework==3.16.0",
+  "docker==7.1.0",
+  "drf-orjson-renderer==1.7.3",
+  "drf-spectacular==0.28.0",
+  "dumb-init==1.2.5.post1",
+  "duo-client==5.5.0",
+  "fido2==2.0.0",
+  "geoip2==5.1.0",
+  "geopy==2.4.1",
+  "google-api-python-client==2.177.0",
+  "gssapi==1.9.0",
+  "gunicorn==23.0.0",
+  "jsonpatch==1.33",
+  "jwcrypto==1.5.6",
+  "kubernetes==33.1.0",
+  "ldap3==2.9.1",
+  "lxml==6.0.0",
+  "msgraph-sdk==1.39.0",
+  "opencontainers==0.0.15",
+  "packaging==25.0",
+  "paramiko==3.5.1",
+  "psycopg[c,pool]==3.2.9",
+  "pydantic==2.11.7",
+  "pydantic-scim==0.0.8",
+  "pyjwt==2.10.1",
+  "pyrad==2.4",
+  "python-kadmin-rs==0.6.1",
+  "pyyaml==6.0.2",
+  "requests-oauthlib==2.0.0",
+  "scim2-filter-parser==0.7.0",
+  "sentry-sdk==2.33.2",
+  "service-identity==24.2.0",
+  "setproctitle==1.3.6",
+  "structlog==25.4.0",
+  "swagger-spec-validator==3.0.4",
+  "twilio==9.7.0",
+  "ua-parser==1.0.1",
+  "unidecode==1.4.0",
+  "urllib3<3",
+  "uvicorn[standard]==0.35.0",
+  "watchdog==6.0.0",
+  "webauthn==2.6.0",
+  "wsproto==1.2.0",
+  "xmlsec==1.3.16",
+  "zxcvbn==4.5.0",
 ]
 
 [dependency-groups]
 dev = [
-    "aws-cdk-lib==2.188.0",
-    "bandit==1.8.3",
-    "black==25.1.0",
-    "bump2version==1.0.1",
-    "channels[daphne]==4.3.0",
-    "codespell==2.4.1",
-    "colorama==0.4.6",
-    "constructs==10.4.2",
-    "coverage[toml]==7.8.0",
-    "debugpy==1.8.14",
-    "drf-jsonschema-serializer==3.0.0",
-    "freezegun==1.5.1",
-    "importlib-metadata==8.6.1",
-    "k5test==0.10.4",
-    "pdoc==15.0.3",
-    "pytest==8.3.5",
-    "pytest-django==4.11.1",
-    "pytest-github-actions-annotate-failures==0.3.0",
-    "pytest-randomly==3.16.0",
-    "pytest-timeout==2.4.0",
-    "requests-mock==1.12.1",
-    "ruff==0.11.9",
-    "selenium==4.32.0",
+  "aws-cdk-lib==2.188.0",
+  "bandit==1.8.3",
+  "black==25.1.0",
+  "channels[daphne]==4.3.1",
+  "codespell==2.4.1",
+  "colorama==0.4.6",
+  "constructs==10.4.2",
+  "coverage[toml]==7.8.0",
+  "debugpy==1.8.14",
+  "drf-jsonschema-serializer==3.0.0",
+  "freezegun==1.5.1",
+  "importlib-metadata==8.6.1",
+  "k5test==0.10.4",
+  "pdoc==15.0.3",
+  "pytest==8.3.5",
+  "pytest-django==4.11.1",
+  "pytest-github-actions-annotate-failures==0.3.0",
+  "pytest-randomly==3.16.0",
+  "pytest-timeout==2.4.0",
+  "requests-mock==1.12.1",
+  "ruff==0.11.9",
+  "selenium==4.32.0",
 ]
 
 [tool.uv]
 no-binary-package = [
-    # This differs from the no-binary packages in the Dockerfile. This is due to the fact
-    # that these packages are built from source for different reasons than cryptography and kadmin.
-    # These packages are built from source to link against the libxml2 on the system which is
-    # required for functionality and to stay up-to-date on both libraries.
-    # The other packages specified in the dockerfile are compiled from source to link against the
-    # correct FIPS OpenSSL libraries
-    "lxml",
-    "xmlsec",
+  # This differs from the no-binary packages in the Dockerfile. This is due to the fact
+  # that these packages are built from source for different reasons than cryptography and kadmin.
+  # These packages are built from source to link against the libxml2 on the system which is
+  # required for functionality and to stay up-to-date on both libraries.
+  # The other packages specified in the dockerfile are compiled from source to link against the
+  # correct FIPS OpenSSL libraries
+  "lxml",
+  "xmlsec",
 ]
 
 [tool.uv.sources]
@@ -133,29 +132,29 @@ exclude_dirs = ["**/node_modules/**"]
 
 [tool.codespell]
 skip = [
-    "**/node_modules",
-    "**/package-lock.json",
-    "schema.yml",
-    "unittest.xml",
-    "./blueprints/schema.json",
-    "go.sum",
-    "locale",
-    "**/web/src/locales",
-    "**/dist", # Distributed build output
-    "**/storybook-static",
-    "**/web/xliff",
-    "**/out", # TypeScript type-checking output
-    "./web/custom-elements.json", # TypeScript custom element definitions
-    "./website/build", # TODO: Remove this after moving website to docs
-    "./website/**/build", # TODO: Remove this after moving website to docs
-    "./docs/build", # Docusaurus Topic docs build output
-    "./docs/**/build", # Docusaurus workspaces output
-    "*.api.mdx", # Generated API docs
-    "./gen-ts-api",
-    "./gen-py-api",
-    "./gen-go-api",
-    "./htmlcov",
-    "./media",
+  "**/node_modules",
+  "**/package-lock.json",
+  "schema.yml",
+  "unittest.xml",
+  "./blueprints/schema.json",
+  "go.sum",
+  "locale",
+  "**/web/src/locales",
+  "**/dist",                    # Distributed build output
+  "**/storybook-static",
+  "**/web/xliff",
+  "**/out",                     # TypeScript type-checking output
+  "./web/custom-elements.json", # TypeScript custom element definitions
+  "./website/build",            # TODO: Remove this after moving website to docs
+  "./website/**/build",         # TODO: Remove this after moving website to docs
+  "./docs/build",               # Docusaurus Topic docs build output
+  "./docs/**/build",            # Docusaurus workspaces output
+  "*.api.mdx",                  # Generated API docs
+  "./gen-ts-api",
+  "./gen-py-api",
+  "./gen-go-api",
+  "./htmlcov",
+  "./media",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
@@ -172,23 +171,23 @@ exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-    # pycodestyle
-    "E",
-    # Pyflakes
-    "F",
-    # isort
-    "I",
-    # pyupgrade
-    "UP",
-    # flake8-bugbear
-    "B",
-    # django
-    "DJ",
-    # pylint
-    "PL",
+  # pycodestyle
+  "E",
+  # Pyflakes
+  "F",
+  # isort
+  "I",
+  # pyupgrade
+  "UP",
+  # flake8-bugbear
+  "B",
+  # django
+  "DJ",
+  # pylint
+  "PL",
 ]
 ignore = [
-    "DJ001", # Avoid using `null=True` on string-based fields,
+  "DJ001", # Avoid using `null=True` on string-based fields,
 ]
 
 [tool.ruff.lint.pylint]
@@ -200,14 +199,14 @@ max-returns = 10
 source = ["authentik"]
 relative_files = true
 omit = [
-    "*/asgi.py",
-    "manage.py",
-    "*/migrations/*",
-    "*/management/commands/*",
-    "*/apps.py",
-    # TODO: Remove this after moving website to docs
-    "website/",
-    "docs/",
+  "*/asgi.py",
+  "manage.py",
+  "*/migrations/*",
+  "*/management/commands/*",
+  "*/apps.py",
+  # TODO: Remove this after moving website to docs
+  "website/",
+  "docs/",
 ]
 
 [tool.coverage.report]
@@ -215,19 +214,19 @@ sort = "Cover"
 skip_covered = true
 precision = 2
 exclude_lines = [
-    "pragma: no cover",
-    # Don't complain about missing debug-only code:
-    "def __unicode__",
-    "def __str__",
-    "def __repr__",
-    "if self.debug",
-    "if TYPE_CHECKING",
-    # Don't complain if tests don't hit defensive assertion code:
-    "raise AssertionError",
-    "raise NotImplementedError",
-    # Don't complain if non-runnable code isn't run:
-    "if 0:",
-    "if __name__ == .__main__.:",
+  "pragma: no cover",
+  # Don't complain about missing debug-only code:
+  "def __unicode__",
+  "def __str__",
+  "def __repr__",
+  "if self.debug",
+  "if TYPE_CHECKING",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if __name__ == .__main__.:",
 ]
 show_missing = true
 
@@ -237,6 +236,6 @@ python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
 addopts = "-p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules --import-mode=importlib --ignore=authentik/tasks/setup.py"
 filterwarnings = [
-    "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
-    "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
+  "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
+  "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]

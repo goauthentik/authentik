@@ -43,11 +43,27 @@ This will send a POST request to the given URL with the following contents:
 
 The `Content-Type` header is set to `text/json`.
 
-You can also select a Notification mapping. This allows you to freely configure the request's payload. For example:
+#### Webhook mappings
+
+You can use Webook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
+
+##### Webhook body example
+
+An example of a webhook body mapping that sets a `foo` key with its value set to the body of the notification:
 
 ```python
 return {
     "foo": request.context['notification'].body,
+}
+```
+
+##### Webhook header example
+
+An example of a webhook header mapping that sets an authorization key:
+
+```python
+return {
+  "Authorization": "Bearer <token>"
 }
 ```
 

@@ -1,4 +1,5 @@
-name: ghcr-retention
+---
+name: GH - GHCR retention
 
 on:
   # schedule:

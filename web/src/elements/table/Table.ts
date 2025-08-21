@@ -124,8 +124,8 @@ export abstract class Table<T extends object>
     @property({ type: String })
     public order?: string;
 
-    @property({ type: String })
-    public search: string = "";
+    @property({ type: String, attribute: false })
+    public search?: string;
 
     @property({ type: Boolean })
     public checkbox = false;
@@ -547,10 +547,12 @@ export abstract class Table<T extends object>
         return html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
             <ak-table-search
                 class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
-                value=${ifDefined(this.search)}
+                .defaultValue=${this.search}
                 label=${ifDefined(this.searchLabel)}
                 placeholder=${ifDefined(this.searchPlaceholder)}
                 .onSearch=${this.#searchListener}
+                .supportsQL=${this.supportsQL}
+                .apiResponse=${this.data}
             >
             </ak-table-search>
         </div>`;

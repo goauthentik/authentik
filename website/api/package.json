@@ -42,7 +42,7 @@
         "prism-react-renderer": "^2.4.1",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
-        "typescript": "^5.8.3"
+        "typescript": "^5.9.2"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.4.11",

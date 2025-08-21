@@ -41,7 +41,7 @@ export function readGitBuildHash() {
 /**
  * Reads the build identifier for the current environment.
  *
- * This must match the behavior defined in authentik's server-side `get_full_version` function.
+ * This must match the behavior defined in authentik's server-side `authentik_full_version` function.
  *
  * @runtime node
  * @see {@link "authentik\_\_init\_\_.py"}
