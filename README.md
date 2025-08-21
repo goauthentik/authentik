@@ -15,15 +15,15 @@
 
 ## What is authentik?
 
-authentik is an open-source Identity Provider that emphasizes flexibility and versatility, with support for a wide set of protocols.
+authentik is an open-source Identity Provider (IdP) for modern SSO. It supports SAML, OAuth2/OIDC, LDAP, RADIUS, and more, designed for self-hosting from small labs to large production clusters.
 
-Our [enterprise offer](https://goauthentik.io/pricing) can also be used as a self-hosted replacement for large-scale deployments of Okta/Auth0, Entra ID, Ping Identity, or other legacy IdPs for employees and B2B2C use.
+An [enterprise offering](https://goauthentik.io/pricing?utm_source=github) is available for organizations looking to replace or consolidate existing IdPs (e.g., Okta/Auth0, Entra ID, Ping Identity) at scale.
 
 ## Installation
 
-For small/test setups it is recommended to use Docker Compose; refer to the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github).
-
-For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github).
+- Docker Compose: recommended for small/test setups. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/docker-compose/?utm_source=github).
+- Kubernetes (Helm Chart): recommended for larger setups. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/kubernetes/?utm_source=github) and the Helm chart [repository](https://github.com/goauthentik/helm).
+- AWS CloudFormation: deploy on AWS using our official templates. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/aws/?utm_source=github).
 
 ## Screenshots
 
@@ -34,12 +34,18 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Development
 
-See [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github)
+See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Security
 
-See [SECURITY.md](SECURITY.md)
+Please see [SECURITY.md](SECURITY.md).
 
 ## Adoption and Contributions
 
-Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information on how to contribute to authentik, please refer to our [contribution guide](https://docs.goauthentik.io/docs/developer-docs?utm_source=github).
+Using authentik? We'd love to hear your story and feature your logo. Say hello at [hello@goauthentik.io](mailto:hello@goauthentik.io)!
+
+## License
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey?style=for-the-badge)](website/LICENSE)
+[![authentik EE License](https://img.shields.io/badge/License-EE-orange?style=for-the-badge)](authentik/enterprise/LICENSE)
