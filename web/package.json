@@ -135,7 +135,7 @@
         "chartjs-adapter-date-fns": "^3.0.0",
         "codemirror": "^6.0.2",
         "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.45.0",
+        "core-js": "^3.45.1",
         "country-flag-icons": "^1.5.19",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
