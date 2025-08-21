@@ -36,7 +36,9 @@ class HTTPServer(BaseHTTPServer):
         self.server_address = (host, port)
 
         self.address_family = (
-            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+            socket.AF_INET6
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
+            else socket.AF_INET
         )
 
         self.socket = socket.create_server(
