@@ -45,7 +45,7 @@ The `Content-Type` header is set to `text/json`.
 
 #### Webhook mappings
 
-You can use Webook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport. For example:
+You can use Webook mappings to configure the request's payload and/or header. These are a type of property mapping that can be applied to the `Webhook Body Mapping` or `Webhook Header Mapping` fields of the webhook notification transport.
 
 ##### Webhook body example
 
@@ -59,7 +59,7 @@ return {
 
 ##### Webhook header example
 
-An example of a webhook header mapping that sets an authentication key:
+An example of a webhook header mapping that sets an authorization key:
 
 ```python
 return {
