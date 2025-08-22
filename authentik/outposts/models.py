@@ -151,7 +151,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_monitor.send_with_options(args=(self.pk), rel_obj=self)
+            outpost_service_connection_monitor.send_with_options(args=(self.pk,), rel_obj=self)
             return OutpostServiceConnectionState("", False)
         return state
 
