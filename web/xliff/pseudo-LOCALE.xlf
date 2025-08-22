@@ -9740,4 +9740,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbc4f2320a13d4dfd">
   <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
 </trans-unit>
+<trans-unit id="s23da7320dee28a60">
+  <source>Device Code</source>
+</trans-unit>
 </body></file></xliff>
