@@ -1,9 +1,6 @@
 """authentik shell command"""
 
-import code
 import platform
-import sys
-import traceback
 from pprint import pprint
 
 from django.core.management.commands.shell import Command as BaseCommand
