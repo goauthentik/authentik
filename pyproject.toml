@@ -81,7 +81,7 @@ dev = [
     "black==25.1.0",
     "bpython==0.25",
     "bump2version==1.0.1",
-    "channels[daphne]==4.3.0",
+    "channels[daphne]==4.3.1",
     "codespell==2.4.1",
     "colorama==0.4.6",
     "constructs==10.4.2",
