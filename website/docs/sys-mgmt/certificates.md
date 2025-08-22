@@ -36,10 +36,14 @@ To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), 
 
 authentik can automatically discover and import certificates from a designated directory. This allows you to use externally managed certificates with minimal configuration.
 
+:::note
+Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** > **System Tasks**.
+:::
+
 #### Mounted directories
 
-- **Docker Compose**: A `certs` directory is mapped to `/certs` within the container
-- **Kubernetes**: You can map custom secrets/volumes under `/certs`
+- **Docker Compose**: A `certs` directory is mapped to `/certs` within the worker container.
+- **Kubernetes**: You can mount custom Secrets or Volumes under `/certs` and configure them in the worker Pod specification.
 
 authentik checks for new or changed files every hour and automatically triggers an outpost refresh when changes are detected.
 
