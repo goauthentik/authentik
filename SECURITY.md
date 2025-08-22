@@ -43,7 +43,7 @@ Our team will:
 
     - Acknowledge receipt of your report as quickly as possible.
     - Keep you updated on the investigation and resolution progress.
-    - Notify you once a fix has an ETA.
+    - Update you on resolution progress
 
 ## Researcher Recognition
 
