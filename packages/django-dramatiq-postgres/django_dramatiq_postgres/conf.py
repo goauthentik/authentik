@@ -57,6 +57,10 @@ class Conf:
         return self.conf["task_model"]
 
     @property
+    def lock_purge_interval(self) -> int:
+        return self.conf.get("lock_purge_interval", 60)
+
+    @property
     def task_purge_interval(self) -> int:
         # 24 hours
         return self.conf.get("task_purge_interval", 24 * 60 * 60)
