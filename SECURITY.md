@@ -43,7 +43,6 @@ Our team will:
 
     - Acknowledge receipt of your report as quickly as possible.
     - Keep you updated on the investigation and resolution progress.
-    - Update you on resolution progress
 
 ## Researcher Recognition
 
