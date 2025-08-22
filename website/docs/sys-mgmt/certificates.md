@@ -43,7 +43,7 @@ Certificate discovery can be manually triggered by restarting the `certificate_d
 #### Mounted directories
 
 - **Docker Compose**: A `certs` directory is mapped to `/certs` within the worker container.
-- **Kubernetes**: You can map custom secrets/volumes under `/certs`.
+- **Kubernetes**: You can mount custom Secrets or Volumes under `/certs` and configure them in the worker Pod specification.
 
 authentik checks for new or changed files every hour and automatically triggers an outpost refresh when changes are detected.
 
