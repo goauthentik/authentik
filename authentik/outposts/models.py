@@ -76,6 +76,7 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_ingress_path_type: str | None = field(default=None)
     kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
