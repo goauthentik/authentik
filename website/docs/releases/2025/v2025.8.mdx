@@ -353,6 +353,23 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: remove mdx and fix references to `@goauthentik/elements` (#15694)
 - web: rework storybook for flow components and to make the design consistent (#15415)
 
+## Fixed in 2025.8.1
+
+- \*: Fix dead doc link (cherry-pick #16288) (#16297)
+- core: use email backend for test_email management command (cherry-pick #16311) (#16337)
+- lifecycle: set PROMETHEUS_MULTIPROC_DIR as early as possible (cherry-pick #16298) (#16302)
+- outposts: allow ingress path type configuration (cherry-pick #16339) (#16341)
+- outposts: fix service connection update task arguments (cherry-pick #16312) (#16313)
+- packages/django-dramatiq-postgres: broker: fix various timing issues (cherry-pick #16340) (#16342)
+- packages/django-dramatiq-postgres: middleware: fix listening on hosts where ipv6 is not supported (cherry-pick #16308) (#16305)
+- providers/oauth2: fix logout token missing sid, fix wrong sub mode used (cherry-pick #16295) (#16299)
+- web: Fix form group slots (cherry-pick #16276) (#16277)
+- web: Fix hidden textarea required attribute. (cherry-pick #16168) (#16275)
+- web: Fix issue where clicking a list item scrolls container (cherry-pick #16174) (#16278)
+- web: Improvements to ReCaptcha resizing (cherry-pick #16171) (#16281)
+- web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
+- web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
+
 ## API Changes
 
 #### What's New
