@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 
+	"beryju.io/radius-eap/protocol"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
 )
@@ -41,26 +42,28 @@ func (rs *RadiusServer) Refresh() error {
 	if len(apiProviders) < 1 {
 		return errors.New("no radius provider defined")
 	}
-	providers := make([]*ProviderInstance, len(apiProviders))
-	for idx, provider := range apiProviders {
+	providers := make(map[int32]*ProviderInstance)
+	for _, provider := range apiProviders {
+		existing, ok := rs.providers[provider.Pk]
+		state := map[string]*protocol.State{}
+		if ok {
+			state = existing.eapState
+		}
 		logger := log.WithField("logger", "authentik.outpost.radius").WithField("provider", provider.Name)
-		providers[idx] = &ProviderInstance{
+		providers[provider.Pk] = &ProviderInstance{
 			SharedSecret:   []byte(provider.GetSharedSecret()),
 			ClientNetworks: parseCIDRs(provider.GetClientNetworks()),
 			MFASupport:     provider.GetMfaSupport(),
 			appSlug:        provider.ApplicationSlug,
 			flowSlug:       provider.AuthFlowSlug,
+			certId:         provider.GetCertificate(),
 			providerId:     provider.Pk,
 			s:              rs,
 			log:            logger,
+			eapState:       state,
 		}
 	}
 	rs.providers = providers
 	rs.log.Info("Update providers")
 	return nil
-}
-
-func (rs *RadiusServer) StartRadiusServer() error {
-	rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
-	return rs.s.ListenAndServe()
 }

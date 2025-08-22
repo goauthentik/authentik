@@ -94,6 +94,10 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	return fe
 }
 
+func (fe *FlowExecutor) AddHeader(name string, value string) {
+	fe.api.GetConfig().AddDefaultHeader(name, value)
+}
+
 func (fe *FlowExecutor) RoundTrip(req *http.Request) (*http.Response, error) {
 	res, err := fe.transport.RoundTrip(req)
 	if res != nil {
