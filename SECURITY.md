@@ -25,7 +25,7 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 ## Reporting a Vulnerability
 
-To report a vulnerability, send an email to [security@goauthentik.io](mailto:security@goauthentik.io). Be sure to include relevant information like which version you've found the issue in, instructions on how to reproduce the issue, and anything else that might make it easier for us to find the issue.
+To report a vulnerability, please email [security@goauthentik.io](mailto:security@goauthentik.io) or use the private security advisory feature on our GitHub repository [here](https://github.com/goauthentik/authentik/security/advisories/new). Include details such as the affected version, steps to reproduce the issue, and any other information that will help us investigate promptly.
 
 ## Severity levels
 
