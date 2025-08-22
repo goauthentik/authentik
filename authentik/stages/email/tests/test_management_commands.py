@@ -1,6 +1,5 @@
 """Test email management commands"""
 
-from io import StringIO
 from unittest.mock import patch
 
 from django.core import mail
