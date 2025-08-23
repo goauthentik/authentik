@@ -49,6 +49,11 @@ const BASE_ESBUILD_OPTIONS = {
         copy({
             assets: [
                 {
+                    from: path.join(PackageRoot, "static", "**"),
+                    to: ".",
+                },
+
+                {
                     from: path.join(patternflyPath, "patternfly.min.css"),
                     to: ".",
                 },
