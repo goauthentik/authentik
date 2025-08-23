@@ -70,7 +70,6 @@ RUN apt-get update && \
     rm -rf /tmp/* /var/lib/apt/lists/*
 
 COPY --from=builder /go/proxy /
-COPY --from=web-builder /static/initializing.html /web/initializing.html
 COPY --from=web-builder /static/robots.txt /web/robots.txt
 COPY --from=web-builder /static/security.txt /web/security.txt
 COPY --from=web-builder /static/dist/ /web/dist/
