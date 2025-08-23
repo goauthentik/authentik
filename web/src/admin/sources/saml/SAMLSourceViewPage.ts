@@ -187,7 +187,7 @@ export class SAMLSourceViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             <ak-codemirror
                                 mode=${CodeMirrorMode.XML}
-                                readOnly
+                                readonly
                                 value="${ifDefined(this.metadata?.metadata)}"
                             ></ak-codemirror>
                         </div>
