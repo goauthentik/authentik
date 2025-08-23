@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from rest_framework import mixins
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import ReadOnlyField, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 
@@ -30,6 +31,18 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         if obj.__class__ == Provider:
             return ""
         return obj.component
+
+    def validate_name(self, value):
+        """Check for case-insensitive uniqueness"""
+        queryset = Provider.objects.filter(name__iexact=value)
+
+        # If updating, exclude current instance
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
+            raise ValidationError(_("A provider with this name already exists (case-insensitive)."))
+        return value
 
     class Meta:
         model = Provider
