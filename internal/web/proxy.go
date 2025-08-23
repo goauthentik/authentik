@@ -104,11 +104,15 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 				"error": "authentik starting",
 			})
 
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write error message")
+				return
+			}
 		} else if strings.Contains(accept, "text/html") {
 			header.Set("Content-Type", "text/html")
 			rw.WriteHeader(http.StatusServiceUnavailable)
 
-			loadingSplashFile, err := staticWeb.StaticDir.Open("startup/index.html")
+			loadingSplashFile, err := staticWeb.StaticDir.Open("standalone/loading/startup.html")
 
 			if err != nil {
 				ws.log.WithError(err).Warning("failed to open startup splash screen")
@@ -123,17 +127,23 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 			}
 
 			_, err = rw.Write(loadingSplashHTML)
+
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write startup splash screen")
+				return
+			}
 		} else {
 			header.Set("Content-Type", "text/plain")
 			rw.WriteHeader(http.StatusServiceUnavailable)
 
 			// Fallback to just a status message
 			_, err = rw.Write([]byte("authentik starting"))
+
+			if err != nil {
+				ws.log.WithError(err).Warning("failed to write initializing HTML")
+			}
 		}
 
-		if err != nil {
-			ws.log.WithError(err).Warning("failed to write initializing HTML")
-		}
 		return
 	}
 
