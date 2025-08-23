@@ -11,7 +11,6 @@ var RobotsTxt []byte
 //go:embed security.txt
 var SecurityTxt []byte
 
-//go:embed initializing.html
-var InitializingHtml []byte
+var StaticDir = http.Dir("./web/dist/")
 
-var StaticHandler = http.FileServer(http.Dir("./web/dist/"))
+var StaticHandler = http.FileServer(StaticDir)

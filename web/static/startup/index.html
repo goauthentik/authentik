@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex" />
         <meta name="color-scheme" content="light dark" />
-        <meta http-equiv="refresh" content="3" />
 
         <title>authentik</title>
         <style>
@@ -38,5 +37,40 @@
         </svg>
 
         <p>Server is starting up. Refreshing in a few seconds...</p>
+
+        <script>
+            "use strict";
+
+            let timeoutID = -1;
+
+            function checkStatus() {
+                console.log("Checking server status...");
+
+                return fetch(window.location.href, {
+                    method: "HEAD",
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            console.log("Server is ready! Reloading...");
+                            clearTimeout(timeoutID);
+                            window.location.reload();
+                            return;
+                        }
+
+                        if (response.status === 503) {
+                            throw new Error("Server is still starting up...");
+                        }
+                    })
+                    .catch((error) => {
+                        console.warn(`Checking server status failed: ${error}`);
+                        timeoutID = setTimeout(checkStatus, 2000);
+                    });
+            }
+
+            checkStatus();
+        </script>
     </body>
 </html>
