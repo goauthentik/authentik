@@ -8,27 +8,62 @@
 
         <title>authentik</title>
         <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            html {
+                font-size: 100%;
+            }
+
             body {
+                font-size: clamp(16px, 3dvw, 20px);
                 background-color: #000;
                 background-color: Canvas;
                 color: #fff;
                 color: CanvasText;
                 font-family: system-ui, ui-sans-serif, sans-serif;
+                text-align: center;
                 display: grid;
                 place-content: center;
                 place-items: center;
                 min-height: 100dvh;
                 margin: 0;
+                padding-block: 0 6em;
+                padding-inline: 0.5em;
+            }
+
+            .logo {
+                height: 3.5em;
+                max-width: 90dvw;
+            }
+
+            .container {
+                position: absolute;
+                left: 0;
+                top: 50%;
+                right: 0;
+                bottom: 0;
+                z-index: -1;
+                overflow: hidden;
+            }
+
+            .container canvas {
+                display: block;
             }
         </style>
     </head>
     <body>
         <svg
+            class="logo"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 1000 144.29"
-            role="heading"
-            aria-level="1"
             aria-label="authentik"
+            aria-role="heading"
+            aria-level="1"
+            preserveAspectRatio="xMidYMid meet"
         >
             <path
                 fill="currentColor"
@@ -38,7 +73,11 @@
 
         <p>Server is starting up. Refreshing in a few seconds...</p>
 
-        <script>
+        <div class="container" aria-hidden="true">
+            <canvas id="waves-canvas"></canvas>
+        </div>
+
+        <script type="text/javascript">
             "use strict";
 
             let timeoutID = -1;
@@ -70,7 +109,32 @@
                     });
             }
 
-            checkStatus();
+            const queryParams = new URLSearchParams(window.location.search);
+
+            if (window.location.origin.startsWith("http") && !queryParams.has("debug")) {
+                console.log("Checking server status...");
+                checkStatus();
+            }
+        </script>
+
+        <script type="module">
+            import("/static/dist/standalone/loading/wave-boi.mjs")
+                .then(({ WavesCanvas }) => {
+                    function drawAnimation() {
+                        const canvas = document.getElementById("waves-canvas");
+                        const waves = new WavesCanvas(canvas);
+                        waves.play();
+                    }
+
+                    if (document.readyState === "loading") {
+                        document.addEventListener("DOMContentLoaded", drawAnimation);
+                    } else {
+                        drawAnimation();
+                    }
+                })
+                .catch((error) => {
+                    console.debug("Skipping waves canvas:", error);
+                });
         </script>
     </body>
 </html>
