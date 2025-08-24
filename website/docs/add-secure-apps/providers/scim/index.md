@@ -33,7 +33,23 @@ All selected mappings are applied in the order of their name, and are deeply mer
 
 ### Filtering
 
-By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
+By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider.
+
+#### User Filtering
+
+Users can be filtered using application policies.
+
+Only users who can view the scim provider's application are synced by the scim provider.
+
+#### Group Filters
+
+Group Filters allow you to define the group syncing scope of a SCIM provider.
+
+In its default configuration, with no group filters selected, the SCIM provider will sync all groups.
+
+If group filters are selected, only selected groups will be synced.
+
+Currently, changes to filter groups do _not_ remove previously synchronized groups and members.
 
 ### Supported features
 
