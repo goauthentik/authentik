@@ -42,9 +42,6 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
 
     client_class = OpenIDConnectClient
 
-    def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("sub", None)
-
 
 @registry.register()
 class OpenIDConnectType(SourceType):
@@ -59,6 +56,7 @@ class OpenIDConnectType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("sub"),
             "username": info.get("nickname", info.get("preferred_username")),
             "email": info.get("email"),
             "name": info.get("name"),
