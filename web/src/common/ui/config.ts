@@ -17,6 +17,7 @@ export const DefaultBrand = {
     defaultLocale: "",
     flags: {
         policiesBufferedAccessView: false,
+        coreDefaultAppAccess: true,
     },
 } as const satisfies CurrentBrand;
 
