@@ -18,6 +18,7 @@ COPY ./blueprints /work/blueprints/
 COPY ./schema.yml /work/
 COPY ./docker-compose.yml /work/
 COPY ./SECURITY.md /work/
+COPY ./package.json /work/
 
 RUN npm run build
 

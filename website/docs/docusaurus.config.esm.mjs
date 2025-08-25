@@ -6,7 +6,7 @@
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  */
 
-import { cp } from "node:fs/promises";
+import { cp, readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -20,6 +20,10 @@ import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/release
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const rootPackagePath = resolve(__dirname, "..", "..", "package.json");
+const packageJson = JSON.parse(await readFile(rootPackagePath, "utf8"));
+const { version } = packageJson;
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
 const authentikModulePath = resolve(__dirname, "..", "..");
@@ -52,6 +56,12 @@ export default createDocusaurusConfig(
         },
 
         url: "https://docs.goauthentik.io",
+
+        customFields: {
+            // This is for the OutdatedVersionBanner component
+            currentVersion: version,
+        },
+
         //#region Preset
 
         presets: [
