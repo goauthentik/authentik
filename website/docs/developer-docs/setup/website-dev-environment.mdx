@@ -1,0 +1,79 @@
+---
+title: Docs development environment
+sidebar_label: Docs development
+tags:
+    - development
+    - contributor
+    - docs
+    - docusaurus
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+If you want to only make changes to the documentation, you only need Node.js.
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/en) (24 or later)
+- [Make](https://www.gnu.org/software/make/) (3 or later)
+
+## 1. Install dependencies
+
+<Tabs defaultValue="macOS">
+<TabItem value="macOS">
+
+Install the required dependencies on macOS using Homebrew:
+
+```shell
+brew install node@24
+```
+
+</TabItem>
+<TabItem value="Linux">
+
+[Download NodeJS version 24](https://nodejs.org/en/download/current) for your Linux distribution.
+
+</TabItem>
+<TabItem value="Windows">
+
+We're currently seeking community input on running the docs in Windows. If you have experience with this setup, please consider contributing to this documentation.
+
+</TabItem>
+</Tabs>
+
+## 2. Instructions
+
+Clone the repo:
+
+```shell
+git clone https://github.com/goauthentik/authentik
+```
+
+Install the docs dev dependencies:
+
+```shell
+make docs-install
+```
+
+Start the development server:
+
+```shell
+make docs-watch
+```
+
+Run the linter and auto-formatter to prepare your changes to commit:
+
+```shell
+make docs
+```
+
+## 3. Submitting your changes
+
+Once your changes pass all checks, you can submit a pull request through [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
+
+- Provide a clear description of your changes
+- Reference any related issues
+- Follow our code style guidelines
+
+Thank you for contributing to authentik!
