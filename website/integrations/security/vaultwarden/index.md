@@ -48,7 +48,7 @@ To configure authentik with Vaultwarden, you must add the following environment 
 
 ```yaml
 SSO_ENABLED=true
-SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>
+SSO_AUTHORITY=https://authentik.company/application/o/<application_slug>/
 SSO_CLIENT_ID=<client_id>
 SSO_CLIENT_SECRET=<client_secret>
 SSO_SCOPES="openid email profile offline_access"
