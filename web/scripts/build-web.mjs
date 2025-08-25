@@ -49,6 +49,11 @@ const BASE_ESBUILD_OPTIONS = {
         copy({
             assets: [
                 {
+                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
+                    to: path.dirname(EntryPoint.StandaloneLoading.out),
+                },
+
+                {
                     from: path.join(patternflyPath, "patternfly.min.css"),
                     to: ".",
                 },
