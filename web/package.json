@@ -203,11 +203,12 @@
         "@rollup/rollup-darwin-arm64": "^4.46.3",
         "@rollup/rollup-linux-arm64-gnu": "^4.46.3",
         "@rollup/rollup-linux-x64-gnu": "^4.46.3",
-        "@wdio/browser-runner": "^9.19.1",
-        "@wdio/cli": "^9.19.1",
-        "@wdio/spec-reporter": "^9.19.1",
+        "@wdio/browser-runner": "^9.19.2",
+        "@wdio/cli": "^9.19.2",
+        "@wdio/spec-reporter": "^9.19.2",
         "@web/test-runner": "^0.20.2",
-        "chromedriver": "^139.0.1"
+        "chromedriver": "^139.0.1",
+        "p-iteration": "^1.1.8"
     },
     "wireit": {
         "build": {
@@ -316,14 +317,14 @@
             }
         },
         "test": {
-            "command": "wdio ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.mjs --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],
@@ -333,7 +334,7 @@
             }
         },
         "test:e2e:watch": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],
@@ -342,7 +343,7 @@
             }
         },
         "test:watch": {
-            "command": "wdio run ./wdio.conf.ts",
+            "command": "wdio run ./wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],
