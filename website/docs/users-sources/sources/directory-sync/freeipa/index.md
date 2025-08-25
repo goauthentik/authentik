@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
-    ![](./01_user_create.pn)
+    ![](./01_user_create.png)
 
 3. In the user management screen, select the Roles tab.
 
@@ -38,43 +38,122 @@ The following placeholders are used in this guide:
     passSyncManagersDNs: uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company
     ```
 
+:::info
 Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Password Change at the Next Login](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/user-authentication#user-passwords-no-expiry)
+:::
 
 ## authentik Setup
 
-In authentik, create a new LDAP Source in Directory -> Federation & Social login.
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 
-Use these settings:
+All the settings are described in [LDAP sources](../../protocols/ldap/index.mdx).
+:::
 
-- Server URI: `ldaps://ipa1.freeipa.company`
+In authentik, create a new LDAP Source: go to **Directory** > **Federation and Social Login**, click **Create**,
+select **LDAP source**.
 
+These settings are required for FreeIPA: 
+
+- **Name**: `Company FreeIPA`
+- **Slug**: `company-freeipa`
+- **Update internal password on login**: enable if you want your users to be able to login if FreeIPA is not accessible
+- **Delete not found object**: enable to delete users from Authentik when they are deleted in FreIPA
+
+### Connection settings
+
+- **Server URI**: `ldaps://ipa1.freeipa.company`
+
+    :::tip
     You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`.
 
     When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+    :::
 
-- Bind CN: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
-- Bind Password: The password you've given the user above
-- Base DN: `dc=freeipa,dc=company`
-- Property mappings: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP"
-- Group property mappings: Select "authentik default OpenLDAP Mapping: cn"
+- **Enable StartTLS**: enable for `ldap://` protocol, disable for `ldaps://`
+- **TLS Verification Certificate**: **FIXME**
+- **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
+- **Bind Password**: The password you've given the user above
+- **Base DN**: `dc=freeipa,dc=company`
 
-Additional settings:
+### LDAP Attribute mapping
 
-- Group: If selected, all synchronized groups will be given this group as a parent.
-- Addition User/Group DN: `cn=users,cn=accounts`
-- Addition Group DN: `cn=groups,cn=accounts`
-- User object filter: `(objectClass=person)`
-- Group object filter: `(objectClass=groupofnames)`
+- **User Property Mappings**: Control/Command-select all Mappings which start with "authentik default LDAP" and "authentik default OpenLDAP". Remove others that are selected by default.
+- **Group property mappings**: Select "authentik default OpenLDAP Mapping: cn"
+
+### Additional settings
+
+- **Parent Group**: If selected, all synchronized groups will be given this group as a parent.
+- **User Path**: `company/freeipa` for instance, this setting is not crucial.
+- **Addition User/Group DN**: `cn=users,cn=accounts`
+- **Addition Group DN**: `cn=groups,cn=accounts`
+- **User object filter**: `(objectClass=person)`
+- **Group object filter**: `(objectClass=groupofnames)`
+- **Group membership field**: `memberOf`
+- **User membership attribute**: `distinguishedName`
+- **Lookup using user attribute**: *enabled*.
+- **Object uniqueness field**: `ipaUniqueID`
+
+:::caution
+In FreeIPA, groups can have other groups as members. Indirect member users are not listed in the parent group's `member` attribute.
+Because of this, the sync havs to be done by the user's attribute `memberOf`. These are present for every membership, even indirect one.
+
+In the improbable case that you want to sync only direct memberships, you can use the following settings:
 - Group membership field: `member`
-- Object uniqueness field: `ipaUniqueID`
+- User membership attribute: `distinguishedName`
+- Lookup using user attribute: *disabled*
+:::
 
-    ![](./04_source_settings_1.png)
-    ![](./05_source_settings_2.png)
+### Manual synchronization
 
-After you save the source, you can kick off a synchronization by navigating to the source, clicking on the "Sync" tab, and clicking the "Run sync again" button.
+After you save the source, you can kick off a synchronization by navigating to the source, clicking on the **Sync** tab, and clicking the **Run sync again** button.
 
-![](./06_sync_source.png)
-
-Lastly, verify that the "User database + LDAP password" backend is selected in the "Password Stage" under Flows -> Stages.
+Lastly, verify that the **User database + LDAP password** backend is selected in the **Password Stage** under **Flows and Stages > Stages**
 
 ![](./07_password_stage.png)
+
+### Blueprints
+
+You can also configure the LDAP source with a blueprint:
+
+```yaml
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: FreeIPA LDAP Source
+  labels:
+    blueprints.goauthentik.io/description: "LDAP Source configuration for FreeIPA"
+entries:
+  - model: authentik_sources_ldap.ldapsource
+    identifiers:
+      slug: ldap-source-freeipa
+    attrs:
+      enabled: true
+      base_dn: dc=freeipa,dc=company
+      additional_user_dn: cn=users,cn=accounts
+      additional_group_dn: cn=groups,cn=accounts
+      bind_cn: !Env FREEIPA_DN
+      bind_password: !Env FREEIPA_PASSWORD
+      delete_not_found_objects: true
+      group_membership_field: memberOf
+      group_object_filter: (objectClass=groupofnames)
+      lookup_groups_from_user: true
+      object_uniqueness_field: ipaUniqueID
+      server_uri: ldaps://ipa1.freeipa.company,ldaps://ipa2.freeipa.company
+      sni: true
+      sync_groups: true
+      sync_users: true
+      sync_users_password: true
+      user_membership_attribute: distinguishedName
+      user_object_filter: (objectClass=person)
+      user_property_mappings:
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-cn ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-uid ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-mail ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-dn-path ]]
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/default-name ]]
+      group_property_mappings:
+        - !Find [ authentik_sources_ldap.ldapsourcepropertymapping, [managed, goauthentik.io/sources/ldap/openldap-cn ]]
+```
+
+You must set the username (dn) and password in the environment variables FREEIPA_DN and FREEIPA_PASSWORD.
