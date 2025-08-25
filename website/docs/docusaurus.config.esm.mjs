@@ -97,6 +97,10 @@ export default createDocusaurusConfig(
                     docsDirectory: __dirname,
                 }),
             ],
+            [
+                resolve(__dirname, "plugins", "glossary-terms-plugin.cjs"),
+                { docsDirectory: __dirname },
+            ],
         ],
 
         //#endregion
