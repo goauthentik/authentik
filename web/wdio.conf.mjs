@@ -1,10 +1,15 @@
-import { addCommands } from "./commands.mjs";
-
 /**
  * @file WebdriverIO configuration file for **integration tests**.
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+
+import * as path from "node:path";
+
+import { addCommands } from "./commands.mjs";
+
+import { PackageRoot } from "#paths/node";
+
 import { browser } from "@wdio/globals";
 
 /// <reference types="@wdio/globals/types" />
@@ -62,12 +67,11 @@ if (process.env.WDIO_TEST_FIREFOX) {
  */
 export const config = {
     runner: "local",
-    tsConfigPath: "./tsconfig.json",
 
-    specs: [
-        // "./tests/specs/**/*.ts"
-        "./tests/specs/new-application-by-wizard.ts",
-    ],
+    tsConfigPath: path.resolve(PackageRoot, "tsconfig.test.json"),
+
+    specs: [path.resolve(PackageRoot, "tests", "specs", "**/*.ts")],
+
     exclude: [],
     maxInstances: 1,
     capabilities,

@@ -4,11 +4,13 @@
  * @see https://webdriver.io/docs/configurationfile.html
  */
 
+import * as path from "node:path";
 import { cwd } from "node:process";
 
 import { addCommands } from "../commands.mjs";
 
-import litCSS from "#bundler/vite-plugin-lit-css/node";
+import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
+import { PackageRoot } from "#paths/node";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;
@@ -77,20 +79,20 @@ const browserRunnerOptions = {
         },
         plugins: [
             // ---
-            // @ts-ignore WDIO's Vite is out of date.
-            litCSS(),
+            inlineCSSPlugin(),
         ],
     },
 };
+
 /**
  * @satisfies {WebdriverIO.Config}
  */
 export const config = {
     runner: ["browser", browserRunnerOptions],
 
-    tsConfigPath: "./tsconfig.test.json",
+    tsConfigPath: path.resolve(PackageRoot, "tsconfig.test.json"),
 
-    specs: ["./src/**/*.test.ts"],
+    specs: [path.resolve(PackageRoot, "tests", "specs", "**/*.ts")],
     exclude: [],
 
     maxInstances,
