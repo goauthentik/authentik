@@ -29,28 +29,24 @@ function DocCardListItem({
   );
 }
 
-// lol look at all the | undefined's the any's and the || s
 function GlossaryTermCard({item}: {item: any}) {
-  const docId = (item && (item.docId || item.id)) as string | undefined;
-  const doc: any = (useDocById as any)(docId ?? '');
-  const Content = doc?.content as React.ComponentType<any> | undefined;
-  const fm = (doc && (doc.frontMatter || doc.metadata?.frontMatter)) || {};
+  const docId = item?.docId || item?.id;
+  const doc = useDocById(docId ?? '');
+  const Content = doc?.content;
+  const fm = doc?.frontMatter || doc?.metadata?.frontMatter || {};
 
-  const [dynContent, setDynContent] = React.useState<React.ComponentType<any> | undefined>(undefined);
-  const [dynFM, setDynFM] = React.useState<any>(undefined);
+  const [dynContent, setDynContent] = React.useState(undefined);
+  const [dynFM, setDynFM] = React.useState(undefined);
 
   React.useEffect(() => {
     if (Content) return;
     if (!docId) return;
-    const candidates = [
-      `@site/${docId}.mdx`,
-      `@site/${docId}.md`,
-    ];
-    let loader: (() => Promise<any>) | undefined;
+    const candidates = [`@site/${docId}.mdx`, `@site/${docId}.md`];
+    let loader;
     for (const modPath of candidates) {
-      const match = Object.values<any>(registry).find((e: any) => e && e[1] === modPath);
+      const match = Object.values(registry).find((e) => e && e[1] === modPath);
       if (match) {
-        loader = match[0] as () => Promise<any>;
+        loader = match[0];
         break;
       }
     }
@@ -62,9 +58,9 @@ function GlossaryTermCard({item}: {item: any}) {
     loader()
       .then((mod) => {
         if (cancelled) return;
-        const Comp = (mod && (mod.default || (mod as any).MDXContent)) as React.ComponentType<any> | undefined;
+        const Comp = mod?.default || mod?.MDXContent;
         setDynContent(Comp);
-        setDynFM((mod && (mod.frontMatter || (mod as any).metadata?.frontMatter)) ?? undefined);
+        setDynFM(mod?.frontMatter || mod?.metadata?.frontMatter);
       })
       .catch((e) => {
         if (cancelled) return;
@@ -75,13 +71,8 @@ function GlossaryTermCard({item}: {item: any}) {
     };
   }, [docId, Content]);
 
-  const termName: string =
-    (dynFM && (dynFM as any).termName) ||
-    (fm.termName as string) ||
-    item?.label ||
-    doc?.metadata?.title ||
-    '';
-  const tags: string[] = (dynFM?.tags as string[]) || (fm.tags as string[]) || (doc?.metadata?.tags as string[]) || [];
+  const termName = dynFM?.termName || fm?.termName || item?.label || doc?.metadata?.title || '';
+  const tags = dynFM?.tags || fm?.tags || doc?.metadata?.tags || [];
 
   debugger;
   console.debug('[DocCardList] render GlossaryTermCard', {docId, termName, tagCount: tags.length});
@@ -103,19 +94,19 @@ function GlossaryTermCard({item}: {item: any}) {
         console.error('[DocCardList] Unable to load MDX content for glossary term', {docId, item, doc});
         return (
           <>
-            {doc && typeof (doc as any).description === 'string' && (doc as any).description.length > 0 ? (
-              <div className="glossary__short">{(doc as any).description}</div>
-            ) : null}
+            {doc?.description && typeof doc.description === 'string' && doc.description.length > 0 && (
+              <div className="glossary__short">{doc.description}</div>
+            )}
           </>
         );
       }
       return (
         <ActiveContent
           components={{
-            ShortDescription: ({children}: any) => (
+            ShortDescription: ({children}) => (
               <div className="glossary__short">{children}</div>
             ),
-            LongDescription: ({children}: any) => (
+            LongDescription: ({children}) => (
               <div className="glossary__long">{children}</div>
             ),
           }}
@@ -133,7 +124,7 @@ function GlossaryTermCard({item}: {item: any}) {
         <div className="card__header">
           <h3 className="margin-vert--sm">{termName}</h3>
         </div>
-        <div className="card__body" ref={containerRef as any}>
+        <div className="card__body" ref={containerRef}>
           {renderContent()}
           {!hasShort && (
             <div className="glossary__short glossary__short--missing">ShortDescription not provided.</div>
@@ -152,39 +143,39 @@ export default function DocCardList(props: Props): ReactNode {
   const {items, className} = props;
   const location = useLocation();
   const pathname = location?.pathname ?? '';
+  const siblings = (useCurrentSidebarSiblings() ?? []) as PropSidebarItem[];
 
   const isGlossary = /\/glossary(\/|$)/.test(pathname); // wasn't there a better way Teffen showed me? Should have noted it down
     debugger;
     console.debug('[DocCardList] pathname:', pathname, 'isGlossary:', isGlossary);
 
   if (!items) {
-    const siblings = (useCurrentSidebarSiblings() ?? []) as PropSidebarItem[];
     const filtered: PropSidebarItem[] = filterDocCardListItems(siblings) as unknown as PropSidebarItem[];
     debugger;
     console.debug('[DocCardList] children count:', filtered.length);
 
     if (isGlossary) {
       // Find a `terms` category among siblings and inline-render each term card.
-      const termsCat: any = filtered.find((it: any) => {
+      const termsCat = filtered.find((it) => {
         if (!it || it.type !== 'category') return false;
         const label = typeof it.label === 'string' ? it.label.toLowerCase() : '';
         const href = typeof it.href === 'string' ? it.href : '';
-        return label === 'terms' || href.includes('/glossary/terms') || href.endsWith('/terms'); // this is questionable
+        return label === 'terms' || href.includes('/glossary/terms') || href.endsWith('/terms');
       });
       debugger;
       console.debug('[DocCardList] glossary termsCat found:', Boolean(termsCat));
       if (termsCat && Array.isArray(termsCat.items)) {
-        const nested = filterDocCardListItems(termsCat.items as any) as any[];
+        const nested = filterDocCardListItems(termsCat.items);
         debugger;
         console.debug('[DocCardList] inline term cards, count:', nested.length);
-        const sorted = [...nested].sort((a: any, b: any) =>
+        const sorted = [...nested].sort((a, b) =>
           String(a?.label || '').localeCompare(String(b?.label || ''), undefined, {sensitivity: 'base'})
         );
         return (
           <section className={clsx('row', className)}>
             {sorted
-              .filter((it: any) => it && (it.type === 'doc' || it.type === 'ref' || it.type === 'link'))
-              .map((it: any, idx: number) => (
+              .filter((it) => it && (it.type === 'doc' || it.type === 'ref' || it.type === 'link'))
+              .map((it, idx) => (
                 <GlossaryTermCard key={idx} item={it} />
               ))}
           </section>
