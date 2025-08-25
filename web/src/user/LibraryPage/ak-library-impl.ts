@@ -182,13 +182,16 @@ export class LibraryPage extends AKElement {
     }
 
     render() {
-        return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
-            <div class="pf-c-content header">
-                <h1 role="heading" aria-level="1" id="library-page-title">
-                    ${msg("My applications")}
-                </h1>
+        return html`<main
+            aria-label=${msg("Applications library")}
+            class="pf-c-page__main"
+            tabindex="-1"
+            id="main-content"
+        >
+            <header class="pf-c-content header">
+                <h1>${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
-            </div>
+            </header>
             <section class="pf-c-page__main-section">${this.renderState()}</section>
         </main>`;
     }

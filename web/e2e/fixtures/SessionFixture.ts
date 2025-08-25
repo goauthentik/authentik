@@ -40,7 +40,9 @@ export class SessionFixture extends PageFixture {
     /**
      * A possible authentication failure message.
      */
-    public $authFailureMessage = this.page.locator(".pf-m-error");
+    public $authFailureMessage = this.page.getByRole("alert", {
+        name: "Failed to authenticate",
+    });
 
     //#endregion
 
