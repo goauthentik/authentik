@@ -3,6 +3,10 @@ name: GH - Cherry-pick
 on:
   pull_request:
     types: [closed, labeled]
+  pull_request_target:
+    types: [labeled]
+  issues:
+    types: [labeled]
 
 jobs:
   cherry-pick:
