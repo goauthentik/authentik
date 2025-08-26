@@ -3,41 +3,50 @@
  * @file Docusaurus releases plugin.
  *
  * @import { LoadContext, Plugin } from "@docusaurus/types"
+ * @import { AKReleasesPluginEnvironment } from "./utils.mjs"
  */
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { collectReleaseFiles } from "./utils.mjs";
+import { collectReleaseFiles, prepareReleaseEnvironment } from "./utils.mjs";
 
 const PLUGIN_NAME = "ak-releases-plugin";
 const RELEASES_FILENAME = "releases.gen.json";
 
 /**
- * @typedef {object} ReleasesPluginOptions
+ * @typedef {object} AKReleasesPluginOptions
  * @property {string} docsDirectory The path to the documentation directory.
+ * @property {AKReleasesPluginEnvironment} [environment] Optional environment variables overrides.
  */
 
 /**
  * @typedef {object} AKReleasesPluginData
- * @property {string} [branch]
- * @property {string} publicPath The URL to the plugin's public directory.
- * @property {string[]} releases The available versions of the documentation.
+ * @property {string} publicPath URL to the plugin's public directory.
+ * @property {string[]} releases Available versions of the documentation.
+ * @property {AKReleasesPluginEnvironment} env Environment variables
  */
 
 /**
  * @param {LoadContext} loadContext
- * @param {ReleasesPluginOptions} options
+ * @param {AKReleasesPluginOptions} options
  * @returns {Promise<Plugin<AKReleasesPluginData>>}
  */
-async function akReleasesPlugin(loadContext, { docsDirectory }) {
+async function akReleasesPlugin(loadContext, options) {
     return {
         name: PLUGIN_NAME,
 
         async loadContent() {
             console.log(`🚀 ${PLUGIN_NAME} loaded`);
 
-            const releases = collectReleaseFiles(docsDirectory).map((release) => release.name);
+            const environment = {
+                ...prepareReleaseEnvironment(),
+                ...options.environment,
+            };
+
+            const releases = collectReleaseFiles(options.docsDirectory).map(
+                (release) => release.name,
+            );
 
             const outputPath = path.join(loadContext.siteDir, "static", RELEASES_FILENAME);
 
@@ -49,10 +58,12 @@ async function akReleasesPlugin(loadContext, { docsDirectory }) {
              * @type {AKReleasesPluginData}
              */
             const content = {
-                branch: process.env.BRANCH,
                 releases,
                 publicPath: path.join("/", RELEASES_FILENAME),
+                env: environment,
             };
+
+            content.publicPath;
 
             return content;
         },

@@ -168,6 +168,8 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             client_secret=generate_id(),
             api_hostname=generate_id(),
         )
+
+        # Test missing admin credentials
         response = self.client.post(
             reverse(
                 "authentik_api:authenticatorduostage-import-devices-automatic",
@@ -177,6 +179,31 @@ class AuthenticatorDuoStageTests(FlowTestCase):
             ),
         )
         self.assertEqual(response.status_code, 400)
+
+        # Test internal error handling
+        stage.admin_integration_key = generate_id()
+        stage.admin_secret_key = generate_id()
+        stage.save()
+        with patch(
+            "duo_client.admin.Admin.get_users_iterator",
+            MagicMock(side_effect=RuntimeError("Duo API error")),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:authenticatorduostage-import-devices-automatic",
+                    kwargs={
+                        "pk": str(stage.pk),
+                    },
+                ),
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertJSONEqual(
+                response.content,
+                {
+                    "error": "An internal error occurred while importing devices.",
+                    "count": 0,
+                },
+            )
 
     def test_api_import_automatic(self):
         """test `import_devices_automatic`"""

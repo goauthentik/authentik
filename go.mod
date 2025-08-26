@@ -27,9 +27,9 @@ require (
 	github.com/sethvargo/go-envconfig v1.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025100.1
+	goauthentik.io/api/v3 v3.2025100.2
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sync v0.16.0

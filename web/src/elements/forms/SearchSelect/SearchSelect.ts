@@ -82,7 +82,18 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     // Used to inform the form of the name of the object
     @property()
-    name?: string;
+    public name?: string;
+
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string;
+
+    // Used to inform the form of the input label.
+    @property()
+    public label?: string;
 
     // The textual placeholder for the search's <input> object, if currently empty. Used as the
     // native <input> object's `placeholder` field.
@@ -255,6 +266,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
         return html`<ak-search-select-view
             managed
+            .fieldID=${this.fieldID}
             .options=${options}
             value=${ifDefined(value)}
             ?blankable=${this.blankable}

@@ -4,7 +4,6 @@ import importlib
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from tempfile import gettempdir
 
 import orjson
 from sentry_sdk import set_tag
@@ -266,6 +265,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.rbac.middleware.InitialPermissionsMiddleware",
 ]
 MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
@@ -368,6 +368,9 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
+    "lock_purge_interval": timedelta_from_string(
+        CONFIG.get("worker.lock_purge_interval")
+    ).total_seconds(),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -424,7 +427,6 @@ DRAMATIQ = {
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
-                "multiproc_dir": str(Path(gettempdir()) / "authentik_prometheus_tmp"),
                 "prefix": "authentik",
             },
         ),

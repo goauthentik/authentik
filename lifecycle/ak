@@ -68,6 +68,11 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
+if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
+    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}"
+fi
+mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
+
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
