@@ -54,10 +54,10 @@ export class AkProviderInput extends AKElement {
     value?: number;
 
     @property({ type: Boolean })
-    required?: boolean;
+    required = false;
 
     @property({ type: Boolean })
-    blankable?: boolean;
+    blankable = false;
 
     @property({ type: String })
     help?: string;
