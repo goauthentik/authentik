@@ -1,0 +1,4 @@
+.container {
+    flex: 1 1 auto;
+    place-content: center;
+}
