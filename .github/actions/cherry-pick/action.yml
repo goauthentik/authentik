@@ -204,8 +204,7 @@ runs:
                 --body "$CHERRY_PICK_BODY" \
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
-                --label "cherry-pick" \
-                --label "backport")
+                --label "cherry-pick")
 
               echo "✅ Created cherry-pick PR #$NEW_PR for $TARGET_BRANCH"
 
@@ -244,9 +243,7 @@ runs:
                 --body "$CONFLICT_BODY" \
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
-                --label "cherry-pick" \
-                --label "backport" \
-                --label "conflicts")
+                --label "cherry-pick")
 
               echo "⚠️ Created conflict resolution PR #$NEW_PR for $TARGET_BRANCH"
 
