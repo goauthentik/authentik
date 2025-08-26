@@ -222,7 +222,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                                    <div class="pf-c-page__main">
                                         <ak-router-outlet
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
@@ -231,7 +231,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
-                                    </main>
+                                    </div>
                                 </div>
                             </div>
                             <ak-notification-drawer
