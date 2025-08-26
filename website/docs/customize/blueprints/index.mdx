@@ -2,7 +2,7 @@
 title: Blueprints
 ---
 
-Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage config as code without any external tools, and to distribute application configurations. Blueprints are YAML files, whose format is described further in [File structure](./v1/structure).
+Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage configurations-as-code without any external tools, and to distribute application configurations. Blueprints are YAML files, whose format is described further in [File structure](./v1/structure).
 
 Blueprints are used to manage authentik default flows and other system objects. For example, authentik's `default-authentication-flow` is, under the covers, a blueprint.
 
@@ -12,19 +12,41 @@ Custom blueprints can be used to replace or modify default blueprints in certain
 
 Blueprints can be applied in one of two ways:
 
-- As a _Blueprint instance_, which is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
+- as a _Blueprint instance_
+- as a _Flow import_
+
+To _apply_ a blueprint means that the content in the blueprint file is initiated and used by authentik.
+
+### Blueprint instance
+
+- A Blueprint instance is a YAML file mounted into the authentik (worker) container. This file is read and applied regularly (every 60 minutes). Multiple instances can be created for a single blueprint file, and instances can be given context key:value attributes to configure the blueprint.
 
     :::info
     authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
-
-    Be aware of how blueprint modifications impact the saved file. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow plus any changes you made. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default, you have to first delete the modified flow, and then [apply the corollary default blueprint](#how-to-apply-a-blueprint).
     :::
 
-- As a _Flow import_, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied. For more information see [Import and Export flows](../../add-secure-apps/flows-stages/flow/#import-or-export-a-flow).
+### Flow import
 
-## How to apply a blueprint
+- A Flow import is a YAML file uploaded via the browser/API. This file is validated and applied directly after being uploaded, but is not further monitored and nor is it automatically applied on startup like blueprint instances.
 
-...words here about how to go to the Admin interface, select a blueprint, and click the Apply icon.. this adds it back to the list of flows. Yay...
+:::
+Be aware of how editing a flow impacts the related blueprint file. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow plus any changes you made. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default flow, you have to first delete the modified flow, and then create and apply the corollary default blueprint.
+
+## Add or edit blueprints
+
+...words here...
+
+#### Add a new blueprint instance
+
+steps here about using the Create button to add a default instance, select from the list...
+
+...also need to cover how to edit one...
+
+### Add a new Flow import
+
+I have no idea how...
+
+... also need to cover how to edit one...
 
 ## Storage - File
 
@@ -38,7 +60,7 @@ Any additional `.yaml` file in `/blueprints` will be discovered and automaticall
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
 
-File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints afre affected by this.
+File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints are affected by this.
 
 :::info
 Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.
