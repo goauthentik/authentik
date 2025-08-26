@@ -26,7 +26,7 @@ runs:
         if [ "${{ github.event.action }}" = "labeled" ]; then
           LABEL_NAME="${{ github.event.label.name }}"
           # Check if it's a backport label
-          if [[ "$LABEL_NAME" =~ ^backport-(.+)$ ]]; then
+          if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
             # Check if PR is already merged
             if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
               echo "should_run=true" >> $GITHUB_OUTPUT
@@ -71,7 +71,7 @@ runs:
         if [ "${{ steps.should_run.outputs.reason }}" = "label_added_to_merged_pr" ]; then
           # Only process the specific label that was just added
           LABEL_NAME="${{ github.event.label.name }}"
-          if [[ "$LABEL_NAME" =~ ^backport-(.+)$ ]]; then
+          if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
             LABELS="$LABEL_NAME"
           else
             echo "Label $LABEL_NAME does not match backport pattern"
@@ -79,7 +79,7 @@ runs:
           fi
         else
           # PR was just merged, process all backport labels
-          LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | grep '^backport-' || true)
+          LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | grep '^backport/' || true)
         fi
 
           if [ -z "$LABELS" ]; then
@@ -91,7 +91,7 @@ runs:
 
           # Process each backport label
           echo "$LABELS" | while read -r label; do
-            if [[ "$label" =~ ^backport-(.+)$ ]]; then
+            if [[ "$label" =~ ^backport/(.+)$ ]]; then
               TARGET_BRANCH="${BASH_REMATCH[1]}"
               echo "Processing backport to branch: $TARGET_BRANCH"
 
