@@ -205,8 +205,7 @@ runs:
                 --base "$TARGET_BRANCH" \
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick" \
-                --label "backport" \
-                --json number --jq '.number')
+                --label "backport")
 
               echo "✅ Created cherry-pick PR #$NEW_PR for $TARGET_BRANCH"
 
@@ -247,8 +246,7 @@ runs:
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick" \
                 --label "backport" \
-                --label "conflicts" \
-                --json number --jq '.number')
+                --label "conflicts")
 
               echo "⚠️ Created conflict resolution PR #$NEW_PR for $TARGET_BRANCH"
 
