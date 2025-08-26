@@ -127,7 +127,7 @@ runs:
                 git push origin "$CHERRY_PICK_BRANCH"
 
                 # Create PR for the cherry-pick
-                CHERRY_PICK_TITLE="$PR_TITLE (backport of #$PR_NUMBER)"
+                CHERRY_PICK_TITLE="$PR_TITLE (cherry-pick #$PR_NUMBER)"
                 CHERRY_PICK_BODY="Cherry-pick of #$PR_NUMBER to \`$TARGET_BRANCH\` branch.
 
         **Original PR:** #$PR_NUMBER
