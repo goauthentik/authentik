@@ -17,7 +17,7 @@ Blueprints can be applied in one of two ways:
     :::info
     authentik watches for file modification/creation events in the blueprint directory and will automatically trigger a discovery when a new blueprint file is created, and trigger a blueprint apply when a file is modified.
 
-    Be aware of how blueprint modifications impact the saved file. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow plus any changes you made. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default, you have to first delete the modified flow, and then [apply the corrollary default blueprint](#how-to-apply-a-blueprint).
+    Be aware of how blueprint modifications impact the saved file. For example, if you [modify and save](../../add-secure-apps/flows-stages/flow/#flow-configuration-options) an _existing default flow_, what you get is a merging of the two: the original flow plus any changes you made. If you want to revert any modifications that you made to the default flow and get a fresh start with the original default, you have to first delete the modified flow, and then [apply the corollary default blueprint](#how-to-apply-a-blueprint).
     :::
 
 - As a _Flow import_, which is a YAML file uploaded via the Browser/API. This file is validated and applied directly after being uploaded, but is not further monitored/applied. For more information see [Import and Export flows](../../add-secure-apps/flows-stages/flow/#import-or-export-a-flow).
