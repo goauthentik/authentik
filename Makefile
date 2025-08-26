@@ -18,7 +18,17 @@ pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
 redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
-all: lint-fix lint test gen web  ## Lint, build, and test everything
+UNAME := $(shell uname)
+
+## For macOS users, add the libxml2 and libxmlsec1 installed from brew to the build path
+## to prevent SAML-related tests from failing and ensure correct compilation
+ifeq ($(UNAME), Darwin)
+BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
+BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
+BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+endif
+
+all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -50,7 +60,14 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
+ifeq ($(UNAME), Darwin)
+	# Clear cache to ensure fresh compilation
+	uv cache clean
+	# Force compilation from source for lxml and xmlsec with correct environment
+	LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+else
 	uv sync --frozen
+endif
 
 migrate: ## Run the Authentik Django server's migrations
 	uv run python -m lifecycle.migrate
