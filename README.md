@@ -34,7 +34,7 @@ Our [enterprise offering](https://goauthentik.io/pricing?utm_source=github) is a
 
 ## Development and contributions
 
-See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github).
+See the [Developer Documentation](https://docs.goauthentik.io/docs/developer-docs/?utm_source=github) for information about setting up local build environments, testing your contributions, and our contribution process.
 
 ## Security
 
