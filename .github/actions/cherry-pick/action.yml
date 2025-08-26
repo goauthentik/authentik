@@ -114,13 +114,9 @@ runs:
         PR_DATA=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER)
         PR_TITLE=$(echo "$PR_DATA" | jq -r '.title')
         PR_AUTHOR=$(echo "$PR_DATA" | jq -r '.user.login')
-        PR_BODY=$(echo "$PR_DATA" | jq -r '.body // ""')
 
         echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
         echo "pr_author=$PR_AUTHOR" >> $GITHUB_OUTPUT
-        echo "pr_body<<EOF" >> $GITHUB_OUTPUT
-        echo "$PR_BODY" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
 
         # Determine which labels to process
         if [ "${{ steps.should_run.outputs.reason }}" = "label_added_to_merged_pr" ]; then
@@ -153,7 +149,6 @@ runs:
         COMMIT_SHA="${{ steps.should_run.outputs.merge_commit_sha }}"
         PR_TITLE="${{ steps.pr_details.outputs.pr_title }}"
         PR_AUTHOR="${{ steps.pr_details.outputs.pr_author }}"
-        PR_BODY="${{ steps.pr_details.outputs.pr_body }}"
         LABELS="${{ steps.pr_details.outputs.labels }}"
 
         echo "Processing PR #$PR_NUMBER (reason: ${{ steps.should_run.outputs.reason }})"
@@ -202,11 +197,7 @@ runs:
 
         **Original PR:** #$PR_NUMBER
         **Original Author:** @$PR_AUTHOR
-        **Cherry-picked commit:** $COMMIT_SHA
-
-        ---
-
-        $PR_BODY"
+        **Cherry-picked commit:** $COMMIT_SHA"
 
               NEW_PR=$(gh pr create \
                 --title "$CHERRY_PICK_TITLE" \
@@ -247,11 +238,7 @@ runs:
         **Original Author:** @$PR_AUTHOR
         **Cherry-picked commit:** $COMMIT_SHA
 
-        **Please resolve the conflicts in this PR before merging.**
-
-        ---
-
-        $PR_BODY"
+        **Please resolve the conflicts in this PR before merging.**"
 
               NEW_PR=$(gh pr create \
                 --title "$CONFLICT_TITLE" \
