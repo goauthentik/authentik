@@ -1,0 +1,206 @@
+name: "Cherry-picker"
+description: "Cherry-pick PRs based on their labels"
+
+inputs:
+  token:
+    description: "GitHub Token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check if workflow should run
+      id: should_run
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        # Case 1: PR was just merged (closed + merged = true)
+        if [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+          echo "should_run=true" >> $GITHUB_OUTPUT
+          echo "reason=pr_merged" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+
+        # Case 2: Label was added
+        if [ "${{ github.event.action }}" = "labeled" ]; then
+          LABEL_NAME="${{ github.event.label.name }}"
+          # Check if it's a backport label
+          if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
+            # Check if PR is already merged
+            if [ "${{ github.event.pull_request.merged }}" = "true" ]; then
+              echo "should_run=true" >> $GITHUB_OUTPUT
+              echo "reason=label_added_to_merged_pr" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "should_run=false" >> $GITHUB_OUTPUT
+              echo "reason=label_added_to_open_pr" >> $GITHUB_OUTPUT
+              echo "Backport label added to open PR. Will run after PR is merged."
+              exit 0
+            fi
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "reason=non_backport_label" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+        fi
+
+        echo "should_run=false" >> $GITHUB_OUTPUT
+        echo "reason=unknown" >> $GITHUB_OUTPUT
+    - name: Configure Git
+      if: steps.should_run.outputs.should_run == 'true'
+      shell: bash
+      run: |
+        git config --global user.name "authentik-automation[bot]"
+        git config --global user.email "135050075+authentik-automation[bot]@users.noreply.github.com"
+    - name: Extract backport labels and cherry-pick
+      if: steps.should_run.outputs.should_run == 'true'
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        # Get PR number and commit SHA
+        PR_NUMBER="${{ github.event.pull_request.number }}"
+        COMMIT_SHA="${{ github.event.pull_request.merge_commit_sha }}"
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+
+        echo "Processing PR #$PR_NUMBER (reason: ${{ steps.should_run.outputs.reason }})"
+
+        # Determine which labels to process
+        if [ "${{ steps.should_run.outputs.reason }}" = "label_added_to_merged_pr" ]; then
+          # Only process the specific label that was just added
+          LABEL_NAME="${{ github.event.label.name }}"
+          if [[ "$LABEL_NAME" =~ ^backport/(.+)$ ]]; then
+            LABELS="$LABEL_NAME"
+          else
+            echo "Label $LABEL_NAME does not match backport pattern"
+            exit 0
+          fi
+        else
+          # PR was just merged, process all backport labels
+          LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels[].name' | grep '^backport/' || true)
+        fi
+
+          if [ -z "$LABELS" ]; then
+            echo "No backport labels found"
+            exit 0
+          fi
+
+          echo "Found backport labels: $LABELS"
+
+          # Process each backport label
+          echo "$LABELS" | while read -r label; do
+            if [[ "$label" =~ ^backport/(.+)$ ]]; then
+              TARGET_BRANCH="${BASH_REMATCH[1]}"
+              echo "Processing backport to branch: $TARGET_BRANCH"
+
+              # Check if target branch exists
+              if ! git ls-remote --heads origin "$TARGET_BRANCH" | grep -q "$TARGET_BRANCH"; then
+                echo "❌ Target branch $TARGET_BRANCH does not exist, skipping"
+
+                # Comment on the original PR about the missing branch
+                gh pr comment $PR_NUMBER --body "⚠️ Cannot backport to \`$TARGET_BRANCH\`: branch does not exist."
+                continue
+              fi
+
+              # Create a unique branch name for the cherry-pick
+              CHERRY_PICK_BRANCH="cherry-pick-${PR_NUMBER}-to-${TARGET_BRANCH}"
+
+              # Check if a cherry-pick PR already exists
+              EXISTING_PR=$(gh pr list --head "$CHERRY_PICK_BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+              if [ -n "$EXISTING_PR" ]; then
+                echo "⚠️ Cherry-pick PR already exists: #$EXISTING_PR"
+                gh pr comment $PR_NUMBER --body "Cherry-pick to \`$TARGET_BRANCH\` already exists: #$EXISTING_PR"
+                continue
+              fi
+
+              # Fetch and checkout target branch
+              git fetch origin "$TARGET_BRANCH"
+              git checkout -b "$CHERRY_PICK_BRANCH" "origin/$TARGET_BRANCH"
+
+              # Attempt cherry-pick
+              if git cherry-pick "$COMMIT_SHA"; then
+                echo "✅ Cherry-pick successful for $TARGET_BRANCH"
+
+                # Push the cherry-pick branch
+                git push origin "$CHERRY_PICK_BRANCH"
+
+                # Create PR for the cherry-pick
+                CHERRY_PICK_TITLE="$PR_TITLE (cherry-pick #$PR_NUMBER)"
+                CHERRY_PICK_BODY="Cherry-pick of #$PR_NUMBER to \`$TARGET_BRANCH\` branch.
+
+        **Original PR:** #$PR_NUMBER
+        **Original Author:** @$PR_AUTHOR
+        **Cherry-picked commit:** $COMMIT_SHA
+
+        ---
+
+        ${{ github.event.pull_request.body }}"
+
+                NEW_PR=$(gh pr create \
+                  --title "$CHERRY_PICK_TITLE" \
+                  --body "$CHERRY_PICK_BODY" \
+                  --base "$TARGET_BRANCH" \
+                  --head "$CHERRY_PICK_BRANCH" \
+                  --label "cherry-pick" \
+                  --label "backport" \
+                  --json number --jq '.number')
+
+                echo "✅ Created cherry-pick PR #$NEW_PR for $TARGET_BRANCH"
+
+                # Comment on original PR
+                gh pr comment $PR_NUMBER --body "🍒 Cherry-pick to \`$TARGET_BRANCH\` created: #$NEW_PR"
+
+              else
+                echo "⚠️ Cherry-pick failed for $TARGET_BRANCH, creating conflict resolution PR"
+
+                # Add conflicted files and commit
+                git add .
+                git commit -m "Cherry-pick #$PR_NUMBER to $TARGET_BRANCH (with conflicts)
+
+        This cherry-pick has conflicts that need manual resolution.
+
+        Original PR: #$PR_NUMBER
+        Original commit: $COMMIT_SHA"
+
+                # Push the branch with conflicts
+                git push origin "$CHERRY_PICK_BRANCH"
+
+                # Create PR with conflict notice
+                CONFLICT_TITLE="$PR_TITLE (backport of #$PR_NUMBER)"
+                CONFLICT_BODY="⚠️ **This cherry-pick has conflicts that require manual resolution.**
+
+        Cherry-pick of #$PR_NUMBER to \`$TARGET_BRANCH\` branch.
+
+        **Original PR:** #$PR_NUMBER
+        **Original Author:** @$PR_AUTHOR
+        **Cherry-picked commit:** $COMMIT_SHA
+
+        **Please resolve the conflicts in this PR before merging.**
+
+        ---
+
+        ${{ github.event.pull_request.body }}"
+
+                NEW_PR=$(gh pr create \
+                  --title "$CONFLICT_TITLE" \
+                  --body "$CONFLICT_BODY" \
+                  --base "$TARGET_BRANCH" \
+                  --head "$CHERRY_PICK_BRANCH" \
+                  --label "cherry-pick" \
+                  --label "backport" \
+                  --label "conflicts" \
+                  --json number --jq '.number')
+
+                echo "⚠️ Created conflict resolution PR #$NEW_PR for $TARGET_BRANCH"
+
+                # Comment on original PR
+                gh pr comment $PR_NUMBER --body "⚠️ Cherry-pick to \`$TARGET_BRANCH\` has conflicts: #$NEW_PR"
+              fi
+
+              # Clean up - go back to main branch
+              git checkout main
+              git branch -D "$CHERRY_PICK_BRANCH" 2>/dev/null || true
+            fi
+          done

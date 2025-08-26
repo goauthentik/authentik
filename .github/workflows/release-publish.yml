@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-server:
-    uses: ./.github/workflows/_reusable-docker-build.yaml
+    uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     permissions:
       contents: read
