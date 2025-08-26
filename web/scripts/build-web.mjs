@@ -1,3 +1,9 @@
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
