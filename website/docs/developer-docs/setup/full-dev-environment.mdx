@@ -9,7 +9,6 @@ tags:
     - docker
 ---
 
-import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -24,6 +23,7 @@ Before you begin, ensure you have the following tools installed:
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
+- [Make](https://www.gnu.org/software/make/) (3 or later)
 
 ## 1. Setting Up Required Services
 
@@ -52,8 +52,8 @@ If using locally installed databases, ensure the PostgreSQL credentials provided
 
 ## 2. Installing Platform-Specific Dependencies
 
-<Tabs defaultValue="Mac">
-<TabItem value="Mac">
+<Tabs defaultValue="macOS">
+<TabItem value="macOS">
 
 Install the required native dependencies on macOS using Homebrew:
 
@@ -61,13 +61,13 @@ Install the required native dependencies on macOS using Homebrew:
 brew install \
 libxmlsec1 \
 libpq \
-krb5 \
 pkg-config \
 uv \
 postgresql \
 redis \
 node@24 \
-golangci-lint
+golangci-lint \
+krb5
 ```
 
 </TabItem>
@@ -76,7 +76,7 @@ golangci-lint
 For Debian/Ubuntu-based distributions:
 
 ```shell
-pip install uv && \
+pip install uv
 sudo apt-get install -y \
 libgss-dev \
 krb5-config \
@@ -182,13 +182,13 @@ Now that the backend and frontend have been set up and built, you can start auth
 Start the server by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-make run-server   # Starts authentik server
+make run-server
 ```
 
 Start the worker by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-make run-worker   # Starts authentik worker
+make run-worker
 ```
 
 Both processes need to run to get a fully functioning authentik development environment.
@@ -214,7 +214,11 @@ When `AUTHENTIK_DEBUG` is set to `true` (the default for the development environ
 
 ## End-to-End (E2E) Setup
 
-To run E2E tests, navigate to the `/tests/e2e` directory in your local copy of the authentik git repo, and start the services by running `docker compose up -d`.
+Start the E2E test services with the following command:
+
+```shell
+docker compose -f tests/e2e/docker-compose.yml up -d
+```
 
 You can then view the Selenium Chrome browser via http://localhost:7900/ using the password: `secret`.
 
@@ -233,6 +237,7 @@ Ensure your code meets our quality standards by running:
 1. **Code linting**:
 
     ```shell
+    make lint-fix
     make lint
     ```
 
@@ -248,10 +253,16 @@ Ensure your code meets our quality standards by running:
     make web
     ```
 
+4. **Run tests**:
+
+    ```shell
+    make test
+    ```
+
 You can run all these checks at once with:
 
 ```shell
-make lint gen web
+make all
 ```
 
 ### Submitting your changes
