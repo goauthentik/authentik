@@ -15,6 +15,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
+        set -e -o pipefail
         # For issues events, check if it's actually a PR
         if [ "${{ github.event_name }}" = "issues" ]; then
           # Check if this issue is actually a PR
@@ -106,6 +107,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
+        set -e -o pipefail
         PR_NUMBER="${{ steps.should_run.outputs.pr_number }}"
 
         # Get PR details
@@ -146,6 +148,7 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
+        set -e -o pipefail
         PR_NUMBER="${{ steps.should_run.outputs.pr_number }}"
         COMMIT_SHA="${{ steps.should_run.outputs.merge_commit_sha }}"
         PR_TITLE="${{ steps.pr_details.outputs.pr_title }}"
