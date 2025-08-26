@@ -77,6 +77,12 @@ updates:
       goauthentik:
         patterns:
           - "@goauthentik/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
