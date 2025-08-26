@@ -60,7 +60,7 @@ export abstract class FlowSearch<T extends Flow> extends CustomListenerElement(A
      * @attr
      */
     @property({ type: Boolean })
-    public required?: boolean;
+    required = false;
 
     /**
      * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
