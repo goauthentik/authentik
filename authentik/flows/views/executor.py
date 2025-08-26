@@ -96,6 +96,14 @@ class InvalidStageError(SentryIgnoredException):
     """Error raised when a challenge from a stage is not valid"""
 
 
+class IncompatibleFlowPlanException(SentryIgnoredException):
+    """Error raised when a flow plan is incompatible with the current code"""
+
+
+class FlowDoneException(SentryIgnoredException):
+    """Error raised when a flow is done"""
+
+
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
     """Flow executor, passing requests to Stage Views"""
@@ -154,6 +162,30 @@ class FlowExecutorView(APIView):
         return plan
 
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        try:
+            return super().dispatch(request)
+        except InvalidStageError as exc:
+            return self.stage_invalid(str(exc))
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
+        except EmptyFlowException as exc:
+            self._logger.warning("f(exec): Flow is empty", exc=exc)
+            # To match behaviour with loading an empty flow plan from cache,
+            # we don't show an error message here, but rather call _flow_done()
+            return self._flow_done()
+        except IncompatibleFlowPlanException as exc:
+            self._logger.warning("f(exec): found incompatible flow plan, invalidating run", exc=exc)
+            keys = cache.keys(f"{CACHE_PREFIX}*")
+            cache.delete_many(keys)
+            return self.stage_invalid()
+        except FlowDoneException:
+            self._logger.debug("f(exec): no more stages, flow is done.")
+            return self._flow_done()
+
+    def perform_authentication(self, request: HttpRequest) -> None:
+        _ = request.user  # accessing request.user forces authentication to happen
+
         with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
@@ -182,6 +214,7 @@ class FlowExecutorView(APIView):
                 request.session[SESSION_KEY_HISTORY] = []
                 self._logger.debug("f(exec): No active Plan found, initiating planner")
                 try:
+                    # _initiate_plan() might throw FlowNonApplicableException or EmptyFlowException
                     self.plan = self._initiate_plan()
                 except FlowNonApplicableException as exc:
                     # If we're this flow is for authentication and the user is already authenticated
@@ -190,14 +223,8 @@ class FlowExecutorView(APIView):
                         self.flow.designation == FlowDesignation.AUTHENTICATION
                         and self.request.user.is_authenticated
                     ):
-                        return self._flow_done()
-                    self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
-                    return self.handle_invalid_flow(exc)
-                except EmptyFlowException as exc:
-                    self._logger.warning("f(exec): Flow is empty", exc=exc)
-                    # To match behaviour with loading an empty flow plan from cache,
-                    # we don't show an error message here, but rather call _flow_done()
-                    return self._flow_done()
+                        raise FlowDoneException() from None
+                    raise exc
             # We don't save the Plan after getting the next stage
             # as it hasn't been successfully passed yet
             try:
@@ -205,16 +232,11 @@ class FlowExecutorView(APIView):
                 # if the cached plan is from an older version, it might have different attributes
                 # in which case we just delete the plan and invalidate everything
                 next_binding = self.plan.next(self.request)
-            except Exception as exc:  # noqa
-                self._logger.warning(
-                    "f(exec): found incompatible flow plan, invalidating run", exc=exc
-                )
-                keys = cache.keys(f"{CACHE_PREFIX}*")
-                cache.delete_many(keys)
-                return self.stage_invalid()
+            except Exception as exc:
+                raise IncompatibleFlowPlanException() from exc
+
             if not next_binding:
-                self._logger.debug("f(exec): no more stages, flow is done.")
-                return self._flow_done()
+                raise FlowDoneException()
             self.current_binding = next_binding
             self.current_stage = next_binding.stage
             self._logger.debug(
@@ -226,15 +248,11 @@ class FlowExecutorView(APIView):
                 stage_cls = self.current_stage.view
             except NotImplementedError as exc:
                 self._logger.debug("Error getting stage type", exc=exc)
-                return self.stage_invalid()
+                raise InvalidStageError() from None
             self.current_stage_view = stage_cls(self)
             self.current_stage_view.args = self.args
             self.current_stage_view.kwargs = self.kwargs
             self.current_stage_view.request = request
-            try:
-                return super().dispatch(request)
-            except InvalidStageError as exc:
-                return self.stage_invalid(str(exc))
 
     def handle_exception(self, exc: Exception) -> HttpResponse:
         """Handle exception in stage execution"""
