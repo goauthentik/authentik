@@ -15,7 +15,7 @@ We expect all contributors to act professionally and respectfully in all interac
 
 ## Have a question?
 
-Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord).
+Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord?utm_source=developer-docs).
 
 ## What should I know before I get started?
 
