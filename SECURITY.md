@@ -27,22 +27,22 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 If you discover a potential vulnerability, please report it responsibly through one of the following channels:
 
-    - **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
-    - **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
+- **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
+- **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
 
 When submitting a report, please include as much detail as possible, such as:
 
-    - **Affected version(s)**: The version of authentik where the issue was identified.
-    - **Steps to reproduce**: A clear description or proof of concept to help us verify the issue.
-    - **Impact assessment**: How the vulnerability could be exploited and its potential effect.
-    - **Additional information**: Logs, configuration details (if relevant), or any suggested mitigations.
+- **Affected version(s)**: The version of authentik where the issue was identified.
+- **Steps to reproduce**: A clear description or proof of concept to help us verify the issue.
+- **Impact assessment**: How the vulnerability could be exploited and its potential effect.
+- **Additional information**: Logs, configuration details (if relevant), or any suggested mitigations.
 
 We kindly ask that you do not disclose the vulnerability publicly until we have confirmed and addressed the issue.
 
 Our team will:
 
-    - Acknowledge receipt of your report as quickly as possible.
-    - Keep you updated on the investigation and resolution progress.
+- Acknowledge receipt of your report as quickly as possible.
+- Keep you updated on the investigation and resolution progress.
 
 ## Researcher Recognition
 
