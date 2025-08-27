@@ -51,7 +51,7 @@ brew install node@24
 </TabItem>
 <TabItem value="Windows">
 
-We're currently seeking community input on running the docs in Windows. If you have experience with this setup, please consider contributing to this documentation.
+We're currently seeking community input on building the docs in Windows. If you have experience with this setup, please consider contributing to this documentation.
 
 </TabItem>
 </Tabs>
