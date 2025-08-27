@@ -10,11 +10,13 @@ import { fileURLToPath } from "node:url";
 import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
+    prepareReleaseEnvironment,
 } from "@goauthentik/docusaurus-theme/releases/utils";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const releases = collectReleaseFiles(path.join(__dirname));
+const releaseEnvironment = prepareReleaseEnvironment();
 
 /**
  * @type {SidebarItemConfig[]}
@@ -640,7 +642,7 @@ const items = [
         items: [
             {
                 type: "link",
-                href: "https://api.goauthentik.io",
+                href: releaseEnvironment.apiReferenceOrigin,
                 label: "API Overview",
                 className: "api-overview",
             },
@@ -663,7 +665,6 @@ const items = [
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
                     "developer-docs/setup/debugging",
                 ],
             },

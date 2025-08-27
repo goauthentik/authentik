@@ -144,7 +144,7 @@ export class RelatedGroupList extends Table<Group> {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
-            html`<ak-label type="info" ?good=${item.isSuperuser}></ak-label>`,
+            html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Group")} </span>

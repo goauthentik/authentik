@@ -4,16 +4,16 @@ import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/u
 
 import clsx from "clsx";
 import React, { memo } from "react";
+import { AKReleasesPluginEnvironment } from "releases/utils.mjs";
 
 export interface VersionDropdownProps {
     /**
      * The hostname of the client.
      */
     hostname: string | null;
-    /**
-     * The branch of the documentation.
-     */
-    branch?: string;
+
+    environment: AKReleasesPluginEnvironment;
+
     /**
      * The available versions of the documentation.
      *
@@ -25,7 +25,8 @@ export interface VersionDropdownProps {
 /**
  * A dropdown that shows the available versions of the documentation.
  */
-export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases }) => {
+export const VersionDropdown = memo<VersionDropdownProps>(({ environment, releases }) => {
+    const { branch, preReleaseOrigin } = environment;
     const parsedSemVer = parseBranchSemVer(branch);
 
     const currentLabel = parsedSemVer || "Pre-release";
@@ -50,7 +51,7 @@ export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases })
                     <>
                         <li>
                             <a
-                                href="https://docs.goauthentik.io"
+                                href={preReleaseOrigin}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="dropdown__link menu__link"
@@ -63,12 +64,11 @@ export const VersionDropdown = memo<VersionDropdownProps>(({ branch, releases })
                 ) : null}
 
                 {visibleReleases.map((semVer, idx) => {
-                    const label = semVer;
+                    let label = semVer;
 
-                    // TODO: Flesh this out after we settle on versioning strategy.
-                    // if (idx === 0) {
-                    //     label += " (Current Release)";
-                    // }
+                    if (idx === 0) {
+                        label += " (Current Release)";
+                    }
 
                     return (
                         <li key={idx}>
