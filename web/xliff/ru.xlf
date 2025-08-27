@@ -9827,6 +9827,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s23da7320dee28a60">
   <source>Device Code</source>
 </trans-unit>
+<trans-unit id="s56e7ff6cc2abeb0d">
+  <source>Wizard steps</source>
+</trans-unit>
+<trans-unit id="s04e09c193d15e4b4">
+  <source>Wizard navigation</source>
+</trans-unit>
+<trans-unit id="s48a2e97afd62c35e">
+  <source>Close wizard</source>
+</trans-unit>
+<trans-unit id="s74b47e964bb82e5f">
+  <source>Wizard content</source>
+</trans-unit>
+<trans-unit id="sa782d5a1919bcbb1">
+  <source>Select a provider type</source>
+</trans-unit>
+<trans-unit id="sa9a4ce20b507b232">
+  <source>New Provider</source>
+</trans-unit>
+<trans-unit id="sf397c39bda7abfc6">
+  <source>Open the wizard to create a new provider.</source>
+</trans-unit>
+<trans-unit id="s700456b0667029f9">
+  <source>Applications library</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
