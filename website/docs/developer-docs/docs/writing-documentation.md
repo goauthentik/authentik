@@ -85,7 +85,7 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 
 For our technical documentation (https://docs.goauthentik.io/docs/), the following commands are used:
 
-### Building locally
+### Build locally
 
 ```shell
 make docs
