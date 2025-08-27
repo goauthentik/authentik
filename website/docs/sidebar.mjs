@@ -656,7 +656,6 @@ const items = [
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",
-                    "developer-docs/setup/website-dev-environment",
                     "developer-docs/setup/debugging",
                 ],
             },
