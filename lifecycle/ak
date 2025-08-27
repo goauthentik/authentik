@@ -69,7 +69,7 @@ function prepare_debug {
 }
 
 if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
-    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}"
+    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
 fi
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
 
