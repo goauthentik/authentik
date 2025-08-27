@@ -172,7 +172,7 @@ class SyncTasks:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
                     f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to "
-                    "transient error: {str(exc)}",
+                    f"transient error: {str(exc)}",
                     obj=sanitize_item(obj),
                 )
             except StopSync as exc:
