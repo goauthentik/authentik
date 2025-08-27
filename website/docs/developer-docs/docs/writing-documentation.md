@@ -2,13 +2,12 @@
 title: Writing documentation
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
 The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (https://integrations.goauthentik.io/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
-
-## Requirements
-
-- Node.js 24 (or later)
 
 ## Guidelines
 
@@ -28,17 +27,52 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
 :::
 
-## Clone and fork the authentik repository
+## Setting up a docs development environment
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en) (24 or later)
+- [Make](https://www.gnu.org/software/make/) (3 or later)
+
+<Tabs defaultValue="macOS">
+<TabItem value="macOS">
+
+Install the required dependencies on macOS using Homebrew:
+
+```shell
+brew install node@24
+```
+
+</TabItem>
+<TabItem value="Linux">
+
+[Download NodeJS version 24](https://nodejs.org/en/download/current) for your Linux distribution.
+
+</TabItem>
+<TabItem value="Windows">
+
+We're currently seeking community input on building the docs in Windows. If you have experience with this setup, please consider contributing to this documentation.
+
+</TabItem>
+</Tabs>
+
+### Clone and fork the authentik repository
+
+```shell
+git clone https://github.com/goauthentik/authentik
+```
 
 The documentation, integration guides, API docs, and the code are in the same [GitHub repo](https://github.com/goauthentik/authentik), so if you have cloned and forked the repo, you already have the docs and integration guides.
 
-## Set up your local build tools
+### Set up your local build tools
 
-Run the following command to install the build tools for both the technical docs and integration guides.
+Run the following command to install or update the build tools for both the technical docs and integration guides.
 
-- **Install (or update) the build tools**: `make docs-install`
+```shell
+make docs-install
+```
 
-    Installs the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
+Installs or updates the build dependencies such as Docusaurus, Prettier, and ESLint. You should run this command when you are first setting up your writing environment, and also if you encounter build check fails either when you build locally or when you push your PR to the authentik repository. Running this command will grab any new dependencies that we might have added to our build tool package.
 
 ## Writing or modifying technical docs
 
@@ -51,13 +85,21 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 
 For our technical documentation (https://docs.goauthentik.io/docs/), the following commands are used:
 
-- **Build locally**: `make docs`
+### Build locally
 
-    This command is a combination of `make docs-lint-fix` and `make docs-build`. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+```shell
+make docs
+```
 
-- **Live editing**: `make docs-watch`
+This command is a combination of `make docs-lint-fix` and `make docs-build`. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
 
-    Starts a development server for the documentation site. This command will automatically rebuild your local documentation site whenever you make changes to the Markdown files in the `website/docs` directory.
+### Live editing
+
+```shell
+make docs-watch
+```
+
+Starts a local development server for the documentation site and opens a preview in your browser. This command will automatically rebuild your local documentation site in real time, as you write or make changes to the Markdown files in the `website/docs` directory.
 
 ## Writing or modifying integration guides
 
@@ -75,10 +117,18 @@ You no longer need to modify the integrations sidebar file manually. This is now
 
 When authoring integration guides, the following commands are used:
 
-- **Build locally**: `make integrations`
+### Build locally
 
-    This command is a combination of `make docs-lint-fix` and `make integrations-build`. This command should always be run on your local branch before committing your changes to a pull request to the authentik repo. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+```shell
+make integrations
+```
 
-- **Live editing**: `make integrations-watch`
+This command is a combination of `make docs-lint-fix` and `make integrations-build`. This command should always be run on your local branch before committing your changes to a pull request to the authentik repo. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
 
-    Starts a development server for the integrations guides. This command will automatically rebuild your local integrations site whenever you make changes to the Markdown files in the [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations) directory.
+### Live editing
+
+```shell
+make integrations-watch
+```
+
+Starts a local development server for the integrations site and opens a preview in your browser. This command will automatically rebuild your local integrations site in real time, as you write or make changes to the Markdown files in the `website/integrations` directory.
