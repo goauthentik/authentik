@@ -206,10 +206,10 @@ runs:
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
 
-              echo "✅ Created cherry-pick PR #$NEW_PR for $TARGET_BRANCH"
+              echo "✅ Created cherry-pick PR $NEW_PR for $TARGET_BRANCH"
 
               # Comment on original PR
-              gh pr comment $PR_NUMBER --body "🍒 Cherry-pick to \`$TARGET_BRANCH\` created: #$NEW_PR"
+              gh pr comment $PR_NUMBER --body "🍒 Cherry-pick to \`$TARGET_BRANCH\` created: $NEW_PR"
 
             else
               echo "⚠️ Cherry-pick failed for $TARGET_BRANCH, creating conflict resolution PR"
@@ -245,10 +245,10 @@ runs:
                 --head "$CHERRY_PICK_BRANCH" \
                 --label "cherry-pick")
 
-              echo "⚠️ Created conflict resolution PR #$NEW_PR for $TARGET_BRANCH"
+              echo "⚠️ Created conflict resolution PR $NEW_PR for $TARGET_BRANCH"
 
               # Comment on original PR
-              gh pr comment $PR_NUMBER --body "⚠️ Cherry-pick to \`$TARGET_BRANCH\` has conflicts: #$NEW_PR"
+              gh pr comment $PR_NUMBER --body "⚠️ Cherry-pick to \`$TARGET_BRANCH\` has conflicts: $NEW_PR"
             fi
 
             # Clean up - go back to main branch
