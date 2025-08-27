@@ -99,7 +99,7 @@ This command is a combination of `make docs-lint-fix` and `make docs-build`. It 
 make docs-watch
 ```
 
-Starts a development server for the documentation site. This command will automatically rebuild your local documentation site whenever you make changes to the Markdown files in the `website/docs` directory.
+Starts a local development server for the documentation site. This command will automatically rebuild your local documentation site in real time, as you write or make changes to the Markdown files in the `website/docs` directory, and launch the build of your local docs in a browser for viewing.
 
 ## Writing or modifying integration guides
 
