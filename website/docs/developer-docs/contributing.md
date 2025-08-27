@@ -13,7 +13,7 @@ We appreciate contributions of code, documentation, enhancements, and bug fixes.
 
 We expect all contributors to act professionally and respectfully in all interactions. If there's something you dislike or think can be done better, tell us! We'd love to hear any suggestions for improvement.
 
-## Have a question?
+## I don't want to read this whole thing I just have a question!!!
 
 Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord?utm_source=developer-docs).
 
