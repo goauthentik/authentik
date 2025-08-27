@@ -1,5 +1,6 @@
 ---
 title: Contributing to authentik
+description: Guidelines for contributing code, docs, and enhancements to authentik.
 ---
 
 :+1::tada: Thanks for taking the time to contribute! :tada::+1:
@@ -14,7 +15,7 @@ We expect all contributors to act professionally and respectfully in all interac
 
 ## I don't want to read this whole thing I just have a question!!!
 
-Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord)
+Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord?utm_source=developer-docs).
 
 ## What should I know before I get started?
 
@@ -22,16 +23,16 @@ Either [create a question on GitHub](https://github.com/goauthentik/authentik/is
 
 authentik consists of a few larger components:
 
-- _authentik_ the actual application server, is described below.
-- _outpost-proxy_ is a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
-- _outpost-ldap_ is a Go LDAP server that uses the _authentik_ application server as its backend
-- _outpost-radius_ is a Go RADIUS server that uses the _authentik_ application server as its backend
-- _web_ is the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS Library.
-- _website_ is the Website/documentation, which uses docusaurus.
+- _authentik_ — the actual application server, described below.
+- _outpost-proxy_ — a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
+- _outpost-ldap_ — a Go LDAP server that uses the _authentik_ application server as its backend.
+- _outpost-radius_ — a Go RADIUS server that uses the _authentik_ application server as its backend.
+- _web_ — the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS library.
+- _website_ — the website/documentation, which uses Docusaurus.
 
 ### authentik's structure
 
-authentik is at it's very core a Django project. It consists of many individual django applications. These applications are intended to separate concerns, and they may share code between each other.
+authentik is at its very core a Django project. It consists of many individual Django applications. These applications are intended to separate concerns, and they may share code between each other.
 
 These are the current packages:
 
@@ -46,7 +47,7 @@ authentik
 ├── events - Event Log, middleware and signals to generate signals
 ├── flows - Flows, the FlowPlanner and the FlowExecutor, used for all flows for authentication, authorization, etc
 ├── lib - Generic library of functions, few dependencies on other packages.
-├── outposts - Configure and deploy outposts on kubernetes and docker.
+├── outposts - Configure and deploy outposts on Kubernetes and Docker.
 ├── policies - General PolicyEngine
 │   ├── dummy - A Dummy policy used for testing
 │   ├── event_matcher - Match events based on different criteria
@@ -62,7 +63,7 @@ authentik
 │   ├── saml - SAML2 Provider
 │   └── scim - SCIM Provider
 ├── recovery - Generate keys to use in case you lock yourself out
-├── root - Root django application, contains global settings and routes
+├── root - Root Django application, contains global settings and routes
 ├── sources
 │   ├── kerberos - Sync Kerberos users into authentik
 │   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
@@ -89,10 +90,10 @@ authentik
 │   ├── user_logout - Logout the currently pending user
 │   └── user_write - Write any currently pending data to the user.
 ├── tasks - Background tasks
-└── tenants - Soft tennancy, configure defaults and branding per domain
+└── tenants - Soft tenancy, configure defaults and branding per domain
 ```
 
-This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to go.
+This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to Go.
 
 There are also several background tasks that run in Dramatiq, via the `django-dramatiq-postgres` package, with some additional helpers in `authentik.tasks`.
 
@@ -116,7 +117,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 #### Local development
 
-authentik can be run locally, although depending on which part you want to work on, different pre-requisites are required.
+authentik can be run locally, although depending on which part you want to work on, different prerequisites are required.
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
@@ -137,9 +138,9 @@ The process described here has several goals:
 
 Please follow these steps to have your contribution considered by the maintainers:
 
-1. Follow the [styleguides](#style-guides)
+1. Follow the [style guides](#style-guides)
 2. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
-3. Ensure your Code has tests. While it is not always possible to test every single case, the majority of the code should be tested.
+3. Ensure your code has tests. While it is not always possible to test every single case, the majority of the code should be tested.
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
