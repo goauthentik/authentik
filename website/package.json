@@ -25,6 +25,7 @@
         "@types/node": "^24.3.0",
         "@typescript-eslint/eslint-plugin": "^8.41.0",
         "@typescript-eslint/parser": "^8.41.0",
+        "escape-string-regexp": "^5.0.0",
         "eslint": "^9.34.0",
         "netlify-plugin-cache": "^1.0.3",
         "netlify-redirect-parser": "^14.4.0",

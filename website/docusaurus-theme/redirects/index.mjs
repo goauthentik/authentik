@@ -2,6 +2,8 @@
  * @file Docusaurus redirects utils.
  */
 
+import escapeStringRegexp from "escape-string-regexp";
+
 /**
  * @typedef {Object} RedirectEntry
  *
@@ -11,16 +13,6 @@
  */
 
 /**
- * Escapes RegExp special characters in a string.
- *
- * @param {string} string
- * @returns {string}
- */
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/**
  * Given a pathname, return a RegExp that matches the pathname.
  *
  * @param {string} pathname
@@ -28,7 +20,7 @@ function escapeRegExp(string) {
  */
 export function pathnameToMatcher(pathname) {
     return new RegExp(
-        "^" + escapeRegExp(pathname).replace(/\\\*/g, "(?<splat>.*)").replace(/\//g, "\\/"),
+        "^" + escapeStringRegexp(pathname).replace(/\\\*/g, "(?<splat>.*)").replace(/\//g, "\\/"),
         "i",
     );
 }
@@ -41,7 +33,7 @@ export function pathnameToMatcher(pathname) {
  * @returns {RegExp}
  */
 export function destinationToMatcher(destination) {
-    const safeDestination = escapeRegExp(destination)
+    const safeDestination = escapeStringRegexp(destination)
         .replace(/:splat/g, "(?<splat>.*)")
         .replace(/\//g, "\\/");
     return new RegExp("^" + safeDestination + "$", "i");
