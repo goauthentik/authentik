@@ -1,7 +1,7 @@
 """EntraID OAuth2 Views"""
 
 from typing import Any
-
+from urllib.parse import urlparse, urlunparse
 from requests import RequestException
 from structlog.stdlib import get_logger
 
@@ -13,13 +13,23 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 LOGGER = get_logger()
 
+def get_graph_base_url(profile_url: str) -> str:
+    """Dynamically get the graph base URL from the full profile URL."""
+    parsed_url = urlparse(profile_url)
+    return urlunparse((parsed_url.scheme, parsed_url.netloc, "", "", "", ""))
+
+
+def get_graph_scope(profile_url: str, permission: str) -> str:
+    """Dynamically build a full graph scope from the profile URL."""
+    base_url = get_graph_base_url(profile_url)
+    return f"{base_url}/{permission}"
 
 class EntraIDOAuthRedirect(OAuthRedirect):
     """Entra ID OAuth2 Redirect"""
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": ["openid", "https://graph.microsoft.com/User.Read"],
+            "scope": ["openid", get_graph_scope(source.profile_url, "User.Read")],
         }
 
 
@@ -28,11 +38,32 @@ class EntraIDClient(UserprofileHeaderAuthClient):
 
     def get_profile_info(self, token):
         profile_data = super().get_profile_info(token)
-        if "https://graph.microsoft.com/GroupMember.Read.All" not in self.source.additional_scopes:
-            return profile_data
+        group_read_scope = get_graph_scope(self.source.profile_url, "GroupMember.Read.All")
+
+        # Check if group reading scope is configured (with fallback for different scope formats)
+        if group_read_scope not in self.source.additional_scopes:
+            # Try alternative scope names that might be configured
+            alternative_scopes = [
+                "GroupMember.Read.All",
+                "Group.Read.All", 
+                f"{get_graph_base_url(self.source.profile_url)}/Group.Read.All"
+            ]
+            
+            scope_found = False
+            for alt_scope in alternative_scopes:
+                if alt_scope in self.source.additional_scopes:
+                    scope_found = True
+                    break
+            
+            if not scope_found:
+                return profile_data
+
+        # Build the memberOf URL using the same base as profile_url
+        graph_base_url = get_graph_base_url(self.source.profile_url)
+        member_of_url = f"{graph_base_url}/v1.0/me/memberOf"
         group_response = self.session.request(
             "get",
-            "https://graph.microsoft.com/v1.0/me/memberOf",
+            member_of_url,
             headers={"Authorization": f"{token['token_type']} {token['access_token']}"},
         )
         try:
@@ -78,7 +109,7 @@ class EntraIDType(SourceType):
     authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
-        mail = info.get("mail", None) or info.get("otherMails", [None])[0]
+        mail = info.get("mail", None) or info.get("email", None) or info.get("userPrincipalName", None) or info.get("otherMails", [None])[0]
         # Format group info
         groups = []
         group_id_dict = {}
