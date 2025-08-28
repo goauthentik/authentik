@@ -11,6 +11,7 @@
         "./config": "./config.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
+        "./redirects/utils": "./redirects/utils.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
         "./releases/utils": "./releases/utils.mjs"
     },

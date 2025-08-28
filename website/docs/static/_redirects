@@ -1,0 +1,65 @@
+# @file Redirect rules for the Docusaurus site.
+#
+# See https://docs.netlify.com/manage/routing/redirects/overview/
+#
+# Note: The order of the rules defines the priority of the redirect.
+#       i.e. The first rule that matches the URL will take precedence.
+
+#region API
+/api                                                        https://api.goauthentik.io
+/docs/api                                                   https://api.goauthentik.io
+/docs/developer-docs/api/                                   https://api.goauthentik.io
+/api/*                                                      https://api.goauthentik.io/:splat
+/docs/api/*                                                 https://api.goauthentik.io/:splat
+/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat
+/developer-docs/api/*                                       https://api.goauthentik.io/:splat
+#endregion
+
+#region Applications
+/add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/
+/core/applications                                          /add-secure-apps/applications/
+/applications/*                                             /add-secure-apps/applications/:splat
+#endregion
+
+#region Core
+/core/geoip                                                 /install-config/geoip/
+/installation/*                                             /install-config/:splat
+#endregion
+
+#region Customize
+/core/brands                                                /customize/brands/
+/customize/brands                                           /customize/branding/
+/customize/interfaces/admin/customization	                /customize/interfaces/admin/
+/customize/interfaces/flow/customization	                /customize/interfaces/flow/
+/customize/interfaces/user/customization	                /customize/interfaces/user/
+/customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/
+/customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/
+/interfaces/*                                               /customize/interfaces/:splat
+/policies/*                                                 /customize/policies/:splat
+#endregion
+
+/core/certificates                                          /sys-mgmt/certificates/
+/core/settings                                              /sys-mgmt/settings/
+/install-config/geoip                                       /sys-mgmt/ops/geoip
+/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3
+/events/*                                                   /sys-mgmt/events/:splat
+/flow/*                                                     /add-secure-apps/flows-stages/flow/:splat
+/flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat
+/outposts/*                                                 /add-secure-apps/outposts/:splat
+/providers/*                                                /add-secure-apps/providers/:splat
+/sources/*                                                  /users-sources/sources/:splat
+/user-group-role/*                                          /users-sources/:splat
+/property-mappings/*                                        /providers/property-mappings/:splat
+
+/security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53
+/security/CVE-*                                             /security/cves/CVE-:splat
+/security/GHSA-*                                            /security/cves/GHSA-:splat
+
+#region Integrations
+/integrations                                               https://integrations.goauthentik.io
+/integrations/*                                             https://integrations.goauthentik.io/:splat
+#endregion
+
+#region Docs prefix
+# /docs/*                                                     /:splat
+#endregion

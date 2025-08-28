@@ -16,12 +16,14 @@ import {
     createClassicPreset,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
+import { RedirectsIndex } from "@goauthentik/docusaurus-theme/redirects/utils";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/utils";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 const rootStaticDirectory = resolve(__dirname, "..", "static");
+const packageStaticDirectory = resolve(__dirname, "static");
 const authentikModulePath = resolve(__dirname, "..", "..");
 
 const releaseEnvironment = prepareReleaseEnvironment();
@@ -40,6 +42,9 @@ await Promise.all(
         return cp(file, destPath, { recursive: true });
     }),
 );
+
+const redirectsFile = resolve(packageStaticDirectory, "_redirects");
+const redirectsIndex = await RedirectsIndex.build(redirectsFile);
 
 //#endregion
 
@@ -100,20 +105,10 @@ export default createDocusaurusConfig(
             [
                 "@docusaurus/plugin-client-redirects",
                 /** @type {RedirectsPluginOptions} */ ({
-                    redirects: [
-                        {
-                            from: [
-                                "/api",
-                                "/docs/api",
-                                "/docs/developer-docs/api/",
-                                "/developer-docs/api/",
-                            ],
-                            to: releaseEnvironment.apiReferenceOrigin,
-                        },
-                    ],
                     createRedirects(existingPath) {
-                        // Redirect to their respective path without the `docs/` prefix
-                        return `/docs${existingPath}`;
+                        const redirects = redirectsIndex.rewriteDestination(existingPath);
+
+                        return redirects;
                     },
                 }),
             ],
