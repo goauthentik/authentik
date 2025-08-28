@@ -4,7 +4,7 @@ import { createVersionURL, parseBranchSemVer } from "#components/VersionPicker/u
 
 import clsx from "clsx";
 import React, { memo } from "react";
-import { AKReleasesPluginEnvironment } from "releases/utils.mjs";
+import { AKReleasesPluginEnvironment } from "releases/node.mjs";
 
 export interface VersionDropdownProps {
     /**

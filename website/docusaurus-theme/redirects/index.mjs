@@ -2,8 +2,6 @@
  * @file Docusaurus redirects utils.
  */
 
-import { parseAllRedirects } from "netlify-redirect-parser";
-
 /**
  * @typedef {Object} RedirectEntry
  *
@@ -11,6 +9,16 @@ import { parseAllRedirects } from "netlify-redirect-parser";
  * @property {string} to
  * @property {boolean} force
  */
+
+/**
+ * Escapes RegExp special characters in a string.
+ *
+ * @param {string} string
+ * @returns {string}
+ */
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 /**
  * Given a pathname, return a RegExp that matches the pathname.
@@ -30,41 +38,16 @@ export function pathnameToMatcher(pathname) {
  * @returns {RegExp}
  */
 export function destinationToMatcher(destination) {
-    return new RegExp(
-        "^" + destination.replace(/:splat/g, "(?<splat>.*)").replace(/\//g, "\\/") + "$",
-        "i",
-    );
+    const safeDestination = escapeRegExp(destination)
+        .replace(/:splat/g, "(?<splat>.*)")
+        .replace(/\//g, "\\/");
+    return new RegExp("^" + safeDestination + "$", "i");
 }
 
 /**
- * A two-way map of redirects.
+ * A two-way map of route rewrites.
  */
-export class RedirectsIndex {
-    /**
-     * @param {string[]} redirectsFiles
-     * @returns {Promise<RedirectsIndex>}
-     */
-    static async build(...redirectsFiles) {
-        const redirectsFileContent = await parseAllRedirects({
-            redirectsFiles,
-            configRedirects: [],
-            minimal: true,
-        });
-
-        if (redirectsFileContent.errors.length) {
-            console.error(redirectsFileContent.errors);
-            throw new TypeError("Failed to parse redirects file.");
-        }
-
-        /**
-         * @type {RedirectEntry[]}
-         */
-        // @ts-expect-error - dynamically generated.
-        const redirectEntries = redirectsFileContent.redirects;
-
-        return new RedirectsIndex(redirectEntries);
-    }
-
+export class RewriteIndex {
     /**
      * @type {Map<RegExp, string>}
      */
@@ -99,10 +82,36 @@ export class RedirectsIndex {
     }
 
     /**
+     * Find the final destination for the given pathname, following all redirects.
+     *
      * @param {string} pathname
      * @returns {string}
      */
-    rewriteFrom(pathname) {
+    finalDestination(pathname) {
+        if (!pathname) return pathname;
+
+        let destination = this.findNextDestination(pathname);
+
+        while (true) {
+            const next = this.findNextDestination(destination);
+
+            if (next === destination) {
+                break;
+            }
+
+            destination = next;
+        }
+
+        return destination ?? pathname;
+    }
+
+    /**
+     * Find the next destination for the given pathname.
+     *
+     * @param {string} pathname
+     * @returns {string}
+     */
+    findNextDestination(pathname) {
         for (const [from, to] of this.#fromMap) {
             const match = from.exec(pathname);
 
@@ -126,7 +135,7 @@ export class RedirectsIndex {
      * @param {string} pathname
      * @returns {string[]}
      */
-    rewriteDestination(pathname) {
+    findAliases(pathname) {
         const aliases = new Set();
 
         for (const [destinationMatcher, destination] of this.#destinationMap) {

@@ -337,6 +337,95 @@ When documenting errors, follow this structure:
 
 ---
 
+## Page routing and URLs
+
+Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.
+
+### Converting file paths to URLs
+
+Let's take a look at the file path of this page:
+
+```text
+/website/docs/developer-docs/docs/style-guide.mdx
+```
+
+Compared to the URL path of this page, there are a few differences:
+
+- The file path drops the `website/docs` prefix.
+- File extensions are removed.
+- A trailing slash is added.
+
+This results in the following URL path:
+
+```text
+https://docs.goauthentik.io/developer-docs/docs/style-guide/
+```
+
+The final published URL is made possible with a combination of [Docusaurus's router](https://docusaurus.io/docs/advanced/routing) and [Netlify's redirects](https://docs.netlify.com/routing/redirects/).
+
+### Redirects
+
+Sometimes we need to move pages or change URLs. Instead of breaking bookmarks and links, we can define a redirect to automatically send readers from old URLs to new ones.
+
+All our redirects are defined in the `website/docs/static/_redirects` file. Each line includes two parts – the source URL path and the destination URL path:
+
+```text
+/old-path    /new-path
+```
+
+For example, if we moved our applications page:
+
+```text
+/core/applications    /add-secure-apps/applications/
+```
+
+Anyone visiting the old URL will automatically land on the new page using a combination of Netlify and Docusaurus.
+
+#### Initial page loads (server-side)
+
+When a reader first visits a documentation page or refreshes their browser:
+
+1. Their browser requests the URL from our server (Netlify).
+2. Netlify checks if that exact page exists.
+3. If not, it checks our `_redirects` file for a matching rule.
+4. The server sends back the correct page, or a 404 if no matching rule exists.
+
+#### Navigating between pages (client-side)
+
+When a reader clicks a link to another documentation page:
+
+1. Docusaurus intercepts the click (no server request needed)
+2. The URL in the browser's address bar changes.
+3. Docusaurus router fetches the new page content without a full reload.
+
+If Docusaurus's router attempts to render a page that does not exist, the `_redirects` file will be used to determine if a redirect rule should be applied, without a server request or a full reload.
+
+Whether the reader is viewing page for the first time or navigating between pages, this arrangement allows us to have a single source of truth for all URLs, ensuring that each page remains consistently accessible across authentik versions and our throughout three Docusaurus deployments (Topics, Integrations, and API).
+
+### Updating a page's URL
+
+:::danger Every URL is a promise
+
+When someone bookmarks a page or shares a link, they expect it to keep working.
+
+**Before changing any URL, ask yourself:**
+
+- [x] Is this move absolutely necessary?
+- [x] Could better organization be achieved without moving files?
+- [x] Will this help or confuse readers migrating between authentik versions?
+
+Remember, [Cool URIs don't change!](https://www.w3.org/Provider/Style/URI)
+:::
+
+Moving a documentation page to a new location requires updating both the `sidebar.mjs` file in the `website/docs` directory, and the `_redirects` file.
+
+1. Take note of the page's current URL path in the browser's address bar.
+2. Move moving the Markdown file to the new location.
+3. Update the `sidebar.mjs` file in the `website/docs` directory.
+4. Add a new redirect rule to the `_redirects` in the `website/docs/static` directory.
+
+---
+
 ## Accessibility best practices
 
 - **Alt text for images**: Describe the purpose of the image, not just its appearance. For example, use "Screenshot of the login form" instead of "Image of a form."

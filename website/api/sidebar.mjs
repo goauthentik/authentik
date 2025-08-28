@@ -11,7 +11,7 @@ import "./ensure-reference-sidebar.mjs";
 // @ts-ignore - Allows for project-wide type checking when partially building docs.
 import apiReference from "./reference/sidebar";
 
-import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/utils";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 
 const releaseEnvironment = prepareReleaseEnvironment();
 

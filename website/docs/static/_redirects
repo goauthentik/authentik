@@ -38,22 +38,35 @@
 /policies/*                                                 /customize/policies/:splat
 #endregion
 
+#region System Management
 /core/certificates                                          /sys-mgmt/certificates/
 /core/settings                                              /sys-mgmt/settings/
 /install-config/geoip                                       /sys-mgmt/ops/geoip
 /install-config/storage-s3                                  /sys-mgmt/ops/storage-s3
 /events/*                                                   /sys-mgmt/events/:splat
+#endregion
+
+#region Flows and Stages
 /flow/*                                                     /add-secure-apps/flows-stages/flow/:splat
 /flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat
 /outposts/*                                                 /add-secure-apps/outposts/:splat
 /providers/*                                                /add-secure-apps/providers/:splat
+#endregion
+
+#region Sources
 /sources/*                                                  /users-sources/sources/:splat
 /user-group-role/*                                          /users-sources/:splat
-/property-mappings/*                                        /providers/property-mappings/:splat
+#endregion
 
+#region Property Mappings
+/property-mappings/*                                        /providers/property-mappings/:splat
+#endregion
+
+#region Security
 /security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53
 /security/CVE-*                                             /security/cves/CVE-:splat
 /security/GHSA-*                                            /security/cves/GHSA-:splat
+#endregion
 
 #region Integrations
 /integrations                                               https://integrations.goauthentik.io
@@ -61,5 +74,5 @@
 #endregion
 
 #region Docs prefix
-# /docs/*                                                     /:splat
+/docs/*                                                     /:splat
 #endregion
