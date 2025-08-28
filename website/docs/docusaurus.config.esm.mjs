@@ -119,7 +119,7 @@ export default createDocusaurusConfig(
             // Create build-time redirects for later use in HTTP responses,
             // such as when navigating to a page for the first time.
             //
-            // The existance of the _redirects file is also picked up by
+            // The existence of the _redirects file is also picked up by
             // Netlify's deployment, which will redirect to the correct URL, even
             // if the source is no longer present within the build output,
             // such as when a page is removed, renamed, or moved.
