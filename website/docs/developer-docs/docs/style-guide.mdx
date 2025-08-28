@@ -368,16 +368,11 @@ The final published URL is made possible with a combination of [Docusaurus's rou
 
 Sometimes we need to move pages or change URLs. Instead of breaking bookmarks and links, we can define a redirect to automatically send readers from old URLs to new ones.
 
-All our redirects are defined in the `website/docs/static/_redirects` file. Each line includes two three columns:
+All our redirects are defined in the `website/docs/static/_redirects` file. Each line includes three columns:
 
 1. The source URL path (i.e the old URL to match against).
 2. The destination URL path (i.e. the new URL to redirect to).
 3. The HTTP status code to use when redirecting
-
-```text
-# Source URL Path  | Destination URL Path           | Status Code
-/old-path            /new-path                        302!
-```
 
 For example, if we moved our applications page:
 
