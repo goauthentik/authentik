@@ -131,7 +131,7 @@
         "@types/mocha": "^10.0.10",
         "@types/node": "^24.3.0",
         "@types/react": "^19.1.12",
-        "@types/react-dom": "^19.1.8",
+        "@types/react-dom": "^19.1.9",
         "@typescript-eslint/eslint-plugin": "^8.38.0",
         "@typescript-eslint/parser": "^8.38.0",
         "@vitest/browser": "^3.2.4",
