@@ -27,7 +27,10 @@ function escapeRegExp(string) {
  * @returns {RegExp}
  */
 export function pathnameToMatcher(pathname) {
-    return new RegExp("^" + pathname.replace(/\*/g, "(?<splat>.*)").replace(/\//g, "\\/"), "i");
+    return new RegExp(
+        "^" + escapeRegExp(pathname).replace(/\\\*/g, "(?<splat>.*)").replace(/\//g, "\\/"),
+        "i",
+    );
 }
 
 /**
