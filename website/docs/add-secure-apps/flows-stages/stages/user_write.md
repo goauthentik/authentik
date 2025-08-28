@@ -8,7 +8,7 @@ Newly created users can be created as inactive and can be assigned to a selected
 
 ### Dynamic groups
 
-To add users to dynamic groups set `groups` in the flow plan context before this stage is run, for example:
+To add users to dynamic groups, set `groups` in the flow plan context before this stage is run. For example:
 
 ```python
 from authentik.core.models import Group
@@ -22,6 +22,6 @@ return True
 
 By default, this stage will create a new user when none is present in the flow context.
 
-You can configure this stage to not automatically create new users, if you want to prevent users from creating new accounts without authorization.
+To prevent users from creating new accounts without authorization, you can configure the User Write stage to not automatically create new users.
 
 Alternatively, you can configure the stage to explicitly allow user creation, forbid it, or force user creation.
