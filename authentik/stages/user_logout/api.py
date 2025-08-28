@@ -12,7 +12,9 @@ class UserLogoutStageSerializer(StageSerializer):
 
     class Meta:
         model = UserLogoutStage
-        fields = StageSerializer.Meta.fields
+        fields = StageSerializer.Meta.fields + [
+            "saml_redirect_logout",
+        ]
 
 
 class UserLogoutStageViewSet(UsedByMixin, ModelViewSet):

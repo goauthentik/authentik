@@ -37,7 +37,7 @@ const clientNetworksHelp = msg(
 // field of the target Provider.
 
 export function renderForm(
-    provider?: Partial<RadiusProvider>,
+    provider: Partial<RadiusProvider> = {},
     errors: ValidationError = {},
     brand?: CurrentBrand,
 ) {
@@ -45,8 +45,8 @@ export function renderForm(
         <ak-text-input
             name="name"
             label=${msg("Name")}
-            value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name}
+            value=${ifDefined(provider.name)}
+            .errorMessages=${errors.name}
             required
         >
         </ak-text-input>
@@ -55,11 +55,11 @@ export function renderForm(
             label=${msg("Authentication flow")}
             required
             name="authorizationFlow"
-            .errorMessages=${errors?.authorizationFlow}
+            .errorMessages=${errors.authorizationFlow}
         >
             <ak-branded-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                .currentFlow=${provider?.authorizationFlow}
+                .currentFlow=${provider.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
                 required
             ></ak-branded-flow-search>
@@ -69,7 +69,7 @@ export function renderForm(
         <ak-switch-input
             name="mfaSupport"
             label=${msg("Code-based MFA Support")}
-            ?checked=${provider?.mfaSupport ?? true}
+            ?checked=${provider.mfaSupport ?? true}
             help=${mfaSupportHelp}
         >
         </ak-switch-input>
@@ -79,16 +79,16 @@ export function renderForm(
                 <ak-hidden-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors?.sharedSecret}
-                    value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
+                    .errorMessages=${errors.sharedSecret}
+                    value=${provider.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
                     input-hint="code"
                 ></ak-hidden-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
-                    value=${provider?.clientNetworks ?? "0.0.0.0/0, ::/0"}
-                    .errorMessages=${errors?.clientNetworks}
+                    value=${provider.clientNetworks ?? "0.0.0.0/0, ::/0"}
+                    .errorMessages=${errors.clientNetworks}
                     required
                     help=${clientNetworksHelp}
                     input-hint="code"
@@ -99,7 +99,7 @@ export function renderForm(
                 >
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
-                        .selector=${propertyMappingsSelector(provider?.propertyMappings)}
+                        .selector=${propertyMappingsSelector(provider.propertyMappings)}
                         available-label=${msg("Available Property Mappings")}
                         selected-label=${msg("Selected Property Mappings")}
                     ></ak-dual-select-dynamic-selected>
@@ -117,8 +117,8 @@ export function renderForm(
                         label=${msg("Invalidation flow")}
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
-                        .currentFlow=${provider?.invalidationFlow}
-                        .errorMessages=${errors?.invalidationFlow}
+                        .currentFlow=${provider.invalidationFlow}
+                        .errorMessages=${errors.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-flow-search>

@@ -31,7 +31,7 @@ def format_pem_certificate(unformatted_cert: str) -> str:
     chunks, chunk_size = len(unformatted_cert), 64
     lines = [PEM_HEADER]
     for i in range(0, chunks, chunk_size):
-        lines.append(unformatted_cert[i : i + chunk_size])  # noqa: E203
+        lines.append(unformatted_cert[i : i + chunk_size])
     lines.append(PEM_FOOTER)
     return "\n".join(lines)
 

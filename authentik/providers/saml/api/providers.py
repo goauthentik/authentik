@@ -167,12 +167,24 @@ class SAMLProviderSerializer(ProviderSerializer):
                         "and 'Sign Response' must be selected."
                     )
                 )
+
+        # Validate backchannel_post_logout
+        if attrs.get("backchannel_post_logout", False) and attrs.get("sls_binding") != "post":
+            raise ValidationError(
+                {
+                    "backchannel_post_logout": _(
+                        "Backchannel logout is only available with POST binding"
+                    )
+                }
+            )
+
         return super().validate(attrs)
 
     class Meta:
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
+            "sls_url",
             "audience",
             "issuer",
             "assertion_valid_not_before",
@@ -188,7 +200,10 @@ class SAMLProviderSerializer(ProviderSerializer):
             "encryption_kp",
             "sign_assertion",
             "sign_response",
+            "sign_logout_request",
             "sp_binding",
+            "sls_binding",
+            "backchannel_post_logout",
             "default_relay_state",
             "default_name_id_policy",
             "url_download_metadata",
