@@ -2,6 +2,8 @@
 title: Outposts
 ---
 
+import DocCardList from "@theme/DocCardList";
+
 An outpost is a single deployment of an authentik component, essentially a service, that can be deployed anywhere that allows for a connection to the authentik API.
 
 An outpost is required if you use any of the following types of providers with your application:
@@ -33,7 +35,7 @@ Any change made to the outpost's associated app or provider immediately triggers
     - **Applications**: select the applications that you want the outpost to serve.
     - **Advanced settings (optional)**: for further optional configuration settings, refer to [Configuration](#configuration) below.
 
-4. Click Create to save your new outpost.
+4. Click **Create**.
 
 Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the outpost to connect to authentik.
 
@@ -65,10 +67,8 @@ Each authentik outpost has a Prometheus metrics endpoint accessible under port `
 
 For the embedded outpost, the metrics of the outpost and the metrics of the core authentik server are both returned under the same endpoint.
 
-## Further documentation
+## Learn more
 
 To learn more about outposts, refer to the following documentation:
-
-import DocCardList from "@theme/DocCardList";
 
 <DocCardList />
