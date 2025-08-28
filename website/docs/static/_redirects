@@ -6,73 +6,73 @@
 #       i.e. The first rule that matches the URL will take precedence.
 
 #region API
-/api                                                        https://api.goauthentik.io
-/docs/api                                                   https://api.goauthentik.io
-/docs/developer-docs/api/                                   https://api.goauthentik.io
-/api/*                                                      https://api.goauthentik.io/:splat
-/docs/api/*                                                 https://api.goauthentik.io/:splat
-/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat
-/developer-docs/api/*                                       https://api.goauthentik.io/:splat
+/api                                                        https://api.goauthentik.io  301!
+/docs/api                                                   https://api.goauthentik.io  301!
+/docs/developer-docs/api/                                   https://api.goauthentik.io  301!
+/api/*                                                      https://api.goauthentik.io/:splat  301!
+/docs/api/*                                                 https://api.goauthentik.io/:splat  301!
+/docs/developer-docs/api/*                                  https://api.goauthentik.io/:splat  301!
+/developer-docs/api/*                                       https://api.goauthentik.io/:splat  301!
 #endregion
 
 #region Applications
-/add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/
-/core/applications                                          /add-secure-apps/applications/
-/applications/*                                             /add-secure-apps/applications/:splat
+/add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/ 301!
+/core/applications                                          /add-secure-apps/applications/ 301!
+/applications/*                                             /add-secure-apps/applications/:splat 301!
 #endregion
 
 #region Core
-/core/geoip                                                 /install-config/geoip/
-/installation/*                                             /install-config/:splat
+/core/geoip                                                 /install-config/geoip/ 301!
+/installation/*                                             /install-config/:splat 301!
 #endregion
 
 #region Customize
-/core/brands                                                /customize/brands/
-/customize/brands                                           /customize/branding/
-/customize/interfaces/admin/customization	                /customize/interfaces/admin/
-/customize/interfaces/flow/customization	                /customize/interfaces/flow/
-/customize/interfaces/user/customization	                /customize/interfaces/user/
-/customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/
-/customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/
-/interfaces/*                                               /customize/interfaces/:splat
-/policies/*                                                 /customize/policies/:splat
+/core/brands                                                /customize/brands/ 301!
+/customize/brands                                           /customize/branding/ 301!
+/customize/interfaces/admin/customization	                /customize/interfaces/admin/ 301!
+/customize/interfaces/flow/customization	                /customize/interfaces/flow/ 301!
+/customize/interfaces/user/customization	                /customize/interfaces/user/ 301!
+/customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/ 301!
+/customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
+/interfaces/*                                               /customize/interfaces/:splat 301!
+/policies/*                                                 /customize/policies/:splat 301!
 #endregion
 
 #region System Management
-/core/certificates                                          /sys-mgmt/certificates/
-/core/settings                                              /sys-mgmt/settings/
-/install-config/geoip                                       /sys-mgmt/ops/geoip
-/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3
-/events/*                                                   /sys-mgmt/events/:splat
+/core/certificates                                          /sys-mgmt/certificates/ 301!
+/core/settings                                              /sys-mgmt/settings/ 301!
+/install-config/geoip                                       /sys-mgmt/ops/geoip 301!
+/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3 301!
+/events/*                                                   /sys-mgmt/events/:splat 301!
 #endregion
 
 #region Flows and Stages
-/flow/*                                                     /add-secure-apps/flows-stages/flow/:splat
-/flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat
-/outposts/*                                                 /add-secure-apps/outposts/:splat
-/providers/*                                                /add-secure-apps/providers/:splat
+/flow/*                                                     /add-secure-apps/flows-stages/flow/:splat 301!
+/flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
+/outposts/*                                                 /add-secure-apps/outposts/:splat 301!
+/providers/*                                                /add-secure-apps/providers/:splat 301!
 #endregion
 
 #region Sources
-/sources/*                                                  /users-sources/sources/:splat
-/user-group-role/*                                          /users-sources/:splat
+/sources/*                                                  /users-sources/sources/:splat 301!
+/user-group-role/*                                          /users-sources/:splat 301!
 #endregion
 
 #region Property Mappings
-/property-mappings/*                                        /providers/property-mappings/:splat
+/property-mappings/*                                        /providers/property-mappings/:splat 301!
 #endregion
 
 #region Security
-/security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53
-/security/CVE-*                                             /security/cves/CVE-:splat
-/security/GHSA-*                                            /security/cves/GHSA-:splat
+/security/2023-06-cure53                                    /security/audits-and-certs/2023-06-cure53 301!
+/security/CVE-*                                             /security/cves/CVE-:splat 301!
+/security/GHSA-*                                            /security/cves/GHSA-:splat 301!
 #endregion
 
 #region Integrations
-/integrations                                               https://integrations.goauthentik.io
-/integrations/*                                             https://integrations.goauthentik.io/:splat
+/integrations                                               https://integrations.goauthentik.io 301!
+/integrations/*                                             https://integrations.goauthentik.io/:splat 301!
 #endregion
 
 #region Docs prefix
-/docs/*                                                     /:splat
+/docs/*                                                     /:splat 301!
 #endregion
