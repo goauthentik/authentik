@@ -202,9 +202,9 @@
         "@rollup/rollup-darwin-arm64": "^4.41.1",
         "@rollup/rollup-linux-arm64-gnu": "^4.41.1",
         "@rollup/rollup-linux-x64-gnu": "^4.41.1",
-        "@wdio/browser-runner": "9.4",
-        "@wdio/cli": "9.4",
-        "@wdio/spec-reporter": "^9.1.2",
+        "@wdio/browser-runner": "^9.19.2",
+        "@wdio/cli": "^9.19.2",
+        "@wdio/spec-reporter": "^9.19.2",
         "@web/test-runner": "^0.20.2"
     },
     "wireit": {
