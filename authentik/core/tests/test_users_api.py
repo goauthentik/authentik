@@ -102,6 +102,16 @@ class TestUsersAPI(APITestCase):
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
 
+    def test_set_password_blank(self):
+        """Test Direct password set"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
+
     def test_recovery(self):
         """Test user recovery link"""
         flow = create_test_flow(
