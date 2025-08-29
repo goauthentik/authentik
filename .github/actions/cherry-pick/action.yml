@@ -5,6 +5,12 @@ inputs:
   token:
     description: "GitHub Token"
     required: true
+  git_user:
+    description: "Git user for pushing the cherry-pick PR"
+    required: true
+  git_user_email:
+    description: "Git user email for pushing the cherry-pick PR"
+    required: true
 
 runs:
   using: "composite"
@@ -97,9 +103,12 @@ runs:
     - name: Configure Git
       if: steps.should_run.outputs.should_run == 'true'
       shell: bash
+      env:
+        user: ${{ inputs.git_user }}
+        email: ${{ inputs.git_user_email }}
       run: |
-        git config --global user.name "authentik-automation[bot]"
-        git config --global user.email "135050075+authentik-automation[bot]@users.noreply.github.com"
+        git config --global user.name "${user}"
+        git config --global user.email "${email}"
     - name: Get PR details and extract backport labels
       if: steps.should_run.outputs.should_run == 'true'
       id: pr_details
