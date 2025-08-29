@@ -132,3 +132,107 @@ make integrations-watch
 ```
 
 Starts a local development server for the integrations site and opens a preview in your browser. This command will automatically rebuild your local integrations site in real time, as you write or make changes to the Markdown files in the `website/integrations` directory.
+
+## Page routing and URLs
+
+Every documentation page you see on our website starts as a simple Markdown file in our repository. When you create or edit these files, our build system automatically transforms them into web pages with predictable URLs.
+
+### Converting file paths to URLs
+
+Let's take a look at the file path of the [Style Guide page](https://docs.goauthentik.io/developer-docs/docs/style-guide/):
+
+```text
+/website/docs/developer-docs/docs/style-guide.mdx
+```
+
+Compared to the URL path of this page, there are a few differences:
+
+- The `website/docs` prefix is dropped.
+- File extensions are removed.
+- A trailing slash is added.
+
+This results in the following URL path:
+
+```text
+https://docs.goauthentik.io/developer-docs/docs/style-guide/
+```
+
+The final published URL is made possible with a combination of [Docusaurus's routing system](https://docusaurus.io/docs/advanced/routing) and [Netlify's redirects](https://docs.netlify.com/routing/redirects/).
+
+### Sidebar files
+
+The sidebar files define the navigation structure of the documentation pages.
+
+- **Documentation**: [`website/docs/sidebar.mjs`](https://github.com/goauthentik/authentik/blob/main/website/docs/sidebar.mjs)
+- **Integrations**: [`website/integrations/sidebar.mjs`](https://github.com/goauthentik/authentik/blob/main/website/integrations/sidebar.mjs)
+    - Automatically generated from the categories in [`/website/integrations/categories.mjs`](https://github.com/goauthentik/authentik/blob/main/website/integrations/categories.mjs).
+- **API Reference**: [`website/api/sidebar.mjs`](https://github.com/goauthentik/authentik/blob/main/website/api/sidebar.mjs)
+    - Mostly automatically generated from authentik API schema.
+
+### Redirects
+
+Sometimes we need to move pages or change URLs. Instead of breaking bookmarks and links, we can define a redirect to automatically send readers from old URLs to new ones.
+
+All our redirects are defined within three files:
+
+- **Documentation**: [`website/docs/static/_redirects`](https://github.com/goauthentik/authentik/blob/main/website/docs/static/_redirects)
+- **Integrations**: [`website/integrations/static/_redirects`](https://github.com/goauthentik/authentik/blob/main/website/integrations/static/_redirects)
+- **API Reference**: [`website/api/static/_redirects`](https://github.com/goauthentik/authentik/blob/main/website/api/static/_redirects)
+
+A `_redirects` file contains a list of rules that define how to handle requests, each of which has the following format:
+
+1. The source URL path (i.e the old URL to match against).
+2. The destination URL path (i.e. the new URL to redirect to).
+3. The HTTP status code to use when redirecting, followed by an exclamation mark (`!`).
+
+For example, if we moved our applications page:
+
+```text title="website/docs/static/_redirects"
+# Source URL Path  | Destination URL Path           | Status Code
+/core/applications   /add-secure-apps/applications/   302!
+```
+
+Anyone visiting the old URL will automatically land on the new page using a combination of Netlify and Docusaurus.
+
+#### Initial page loads (server-side)
+
+When a reader first visits a documentation page or refreshes their browser:
+
+1. Their browser requests the URL from our server (Netlify).
+2. Netlify checks if that exact page exists.
+3. If not, it checks our `_redirects` file for a matching rule.
+4. The server sends back the correct page, or a 404 if no matching rule exists.
+
+#### Navigating between pages (client-side)
+
+When a reader clicks a link to another documentation page:
+
+1. Docusaurus intercepts the click (no server request needed).
+2. The URL in the browser's address bar changes.
+3. Docusaurus router fetches the new page content without a full reload.
+
+If Docusaurus's router attempts to render a page that does not exist, the `_redirects` file will be used to determine if a redirect rule should be applied, without a server request or a full reload.
+
+Whether the reader is viewing a page for the first time or navigating between pages, this arrangement allows us to have a single source of truth for all URLs, ensuring that each page remains consistently accessible across authentik versions and throughout our three Docusaurus deployments (Topics, Integrations, and API).
+
+### Updating a page's URL
+
+:::danger[Every URL is a promise]
+
+When someone bookmarks a page or shares a link, they expect it to keep working.
+
+**Before changing any URL, ask yourself:**
+
+- [x] Is this move absolutely necessary?
+- [x] Could better organization be achieved without moving files?
+- [x] Will this help or confuse readers migrating between authentik versions?
+
+Remember, [Cool URIs don't change!](https://www.w3.org/Provider/Style/URI)
+:::
+
+Moving a documentation page to a new location requires updating a `sidebar.mjs` and `_redirects` file.
+
+1. Take note of the page's current URL path in the browser's address bar.
+2. Move the Markdown file to the new location.
+3. Add a new redirect rule to the `_redirects` file in the respective [documentation directory](#redirects).
+4. Update the `sidebar.mjs` file in the respective [documentation directory](#redirects).
