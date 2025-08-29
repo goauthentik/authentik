@@ -497,7 +497,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @id_token.setter
     def id_token(self, value: "IDToken"):
-        self.token = value.to_access_token(self.provider)
+        self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
     @property

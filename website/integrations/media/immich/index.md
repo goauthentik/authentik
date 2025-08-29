@@ -45,7 +45,7 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
 
 1. In Immich, navigate to **Administration** > **Settings** > **OAuth Authentication**
 2. Configure Immich as follows:
-    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`

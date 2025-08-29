@@ -147,11 +147,12 @@ class IDToken:
         id_dict.update(self.claims)
         return id_dict
 
-    def to_access_token(self, provider: "OAuth2Provider") -> str:
+    def to_access_token(self, provider: "OAuth2Provider", token: "BaseGrantModel") -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
+        final["scope"] = " ".join(token.scope)
         return provider.encode(final)
 
     def to_jwt(self, provider: "OAuth2Provider") -> str:

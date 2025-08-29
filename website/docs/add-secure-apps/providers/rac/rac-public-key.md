@@ -33,7 +33,7 @@ SSH private keys can be configured via several methods:
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers**.
 3. Click the name of the RAC provider that the endpoint belongs to.
-4. Under **Endpoints**- click on the **Edit** icon next to the endpoint that requires public key authentication.
+4. Under **Endpoints**, click on the **Edit** icon next to the endpoint that requires public key authentication.
 5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the endpoint:
     ```python
     private-key:

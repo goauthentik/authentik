@@ -49,7 +49,10 @@ export function readGitBuildHash() {
 export function readBuildIdentifier() {
     const { GIT_BUILD_HASH } = process.env;
 
-    if (!GIT_BUILD_HASH) return AuthentikVersion;
+    if (!GIT_BUILD_HASH) {
+        console.warn("GIT_BUILD_HASH is not set, falling back to authentik version.");
+        return AuthentikVersion;
+    }
 
     return [AuthentikVersion, GIT_BUILD_HASH].join("+");
 }

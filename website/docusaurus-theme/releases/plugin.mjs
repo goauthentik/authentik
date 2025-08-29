@@ -3,13 +3,13 @@
  * @file Docusaurus releases plugin.
  *
  * @import { LoadContext, Plugin } from "@docusaurus/types"
- * @import { AKReleasesPluginEnvironment } from "./utils.mjs"
+ * @import { AKReleasesPluginEnvironment } from "./node.mjs"
  */
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { collectReleaseFiles, prepareReleaseEnvironment } from "./utils.mjs";
+import { collectReleaseFiles, prepareReleaseEnvironment } from "./node.mjs";
 
 const PLUGIN_NAME = "ak-releases-plugin";
 const RELEASES_FILENAME = "releases.gen.json";

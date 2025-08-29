@@ -97,12 +97,18 @@ export abstract class BaseStage<
         }
 
         return html`<div class="pf-c-form__alert">
-            ${nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
+            ${nonFieldErrors.map((err, idx) => {
+                return html`<div
+                    role="alert"
+                    aria-labelledby="error-message-${idx}"
+                    class="pf-c-alert pf-m-inline pf-m-danger"
+                >
                     <div class="pf-c-alert__icon">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i aria-hidden="true" class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${pluckErrorDetail(err)}</h4>
+                    <p id="error-message-${idx}" class="pf-c-alert__title">
+                        ${pluckErrorDetail(err)}
+                    </p>
                 </div>`;
             })}
         </div>`;

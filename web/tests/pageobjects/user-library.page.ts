@@ -11,7 +11,7 @@ class UserLibraryPage extends Page {
      */
 
     public async pageHeader() {
-        return await $('>>>h1[aria-level="1"]');
+        return $(">>>header h1");
     }
 
     public async goToAdmin() {
