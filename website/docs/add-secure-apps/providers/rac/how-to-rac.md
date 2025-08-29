@@ -33,7 +33,7 @@ Next, you need to add property mappings for each remote machine you want to acce
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-    - **Select Type**: RAC Property Mappings
+    - **Select Type**: `RAC Provider Property Mapping`
     - **Create RAC Property Mapping**:
         - **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
         - **General settings**:
