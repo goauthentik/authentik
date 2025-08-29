@@ -1,8 +1,9 @@
-import { AKElement } from "@goauthentik/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { AKElement } from "#elements/Base";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -14,9 +15,7 @@ export class TimeDeltaHelp extends AKElement {
     @property({ type: Boolean })
     negative = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFList];
-    }
+    static styles: CSSResult[] = [PFBase, PFForm, PFList];
 
     render(): TemplateResult {
         return html`<div class="pf-c-form__helper-text">

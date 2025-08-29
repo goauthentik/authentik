@@ -1,18 +1,24 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/user/SessionList";
-import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/sources/SourceSettings";
-import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
-import "@goauthentik/user/user-settings/details/UserPassword";
-import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
-import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
-import "@goauthentik/user/user-settings/tokens/UserTokenList";
+import "#elements/Tabs";
+import "#elements/user/SessionList";
+import "#elements/user/UserConsentList";
+import "#elements/user/sources/SourceSettings";
+import "#user/user-settings/details/UserPassword";
+import "#user/user-settings/details/UserSettingsFlowExecutor";
+import "#user/user-settings/mfa/MFADevicesPage";
+import "#user/user-settings/tokens/UserTokenList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { rootInterface } from "#common/theme";
+
+import { AKElement } from "#elements/Base";
+
+import type { UserInterface } from "#user/index.entrypoint";
+
+import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -28,51 +34,47 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { StagesApi, UserSetting } from "@goauthentik/api";
-
 @localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFDisplay,
-            PFGallery,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-            PFForm,
-            PFFormControl,
-            PFStack,
-            css`
-                .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFDisplay,
+        PFGallery,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        css`
+            .pf-c-page {
+                --pf-c-page--BackgroundColor: transparent;
+            }
+            .pf-c-page__main-section {
+                --pf-c-page__main-section--BackgroundColor: transparent;
+            }
+            :host([theme="dark"]) .pf-c-page {
+                --pf-c-page--BackgroundColor: transparent;
+            }
+            :host([theme="dark"]) .pf-c-page__main-section {
+                --pf-c-page__main-section--BackgroundColor: transparent;
+            }
+            .pf-c-page__main {
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            @media screen and (min-width: 1200px) {
+                :host {
+                    width: 90rem;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
-                .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
-                }
-                .pf-c-page__main {
-                    min-height: 100vh;
-                    overflow-y: auto;
-                }
-                @media screen and (min-width: 1200px) {
-                    :host {
-                        width: 90rem;
-                        margin-left: auto;
-                        margin-right: auto;
-                    }
-                }
-            `,
-        ];
-    }
+            }
+        `,
+    ];
 
     @state()
     userSettings?: UserSetting[];
@@ -94,7 +96,7 @@ export class UserSettingsPage extends AKElement {
             [];
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
-                <ak-tabs ?vertical="${true}">
+                <ak-tabs vertical>
                     <section
                         slot="page-details"
                         data-tab-title="${msg("User details")}"

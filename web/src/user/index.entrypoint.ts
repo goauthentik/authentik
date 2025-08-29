@@ -1,31 +1,36 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "#components/ak-nav-buttons";
+import "#elements/ak-locale-context/ak-locale-context";
+import "#elements/banner/EnterpriseStatusBanner";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/messages/MessageContainer";
+import "#elements/notifications/APIDrawer";
+import "#elements/notifications/NotificationDrawer";
+import "#elements/router/RouterOutlet";
+import "#elements/sidebar/Sidebar";
+import "#elements/sidebar/SidebarItem";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig, getConfigForUser } from "@goauthentik/common/ui/config";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import { WebsocketClient } from "@goauthentik/common/ws";
-import "@goauthentik/components/ak-nav-buttons";
-import { AKElement } from "@goauthentik/elements/Base";
-import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/ak-locale-context";
-import "@goauthentik/elements/banner/EnterpriseStatusBanner";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/elements/notifications/APIDrawer";
-import "@goauthentik/elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/router/RouterOutlet";
-import "@goauthentik/elements/sidebar/Sidebar";
-import "@goauthentik/elements/sidebar/SidebarItem";
-import { themeImage } from "@goauthentik/elements/utils/images";
-import { ROUTES } from "@goauthentik/user/Routes";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+} from "#common/constants";
+import { globalAK } from "#common/global";
+import { configureSentry } from "#common/sentry/index";
+import { DefaultBrand, getConfigForUser, UIConfig } from "#common/ui/config";
+import { me } from "#common/users";
+import { WebsocketClient } from "#common/ws";
+
+import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+import { AKElement } from "#elements/Base";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { themeImage } from "#elements/utils/images";
+
+import { ROUTES } from "#user/Routes";
+
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -40,8 +45,6 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
@@ -117,21 +120,19 @@ const customStyles = css`
 
 @customElement("ak-interface-user-presentation")
 // @ts-ignore
-class UserInterfacePresentation extends AKElement {
-    static get styles() {
-        return [
-            PFBase,
-            PFDisplay,
-            PFBrand,
-            PFPage,
-            PFAvatar,
-            PFButton,
-            PFDrawer,
-            PFDropdown,
-            PFNotificationBadge,
-            customStyles,
-        ];
-    }
+class UserInterfacePresentation extends WithBrandConfig(AKElement) {
+    static styles = [
+        PFBase,
+        PFDisplay,
+        PFBrand,
+        PFPage,
+        PFAvatar,
+        PFButton,
+        PFDrawer,
+        PFDropdown,
+        PFNotificationBadge,
+        customStyles,
+    ];
 
     @property({ type: Object })
     uiConfig!: UIConfig;
@@ -147,9 +148,6 @@ class UserInterfacePresentation extends AKElement {
 
     @property({ type: Number })
     notificationsCount = 0;
-
-    @property({ type: Object })
-    brand!: CurrentBrand;
 
     get canAccessAdmin() {
         return (
@@ -206,8 +204,8 @@ class UserInterfacePresentation extends AKElement {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${themeImage(this.brand.brandingLogo)}"
-                                alt="${this.brand.brandingTitle}"
+                                src="${themeImage(this.brandingLogo)}"
+                                alt="${this.brandingTitle}"
                             />
                         </a>
                     </div>
@@ -224,9 +222,8 @@ class UserInterfacePresentation extends AKElement {
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                                    <div class="pf-c-page__main">
                                         <ak-router-outlet
-                                            role="main"
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
@@ -234,7 +231,7 @@ class UserInterfacePresentation extends AKElement {
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
-                                    </main>
+                                    </div>
                                 </div>
                             </div>
                             <ak-notification-drawer
@@ -265,25 +262,29 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends AuthenticatedInterface {
+export class UserInterface extends WithBrandConfig(AuthenticatedInterface) {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @state()
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    ws: WebsocketClient;
-
     @state()
     notificationsCount = 0;
 
     @state()
-    me?: SessionUser;
+    me: SessionUser | null = null;
+
+    @state()
+    uiConfig: UIConfig | null = null;
 
     constructor() {
         configureSentry(true);
+
         super();
-        this.ws = new WebsocketClient();
+
+        WebsocketClient.connect();
+
         this.fetchConfigurationDetails();
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
@@ -299,11 +300,13 @@ export class UserInterface extends AuthenticatedInterface {
     }
 
     disconnectedCallback() {
+        super.disconnectedCallback();
+
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
 
-        super.disconnectedCallback();
+        WebsocketClient.close();
     }
 
     toggleNotificationDrawer() {

@@ -1,24 +1,27 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
-    FlowStageBinding,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowStageBinding,
     InvalidResponseActionEnum,
-    PolicyEngineMode,
     Stage,
     StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -39,9 +42,8 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
-        } else {
-            return msg("Successfully created binding.");
         }
+        return msg("Successfully created binding.");
     }
 
     send(data: FlowStageBinding): Promise<unknown> {
@@ -50,14 +52,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 fsbUuid: this.instance.pk,
                 patchedFlowStageBindingRequest: data,
             });
-        } else {
-            if (this.targetPk) {
-                data.target = this.targetPk;
-            }
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
-                flowStageBindingRequest: data,
-            });
         }
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
+        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
+            flowStageBindingRequest: data,
+        });
     }
 
     async getOrder(): Promise<number> {
@@ -78,11 +79,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
-        return html`<ak-form-element-horizontal
-            label=${msg("Target")}
-            ?required=${true}
-            name="target"
-        >
+        return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}
@@ -93,7 +90,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     renderForm(): TemplateResult {
         return html` ${this.renderTarget()}
-            <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
+            <ak-form-element-horizontal label=${msg("Stage")} required name="stage">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {
@@ -120,7 +117,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
@@ -166,7 +163,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Invalid response behavior")}
-                ?required=${true}
+                required
                 name="invalidResponseAction"
             >
                 <ak-radio
@@ -203,25 +200,10 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Policy engine mode")}
-                ?required=${true}
+                required
                 name="policyEngineMode"
             >
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "any",
-                            value: PolicyEngineMode.Any,
-                            default: true,
-                            description: html`${msg("Any policy must match to grant access")}`,
-                        },
-                        {
-                            label: "all",
-                            value: PolicyEngineMode.All,
-                            description: html`${msg("All policies must match to grant access")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.policyEngineMode}
-                >
+                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }

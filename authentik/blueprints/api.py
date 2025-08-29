@@ -39,7 +39,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         """Ensure the path (if set) specified is retrievable"""
         if path == "" or path.startswith(OCI_PREFIX):
             return path
-        files: list[dict] = blueprints_find_dict.delay().get()
+        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
         if path not in [file["path"] for file in files]:
             raise ValidationError(_("Blueprint file does not exist"))
         return path
@@ -115,7 +115,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
-        files: list[dict] = blueprints_find_dict.delay().get()
+        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
         return Response(files)
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
@@ -129,5 +129,5 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def apply(self, request: Request, *args, **kwargs) -> Response:
         """Apply a blueprint"""
         blueprint = self.get_object()
-        apply_blueprint.delay(str(blueprint.pk)).get()
+        apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)

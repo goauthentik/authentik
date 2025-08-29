@@ -4,33 +4,34 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import User
 from tests.e2e.utils import SeleniumTestCase, retry
+
+
+def login_sfe(driver: WebDriver, user: User):
+    """Do entire login flow adjusted for SFE"""
+    flow_executor = driver.find_element(By.ID, "flow-sfe-container")
+    identification_stage = flow_executor.find_element(By.ID, "ident-form")
+
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").click()
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
+        user.username
+    )
+    identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
+        Keys.ENTER
+    )
+
+    password_stage = flow_executor.find_element(By.ID, "password-form")
+    password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(user.username)
+    password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
+    sleep(1)
 
 
 class TestFlowsLoginSFE(SeleniumTestCase):
     """test default login flow"""
-
-    def login(self):
-        """Do entire login flow adjusted for SFE"""
-        flow_executor = self.driver.find_element(By.ID, "flow-sfe-container")
-        identification_stage = flow_executor.find_element(By.ID, "ident-form")
-
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").click()
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
-            self.user.username
-        )
-        identification_stage.find_element(By.CSS_SELECTOR, "input[name=uid_field]").send_keys(
-            Keys.ENTER
-        )
-
-        password_stage = flow_executor.find_element(By.ID, "password-form")
-        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(
-            self.user.username
-        )
-        password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
-        sleep(1)
 
     @retry()
     @apply_blueprint(
@@ -46,6 +47,6 @@ class TestFlowsLoginSFE(SeleniumTestCase):
                 query={"sfe": True},
             )
         )
-        self.login()
+        login_sfe(self.driver, self.user)
         self.wait_for_url(self.if_user_url("/library"))
         self.assert_user(self.user)

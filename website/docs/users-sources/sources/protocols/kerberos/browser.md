@@ -26,7 +26,7 @@ To automate the deployment of this configuration use a [Group policy](https://su
 
 ## Windows / Internet Explorer
 
-Log into the Windows machine using an account of your Kerberos realm (or administrative domain).
+Log in to the Windows machine using an account of your Kerberos realm (or administrative domain).
 
 Open Internet Explorer, click **Tools** and then click **Internet Options**. You can also find **Internet Options** using the system search.
 

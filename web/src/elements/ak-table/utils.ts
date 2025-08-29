@@ -1,7 +1,3 @@
-import { groupBy as groupByProcessor } from "@goauthentik/common/utils.js";
-
-import { html } from "lit";
-
 import {
     KeyBy,
     RawType,
@@ -10,7 +6,11 @@ import {
     TableInputType,
     TableRow,
     TableType,
-} from "./types";
+} from "./types.js";
+
+import { groupBy as groupByProcessor } from "#common/utils";
+
+import { html } from "lit";
 
 // TypeScript was extremely specific about due diligence here.
 export const isTableRows = (v: unknown): v is TableRow[] =>

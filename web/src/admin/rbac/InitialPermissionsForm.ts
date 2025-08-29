@@ -1,17 +1,15 @@
-import { InitialPermissionsModeToLabel } from "@goauthentik/admin/rbac/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { InitialPermissionsModeToLabel } from "#admin/rbac/utils";
 
 import {
     InitialPermissions,
@@ -21,6 +19,11 @@ import {
     RbacRolesListRequest,
     Role,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export function rbacPermissionPair(item: Permission): DualSelectPair {
     return [item.id.toString(), html`<div class="selection-main">${item.name}</div>`, item.name];
@@ -46,11 +49,10 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                 id: this.instance.pk,
                 patchedInitialPermissionsRequest: data,
             });
-        } else {
-            return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
-                initialPermissionsRequest: data,
-            });
         }
+        return new RbacApi(DEFAULT_CONFIG).rbacInitialPermissionsCreate({
+            initialPermissionsRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -72,8 +74,8 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
-                        return users.results;
+                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
+                        return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {
                         return role.name;

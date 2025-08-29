@@ -1,6 +1,8 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { SlottedTemplateResult } from "../types";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { AKElement } from "#elements/Base";
+
+import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -68,60 +70,67 @@ export class AggregateCard extends AKElement implements IAggregateCard {
     @property({ type: Boolean, attribute: "left-justified" })
     leftJustified = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFFlex].concat([
-            css`
-                .pf-c-card.pf-c-card-aggregate {
-                    height: 100%;
-                }
-                .pf-c-card__header {
-                    flex-wrap: nowrap;
-                }
-                .center-value {
-                    font-size: var(--pf-global--icon--FontSize--lg);
-                    text-align: center;
-                }
-                .subtext {
-                    margin-top: var(--pf-global--spacer--sm);
-                    font-size: var(--pf-global--FontSize--sm);
-                }
-                .pf-c-card__body {
-                    overflow-x: auto;
-                    padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
-                    padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
-                }
-                .pf-c-card__header,
-                .pf-c-card__title,
-                .pf-c-card__body,
-                .pf-c-card__footer {
-                    padding-bottom: 0;
-                }
-            `,
-        ]);
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFFlex,
+        css`
+            .pf-c-card.pf-c-card-aggregate {
+                height: 100%;
+            }
+            .pf-c-card__header {
+                flex-wrap: nowrap;
+            }
+            .center-value {
+                font-size: var(--pf-global--icon--FontSize--lg);
+                text-align: center;
+            }
+            .subtext {
+                margin-top: var(--pf-global--spacer--sm);
+                font-size: var(--pf-global--FontSize--sm);
+            }
+            .pf-c-card__body {
+                overflow-x: auto;
+                padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
+                padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
+            }
+            .pf-c-card__header,
+            .pf-c-card__title,
+            .pf-c-card__body,
+            .pf-c-card__footer {
+                padding-bottom: 0;
+            }
+        `,
+    ];
 
-    renderInner(): TemplateResult {
+    renderInner(): SlottedTemplateResult {
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): TemplateResult {
-        return html`${this.headerLink
-            ? html`<a href="${this.headerLink}">
-                  <i class="fa fa-link"> </i>
-              </a>`
-            : ""}`;
+    renderHeaderLink(): SlottedTemplateResult {
+        if (!this.headerLink) {
+            return nothing;
+        }
+
+        return html`<a href="${this.headerLink}">
+            <i aria-hidden="true" class="fa fa-link"> </i>
+        </a>`;
     }
 
-    renderHeader(): TemplateResult {
-        return html`${this.header ? this.header : ""}`;
+    renderHeader(): SlottedTemplateResult {
+        return this.header ?? nothing;
     }
 
-    render(): TemplateResult {
-        return html`<div class="pf-c-card pf-c-card-aggregate">
+    render(): SlottedTemplateResult {
+        return html`<div
+            aria-label="${ifDefined(this.header)}"
+            role="region"
+            class="pf-c-card pf-c-card-aggregate"
+        >
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__title">
                     ${this.icon
-                        ? html`<i class="${ifDefined(this.icon)}"></i>&nbsp;`
+                        ? html`<i aria-hidden="true" class="${this.icon}"></i>&nbsp;`
                         : nothing}${this.renderHeader()}
                 </div>
                 ${this.renderHeaderLink()}

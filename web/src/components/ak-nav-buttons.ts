@@ -1,13 +1,15 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import {
-    EVENT_API_DRAWER_TOGGLE,
-    EVENT_NOTIFICATION_DRAWER_TOGGLE,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
+import "#elements/buttons/ActionButton/ak-action-button";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
+import { globalAK } from "#common/global";
+import { uiConfig, UIConfig, UserDisplay } from "#common/ui/config";
+import { me } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+
+import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
+
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
@@ -24,8 +26,6 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends AKElement {
@@ -44,32 +44,30 @@ export class NavigationButtons extends AKElement {
     @property({ type: Number })
     notificationsCount = 0;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFDisplay,
-            PFBrand,
-            PFPage,
-            PFAvatar,
-            PFButton,
-            PFDrawer,
-            PFDropdown,
-            PFNotificationBadge,
-            css`
-                .pf-c-page__header-tools {
-                    display: flex;
-                }
-                :host([theme="dark"]) .pf-c-page__header-tools {
-                    color: var(--ak-dark-foreground) !important;
-                }
-                :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-                :host([theme="light"]) .pf-c-notification-badge__count,
-                :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
-                    color: var(--ak-global--Color--100) !important;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFDisplay,
+        PFBrand,
+        PFPage,
+        PFAvatar,
+        PFButton,
+        PFDrawer,
+        PFDropdown,
+        PFNotificationBadge,
+        css`
+            .pf-c-page__header-tools {
+                display: flex;
+            }
+            :host([theme="dark"]) .pf-c-page__header-tools {
+                color: var(--ak-dark-foreground) !important;
+            }
+            :host([theme="light"]) .pf-c-page__header-tools-item .fas,
+            :host([theme="light"]) .pf-c-notification-badge__count,
+            :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
+                color: var(--ak-global--Color--100) !important;
+            }
+        `,
+    ];
 
     async firstUpdated() {
         this.me = await me();
@@ -177,6 +175,7 @@ export class NavigationButtons extends AKElement {
         return html`<img
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             src=${ifDefined(this.me?.user.avatar)}
+            aria-hidden="true"
             alt="${msg("Avatar image")}"
         />`;
     }
@@ -191,7 +190,7 @@ export class NavigationButtons extends AKElement {
     }
 
     render() {
-        return html`<div class="pf-c-page__header-tools">
+        return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderApiDrawerTrigger()}
                 <!-- -->
@@ -211,7 +210,7 @@ export class NavigationButtons extends AKElement {
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            ${this.userDisplayName != ""
+            ${this.userDisplayName
                 ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
                       <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
                           ${this.userDisplayName}

@@ -8,9 +8,11 @@ from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.brands.models import Brand
-from authentik.core.models import Group
+from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event
-from authentik.flows.views.executor import QS_QUERY
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.views.executor import QS_QUERY, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 
@@ -114,5 +116,94 @@ class TestEvents(TestCase):
                 "model_name": "brand",
                 "name": "Brand test-brand",
                 "pk": brand.pk.hex,
+            },
+        )
+
+    def test_from_http_flow_pending_user(self):
+        """Test request from flow request with a pending user"""
+        user = create_test_user()
+
+        session = self.client.session
+        plan = FlowPlan(generate_id())
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        request = self.factory.get("/")
+        request.session = session
+        request.user = user
+
+        event = Event.new("unittest").from_http(request)
+        self.assertEqual(
+            event.user,
+            {
+                "email": user.email,
+                "pk": user.pk,
+                "username": user.username,
+            },
+        )
+
+    def test_from_http_flow_pending_user_anon(self):
+        """Test request from flow request with a pending user"""
+        user = create_test_user()
+        anon = get_anonymous_user()
+
+        session = self.client.session
+        plan = FlowPlan(generate_id())
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        request = self.factory.get("/")
+        request.session = session
+        request.user = anon
+
+        event = Event.new("unittest").from_http(request)
+        self.assertEqual(
+            event.user,
+            {
+                "authenticated_as": {
+                    "pk": anon.pk,
+                    "is_anonymous": True,
+                    "username": "AnonymousUser",
+                    "email": "",
+                },
+                "email": user.email,
+                "pk": user.pk,
+                "username": user.username,
+            },
+        )
+
+    def test_from_http_flow_pending_user_fake(self):
+        """Test request from flow request with a pending user"""
+        user = User(
+            username=generate_id(),
+            email=generate_id(),
+        )
+        anon = get_anonymous_user()
+
+        session = self.client.session
+        plan = FlowPlan(generate_id())
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        request = self.factory.get("/")
+        request.session = session
+        request.user = anon
+
+        event = Event.new("unittest").from_http(request)
+        self.assertEqual(
+            event.user,
+            {
+                "authenticated_as": {
+                    "pk": anon.pk,
+                    "is_anonymous": True,
+                    "username": "AnonymousUser",
+                    "email": "",
+                },
+                "email": user.email,
+                "pk": user.pk,
+                "username": user.username,
             },
         )

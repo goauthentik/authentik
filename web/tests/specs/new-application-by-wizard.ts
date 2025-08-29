@@ -1,12 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
-// via `defineProperties` is how we installed the OUID finders for the various
-// wizard types.
-import { expect } from "@wdio/globals";
-
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
+import type { TestProvider, TestSequence } from "../pageobjects/controls.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
 import {
@@ -27,7 +21,12 @@ import {
     simpleSAMLProviderForm,
     simpleSCIMProviderForm,
 } from "./provider-shared-sequences.js";
-import { type TestSequence } from "./shared-sequences";
+
+// @ts-nocheck
+// ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
+// via `defineProperties` is how we installed the OUID finders for the various
+// wizard types.
+import { expect } from "@wdio/globals";
 
 const SUCCESS_MESSAGE = "Your application has been saved";
 
@@ -89,7 +88,7 @@ export async function findWizardTitle() {
 async function passByPoliciesAndCommit() {
     const title = await findWizardTitle();
     // Expect to be on the Bindings panel
-    await expect(await title.getText()).toEqual("Configure Policy/User/Group Bindings");
+    await expect(await title?.getText()).toEqual("Configure Policy/User/Group Bindings");
     await (await ApplicationWizardView.nextButton()).click();
     await ApplicationWizardView.pause();
     await (await ApplicationWizardView.submitPage()).waitForDisplayed();
@@ -106,7 +105,7 @@ async function itShouldConfigureApplicationsViaTheWizard(name: string, provider:
     });
 }
 
-const providers = [
+const providers: [string, TestProvider][] = [
     ["Simple LDAP", simpleLDAPProviderForm],
     ["Simple OAuth2", simpleOAuth2ProviderForm],
     ["Simple Radius", simpleRadiusProviderForm],

@@ -1,24 +1,26 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import "#admin/common/ak-crypto-certificate-search";
+import "#components/ak-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProvidersProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/oauth2/OAuth2ProvidersProvider";
 
 import { ProvidersApi, SSFProvider } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
  * Form page for SSF Authentication Method
@@ -42,11 +44,10 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 id: this.instance.pk,
                 sSFProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
-                sSFProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
+            sSFProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -58,9 +59,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Signing Key")}
                         name="signingKey"
@@ -94,9 +94,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header">${msg("Authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Authentication settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("OIDC Providers")}
                         name="oidcAuthProviders"

@@ -1,20 +1,38 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import renderDescriptionList from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
-import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.mdx";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/oauth2/OAuth2ProviderForm";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/tasks/TaskList";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    ClientTypeEnum,
+    CoreApi,
+    CoreUsersListRequest,
+    ModelEnum,
+    OAuth2Provider,
+    OAuth2ProviderSetupURLs,
+    PropertyMappingPreview,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    User,
+} from "@goauthentik/api";
+
+import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -28,18 +46,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ClientTypeEnum,
-    CoreApi,
-    CoreUsersListRequest,
-    OAuth2Provider,
-    OAuth2ProviderSetupURLs,
-    PropertyMappingPreview,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    User,
-} from "@goauthentik/api";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";
@@ -78,21 +84,19 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-            PFDivider,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+        PFDivider,
+    ];
 
     constructor() {
         super();
@@ -168,6 +172,7 @@ export class OAuth2ProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikProvidersOauth2Oauth2provider.split(".");
         return html` ${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -241,6 +246,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                                                 </li>`;
                                             })}
                                         </ul>
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Back-Channel Logout URI")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text pf-m-monospace">
+                                        ${this.provider.backchannelLogoutUri}
                                     </div>
                                 </dd>
                             </div>
@@ -356,6 +373,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+                        <div class="pf-c-card__title">${msg("Tasks")}</div>
+                        <ak-task-list
+                            .relObjAppLabel=${appLabel}
+                            .relObjModel=${modelName}
+                            .relObjId="${this.provider.pk}"
+                        ></ak-task-list>
+                    </div>
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                >
                     <div class="pf-c-card__body">
                         <ak-mdx
                             .url=${MDProviderOAuth2}
@@ -416,7 +445,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                         .selected=${(user: User): boolean => {
                                             return user.pk === this.previewUser?.pk;
                                         }}
-                                        ?blankable=${true}
+                                        blankable
                                         @ak-change=${(ev: CustomEvent) => {
                                             this.previewUser = ev.detail.value;
                                             this.fetchPreview();

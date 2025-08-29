@@ -1,23 +1,23 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/users/GroupSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/groups/GroupForm";
+import "#admin/users/GroupSelectModal";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
@@ -65,7 +65,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     <ak-chip-group>
                         ${this.groupsToAdd.map((group) => {
                             return html`<ak-chip
-                                .removable=${true}
+                                removable
                                 value=${ifDefined(group.pk)}
                                 @remove=${() => {
                                     const idx = this.groupsToAdd.indexOf(group);
@@ -144,7 +144,7 @@ export class RelatedGroupList extends Table<Group> {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
-            html`<ak-label type="info" ?good=${item.isSuperuser}></ak-label>`,
+            html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Group")} </span>

@@ -1,37 +1,36 @@
 // sort-imports-ignore
 import "rapidoc";
-import "@goauthentik/elements/ak-locale-context/index.js";
+import "#elements/ak-locale-context/index";
 
-import { CSRFHeaderName } from "@goauthentik/common/api/middleware.js";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
-import { getCookie } from "@goauthentik/common/utils.js";
-import { Interface } from "@goauthentik/elements/Interface/Interface.js";
-import { DefaultBrand } from "@goauthentik/common/ui/config.js";
-import { themeImage } from "@goauthentik/elements/utils/images.js";
+import { CSRFHeaderName } from "#common/api/middleware";
+import { EVENT_THEME_CHANGE } from "#common/constants";
+import { getCookie } from "#common/utils";
 
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { Interface } from "#elements/Interface";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { themeImage } from "#elements/utils/images";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { css, CSSResult, html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
 @customElement("ak-api-browser")
-export class APIBrowser extends Interface {
+export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                img.logo {
-                    width: 100%;
-                    padding: 1rem 0.5rem 1.5rem 0.5rem;
-                    min-height: 48px;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            img.logo {
+                width: 100%;
+                padding: 1rem 0.5rem 1.5rem 0.5rem;
+                min-height: 48px;
+            }
+        `,
+    ];
 
     @state()
     bgColor = "#000000";
@@ -102,9 +101,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="${msg("authentik Logo")}"
                             class="logo"
-                            src="${themeImage(
-                                this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
-                            )}"
+                            src="${themeImage(this.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>

@@ -1,18 +1,28 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/ssf/SSFProviderFormPage";
-import "@goauthentik/admin/providers/ssf/StreamTable";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/ssf/SSFProviderFormPage";
+import "#admin/providers/ssf/StreamTable";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/tasks/TaskList";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    ModelEnum,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SSFProvider,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -26,12 +36,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SSFProvider,
-} from "@goauthentik/api";
 
 @customElement("ak-provider-ssf-view")
 export class SSFProviderViewPage extends AKElement {
@@ -49,21 +53,19 @@ export class SSFProviderViewPage extends AKElement {
     @property({ attribute: false })
     provider?: SSFProvider;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-            PFDivider,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+        PFDivider,
+    ];
 
     constructor() {
         super();
@@ -109,6 +111,7 @@ export class SSFProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
+        const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
         return html`<div slot="header" class="pf-c-banner pf-m-info">
                 ${msg("SSF Provider is in preview.")}
                 <a href="mailto:hello+feature/ssf@goauthentik.io">${msg("Send us feedback!")}</a>
@@ -165,6 +168,14 @@ export class SSFProviderViewPage extends AKElement {
                     <div class="pf-c-card__title">${msg("Streams")}</div>
                     <ak-provider-ssf-stream-list .providerId=${this.providerID}>
                     </ak-provider-ssf-stream-list>
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col-on-2xl">
+                    <div class="pf-c-card__title">${msg("Tasks")}</div>
+                    <ak-task-list
+                        .relObjAppLabel=${appLabel}
+                        .relObjModel=${modelName}
+                        .relObjId="${this.provider.pk}"
+                    ></ak-task-list>
                 </div>
             </div>`;
     }

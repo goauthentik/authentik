@@ -18,21 +18,26 @@ import (
 )
 
 type LDAPServer struct {
-	s           *ldap.Server
-	log         *log.Entry
-	ac          *ak.APIController
-	cs          *ak.CryptoStore
-	defaultCert *tls.Certificate
-	providers   []*ProviderInstance
+	s               *ldap.Server
+	log             *log.Entry
+	ac              *ak.APIController
+	cs              *ak.CryptoStore
+	defaultCert     *tls.Certificate
+	providers       []*ProviderInstance
+	connections     map[string]net.Conn
+	connectionsSync sync.Mutex
 }
 
-func NewServer(ac *ak.APIController) *LDAPServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	ls := &LDAPServer{
-		log:       log.WithField("logger", "authentik.outpost.ldap"),
-		ac:        ac,
-		cs:        ak.NewCryptoStore(ac.Client.CryptoApi),
-		providers: []*ProviderInstance{},
+		log:             log.WithField("logger", "authentik.outpost.ldap"),
+		ac:              ac,
+		cs:              ak.NewCryptoStore(ac.Client.CryptoApi),
+		providers:       []*ProviderInstance{},
+		connections:     map[string]net.Conn{},
+		connectionsSync: sync.Mutex{},
 	}
+	ac.AddEventHandler(ls.handleWSSessionEnd)
 	s := ldap.NewServer()
 	s.EnforceLDAP = true
 
@@ -50,6 +55,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	s.BindFunc("", ls)
 	s.UnbindFunc("", ls)
 	s.SearchFunc("", ls)
+	s.CloseFunc("", ls)
 	return ls
 }
 
@@ -116,4 +122,24 @@ func (ls *LDAPServer) TimerFlowCacheExpiry(ctx context.Context) {
 		ls.log.WithField("flow", p.authenticationFlowSlug).Debug("Pre-heating flow cache")
 		p.binder.TimerFlowCacheExpiry(ctx)
 	}
+}
+
+func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.Event) error {
+	if msg.Instruction != ak.EventKindSessionEnd {
+		return nil
+	}
+	mmsg := ak.EventArgsSessionEnd{}
+	err := msg.ArgsAs(&mmsg)
+	if err != nil {
+		return err
+	}
+	ls.connectionsSync.Lock()
+	defer ls.connectionsSync.Unlock()
+	ls.log.Info("Disconnecting session due to session end event")
+	conn, ok := ls.connections[mmsg.SessionID]
+	if !ok {
+		return nil
+	}
+	delete(ls.connections, mmsg.SessionID)
+	return conn.Close()
 }

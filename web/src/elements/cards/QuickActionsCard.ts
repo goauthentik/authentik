@@ -1,5 +1,6 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/cards/AggregateCard.js";
+import "#elements/cards/AggregateCard";
+
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -24,9 +25,7 @@ export interface IQuickActionsCard {
  */
 @customElement("ak-quick-actions-card")
 export class QuickActionsCard extends AKElement implements IQuickActionsCard {
-    static get styles() {
-        return [PFBase, PFList];
-    }
+    static styles = [PFBase, PFList];
 
     /**
      * Card title
@@ -51,6 +50,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
                 <a class="pf-u-mb-xl" href=${url} ${external ? 'target="_blank"' : ""}>
                     ${external
                         ? html`${label}&nbsp;<i
+                                  aria-hidden="true"
                                   class="fas fa-external-link-alt ak-external-link"
                               ></i>`
                         : label}
@@ -58,7 +58,7 @@ export class QuickActionsCard extends AKElement implements IQuickActionsCard {
             </li>`;
 
         return html` <ak-aggregate-card icon="fa fa-share" header=${this.title} left-justified>
-            <ul class="pf-c-list">
+            <ul aria-label="${msg("Quick actions")}" class="pf-c-list">
                 ${map(this.actions, renderItem)}
             </ul>
         </ak-aggregate-card>`;

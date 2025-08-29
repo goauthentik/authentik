@@ -1,20 +1,24 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/groups/RelatedUserList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/groups/GroupForm";
+import "#admin/groups/RelatedUserList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-page-header";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/ModalForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -27,8 +31,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-
-import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
@@ -47,20 +49,18 @@ export class GroupViewPage extends AKElement {
     @property({ attribute: false })
     group?: Group;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFList,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFList,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+    ];
 
     constructor() {
         super();
@@ -118,7 +118,7 @@ export class GroupViewPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-status-label
-                                                type="info"
+                                                type="neutral"
                                                 ?good=${this.group.isSuperuser}
                                             ></ak-status-label>
                                         </div>

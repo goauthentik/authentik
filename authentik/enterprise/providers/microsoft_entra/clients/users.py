@@ -24,7 +24,7 @@ class MicrosoftEntraUserClient(MicrosoftEntraSyncClient[User, MicrosoftEntraProv
     """Sync authentik users into microsoft entra"""
 
     connection_type = MicrosoftEntraProviderUser
-    connection_type_query = "user"
+    connection_attr = "microsoftentraprovideruser_set"
     can_discover = True
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:

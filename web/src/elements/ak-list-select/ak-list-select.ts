@@ -1,22 +1,18 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import type {
-    GroupedOptions,
-    SelectGroup,
-    SelectOption,
-    SelectOptions,
-} from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
+
 import { match } from "ts-pattern";
 
-import { PropertyValueMap, css, html, nothing } from "lit";
+import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
 
 export interface IListSelect {
     options: SelectOptions;
@@ -50,29 +46,27 @@ export interface IListSelect {
  */
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
-    static get styles() {
-        return [
-            PFBase,
-            PFDropdown,
-            PFSelect,
-            css`
-                :host {
-                    overflow: visible;
-                    z-index: 9999;
-                }
+    static styles = [
+        PFBase,
+        PFDropdown,
+        PFSelect,
+        css`
+            :host {
+                overflow: visible;
+                z-index: 9999;
+            }
 
-                :host([hidden]) {
-                    display: none;
-                }
+            :host([hidden]) {
+                display: none;
+            }
 
-                .pf-c-dropdown__menu {
-                    max-height: 50vh;
-                    overflow-y: auto;
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+            .pf-c-dropdown__menu {
+                max-height: 50vh;
+                overflow-y: auto;
+                width: 100%;
+            }
+        `,
+    ];
 
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
@@ -160,11 +154,17 @@ export class ListSelect extends AKElement implements IListSelect {
         return elementCount === 0 ? -1 : checkIndex();
     }
 
+    /**
+     * Highlight the currently focused item.
+     *
+     * @todo
+     * This doesn't quite work as intended, but this component will likely
+     * be refined after the PatternFly upgrade.
+     */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
-            item.tabIndex = -1;
         });
         const currentElement = this.currentElement;
         if (!currentElement) {
@@ -174,7 +174,6 @@ export class ListSelect extends AKElement implements IListSelect {
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
-        currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
     @bound

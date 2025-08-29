@@ -1,24 +1,26 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#components/ak-event-info";
+import "#elements/Tabs";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, renderEventUser } from "#admin/events/utils";
+
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-import { Event, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-recent-events")
 export class RecentEventsCard extends Table<Event> {
@@ -35,23 +37,20 @@ export class RecentEventsCard extends Table<Event> {
         });
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFCard,
-            css`
-                .pf-c-card__title {
-                    --pf-c-card__title--FontFamily: var(
-                        --pf-global--FontFamily--heading--sans-serif
-                    );
-                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                    --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
-                }
-                * {
-                    word-break: break-all;
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFCard,
+        css`
+            .pf-c-card__title {
+                --pf-c-card__title--FontFamily: var(--pf-global--FontFamily--heading--sans-serif);
+                --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
+                --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
+            }
+            * {
+                word-break: break-all;
+            }
+        `,
+    ];
 
     columns(): TableColumn[] {
         return [
@@ -73,7 +72,7 @@ export class RecentEventsCard extends Table<Event> {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
-            EventUser(item),
+            renderEventUser(item),
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html` <div>${item.clientIp || msg("-")}</div>
@@ -88,7 +87,8 @@ export class RecentEventsCard extends Table<Event> {
         }
 
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Events found.")}>
+            html`<ak-empty-state
+                ><span>${msg("No Events found.")}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

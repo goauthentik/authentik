@@ -100,9 +100,6 @@ ipython_config.py
 # pyenv
 .python-version
 
-# celery beat schedule file
-celerybeat-schedule
-
 # SageMath parsed files
 *.sage.py
 
@@ -165,8 +162,6 @@ dmypy.json
 # IPython
 
 # pyenv
-
-# celery beat schedule file
 
 # SageMath parsed files
 

@@ -46,6 +46,12 @@ def generate_local_config():
             "enabled": False,
             "api_key": generate_id(),
         },
+        "worker": {
+            "processes": 1,
+            "threads": 1,
+            "consumer_listen_timeout": "seconds=10",
+            "scheduler_interval": "seconds=30",
+        },
     }
 
 

@@ -31,4 +31,4 @@ If changes to the frontend have been made
 If applicable
 
 -   [ ] The documentation has been updated
--   [ ] The documentation has been formatted (`make website`)
+-   [ ] The documentation has been formatted (`make docs`)

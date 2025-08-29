@@ -4,12 +4,7 @@
         {
             "label": "authentik/core: make",
             "command": "uv",
-            "args": [
-                "run",
-                "make",
-                "lint-fix",
-                "lint"
-            ],
+            "args": ["run", "make", "lint-fix", "lint"],
             "presentation": {
                 "panel": "new"
             },
@@ -18,11 +13,7 @@
         {
             "label": "authentik/core: run",
             "command": "uv",
-            "args": [
-                "run",
-                "ak",
-                "server"
-            ],
+            "args": ["run", "ak", "server"],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -32,17 +23,13 @@
         {
             "label": "authentik/web: make",
             "command": "make",
-            "args": [
-                "web"
-            ],
+            "args": ["web"],
             "group": "build"
         },
         {
             "label": "authentik/web: watch",
             "command": "make",
-            "args": [
-                "web-watch"
-            ],
+            "args": ["web-watch"],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -52,26 +39,19 @@
         {
             "label": "authentik: install",
             "command": "make",
-            "args": [
-                "install",
-                "-j4"
-            ],
+            "args": ["install", "-j4"],
             "group": "build"
         },
         {
-            "label": "authentik/website: make",
+            "label": "authentik/docs: make",
             "command": "make",
-            "args": [
-                "website"
-            ],
+            "args": ["docs"],
             "group": "build"
         },
         {
-            "label": "authentik/website: watch",
+            "label": "authentik/docs: watch",
             "command": "make",
-            "args": [
-                "website-watch"
-            ],
+            "args": ["docs-watch"],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -81,11 +61,7 @@
         {
             "label": "authentik/api: generate",
             "command": "uv",
-            "args": [
-                "run",
-                "make",
-                "gen"
-            ],
+            "args": ["run", "make", "gen"],
             "group": "build"
         }
     ]

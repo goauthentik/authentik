@@ -16,7 +16,6 @@ Default: `gravatar,initials`
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
-
     - `%(username)s`: The user's username
     - `%(mail_hash)s`: The email address, md5 hashed
     - `%(upn)s`: The user's UPN, if set (otherwise an empty string)

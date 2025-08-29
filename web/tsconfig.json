@@ -2,6 +2,9 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
+        "checkJs": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
@@ -14,18 +17,6 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         // TODO: We should enable this when when we're ready to enforce it.
         "noUncheckedIndexedAccess": false,
-        "paths": {
-            "@goauthentik/admin/*": ["./src/admin/*"],
-            "@goauthentik/common/*": ["./src/common/*"],
-            "@goauthentik/components/*": ["./src/components/*"],
-            "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["./src/elements/*"],
-            "@goauthentik/flow/*": ["./src/flow/*"],
-            "@goauthentik/locales/*": ["./src/locales/*"],
-            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
-            "@goauthentik/standalone/*": ["./src/standalone/*"],
-            "@goauthentik/user/*": ["./src/user/*"]
-        },
         "plugins": [
             {
                 "name": "ts-lit-plugin",
@@ -49,17 +40,13 @@
     },
     "exclude": [
         // ---
-        "./out/**/*",
-        "./dist/**/*",
+        "**/out/**/*",
+        "**/dist/**/*",
+        "storybook-static",
         "src/**/*.test.ts",
         "./tests",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"
-    ],
-    "references": [
-        {
-            "path": "./packages/esbuild-plugin-live-reload"
-        }
     ]
 }

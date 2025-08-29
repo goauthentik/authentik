@@ -1,19 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { PFSize } from "@goauthentik/common/enums.js";
-import {
-    EventContext,
-    EventContextProperty,
-    EventModel,
-    EventWithContext,
-} from "@goauthentik/common/events";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Expand";
-import "@goauthentik/elements/Spinner";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#elements/Expand";
+import "#elements/Spinner";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventActions, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -26,8 +24,6 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { EventActions, FlowsApi } from "@goauthentik/api";
 
 // TODO: Settle these types. It's too hard to make sense of what we're expecting here.
 type EventSlotValueType =
@@ -76,7 +72,7 @@ ${context.message as string}
 
 
 **Version and Deployment (please complete the following information):**
-- authentik version: ${VERSION}
+- authentik version: ${import.meta.env.AK_VERSION}
 - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
@@ -88,35 +84,33 @@ export class EventInfo extends AKElement {
     @property({ attribute: false })
     event!: EventWithContext;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFFlex,
-            PFCard,
-            PFTable,
-            PFList,
-            PFSplit,
-            PFDescriptionList,
-            css`
-                code {
-                    display: block;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                }
-                .pf-l-flex {
-                    justify-content: space-between;
-                }
-                .pf-l-flex__item {
-                    min-width: 25%;
-                }
-                iframe {
-                    width: 100%;
-                    height: 50rem;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFFlex,
+        PFCard,
+        PFTable,
+        PFList,
+        PFSplit,
+        PFDescriptionList,
+        css`
+            code {
+                display: block;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+            .pf-l-flex {
+                justify-content: space-between;
+            }
+            .pf-l-flex__item {
+                min-width: 25%;
+            }
+            iframe {
+                width: 100%;
+                height: 50rem;
+            }
+        `,
+    ];
 
     renderDescriptionGroup([term, description]: FieldLabelTuple) {
         return html` <div class="pf-c-description-list__group">
@@ -375,7 +369,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
 
     renderEmailSent() {
         let body = this.event.context.body as string;
-        body = body.replace("cid:logo.png", "/static/dist/assets/icons/icon_left_brand.png");
+        body = body.replace("cid:logo", "/static/dist/assets/icons/icon_left_brand.png");
         return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
             <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
             <ak-expand>

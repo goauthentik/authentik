@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main
+name: CI - Main
 
 on:
   push:
@@ -17,6 +17,12 @@ env:
   POSTGRES_USER: authentik
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
+permissions:
+  # Needed for checkout
+  contents: read
+  # Needed for codecov OIDC token
+  id-token: write
+
 jobs:
   lint:
     strategy:
@@ -30,7 +36,7 @@ jobs:
           - ruff
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
@@ -38,7 +44,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -62,9 +68,10 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: checkout stable
@@ -116,9 +123,10 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -134,18 +142,18 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           flags: unit
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
       - if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           flags: unit
           file: unittest.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
   test-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -158,13 +166,13 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           flags: integration
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
       - if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           flags: integration
           file: unittest.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
@@ -190,7 +198,7 @@ jobs:
           - name: flows
             glob: tests/e2e/test_flows*
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -200,7 +208,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
@@ -217,13 +225,13 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           flags: e2e
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
       - if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           flags: e2e
           file: unittest.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
   ci-core-mark:
     if: always()
     needs:
@@ -245,11 +253,13 @@ jobs:
       # Needed for attestation
       id-token: write
       attestations: write
+      # Needed for checkout
+      contents: read
     needs: ci-core-mark
-    uses: ./.github/workflows/_reusable-docker-build.yaml
+    uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     with:
-      image_name: ghcr.io/goauthentik/dev-server
+      image_name: ${{ github.repository == 'goauthentik/authentik-internal' && 'ghcr.io/goauthentik/internal-server' || 'ghcr.io/goauthentik/dev-server' }}
       release: false
   pr-comment:
     needs:
@@ -261,14 +271,14 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_CORP_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/dev-server
       - name: Comment on PR

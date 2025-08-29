@@ -338,7 +338,7 @@ class TestCrypto(APITestCase):
             with open(f"{temp_dir}/foo.bar/privkey.pem", "w+", encoding="utf-8") as _key:
                 _key.write(builder.private_key)
             with CONFIG.patch("cert_discovery_dir", temp_dir):
-                certificate_discovery()
+                certificate_discovery.send()
         keypair: CertificateKeyPair = CertificateKeyPair.objects.filter(
             managed=MANAGED_DISCOVERED % "foo"
         ).first()

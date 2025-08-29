@@ -1,9 +1,0 @@
-{
-    "extends": "@goauthentik/tsconfig",
-    "compilerOptions": {
-        "resolveJsonModule": true,
-        "baseUrl": ".",
-        "checkJs": true,
-        "emitDeclarationOnly": true
-    }
-}

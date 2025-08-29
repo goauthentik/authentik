@@ -1,11 +1,10 @@
 """authentik e2e testing utilities"""
 
 import json
-import os
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
-from os import environ
+from os import environ, getenv
 from sys import stderr
 from time import sleep
 from typing import Any
@@ -37,24 +36,16 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.root.test_runner import get_docker_tag
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
 
 
-def get_docker_tag() -> str:
-    """Get docker-tag based off of CI variables"""
-    env_pr_branch = "GITHUB_HEAD_REF"
-    default_branch = "GITHUB_REF"
-    branch_name = os.environ.get(default_branch, "main")
-    if os.environ.get(env_pr_branch, "") != "":
-        branch_name = os.environ[env_pr_branch]
-    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
-    return f"gh-{branch_name}"
-
-
 def get_local_ip() -> str:
     """Get the local machine's IP"""
+    if local_ip := getenv("LOCAL_IP"):
+        return local_ip
     hostname = socket.gethostname()
     ip_addr = socket.gethostbyname(hostname)
     return ip_addr
@@ -63,7 +54,7 @@ def get_local_ip() -> str:
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 45
 
     __client: DockerClient
     __network: Network
@@ -97,7 +88,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
-                self.failureException("Container failed to start")
+                raise self.failureException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -166,30 +157,35 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::group::authentik Logs", file=stderr)
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
+        self.logger = get_logger()
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.logger = get_logger()
         self.user = create_test_admin_user()
         super().setUp()
 
     def _get_driver(self) -> WebDriver:
         count = 0
-        try:
-            opts = webdriver.ChromeOptions()
-            opts.add_argument("--disable-search-engine-choice-screen")
-            return webdriver.Chrome(options=opts)
-        except WebDriverException:
-            pass
+        opts = webdriver.ChromeOptions()
+        opts.add_argument("--disable-search-engine-choice-screen")
+        # This breaks selenium when running remotely...?
+        # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+        opts.add_experimental_option(
+            "prefs",
+            {
+                "profile.password_manager_leak_detection": False,
+            },
+        )
         while count < RETRIES:
             try:
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    options=webdriver.ChromeOptions(),
+                    options=opts,
                 )
                 driver.maximize_window()
                 return driver
-            except WebDriverException:
+            except WebDriverException as exc:
+                self.logger.warning("Failed to setup webdriver", exc=exc)
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 

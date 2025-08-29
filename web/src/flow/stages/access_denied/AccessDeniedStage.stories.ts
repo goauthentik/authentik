@@ -1,40 +1,22 @@
+import "@patternfly/patternfly/components/Login/login.css";
+import "../../../stories/flow-interface.js";
+import "./AccessDeniedStage.js";
+
+import { AccessDeniedChallenge, UiThemeEnum } from "@goauthentik/api";
+
 import type { StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
-import "@patternfly/patternfly/components/Login/login.css";
-
-import { AccessDeniedChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./AccessDeniedStage";
-
 export default {
-    title: "Flow / Stages / AccessDeniedStage",
-};
-
-export const LoadingNoChallenge = () => {
-    return html`<ak-storybook-interface theme=${UiThemeEnum.Dark}>
-        <div class="pf-c-login">
-            <div class="pf-c-login__container">
-                <div class="pf-c-login__main">
-                    <ak-stage-access-denied></ak-stage-access-denied>
-                </div>
-            </div>
-        </div>
-    </ak-storybook-interface>`;
+    title: "Flow / Stages / <ak-stage-access-denied>",
 };
 
 export const Challenge: StoryObj = {
     render: ({ theme, challenge }) => {
-        return html`<ak-storybook-interface theme=${theme}>
-            <div class="pf-c-login">
-                <div class="pf-c-login__container">
-                    <div class="pf-c-login__main">
-                        <ak-stage-access-denied .challenge=${challenge}></ak-stage-access-denied>
-                    </div>
-                </div></div
-        ></ak-storybook-interface>`;
+        return html`<ak-storybook-interface-flow theme=${theme}>
+            <ak-stage-access-denied .challenge=${challenge}></ak-stage-access-denied>
+        </ak-storybook-interface-flow>`;
     },
     args: {
         theme: "automatic",

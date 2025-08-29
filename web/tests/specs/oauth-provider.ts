@@ -1,9 +1,9 @@
-import { expect } from "@wdio/globals";
-
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
+
+import { expect } from "@wdio/globals";
 
 async function reachTheProvider() {
     await ProvidersListPage.logout();

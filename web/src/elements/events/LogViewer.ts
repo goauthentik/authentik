@@ -1,15 +1,17 @@
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-status-label";
+import "#elements/EmptyState";
+
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
@@ -19,9 +21,7 @@ export class LogViewer extends Table<LogEvent> {
     expandable = true;
     paginated = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
@@ -40,7 +40,7 @@ export class LogViewer extends Table<LogEvent> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No log messages.")}> </ak-empty-state>`,
+            html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 

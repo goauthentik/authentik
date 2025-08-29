@@ -1,7 +1,7 @@
-import { $ } from "@wdio/globals";
-
 import AdminPage from "./admin.page.js";
 import OauthForm from "./forms/oauth.form.js";
+
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page

@@ -1,9 +1,12 @@
 """API Authentication"""
 
 from hmac import compare_digest
+from pathlib import Path
+from tempfile import gettempdir
 from typing import Any
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed
@@ -11,11 +14,17 @@ from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA
-from authentik.core.models import Token, TokenIntents, User
+from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.outposts.models import Outpost
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 
 LOGGER = get_logger()
+_tmp = Path(gettempdir())
+try:
+    with open(_tmp / "authentik-core-ipc.key") as _f:
+        ipc_key = _f.read()
+except OSError:
+    ipc_key = None
 
 
 def validate_auth(header: bytes) -> str | None:
@@ -73,6 +82,11 @@ def auth_user_lookup(raw_header: bytes) -> User | None:
     if user:
         CTX_AUTH_VIA.set("secret_key")
         return user
+    # then try to auth via secret key (for embedded outpost/etc)
+    user = token_ipc(auth_credentials)
+    if user:
+        CTX_AUTH_VIA.set("ipc")
+        return user
     raise AuthenticationFailed("Token invalid/expired")
 
 
@@ -88,6 +102,43 @@ def token_secret_key(value: str) -> User | None:
         return None
     outpost = outposts.first()
     return outpost.user
+
+
+class IPCUser(AnonymousUser):
+    """'Virtual' user for IPC communication between authentik core and the authentik router"""
+
+    username = "authentik:system"
+    is_active = True
+    is_superuser = True
+
+    @property
+    def type(self):
+        return UserTypes.INTERNAL_SERVICE_ACCOUNT
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_perms(self, perm_list, obj=None):
+        return True
+
+    def has_module_perms(self, module):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_authenticated(self):
+        return True
+
+
+def token_ipc(value: str) -> User | None:
+    """Check if the token is the secret key
+    and return the service account for the managed outpost"""
+    if not ipc_key or not compare_digest(value, ipc_key):
+        return None
+    return IPCUser()
 
 
 class TokenAuthentication(BaseAuthentication):

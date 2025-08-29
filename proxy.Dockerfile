@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -11,13 +11,13 @@ RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
     --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/static/scripts,src=./web/scripts \
     --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
+    npm ci
 
 COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.25-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -53,11 +53,16 @@ ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
-LABEL org.opencontainers.image.url=https://goauthentik.io
-LABEL org.opencontainers.image.description="goauthentik.io Proxy outpost image, see https://goauthentik.io for more info."
-LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.authors="Authentik Security Inc." \
+    org.opencontainers.image.description="goauthentik.io Proxy outpost image, see https://goauthentik.io for more info." \
+    org.opencontainers.image.documentation="https://docs.goauthentik.io" \
+    org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE" \
+    org.opencontainers.image.revision=${GIT_BUILD_HASH} \
+    org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
+    org.opencontainers.image.title="authentik proxy outpost image" \
+    org.opencontainers.image.url="https://goauthentik.io" \
+    org.opencontainers.image.vendor="Authentik Security Inc." \
+    org.opencontainers.image.version=${VERSION}
 
 RUN apt-get update && \
     apt-get upgrade -y && \

@@ -1,24 +1,24 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#elements/buttons/SpinnerButton/index";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
-
 @customElement("ak-forms-delete")
 export class DeleteForm extends ModalButton {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFList];
 
     @property({ attribute: false })
     obj?: Record<string, unknown>;

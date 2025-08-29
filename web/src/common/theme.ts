@@ -1,18 +1,13 @@
+import AKBase from "#common/styles/authentik.css";
+import AKBaseDark from "#common/styles/theme-dark.css";
 /**
  * @file Theme utilities.
  */
-import {
-    type StyleRoot,
-    createStyleSheetUnsafe,
-    setAdoptedStyleSheets,
-} from "@goauthentik/common/stylesheets.js";
-import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { createStyleSheetUnsafe, setAdoptedStyleSheets, type StyleRoot } from "#common/stylesheets";
 
-import AKBase from "@goauthentik/common/styles/authentik.css";
-import AKBaseDark from "@goauthentik/common/styles/theme-dark.css";
+import { UiThemeEnum } from "@goauthentik/api";
+
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 
 //#region Stylesheet Exports
 
@@ -263,6 +258,8 @@ export function applyUITheme(
 export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "auto"): void {
     const preferredColorScheme = formatColorScheme(hint);
 
+    if (document.documentElement.dataset.theme === preferredColorScheme) return;
+
     const applyStyleSheets: UIThemeListener = (currentUITheme) => {
         console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
 
@@ -290,34 +287,18 @@ export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "au
 }
 
 /**
- * An element that can be themed.
- */
-export interface ThemedElement extends HTMLElement {
-    /**
-     * The brand information for the current theme.
-     */
-    readonly brand?: CurrentBrand;
-    /**
-     * The UI configuration for the current theme,
-     * typically injected through a Lit Mixin.
-     *
-     * @see {@linkcode UIConfig} for details.
-     */
-    readonly uiConfig?: UIConfig;
-    /**
-     * An authentik configuration initially provided by the server.
-     */
-    readonly config?: Config;
-    activeTheme: ResolvedUITheme;
-}
-
-/**
  * Returns the root interface element of the page.
  *
  * @todo Can this be handled with a Lit Mixin?
  */
-export function rootInterface<T extends ThemedElement = ThemedElement>(): T | null {
-    const element = document.body.querySelector<T>("[data-ak-interface-root]");
+export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
+    const element = document.body.querySelector<T>("[data-test-id=interface-root]");
+
+    if (!element) {
+        throw new Error(
+            `Could not find root interface element. Was this element added before the parent interface element?`,
+        );
+    }
 
     return element;
 }

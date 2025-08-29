@@ -1,22 +1,25 @@
-import "@goauthentik/admin/groups/MemberSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
-import "@goauthentik/elements/chips/Chip";
-import "@goauthentik/elements/chips/ChipGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/groups/MemberSelectModal";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
 
 export function rbacRolePair(item: Role): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];
@@ -24,16 +27,17 @@ export function rbacRolePair(item: Role): DualSelectPair {
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .pf-c-button.pf-m-control {
                 height: 100%;
             }
             .pf-c-form-control {
                 height: auto !important;
             }
-        `);
-    }
+        `,
+    ];
 
     loadInstance(pk: string): Promise<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsRetrieve({
@@ -49,21 +53,21 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     async send(data: Group): Promise<Group> {
+        data.attributes ??= {};
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
-        } else {
-            data.users = [];
-            return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-                groupRequest: data,
-            });
         }
+        data.users = [];
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
+            groupRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -113,7 +117,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.parent;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
@@ -142,11 +146,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${true}
-                name="attributes"
-            >
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"

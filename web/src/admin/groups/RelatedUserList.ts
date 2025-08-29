@@ -1,44 +1,42 @@
-import "@goauthentik/admin/users/ServiceAccountForm";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserImpersonateForm";
-import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { me } from "@goauthentik/common/users";
-import "@goauthentik/components/ak-status-label";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { UserOption } from "@goauthentik/elements/user/utils";
+import "#admin/users/ServiceAccountForm";
+import "#admin/users/UserActiveForm";
+import "#admin/users/UserForm";
+import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserPasswordForm";
+import "#admin/users/UserResetEmailForm";
+import "#components/ak-status-label";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/Dropdown";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+import { formatElapsedTime } from "#common/temporal";
+import { me } from "#common/users";
+
+import { Form } from "#elements/forms/Form";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { UserOption } from "#elements/user/utils";
+
+import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
+
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
 
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
@@ -86,7 +84,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                     <ak-chip-group>
                         ${this.usersToAdd.map((user) => {
                             return html`<ak-chip
-                                .removable=${true}
+                                removable
                                 value=${ifDefined(user.pk)}
                                 @remove=${() => {
                                     const idx = this.usersToAdd.indexOf(user);
@@ -126,9 +124,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return Table.styles.concat(PFDescriptionList, PFAlert, PFBanner);
-    }
+    static styles: CSSResult[] = [...Table.styles, PFDescriptionList, PFAlert, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
@@ -286,8 +282,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                 <div class="pf-c-description-list__text">
                                     <ak-forms-modal>
                                         <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">${msg("Update password")}</span>
+                                        <span slot="header">
+                                            ${msg(
+                                                str`Update ${item.name || item.username}'s password`,
+                                            )}
+                                        </span>
                                         <ak-user-password-form
+                                            username=${item.username}
+                                            email=${ifDefined(item.email)}
                                             slot="form"
                                             .instancePk=${item.pk}
                                         ></ak-user-password-form>
@@ -295,7 +297,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.brand?.flowRecovery
+                                    ${this.brand.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

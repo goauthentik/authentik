@@ -1,21 +1,31 @@
-import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementPage";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/elements/AppIcon";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/applications/ApplicationAuthorizeChart";
+import "#admin/applications/ApplicationCheckAccessForm";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/entitlements/ApplicationEntitlementPage";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#elements/AppIcon";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    Application,
+    CoreApi,
+    OutpostsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -29,39 +39,42 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    Application,
-    CoreApi,
-    OutpostsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
-
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
+    static styles: CSSResult[] = [
+        PFBase,
+        PFList,
+        PFBanner,
+        PFPage,
+        PFContent,
+        PFButton,
+        PFDescriptionList,
+        PFGrid,
+        PFCard,
+    ];
+
+    //#region Properties
+
     @property({ type: String })
-    applicationSlug?: string;
+    public applicationSlug?: string;
+    //#endregion
+
+    //#region State
 
     @state()
-    application?: Application;
+    protected application?: Application;
 
     @state()
-    missingOutpost = false;
+    protected error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFList,
-            PFBanner,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGrid,
-            PFCard,
-        ];
-    }
+    @state()
+    protected missingOutpost = false;
 
-    fetchIsMissingOutpost(providersByPk: Array<number>) {
+    //#endregion
+
+    //#region Lifecycle
+
+    protected fetchIsMissingOutpost(providersByPk: Array<number>) {
         new OutpostsApi(DEFAULT_CONFIG)
             .outpostsInstancesList({
                 providersByPk,
@@ -74,32 +87,38 @@ export class ApplicationViewPage extends AKElement {
             });
     }
 
-    fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
-            this.application = app;
-            if (
-                app.providerObj &&
-                [
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
-                ].includes(app.providerObj.metaModelName)
-            ) {
-                this.fetchIsMissingOutpost([app.provider || 0]);
-            }
-        });
+    protected fetchApplication(slug: string) {
+        new CoreApi(DEFAULT_CONFIG)
+            .coreApplicationsRetrieve({ slug })
+            .then((app) => {
+                this.application = app;
+                if (
+                    app.providerObj &&
+                    [
+                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                        RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                    ].includes(app.providerObj.metaModelName)
+                ) {
+                    this.fetchIsMissingOutpost([app.provider || 0]);
+                }
+            })
+            .catch(async (error) => {
+                this.error = await parseAPIResponseError(error);
+            });
     }
 
-    willUpdate(changedProperties: PropertyValues<this>) {
+    public override willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }
     }
 
+    //#region Render
+
     render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
@@ -112,9 +131,17 @@ export class ApplicationViewPage extends AKElement {
     }
 
     renderApp(): TemplateResult {
-        if (!this.application) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+        if (this.error) {
+            return html`<ak-empty-state icon="fa-ban"
+                ><span>${msg(str`Failed to fetch application "${this.applicationSlug}".`)}</span>
+                <div slot="body">${pluckErrorDetail(this.error)}</div>
+            </ak-empty-state>`;
         }
+
+        if (!this.application) {
+            return html`<ak-empty-state default-label></ak-empty-state>`;
+        }
+
         return html`<ak-tabs>
             ${this.missingOutpost
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
@@ -189,7 +216,7 @@ export class ApplicationViewPage extends AKElement {
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                        <div class="pf-c-description-list__text pf-m-monospace">
                                             ${this.application.policyEngineMode?.toUpperCase()}
                                         </div>
                                     </dd>
@@ -283,7 +310,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
@@ -332,7 +359,10 @@ export class ApplicationViewPage extends AKElement {
                     <div class="pf-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
-                    <ak-bound-policies-list .target=${this.application.pk}>
+                    <ak-bound-policies-list
+                        .target=${this.application.pk}
+                        .policyEngineMode=${this.application.policyEngineMode}
+                    >
                     </ak-bound-policies-list>
                 </div>
             </section>

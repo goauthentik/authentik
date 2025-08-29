@@ -4,7 +4,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 GITHUB_OUTPUT=/dev/stdout \
     GITHUB_REF=ref \
     GITHUB_SHA=sha \
-    IMAGE_NAME=ghcr.io/goauthentik/server,beryju/authentik \
+    IMAGE_NAME=ghcr.io/goauthentik/server,authentik/server \
     GITHUB_REPOSITORY=goauthentik/authentik \
     python $SCRIPT_DIR/push_vars.py
 
@@ -12,7 +12,7 @@ GITHUB_OUTPUT=/dev/stdout \
 GITHUB_OUTPUT=/dev/stdout \
     GITHUB_REF=ref \
     GITHUB_SHA=sha \
-    IMAGE_NAME=ghcr.io/goauthentik/server,beryju/authentik \
+    IMAGE_NAME=ghcr.io/goauthentik/server,authentik/server \
     GITHUB_REPOSITORY=goauthentik/authentik \
     DOCKER_USERNAME=foo \
     python $SCRIPT_DIR/push_vars.py

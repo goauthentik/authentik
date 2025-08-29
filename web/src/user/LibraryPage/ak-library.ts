@@ -1,16 +1,21 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { me } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
+import "./ak-library-impl.js";
+
+import type { PageUIConfig } from "./types.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { rootInterface } from "#common/theme";
+import { me } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+
+import type { UserInterface } from "#user/index.entrypoint";
+
+import { Application, CoreApi } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { Application, CoreApi } from "@goauthentik/api";
-
-import "./ak-library-impl.js";
-import type { PageUIConfig } from "./types.js";
 
 /**
  * List of Applications available
@@ -47,7 +52,8 @@ export class LibraryPage extends AKElement {
 
     constructor() {
         super();
-        const uiConfig = rootInterface()?.uiConfig;
+        const { uiConfig } = rootInterface<UserInterface>();
+
         if (!uiConfig) {
             throw new Error("Could not retrieve uiConfig. Reason: unknown. Check logs.");
         }
@@ -102,7 +108,7 @@ export class LibraryPage extends AKElement {
     }
 
     loading() {
-        return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-empty-state default-label></ak-empty-state>`;
     }
 
     running() {

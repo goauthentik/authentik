@@ -31,13 +31,26 @@ type MemorySearcher struct {
 	groups []api.Group
 }
 
-func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
+func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *MemorySearcher {
 	ms := &MemorySearcher{
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
 		ds:  direct.NewDirectSearcher(si),
 	}
+	if existing != nil {
+		if ems, ok := existing.(*MemorySearcher); ok {
+			ems.si = si
+			ems.fetch()
+			ems.log.Debug("re-initialised memory searcher")
+			return ems
+		}
+	}
+	ms.fetch()
 	ms.log.Debug("initialised memory searcher")
+	return ms
+}
+
+func (ms *MemorySearcher) fetch() {
 	// Error is not handled here, we get an empty/truncated list and the error is logged
 	users, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()).IncludeGroups(true), ak.PaginatorOptions{
 		PageSize: 100,
@@ -49,7 +62,6 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 		Logger:   ms.log,
 	})
 	ms.groups = groups
-	return ms
 }
 
 func (ms *MemorySearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {
@@ -153,7 +165,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				for _, u := range g.UsersObj {
 					if flag.UserPk == u.Pk {
 						// TODO: Is there a better way to clone this object?
-						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{})
+						fg := api.NewGroup(g.Pk, g.NumPk, g.Name, g.ParentName, []api.GroupMember{u}, []api.Role{}, []api.GroupChild{})
 						fg.SetUsers([]int32{flag.UserPk})
 						if g.Parent.IsSet() {
 							if p := g.Parent.Get(); p != nil {

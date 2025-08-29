@@ -8,7 +8,7 @@ export interface MDXWrapperProps {
 /**
  * A wrapper component for MDX content that adds a title if one is provided in the frontmatter.
  */
-export const MDXWrapper: React.FC<MDXWrapperProps> = ({ children, frontmatter }) => {
+export const MDXWrapper = ({ children, frontmatter }: MDXWrapperProps) => {
     const { title } = frontmatter;
     const nextChildren = React.Children.toArray(children);
 

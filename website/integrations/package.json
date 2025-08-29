@@ -1,0 +1,34 @@
+{
+    "name": "@goauthentik/integration-docs",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:docusaurus",
+        "build:docusaurus": "docusaurus build",
+        "clear": "docusaurus clear",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve",
+        "start": "docusaurus start"
+    },
+    "dependencies": {
+        "@docusaurus/core": "^3.8.1",
+        "@docusaurus/module-type-aliases": "^3.8.1",
+        "@docusaurus/plugin-client-redirects": "^3.8.1",
+        "@docusaurus/preset-classic": "^3.8.1",
+        "@docusaurus/theme-mermaid": "^3.8.1",
+        "@docusaurus/tsconfig": "^3.8.1",
+        "@docusaurus/types": "^3.8.1",
+        "@goauthentik/docusaurus-config": "^2.1.1",
+        "@goauthentik/docusaurus-theme": "*",
+        "@mdx-js/react": "^3.0.0",
+        "@types/react": "^19.1.12",
+        "@types/react-dom": "^19.1.8",
+        "prism-react-renderer": "^2.3.0",
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1"
+    },
+    "engines": {
+        "node": ">=24"
+    }
+}

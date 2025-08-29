@@ -1,78 +1,75 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/ak-array-input.js";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#components/ak-number-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#elements/ak-array-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+import "./AdminSettingsFooterLinks.js";
+import "#elements/CodeMirror";
+
+import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { Form } from "#elements/forms/Form";
+
+import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
+
+import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
-
-import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
-
-import "./AdminSettingsFooterLinks.js";
-import { IFooterLinkInput, akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
-    //
-    // Custom property accessors in Lit 2 require a manual call to requestUpdate(). See:
-    // https://lit.dev/docs/v2/components/properties/#accessors-custom
-    //
-    set settings(value: Settings | undefined) {
-        this._settings = value;
-        this.requestUpdate();
-    }
+    public static styles: CSSResult[] = [
+        ...super.styles,
+        PFList,
+        css`
+            ak-array-input {
+                width: 100%;
+            }
+        `,
+    ];
 
-    @property({ type: Object })
-    get settings() {
-        return this._settings;
-    }
-
-    private _settings?: Settings;
-
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFList,
-            css`
-                ak-array-input {
-                    width: 100%;
-                }
-            `,
-        );
-    }
+    @property({ attribute: false })
+    public settings!: Settings;
 
     getSuccessMessage(): string {
         return msg("Successfully updated settings.");
     }
 
-    async send(data: SettingsRequest): Promise<Settings> {
+    async send(settingsRequest: SettingsRequest): Promise<Settings> {
         const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
-            settingsRequest: data,
+            settingsRequest,
         });
+
         this.dispatchEvent(new CustomEvent("ak-admin-setting-changed"));
+
         return result;
     }
 
     renderForm(): TemplateResult {
+        const { settings } = this;
+
         return html`
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
-                value="${ifDefined(this._settings?.avatars)}"
-                inputHint="code"
+                value="${ifDefined(settings.avatars)}"
+                input-hint="code"
+                required
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -132,36 +129,35 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         )}
                     </p>
                 `}
-                required
             >
             </ak-text-input>
             <ak-switch-input
                 name="defaultUserChangeName"
                 label=${msg("Allow users to change name")}
-                ?checked="${this._settings?.defaultUserChangeName}"
+                ?checked=${settings.defaultUserChangeName}
                 help=${msg("Enable the ability for users to change their name.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeEmail"
                 label=${msg("Allow users to change email")}
-                ?checked="${this._settings?.defaultUserChangeEmail}"
+                ?checked=${settings.defaultUserChangeEmail}
                 help=${msg("Enable the ability for users to change their email.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="defaultUserChangeUsername"
                 label=${msg("Allow users to change username")}
-                ?checked="${this._settings?.defaultUserChangeUsername}"
+                ?checked=${settings.defaultUserChangeUsername}
                 help=${msg("Enable the ability for users to change their username.")}
             >
             </ak-switch-input>
             <ak-text-input
                 name="eventRetention"
                 label=${msg("Event retention")}
-                inputHint="code"
+                input-hint="code"
                 required
-                value="${ifDefined(this._settings?.eventRetention)}"
+                value="${ifDefined(settings.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                         ${msg("Duration after which events will be deleted from the database.")}
                     </p>
@@ -183,19 +179,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Reputation: lower limit")}
                 required
                 name="reputationLowerLimit"
-                value="${this._settings?.reputationLowerLimit ?? DEFAULT_REPUTATION_LOWER_LIMIT}"
+                value="${settings.reputationLowerLimit ?? DEFAULT_REPUTATION_LOWER_LIMIT}"
                 help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
             ></ak-number-input>
             <ak-number-input
                 label=${msg("Reputation: upper limit")}
                 required
                 name="reputationUpperLimit"
-                value="${this._settings?.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
+                value="${settings.reputationUpperLimit ?? DEFAULT_REPUTATION_UPPER_LIMIT}"
                 help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
-                    .items=${this._settings?.footerLinks ?? []}
+                    .items=${settings.footerLinks ?? []}
                     .newItem=${() => ({ name: "", href: "" })}
                     .row=${(f?: FooterLink) =>
                         akFooterLinkInput({
@@ -214,7 +210,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-switch-input
                 name="gdprCompliance"
                 label=${msg("GDPR compliance")}
-                ?checked="${this._settings?.gdprCompliance}"
+                ?checked=${settings.gdprCompliance}
                 help=${msg(
                     "When enabled, all the events caused by a user will be deleted upon the user's deletion.",
                 )}
@@ -223,23 +219,23 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-switch-input
                 name="impersonation"
                 label=${msg("Impersonation")}
-                ?checked="${this._settings?.impersonation}"
+                ?checked=${settings.impersonation}
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
             <ak-switch-input
                 name="impersonationRequireReason"
                 label=${msg("Require reason for impersonation")}
-                ?checked="${this._settings?.impersonationRequireReason}"
+                ?checked=${settings.impersonationRequireReason}
                 help=${msg("Require administrators to provide a reason for impersonating a user.")}
             >
             </ak-switch-input>
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}
-                inputHint="code"
+                input-hint="code"
                 required
-                value="${ifDefined(this._settings?.defaultTokenDuration)}"
+                value="${ifDefined(settings.defaultTokenDuration)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
                         ${msg("Default duration for generated tokens")}
                     </p>
@@ -250,9 +246,19 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 label=${msg("Default token length")}
                 required
                 name="defaultTokenLength"
-                value="${this._settings?.defaultTokenLength ?? 60}"
+                value="${settings.defaultTokenLength ?? 60}"
                 help=${msg("Default length of generated tokens")}
             ></ak-number-input>
+            <ak-form-element-horizontal label=${msg("Flags")} name="flags" required>
+                <ak-codemirror
+                    mode=${CodeMirrorMode.YAML}
+                    value="${YAML.stringify(settings?.flags ?? {})}"
+                >
+                </ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Modify flags to opt into new authentik behaviours early.")}
+                </p>
+            </ak-form-element-horizontal>
         `;
     }
 }

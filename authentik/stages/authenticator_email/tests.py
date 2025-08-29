@@ -1,10 +1,11 @@
 """Test Email Authenticator API"""
 
 from datetime import timedelta
-from unittest.mock import MagicMock, PropertyMock, patch
+from unittest.mock import PropertyMock, patch
 
 from django.core import mail
-from django.core.mail.backends.smtp import EmailBackend
+from django.core.mail.backends.locmem import EmailBackend
+from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
 from django.urls import reverse
@@ -83,24 +84,28 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         self.assertTrue(self.device.verify_token(token))
         self.assertIsNone(self.device.token)
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_stage_no_prefill(self):
         """Test stage without prefilled email"""
         self.client.force_login(self.user_noemail)
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
-            self.assertStageResponse(
-                response,
-                self.flow,
-                self.user_noemail,
-                component="ak-stage-authenticator-email",
-                email_required=True,
-            )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user_noemail,
+            component="ak-stage-authenticator-email",
+            email_required=True,
+        )
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_stage_submit(self):
         """Test stage email submission"""
         # Initialize the flow
@@ -115,34 +120,18 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             email_required=False,
         )
 
-        # Test email submission with locmem backend
-        def mock_send_mails(stage, *messages):
-            """Mock send_mails to send directly"""
-            for message in messages:
-                message.send()
-
-        with (
-            patch(
-                "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-                return_value=EmailBackend,
-            ),
-            patch(
-                "authentik.stages.authenticator_email.stage.send_mails",
-                side_effect=mock_send_mails,
-            ),
-        ):
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                data={"component": "ak-stage-authenticator-email", "email": "test@example.com"},
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(mail.outbox), 1)
-            sent_mail = mail.outbox[0]
-            self.assertEqual(sent_mail.subject, self.stage.subject)
-            self.assertEqual(sent_mail.to, [f"{self.user} <test@example.com>"])
-            # Get from_address from global email config to test if global settings are being used
-            from_address_global = CONFIG.get("email.from")
-            self.assertEqual(sent_mail.from_email, from_address_global)
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "email": "test@example.com"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 2)
+        sent_mail = mail.outbox[1]
+        self.assertEqual(sent_mail.subject, self.stage.subject)
+        self.assertEqual(sent_mail.to, [f"{self.user} <test@example.com>"])
+        # Get from_address from global email config to test if global settings are being used
+        from_address_global = CONFIG.get("email.from")
+        self.assertEqual(sent_mail.from_email, from_address_global)
 
         self.assertStageResponse(
             response,
@@ -196,110 +185,110 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         with self.assertRaises(TemplateDoesNotExist):
             self.stage.send(self.device)
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_challenge_response_validation(self):
         """Test challenge response validation"""
         # Initialize the flow
         self.client.force_login(self.user_noemail)
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
 
-            # Test missing code and email
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                data={"component": "ak-stage-authenticator-email"},
-            )
-            self.assertIn("email required", str(response.content))
+        # Test missing code and email
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email"},
+        )
+        self.assertIn("email required", str(response.content))
 
-            # Test invalid code
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                data={"component": "ak-stage-authenticator-email", "code": "000000"},
-            )
-            self.assertIn("Code does not match", str(response.content))
+        # Test invalid code
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "code": "000000"},
+        )
+        self.assertIn("Code does not match", str(response.content))
 
-            # Test valid code
-            self.client.force_login(self.user)
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
-            device = self.device
-            token = device.token
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                data={"component": "ak-stage-authenticator-email", "code": token},
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertTrue(device.confirmed)
+        # Test valid code
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        device = self.device
+        token = device.token
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "code": token},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(device.confirmed)
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_challenge_generation(self):
         """Test challenge generation"""
         # Test with masked email
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
-            self.assertStageResponse(
-                response,
-                self.flow,
-                self.user,
-                component="ak-stage-authenticator-email",
-                email_required=False,
-            )
-            masked_email = mask_email(self.user.email)
-            self.assertEqual(masked_email, response.json()["email"])
-            self.client.logout()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-authenticator-email",
+            email_required=False,
+        )
+        masked_email = mask_email(self.user.email)
+        self.assertEqual(masked_email, response.json()["email"])
+        self.client.logout()
 
-            # Test without email
-            self.client.force_login(self.user_noemail)
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
-            self.assertStageResponse(
-                response,
-                self.flow,
-                self.user_noemail,
-                component="ak-stage-authenticator-email",
-                email_required=True,
-            )
-            self.assertIsNone(response.json()["email"])
+        # Test without email
+        self.client.force_login(self.user_noemail)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user_noemail,
+            component="ak-stage-authenticator-email",
+            email_required=True,
+        )
+        self.assertIsNone(response.json()["email"])
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_session_management(self):
         """Test session device management"""
         # Test device creation in session
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-            PropertyMock(return_value=EmailBackend),
-        ):
-            # Delete any existing devices for this test
-            EmailDevice.objects.filter(user=self.user).delete()
+        # Delete any existing devices for this test
+        EmailDevice.objects.filter(user=self.user).delete()
 
-            response = self.client.get(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            )
-            self.assertIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
-            device = self.client.session[SESSION_KEY_EMAIL_DEVICE]
-            self.assertIsInstance(device, EmailDevice)
-            self.assertFalse(device.confirmed)
-            self.assertEqual(device.user, self.user)
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
+        device = self.client.session[SESSION_KEY_EMAIL_DEVICE]
+        self.assertIsInstance(device, EmailDevice)
+        self.assertFalse(device.confirmed)
+        self.assertEqual(device.user, self.user)
 
-            # Test device confirmation and cleanup
-            device.confirmed = True
-            device.email = "new_test@authentik.local"  # Use a different email
-            self.client.session[SESSION_KEY_EMAIL_DEVICE] = device
-            self.client.session.save()
-            response = self.client.post(
-                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                data={"component": "ak-stage-authenticator-email", "code": device.token},
-            )
-            self.assertEqual(response.status_code, 200)
+        # Test device confirmation and cleanup
+        device.confirmed = True
+        device.email = "new_test@authentik.local"  # Use a different email
+        self.client.session[SESSION_KEY_EMAIL_DEVICE] = device
+        self.client.session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"component": "ak-stage-authenticator-email", "code": device.token},
+        )
+        self.assertEqual(response.status_code, 200)
 
     def test_model_properties_and_methods(self):
         """Test model properties"""
@@ -307,30 +296,23 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         stage = self.stage
 
         self.assertEqual(stage.serializer, AuthenticatorEmailStageSerializer)
-        self.assertIsInstance(stage.backend, EmailBackend)
+        self.assertIsInstance(stage.backend, SMTPEmailBackend)
         self.assertEqual(device.serializer, EmailDeviceSerializer)
 
         # Test AuthenticatorEmailStage send method
-        with patch(
-            "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
-            return_value=EmailBackend,
-        ):
-            self.device.generate_token()
-            # Test EmailDevice _compose_email method
-            message = self.device._compose_email()
-            self.assertIsInstance(message, TemplateEmailMessage)
-            self.assertEqual(message.subject, self.stage.subject)
-            self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
-            self.assertTrue(self.device.token in message.body)
-            # Test AuthenticatorEmailStage send method
-            self.stage.send(device)
+        self.device.generate_token()
+        # Test EmailDevice _compose_email method
+        message = self.device._compose_email()
+        self.assertIsInstance(message, TemplateEmailMessage)
+        self.assertEqual(message.subject, self.stage.subject)
+        self.assertEqual(message.to, [f"{self.user.name} <{self.device.email}>"])
+        self.assertTrue(self.device.token in message.body)
 
+    @patch(
+        "authentik.stages.authenticator_email.models.AuthenticatorEmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
     def test_email_tasks(self):
-        email_send_mock = MagicMock()
-        with patch(
-            "authentik.stages.email.tasks.send_mails",
-            email_send_mock,
-        ):
-            # Test AuthenticatorEmailStage send method
-            self.stage.send(self.device)
-            email_send_mock.assert_called_once()
+        # Test AuthenticatorEmailStage send method
+        self.stage.send(self.device)
+        self.assertEqual(len(mail.outbox), 1)

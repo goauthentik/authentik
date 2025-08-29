@@ -38,7 +38,14 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		username, err := instance.binder.GetUsername(bindDN)
 		if err == nil {
 			selectedApp = instance.GetAppSlug()
-			return instance.binder.Bind(username, req)
+			c, err := instance.binder.Bind(username, req)
+			if c == ldap.LDAPResultSuccess {
+				f := instance.GetFlags(req.BindDN)
+				ls.connectionsSync.Lock()
+				ls.connections[f.SessionID()] = conn
+				ls.connectionsSync.Unlock()
+			}
+			return c, err
 		} else {
 			req.Log().WithError(err).Debug("Username not for instance")
 		}

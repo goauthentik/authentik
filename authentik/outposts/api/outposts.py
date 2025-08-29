@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik import get_build_hash
+from authentik import authentik_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
@@ -194,7 +194,7 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "openssl_version": state.openssl_version,
                     "fips_enabled": state.fips_enabled,
                     "hostname": state.hostname,
-                    "build_hash_should": get_build_hash(),
+                    "build_hash_should": authentik_build_hash(),
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)

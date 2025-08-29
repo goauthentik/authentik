@@ -1,4 +1,6 @@
-name: authentik-gen-update-webauthn-mds
+---
+name: Gen - Webauthn MDS
+
 on:
   workflow_dispatch:
   schedule:
@@ -19,7 +21,7 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
@@ -37,6 +39,7 @@ jobs:
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
+          labels: dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}

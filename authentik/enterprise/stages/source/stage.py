@@ -97,6 +97,7 @@ class SourceStageFinal(StageView):
         token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
         self.logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
         plan = token.plan
+        plan.context.update(self.executor.plan.context)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         response = plan.to_redirect(self.request, token.flow)
         token.delete()

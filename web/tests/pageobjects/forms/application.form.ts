@@ -1,6 +1,6 @@
-import { $ } from "@wdio/globals";
-
 import Page from "../page.js";
+
+import { $ } from "@wdio/globals";
 
 export class ApplicationForm extends Page {
     async name() {
@@ -8,7 +8,7 @@ export class ApplicationForm extends Page {
     }
 
     async uiSettings() {
-        return await $(">>>ak-form-group").$('button[aria-label="UI Settings"]');
+        return $('>>>ak-form-group[label="UI Settings"]');
     }
 
     async launchUrl() {

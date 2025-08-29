@@ -1,35 +1,37 @@
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostDeploymentModal";
-import "@goauthentik/admin/outposts/OutpostForm";
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/OutpostHealthSimple";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/outposts/OutpostDeploymentModal";
+import "#admin/outposts/OutpostForm";
+import "#admin/outposts/OutpostHealth";
+import "#admin/outposts/OutpostHealthSimple";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/tasks/ScheduleList";
+import "#elements/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
+import {
+    ModelEnum,
+    Outpost,
+    OutpostHealth,
+    OutpostsApi,
+    OutpostTypeEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
+
 import { msg, str } from "@lit/localize";
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import {
-    Outpost,
-    OutpostHealth,
-    OutpostTypeEnum,
-    OutpostsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -98,9 +100,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         ];
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     checkbox = true;
     clearOnRefresh = true;
@@ -112,12 +112,12 @@ export class OutpostListPage extends TablePage<Outpost> {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
-                    ? html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    ? html`<ak-label color=${PFColor.Orange} compact>
                           ${msg(
                               "Warning: authentik Domain is not configured, authentication will not work.",
                           )}
                       </ak-label>`
-                    : html`<ak-label color=${PFColor.Green} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Green} compact>
                           ${msg(str`Logging in via ${item.config.authentik_host}.`)}
                       </ak-label>`}`,
             html`${TypeToLabel(item.type)}`,
@@ -163,7 +163,8 @@ export class OutpostListPage extends TablePage<Outpost> {
     }
 
     renderExpanded(item: Outpost): TemplateResult {
-        return html`<td role="cell" colspan="5">
+        const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
+        return html`<td role="cell" colspan="7">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${msg(
@@ -180,6 +181,38 @@ export class OutpostListPage extends TablePage<Outpost> {
                             </dd>
                         </div>`;
                     })}
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Schedules")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-schedule-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-schedule-list>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Tasks")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-task-list
+                                    .relObjAppLabel=${appLabel}
+                                    .relObjModel=${modelName}
+                                    .relObjId="${item.pk}"
+                                ></ak-task-list>
+                            </div>
+                        </dd>
+                    </div>
                 </dl>
             </div>
         </td>`;

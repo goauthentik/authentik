@@ -1,29 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
+import "#user/user-settings/details/stages/prompt/PromptStage";
 
-import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
+import { refreshMe } from "#common/users";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFPage from "@patternfly/patternfly/components/Page/page.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+
+import { StageHost } from "#flow/stages/base";
 
 import {
     ChallengeTypes,
@@ -34,13 +22,24 @@ import {
     ShellChallenge,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { CSSResult, html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor
     extends WithBrandConfig(AKElement, true)
     implements StageHost
 {
     @property()
-    flowSlug?: string;
+    flowSlug = this.brand?.flowUserSettings;
 
     private _challenge?: ChallengeTypes;
 
@@ -57,9 +56,7 @@ export class UserSettingsFlowExecutor
     @property({ type: Boolean })
     loading = false;
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFButton, PFContent];
-    }
+    static styles: CSSResult[] = [PFBase, PFCard, PFPage, PFButton, PFContent];
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
@@ -75,6 +72,7 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
+                delete this.challenge.flowInfo;
                 return !this.challenge.responseErrors;
             })
             .catch(async (error: unknown) => {
@@ -90,12 +88,15 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("brand") && this.brand) {
-            this.flowSlug = this.brand?.flowUserSettings;
-            if (!this.flowSlug) {
-                return;
-            }
+    firstUpdated() {
+        if (this.flowSlug) {
+            this.nextChallenge();
+        }
+    }
+
+    updated(): void {
+        if (!this.flowSlug && this.brand?.flowUserSettings) {
+            this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }
     }
@@ -107,6 +108,7 @@ export class UserSettingsFlowExecutor
                 flowSlug: this.flowSlug || "",
                 query: window.location.search.substring(1),
             });
+            delete challenge.flowInfo;
             this.challenge = challenge;
         } catch (e: unknown) {
             // Catch JSON or Update errors
@@ -173,7 +175,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+                return html`<ak-empty-state default-label></ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -194,7 +196,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state default-label></ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }

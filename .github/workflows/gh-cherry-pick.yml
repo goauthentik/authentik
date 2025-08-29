@@ -1,0 +1,30 @@
+name: GH - Cherry-pick
+
+on:
+  pull_request:
+    types: [closed, labeled]
+  pull_request_target:
+    types: [labeled]
+
+jobs:
+  cherry-pick:
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        name: Generate app token
+        uses: actions/create-github-app-token@v2
+        if: ${{ env.GH_APP_ID != '' }}
+        with:
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+        env:
+          GH_APP_ID: ${{ secrets.GH_APP_ID }}
+      - uses: actions/checkout@v5
+        if: ${{ steps.app-token.outcome != 'skipped' }}
+        with:
+          fetch-depth: 0
+          token: "${{ steps.app-token.outputs.token }}"
+      - uses: ./.github/actions/cherry-pick
+        if: ${{ steps.app-token.outcome != 'skipped' }}
+        with:
+          token: ${{ steps.app-token.outputs.token }}

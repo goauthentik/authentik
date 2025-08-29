@@ -9,7 +9,7 @@
     --ifm-color-primary-lighter: #fd7159;
     --ifm-color-primary-lightest: #fe9786;
 
-    --ifm-hover-overlay: hsl(0deg 0% 100% / 25%);
+    --ifm-color-primary-inverse: var(--white);
 
-    --ifm-color-content: hsl(216 35% 3%);
+    --ifm-hover-overlay: hsl(0deg 0% 100% / 25%);
 }

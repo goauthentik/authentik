@@ -5,7 +5,7 @@ from json import loads
 from django.test import TestCase
 from django.urls import reverse
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
@@ -27,19 +27,7 @@ class TestAdminAPI(TestCase):
         response = self.client.get(reverse("authentik_api:admin_version"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content)
-        self.assertEqual(body["version_current"], __version__)
-
-    def test_workers(self):
-        """Test Workers API"""
-        response = self.client.get(reverse("authentik_api:admin_workers"))
-        self.assertEqual(response.status_code, 200)
-        body = loads(response.content)
-        self.assertEqual(len(body), 0)
-
-    def test_metrics(self):
-        """Test metrics API"""
-        response = self.client.get(reverse("authentik_api:admin_metrics"))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(body["version_current"], authentik_version())
 
     def test_apps(self):
         """Test apps API"""

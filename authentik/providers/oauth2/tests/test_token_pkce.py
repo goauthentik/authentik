@@ -80,6 +80,7 @@ class TestTokenPKCE(OAuthTestCase):
                     "revoked, does not match the redirection URI used in the authorization "
                     "request, or was issued to another client"
                 ),
+                "request_id": response.headers["X-authentik-id"],
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -136,6 +137,7 @@ class TestTokenPKCE(OAuthTestCase):
                     "revoked, does not match the redirection URI used in the authorization "
                     "request, or was issued to another client"
                 ),
+                "request_id": response.headers["X-authentik-id"],
             },
         )
         self.assertEqual(response.status_code, 400)

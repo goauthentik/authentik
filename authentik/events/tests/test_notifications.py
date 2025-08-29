@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
+from authentik.core.tests.utils import create_test_user
 from authentik.events.models import (
     Event,
     EventAction,
@@ -34,7 +35,7 @@ class TestEventsNotifications(APITestCase):
     def test_trigger_empty(self):
         """Test trigger without any policies attached"""
         transport = NotificationTransport.objects.create(name=generate_id())
-        trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_group=self.group)
         trigger.transports.add(transport)
         trigger.save()
 
@@ -46,7 +47,7 @@ class TestEventsNotifications(APITestCase):
     def test_trigger_single(self):
         """Test simple transport triggering"""
         transport = NotificationTransport.objects.create(name=generate_id())
-        trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_group=self.group)
         trigger.transports.add(transport)
         trigger.save()
         matcher = EventMatcherPolicy.objects.create(
@@ -58,6 +59,25 @@ class TestEventsNotifications(APITestCase):
         with patch("authentik.events.models.NotificationTransport.send", execute_mock):
             Event.new(EventAction.CUSTOM_PREFIX).save()
         self.assertEqual(execute_mock.call_count, 1)
+
+    def test_trigger_event_user(self):
+        """Test trigger with event user"""
+        user = create_test_user()
+        transport = NotificationTransport.objects.create(name=generate_id())
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_event_user=True)
+        trigger.transports.add(transport)
+        trigger.save()
+        matcher = EventMatcherPolicy.objects.create(
+            name="matcher", action=EventAction.CUSTOM_PREFIX
+        )
+        PolicyBinding.objects.create(target=trigger, policy=matcher, order=0)
+
+        execute_mock = MagicMock()
+        with patch("authentik.events.models.NotificationTransport.send", execute_mock):
+            Event.new(EventAction.CUSTOM_PREFIX).set_user(user).save()
+        self.assertEqual(execute_mock.call_count, 1)
+        notification: Notification = execute_mock.call_args[0][0]
+        self.assertEqual(notification.user, user)
 
     def test_trigger_no_group(self):
         """Test trigger without group"""
@@ -76,7 +96,7 @@ class TestEventsNotifications(APITestCase):
         """Test Policy error which would cause recursion"""
         transport = NotificationTransport.objects.create(name=generate_id())
         NotificationRule.objects.filter(name__startswith="default").delete()
-        trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_group=self.group)
         trigger.transports.add(transport)
         trigger.save()
         matcher = EventMatcherPolicy.objects.create(
@@ -99,7 +119,7 @@ class TestEventsNotifications(APITestCase):
 
         transport = NotificationTransport.objects.create(name=generate_id(), send_once=True)
         NotificationRule.objects.filter(name__startswith="default").delete()
-        trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_group=self.group)
         trigger.transports.add(transport)
         trigger.save()
         matcher = EventMatcherPolicy.objects.create(
@@ -123,7 +143,7 @@ class TestEventsNotifications(APITestCase):
             name=generate_id(), webhook_mapping_body=mapping, mode=TransportMode.LOCAL
         )
         NotificationRule.objects.filter(name__startswith="default").delete()
-        trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)
+        trigger = NotificationRule.objects.create(name=generate_id(), destination_group=self.group)
         trigger.transports.add(transport)
         matcher = EventMatcherPolicy.objects.create(
             name="matcher", action=EventAction.CUSTOM_PREFIX

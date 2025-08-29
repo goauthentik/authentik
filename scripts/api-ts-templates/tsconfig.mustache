@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "composite": true,
+        "isolatedModules": true,
+        "incremental": true,
+        "baseUrl": ".",
+        "rootDir": "src",
+        "strict": true,
+        "newLine": "lf",
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "outDir": "dist",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    },
+    "exclude": ["node_modules", "./out/**/*", "./dist/**/*"],
+}

@@ -28,6 +28,9 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 LOGGER = get_logger()
 
@@ -43,7 +46,7 @@ class KAdminType(models.TextChoices):
     OTHER = "other"
 
 
-class KerberosSource(Source):
+class KerberosSource(ScheduledModel, Source):
     """Federate Kerberos realm with authentik"""
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
@@ -134,6 +137,27 @@ class KerberosSource(Source):
         if not icon:
             return static("authentik/sources/kerberos.png")
         return icon
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.kerberos.tasks import kerberos_connectivity_check, kerberos_sync
+
+        return [
+            ScheduleSpec(
+                actor=kerberos_sync,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
+            ),
+            ScheduleSpec(
+                actor=kerberos_connectivity_check,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
+            ),
+        ]
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(

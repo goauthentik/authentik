@@ -1,15 +1,17 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../QuickActionsCard.js";
+
+import { QuickAction } from "../QuickActionsCard.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
-import { QuickAction } from "../QuickActionsCard.js";
-import "../QuickActionsCard.js";
-
 const ACTIONS: QuickAction[] = [
     ["Create a new application", "/core/applications"],
     ["Check the logs", "/events/log"],
-    ["Explore integrations", "https://goauthentik.io/integrations/", true],
+    ["Explore integrations", "https://integrations.goauthentik.io/", true],
     ["Manage users", "/identity/users"],
     ["Check the release notes", "https://goauthentik.io/docs/releases/", true],
 ];

@@ -1,7 +1,7 @@
+import AdminPage from "./admin.page.js";
+
 import { $, browser } from "@wdio/globals";
 import { Key } from "webdriverio";
-
-import AdminPage from "./admin.page.js";
 
 /**
  * sub page containing specific selectors and methods for a specific page

@@ -1,68 +1,47 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import "#elements/EmptyState";
+import "chartjs-adapter-date-fns";
+
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { formatElapsedTime } from "#common/temporal";
+
+import { AKElement } from "#elements/Base";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import {
+    ArcElement,
+    BarController,
+    BarElement,
     Chart,
     ChartConfiguration,
     ChartData,
     ChartOptions,
+    DoughnutController,
     Filler,
+    Legend,
+    LinearScale,
+    LineController,
     LineElement,
     Plugin,
     PointElement,
     Tick,
+    TimeScale,
+    TimeSeriesScale,
+    Tooltip,
 } from "chart.js";
-import { Legend, Tooltip } from "chart.js";
-import { BarController, DoughnutController, LineController } from "chart.js";
-import { ArcElement, BarElement } from "chart.js";
-import { LinearScale, TimeScale } from "chart.js";
-import "chartjs-adapter-date-fns";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
-Chart.register(TimeScale, LinearScale, Filler);
+Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
-
-export class RGBAColor {
-    constructor(
-        public r: number,
-        public g: number,
-        public b: number,
-        public a: number = 1,
-    ) {}
-    toString(): string {
-        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
-    }
-}
-
-export function getColorFromString(stringInput: string): RGBAColor {
-    let hash = 0;
-    for (let i = 0; i < stringInput.length; i++) {
-        hash = stringInput.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    const rgb = [0, 0, 0];
-    for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 255;
-        rgb[i] = value;
-    }
-    return new RGBAColor(rgb[0], rgb[1], rgb[2]);
-}
 
 export abstract class AKChart<T> extends AKElement {
     abstract apiRequest(): Promise<T>;
@@ -79,31 +58,29 @@ export abstract class AKChart<T> extends AKElement {
 
     fontColour = FONT_COLOUR_LIGHT_MODE;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                .container {
-                    height: 100%;
-                    width: 100%;
+    static styles: CSSResult[] = [
+        css`
+            .container {
+                height: 100%;
+                width: 100%;
 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: relative;
-                }
-                .container > span {
-                    position: absolute;
-                    font-size: 2.5rem;
-                }
-                canvas {
-                    width: 100px;
-                    height: 100px;
-                    z-index: 1;
-                    cursor: crosshair;
-                }
-            `,
-        ];
-    }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .container > span {
+                position: absolute;
+                font-size: 2.5rem;
+            }
+            canvas {
+                width: 100px;
+                height: 100px;
+                z-index: 1;
+                cursor: crosshair;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();
@@ -184,7 +161,7 @@ export abstract class AKChart<T> extends AKElement {
             responsive: true,
             scales: {
                 x: {
-                    type: "time",
+                    type: "timeseries",
                     display: true,
                     ticks: {
                         callback: (tickValue: string | number, index: number, ticks: Tick[]) => {
@@ -226,7 +203,8 @@ export abstract class AKChart<T> extends AKElement {
             <div class="container">
                 ${this.error
                     ? html`
-                          <ak-empty-state header="${msg("Failed to fetch data.")}" icon="fa-times">
+                          <ak-empty-state icon="fa-times"
+                              ><span>${msg("Failed to fetch data.")}</span>
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `

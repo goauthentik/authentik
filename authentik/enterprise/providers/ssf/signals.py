@@ -1,10 +1,8 @@
 from hashlib import sha256
 
-from django.contrib.auth.signals import user_logged_out
 from django.db.models import Model
 from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
-from django.http.request import HttpRequest
 from guardian.shortcuts import assign_perm
 
 from authentik.core.models import (
@@ -20,7 +18,7 @@ from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFProvider,
 )
-from authentik.enterprise.providers.ssf.tasks import send_ssf_event
+from authentik.enterprise.providers.ssf.tasks import send_ssf_events
 from authentik.events.middleware import audit_ignore
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import DuoDevice
@@ -62,38 +60,13 @@ def ssf_providers_post_save(sender: type[Model], instance: SSFProvider, created:
             instance.save()
 
 
-@receiver(user_logged_out)
-def ssf_user_logged_out_session_revoked(sender, request: HttpRequest, user: User, **_):
-    """Session revoked trigger (user logged out)"""
-    if not request.session or not request.session.session_key or not user:
-        return
-    send_ssf_event(
-        EventTypes.CAEP_SESSION_REVOKED,
-        {
-            "initiating_entity": "user",
-        },
-        sub_id={
-            "format": "complex",
-            "session": {
-                "format": "opaque",
-                "id": sha256(request.session.session_key.encode("ascii")).hexdigest(),
-            },
-            "user": {
-                "format": "email",
-                "email": user.email,
-            },
-        },
-        request=request,
-    )
-
-
 @receiver(pre_delete, sender=AuthenticatedSession)
 def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSession, **_):
     """Session revoked trigger (users' session has been deleted)
 
     As this signal is also triggered with a regular logout, we can't be sure
     if the session has been deleted by an admin or by the user themselves."""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_SESSION_REVOKED,
         {
             "initiating_entity": "user",
@@ -115,7 +88,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
 @receiver(password_changed)
 def ssf_password_changed_cred_change(sender, user: User, password: str | None, **_):
     """Credential change trigger (password changed)"""
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         {
             "credential_type": "password",
@@ -153,7 +126,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={
@@ -180,7 +153,7 @@ def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
     }
     if isinstance(instance, WebAuthnDevice) and instance.aaguid != UNKNOWN_DEVICE_TYPE_AAGUID:
         data["fido2_aaguid"] = instance.aaguid
-    send_ssf_event(
+    send_ssf_events(
         EventTypes.CAEP_CREDENTIAL_CHANGE,
         data,
         sub_id={

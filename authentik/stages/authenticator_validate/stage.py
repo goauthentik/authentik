@@ -224,7 +224,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 data={
                     "device_class": device_class,
                     "device_uid": device.pk,
-                    "challenge": get_challenge_for_device(self.request, stage, device),
+                    "challenge": get_challenge_for_device(self, stage, device),
                     "last_used": device.last_used,
                 }
             )
@@ -243,7 +243,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
                 "device_class": DeviceClasses.WEBAUTHN,
                 "device_uid": -1,
                 "challenge": get_webauthn_challenge_without_user(
-                    self.request,
+                    self,
                     self.executor.current_stage,
                 ),
                 "last_used": None,

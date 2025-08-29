@@ -52,7 +52,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-meta-outpost", a.outpostName)
 	headers.Set("X-authentik-meta-provider", a.proxyConfig.Name)
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
-	headers.Set("X-authentik-meta-version", constants.OutpostUserAgent())
+	headers.Set("X-authentik-meta-version", constants.UserAgentOutpost())
 
 	if c.Proxy == nil {
 		return

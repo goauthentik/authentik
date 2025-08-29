@@ -48,7 +48,7 @@ Finally, you need to publish the Facebook app.
 
 ## authentik configuration
 
-1. Log into authentik as admin, and then navigate to **Directory -> Federation & Social login**
+1. Log in to authentik as admin, and then navigate to **Directory -> Federation & Social login**
 2. Click **Create**.
 3. In the **New Source** box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
 4. Define the following fields:
@@ -69,5 +69,5 @@ Finally, you need to publish the Facebook app.
 You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
 
 :::note
-For more details on how to display the new source on the authentik Login page refer to [Add Sources to default Login form](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

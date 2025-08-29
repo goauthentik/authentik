@@ -30,7 +30,7 @@ from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import BufferedPolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
@@ -150,12 +150,12 @@ class OAuthAuthorizationParams:
         self.check_redirect_uri()
         self.check_grant()
         self.check_scope(github_compat)
-        self.check_nonce()
-        self.check_code_challenge()
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
+        self.check_nonce()
+        self.check_code_challenge()
 
     def check_grant(self):
         """Check grant"""
@@ -190,7 +190,7 @@ class OAuthAuthorizationParams:
         allowed_redirect_urls = self.provider.redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
-            raise RedirectUriError("", allowed_redirect_urls)
+            raise RedirectUriError("", allowed_redirect_urls).with_cause("redirect_uri_missing")
 
         if len(allowed_redirect_urls) < 1:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
@@ -219,10 +219,14 @@ class OAuthAuthorizationParams:
                         provider=self.provider,
                     )
         if not match_found:
-            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls).with_cause(
+                "redirect_uri_no_match"
+            )
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
-            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls).with_cause(
+                "redirect_uri_forbidden_scheme"
+            )
 
     def check_scope(self, github_compat=False):
         """Ensure openid scope is set in Hybrid flows, or when requesting an id_token"""
@@ -251,7 +255,9 @@ class OAuthAuthorizationParams:
             or self.response_type in [ResponseTypes.ID_TOKEN, ResponseTypes.ID_TOKEN_TOKEN]
         ):
             LOGGER.warning("Missing 'openid' scope.")
-            raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_scope", self.grant_type, self.state
+            ).with_cause("scope_openid_missing")
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
             # Don't explicitly request consent with offline_access, as the spec allows for
@@ -286,7 +292,9 @@ class OAuthAuthorizationParams:
             return
         if not self.nonce:
             LOGGER.warning("Missing nonce for OpenID Request")
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
+            raise AuthorizeError(
+                self.redirect_uri, "invalid_request", self.grant_type, self.state
+            ).with_cause("nonce_missing")
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
@@ -326,7 +334,7 @@ class OAuthAuthorizationParams:
         return code
 
 
-class AuthorizationFlowInitView(PolicyAccessView):
+class AuthorizationFlowInitView(BufferedPolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
@@ -345,10 +353,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.request, github_compat=self.github_compat
             )
         except AuthorizeError as error:
-            LOGGER.warning(error.description, redirect_uri=error.redirect_uri)
+            LOGGER.warning(error.description, redirect_uri=error.redirect_uri, cause=error.cause)
             raise RequestValidationError(error.get_response(self.request)) from None
         except OAuth2Error as error:
-            LOGGER.warning(error.description)
+            LOGGER.warning(error.description, cause=error.cause)
             raise RequestValidationError(
                 bad_request_message(self.request, error.description, title=error.error)
             ) from None
@@ -630,7 +638,6 @@ class OAuthFulfillmentStage(StageView):
         if self.params.response_type in [
             ResponseTypes.ID_TOKEN_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
-            ResponseTypes.ID_TOKEN,
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token

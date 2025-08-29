@@ -1,23 +1,24 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/ak-list-select/ak-list-select.js";
-import { ListSelect } from "@goauthentik/elements/ak-list-select/ak-list-select.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
-import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import "#elements/ak-list-select/ak-list-select";
+import "#elements/forms/SearchSelect/ak-portal";
+
+import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
+
+import { ListSelect } from "#elements/ak-list-select/ak-list-select";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, html, nothing } from "lit";
+import { html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { Ref, createRef, ref } from "lit/directives/ref.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
 export interface ISearchSelectView {
     options: SelectOptions;
@@ -69,9 +70,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static get styles() {
-        return [PFBase, PFForm, PFFormControl, PFSelect];
-    }
+    static styles = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See

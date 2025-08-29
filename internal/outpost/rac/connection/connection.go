@@ -61,7 +61,7 @@ func (c *Connection) initSocket(forChannel string) error {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{constants.OutpostUserAgent()},
+		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
 	dialer := websocket.Dialer{

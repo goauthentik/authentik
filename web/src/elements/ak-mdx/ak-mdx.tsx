@@ -1,42 +1,44 @@
-import "@goauthentik/elements/Alert";
-import { AKElement } from "@goauthentik/elements/Base";
-import {
-    MDXModule,
-    MDXModuleContext,
-    fetchMDXModule,
-} from "@goauthentik/elements/ak-mdx/MDXModuleContext";
-import { MDXAnchor } from "@goauthentik/elements/ak-mdx/components/MDXAnchor";
-import { MDXWrapper } from "@goauthentik/elements/ak-mdx/components/MDXWrapper";
-import { remarkAdmonition } from "@goauthentik/elements/ak-mdx/remark/remark-admonition";
-import { remarkHeadings } from "@goauthentik/elements/ak-mdx/remark/remark-headings";
-import { remarkLists } from "@goauthentik/elements/ak-mdx/remark/remark-lists";
+import "#elements/Alert";
+
+import { globalAK } from "#common/global";
+import OneDark from "#common/styles/one-dark.css";
+
+import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
+import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
+import { fetchMDXModule, MDXModuleContext } from "#elements/ak-mdx/MDXModuleContext";
+import { remarkAdmonition } from "#elements/ak-mdx/remark/remark-admonition";
+import { remarkHeadings } from "#elements/ak-mdx/remark/remark-headings";
+import { remarkLists } from "#elements/ak-mdx/remark/remark-lists";
+import { AKElement } from "#elements/Base";
+
+import { DistDirectoryName, StaticDirectoryName } from "#paths";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
 import { compile as compileMDX, run as runMDX } from "@mdx-js/mdx";
 import apacheGrammar from "highlight.js/lib/languages/apache";
 import diffGrammar from "highlight.js/lib/languages/diff";
 import confGrammar from "highlight.js/lib/languages/ini";
 import nginxGrammar from "highlight.js/lib/languages/nginx";
 import { common } from "lowlight";
-import { Root, createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import * as runtime from "react/jsx-runtime";
-import rehypeHighlight from "rehype-highlight";
-import { Options as HighlightOptions } from "rehype-highlight";
+import rehypeHighlight, { Options as HighlightOptions } from "rehype-highlight";
 import rehypeMermaid, { RehypeMermaidOptions } from "rehype-mermaid";
 import remarkDirective from "remark-directive";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGFM from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
+import type { MDXModule } from "~docs/types";
 
 import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import OneDark from "@goauthentik/common/styles/one-dark.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -55,20 +57,16 @@ export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
 export class AKMDX extends AKElement {
-    @property({
-        reflect: true,
-    })
-    url: string = "";
+    @property({ type: String, reflect: true })
+    public url?: string;
 
     @property()
-    content: string = "";
+    public content?: string;
 
     @property({ attribute: false })
-    replacers: Replacer[] = [];
+    public replacers: Replacer[] = [];
 
     #reactRoot: Root | null = null;
-
-    resolvedHTML = "";
 
     static styles = [
         PFBase,
@@ -166,12 +164,20 @@ export class AKMDX extends AKElement {
         this.#reactRoot = createRoot(this.shadowRoot!);
 
         let nextMDXModule: MDXModule | undefined;
+        const { relBase } = globalAK().api;
 
         if (this.url) {
-            nextMDXModule = await fetchMDXModule(this.url);
+            const pathname =
+                relBase +
+                StaticDirectoryName +
+                "/" +
+                DistDirectoryName +
+                this.url.slice(this.url.indexOf("/assets"));
+
+            nextMDXModule = await fetchMDXModule(pathname);
         } else {
             nextMDXModule = {
-                content: this.content,
+                content: this.content || "",
             };
         }
 

@@ -1,15 +1,20 @@
-import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/roles/RoleForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { renderDescriptionList } from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/components/events/UserEvents";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/groups/RelatedGroupList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/roles/RoleForm";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#components/events/UserEvents";
+import "#elements/Tabs";
+import "#elements/forms/ModalForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import { renderDescriptionList } from "#components/DescriptionList";
+
+import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -23,8 +28,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
@@ -42,27 +45,25 @@ export class RoleViewPage extends AKElement {
     @state()
     _role?: Role;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
-                .ak-button-collection {
-                    max-width: 12em;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        css`
+            .pf-c-description-list__description ak-action-button {
+                margin-right: 6px;
+                margin-bottom: 6px;
+            }
+            .ak-button-collection {
+                max-width: 12em;
+            }
+        `,
+    ];
 
     constructor() {
         super();

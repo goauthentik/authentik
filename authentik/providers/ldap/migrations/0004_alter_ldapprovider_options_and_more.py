@@ -7,10 +7,8 @@ from django.db import migrations
 
 
 def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from authentik.core.models import User
     from django.apps import apps as real_apps
     from django.contrib.auth.management import create_permissions
-    from guardian.shortcuts import UserObjectPermission
 
     db_alias = schema_editor.connection.alias
 

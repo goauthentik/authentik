@@ -1,12 +1,15 @@
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+import "#elements/forms/HorizontalFormElement";
+import "#flow/components/ak-flow-card";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { globalAK } from "#common/global";
+
+import { PromptStage } from "#flow/stages/prompt/PromptStage";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
@@ -24,17 +27,15 @@ export class UserSettingsPromptStage extends PromptStage {
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
-        const errors = (this.challenge?.responseErrors || {})[prompt.fieldKey];
+        const errors = this.challenge?.responseErrors?.[prompt.fieldKey];
+
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
                     label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
-                    ?invalid=${errors !== undefined}
-                    .errorMessages=${(errors || []).map((error) => {
-                        return error.string;
-                    })}
+                    .errorMessages=${errors}
                 >
                     ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
@@ -63,15 +64,10 @@ export class UserSettingsPromptStage extends PromptStage {
     }
 
     render(): TemplateResult {
-        if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
-        }
-        return html`<div class="pf-c-login__main-body">
+        return html`<ak-flow-card .challenge=${this.challenge}>
                 <form
                     class="pf-c-form"
-                    @submit=${(e: Event) => {
-                        this.submitForm(e);
-                    }}
+                    @submit=${this.submitForm}
                 >
                     ${this.challenge.fields.map((prompt) => {
                         return this.renderField(prompt);
@@ -79,9 +75,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.renderNonFieldErrors()} ${this.renderContinue()}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
-            </footer>`;
+            </ak-flow-card>`;
     }
 }
 

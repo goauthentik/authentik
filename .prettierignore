@@ -10,7 +10,8 @@ coverage
 dist
 out
 .docusaurus
-website/docs/developer-docs/api/**/*
+# TODO Replace after moving website to docs
+website/api/reference
 
 ## Environment
 *.env

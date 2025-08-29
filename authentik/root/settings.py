@@ -6,11 +6,10 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from celery.schedules import crontab
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
@@ -65,14 +64,20 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "django_dramatiq_postgres",
+    "authentik.tasks",
 ]
 TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "pgtrigger",
     "authentik.admin",
     "authentik.api",
+    "authentik.core",
     "authentik.crypto",
+    "authentik.enterprise",
+    "authentik.events",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -120,6 +125,7 @@ TENANT_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
+    "authentik.tasks.schedules",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
@@ -132,18 +138,18 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH = False
+GUARDIAN_MONKEY_PATCH_USER = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
     "DESCRIPTION": "Making authentication simple.",
-    "VERSION": __version__,
+    "VERSION": authentik_version(),
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": "/api/v([0-9]+(beta)?)",
     "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVERS": [
         {
-            "url": "/api/v3/",
+            "url": "/api/v3",
         },
     ],
     "CONTACT": {
@@ -156,16 +162,19 @@ SPECTACULAR_SETTINGS = {
     },
     "ENUM_NAME_OVERRIDES": {
         "CountryCodeEnum": "django_countries.countries",
+        "DeviceClassesEnum": "authentik.stages.authenticator_validate.models.DeviceClasses",
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
-        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
-        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
-        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
-        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
-        "UserTypeEnum": "authentik.core.models.UserTypes",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
+        "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
+        "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
+        "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
+        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
+        "UserTypeEnum": "authentik.core.models.UserTypes",
+        "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -238,10 +247,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
+MIDDLEWARE_FIRST = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+]
 MIDDLEWARE = [
     "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
@@ -254,6 +265,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.rbac.middleware.InitialPermissionsMiddleware",
+]
+MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
@@ -341,37 +355,88 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-CELERY = {
-    "task_soft_time_limit": 600,
-    "worker_max_tasks_per_child": 50,
-    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
-    "beat_schedule": {
-        "clean_expired_models": {
-            "task": "authentik.core.tasks.clean_expired_models",
-            "schedule": crontab(minute="2-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
-        "user_cleanup": {
-            "task": "authentik.core.tasks.clean_temporary_users",
-            "schedule": crontab(minute="9-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
+
+# Tests
+
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+
+# Dramatiq
+
+DRAMATIQ = {
+    "broker_class": "authentik.tasks.broker.Broker",
+    "channel_prefix": "authentik",
+    "task_model": "authentik.tasks.models.Task",
+    "lock_purge_interval": timedelta_from_string(
+        CONFIG.get("worker.lock_purge_interval")
+    ).total_seconds(),
+    "task_purge_interval": timedelta_from_string(
+        CONFIG.get("worker.task_purge_interval")
+    ).total_seconds(),
+    "task_expiration": timedelta_from_string(CONFIG.get("worker.task_expiration")).total_seconds(),
+    "autodiscovery": {
+        "enabled": True,
+        "setup_module": "authentik.tasks.setup",
+        "apps_prefix": "authentik",
     },
-    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
-    "task_create_missing_queues": True,
-    "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
-    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
-    "broker_transport_options": CONFIG.get_dict_from_b64_json(
-        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
+    "worker": {
+        "processes": CONFIG.get_int("worker.processes", 2),
+        "threads": CONFIG.get_int("worker.threads", 1),
+        "consumer_listen_timeout": timedelta_from_string(
+            CONFIG.get("worker.consumer_listen_timeout")
+        ).total_seconds(),
+        "watch_folder": BASE_DIR / "authentik",
+    },
+    "scheduler_class": "authentik.tasks.schedules.scheduler.Scheduler",
+    "schedule_model": "authentik.tasks.schedules.models.Schedule",
+    "scheduler_interval": timedelta_from_string(
+        CONFIG.get("worker.scheduler_interval")
+    ).total_seconds(),
+    "middlewares": (
+        ("django_dramatiq_postgres.middleware.FullyQualifiedActorName", {}),
+        # TODO: fixme
+        # ("dramatiq.middleware.prometheus.Prometheus", {}),
+        ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
+        ("dramatiq.middleware.age_limit.AgeLimit", {}),
+        (
+            "dramatiq.middleware.time_limit.TimeLimit",
+            {
+                "time_limit": timedelta_from_string(
+                    CONFIG.get("worker.task_default_time_limit")
+                ).total_seconds()
+                * 1000
+            },
+        ),
+        ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
+        ("dramatiq.middleware.callbacks.Callbacks", {}),
+        ("dramatiq.middleware.pipelines.Pipelines", {}),
+        (
+            "dramatiq.middleware.retries.Retries",
+            {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
+        ),
+        ("dramatiq.results.middleware.Results", {"store_results": True}),
+        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.TenantMiddleware", {}),
+        ("authentik.tasks.middleware.RelObjMiddleware", {}),
+        ("authentik.tasks.middleware.MessagesMiddleware", {}),
+        ("authentik.tasks.middleware.LoggingMiddleware", {}),
+        ("authentik.tasks.middleware.DescriptionMiddleware", {}),
+        ("authentik.tasks.middleware.WorkerHealthcheckMiddleware", {}),
+        ("authentik.tasks.middleware.WorkerStatusMiddleware", {}),
+        (
+            "authentik.tasks.middleware.MetricsMiddleware",
+            {
+                "prefix": "authentik",
+            },
+        ),
     ),
-    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
-        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
-    ),
-    "redis_retry_on_timeout": True,
+    "test": TEST,
 }
 
+
 # Sentry integration
+
 env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
@@ -424,16 +489,13 @@ else:
         "BACKEND": "authentik.root.storages.FileStorage",
         "OPTIONS": {
             "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": "/media/",
+            "base_url": CONFIG.get("web.path", "/") + "media/",
         },
     }
     # Compatibility for apps not supporting top-level STORAGES
     # such as django-tenants
     MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
     MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
-
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 structlog_configure()
 LOGGING = get_logger_config()
@@ -443,9 +505,12 @@ _DISALLOWED_ITEMS = [
     "SHARED_APPS",
     "TENANT_APPS",
     "INSTALLED_APPS",
+    "MIDDLEWARE_FIRST",
     "MIDDLEWARE",
+    "MIDDLEWARE_LAST",
     "AUTHENTICATION_BACKENDS",
-    "CELERY",
+    "SPECTACULAR_SETTINGS",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -460,15 +525,35 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 
-def _update_settings(app_path: str):
+def subtract_list(a: list, b: list) -> list:
+    return [item for item in a if item not in b]
+
+
+def _filter_and_update(apps: list[str]) -> None:
+    for _app in set(apps):
+        if not _app.startswith("authentik"):
+            continue
+        _update_settings(f"{_app}.settings")
+
+
+def _update_settings(app_path: str) -> None:
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
-        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
+
+        new_shared_apps = subtract_list(getattr(settings_module, "SHARED_APPS", []), SHARED_APPS)
+        new_tenant_apps = subtract_list(getattr(settings_module, "TENANT_APPS", []), TENANT_APPS)
+        SHARED_APPS.extend(new_shared_apps)
+        TENANT_APPS.extend(new_tenant_apps)
+        _filter_and_update(new_shared_apps + new_tenant_apps)
+
+        MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
+
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
+        SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
+
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -477,37 +562,19 @@ def _update_settings(app_path: str):
 
 
 if DEBUG:
-    CELERY["task_always_eager"] = True
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 
-TENANT_APPS.append("authentik.core")
 
-CONFIG.log("info", "Booting authentik", version=__version__)
-
-# Attempt to load enterprise app, if available
-try:
-    importlib.import_module("authentik.enterprise.apps")
-    CONFIG.log("info", "Enabled authentik enterprise")
-    TENANT_APPS.append("authentik.enterprise")
-    _update_settings("authentik.enterprise.settings")
-except ImportError:
-    pass
-
-# Import events after other apps since it relies on tasks and other things from all apps
-# being imported for @prefill_task
-TENANT_APPS.append("authentik.events")
-
+CONFIG.log("info", "Booting authentik", version=authentik_version())
 
 # Load subapps's settings
-for _app in set(SHARED_APPS + TENANT_APPS):
-    if not _app.startswith("authentik"):
-        continue
-    _update_settings(f"{_app}.settings")
+_filter_and_update(SHARED_APPS + TENANT_APPS)
 _update_settings("data.user_settings")
 
+MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

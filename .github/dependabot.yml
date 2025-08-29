@@ -23,7 +23,13 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/web/sfe"
+      - "/web/packages/sfe"
+      - "/web/packages/core"
+      - "/packages/esbuild-plugin-live-reload"
+      - "/packages/prettier-config"
+      - "/packages/tsconfig"
+      - "/packages/docusaurus-config"
+      - "/packages/eslint-config"
     schedule:
       interval: daily
       time: "04:00"
@@ -68,6 +74,15 @@ updates:
       wdio:
         patterns:
           - "@wdio/*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
@@ -88,6 +103,16 @@ updates:
           - "swc-*"
           - "lightningcss*"
           - "@rspack/binding*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      eslint:
+        patterns:
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:

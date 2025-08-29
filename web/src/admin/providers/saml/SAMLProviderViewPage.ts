@@ -1,23 +1,38 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import renderDescriptionList from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/saml/SAMLProviderForm";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { MessageLevel } from "#common/messages";
+
+import { AKElement } from "#elements/Base";
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
+    CryptoApi,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLProvider,
+    User,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,18 +47,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    CertificateKeyPair,
-    CoreApi,
-    CoreUsersListRequest,
-    CryptoApi,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SAMLMetadata,
-    SAMLProvider,
-    User,
-} from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
     attributes: {
@@ -68,35 +71,33 @@ export class SAMLProviderViewPage extends AKElement {
     metadata?: SAMLMetadata;
 
     @state()
-    signer?: CertificateKeyPair;
+    signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier?: CertificateKeyPair;
+    verifier: CertificateKeyPair | null = null;
 
     @state()
     previewUser?: User;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFList,
-            PFDescriptionList,
-            PFForm,
-            PFFormControl,
-            PFBanner,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFList,
+        PFDescriptionList,
+        PFForm,
+        PFFormControl,
+        PFBanner,
+    ];
 
     constructor() {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            this.providerID = this.provider?.pk;
+            this.fetchProvider(this.provider.pk);
         });
     }
 
@@ -116,20 +117,32 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchSigningCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.signer = kp;
+            this.requestUpdate("signer");
+        });
     }
 
     fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.verifier = kp;
+            this.requestUpdate("verifier");
+        });
     }
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
-            if (this.provider.signingKp) {
+            // Clear existing signing certificate if the provider has none
+            if (!this.provider.signingKp) {
+                this.signer = null;
+            } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
-            if (this.provider.verificationKp) {
+            // Clear existing verification certificate if the provider has none
+            if (!this.provider.verificationKp) {
+                this.verifier = null;
+            } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
@@ -489,7 +502,7 @@ export class SAMLProviderViewPage extends AKElement {
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
                                       mode=${CodeMirrorMode.XML}
-                                      ?readOnly=${true}
+                                      readOnly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
@@ -539,7 +552,7 @@ export class SAMLProviderViewPage extends AKElement {
                                     .selected=${(user: User): boolean => {
                                         return user.pk === this.previewUser?.pk;
                                     }}
-                                    ?blankable=${true}
+                                    blankable
                                     @ak-change=${(ev: CustomEvent) => {
                                         this.previewUser = ev.detail.value;
                                         this.fetchPreview();

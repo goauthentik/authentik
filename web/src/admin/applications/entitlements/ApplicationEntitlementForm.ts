@@ -1,20 +1,22 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-
-import { ApplicationEntitlement, CoreApi } from "@goauthentik/api";
 
 @customElement("ak-application-entitlement-form")
 export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement, string> {
@@ -30,14 +32,11 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
-        } else {
-            return msg("Successfully created entitlement.");
         }
+        return msg("Successfully created entitlement.");
     }
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFContent];
-    }
+    static styles: CSSResult[] = [...super.styles, PFContent];
 
     send(data: ApplicationEntitlement): Promise<unknown> {
         if (this.targetPk) {
@@ -48,15 +47,14 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                 pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
-                applicationEntitlementRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
+            applicationEntitlementRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -64,11 +62,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
-            >
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"

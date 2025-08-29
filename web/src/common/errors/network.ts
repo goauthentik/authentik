@@ -6,6 +6,8 @@ import {
     ValidationErrorFromJSON,
 } from "@goauthentik/api";
 
+import { sentenceCase } from "change-case";
+
 //#region HTTP
 
 /**
@@ -26,13 +28,48 @@ export const HTTPStatusCodeTransformer: Record<number, HTTPErrorJSONTransformer>
     [HTTPStatusCode.Forbidden]: GenericErrorFromJSON,
 } as const;
 
+//#endregion
+
+//#region Type Predicates
+
 /**
- * Type guard to check if a response contains a JSON body.
+ * Type predicate to check if a response contains a JSON body.
  *
  * This is useful to guard against parsing errors when attempting to read the response body.
  */
 export function isJSONResponse(response: Response): boolean {
     return Boolean(response.headers.get("content-type")?.includes("application/json"));
+}
+
+/**
+ * An error originating from an aborted request.
+ *
+ * @see {@linkcode isAbortError} to check if an error originates from an aborted request.
+ */
+export interface AbortErrorLike extends DOMException {
+    name: "AbortError";
+}
+
+/**
+ * Type predicate to check if an error originates from an aborted request.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort | MDN}
+ */
+export function isAbortError(error: unknown): error is AbortErrorLike {
+    return error instanceof DOMException && error.name === "AbortError";
+}
+
+/**
+ * Type predicate to check if an error originates from an aborted request.
+ *
+ * @see {@linkcode isAbortError} for the underlying implementation.
+ */
+export function isCausedByAbortError(error: unknown): error is AbortErrorLike {
+    return (
+        error instanceof Error &&
+        // ---
+        (isAbortError(error) || isAbortError(error.cause))
+    );
 }
 
 //#endregion
@@ -109,6 +146,16 @@ export function composeResponseErrorDescriptor(descriptor: ResponseErrorDescript
     return `${descriptor.headline}: ${descriptor.reason}`;
 }
 
+export const ErrorFieldFallbackKeys = [
+    // ---
+    "detail", // OpenAPI
+    "non_field_errors", // ValidationError.non_field_errors
+    "message", // Error.prototype.message
+    "string", // OpenAPI
+] as const;
+
+export type FallbackError = Record<(typeof ErrorFieldFallbackKeys)[number], string | undefined>;
+
 /**
  * Attempts to pluck a human readable error message from a {@linkcode ValidationError}.
  */
@@ -129,6 +176,10 @@ export function pluckErrorDetail(error: Error, fallback?: string): string;
  */
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string;
 export function pluckErrorDetail(errorLike: unknown, fallback?: string): string {
+    if (typeof errorLike === "string" && errorLike) {
+        return errorLike;
+    }
+
     fallback ||= composeResponseErrorDescriptor(
         ResponseErrorMessages[HTTPStatusCode.InternalServiceError],
     );
@@ -137,12 +188,14 @@ export function pluckErrorDetail(errorLike: unknown, fallback?: string): string 
         return fallback;
     }
 
-    if ("detail" in errorLike && typeof errorLike.detail === "string") {
-        return errorLike.detail;
-    }
+    for (const fieldKey of ErrorFieldFallbackKeys) {
+        if (!(fieldKey in errorLike)) continue;
 
-    if ("message" in errorLike && typeof errorLike.message === "string") {
-        return errorLike.message;
+        const value = (errorLike as FallbackError)[fieldKey];
+
+        if (typeof value === "string" && value) {
+            return value;
+        }
     }
 
     return fallback;
@@ -179,6 +232,28 @@ export async function parseAPIResponseError<T extends APIError = APIError>(
 
             return createSyntheticGenericError(message || response.statusText) as T;
         });
+}
+
+//#endregion
+
+//#region Validation errors
+
+/**
+ * Pluck a field error from a validation error.
+ *
+ * This is used to create a fallback error message when the API returns
+ * a validation error that isn't associated with field within the form.
+ *
+ * We can still show the error message, to at least give the user some feedback.
+ */
+export function pluckFallbackFieldErrors(parsedError: APIError): string[] {
+    for (const [fieldName, fieldErrors] of Object.entries(parsedError)) {
+        if (Array.isArray(fieldErrors)) {
+            return [`${sentenceCase(fieldName)}: ${fieldErrors.join(", ")}`];
+        }
+    }
+
+    return [];
 }
 
 //#endregion
