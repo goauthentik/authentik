@@ -61879,6 +61879,7 @@ components:
       - object_pk
     UserPasswordSetRequest:
       type: object
+      description: Payload to set a users' password directly
       properties:
         password:
           type: string
