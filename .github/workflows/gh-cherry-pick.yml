@@ -1,10 +1,8 @@
 name: GH - Cherry-pick
 
 on:
-  pull_request:
-    types: [closed, labeled]
   pull_request_target:
-    types: [labeled]
+    types: [closed, labeled]
 
 jobs:
   cherry-pick:
@@ -28,3 +26,5 @@ jobs:
         if: ${{ steps.app-token.outcome != 'skipped' }}
         with:
           token: ${{ steps.app-token.outputs.token }}
+          git_user: authentik-automation[bot]
+          git_user_email: 135050075+authentik-automation[bot]@users.noreply.github.com
