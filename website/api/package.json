@@ -35,7 +35,7 @@
         "@mdx-js/react": "^3.1.0",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^19.1.12",
-        "@types/react-dom": "^19.1.8",
+        "@types/react-dom": "^19.1.9",
         "docusaurus-plugin-openapi-docs": "^4.5.1",
         "docusaurus-theme-openapi-docs": "^4.5.1",
         "npm-run-all": "^4.1.5",
