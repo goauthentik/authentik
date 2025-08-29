@@ -11,7 +11,7 @@ import {
     collectReleaseFiles,
     createReleaseSidebarEntries,
     prepareReleaseEnvironment,
-} from "@goauthentik/docusaurus-theme/releases/utils";
+} from "@goauthentik/docusaurus-theme/releases/node";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
