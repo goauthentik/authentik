@@ -30,9 +30,9 @@
 #region Customize
 /core/brands                                                /customize/brands/ 301!
 /customize/brands                                           /customize/branding/ 301!
-/customize/interfaces/admin/customization	                /customize/interfaces/admin/ 301!
-/customize/interfaces/flow/customization	                /customize/interfaces/flow/ 301!
-/customize/interfaces/user/customization	                /customize/interfaces/user/ 301!
+/customize/interfaces/admin/customization                   /customize/interfaces/admin/ 301!
+/customize/interfaces/flow/customization                    /customize/interfaces/flow/ 301!
+/customize/interfaces/user/customization                    /customize/interfaces/user/ 301!
 /customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/ 301!
 /customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
