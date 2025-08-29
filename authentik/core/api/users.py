@@ -328,6 +328,12 @@ class SessionUserSerializer(PassiveSerializer):
     original = UserSelfSerializer(required=False)
 
 
+class UserPasswordSetSerializer(PassiveSerializer):
+    """Payload to set a users' password directly"""
+
+    password = CharField(required=True)
+
+
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -585,12 +591,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        request=inline_serializer(
-            "UserPasswordSetSerializer",
-            {
-                "password": CharField(required=True),
-            },
-        ),
+        request=UserPasswordSetSerializer,
         responses={
             204: OpenApiResponse(description="Successfully changed password"),
             400: OpenApiResponse(description="Bad request"),
@@ -599,9 +600,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, methods=["POST"], permission_classes=[])
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
+        data = UserPasswordSetSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
         user: User = self.get_object()
         try:
-            user.set_password(request.data.get("password"), request=request)
+            user.set_password(data.validated_data["password"], request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
