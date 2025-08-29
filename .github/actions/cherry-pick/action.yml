@@ -154,11 +154,11 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         set -e -o pipefail
-        PR_NUMBER="${{ steps.should_run.outputs.pr_number }}"
-        COMMIT_SHA="${{ steps.should_run.outputs.merge_commit_sha }}"
-        PR_TITLE="${{ steps.pr_details.outputs.pr_title }}"
-        PR_AUTHOR="${{ steps.pr_details.outputs.pr_author }}"
-        LABELS="${{ steps.pr_details.outputs.labels }}"
+        PR_NUMBER='${{ steps.should_run.outputs.pr_number }}'
+        COMMIT_SHA='${{ steps.should_run.outputs.merge_commit_sha }}'
+        PR_TITLE='${{ steps.pr_details.outputs.pr_title }}'
+        PR_AUTHOR='${{ steps.pr_details.outputs.pr_author }}'
+        LABELS='${{ steps.pr_details.outputs.labels }}'
 
         echo "Processing PR #$PR_NUMBER (reason: ${{ steps.should_run.outputs.reason }})"
         echo "Found backport labels: $LABELS"
