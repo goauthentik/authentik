@@ -59,6 +59,7 @@ If you have Paperless-ngx setup in Docker, add the following environment variabl
 
 ```yaml
 environment:
+    PAPERLESS_ENABLE_ALLAUTH=true
     PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
     PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
         {
@@ -66,17 +67,20 @@ environment:
             "APPS": [
               {
                 "provider_id": "authentik",
-                "name": "Authentik",
-                "client_id": "<Client ID>",
-                "secret": "<Client Secret>",
+                "name": "authentik",
+                "client_id": "<client_ID>",
+                "secret": "<client_secret>",
                 "settings": {
                   "server_url": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
+                  "claims": {"username": "email"}
                 }
               }
             ],
             "OAUTH_PKCE_ENABLED": "True"
           }
         }
+    PAPERLESS_AUTO_LOGIN=true
+    PAPERLESS_AUTO_CREATE=true
 ```
 
 Now restart your container:
