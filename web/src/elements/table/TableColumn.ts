@@ -6,12 +6,14 @@ import { classMap } from "lit/directives/class-map.js";
 type ARIASort = "ascending" | "descending" | "none" | "other";
 
 export class TableColumn {
-    title: string;
-    orderBy?: string;
+    static formatColumnID = (columnIndex: number): string => `table-header-${columnIndex}`;
 
-    onClick?: () => void;
+    public title: string;
+    public orderBy?: string;
 
-    constructor(title: string, orderBy?: string) {
+    public onClick?: () => void;
+
+    public constructor(title: string, orderBy?: string) {
         this.title = title;
         this.orderBy = orderBy;
     }
@@ -63,13 +65,14 @@ export class TableColumn {
         </button>`;
     }
 
-    public render(table: TableLike): TemplateResult {
+    public render(table: TableLike, columnIndex: number): TemplateResult {
         const classes = {
             "pf-c-table__sort": !!this.orderBy,
             "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
         };
 
         return html`<th
+            id=${TableColumn.formatColumnID(columnIndex)}
             role="columnheader"
             scope="col"
             aria-sort=${this.getARIASort(table)}
