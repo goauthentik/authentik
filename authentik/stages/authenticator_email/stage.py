@@ -162,7 +162,9 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                     )
                     self.request.session.pop(SESSION_KEY_EMAIL_DEVICE, None)
                     self.logger.warning("failed to send email to pre-set address", exc=exc)
-                    return self.get(request, *args, **kwargs)
+                    return self.executor.stage_invalid(
+                        _("The user already has an email address registered for MFA.")
+                    )
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
