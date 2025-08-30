@@ -33,3 +33,5 @@ yarn-error.log*
 **/static/schema.yml
 api/reference
 docs/developer-docs/api/reference/**
+
+docusaurus-theme/components/Glossary/terms.generated.ts
