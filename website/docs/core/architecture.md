@@ -33,7 +33,7 @@ Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost
 
 ### Worker
 
-This container executes background tasks, such as sending emails, the event notification system, and everything you can see on the _System Tasks_ page in the frontend.
+This container executes background tasks, such as sending emails, the event notification system, and everything you can see on the _System Tasks_ page in the Admin interface.
 
 #### Persistence
 
@@ -52,7 +52,7 @@ On Kubernetes, with the default Helm chart and using the packaged PostgreSQL sub
 
 ### Redis
 
-authentik uses Redis as a message-queue and a cache. Data in Redis is not required to be persistent, however you should be aware that restarting Redis will cause the loss of all sessions.
+authentik uses Redis as a message-queue and a cache. Data in Redis is not required to be persistent.
 
 #### Persistence
 
