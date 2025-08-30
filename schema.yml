@@ -6006,8 +6006,6 @@ paths:
       responses:
         '204':
           description: Successfully started impersonation
-        '401':
-          description: Access denied
         '400':
           content:
             application/json:

@@ -681,8 +681,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         ),
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
-            "401": OpenApiResponse(description="Access denied"),
+            204: OpenApiResponse(description="Successfully started impersonation"),
         },
     )
     @action(detail=True, methods=["POST"], permission_classes=[])
@@ -701,7 +700,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without permissions",
                 user=request.user,
             )
-            return Response(status=401)
+            return Response(status=403)
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
             return Response(status=401)
@@ -710,14 +709,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "User attempted to impersonate without providing a reason",
                 user=request.user,
             )
-            return Response(status=401)
+            raise ValidationError({"reason": _("This field is required.")})
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
         Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
-        return Response(status=201)
+        return Response(status=204)
 
     @extend_schema(
         request=OpenApiTypes.NONE,
