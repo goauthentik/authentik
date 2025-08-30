@@ -40,6 +40,9 @@ HEADER_OUTPOST_FORWARDED = "X-Authentik-Outpost-Certificate"
 
 PLAN_CONTEXT_CERTIFICATE = "certificate"
 
+# Default PEM header and footer ---
+PEM_HEADER = "-----BEGIN CERTIFICATE-----"
+PEM_FOOTER = "-----END CERTIFICATE-----"
 
 class MTLSStageView(ChallengeStageView):
 
@@ -48,7 +51,15 @@ class MTLSStageView(ChallengeStageView):
         if not raw:
             return []
         try:
-            cert = load_pem_x509_certificate(unquote_plus(raw).encode())
+            cert_str = str(raw)
+
+            if PEM_HEADER not in cert_str.strip():
+                self.logger.debug("Certificate header/footer not found, reconstructing PEM.")
+                cert_pem = f"{PEM_HEADER}\n{cert_str}\n{PEM_FOOTER}"
+            else:
+                cert_pem = cert_str
+
+            cert = load_pem_x509_certificate(cert_pem.encode())
             return [cert]
         except ValueError as exc:
             self.logger.info("Failed to parse certificate", exc=exc)
