@@ -502,7 +502,7 @@ export class SAMLProviderViewPage extends AKElement {
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
                                       mode=${CodeMirrorMode.XML}
-                                      readOnly
+                                      readonly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
