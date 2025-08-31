@@ -6,8 +6,9 @@ support_level: community
 
 ## What is AppFlowy
 
-[AppFlowy](https://www.appflowy.io/) is an open-source workspace collaboration platform (similar to Notion) that lets teams create, manage, and collaborate on documents, databases, and projects.  
-This guide explains how to configure AppFlowy Cloud to enable secure login using SAML 2.0 authentication with authentik.
+AppFlowy is an open-source workspace collaboration platform (similar to Notion) that lets teams create, manage, and collaborate on documents, databases, and projects.
+
+-- https://appflowy.com
 
 ## Preparation
 
@@ -26,7 +27,7 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create a certificate-key pair
 
-1. In authentik, go to **System → Certificates** and click **Generate**.
+1. From the authentik Admin interface, navigate to **System** > **Certificates** and click **Generate**.
 2. In the dialog:
    - **Common name**: `AppFlowyCertSAML` (example)
    - **Validity days**: leave default (`365`)
@@ -36,13 +37,11 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create an application and provider in authentik
 
-1. Go to **Applications → Applications** and click **Create with Provider**.
-2. Application:
-   - **Name**: `AppFlowy` (slug will auto-complete)
-   - **Launch URL**: leave empty (authentik will auto-detect)
-   - Click **Next**
-3. **Choose a Provider type**: select **SAML Provider**.
-4. **Configure the Provider**:
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+3. Application: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+4. **Choose a Provider type**: select **SAML Provider** as the provider type.
+5. **Configure the Provider**:
    - **Name**: `Provider for AppFlowy`
    - **Authorization flow**: `default-provider-authorization-explicit-consent`
    - **Protocol settings**:
@@ -61,8 +60,8 @@ To support the integration of AppFlowy with authentik, you need to create a cert
      - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
      - **Default relay state**: `https://appflowy.company/auth/callback`
      - **Signature algorithm**: `RSA-SHA256` (default)
-5. **Configure Bindings** (optional): create [bindings](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage which users see and can access AppFlowy on **My Applications**.
-6. Click **Submit** to create the application and provider.
+6. **Configure Bindings** (optional): create [bindings](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage which users see and can access AppFlowy on **My Applications**.
+7. Click **Submit** to create the application and provider.
 7. Navigate to **Applications → Providers → Provider for AppFlowy** and keep this page open to retrieve the SSO (POST) URL and metadata URL later.
 
 ## Service configuration
@@ -127,6 +126,7 @@ Restart the AppFlowy services.
 
 To confirm that authentik is properly configured with AppFlowy, log out and log back in by clicking the **AppFlowy** application on your authentik user dashboard. You should be automatically redirected and signed into AppFlowy via SSO.
 
----
+## Resources
 
-*Tested with AppFlowy Cloud `0.9.64`.*
+- [Appflowy Documentation - How to login using Okta SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-Okta-SAML-2)
+- [Appflowy Documentation - How to login using SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-SAML-2)
