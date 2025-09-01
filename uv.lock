@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = "==3.13.*"
 
 [manifest]
@@ -1318,11 +1318,11 @@ wheels = [
 
 [[package]]
 name = "geographiclib"
-version = "2.0"
+version = "2.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/96/cd/90271fd195d79a9c2af0ca21632b297a6cc3e852e0413a2e4519e67be213/geographiclib-2.0.tar.gz", hash = "sha256:f7f41c85dc3e1c2d3d935ec86660dc3b2c848c83e17f9a9e51ba9d5146a15859", size = 36720, upload-time = "2022-04-23T13:01:11.495Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/df/78/4892343230a9d29faa1364564e525307a37e54ad776ea62c12129dbba704/geographiclib-2.1.tar.gz", hash = "sha256:6a6545e6262d0ed3522e13c515713718797e37ed8c672c31ad7b249f372ef108", size = 37004, upload-time = "2025-08-21T21:34:26Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9f/5a/a26132406f1f40cf51ea349a5f11b0a46cec02a2031ff82e391c2537247a/geographiclib-2.0-py3-none-any.whl", hash = "sha256:6b7225248e45ff7edcee32becc4e0a1504c606ac5ee163a5656d482e0cd38734", size = 40324, upload-time = "2022-04-23T13:01:09.958Z" },
+    { url = "https://files.pythonhosted.org/packages/31/b3/802576f2ea5dcb48501bb162e4c7b7b3ca5654a42b2c968ef98a797a4c79/geographiclib-2.1-py3-none-any.whl", hash = "sha256:e2a873b9b9e7fc38721ad73d5f4e6c9ed140d428a339970f505c07056997d40b", size = 40740, upload-time = "2025-08-21T21:34:24.955Z" },
 ]
 
 [[package]]
