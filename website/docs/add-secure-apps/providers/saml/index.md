@@ -2,9 +2,9 @@
 title: SAML Provider
 ---
 
-This provider allows you to integrate enterprise software using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields. Default fields are exposed through auto-generated property pappings, which are prefixed with "authentik default".
+The SAML provider allows you to integrate enterprise software using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields. Default fields are exposed through auto-generated property mappings, which are prefixed with "authentik default".
 
-To create a new SAML provider in authentik, refer to our [documentation](./create-saml-provider.md).
+Refer to the instructions to [create a SAML provider](./create-saml-provider.md).
 
 ## SAML Bindings
 
@@ -23,17 +23,27 @@ In authentik, you can define two communication protocols: `HTTP Redirect` or `HT
 | SLO (POST binding)        | `/application/saml/<application_slug>/slo/binding/post/`     |
 | Metadata Download         | `/application/saml/<application_slug>/metadata/`             |
 
-(TODO be more specific here, where in which interface, and do we mean the SP metadata or the IdP?) You can download the metadata through the Web interface; this link might be handy if your software wants to download the metadata directly.
+## Discovery: SAML metadata
 
-The metadata download link can also be copied with a button on the provider overview page.
+Describe the basics of metadata. But put any procedurals over in the How To doc (and link to from here).
+
+BASICS: After you create your app (SP) and your SAML provider, you go back on the provider page and you can download the SP metadata.
+
+- BUT… do our users need our IdP-generated metadata file? And if so where do they get it from? How do we create it for them?
+
+## Signatures and Certificates
+
+TODO write words here about the Signing Certificate and the other type of certs (see UI for Creating a new App (with SAML provider) under Advanced Protocols...)
 
 ## Property mappings in SAML
 
-Attributes are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, email address, a username, or even a custom attribute.
+Attributes defined within a property mapping are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, email address, a username, or even a custom attribute.
+
+Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string.
 
 During the sign on and authentication process, communication between the SP (say the application that the user is attempting to log in to) and the IdP (the identity provider software managing the SSO work) replies on property mappings to align, or "map" the attributes' values between the SP and IdP.
 
-... talk about the fist name and last name thing (just use `Name`)...
+... talk about the first name and last name thing (just use `Name`)...
 
 ### Default property mappings
 
@@ -53,7 +63,7 @@ The following attributes are available as property mappings through the Admin in
 
 ### Custom property mappings
 
-If there is not already a property mapping that works for what you need, you can create a custom property mapping. Some useful custom property mappings include:
+If there is not already a property mapping that works for what you need, you can [create a custom property mapping](../property-mappings/). Some useful custom property mappings include:
 
 #### `surname`
 
