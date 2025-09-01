@@ -28,12 +28,11 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 ### Create a certificate-key pair
 
 1. From the authentik Admin interface, navigate to **System** > **Certificates** and click **Generate**.
-2. In the dialog:
-   - **Common name**: `AppFlowyCertSAML` (example)
-   - **Validity days**: leave default (`365`)
+2. Set the following required configuration items:
+   - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
+   - **Validity days**: set an appropriate certificate validity period (or keep the default value of `365`).
    - **Private key algorithm**: `RSA`
-   - Click **Generate**
-3. Download the **Certificate** and **Private key**. These will be needed later.
+3. Click **Generate** and take note of the **Certificate** and **Private key** values as they will be required later on.
 
 ### Create an application and provider in authentik
 
@@ -64,7 +63,7 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 7. Click **Submit** to create the application and provider.
 7. Navigate to **Applications → Providers → Provider for AppFlowy** and keep this page open to retrieve the SSO (POST) URL and metadata URL later.
 
-## Service configuration
+## AppFlowy configuration
 
 Configure AppFlowy Cloud to use authentik as its SAML IdP.
 
@@ -124,9 +123,9 @@ Restart the AppFlowy services.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with AppFlowy, log out and log back in by clicking the **AppFlowy** application on your authentik user dashboard. You should be automatically redirected and signed into AppFlowy via SSO.
+To confirm that authentik is properly configured with AppFlowy, log out and then log back in by selecting the **AppFlowy** application from the authentik User interface. You should be automatically redirected and signed in to AppFlowy.
 
 ## Resources
 
-- [Appflowy Documentation - How to login using Okta SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-Okta-SAML-2)
-- [Appflowy Documentation - How to login using SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-SAML-2)
+- [AppFlowy Documentation - How to login using Okta SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-Okta-SAML-2)
+- [AppFlowy Documentation - How to login using SAML 2.0](https://appflowy.com/docs/How-to-log-in-using-SAML-2)
