@@ -60,3 +60,4 @@ List the external sources (official docs, community articles, blogs, videos) tha
 
 ```text
 - [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
+```
