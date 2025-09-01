@@ -217,6 +217,14 @@ class WorkerStatusMiddleware(Middleware):
             hostname=socket.gethostname(),
             version=authentik_full_version(),
         )
+        while True:
+            try:
+                WorkerStatusMiddleware.keep(status)
+            except DB_ERRORS:  # pragma: no cover
+                sleep(10)
+                pass
+
+    def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while True:
