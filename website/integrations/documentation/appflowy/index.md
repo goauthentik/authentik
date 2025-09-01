@@ -7,7 +7,7 @@ support_level: community
 ## What is AppFlowy
 
 > AppFlowy is an open-source workspace collaboration platform (similar to Notion) that lets teams create, manage, and collaborate on documents, databases, and projects.
-
+> 
 -- https://appflowy.com
 
 ## Preparation
