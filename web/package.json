@@ -111,7 +111,7 @@
         "@lit/localize-tools": "^0.8.0",
         "@lit/reactive-element": "^2.1.1",
         "@lit/task": "^1.0.3",
-        "@mdx-js/mdx": "^3.1.0",
+        "@mdx-js/mdx": "^3.1.1",
         "@mrmarble/djangoql-completion": "^0.8.3",
         "@open-wc/lit-helpers": "^0.7.0",
         "@openlayers-elements/core": "^0.4.0",
