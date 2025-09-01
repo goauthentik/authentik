@@ -56,4 +56,7 @@ If there are more specific validation methods for the Service (e.g., clicking a 
 
 ## References
 
-- List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
+List the external sources (official docs, community articles, blogs, videos) that were used to create this guide.
+
+```text
+- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
