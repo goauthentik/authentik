@@ -4,6 +4,7 @@ from authentik.tasks.schedules.common import ScheduleSpec
 
 PRIORITY_HIGH = 1000
 
+
 class AuthentikTasksConfig(ManagedAppConfig):
     name = "authentik.tasks"
     label = "authentik_tasks"

@@ -29,6 +29,7 @@ LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 DB_ERRORS = (OperationalError, Error, RedisError)
 
+
 class TenantMiddleware(Middleware):
     def before_enqueue(self, broker: Broker, message: Message, delay: int):
         message.options["model_defaults"]["tenant"] = get_current_tenant()
