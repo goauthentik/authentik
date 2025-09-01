@@ -722,7 +722,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
-            "204": OpenApiResponse(description="Successfully started impersonation"),
+            "204": OpenApiResponse(description="Successfully ended impersonation"),
         },
     )
     @action(detail=False, methods=["GET"])
