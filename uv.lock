@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = "==3.13.*"
 
 [manifest]
@@ -1534,14 +1534,14 @@ wheels = [
 
 [[package]]
 name = "httplib2"
-version = "0.22.0"
+version = "0.30.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pyparsing" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/ad/2371116b22d616c194aa25ec410c9c6c37f23599dcd590502b74db197584/httplib2-0.22.0.tar.gz", hash = "sha256:d7a10bc5ef5ab08322488bde8c726eeee5c8618723fdb399597ec58f3d82df81", size = 351116, upload-time = "2023-03-21T22:29:37.214Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5b/75/1d10a90b3411f707c10c226fa918cf4f5e0578113caa223369130f702b6b/httplib2-0.30.0.tar.gz", hash = "sha256:d5b23c11fcf8e57e00ff91b7008656af0f6242c8886fd97065c97509e4e548c5", size = 249764, upload-time = "2025-08-29T18:58:36.497Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/6c/d2fbdaaa5959339d53ba38e94c123e4e84b8fbc4b84beb0e70d7c1608486/httplib2-0.22.0-py3-none-any.whl", hash = "sha256:14ae0a53c1ba8f3d37e9e27cf37eabb0fb9980f435ba405d546948b009dd64dc", size = 96854, upload-time = "2023-03-21T22:29:35.683Z" },
+    { url = "https://files.pythonhosted.org/packages/87/7c/f35bd530a35654ef3ff81f5e102572b8b620361659e090beb85a73a3bcc9/httplib2-0.30.0-py3-none-any.whl", hash = "sha256:d10443a2bdfe0ea5dbb17e016726146d48b574208dafd41e854cf34e7d78842c", size = 91101, upload-time = "2025-08-29T18:58:33.224Z" },
 ]
 
 [[package]]
