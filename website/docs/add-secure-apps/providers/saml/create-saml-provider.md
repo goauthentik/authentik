@@ -4,7 +4,7 @@ title: Create a SAML provider
 
 To create a provider along with the corresponding application that uses it for authentication, navigate to **Applications** → **Applications** and click **Create with provider**. We recommend this combined approach for most common use cases. Alternatively, you can follow the legacy method by navigating to **Applications** → **Providers** and clicking **Create**.
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 
 2. Navigate to **Applications -> Applications** and click **Create with provider** to create an application and provider pair.
 
