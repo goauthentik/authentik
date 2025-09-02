@@ -9,7 +9,7 @@ Allows users to authenticate using their Plex credentials
 
 None
 
-## authentik -> Sources
+## authentik > Sources
 
 Add _Plex_ as a _source_
 
