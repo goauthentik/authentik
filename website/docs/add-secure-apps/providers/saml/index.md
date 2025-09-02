@@ -45,7 +45,7 @@ During the sign on and authentication process, communication between the SP (say
 
 ... talk here about the first name and last name thing (just use `Name`)...
 
-### Default property mappings
+### Default SAML property mappings
 
 The following attributes are available as property mappings through the Admin interface when you create a new SAML provider.
 
