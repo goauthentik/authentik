@@ -30,7 +30,6 @@ To support the integration of osTicket with authentik, you need to create an app
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
@@ -53,7 +52,6 @@ Then go to "Instances", click on "Add New Instance" and select "OAuth2 - Other"
 
 - On the **Instance** tab fill in the Name and set Status to Enabled
 - On the **Config** tab change the following fields
-
     - **Name**: `Authentik`
     - **Authentication Target**: `Agents Only` or `End Users Only` or `Agents and End Users`
     - **Authentication Label**: `Authentik`
@@ -64,6 +62,7 @@ Then go to "Instances", click on "Add New Instance" and select "OAuth2 - Other"
     - **Token Endpoint**: `https://authentik.company/application/o/token/`
     - **Resource Details Endpoint**: `https://authentik.company`/application/o/userinfo/
     - **Scopes**: `email openid profile`
+
 - click on Save Changes
 
 ## Additional Resources
