@@ -37,7 +37,7 @@ TODO write words here about the Signing Certificate and the other type of certs 
 
 ## Property mappings in SAML
 
-Attributes defined within a property mapping are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, email address, a username, or even a custom attribute.
+Attributes defined within a property mapping are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, username, email address, group membership, or even a custom attribute.
 
 Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string.
 
