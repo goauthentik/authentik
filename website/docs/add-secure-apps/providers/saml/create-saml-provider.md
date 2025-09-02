@@ -10,7 +10,7 @@ To create a provider along with the corresponding application that uses it for a
 
 3. In the **New application** box, define the application details, and then click **Next**.
 
-4. Select the **Provider Type** of either **SAML Provider** or **SAML Provider from Metadata**, and then click **Next**.
+4. Select the **Provider Type** of either **SAML Provider**, and then click **Next**.
     - TODO: talk about the diff bwetween using metadata vs not...
 
 5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Submit** to create and save both the application and the provider.
