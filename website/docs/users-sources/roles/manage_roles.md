@@ -13,7 +13,7 @@ In authentik, we assign roles to groups, not to individual users.
 
 To create a new role, follow these steps:
 
-1. In the Admin interface, navigate to **Directory > Roles**.
+1. In the Admin interface, navigate to **Directory -> Roles**.
 2. Click **Create**, enter the name of the role, and then click **Create** in the box.
 3. Next, [assign permissions to the role](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
@@ -29,7 +29,7 @@ To modify a role, follow these steps:
 
 To delete a role, follow these steps:
 
-1. In the Admin interface, navigate to **Directory > Roles**.
+1. In the Admin interface, navigate to **Directory -> Roles**.
 2. Select the checkbox beside the name of the role that you want to delete.
 3. Click **Delete**.
 

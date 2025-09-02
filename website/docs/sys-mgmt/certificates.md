@@ -25,7 +25,7 @@ For SAML use-cases, you can generate a certificate with a longer validity period
 To download a certificate for SAML configuration:
 
 1. Log into authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider.
+2. Navigate to **Applications** -> **Providers** and click on the name of the provider.
 3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
 
 ## External certificates
@@ -37,7 +37,7 @@ To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), 
 authentik can automatically discover and import certificates from a designated directory. This allows you to use externally managed certificates with minimal configuration.
 
 :::note
-Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** > **System Tasks**.
+Certificate discovery can be manually initiated by restarting the `certificate_discovery` system task from the authentik Admin interface under **Dashboards** -> **System Tasks**.
 :::
 
 #### Mounted directories
@@ -140,4 +140,4 @@ Run `docker compose up -d` to create and start the Certbot container and generat
 
 For Kubernetes or AWS deployments, you can use similar approaches with appropriate certificate management tools for your platform.
 
-Navigate to **System** > **Brands**, edit any brand, and select your preferred certificate.
+Navigate to **System** -> **Brands**, edit any brand, and select your preferred certificate.

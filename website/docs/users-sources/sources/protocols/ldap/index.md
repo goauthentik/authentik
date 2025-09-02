@@ -12,7 +12,7 @@ For FreeIPA, follow the [FreeIPA Integration](../../directory-sync/freeipa/index
 
 ## Configuration options for LDAP sources
 
-To create or edit a source in authentik, open the Admin interface and navigate to **Directory > Federation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
+To create or edit a source in authentik, open the Admin interface and navigate to **Directory -> Federation and Social login**. There you can create a new LDAP source, or edit an existing one, using the following settings.
 
 - **Enabled**: Toggle this option on to allow authentik to use the defined LDAP source.
 - **Update internal password on login**: When the user logs in to authentik using the LDAP password backend, the password is stored as a hashed value in authentik. Toggle off (default setting) if you do not want to store the hashed passwords in authentik.

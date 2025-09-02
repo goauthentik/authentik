@@ -61,7 +61,7 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 Create a new **Expression Policy** with the content below, adjusting the variables where required:
 
 ```python
-# To get the guild ID number for the parameters, open Discord, go to Settings > Advanced and enable developer mode.
+# To get the guild ID number for the parameters, open Discord, go to Settings -> Advanced and enable developer mode.
 # Right-click on the server/guild title and select "Copy ID" to get the guild ID.
 
 ACCEPTED_GUILD_ID = "123456789123456789"
@@ -103,10 +103,10 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 Create a new **Expression Policy** with the content below, adjusting the variables where required:
 
 ```python
-# To get the role and guild ID numbers for the parameters, open Discord, go to Settings > Advanced and
+# To get the role and guild ID numbers for the parameters, open Discord, go to Settings -> Advanced and
 # enable developer mode.
 # Right-click on the server/guild title and select "Copy ID" to get the guild ID.
-# Right-click on the server/guild title and select server settings > roles, right click on the role and click
+# Right-click on the server/guild title and select server settings -> roles, right click on the role and click
 # "Copy ID" to get the role ID.
 
 ACCEPTED_ROLE_ID = "123456789123456789"
@@ -162,7 +162,7 @@ Ensure that the Discord OAuth source in **Federation & Social login** has the ad
 
 :::info
 Any authentik role that you want to sync with a Discord role needs to have the **attribute** `discord_role_id` with a value of the Discord role's ID set.
-This setting can be found under `Authentik > Admin Interface > Directory > Groups > YOUR_GROUP > Attributes`
+This setting can be found under `Authentik -> Admin Interface -> Directory -> Groups -> YOUR_GROUP -> Attributes`
 Example: `discord_role_id: "<ROLE ID>"`
 :::
 

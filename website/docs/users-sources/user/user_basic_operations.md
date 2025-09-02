@@ -10,7 +10,7 @@ The following topics are for the basic management of users: how to create, modif
 
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write.md), or [using the API](/api/reference/core-users-create).
 
-1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
+1. In the Admin interface of your authentik instance, select **Directory -> Users** in the left side menu.
 2. Select the folder where you want to create a user.
 3. Click **Create** (for a default user).
 4. Fill in the required fields:
@@ -35,7 +35,7 @@ To create a super-user, you need to add the user to a group that has super-user 
 
 ## Advanced queries for users:ak-enterprise {#tell-me-more}
 
-You can create advanced queries to locate specific users within the list shown under **Directory** > **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can create advanced queries to locate specific users within the list shown under **Directory** -> **Users** in the Admin interface. Use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
@@ -57,7 +57,7 @@ You can create advanced queries to locate specific users within the list shown u
 
 ## View user details
 
-In the **Directory > Users** menu of the Admin interface, you can browse all the users in your authentik instance.
+In the **Directory -> Users** menu of the Admin interface, you can browse all the users in your authentik instance.
 
 To view details about a specific user:
 
@@ -78,7 +78,7 @@ To view details about a specific user:
 
 After the creation of the user, you can edit any parameter defined during the creation.
 
-To modify a user object, go to **Directory > Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
+To modify a user object, go to **Directory -> Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
 
 ## Assign, modify, or remove permissions for a user
 
@@ -88,7 +88,7 @@ For more information, review ["Permissions"](../access-control/permissions.md).
 
 ## Add a user to a group
 
-1. To add a user to a group, navigate to **Directory > Users** to display all users.
+1. To add a user to a group, navigate to **Directory -> Users** to display all users.
 2. Click the name of the user to display the full user details page.
 3. Click the **Groups** tab, and then click either **Add to existing group** or **Add to new group**.
 
@@ -102,7 +102,7 @@ If a user has lost their credentials, there are several options.
 This option is only available if a default recovery flow was configured for the currently active brand.
 :::
 
-1. In the Admin interface, navigate to **Directory > Users** to display all users.
+1. In the Admin interface, navigate to **Directory -> Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron (the › symbol) beside their name to expand the options.
 3. To generate a recovery link, which you can then copy and paste into an email, click **Create recovery link**.
 
@@ -116,7 +116,7 @@ This option is only available if a default recovery flow was configured for the 
 
 You can send a link with the URL for the user to reset their password via Email. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
 
-1. In the Admin interface, navigate to **Directory > Users** to display all users.
+1. In the Admin interface, navigate to **Directory -> Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
 3. To send the email to the user, click **Email recovery link**.
 
@@ -126,7 +126,7 @@ If the user does not receive the email, check if the mail server parameters [are
 
 As an Admin, you can simply reset the password for the user.
 
-1. In the Admin interface, navigate to **Directory > Users** to display all users.
+1. In the Admin interface, navigate to **Directory -> Users** to display all users.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
@@ -155,7 +155,7 @@ The user list refreshes and no longer displays the removed users.
 
 With authentik, an Admin can impersonate a user, meaning that the Admin temporarily assumes the identity of the user.
 
-1. In the Admin interface, navigate to **Directory > Users** to display all users.
+1. In the Admin interface, navigate to **Directory -> Users** to display all users.
 2. Click the name of the user to display the full User details page.
 3. On the Overview tab, beneath **User Details**, in the **Actions** area, click **Impersonate**.
 4. At the prompt, provide a reason why you are impersonating this user, and then click **Impersonate**.

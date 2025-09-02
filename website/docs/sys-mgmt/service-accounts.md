@@ -28,7 +28,7 @@ Service accounts have certain limitations compared to regular user accounts:
 
 To create a service account:
 
-1. In the authentik **Admin interface**, navigate to **Directory** > **Users**.
+1. In the authentik **Admin interface**, navigate to **Directory** -> **Users**.
 2. Click the **Create Service Account** button.
 3. Configure the following settings:
     - **Username**: The user's primary identifier (150 characters or fewer).
@@ -52,7 +52,7 @@ Service account tokens have the following properties:
 
 Tokens for service accounts are managed through the authentik Admin interface:
 
-1. Log in to the Admin interface and navigate to **Directory** > **Tokens and App passwords**.
+1. Log in to the Admin interface and navigate to **Directory** -> **Tokens and App passwords**.
 2. Here you can view, create, copy, delete, and manage tokens.
 
 ### Creating New Tokens

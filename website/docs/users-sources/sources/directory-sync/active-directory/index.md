@@ -15,7 +15,7 @@ The following placeholders are used in this guide:
 To support the integration of Active Directory with authentik, you need to create a service account in Active Directory.
 
 1. Open **Active Directory Users and Computers** on a domain controller or computer with **Active Directory Remote Server Administration Tools** installed.
-2. Navigate to an Organizational Unit, right click on it, and select **New** > **User**.
+2. Navigate to an Organizational Unit, right click on it, and select **New** -> **User**.
 3. Create a service account, matching your naming scheme, for example:
 
     ![](./01_user_create.png)
@@ -43,7 +43,7 @@ To support the integration of Active Directory with authentik, you need to creat
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation & Social login**.
+2. Navigate to **Directory** -> **Federation & Social login**.
 3. Click **Create** and select **LDAP Source** as the type.
 4. Provide a name, slug, and the following required configurations:
 
@@ -72,7 +72,7 @@ To support the integration of authentik with Active Directory, you will need to 
     - **Group membership field**: the user object attribute or the group object attribute that determines the group membership of a user (e.g. `member`). If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
     - **Object uniqueness field**: a user attribute that contains a unique identifier (e.g. `objectSid`).
 
-5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
+5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** -> **System Tasks**:
 
     ![](./03_additional_perms.png)
 

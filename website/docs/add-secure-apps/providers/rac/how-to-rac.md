@@ -24,7 +24,7 @@ Depending on whether you are connecting using RDP, SSH, or VNC, the exact config
 The first step is to create the RAC application and provider pair.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with provider**.
+2. Navigate to **Applications** -> **Applications** and click **Create with provider**.
 3. Follow these [instructions](../../applications/manage_apps.mdx#instructions) to create your RAC application and provider.
 
 ### Create RAC property mappings
@@ -32,7 +32,7 @@ The first step is to create the RAC application and provider pair.
 Next, you need to add property mappings for each remote machine you want to access. Property mappings allow you to pass information to external applications, and with RAC they are used to pass the host name, IP address, and access credentials of the remote machine.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+2. Navigate to **Customization** -> **Property Mappings** and click **Create**.
     - **Select Type**: `RAC Provider Property Mapping`
     - **Create RAC Property Mapping**:
         - **Name**s: define a name for the property mapping, perhaps include the type of connection (RDP, SSH, VNC)
@@ -54,7 +54,7 @@ Next, you need to add property mappings for each remote machine you want to acce
 Then, you need to create an endpoint for each remote machine. Endpoints are defined within providers; connections between the remote machine and authentik are enabled through communication between the provider's endpoint and the remote machine.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
+2. Navigate to **Applications** -> **Providers**.
 3. Click the **Edit** button on the RAC provider that you previously created.
 4. On the Provider page, under **Endpoints**, click **Create**, and provide the following settings:
     - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC).
@@ -71,7 +71,7 @@ Then, you need to create an endpoint for each remote machine. Endpoints are defi
 The RAC provider requires the deployment of an [RAC Outpost](../../outposts/index.mdx).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Outposts**.
+2. Navigate to **Applications** -> **Outposts**.
 3. Click **Create** and set the following values:
     - **Name**: define a name for the outpost.
     - **Type**: `RAC`

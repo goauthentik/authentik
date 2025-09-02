@@ -48,7 +48,7 @@ See https://developers.cloudflare.com/turnstile/get-started/migrating-from-recap
 #### Configuration options
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and click **Create**.
+2. Navigate to **Flows and Stages** -> **Stages** and click **Create**.
 3. Select **Captcha Stage** and click **Next**.
 4. Provide a descriptive name for the stage (e.g. `authentication-captcha`) and configure the following required settings based on the values of your [Cloudflare Turnstile Widget](https://developers.cloudflare.com/turnstile/concepts/widget/):
     - Under **Stage-specific settings**:

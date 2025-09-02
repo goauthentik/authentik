@@ -22,9 +22,9 @@ In the enterprise version, two enhancements make reading the logs even easier:
 
 You can view audit details in the following areas of the authentik Admin interface:
 
-- **Admin interface > Dashboards > Overview**: In the **Recent events** section click an event name to view its details.
+- **Admin interface -> Dashboards -> Overview**: In the **Recent events** section click an event name to view its details.
 
-- **Admin interface > Events > Logs**: In the event list, click the arrow toggle next to the event you want to view.
+- **Admin interface -> Events -> Logs**: In the event list, click the arrow toggle next to the event you want to view.
 
 ## Viewing events in maps and charts :ak-enterprise
 
@@ -34,7 +34,7 @@ With the enterprise version, you can view recent events on both a world map view
 
 ## Advanced queries for event logs:ak-enterprise {#tell-me-more}
 
-You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events > Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
+You can construct advanced queries to find specific event logs. In the Admin interface, navigate to **Events -> Logs**, and then use the auto-complete in the **Search** field or enter your own queries to return results with greater specificity.
 
 - **Field**: `action`, `event_uuid`, `app`, `client_ip`, `user`, `brand`, `context`, `created`
 

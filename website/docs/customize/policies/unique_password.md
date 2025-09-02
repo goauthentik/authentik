@@ -33,7 +33,7 @@ For comprehensive password security, consider using this policy alongside:
 
 To implement a policy that prevents users from reusing their previous passwords, follow these steps:
 
-1. In the Admin interface, navigate to **Customization** > **Policies**.
+1. In the Admin interface, navigate to **Customization** -> **Policies**.
 2. Click **Create** to define a new Password Uniqueness Policy.
     - **Name**: provide a descriptive name for the policy.
     - **Password field**: enter the name of the input field to check for the new password. By default, if no custom flows are used, the field name is `password`. This field name must match the field name used in your Prompt stage.

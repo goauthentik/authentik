@@ -11,7 +11,7 @@ SSH private keys can be configured via several methods:
 ## Apply a private key to an RAC provider
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
+2. Navigate to **Applications** -> **Providers**.
 3. Click the **Edit** icon on the RAC provider that requires public key authentication.
 4. In the **Settings** codebox enter the private key of the endpoint, for example:
     ```python
@@ -31,7 +31,7 @@ SSH private keys can be configured via several methods:
 ## Apply a private key to an RAC endpoint
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
+2. Navigate to **Applications** -> **Providers**.
 3. Click the name of the RAC provider that the endpoint belongs to.
 4. Under **Endpoints**, click on the **Edit** icon next to the endpoint that requires public key authentication.
 5. Under **Advanced settings**, in the **Settings** codebox enter the private key of the endpoint:
@@ -52,7 +52,7 @@ SSH private keys can be configured via several methods:
 ## Apply a private key to an RAC property mapping
 
 1.  Log in to authentik as an administrator, and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
+2.  Navigate to **Customization** -> **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:
@@ -72,7 +72,7 @@ SSH private keys can be configured via several methods:
     ```
 
 3.  Click **Finish**.
-4.  Navigate to **Applications** > **Providers**.
+4.  Navigate to **Applications** -> **Providers**.
 5.  Click the **Edit** icon on the RAC provider that requires public key authentication.
 6.  Under **Protocol Settings** add the newly created property mapping to **Selected Property Mappings**.
 7.  Click **Update**.
@@ -80,7 +80,7 @@ SSH private keys can be configured via several methods:
 ## Retrieve a private key from a user's attributes and apply it to an RAC property mapping
 
 1.  Log in to authentik as an administrator, and open the authentik Admin interface.
-2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
+2.  Navigate to **Customization** -> **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
     - **Name**: Choose a descriptive name
     - Under **Advanced Settings**:
         - **Expression**:
@@ -91,7 +91,7 @@ SSH private keys can be configured via several methods:
         ```
 
 3.  Click **Finish**.
-4.  Navigate to **Applications** > **Providers**.
+4.  Navigate to **Applications** -> **Providers**.
 5.  Click the **Edit** icon on the RAC provider that requires public key authentication.
 6.  Under **Protocol Settings**, add the newly created property mapping to **Selected Property Mappings**.
 7.  Click **Update**.

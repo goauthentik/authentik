@@ -45,7 +45,7 @@ You can view and manage all background tasks and schedules from the Admin interf
 
 However, by default, tasks are shown _as close as possible_ to their relevant objects. For instance, LDAP source synchronization tasks and schedules are shown on the LDAP source detail page.
 
-When a task or a schedule cannot be associated to an object (for example, housekeeping tasks), it is referred to as "standalone" and is displayed under **Dashboards** > **System Tasks**. Note that tasks created from a schedule are associated to that schedule and thus are not considered standalone. Both schedule and task items can be expanded to view additional details about them.
+When a task or a schedule cannot be associated to an object (for example, housekeeping tasks), it is referred to as "standalone" and is displayed under **Dashboards** -> **System Tasks**. Note that tasks created from a schedule are associated to that schedule and thus are not considered standalone. Both schedule and task items can be expanded to view additional details about them.
 
 If you cannot find the object to which a task or schedule is attached, deselect the "Show only standalone tasks/schedules" toggle on the **System Tasks** page to show all tasks and schedules, including the ones that are attached to objects.
 
