@@ -26,7 +26,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Also set up your proxy server to use forward auth with paperless.company: https://goauthentik.io/docs/providers/proxy/forward_auth
+Also set up your proxy server to use forward auth with paperless.company: https://docs.goauthentik.io/docs/add-secure-apps/providers/proxy/forward_auth/
 
 ## Paperless
 

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.6.4
+  version: 2025.10.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -104,6 +104,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SettingsRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -4719,6 +4720,11 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_users
         schema:
           type: boolean
@@ -4840,6 +4846,11 @@ paths:
           format: uuid
         description: A UUID string identifying this Group.
         required: true
+      - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
       - in: query
         name: include_users
         schema:
@@ -5655,6 +5666,21 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: date_joined
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: email
         schema:
           type: string
@@ -5688,6 +5714,21 @@ paths:
         name: is_superuser
         schema:
           type: boolean
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
       - in: query
         name: name
         schema:
@@ -5982,7 +6023,7 @@ paths:
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Create a temporary link that a user can use to recover their account
       parameters:
       - in: path
         name: id
@@ -6016,7 +6057,8 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Send an email with a temporary link that a user can use to recover
+        their account
       parameters:
       - in: query
         name: email_stage
@@ -22283,6 +22325,17 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: default_name_id_policy
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - in: query
         name: default_relay_state
         schema:
           type: string
@@ -29498,6 +29551,7 @@ paths:
           enum:
           - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
           - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
@@ -41407,7 +41461,9 @@ components:
       - authentik.tasks
       - authentik.admin
       - authentik.api
+      - authentik.core
       - authentik.crypto
+      - authentik.enterprise
       - authentik.events
       - authentik.flows
       - authentik.outposts
@@ -41459,8 +41515,6 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
-      - authentik.core
-      - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -44113,12 +44167,21 @@ components:
         default_locale:
           type: string
           readOnly: true
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+          readOnly: true
       required:
       - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
       - default_locale
+      - flags
       - matched_domain
       - ui_footer_links
       - ui_theme
@@ -44793,6 +44856,15 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
       - meta_model_name
@@ -44853,6 +44925,16 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
     Endpoint:
@@ -46466,13 +46548,50 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        children:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupChild'
+          readOnly: true
+          nullable: true
       required:
+      - children_obj
       - name
       - num_pk
       - parent_name
       - pk
       - roles_obj
       - users_obj
+    GroupChild:
+      type: object
+      description: Stripped down group serializer to show relevant children for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -46790,6 +46909,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -48868,7 +48992,13 @@ components:
     ModelEnum:
       enum:
       - authentik_tenants.domain
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.applicationentitlement
+      - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
       - authentik_events.notification
@@ -48957,12 +49087,6 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
-      - authentik_core.group
-      - authentik_core.user
-      - authentik_core.application
-      - authentik_core.applicationentitlement
-      - authentik_core.token
-      - authentik_enterprise.license
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -49063,14 +49187,6 @@ components:
       - mode
       - name
       - user_attribute
-    NameIdPolicyEnum:
-      enum:
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-      type: string
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -49229,6 +49345,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49268,6 +49388,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49417,6 +49542,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -49524,6 +49653,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -53300,6 +53433,16 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
     PatchedEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -53681,6 +53824,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -54342,6 +54490,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -54428,6 +54581,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -55289,6 +55446,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -55382,7 +55541,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -55688,6 +55847,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -58130,6 +58296,15 @@ components:
       required:
       - download_url
       - metadata
+    SAMLNameIDPolicyEnum:
+      enum:
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+      type: string
     SAMLPropertyMapping:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -58347,6 +58522,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -58519,6 +58696,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
       - acs_url
       - authorization_flow
@@ -58627,7 +58806,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -58817,7 +58996,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -59896,6 +60075,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -59949,6 +60137,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SeverityEnum:
       enum:
       - notice
@@ -61075,11 +61272,16 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
       - date_joined
       - groups_obj
       - is_superuser
+      - last_updated
       - name
       - password_change_date
       - pk
@@ -61677,6 +61879,7 @@ components:
       - object_pk
     UserPasswordSetRequest:
       type: object
+      description: Payload to set a users' password directly
       properties:
         password:
           type: string
@@ -62294,4 +62497,4 @@ components:
       type: http
       scheme: bearer
 servers:
-- url: /api/v3/
+- url: /api/v3

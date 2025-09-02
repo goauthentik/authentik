@@ -16,8 +16,26 @@ GEN_API_GO = gen-go-api
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
-all: lint-fix lint test gen web  ## Lint, build, and test everything
+UNAME := $(shell uname)
+
+# For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
+# to prevent SAML-related tests from failing and ensure correct pip dependency compilation
+ifeq ($(UNAME), Darwin)
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+	endif
+endif
+
+all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -49,7 +67,14 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
+ifdef LIBXML2_EXISTS
+# Clear cache to ensure fresh compilation
+	uv cache clean
+# Force compilation from source for lxml and xmlsec with correct environment
+	LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+else
 	uv sync --frozen
+endif
 
 migrate: ## Run the Authentik Django server's migrations
 	uv run python -m lifecycle.migrate
@@ -57,7 +82,7 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn:
-	cd lifecycle/aws && npm run aws-cfn
+	cd lifecycle/aws && npm i && uv run npm run aws-cfn
 
 run-server:  ## Run the main authentik server process
 	uv run ak server
@@ -79,10 +104,10 @@ core-i18n-extract:
 install: node-install docs-install core-install  ## Install all requires dependencies for `node`, `docs` and `core`
 
 dev-drop-db:
-	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	dropdb -U ${pg_user} -h ${pg_host} ${pg_name} || true
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	redis-cli -n 0 flushall
+	redis-cli -n ${redis_db} flushall
 
 dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -92,6 +117,17 @@ dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik 
 update-test-mmdb:  ## Update test GeoIP and ASN Databases
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-ASN-Test.mmdb -o ${PWD}/tests/GeoLite2-ASN-Test.mmdb
 	curl -L https://raw.githubusercontent.com/maxmind/MaxMind-DB/refs/heads/main/test-data/GeoLite2-City-Test.mmdb -o ${PWD}/tests/GeoLite2-City-Test.mmdb
+
+bump:  ## Bump authentik version. Usage: make bump version=20xx.xx.xx
+ifndef version
+	$(error Usage: make bump version=20xx.xx.xx )
+endif
+	sed -i 's/^version = ".*"/version = "$(version)"/' pyproject.toml
+	sed -i 's/^VERSION = ".*"/VERSION = "$(version)"/' authentik/__init__.py
+	$(MAKE) gen-build gen-compose aws-cfn
+	npm version --no-git-tag-version --allow-same-version $(version)
+	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	echo -n $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
@@ -106,6 +142,9 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		uv run ak spectacular --file schema.yml
+
+gen-compose:
+	uv run scripts/generate_docker_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
@@ -145,7 +184,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
@@ -161,7 +200,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
 		-i /local/schema.yml \
 		-g python \
 		-o /local/${GEN_API_PY} \

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.6.4 Blueprint schema",
+    "title": "authentik 2025.10.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -4689,6 +4689,14 @@
                         "format": "uuid"
                     },
                     "title": "Roles"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Children"
                 }
             },
             "required": []
@@ -6745,6 +6753,15 @@
                     "title": "Webhook mapping headers",
                     "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
+                "email_subject_prefix": {
+                    "type": "string",
+                    "title": "Email subject prefix"
+                },
+                "email_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Email template"
+                },
                 "send_once": {
                     "type": "boolean",
                     "title": "Send once",
@@ -7334,7 +7351,9 @@
                         "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
+                        "authentik.core",
                         "authentik.crypto",
+                        "authentik.enterprise",
                         "authentik.events",
                         "authentik.flows",
                         "authentik.outposts",
@@ -7386,8 +7405,6 @@
                         "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
-                        "authentik.core",
-                        "authentik.enterprise",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
@@ -7409,7 +7426,13 @@
                     "enum": [
                         null,
                         "authentik_tenants.domain",
+                        "authentik_core.group",
+                        "authentik_core.user",
+                        "authentik_core.application",
+                        "authentik_core.applicationentitlement",
+                        "authentik_core.token",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_enterprise.license",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
                         "authentik_events.notification",
@@ -7498,12 +7521,6 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
-                        "authentik_core.group",
-                        "authentik_core.user",
-                        "authentik_core.application",
-                        "authentik_core.applicationentitlement",
-                        "authentik_core.token",
-                        "authentik_enterprise.license",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
@@ -8465,6 +8482,10 @@
                     },
                     "title": "Redirect uris"
                 },
+                "backchannel_logout_uri": {
+                    "type": "string",
+                    "title": "Back-Channel Logout URI"
+                },
                 "sub_mode": {
                     "type": "string",
                     "enum": [
@@ -9287,6 +9308,18 @@
                     "type": "string",
                     "title": "Default relay state",
                     "description": "Default relay_state value for IDP-initiated logins"
+                },
+                "default_name_id_policy": {
+                    "type": "string",
+                    "enum": [
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+                    ],
+                    "title": "Default name id policy"
                 }
             },
             "required": []
@@ -11714,7 +11747,8 @@
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
                         "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
                         "urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName",
-                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+                        "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+                        "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
                     ],
                     "title": "Name id policy",
                     "description": "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
@@ -14311,6 +14345,18 @@
                     "type": "boolean",
                     "title": "Activate user on success",
                     "description": "Activate users upon completion of stage."
+                },
+                "recovery_max_attempts": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Recovery max attempts"
+                },
+                "recovery_cache_timeout": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Recovery cache timeout",
+                    "description": "The time window used to count recent account recovery attempts. If the number of attempts exceed recovery_max_attempts within this period, further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
             "required": []

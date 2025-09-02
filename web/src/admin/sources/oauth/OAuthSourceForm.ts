@@ -442,8 +442,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         name="consumerSecret"
                         input-hint="code"
                         help=${msg("Also known as Client Secret.")}
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                     ></ak-secret-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
@@ -530,9 +530,8 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Policy engine mode")}
                         required

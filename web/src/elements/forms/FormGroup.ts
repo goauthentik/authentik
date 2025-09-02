@@ -1,7 +1,7 @@
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -20,15 +20,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  */
 @customElement("ak-form-group")
 export class AKFormGroup extends AKElement {
-    @property({ type: Boolean, reflect: true })
-    public open = false;
-
-    @property({ type: String, reflect: true })
-    public label = msg("Details");
-
-    @property({ type: String, reflect: true })
-    public description?: string;
-
     static styles: CSSResult[] = [
         PFBase,
         PFForm,
@@ -36,9 +27,9 @@ export class AKFormGroup extends AKElement {
         PFFormControl,
 
         css`
-            :host {
+            :host([theme="dark"]) {
                 --marker-color: var(--pf-global--Color--200);
-                --marker-color-hover: var(--pf-global--Color--100);
+                --marker-color-hover: var(--ak-dark-foreground-darker);
             }
 
             .pf-c-form__field-group-header-description {
@@ -46,27 +37,6 @@ export class AKFormGroup extends AKElement {
             }
 
             details {
-                &::details-content {
-                    height: 0;
-                    overflow: clip;
-                    transition-behavior: normal, allow-discrete;
-                    transition-duration: var(--pf-global--TransitionDuration);
-                    transition-timing-function: var(--pf-global--TimingFunction);
-                    transition-property: height, content-visibility;
-
-                    @media (prefers-reduced-motion) {
-                        transition-duration: 0;
-                    }
-                }
-
-                @supports (interpolate-size: allow-keywords) {
-                    interpolate-size: allow-keywords;
-
-                    &[open]::details-content {
-                        height: auto;
-                    }
-                }
-
                 &::details-content {
                     padding-inline-start: var(
                         --pf-c-form__field-group--GridTemplateColumns--toggle
@@ -83,7 +53,7 @@ export class AKFormGroup extends AKElement {
                     user-select: none;
 
                     &::marker {
-                        color: var(--marker-color);
+                        color: var(--marker-color, var(--pf-global--Color--200));
                         transition: var(--pf-c-form__field-group-toggle-icon--Transition);
                         font-family: "Font Awesome 5 Free";
                         font-weight: 900;
@@ -91,7 +61,7 @@ export class AKFormGroup extends AKElement {
 
                     &:hover::marker {
                         outline: 1px dashed red;
-                        color: var(--marker-color-hover);
+                        color: var(--marker-color-hover, var(--pf-global--Color--100));
                     }
                 }
 
@@ -102,12 +72,84 @@ export class AKFormGroup extends AKElement {
         `,
     ];
 
-    formRef = createRef<HTMLFormElement>();
+    //region Properties
 
-    scrollAnimationFrame = -1;
+    @property({ type: Boolean, reflect: true })
+    public open = false;
 
-    scrollIntoView = (): void => {
-        this.formRef.value?.scrollIntoView({
+    @property({ type: String, reflect: true })
+    public label = msg("Details");
+
+    @property({ type: String, reflect: true })
+    public description?: string;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    #invalidInputObserver: MutationObserver | null = null;
+
+    /**
+     * Explore within the form group for invalid inputs, revealing the first
+     *
+     * Note that this occurs **after** client-side validation, typically when
+     * server-side updates the `errorMessages` property.
+     */
+    #explore = (mutations: MutationRecord[]) => {
+        for (const mutation of mutations) {
+            if (mutation.type !== "attributes") continue;
+
+            const element = mutation.target as HTMLElement;
+
+            if (element.getAttribute("aria-invalid") === "true" && !this.open) {
+                this.open = true;
+
+                requestAnimationFrame(() => element.focus());
+
+                break;
+            }
+        }
+    };
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+
+        this.#invalidInputObserver = new MutationObserver((mutations) => {
+            // We wait for the next frame for a smoother experience.
+            requestAnimationFrame(() => this.#explore(mutations));
+        });
+
+        this.#invalidInputObserver.observe(this, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["aria-invalid"],
+        });
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#invalidInputObserver?.disconnect();
+        this.#invalidInputObserver = null;
+    }
+
+    public override updated(changedProperties: PropertyValues<this>): void {
+        const previousOpen = changedProperties.get("open");
+
+        if (typeof previousOpen !== "boolean") return;
+
+        if (this.open && this.open !== previousOpen) {
+            cancelAnimationFrame(this.#scrollAnimationFrame);
+
+            this.#scrollAnimationFrame = requestAnimationFrame(this.#scrollIntoView);
+        }
+    }
+
+    #detailsRef = createRef<HTMLDetailsElement>();
+
+    #scrollAnimationFrame = -1;
+
+    #scrollIntoView = (): void => {
+        this.#detailsRef.value?.scrollIntoView({
             behavior: "smooth",
         });
     };
@@ -117,23 +159,19 @@ export class AKFormGroup extends AKElement {
      */
     public toggle = (event: Event): void => {
         event.preventDefault();
-        cancelAnimationFrame(this.scrollAnimationFrame);
 
         this.open = !this.open;
-
-        if (this.open) {
-            this.scrollAnimationFrame = requestAnimationFrame(this.scrollIntoView);
-        }
     };
+
+    //#region Render
 
     public render(): TemplateResult {
         return html`
             <details
-                ${ref(this.formRef)}
+                ${ref(this.#detailsRef)}
                 ?open=${this.open}
-                ?aria-expanded="${this.open}"
+                aria-expanded=${this.open ? "true" : "false"}
                 role="group"
-                aria-owns="form-group-expandable-content"
                 aria-labelledby="form-group-header-title"
                 aria-describedby="form-group-expandable-content-description"
             >
@@ -167,6 +205,44 @@ export class AKFormGroup extends AKElement {
             </details>
         `;
     }
+
+    //#endregion
+}
+
+//#region Utilities
+
+/**
+ * Deeply report the validity of the form, expanding collapsed groups as needed
+ * to reveal invalid inputs.
+ *
+ * @param form The form element to check.
+ * @returns Whether the form is valid.
+ */
+export function reportValidityDeep(
+    form: Pick<HTMLFormElement, "checkValidity" | "reportValidity" | "querySelector">,
+): boolean {
+    // Invalid inputs within collapsed groups can't receive focus,
+    // so we need to check validity before reporting.
+    const valid = form.checkValidity();
+
+    if (!valid) {
+        // We only want to reveal the first invalid input to avoid
+        // a rollercoaster of form groups attempting to scroll into view.
+        const formGroup = form.querySelector<AKFormGroup>(
+            "ak-form-group:not([open]):has(input:invalid)",
+        );
+
+        if (formGroup) {
+            formGroup.open = true;
+            // Ensure the form group has a frame to reveal the invalid input.
+            requestAnimationFrame(() => form.reportValidity());
+
+            return false;
+        }
+    }
+
+    // Otherwise, we're ready to use the browser's native validation.
+    return form.reportValidity();
 }
 
 declare global {

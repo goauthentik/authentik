@@ -1,5 +1,4 @@
 import { browser } from "@wdio/globals";
-import { match } from "ts-pattern";
 import { Key } from "webdriverio";
 
 export async function doBlur(el: WebdriverIO.Element | ChainablePromiseElement) {
@@ -85,11 +84,13 @@ export async function setFormGroup(name: string | RegExp, setting: "open" | "clo
     }
 
     await formGroup.scrollIntoView();
-    const toggle = await formGroup.$(">>>div.pf-c-form__field-group-toggle-button button");
-    await match([await toggle.getAttribute("aria-expanded"), setting])
-        .with(["false", "open"], async () => await toggle.click())
-        .with(["true", "closed"], async () => await toggle.click())
-        .otherwise(async () => {});
+
+    const open = await formGroup.getAttribute("open").then((value) => value !== null);
+
+    if ((setting === "open" && !open) || (setting === "closed" && open)) {
+        await formGroup.$(">>>summary").click();
+    }
+
     await doBlur(formGroup);
 }
 

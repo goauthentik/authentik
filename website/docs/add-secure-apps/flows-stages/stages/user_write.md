@@ -1,14 +1,14 @@
 ---
-title: User write stage
+title: User Write stage
 ---
 
-This stages writes data from the current flow context to a user.
+The User Write stage writes data from the current flow context to a user.
 
 Newly created users can be created as inactive and can be assigned to a selected group.
 
 ### Dynamic groups
 
-Starting with authentik 2022.5, users can be added to dynamic groups. To do so, simply set `groups` in the flow plan context before this stage is run, for example
+To add users to dynamic groups, set `groups` in the flow plan context before this stage is run. For example:
 
 ```python
 from authentik.core.models import Group
@@ -22,6 +22,6 @@ return True
 
 By default, this stage will create a new user when none is present in the flow context.
 
-Starting with authentik 2022.12, the stage can by default not create new users to prevent users from creating new accounts without authorization.
+To prevent users from creating new accounts without authorization, you can configure the User Write stage to not automatically create new users.
 
-Starting with authentik 2023.1, this option has been expanded to allow user creation, forbid it or force user creation.
+Alternatively, you can configure the stage to explicitly allow user creation, forbid it, or force user creation.

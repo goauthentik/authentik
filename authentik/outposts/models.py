@@ -19,7 +19,7 @@ from packaging.version import Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
 from authentik.core.models import (
@@ -40,7 +40,7 @@ from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tasks.schedules.models import ScheduledModel
 
-OUR_VERSION = parse(__version__)
+OUR_VERSION = parse(authentik_version())
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
@@ -76,6 +76,7 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_ingress_path_type: str | None = field(default=None)
     kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
@@ -151,7 +152,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_monitor.send_with_options(args=(self.pk), rel_obj=self)
+            outpost_service_connection_monitor.send_with_options(args=(self.pk,), rel_obj=self)
             return OutpostServiceConnectionState("", False)
         return state
 
@@ -481,7 +482,7 @@ class OutpostState:
         """Check if outpost version matches our version"""
         if not self.version:
             return False
-        if self.build_hash != get_build_hash():
+        if self.build_hash != authentik_build_hash():
             return False
         return parse(self.version) != OUR_VERSION
 

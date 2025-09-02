@@ -55,6 +55,7 @@ class TestEnterpriseAudit(APITestCase):
         self.assertIsNotNone(event)
         self.assertIsNotNone(event.context["diff"])
         diff = event.context["diff"]
+        diff.pop("last_updated")
         self.assertEqual(
             diff,
             {
@@ -116,6 +117,7 @@ class TestEnterpriseAudit(APITestCase):
         self.assertIsNotNone(event)
         self.assertIsNotNone(event.context["diff"])
         diff = event.context["diff"]
+        diff.pop("last_updated")
         self.assertEqual(
             diff,
             {

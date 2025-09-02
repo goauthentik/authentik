@@ -5,6 +5,9 @@ import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
 
+import { TableLike } from "./shared.js";
+import { TableColumn } from "./TableColumn.js";
+
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { uiConfig } from "#common/ui/config";
@@ -17,7 +20,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { Pagination } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -32,10 +35,8 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export interface TableLike {
-    order?: string;
-    fetch: () => void;
-}
+export * from "./shared.js";
+export * from "./TableColumn.js";
 
 export interface PaginatedResponse<T> {
     pagination: Pagination;
@@ -44,138 +45,10 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-export class TableColumn {
-    title: string;
-    orderBy?: string;
-
-    onClick?: () => void;
-
-    constructor(title: string, orderBy?: string) {
-        this.title = title;
-        this.orderBy = orderBy;
-    }
-
-    headerClickHandler(table: TableLike): void {
-        if (!this.orderBy) {
-            return;
-        }
-        table.order = table.order === this.orderBy ? `-${this.orderBy}` : this.orderBy;
-        table.fetch();
-    }
-
-    private getSortIndicator(table: TableLike): string {
-        switch (table.order) {
-            case this.orderBy:
-                return "fa-long-arrow-alt-down";
-            case `-${this.orderBy}`:
-                return "fa-long-arrow-alt-up";
-            default:
-                return "fa-arrows-alt-v";
-        }
-    }
-
-    renderSortable(table: TableLike): TemplateResult {
-        return html` <button
-            class="pf-c-table__button"
-            @click=${() => this.headerClickHandler(table)}
-        >
-            <div class="pf-c-table__button-content">
-                <span class="pf-c-table__text">${this.title}</span>
-                <span class="pf-c-table__sort-indicator">
-                    <i class="fas ${this.getSortIndicator(table)}"></i>
-                </span>
-            </div>
-        </button>`;
-    }
-
-    render(table: TableLike): TemplateResult {
-        const classes = {
-            "pf-c-table__sort": !!this.orderBy,
-            "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
-        };
-
-        return html`<th role="columnheader" scope="col" class="${classMap(classes)}">
-            ${this.orderBy ? this.renderSortable(table) : html`${this.title}`}
-        </th>`;
-    }
-}
-
-export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
-    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    abstract columns(): TableColumn[];
-    abstract row(item: T): SlottedTemplateResult[];
-
-    private isLoading = false;
-
-    #pageParam = `${this.tagName.toLowerCase()}-page`;
-    #searchParam = `${this.tagName.toLowerCase()}-search`;
-
-    @property({ type: Boolean })
-    supportsQL: boolean = false;
-
-    searchEnabled(): boolean {
-        return false;
-    }
-
-    renderExpanded(_item: T): SlottedTemplateResult {
-        if (this.expandable) {
-            throw new Error("Expandable is enabled but renderExpanded is not overridden!");
-        }
-
-        return nothing;
-    }
-
-    @property({ attribute: false })
-    data?: PaginatedResponse<T>;
-
-    @property({ type: Number })
-    page = getURLParam(this.#pageParam, 1);
-
-    /**
-     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
-     * so that stale data is cleared out when the API returns a new list minus the deleted entries.
-     *
-     * @prop
-     */
-    @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
-    clearOnRefresh = false;
-
-    @property({ type: String })
-    order?: string;
-
-    @property({ type: String })
-    search: string = "";
-
-    @property({ type: Boolean })
-    checkbox = false;
-
-    @property({ type: Boolean })
-    clickable = false;
-
-    @property({ attribute: false })
-    clickHandler: (item: T) => void = () => {};
-
-    @property({ type: Boolean })
-    radioSelect = false;
-
-    @property({ type: Boolean })
-    checkboxChip = false;
-
-    @property({ attribute: false })
-    selectedElements: T[] = [];
-
-    @property({ type: Boolean })
-    paginated = true;
-
-    @property({ type: Boolean })
-    expandable = false;
-
-    @property({ attribute: false })
-    expandedElements: T[] = [];
-
-    @state()
-    error?: APIError;
-
+export abstract class Table<T extends object>
+    extends WithLicenseSummary(AKElement)
+    implements TableLike
+{
     static styles: CSSResult[] = [
         PFBase,
         PFTable,
@@ -213,15 +86,123 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         `,
     ];
 
-    constructor() {
-        super();
-        this.addEventListener(EVENT_REFRESH, async () => {
-            await this.fetch();
-        });
+    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+    abstract columns(): TableColumn[];
+    abstract row(item: T): SlottedTemplateResult[];
+
+    #loading = false;
+
+    #pageParam = `${this.tagName.toLowerCase()}-page`;
+    #searchParam = `${this.tagName.toLowerCase()}-search`;
+
+    @property({ type: Boolean })
+    public supportsQL: boolean = false;
+
+    //#region Properties
+
+    @property({ type: String })
+    public toolbarLabel = msg("Table actions");
+
+    @property({ type: String })
+    public label?: string;
+
+    @property({ attribute: false })
+    public data?: PaginatedResponse<T>;
+
+    @property({ type: Number })
+    public page = getURLParam(this.#pageParam, 1);
+
+    /**
+     * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
+     * so that stale data is cleared out when the API returns a new list minus the deleted entries.
+     *
+     * @prop
+     */
+    @property({ attribute: "clear-on-refresh", type: Boolean, reflect: true })
+    public clearOnRefresh = false;
+
+    @property({ type: String })
+    public order?: string;
+
+    @property({ type: String, attribute: false })
+    public search?: string;
+
+    @property({ type: Boolean })
+    public checkbox = false;
+
+    @property({ type: Boolean })
+    public clickable = false;
+
+    @property({ attribute: false })
+    public clickHandler: (item: T) => void = () => {};
+
+    @property({ type: Boolean })
+    public radioSelect = false;
+
+    @property({ type: Boolean })
+    public checkboxChip = false;
+
+    @property({ attribute: false })
+    public selectedElements: T[] = [];
+
+    @property({ type: Boolean })
+    public paginated = true;
+
+    @property({ type: Boolean })
+    public expandable = false;
+
+    @property({ attribute: false })
+    public expandedElements: T[] = [];
+
+    @property({ attribute: false })
+    public searchLabel?: string;
+
+    @property({ attribute: false })
+    public searchPlaceholder?: string;
+
+    //#endregion
+
+    //#region Lifecycle
+
+    @state()
+    protected error?: APIError;
+
+    #refreshListener = () => {
+        return this.fetch();
+    };
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.addEventListener(EVENT_REFRESH, this.#refreshListener);
+
         if (this.searchEnabled()) {
             this.search = getURLParam(this.#searchParam, "");
         }
     }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.removeEventListener(EVENT_REFRESH, this.#refreshListener);
+    }
+
+    protected willUpdate(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("page")) {
+            updateURLParams({
+                [this.#pageParam]: this.page,
+            });
+        }
+        if (changedProperties.has("search")) {
+            updateURLParams({
+                [this.#searchParam]: this.search,
+            });
+        }
+    }
+
+    firstUpdated(): void {
+        this.fetch();
+    }
+
+    //#endregion
 
     async defaultEndpointConfig() {
         return {
@@ -232,16 +213,12 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         };
     }
 
-    public groupBy(items: T[]): [SlottedTemplateResult, T[]][] {
-        return groupBy(items, () => {
-            return "";
-        });
-    }
+    public fetch(): Promise<void> {
+        if (this.#loading) {
+            return Promise.resolve();
+        }
 
-    public async fetch(): Promise<void> {
-        if (this.isLoading) return;
-
-        this.isLoading = true;
+        this.#loading = true;
 
         return this.apiEndpoint()
             .then((data) => {
@@ -289,12 +266,14 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
-                this.isLoading = false;
+                this.#loading = false;
                 this.requestUpdate();
             });
     }
 
-    private renderLoading(): TemplateResult {
+    //#region Render
+
+    protected renderLoading(): TemplateResult {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
@@ -320,11 +299,21 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </tbody>`;
     }
 
-    renderObjectCreate(): SlottedTemplateResult {
+    /**
+     * Render the create object button.
+     *
+     * @abstract
+     */
+    protected renderObjectCreate(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderError(): SlottedTemplateResult {
+    /**
+     * Render the error state.
+     *
+     * @abstract
+     */
+    protected renderError(): SlottedTemplateResult {
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
@@ -333,11 +322,27 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </ak-empty-state>`;
     }
 
+    //#region Rows
+    /**
+     * Render a row for a given item.
+     *
+     * @param item The item to render.
+     */
+    protected rowLabel<T extends object>(item: T): string | typeof nothing {
+        const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
+
+        if (!name) {
+            return nothing;
+        }
+
+        return msg(str`${name}`);
+    }
+
     private renderRows(): TemplateResult[] | undefined {
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
-        if (!this.data || this.isLoading) {
+        if (!this.data || this.#loading) {
             return [this.renderLoading()];
         }
         if (this.data.pagination.count === 0) {
@@ -357,7 +362,23 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         });
     }
 
+    //#region Grouping
+
+    public groupBy(items: T[]): [SlottedTemplateResult, T[]][] {
+        return groupBy(items, () => "");
+    }
+
+    renderExpanded(_item: T): SlottedTemplateResult {
+        if (this.expandable) {
+            throw new Error("Expandable is enabled but renderExpanded is not overridden!");
+        }
+
+        return nothing;
+    }
+
     private renderRowGroup(items: T[]): TemplateResult[] {
+        const columns = this.columns();
+
         return items.map((item) => {
             const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
                 const target = ev.target as HTMLElement;
@@ -388,7 +409,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             };
 
             const renderCheckbox = () =>
-                html`<td class="pf-c-table__check" role="cell">
+                html`<td aria-label="${msg("Select row")}" class="pf-c-table__check" role="button">
                     <label class="ignore-click"
                         ><input
                             type="checkbox"
@@ -428,9 +449,9 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                 </td>`;
             };
 
-            return html`<tbody role="rowgroup" class="${classMap(expandedClass)}">
+            return html`<tbody class="${classMap(expandedClass)}">
                 <tr
-                    role="row"
+                    aria-label="${this.rowLabel(item)}"
                     class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
                     @click=${this.clickable
                         ? () => {
@@ -441,7 +462,13 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
                     ${this.checkbox ? renderCheckbox() : nothing}
                     ${this.expandable ? renderExpansion() : nothing}
                     ${this.row(item).map((column, columnIndex) => {
-                        return html`<td data-column-index="${columnIndex}" role="cell">
+                        const columnLabel = columns[columnIndex]?.title;
+
+                        return html`<td
+                            aria-label=${ifDefined(columnLabel)}
+                            data-column-index="${columnIndex}"
+                            role="cell"
+                        >
                             ${column}
                         </td>`;
                     })}
@@ -454,7 +481,11 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         });
     }
 
-    renderToolbar(): TemplateResult {
+    //#endregion
+
+    //#region Toolbar
+
+    protected renderToolbar(): TemplateResult {
         return html` ${this.renderObjectCreate()}
             <ak-spinner-button
                 .callAction=${() => {
@@ -474,57 +505,66 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         return nothing;
     }
 
-    protected willUpdate(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("page")) {
-            updateURLParams({
-                [this.#pageParam]: this.page,
-            });
-        }
-        if (changedProperties.has("search")) {
-            updateURLParams({
-                [this.#searchParam]: this.search,
-            });
-        }
-    }
-
-    renderSearch(): TemplateResult {
-        const runSearch = (value: string) => {
-            this.search = value;
-            this.page = 1;
-            this.fetch();
-        };
-        const isQL = this.supportsQL && this.hasEnterpriseLicense;
-        return !this.searchEnabled()
-            ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
-                  <ak-table-search
-                      ?supportsQL=${this.supportsQL}
-                      class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
-                      value=${ifDefined(this.search)}
-                      .onSearch=${runSearch}
-                      .apiResponse=${this.data}
-                  >
-                  </ak-table-search>
-              </div>`;
-    }
-
     protected renderToolbarContainer(): SlottedTemplateResult {
-        return html`<div class="pf-c-toolbar">
-            <div class="pf-c-toolbar__content">
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${this.toolbarLabel}">
+            <div role="presentation" class="pf-c-toolbar__content">
                 ${this.renderSearch()}
-                <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
-                ${this.paginated ? this.renderTablePagination() : html``}
+                <div role="presentation" class="pf-c-toolbar__bulk-select">
+                    ${this.renderToolbar()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarAfter()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarSelected()}
+                </div>
+                ${this.paginated ? this.renderTablePagination() : nothing}
             </div>
+        </header>`;
+    }
+
+    //#endregion
+
+    //#region Search
+
+    #searchListener = (value: string) => {
+        this.search = value;
+        this.page = 1;
+        this.fetch();
+    };
+
+    protected searchEnabled(): boolean {
+        return false;
+    }
+
+    protected renderSearch(): SlottedTemplateResult {
+        if (!this.searchEnabled()) {
+            return nothing;
+        }
+
+        const isQL = this.supportsQL && this.hasEnterpriseLicense;
+
+        return html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
+            <ak-table-search
+                class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
+                .defaultValue=${this.search}
+                label=${ifDefined(this.searchLabel)}
+                placeholder=${ifDefined(this.searchPlaceholder)}
+                .onSearch=${this.#searchListener}
+                .supportsQL=${this.supportsQL}
+                .apiResponse=${this.data}
+            >
+            </ak-table-search>
         </div>`;
     }
 
-    firstUpdated(): void {
-        this.fetch();
-    }
+    //#endregion
 
-    /* The checkbox on the table header row that allows the user to "activate all on this page,"
+    //#region Chips
+
+    /**
+     * The checkbox on the table header row that allows the user to
+     * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
@@ -549,11 +589,13 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </td>`;
     }
 
-    /* For very large tables where the user is selecting a limited number of entries, we provide a
-     * chip-based subtable at the top that shows the list of selected entries. Long text result in
-     * ellipsized chips, which is sub-optimal.
+    /**
+     * For very large tables where the user is selecting a limited number of entries,
+     * we provide a chip-based subtable at the top that shows the list of selected entries.
+     *
+     * Long text result in ellipsized chips, which is sub-optimal.
      */
-    renderSelectedChip(_item: T): SlottedTemplateResult {
+    protected renderSelectedChip(_item: T): SlottedTemplateResult {
         // Override this for chip-based displays
         return nothing;
     }
@@ -570,7 +612,9 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         </ak-chip-group>`;
     }
 
-    /* A simple pagination display, shown at both the top and bottom of the page. */
+    /**
+     * A simple pagination display, shown at both the top and bottom of the page.
+     */
     protected renderTablePagination(): SlottedTemplateResult {
         const handler = (page: number) => {
             this.page = page;
@@ -581,7 +625,7 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
             <ak-table-pagination
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
-                .pageChangeHandler=${handler}
+                .onPageChange=${handler}
             >
             </ak-table-pagination>
         `;
@@ -591,19 +635,22 @@ export abstract class Table<T> extends WithLicenseSummary(AKElement) implements 
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : html``}
+        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
-            <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
-                <thead>
-                    <tr role="row" class="pf-c-table__header-row">
-                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : html``}
-                        ${this.expandable ? html`<td role="cell"></td>` : html``}
+            <table
+                aria-label=${this.label ? msg(str`Table of ${this.label}`) : msg("Table content")}
+                class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
+            >
+                <thead aria-label=${msg("Table actions")}>
+                    <tr role="presentation" class="pf-c-table__header-row">
+                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
+                        ${this.expandable ? html`<td role="cell"></td>` : nothing}
                         ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
                 ${this.renderRows()}
             </table>
-            ${this.paginated ? renderBottomPagination() : html``}`;
+            ${this.paginated ? renderBottomPagination() : nothing}`;
     }
 
     render(): TemplateResult {

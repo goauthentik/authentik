@@ -4,13 +4,12 @@ import importlib
 from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from tempfile import gettempdir
 
 import orjson
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
@@ -75,7 +74,9 @@ TENANT_APPS = [
     "pgtrigger",
     "authentik.admin",
     "authentik.api",
+    "authentik.core",
     "authentik.crypto",
+    "authentik.enterprise",
     "authentik.events",
     "authentik.flows",
     "authentik.outposts",
@@ -142,13 +143,13 @@ GUARDIAN_MONKEY_PATCH_USER = False
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
     "DESCRIPTION": "Making authentication simple.",
-    "VERSION": __version__,
+    "VERSION": authentik_version(),
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": "/api/v([0-9]+(beta)?)",
     "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVERS": [
         {
-            "url": "/api/v3/",
+            "url": "/api/v3",
         },
     ],
     "CONTACT": {
@@ -171,6 +172,7 @@ SPECTACULAR_SETTINGS = {
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
+        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
     },
@@ -245,10 +247,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
+MIDDLEWARE_FIRST = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+]
 MIDDLEWARE = [
     "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
@@ -261,6 +265,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.rbac.middleware.InitialPermissionsMiddleware",
+]
+MIDDLEWARE_LAST = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
@@ -361,6 +368,9 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
+    "lock_purge_interval": timedelta_from_string(
+        CONFIG.get("worker.lock_purge_interval")
+    ).total_seconds(),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -417,7 +427,6 @@ DRAMATIQ = {
         (
             "authentik.tasks.middleware.MetricsMiddleware",
             {
-                "multiproc_dir": str(Path(gettempdir()) / "authentik_prometheus_tmp"),
                 "prefix": "authentik",
             },
         ),
@@ -496,7 +505,9 @@ _DISALLOWED_ITEMS = [
     "SHARED_APPS",
     "TENANT_APPS",
     "INSTALLED_APPS",
+    "MIDDLEWARE_FIRST",
     "MIDDLEWARE",
+    "MIDDLEWARE_LAST",
     "AUTHENTICATION_BACKENDS",
     "SPECTACULAR_SETTINGS",
     "REST_FRAMEWORK",
@@ -514,16 +525,35 @@ SILENCED_SYSTEM_CHECKS = [
 ]
 
 
-def _update_settings(app_path: str):
+def subtract_list(a: list, b: list) -> list:
+    return [item for item in a if item not in b]
+
+
+def _filter_and_update(apps: list[str]) -> None:
+    for _app in set(apps):
+        if not _app.startswith("authentik"):
+            continue
+        _update_settings(f"{_app}.settings")
+
+
+def _update_settings(app_path: str) -> None:
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
-        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
+
+        new_shared_apps = subtract_list(getattr(settings_module, "SHARED_APPS", []), SHARED_APPS)
+        new_tenant_apps = subtract_list(getattr(settings_module, "TENANT_APPS", []), TENANT_APPS)
+        SHARED_APPS.extend(new_shared_apps)
+        TENANT_APPS.extend(new_tenant_apps)
+        _filter_and_update(new_shared_apps + new_tenant_apps)
+
+        MIDDLEWARE_FIRST.extend(getattr(settings_module, "MIDDLEWARE_FIRST", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
+
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
         SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
         REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
+
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -538,26 +568,13 @@ if DEBUG:
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 
-TENANT_APPS.append("authentik.core")
 
-CONFIG.log("info", "Booting authentik", version=__version__)
-
-# Attempt to load enterprise app, if available
-try:
-    importlib.import_module("authentik.enterprise.apps")
-    CONFIG.log("info", "Enabled authentik enterprise")
-    TENANT_APPS.append("authentik.enterprise")
-    _update_settings("authentik.enterprise.settings")
-except ImportError:
-    pass
-
+CONFIG.log("info", "Booting authentik", version=authentik_version())
 
 # Load subapps's settings
-for _app in set(SHARED_APPS + TENANT_APPS):
-    if not _app.startswith("authentik"):
-        continue
-    _update_settings(f"{_app}.settings")
+_filter_and_update(SHARED_APPS + TENANT_APPS)
 _update_settings("data.user_settings")
 
+MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

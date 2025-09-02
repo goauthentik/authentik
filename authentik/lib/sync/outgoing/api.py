@@ -1,4 +1,5 @@
 from dramatiq.actor import Actor
+from dramatiq.results.errors import ResultFailure
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
@@ -110,9 +111,13 @@ class OutgoingSyncProviderStatusMixin:
                 "override_dry_run": params.validated_data["override_dry_run"],
                 "pk": params.validated_data["sync_object_id"],
             },
+            retries=0,
             rel_obj=provider,
         )
-        msg.get_result(block=True)
+        try:
+            msg.get_result(block=True)
+        except ResultFailure:
+            pass
         task: Task = msg.options["task"]
         task.refresh_from_db()
         return Response(SyncObjectResultSerializer(instance={"messages": task._messages}).data)

@@ -7,7 +7,9 @@ import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import HTTPServer
-from django_dramatiq_postgres.middleware import MetricsMiddleware as BaseMetricsMiddleware
+from django_dramatiq_postgres.middleware import (
+    MetricsMiddleware as BaseMetricsMiddleware,
+)
 from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
@@ -15,13 +17,15 @@ from dramatiq.middleware import Middleware
 from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.events.models import Event, EventAction
+from authentik.lib.sentry import should_ignore_exception
 from authentik.tasks.models import Task, TaskStatus, WorkerStatus
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
+HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 
 
 class TenantMiddleware(Middleware):
@@ -88,17 +92,24 @@ class MessagesMiddleware(Middleware):
         task: Task = message.options["task"]
         if exception is None:
             task.log(str(type(self)), TaskStatus.INFO, "Task finished processing without errors")
-        else:
-            task.log(
-                str(type(self)),
-                TaskStatus.ERROR,
-                exception,
-            )
-            Event.new(
-                EventAction.SYSTEM_TASK_EXCEPTION,
-                message=f"Task {task.actor_name} encountered an error",
-                actor=task.actor_name,
-            ).with_exception(exception).save()
+            return
+        if should_ignore_exception(exception):
+            return
+        task.log(
+            str(type(self)),
+            TaskStatus.ERROR,
+            exception,
+        )
+        event_kwargs = {
+            "actor": task.actor_name,
+        }
+        if task.rel_obj:
+            event_kwargs["rel_obj"] = task.rel_obj
+        Event.new(
+            EventAction.SYSTEM_TASK_EXCEPTION,
+            message=f"Task {task.actor_name} encountered an error",
+            **event_kwargs,
+        ).with_exception(exception).save()
 
     def after_skip_message(self, broker: Broker, message: Message):
         task: Task = message.options["task"]
@@ -145,6 +156,16 @@ class DescriptionMiddleware(Middleware):
 
 
 class _healthcheck_handler(BaseHTTPRequestHandler):
+    def log_request(self, code="-", size="-"):
+        HEALTHCHECK_LOGGER.info(
+            self.path,
+            method=self.command,
+            status=code,
+        )
+
+    def log_error(self, format, *args):
+        HEALTHCHECK_LOGGER.warning(format, *args)
+
     def do_HEAD(self):
         try:
             for db_conn in connections.all():
@@ -193,7 +214,7 @@ class WorkerStatusMiddleware(Middleware):
     def run():
         status = WorkerStatus.objects.create(
             hostname=socket.gethostname(),
-            version=get_full_version(),
+            version=authentik_full_version(),
         )
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):

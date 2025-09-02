@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-28 16:09+0000\n"
+"POT-Creation-Date: 2025-08-30 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,6 +124,11 @@ msgstr ""
 msgid "User does not have access to application."
 msgstr ""
 
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr ""
+
 #: authentik/core/api/groups.py
 msgid "Cannot set group as parent of itself."
 msgstr ""
@@ -201,11 +206,11 @@ msgstr ""
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can unassign permissions from users"
 msgstr ""
 
@@ -787,6 +792,12 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
@@ -795,12 +806,6 @@ msgstr ""
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Only send notification once, for example when sending a webhook into a chat "
-"channel."
 msgstr ""
 
 #: authentik/events/models.py
@@ -1402,6 +1407,20 @@ msgstr ""
 msgid "Reputation Scores"
 msgstr ""
 
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr ""
+
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
 msgstr ""
@@ -1483,27 +1502,27 @@ msgstr ""
 msgid "Invalid Regex Pattern: {url}"
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user ID"
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user UUID"
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the username"
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
@@ -1615,6 +1634,10 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Back-Channel Logout URI"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1730,6 +1753,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Device Tokens"
+msgstr ""
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr ""
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
 msgstr ""
 
 #: authentik/providers/oauth2/views/authorize.py
@@ -2166,6 +2197,14 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -2875,10 +2914,6 @@ msgid "Duo Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
-msgid "Email OTP"
-msgstr ""
-
-#: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
@@ -3239,6 +3274,21 @@ msgid "Account Confirmation"
 msgstr ""
 
 #: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr ""
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr ""
+
+#: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr ""
 
@@ -3260,6 +3310,13 @@ msgstr ""
 
 #: authentik/stages/email/stage.py
 msgid "Email sent."
+msgstr ""
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
 msgstr ""
 
 #: authentik/stages/email/stage.py
@@ -3759,6 +3816,11 @@ msgstr ""
 
 #: authentik/tasks/tasks.py
 msgid "Remove old worker statuses."
+msgstr ""
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
 msgstr ""
 
 #: authentik/tenants/models.py

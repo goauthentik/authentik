@@ -1,16 +1,23 @@
-import { addCommands } from "./commands.mjs";
-
 /**
  * @file WebdriverIO configuration file for **integration tests**.
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+
+import * as path from "node:path";
+
+import { addCommands } from "./commands.mjs";
+
+import { createBundleDefinitions } from "#bundler/utils/node";
+import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
+import { PackageRoot } from "#paths/node";
+
 import { browser } from "@wdio/globals";
 
 /// <reference types="@wdio/globals/types" />
 /// <reference types="./types/webdriver.js" />
 
-const headless = !!process.env.CI;
+const headless = !process.env.HEADLESS || !!process.env.CI;
 const lemmeSee = !!process.env.WDIO_LEMME_SEE;
 
 /**
@@ -24,21 +31,18 @@ if (!process.env.WDIO_SKIP_CHROME) {
      */
     const chromeBrowserConfig = {
         "browserName": "chrome",
-        // "wdio:chromedriverOptions": {
-        //     binary: "./node_modules/.bin/chromedriver",
-        // },
         "goog:chromeOptions": {
-            args: ["disable-infobars", "window-size=1280,800"],
+            args: ["disable-search-engine-choice-screen"],
         },
     };
 
     if (headless) {
         chromeBrowserConfig["goog:chromeOptions"].args.push(
             "headless",
-            "no-sandbox",
             "disable-gpu",
-            "disable-setuid-sandbox",
-            "disable-dev-shm-usage",
+            "no-sandbox",
+            "window-size=1280,672",
+            "browser-test",
         );
     }
 
@@ -58,16 +62,28 @@ if (process.env.WDIO_TEST_FIREFOX) {
 }
 
 /**
+ * @type {WebdriverIO.BrowserRunnerOptions}
+ */
+const browserRunnerOptions = {
+    viteConfig: {
+        define: createBundleDefinitions(),
+        plugins: [
+            // ---
+            inlineCSSPlugin(),
+        ],
+    },
+};
+
+/**
  * @satisfies {WebdriverIO.Config}
  */
 export const config = {
-    runner: "local",
-    tsConfigPath: "./tsconfig.json",
+    runner: ["browser", browserRunnerOptions],
 
-    specs: [
-        // "./tests/specs/**/*.ts"
-        "./tests/specs/new-application-by-wizard.ts",
-    ],
+    tsConfigPath: path.resolve(PackageRoot, "tsconfig.test.json"),
+
+    specs: [path.resolve(PackageRoot, "src", "**", "*.test.ts")],
+
     exclude: [],
     maxInstances: 1,
     capabilities,
@@ -84,13 +100,11 @@ export const config = {
         ui: "bdd",
         timeout: 60000,
     },
+
     /**
-     * @param {WebdriverIO.Capabilities} capabilities
-     * @param {string[]} specs
      * @param {WebdriverIO.Browser} browser
-     * @returns {void}
      */
-    before(capabilities, specs, browser) {
+    before(_capabilities, _specs, browser) {
         addCommands(browser);
     },
 

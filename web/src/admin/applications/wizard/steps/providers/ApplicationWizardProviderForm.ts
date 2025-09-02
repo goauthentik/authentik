@@ -8,15 +8,15 @@ import "#elements/forms/HorizontalFormElement";
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.styles.js";
 import { type ApplicationWizardState, type OneOfProvider } from "../../types.js";
 
-import { camelToSnake } from "#common/utils";
-
 import { AKElement } from "#elements/Base";
 import { serializeForm } from "#elements/forms/Form";
+
+import { snakeCase } from "change-case";
 
 import { CSSResult } from "lit";
 import { property, query } from "lit/decorators.js";
 
-export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
+export abstract class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
     static styles: CSSResult[] = [...AwadStyles];
 
     label = "";
@@ -28,9 +28,13 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
     errors: Record<string | number | symbol, string> = {};
 
     @query("form#providerform")
-    form!: HTMLFormElement;
+    public form!: HTMLFormElement | null;
 
     get formValues() {
+        if (!this.form) {
+            throw new TypeError("Form reference is not set");
+        }
+
         return serializeForm([
             ...this.form.querySelectorAll("ak-form-element-horizontal"),
             ...this.form.querySelectorAll("[data-ak-control]"),
@@ -39,14 +43,15 @@ export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKEl
 
     get valid() {
         this.errors = {};
-        return this.form.checkValidity();
+
+        return !!this.form?.checkValidity();
     }
 
     errorMessages(name: string) {
         return name in this.errors
             ? [this.errors[name]]
             : (this.wizard.errors?.provider?.[name] ??
-                  this.wizard.errors?.provider?.[camelToSnake(name)] ??
+                  this.wizard.errors?.provider?.[snakeCase(name)] ??
                   []);
     }
 

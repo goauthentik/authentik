@@ -120,9 +120,13 @@ class RACPropertyMapping(PropertyMapping):
 
     def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
-        if len(self.static_settings) > 0:
-            return self.static_settings
-        return super().evaluate(user, request, **kwargs)
+        settings = {}
+        for key, value in self.static_settings.items():
+            if value and value != "":
+                settings[key] = value
+        if self.expression != "":
+            always_merger.merge(settings, super().evaluate(user, request, **kwargs))
+        return settings
 
     @property
     def component(self) -> str:

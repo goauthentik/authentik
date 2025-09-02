@@ -75,7 +75,6 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="text"
                             value="${ifDefined(this.instance?.staticSettings.username)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -86,7 +85,6 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             type="password"
                             value="${ifDefined(this.instance?.staticSettings.password)}"
                             class="pf-c-form-control"
-                            required
                         />
                     </ak-form-element-horizontal>
                 </div>
@@ -137,11 +135,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
             </ak-form-group>
             <ak-form-group label="${msg("Advanced settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Expression")}
-                        required
-                        name="expression"
-                    >
+                    <ak-form-element-horizontal label=${msg("Expression")} name="expression">
                         <ak-codemirror
                             mode=${CodeMirrorMode.Python}
                             value="${ifDefined(this.instance?.expression)}"

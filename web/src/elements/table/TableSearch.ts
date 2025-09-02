@@ -8,6 +8,7 @@ import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -16,18 +17,24 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-table-search")
-export class TableSearch extends WithLicenseSummary(AKElement) {
-    @property()
-    value?: string;
+export class TableSearchForm extends WithLicenseSummary(AKElement) {
+    @property({ type: String, reflect: false })
+    public defaultValue?: string;
 
-    @property({ type: Boolean })
-    supportsQL: boolean = false;
+    @property({ type: String })
+    public label = msg("Table Search");
+
+    @property({ type: String })
+    public placeholder = msg("Search...");
 
     @property({ attribute: false })
-    apiResponse?: PaginatedResponse<unknown>;
+    public supportsQL: boolean = false;
 
-    @property()
-    onSearch?: (value: string) => void;
+    @property({ attribute: false })
+    public apiResponse?: PaginatedResponse<unknown>;
+
+    @property({ attribute: false })
+    public onSearch?: (value: string) => void;
 
     static styles: CSSResult[] = [
         PFBase,
@@ -45,63 +52,68 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
         `,
     ];
 
+    #formRef = createRef<HTMLFormElement>();
+
+    public reset = (): void => {
+        this.#formRef.value?.reset();
+
+        this.onSearch?.("");
+    };
+
+    #submitListener = (event: SubmitEvent) => {
+        event.preventDefault();
+
+        const form = this.#formRef.value;
+
+        if (!form || !this.onSearch) return;
+
+        form.reportValidity();
+
+        const data = new FormData(form);
+
+        const value = data.get("search")?.toString() ?? "";
+
+        this.onSearch(value);
+    };
+
     renderInput(): TemplateResult {
         if (this.supportsQL && this.hasEnterpriseLicense) {
             return html`<ak-search-ql
-                .apiResponse=${this.apiResponse}
-                .value=${this.value}
-                .onSearch=${(value: string) => {
-                    if (!this.onSearch) return;
-                    this.onSearch(value);
-                }}
+                aria-label=${ifDefined(this.label)}
                 name="search"
+                required
+                placeholder=${ifDefined(this.placeholder)}
+                value=${ifDefined(this.defaultValue)}
+                .apiResponse=${this.apiResponse}
             ></ak-search-ql>`;
         }
+
         return html`<input
-            class="pf-c-form-control"
+            aria-label=${ifDefined(this.label)}
             name="search"
-            type="search"
-            placeholder=${msg("Search...")}
-            value="${ifDefined(this.value)}"
-            @search=${(ev: Event) => {
-                if (!this.onSearch) return;
-                this.onSearch((ev.target as HTMLInputElement).value);
-            }}
+            required
+            placeholder=${ifDefined(this.placeholder)}
+            value=${ifDefined(this.defaultValue)}
+            class="pf-c-form-control"
         />`;
     }
 
     render(): TemplateResult {
         return html`<form
+            ${ref(this.#formRef)}
             class="pf-c-input-group"
-            method="get"
-            @submit=${(event: SubmitEvent) => {
-                event.preventDefault();
-
-                if (!this.onSearch) return;
-
-                const el = this.shadowRoot?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
-                    "[name=search]",
-                );
-
-                if (!el) return;
-                if (el.value === "") return;
-
-                this.onSearch(el?.value);
-            }}
+            @submit=${this.#submitListener}
         >
             ${this.renderInput()}
             <button
+                aria-label=${msg("Clear search")}
                 class="pf-c-button pf-m-control"
                 type="reset"
-                @click=${() => {
-                    if (!this.onSearch) return;
-                    this.value = "";
-                    this.onSearch("");
-                }}
+                @click=${this.reset}
             >
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <button class="pf-c-button pf-m-control" type="submit">
+            <button aria-label=${msg("Search")} type="submit" class="pf-c-button pf-m-control">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>`;
@@ -110,6 +122,6 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-table-search": TableSearch;
+        "ak-table-search": TableSearchForm;
     }
 }

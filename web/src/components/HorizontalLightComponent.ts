@@ -1,26 +1,34 @@
 import "#elements/forms/HorizontalFormElement";
 
+import { SlottedTemplateResult } from "../elements/types";
+
 import { AKElement, type AKElementProps } from "#elements/Base";
+
+import { ErrorProp } from "#components/ak-field-errors";
+import { AKLabel } from "#components/ak-label";
+
+import { IDGenerator } from "@goauthentik/core/id";
 
 import { html, nothing, TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-
-type HelpType = TemplateResult | typeof nothing;
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
     label?: string;
     required?: boolean;
     help?: string;
-    bighelp?: TemplateResult | TemplateResult[];
+    bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
     hidden?: boolean;
     invalid?: boolean;
-    errorMessages?: string[];
+    errorMessages?: ErrorProp[];
     value?: T;
     inputHint?: string;
 }
 
-export class HorizontalLightComponent<T> extends AKElement {
+export abstract class HorizontalLightComponent<T>
+    extends AKElement
+    implements HorizontalLightComponentProps<T>
+{
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -31,6 +39,8 @@ export class HorizontalLightComponent<T> extends AKElement {
     protected createRenderRoot() {
         return this;
     }
+
+    //#region Properties
 
     /**
      * The name attribute for the form element
@@ -46,14 +56,14 @@ export class HorizontalLightComponent<T> extends AKElement {
      * @attribute
      */
     @property({ type: String, reflect: true })
-    label = "";
+    label?: string;
 
     /**
      * @property
      * @attribute
      */
     @property({ type: Boolean, reflect: true })
-    required = false;
+    public required?: boolean;
 
     /**
      * Help text to display below the form element. Optional
@@ -88,10 +98,9 @@ export class HorizontalLightComponent<T> extends AKElement {
      * @property
      */
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    public errorMessages?: ErrorProp[];
 
     /**
-     * @attribute
      * @property
      */
     @property({ attribute: false })
@@ -104,16 +113,29 @@ export class HorizontalLightComponent<T> extends AKElement {
      * @attribute
      */
     @property({ type: String, attribute: "input-hint" })
-    inputHint = "";
+    inputHint?: string;
 
-    protected renderControl() {
-        throw new Error("Must be implemented in a subclass");
-    }
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
 
-    renderHelp(): HelpType[] {
-        const bigHelp: HelpType[] = Array.isArray(this.bighelp)
+    //#endregion
+
+    //#region Rendering
+
+    /**
+     * Render the control element, e.g. an input, textarea, select, etc.
+     */
+    protected abstract renderControl(): SlottedTemplateResult;
+
+    protected renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
+        const bigHelp: SlottedTemplateResult[] = Array.isArray(this.bighelp)
             ? this.bighelp
             : [this.bighelp ?? nothing];
+
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
             ...bigHelp,
@@ -121,17 +143,20 @@ export class HorizontalLightComponent<T> extends AKElement {
     }
 
     render() {
-        // prettier-ignore
         return html`<ak-form-element-horizontal
-            label=${this.label}
+            .fieldID=${this.fieldID}
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
             .errorMessages=${this.errorMessages}
-            ?invalid=${this.invalid}
-            >
-              ${this.renderControl()}
-              ${this.renderHelp()}
+        >
+            <div slot="label" class="pf-c-form__group-label">
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+            </div>
+
+            ${this.renderControl()} ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }
+
+    //#endregion
 }

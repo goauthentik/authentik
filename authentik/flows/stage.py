@@ -301,6 +301,7 @@ class SessionEndStage(ChallengeStageView):
                     "flow_slug": self.request.brand.flow_invalidation.slug,
                 },
             )
+
         return SessionEndChallenge(data=data)
 
     # This can never be reached since this challenge is created on demand and only the

@@ -41,7 +41,7 @@ export function readGitBuildHash() {
 /**
  * Reads the build identifier for the current environment.
  *
- * This must match the behavior defined in authentik's server-side `get_full_version` function.
+ * This must match the behavior defined in authentik's server-side `authentik_full_version` function.
  *
  * @runtime node
  * @see {@link "authentik\_\_init\_\_.py"}
@@ -49,7 +49,10 @@ export function readGitBuildHash() {
 export function readBuildIdentifier() {
     const { GIT_BUILD_HASH } = process.env;
 
-    if (!GIT_BUILD_HASH) return AuthentikVersion;
+    if (!GIT_BUILD_HASH) {
+        console.warn("GIT_BUILD_HASH is not set, falling back to authentik version.");
+        return AuthentikVersion;
+    }
 
     return [AuthentikVersion, GIT_BUILD_HASH].join("+");
 }

@@ -26,6 +26,9 @@ export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
         font-size: var(--pf-global--FontSize--md);
+
+        /* Fixes issue where browser inherits cursor from parent, typically a button. */
+        cursor: initial;
     }
     .pf-c-modal-box > .pf-c-button + * {
         margin-right: 0;
@@ -116,8 +119,8 @@ export abstract class ModalButton extends AKElement {
      * @abstract
      */
     protected renderModal(): SlottedTemplateResult {
-        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
-            <div class="pf-l-bullseye">
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
+            <div class="pf-l-bullseye" role="presentation">
                 <div
                     class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
