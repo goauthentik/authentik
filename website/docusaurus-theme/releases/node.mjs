@@ -69,3 +69,26 @@ export function createReleaseSidebarEntries(releaseFiles) {
 
     return sidebarEntries;
 }
+
+/**
+ * @typedef {object} AKReleasesPluginEnvironment
+ * @property {string} [branch] The current branch name, if available.
+ * e.g. "main" `version-${year}.${month}`, "feature-branch"
+ * @property {string} currentReleaseOrigin The URL to the current release documentation.
+ * @property {string} preReleaseOrigin The URL to the pre-release documentation.
+ * @property {string} apiReferenceOrigin The URL to the API reference documentation.
+ */
+
+/**
+ * Prepare the environment variables for the releases plugin.
+ *
+ * @returns {AKReleasesPluginEnvironment}
+ */
+export function prepareReleaseEnvironment() {
+    return {
+        branch: process.env.BRANCH,
+        currentReleaseOrigin: process.env.CURRENT_RELEASE_ORIGIN || "https://docs.goauthentik.io",
+        preReleaseOrigin: process.env.PRE_RELEASE_ORIGIN || "https://next.goauthentik.io",
+        apiReferenceOrigin: process.env.API_REFERENCE_ORIGIN || "https://api.goauthentik.io",
+    };
+}

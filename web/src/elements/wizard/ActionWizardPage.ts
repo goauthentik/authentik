@@ -105,7 +105,7 @@ export class ActionWizardPage extends WizardPage {
         return html`<div class="pf-l-bullseye">
             <div class="pf-c-empty-state pf-m-lg">
                 <div class="pf-c-empty-state__content">
-                    <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
+                    <i class="fas fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
                     <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
                     <div class="pf-c-empty-state__body">
                         <ol class="pf-c-progress-stepper pf-m-vertical">

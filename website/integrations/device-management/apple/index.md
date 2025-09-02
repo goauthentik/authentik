@@ -94,7 +94,7 @@ Apple Business Manager requires that we create three scope mappings for our OIDC
 
 #### User profile information
 
-1. From the authentik Admin interface, navigate to **Customization -> Property Mappings** and click **Create**.
+1. From the authentik Admin interface, navigate to **Customization > Property Mappings** and click **Create**.
 
 2. Select **Scope Mapping** and use the following values:
     - **Name**: `Apple Business Manager profile`
@@ -149,7 +149,7 @@ You can either generate a new key or import an existing one.
 
 #### Generate a new key
 
-1. From the Admin interface, navigate to **System -> Certificates**
+1. From the Admin interface, navigate to **System > Certificates**
 2. Click **Generate**, select **Signing Key**, and use the following values:
     - **Common Name**: `apple-business-manager`
 
@@ -159,7 +159,7 @@ You can either generate a new key or import an existing one.
 
 Alternatively, you can use an existing key if you have one available.
 
-1. From the Admin interface, navigate to **System -> Certificates**.
+1. From the Admin interface, navigate to **System > Certificates**.
 2. Click **Create** and use the following values:
     - **Name**: `apple-business-manager`
     - **Certificate**: Paste in your certificate
@@ -177,7 +177,7 @@ You can always find your provider's generated values by navigating to **Provider
 
 :::
 
-1. From the authentik Admin interface, navigate to **Applications -> Providers** and click **Create**.
+1. From the authentik Admin interface, navigate to **Applications > Providers** and click **Create**.
 2. For the **Provider Type** select **OAuth2/OpenID Provider**, click **Next**, and use the following values.
     - **Name**: `Apple Business Manager`
     - **Authorization flow**: Select a flow that suits your organization's requirements.
@@ -198,14 +198,14 @@ You can always find your provider's generated values by navigating to **Provider
 
 3. Click **Finish** and confirm that `Apple Business Manager` is listed in the provider overview.
 
-4. Navigate to **Applications -> Providers** and click `Apple Business Manager`.
+4. Navigate to **Applications > Providers** and click `Apple Business Manager`.
 5. Copy the **OpenID Configuration URL** field to your text editor.
 
 ### 4. Create Shared Signals Framework provider
 
 While the OIDC provider handles the authentication flow, you'll need to create a [Shared Signals Framework provider](/docs/add-secure-apps/providers/ssf/) to handle the backchannel communication between authentik and Apple Business Manager.
 
-1. From the authentik Admin interface, navigate to **Applications -> Providers** and click **Create**.
+1. From the authentik Admin interface, navigate to **Applications > Providers** and click **Create**.
 2. Select **Shared Signals Framework Provider** and use the following values.
    Any fields that can be left as their default values are omitted from the list.
     - **Name** `Apple Business Manager SSF`
@@ -224,7 +224,7 @@ While the OIDC provider handles the authentication flow, you'll need to create a
 
 The authentik user you will use to test the stream connection to Apple Business Manager must either have the role of superuser or have permission to add streams to the SSF provider.
 
-1. From authentik the Admin interface, navigate to **Applications -> Providers** and click the Apple Business Manager SSF provider.
+1. From authentik the Admin interface, navigate to **Applications > Providers** and click the Apple Business Manager SSF provider.
 
 2. Click the **Permissions** tab, select **User Object Permissions**, and click **Assign to new user**.
 
@@ -236,7 +236,7 @@ The authentik user you will use to test the stream connection to Apple Business 
 
 ### 6. Create application
 
-1. From the authentik Admin interface, navigate to **Applications -> Applications**, click **Create**, and use the following values:
+1. From the authentik Admin interface, navigate to **Applications > Applications**, click **Create**, and use the following values:
     - **Name**: Apple Business Manager
     - **Slug**: `abm`
     - **Provider**: `Apple Business Manager`
@@ -244,7 +244,7 @@ The authentik user you will use to test the stream connection to Apple Business 
 
 2. Click **Create** and confirm that the application is listed in the overview page.
 
-3. Navigate to **Providers -> Apple Business Manager SSF**
+3. Navigate to **Providers > Apple Business Manager SSF**
     - On the **Overview** tab copy the `SSF Config URL` value to your text editor.
 
 ### 7. Confirm and modify copied authentik values

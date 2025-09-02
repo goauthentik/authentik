@@ -21,7 +21,7 @@ on:
 
 jobs:
   build-server-amd64:
-    uses: ./.github/workflows/_reusable-docker-build-single.yaml
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
     secrets: inherit
     with:
       image_name: ${{ inputs.image_name }}
@@ -31,7 +31,7 @@ jobs:
       registry_ghcr: ${{ inputs.registry_ghcr }}
       release: ${{ inputs.release }}
   build-server-arm64:
-    uses: ./.github/workflows/_reusable-docker-build-single.yaml
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
     secrets: inherit
     with:
       image_name: ${{ inputs.image_name }}
@@ -97,7 +97,7 @@ jobs:
           sources: |
             ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-amd64.outputs.image-digest }}
             ${{ steps.ev.outputs.attestImageNames }}@${{ needs.build-server-arm64.outputs.image-digest }}
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v3
         id: attest
         with:
           subject-name: ${{ steps.ev.outputs.attestImageNames }}

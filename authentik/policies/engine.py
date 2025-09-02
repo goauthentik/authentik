@@ -86,7 +86,6 @@ class PolicyEngine:
             binding_order=binding.order,
             binding_target_type=binding.target_type,
             binding_target_name=binding.target_name,
-            object_pk=str(self.request.obj.pk),
             object_type=class_to_path(self.request.obj.__class__),
             mode="cache_retrieve",
         ).time():

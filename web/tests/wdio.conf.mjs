@@ -4,14 +4,15 @@
  * @see https://webdriver.io/docs/configurationfile.html
  */
 
-import { cwd } from "node:process";
+import * as path from "node:path";
 
 import { addCommands } from "../commands.mjs";
 
-import litCSS from "#bundler/vite-plugin-lit-css/node";
+import { createBundleDefinitions } from "#bundler/utils/node";
+import { inlineCSSPlugin } from "#bundler/vite-plugin-lit-css/node";
+import { PackageRoot } from "#paths/node";
 
-const NODE_ENV = process.env.NODE_ENV || "development";
-const headless = !!process.env.HEADLESS || !!process.env.CI;
+const headless = !process.env.HEADLESS || !!process.env.CI;
 const lemmeSee = !!process.env.WDIO_LEMME_SEE;
 
 /**
@@ -70,27 +71,24 @@ if (process.env.WDIO_TEST_FIREFOX) {
  */
 const browserRunnerOptions = {
     viteConfig: {
-        define: {
-            "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-            "process.env.CWD": JSON.stringify(cwd()),
-            "process.env.AK_API_BASE_PATH": JSON.stringify(process.env.AK_API_BASE_PATH || ""),
-        },
+        define: createBundleDefinitions(),
         plugins: [
             // ---
-            // @ts-ignore WDIO's Vite is out of date.
-            litCSS(),
+            inlineCSSPlugin(),
         ],
     },
 };
+
 /**
  * @satisfies {WebdriverIO.Config}
  */
 export const config = {
     runner: ["browser", browserRunnerOptions],
 
-    tsConfigPath: "./tsconfig.test.json",
+    tsConfigPath: path.resolve(PackageRoot, "tests", "tsconfig.test.json"),
 
-    specs: ["./src/**/*.test.ts"],
+    specs: [path.resolve(PackageRoot, "tests", "specs", "**", "*.ts")],
+
     exclude: [],
 
     maxInstances,

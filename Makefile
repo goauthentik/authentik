@@ -18,7 +18,24 @@ pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
 redis_db := $(shell uv run python -m authentik.lib.config redis.db 2>/dev/null)
 
-all: lint-fix lint test gen web  ## Lint, build, and test everything
+UNAME := $(shell uname)
+
+# For macOS users, add the libxml2 installed from brew libxmlsec1 to the build path
+# to prevent SAML-related tests from failing and ensure correct pip dependency compilation
+ifeq ($(UNAME), Darwin)
+# Only add for brew users who installed libxmlsec1
+	BREW_EXISTS := $(shell command -v brew 2> /dev/null)
+	ifdef BREW_EXISTS
+		LIBXML2_EXISTS := $(shell brew list libxml2 2> /dev/null)
+		ifdef LIBXML2_EXISTS
+			BREW_LDFLAGS := -L$(shell brew --prefix libxml2)/lib $(LDFLAGS)
+			BREW_CPPFLAGS := -I$(shell brew --prefix libxml2)/include $(CPPFLAGS)
+			BREW_PKG_CONFIG_PATH := $(shell brew --prefix libxml2)/lib/pkgconfig:$(PKG_CONFIG_PATH)
+		endif
+	endif
+endif
+
+all: lint-fix lint gen web test  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
 	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
@@ -50,7 +67,14 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
+ifdef LIBXML2_EXISTS
+# Clear cache to ensure fresh compilation
+	uv cache clean
+# Force compilation from source for lxml and xmlsec with correct environment
+	LDFLAGS="$(BREW_LDFLAGS)" CPPFLAGS="$(BREW_CPPFLAGS)" PKG_CONFIG_PATH="$(BREW_PKG_CONFIG_PATH)" uv sync --frozen --reinstall-package lxml --reinstall-package xmlsec --no-binary-package lxml --no-binary-package xmlsec
+else
 	uv sync --frozen
+endif
 
 migrate: ## Run the Authentik Django server's migrations
 	uv run python -m lifecycle.migrate
@@ -160,7 +184,7 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/${GEN_API_TS} \
@@ -176,7 +200,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.15.0 generate \
 		-i /local/schema.yml \
 		-g python \
 		-o /local/${GEN_API_PY} \

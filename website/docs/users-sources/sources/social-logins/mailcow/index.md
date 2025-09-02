@@ -30,7 +30,7 @@ The following placeholders are used in this guide:
 
 ## authentik
 
-5. Under _Directory -> Federation & Social login_ Click **Create > Mailcow OAuth Source**
+5. Under **Directory > Federation & Social login** click **Create > Mailcow OAuth Source**
 
 ![Mailcow OAuth Source](./mailcow4.png)
 

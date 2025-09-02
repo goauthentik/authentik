@@ -33,7 +33,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
 
 ### Create an application and provider
 
-1. From the authentik Admin interface, navigate to **Applications -> Applications** and click **Create with Provider** to create an application and provider pair.
+1. From the authentik Admin interface, navigate to **Applications > Applications** and click **Create with Provider** to create an application and provider pair.
 
 2. For the **App name** enter `Fleet` and click **Next**.
 
@@ -68,7 +68,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
 
 ### Retrieve provider metadata
 
-1. From the authentik Admin interface, navigate to **Applications -> Providers** and click the Fleet SAML provider.
+1. From the authentik Admin interface, navigate to **Applications > Providers** and click the Fleet SAML provider.
 
 2. In the **Related Objects** section, click **Copy download URL** to copy the metadata URL to your clipboard. Paste this URL to a text editor as you will need it when configuring Fleet.
 
@@ -108,14 +108,14 @@ To verify that authentik and Fleet are correctly configured, you can test the SS
 
 ### Create a test user
 
-1. From the authentik Admin interface, navigate to **Directory -> Users** and click **Create**.
+1. From the authentik Admin interface, navigate to **Directory > Users** and click **Create**.
 2. Enter the following details for the test user. All other fields can be left as their default values.
     - **Name**: `Jessie Lorem`
     - **Email**: `jessie@authentik.company`
 
 3. Click **Create** and verify that the user is listed in the **Users** table.
 
-4. From the Fleet Admin interface, navigate to **Settings -> Users** and click **Add user**.
+4. From the Fleet Admin interface, navigate to **Settings > Users** and click **Add user**.
 
 5. Enter the following details for the test user. All other fields can be left as their default values.
     - **Full Name**: `Jessie Lorem`

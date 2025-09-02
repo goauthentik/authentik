@@ -60,7 +60,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 ## Aruba Orchestrator Configuration
 
 1. Log in to the Aruba Orchestrator.
-2. Create a new Remote Authentication Server under **Orchestrator** -> **Authentication** -> **Add New Server**.
+2. Create a new Remote Authentication Server under **Orchestrator** > **Authentication** > **Add New Server**.
     - **Type**: `SAML`
     - **Name**: `authentik`
     - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`

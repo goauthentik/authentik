@@ -90,7 +90,7 @@ jobs:
           platforms: linux/${{ inputs.image_arch }}
           cache-from: type=registry,ref=${{ steps.ev.outputs.attestImageNames }}:buildcache-${{ inputs.image_arch }}
           cache-to: ${{ steps.ev.outputs.cacheTo }}
-      - uses: actions/attest-build-provenance@v2
+      - uses: actions/attest-build-provenance@v3
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         with:

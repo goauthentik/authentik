@@ -10,6 +10,7 @@ import { property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -29,12 +30,13 @@ export class BaseDeviceStage<
         PFLogin,
         PFForm,
         PFFormControl,
+        PFInputGroup,
         PFTitle,
         PFButton,
         css`
             .pf-c-form__group.pf-m-action {
                 display: flex;
-                gap: 16px;
+                gap: 1rem;
                 margin-top: 0;
                 margin-bottom: calc(var(--pf-c-form__group--m-action--MarginTop) / 2);
                 flex-direction: column;
