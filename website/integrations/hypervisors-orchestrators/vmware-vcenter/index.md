@@ -44,7 +44,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 
 ## vCenter configuration
 
-1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration -> Single Sign-on -> Configuration**.
+1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration > Single Sign-on > Configuration**.
 
 2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
@@ -63,7 +63,7 @@ To support the integration of vCenter with authentik, you need to create an appl
 
 6. Click **Next**, and then **Finish**.
 
-7. On the **Single Sign On -> Configuration** page, in the **User Provisioning** area, take the following steps:
+7. On the **Single Sign On > Configuration** page, in the **User Provisioning** area, take the following steps:
     - Copy the **Tenant URL** and save to a safe place.
     - Click on **Generate** to generate a SCIM token.
     - Click **Generate** in the newly opened modal box.
@@ -80,7 +80,7 @@ To support the integration of vCenter with authentik, you need to create an appl
     - Navigate to the provider and trigger a sync.
 
 9. Return to vCenter.
-    - Navigate to **Administration -> Access Control -> Global Permissions**.
+    - Navigate to **Administration > Access Control > Global Permissions**.
     - Click **Add**.
     - Select the Domain created above from the dropdown.
     - Enter the name of the group to which you want to assign permissions.

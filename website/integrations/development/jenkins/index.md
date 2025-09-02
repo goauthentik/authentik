@@ -42,7 +42,7 @@ To support the integration of Jenkins with authentik, you need to create an appl
 
 ## Jenkins configuration
 
-Navigate to the Jenkins plugin manager: **Manage Jenkins** -> **Plugins** -> **Available plugins**. Search for the plugin `oic-auth` in the search field, and install the plugin. Jenkins must be restarted afterwards to ensure the plugin is loaded.
+Navigate to the Jenkins plugin manager: **Manage Jenkins** > **Plugins** > **Available plugins**. Search for the plugin `oic-auth` in the search field, and install the plugin. Jenkins must be restarted afterwards to ensure the plugin is loaded.
 
 After the restart, navigate to **Manage Jenkins** again, and click **Security**.
 

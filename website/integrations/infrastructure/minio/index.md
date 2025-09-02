@@ -84,7 +84,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 
 ### From the web interface
 
-From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
+From the sidebar of the main page, go to **Identity > OpenID**, click **Create**, and then define the configuration as follows:
 
 - Name: MinIO
 - Config URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
