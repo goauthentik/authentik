@@ -13,6 +13,6 @@ To create a provider along with the corresponding application that uses it for a
 4. Select the **Provider Type** of either **SAML Provider**, and then click **Next**.
     - TODO: talk about the diff bwetween using metadata vs not...
 
-5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Submit** to create and save both the application and the provider.
+5. On the **Configure SAML Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
 
 TODO describe each field.... maybe. There are some very important fields under Advanced Protocol settings...
