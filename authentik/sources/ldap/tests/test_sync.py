@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.db.models import Q
 from django.test import TestCase
 from ldap3.core.exceptions import LDAPInvalidFilterError
+from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
@@ -591,7 +592,6 @@ class LDAPSyncTests(TestCase):
 
     def test_escape_filter_chars_function(self):
         """Test the escape_filter_chars function directly"""
-        from ldap3.utils.conv import escape_filter_chars
         
         # Test various special characters that need escaping
         test_cases = [
