@@ -39,7 +39,7 @@ TODO write words here about the Signing Certificate and the other type of certs 
 
 Attributes defined within a property mapping are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, username, email address, group membership, or even a custom attribute.
 
-Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string.
+Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or any other string.
 
 During the sign on and authentication process, communication between the SP (say the application that the user is attempting to log in to) and the IdP (the identity provider software managing the SSO work) replies on property mappings to align, or "map" the attributes' values between the SP and IdP.
 
