@@ -43,26 +43,27 @@ To support the integration of osTicket with authentik, you need to create an app
 
 ## osTicket configuration
 
-To configure the osTicket OAuth2 first download the plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder. Then go to the **Admin Panel** (link top right) and select **Manage** > **Plugins**. Next, click Add New Plugins and follow the onscreen instructions to install Oauth2 client.
+1. Download the OAuth2 plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder of your osTicket installation. Then 
+2. Log in to osTicket as an administrator and navigate to the **Admin Panel** > **Manage** > **Plugins**. 
+3. Click **Add New Plugins** and follow the onscreen instructions to install the OAuth2 plugin.
+4. Once installed click on the newly installed OAuth2 plugin, set **Status** to **Active ** and then click **Save Changes**.
+5. Navigate to **Instances**, click on **Add New Instance**, select **OAuth2 - Other** and set the following fields:
+    - On the **Instance** tab:
+        - Define the **Name**.
+        - Set **Status** to `Enabled`.
+    - On the **Config** tab:
+        - **Name**: `authentik`
+        - **Authentication Target**: `Agents Only` or `End Users Only` or `Agents and End Users`
+        - **Authentication Label**: `authentik`
+        - **Redirect URI**: `https://osticket.company/osticket/api/auth/oauth2`
+        - **Client Id**: Set the Client ID from authentik.
+        - **Client Secret**: Set the Client secret from authentik.
+        - **Authorization Endpoint**: `https://authentik.company/application/o/authorize/`
+        - **Token Endpoint**: `https://authentik.company/application/o/token/`
+        - **Resource Details Endpoint**: `https://authentik.company/application/o/userinfo/`
+        - **Scopes**: `email openid profile`
 
-Once installed click on the new Oauth2 client plug in, set Status to Active and click on Save Changes.
-
-Then go to "Instances", click on "Add New Instance" and select "OAuth2 - Other"
-
-- On the **Instance** tab fill in the Name and set Status to Enabled
-- On the **Config** tab change the following fields
-    - **Name**: `Authentik`
-    - **Authentication Target**: `Agents Only` or `End Users Only` or `Agents and End Users`
-    - **Authentication Label**: `Authentik`
-    - **Redirect URI**: `https://osticket.company/osticket/api/auth/oauth2`
-    - **Client Id**: `<Client ID>`
-    - **Client Secret**: `<Client Secret>`
-    - **Authorization Endpoint**: `https://authentik.company/application/o/authorize/`
-    - **Token Endpoint**: `https://authentik.company/application/o/token/`
-    - **Resource Details Endpoint**: `https://authentik.company`/application/o/userinfo/
-    - **Scopes**: `email openid profile`
-
-- click on Save Changes
+6. Click on **Save Changes**.
 
 ## Additional Resources
 
