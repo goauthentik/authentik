@@ -17,7 +17,6 @@ class Command(TenantCommand):
 
     help = _("Create a Key which can be used to restore access to authentik.")
 
-    # Constants for time conversions
     def format_duration_message(self, duration: int) -> str:
         """Format duration in minutes to a human-readable message"""
         # without this, running the command with say 120m as duration would return 1h 59m
