@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="scimprovider",
             name="compatibility_mode",
             field=models.CharField(
-                choices=[("default", "Default"), ("aws", "AWS"), ("slack", "Slack")],
+                choices=[("default", "Default"), ("aws", "AWS"), ("slack", "Slack"), ("vcenter", "vCenter")],
                 default="default",
                 help_text="Alter authentik behavior for vendor-specific SCIM implementations.",
                 max_length=30,

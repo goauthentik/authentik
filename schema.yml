@@ -43649,6 +43649,7 @@ components:
       - default
       - aws
       - slack
+      - vcenter
       type: string
     Config:
       type: object

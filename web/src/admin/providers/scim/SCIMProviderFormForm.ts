@@ -86,6 +86,11 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                             value: CompatibilityModeEnum.Slack,
                             description: html`${msg("Altered behavior for usage with Slack.")}`,
                         },
+                        {
+                            label: msg("vCenter"),
+                            value: CompatibilityModeEnum.Vcenter,
+                            description: html`${msg("Altered behavior for usage with VMware vCenter.")}`,
+                        },
                     ]}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
