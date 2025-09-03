@@ -187,7 +187,7 @@
         "ts-pattern": "^5.8.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.41.0",
+        "typescript-eslint": "^8.42.0",
         "unique-names-generator": "^4.7.1",
         "unist-util-visit": "^5.0.0",
         "vite": "^7.1.3",
