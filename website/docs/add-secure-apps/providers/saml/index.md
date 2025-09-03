@@ -37,13 +37,14 @@ TODO write words here about the Signing Certificate and the other type of certs 
 
 ## Property mappings in SAML
 
-Attributes defined within a property mapping are used to provide information about a user to a service provider when a SAML-based single sign-on (SSO) process is started, such as name, username, email address, group membership, or even a custom attribute.
+During a SAML authentication process, communication between the SP and the IdP replies on property mappings to align, or "map" user attributes values between the IdP and SP.
 
-Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or any other string.
+Each SAML property mapping includes the following fields:
 
-During the sign on and authentication process, communication between the SP (say the application that the user is attempting to log in to) and the IdP (the identity provider software managing the SSO work) replies on property mappings to align, or "map" the attributes' values between the SP and IdP.
-
-... talk here about the first name and last name thing (just use `Name`)...
+    - **Name**: The name of the property mapping that's displayed in the authentik admin interface.
+    - **SAML Attribute Name**: The label that maps IdP user information to SP expectations. Can be a URN OID, a schema reference, or any other string.
+    - **Friendly Name**: A human-friendly identifier for a SAML attribute.
+    - **Expression**: The python expression that maps an authentik user attribute to a value that an SP is expecting.
 
 ### Default SAML property mappings
 
@@ -59,22 +60,17 @@ The following property mappings are automatically added when you create a new SA
 | authentik default SAML Mapping: Username                      | `http://schemas.goauthentik.io/2021/02/saml/username`                        |
 | authentik default SAML Mapping: WindowsAccountName (Username) | `http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname` |
 
-They can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
+The default SAML property mappings can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
 
 ### Custom property mappings
 
-If there is not already a property mapping that works for what you need, you can [create a custom property mapping](../property-mappings/) or edit one of the existing mappings.
+If there is not already a property mapping that maps the user attributes that your SP requires, you can [create a custom property mapping](../property-mappings/) or edit one of the existing mappings.
 
-Some useful custom SAML property mappings include:
-
-:::note
-The `authentik default SAML Mapping: Name` property mapping returns first name (givenname) and last name (surname) in one string. Some SPs require these attributes to be separate.
-:::
+For example, some SPs require users' first name (givenname) and last name (surname) attributes to be provided separately. However, the `authentik default SAML Mapping: Name` property mapping returns both attributes as one string. The following custom property mappings can be useful in such cases:
 
 #### `surname`
 
 - SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
-
 - Expression:
 
     ```python
@@ -84,31 +80,30 @@ The `authentik default SAML Mapping: Name` property mapping returns first name (
 #### `givenname`
 
 - SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
-
 - Expression:
 
     ```python
     return request.user.name.split(" ", 1)[0]
     ```
 
-### `Name ID`
+### `NameID`
 
-The Name_ID element is an important type of attribute, a unique identifier for that user. While the other attributes might change (givenname, email address, etc) the Name_ID is persistent and should never change.
+The NameID attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
-When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
+authentik defaults to setting the NameID attribute to whatever is defined by the SP using the following logic:
 
-The SP also tells the IdP what format the IdP should use when creating the assertion. Under certain circumstances, the SP cannot tell us what format they want, like if the user is already in authentik and click the app to log in to it… but by making it a property mapping we do not get stopped on this snag. We default to the unspecified format, but of course the value is already set in the property mapping, so authn carries on.
+| SAML attribute request by SP                                           | How authentik will handle the NameId                                                                                                                                                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`                 | The NameID will be set to the hashed user ID.                                                                                                                                                          |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`            | The NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | The NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.name`                                                                  |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                  | The NameID will be set based on the user's session ID.upn`                                                                                                                                             |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`               | The NameID will be set to the user's email address.uid`                                                                                                                                                |
 
-You can select a custom SAML property mapping from which the NameID field will be generated. If left default, the following checks are done:
-
-- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, the NameID will be set to the hashed user ID.
-- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`, the NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier.
-- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName`, the NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.
-- When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`, the NameID will be set based on the user's session ID.
-- When the request asks for `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`, the NameID will be set to the user's email address.
+However, it's possible to manually set the Name ID attribute to any property mapping that's enabled on a SAML provider.
 
 :::warning
-Keep in mind that with the default settings, users are free to change their email addresses. - Therefore, it is recommended to either: - disallow users to change their email addresses - use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the Name ID format in the SP (if possible), because this this cannot be changed.
+Keep in mind that with the default settings, users are free to change their email addresses. Therefore, it is recommended to either: disallow users to change their email addresses or use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the Name ID format in the SP (if possible).
 :::
 
 ### `AuthnContextClassRef` property mapping
