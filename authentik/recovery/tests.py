@@ -31,7 +31,7 @@ class TestRecovery(TestCase):
         )
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, out.getvalue())
-        self.assertIn("valid for 5 minutes", out.getvalue())
+        self.assertIn("valid for 5\xa0minutes", out.getvalue())
         self.assertEqual(len(Token.objects.filter(intent=TokenIntents.INTENT_RECOVERY)), 1)
 
     def test_create_key_invalid(self):
@@ -89,7 +89,7 @@ class TestRecovery(TestCase):
 
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, out.getvalue())
-        self.assertIn("valid for 1 hour", out.getvalue())
+        self.assertIn("valid for 1\xa0hour", out.getvalue())
 
         # Verify the token expires in approximately 60 minutes (default)
         expected_expiry_min = before_creation + timedelta(minutes=60)
@@ -114,7 +114,7 @@ class TestRecovery(TestCase):
 
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, out.getvalue())
-        self.assertIn("valid for 2 hours", out.getvalue())
+        self.assertIn("valid for 2\xa0hours", out.getvalue())
 
         # Verify the token expires in approximately the custom duration
         expected_expiry_min = before_creation + timedelta(minutes=custom_duration)
@@ -139,7 +139,7 @@ class TestRecovery(TestCase):
 
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.assertIn(token.key, out.getvalue())
-        self.assertIn("valid for 1 minute", out.getvalue())
+        self.assertIn("valid for 1\xa0minute", out.getvalue())
 
         # Verify the token expires in approximately 1 minute
         expected_expiry_min = before_creation + timedelta(minutes=short_duration)
@@ -197,29 +197,29 @@ class TestRecovery(TestCase):
         # Test cases for various durations
         test_cases = [
             # Minutes
-            (1, "1 minute"),
-            (2, "2 minutes"),
-            (5, "5 minutes"),
-            (30, "30 minutes"),
-            (59, "59 minutes"),
+            (1, "1\xa0minute"),
+            (2, "2\xa0minutes"),
+            (5, "5\xa0minutes"),
+            (30, "30\xa0minutes"),
+            (59, "59\xa0minutes"),
             # Hours
-            (60, "1 hour"),
-            (90, "1 hour and 30 minutes"),
-            (120, "2 hours"),
-            (150, "2 hours and 30 minutes"),
-            (180, "3 hours"),
-            (721, "12 hours and 1 minute"),
-            (1439, "23 hours and 59 minutes"),
+            (60, "1\xa0hour"),
+            (90, "1\xa0hour, 30\xa0minutes"),
+            (120, "2\xa0hours"),
+            (150, "2\xa0hours, 30\xa0minutes"),
+            (180, "3\xa0hours"),
+            (721, "12\xa0hours, 1\xa0minute"),
+            (1439, "23\xa0hours, 59\xa0minutes"),
             # Days
-            (1440, "1 day"),
-            (1500, "1 day and 1 hour"),
-            (1501, "1 day, 1 hour and 1 minute"),
-            (2880, "2 days"),
-            (2940, "2 days and 1 hour"),
-            (2941, "2 days, 1 hour and 1 minute"),
-            (4320, "3 days"),
-            (4380, "3 days and 1 hour"),
-            (4441, "3 days, 2 hours and 1 minute"),
+            (1440, "1\xa0day"),
+            (1500, "1\xa0day, 1\xa0hour"),
+            (1501, "1\xa0day, 1\xa0hour"),
+            (2880, "2\xa0days"),
+            (2940, "2\xa0days, 1\xa0hour"),
+            (2941, "2\xa0days, 1\xa0hour"),
+            (4320, "3\xa0days"),
+            (4380, "3\xa0days, 1\xa0hour"),
+            (4441, "3\xa0days, 2\xa0hours"),
         ]
 
         for duration, expected in test_cases:
@@ -234,14 +234,14 @@ class TestRecovery(TestCase):
     def test_create_key_duration_message_formatting(self):
         """Test that various duration formats are displayed correctly in command output"""
         test_cases = [
-            (1, "valid for 1 minute"),
-            (5, "valid for 5 minutes"),
-            (60, "valid for 1 hour"),
-            (90, "valid for 1 hour and 30 minutes"),
-            (120, "valid for 2 hours"),
-            (1440, "valid for 1 day"),
-            (1500, "valid for 1 day and 1 hour"),
-            (1501, "valid for 1 day, 1 hour and 1 minute"),
+            (1, "valid for 1\xa0minute"),
+            (5, "valid for 5\xa0minutes"),
+            (60, "valid for 1\xa0hour"),
+            (90, "valid for 1\xa0hour, 30\xa0minutes"),
+            (120, "valid for 2\xa0hours"),
+            (1440, "valid for 1\xa0day"),
+            (1500, "valid for 1\xa0day, 1\xa0hour"),
+            (1501, "valid for 1\xa0day, 1\xa0hour"),
         ]
 
         for duration, expected_message in test_cases:
