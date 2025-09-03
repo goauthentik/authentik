@@ -43,11 +43,12 @@ To support the integration of osTicket with authentik, you need to create an app
 
 ## osTicket configuration
 
-1. Download the OAuth2 plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder of your osTicket installation. Then 
-2. Log in to osTicket as an administrator and navigate to the **Admin Panel** > **Manage** > **Plugins**. 
-3. Click **Add New Plugins** and follow the onscreen instructions to install the OAuth2 plugin.
-4. Once installed click on the newly installed OAuth2 plugin, set **Status** to **Active ** and then click **Save Changes**.
-5. Navigate to **Instances**, click on **Add New Instance**, select **OAuth2 - Other** and set the following fields:
+1. Download the OAuth2 plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder of your osTicket installation.
+2. Log in to osTicket as an administrator and navigate to the **Admin Panel**
+3. On the **Admin Panel**, go to **Manage** > **Plugins**.
+4. Click **Add New Plugins** and follow the onscreen instructions to install the OAuth2 plugin.
+5. Once installed click on the newly installed OAuth2 plugin, set **Status** to **Active ** and then click **Save Changes**.
+6. Navigate to **Instances**, click on **Add New Instance**, select **OAuth2 - Other** and set the following fields:
     - On the **Instance** tab:
         - Define the **Name**.
         - Set **Status** to `Enabled`.
@@ -63,7 +64,7 @@ To support the integration of osTicket with authentik, you need to create an app
         - **Resource Details Endpoint**: `https://authentik.company/application/o/userinfo/`
         - **Scopes**: `email openid profile`
 
-6. Click on **Save Changes**.
+7. Click on **Save Changes**.
 
 ## Resources
 
