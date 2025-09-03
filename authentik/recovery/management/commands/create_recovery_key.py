@@ -19,10 +19,8 @@ class Command(TenantCommand):
 
     def format_duration_message(self, duration: int) -> str:
         """Format duration in minutes to a human-readable message"""
-        # without this, running the command with say 120m as duration would return 1h 59m
         current_time = now()
         future_time = current_time + timedelta(minutes=duration)
-        future_time = future_time.replace(microsecond=999999)
 
         # fyi a non-breaking space is returned by timesince
         return timesince(current_time, future_time)
