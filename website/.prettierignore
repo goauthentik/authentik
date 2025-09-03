@@ -7,3 +7,4 @@ node_modules
 help
 static
 scripts/docsmg/target/
+docs/core/glossary/terms/
