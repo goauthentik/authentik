@@ -3,7 +3,7 @@
 from datetime import timedelta
 from getpass import getuser
 
-from django.utils.timesince import timeuntil
+from django.utils.timesince import timesince
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
@@ -24,8 +24,8 @@ class Command(TenantCommand):
         future_time = current_time + timedelta(minutes=duration)
         future_time = future_time.replace(microsecond=999999)
 
-        # fyi a non-breaking space is returned by timeuntil
-        return timeuntil(future_time, current_time)
+        # fyi a non-breaking space is returned by timesince
+        return timesince(current_time, future_time)
 
     def add_arguments(self, parser):
         parser.add_argument(
