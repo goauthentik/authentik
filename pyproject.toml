@@ -27,7 +27,7 @@ dependencies = [
   "django-tenants==3.8.0",
   "djangoql==0.18.1",
   "djangorestframework-guardian==0.4.0",
-  "djangorestframework==3.16.0",
+  "djangorestframework==3.16.1",
   "docker==7.1.0",
   "drf-orjson-renderer==1.7.3",
   "drf-spectacular==0.28.0",
@@ -113,7 +113,6 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 django-dramatiq-postgres = { workspace = true }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 
