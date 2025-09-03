@@ -7,7 +7,6 @@ support_level: community
 ## What is osTicket
 
 > osTicket is a web-based, open source user support/ticketing solution.
-> Download and install it on your own servers. For free.
 >
 > -- https://osticket.com
 
