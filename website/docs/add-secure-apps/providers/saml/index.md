@@ -2,17 +2,17 @@
 title: SAML Provider
 ---
 
-The SAML provider allows you to integrate with software using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields. Default fields are exposed through auto-generated property mappings, which are prefixed with "authentik default".
+The SAML provider allows you to integrate with services and applications using the SAML2 protocol. It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose application-specific fields. Default fields are exposed through auto-generated property mappings, which are prefixed with "authentik default".
 
 Refer to the instructions to [create a SAML provider](./create-saml-provider.md).
 
-## SAML Bindings
+## SAML bindings and endpoints
 
-Bindings are the mechanism that handle how SAML messages are exchanged between between an Identity Provider (IdP) and a Service Provider (SP). Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
+Bindings are the mechanism that handle how SAML messages are exchanged between between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
 
 A binding defines how these SAML messages are transported over network protocols; the endpoint URL specifies where and how the messages are sent according to that binding.
 
-In authentik, you can define two communication protocols: `HTTP Redirect` or `HTTP POST`. The table below shows the supported endpoints you can use when creating bindings for SAML.
+In authentik, you can define two SAML bindings: `HTTP Redirect` or `HTTP POST`. The table below shows the supported endpoints for each binding.
 
 | Endpoint                  | URL                                                          |
 | ------------------------- | ------------------------------------------------------------ |
@@ -23,7 +23,7 @@ In authentik, you can define two communication protocols: `HTTP Redirect` or `HT
 | SLO (POST binding)        | `/application/saml/<application_slug>/slo/binding/post/`     |
 | Metadata Download         | `/application/saml/<application_slug>/metadata/`             |
 
-## Discovery: SAML metadata
+## SAML metadata
 
 Describe the basics of metadata. But put any procedurals over in the How To doc (and link to from here).
 
@@ -31,7 +31,7 @@ BASICS: After you create your app (SP) and your SAML provider, you go back on th
 
 - BUT… do our users need our IdP-generated metadata file? And if so where do they get it from? How do we create it for them?
 
-## Signatures and Certificates
+## Signing and certificates
 
 TODO write words here about the Signing Certificate and the other type of certs (see UI for Creating a new App (with SAML provider) under Advanced Protocols...)
 
@@ -47,37 +47,51 @@ During the sign on and authentication process, communication between the SP (say
 
 ### Default SAML property mappings
 
-The following attributes are available as property mappings through the Admin interface when you create a new SAML provider.
+The following property mappings are automatically added when you create a new SAML provider and can be removed at will.
 
-#### User ID
+| Property Mapping Name                                         | SAML Attribute Name                                                          |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| authentik default SAML Mapping: Email                         | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`         |
+| authentik default SAML Mapping: Groups                        | `http://schemas.xmlsoap.org/claims/Group`                                    |
+| authentik default SAML Mapping: Name                          | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`                 |
+| authentik default SAML Mapping: UPN                           | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn`                  |
+| authentik default SAML Mapping: User ID                       | `http://schemas.goauthentik.io/2021/02/saml/uid`                             |
+| authentik default SAML Mapping: Username                      | `http://schemas.goauthentik.io/2021/02/saml/username`                        |
+| authentik default SAML Mapping: WindowsAccountName (Username) | `http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname` |
 
-#### User name
-
-#### WindowsAccountname
-
-#### Groups
-
-#### Email
-
-#### Name
+They can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
 
 ### Custom property mappings
 
-If there is not already a property mapping that works for what you need, you can [create a custom property mapping](../property-mappings/). Some useful custom property mappings include:
+If there is not already a property mapping that works for what you need, you can [create a custom property mapping](../property-mappings/) or edit one of the existing mappings.
+
+Some useful custom SAML property mappings include:
+
+:::note
+The `authentik default SAML Mapping: Name` property mapping returns first name (givenname) and last name (surname) in one string. Some SPs require these attributes to be separate.
+:::
 
 #### `surname`
 
-- SAML Attribute Name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
+- SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
 
-- Expression: `return request.user.name.rsplit(" ", 1)[-1]`
+- Expression:
+
+    ```python
+    return request.user.name.rsplit(" ", 1)[-1]
+    ```
 
 #### `givenname`
 
-- SAML Attribute Name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
+- SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
 
-- Expression: `return request.user.name.split(" ", 1)[0]`
+- Expression:
 
-### `Name ID` property mapping
+    ```python
+    return request.user.name.split(" ", 1)[0]
+    ```
+
+### `Name ID`
 
 The Name_ID element is an important type of attribute, a unique identifier for that user. While the other attributes might change (givenname, email address, etc) the Name_ID is persistent and should never change.
 
@@ -85,7 +99,7 @@ When the IdP sends a SAML assertion to the SP, the NameID is the unique identifi
 
 The SP also tells the IdP what format the IdP should use when creating the assertion. Under certain circumstances, the SP cannot tell us what format they want, like if the user is already in authentik and click the app to log in to it… but by making it a property mapping we do not get stopped on this snag. We default to the unspecified format, but of course the value is already set in the property mapping, so authn carries on.
 
-You can select a custom SAML property mapping after which the NameID field will be generated. If left default, the following checks are done:
+You can select a custom SAML property mapping from which the NameID field will be generated. If left default, the following checks are done:
 
 - When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`, the NameID will be set to the hashed user ID.
 - When the request asks for `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`, the NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier.
