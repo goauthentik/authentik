@@ -48,7 +48,7 @@ To support the integration of osTicket with authentik, you need to create an app
 3. In the Admin Panel, go to **Manage** > **Plugins**.
 4. Click **Add New Plugins** and follow the on-screen instructions to install the OAuth2 plugin.
 5. Once installed click on the newly installed OAuth2 plugin, set **Status** to **Active ** and then click **Save Changes**.
-6. Navigate to **Instances**, click on **Add New Instance**, select **OAuth2 - Other** and set the following fields:
+6. Navigate to **Instances**, click on **Add New Instance**, select **OAuth2 - Other**, and set the following fields:
     - On the **Instance** tab:
         - Define the **Name**.
         - Set **Status** to `Enabled`.
