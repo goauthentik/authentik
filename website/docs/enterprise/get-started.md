@@ -17,7 +17,7 @@ If this is a fresh install, refer to our [technical documentation](../install-co
 
 Access your Enterprise features by first [purchasing a license](./manage-enterprise.mdx#buy-a-license) for the organization.
 
-To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer Portal**.
+To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise > Licenses**, and then click **Go to Customer Portal**.
 
 Alternatively you can open a new browser window and go directly to the [Customer Portal](https://customers.goauthentik.io/). If you do not yet have an authentik account, there is a [Sign up link](https://customers.goauthentik.io/signup) on the Customer Portal login page.
 
