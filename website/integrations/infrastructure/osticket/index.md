@@ -44,7 +44,7 @@ To support the integration of osTicket with authentik, you need to create an app
 ## osTicket configuration
 
 1. Download the OAuth2 plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder of your osTicket installation.
-2. Log in to osTicket as an administrator and navigate to the **Admin Panel**
+2. Log in to osTicket as an administrator and navigate to the **Admin Panel**.
 3. In the Admin Panel, go to **Manage** > **Plugins**.
 4. Click **Add New Plugins** and follow the on-screen instructions to install the OAuth2 plugin.
 5. Once installed, click on the newly installed OAuth2 plugin, set **Status** to `Active`, then click **Save Changes**.
