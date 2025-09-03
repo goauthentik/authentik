@@ -72,7 +72,7 @@ This policy prevents users from reusing their previous passwords when setting a 
 
 ### Reputation Policy
 
-authentik keeps track of failed login attempts by source IP and attempted username. These values are saved as scores. Each failed login decreases the score for the client IP as well as the targeted username by 1 (one).
+authentik keeps track of recent login attempts per [Identifier](../../add-secure-apps/flows-stages/stages/identification/#user-fields) and client IP. These values are saved as scores. Failed logins decrease the score by 1, while successful logins increase the score by 1.
 
 This policy can be used, for example, to prompt clients with a low score to pass a CAPTCHA test before they can continue.
 
