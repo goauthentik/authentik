@@ -65,6 +65,6 @@ To support the integration of osTicket with authentik, you need to create an app
 
 6. Click on **Save Changes**.
 
-## Additional Resources
+## Resources
 
 - [osTicket Docs - OAuth2 Guide](https://docs.osticket.com/en/latest/Guides/OAuth2%20Guide.html)
