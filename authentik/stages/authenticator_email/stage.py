@@ -157,12 +157,17 @@ class AuthenticatorEmailStageView(ChallengeStageView):
                 try:
                     self.validate_and_send(email)
                 except ValidationError as exc:
-                    self.logger.warning(
-                        "failed to send email to pre-set address, duplicate device", exc=exc
+                    # We had an email given already (at this point only possible from flow
+                    # context), but an error occurred while sending (most likely)
+                    # due to a duplicate device, so delete the email we got given, reset the state
+                    # (ish) and retry
+                    device.email = ""
+                    self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).pop(
+                        PLAN_CONTEXT_EMAIL, None
                     )
-                    return self.executor.stage_invalid(
-                        _("The user already has an email address registered for MFA.")
-                    )
+                    self.request.session.pop(SESSION_KEY_EMAIL_DEVICE, None)
+                    self.logger.warning("failed to send email to pre-set address", exc=exc)
+                    return self.get(request, *args, **kwargs)
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
