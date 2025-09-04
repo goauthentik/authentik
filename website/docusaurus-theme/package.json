@@ -27,7 +27,7 @@
     "dependencies": {
         "@docusaurus/preset-classic": "^3.8.1",
         "@goauthentik/docusaurus-config": "^2.1.1",
-        "@types/semver": "^7.7.0",
+        "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",
         "remark-directive": "^4.0.0",
