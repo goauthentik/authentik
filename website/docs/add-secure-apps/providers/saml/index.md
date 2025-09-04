@@ -47,7 +47,7 @@ Certificates are vital for trust and security during SAML authentication.
 
 A signing certificate allow authentik to digitally sign SAML assertions and responses. This certificate contains a private key that creates a cryptographic signature, proving the authenticity and integrity of the transmitted data. The SP then uses the corresponding public key from this certificate to verify the signature. Ensuring the response was not tampered with and that it originated from authentik.
 
-#### Signing alogrithm
+#### Signing algorithm
 
 Signing algorithms (such as ECDSA-SHA256) define the cryptographic method used for creating and validating the signatures.
 
@@ -57,7 +57,7 @@ A digest algorithm is a cryptographic hash function used to create a fixed-size 
 
 ### Verification certificates
 
-A verification certificate in authentik acts as the public key used to verify digital signatures on SAML responses and assertions from an SP. When a SAML message is received, authentik validates it by comparing the signature against its configured verification certificate, ensuring that messages are authentic and originated from the SP.
+A verification certificate in authentik acts as the public key used to verify digital signatures on SAML responses and assertions from an SP. When a SAML message is received, authentik validates it by comparing the signature against its configured verification certificate, ensuring that messages originated from the SP.
 
 ### Encryption certificates
 
