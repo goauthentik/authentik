@@ -63,7 +63,7 @@ A verification certificate in authentik acts as the public key used to verify di
 
 An encryption certificate is a public key certificate used by authentik to encrypt sensitive data in SAML assertions before sending them to an SP. This ensures that sensitive data within the assertion, such as user attributes and authentication details, remain confidential and can only be decrypted by the SP possessing the corresponding private key.
 
-## Property mappings in SAML
+## SAML property mappings
 
 During a SAML authentication process, communication between the SP and the IdP replies on property mappings to align, or "map" user attributes values between the IdP and SP.
 
@@ -90,7 +90,7 @@ The following property mappings are automatically added when you create a new SA
 
 The default SAML property mappings can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
 
-### Custom property mappings
+### Custom SAML property mappings
 
 If there is not already a property mapping that maps the user attributes that your SP requires, you can [create a custom property mapping](../property-mappings/) or edit one of the existing mappings.
 
@@ -114,34 +114,34 @@ For example, some SPs require users' first name (givenname) and last name (surna
     return request.user.name.split(" ", 1)[0]
     ```
 
-### `NameID`
+### NameID
 
-The `NameID` attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the `NameID` attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the `NameID` is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
+The NameID attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
-#### `NameID` property mapping
+#### NameID property mapping
 
-In authentik, it's possible to configure which property mapping will be used to create the `NameID` attribute. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the `NameID Policy` of the incoming SP request will be respected.
+In authentik, it's possible to configure which property mapping will be used to create the NameID attribute. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
 
-#### Default `NameID` policy
+#### Default NameID policy
 
-In authentik, it's also possible to configure the default `NameID Policy` used for IDP-initiated logins or when an incoming SP assertion doesn't specify a `NameID Policy` (also applies when using a custom NameID Mapping). The following table outlines how the `NameID policies` are handled:
+In authentik, it's also possible to configure the default NameID Policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
 
-| Default `NameID` policy                                                          | How authentik will handle the `NameID`                                                                                                                                                               |
-| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | `NameID` will be set to the hashed user ID.                                                                                                                                                          |
-| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | `NameID` will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
-| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | `NameID` will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
-| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | `NameID` will be set based on the user's session ID.                                                                                                                                                 |
-| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | `NameID` will be set to the user's email address.                                                                                                                                                    |
+| Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                               |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the hashed user ID.                                                                                                                                                          |
+| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
+| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
+| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                 |
+| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                    |
 
 :::warning
-By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using an user's email address as the `NameID` attribute.
+By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using an user's email address as the NameID attribute.
 :::
 
-### `AuthnContextClassRef`
+### AuthnContextClassRef
 
-The `AuthnContextClassRef` attribute appears in the SAML assertion and contains a URI that describes the assurance level, such as password, multi-factor, or smartcard authentication. SPs use this information to understand and verify how the user was authenticated by an IdP.
+The AuthnContextClassRef attribute appears in the SAML assertion and contains a URI that describes the assurance level, such as password, multi-factor, or smartcard authentication. SPs use this information to understand and verify how the user was authenticated by an IdP.
 
-In authentik, it's possible to set the `AuthnContextClassRef` attribute to any property mapping that's enabled on a SAML provider. This is done via the **AuthnContextClassRef Property Mapping** on a SAML provider.
+In authentik, it's possible to set the AuthnContextClassRef attribute to any property mapping that's enabled on a SAML provider. This is done via the **AuthnContextClassRef Property Mapping** on a SAML provider.
 
-Alternatively, when the **AuthnContextClassRef Property Mapping** field is left unpopulated on a SAML provider, the `AuthnContextClassRef` will be set based on the authentication method that the user used to authenticate.
+Alternatively, when the **AuthnContextClassRef Property Mapping** field is left unpopulated on a SAML provider, the AuthnContextClassRef will be set based on the authentication method that the user used to authenticate.
