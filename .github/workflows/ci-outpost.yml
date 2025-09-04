@@ -107,7 +107,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
-          file: ${{ matrix.type }}.Dockerfile
+          file: lifecycle/container/${{ matrix.type }}.Dockerfile
           push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
