@@ -19,7 +19,7 @@ To create a provider along with the corresponding application that uses it for a
 3. Select **SAML Provider** as the **Provider Type**, and then click **Next**.
 4. On the **Create SAML Provider** page, provide the configuration settings and then click **Submit** to create the provider.
 
-## Create a SAML provider from SP metadata
+## Create a SAML provider from SP metadata (import SP metadata)
 
 If you have exported SAML metadata from your SP, you can optionally create the authentik SAML provider by importing this metadata.
 
@@ -35,4 +35,15 @@ Once an authentik SAML provider has been created via any of the above methods, y
 
 ### Metadata download
 
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications > Providers**.
+3. Click the name of the provider you want metadata from to open its overview tab.
+4. In the **Related objects** section, under **Metadata** click on **Download**. This will download the metadata xml file for that provider.
+
 ### Metadata tab
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications > Providers**.
+3. Click the name of the provider you want metadata from to open its overview tab.
+4. Navigate to the **Metadata** tab.
+5. The metadata for the provider will be shown in a codebox. You can optionally use the **Download** button to obtain the metadata as a file.

@@ -33,11 +33,11 @@ SAML Metadata ensures that SAML single sign-on works reliably by exchanging and 
 
 #### Importing SP SAML metadata
 
-SAML metadata can be imported into authentik(put a link here to procedure) to automatically configure a SAML provider based on the requirements of an SP.
+SP SAML metadata can be [imported into authentik](./create-saml-provider.md#create-a-saml-provider-from-sp-metadata-import-sp-metadata) to automatically configure a SAML provider based on the requirements of an SP.
 
 #### Exporting authentik SAML metadata
 
-SAML metadata can also be exported from an authentik SAML provider(put a link to procedure) to an SP to automatically provide important endpoint and certificate information to an SP.
+SAML metadata can also be [exported from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to an SP.
 
 ## Signing and certificates
 
