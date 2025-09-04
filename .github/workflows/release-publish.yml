@@ -187,7 +187,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
           aws-region: ${{ env.AWS_REGION }}
