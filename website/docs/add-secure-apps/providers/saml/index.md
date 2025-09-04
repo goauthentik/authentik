@@ -8,11 +8,13 @@ Refer to the instructions to [create a SAML provider](./create-saml-provider.md)
 
 ## SAML bindings and endpoints
 
-Bindings are the mechanism that handle how SAML messages are exchanged between between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
+Bindings are the mechanism that handle how SAML messages are exchanged between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
 
-A binding defines how these SAML messages are transported over network protocols; the endpoint URL specifies where and how the messages are sent according to that binding.
+A binding defines how SAML messages are transported over network protocols.
 
-In authentik, you can define two SAML bindings: `HTTP Redirect` or `HTTP POST`. The table below shows the supported endpoints for each binding.
+The endpoint URL specifies where and how the messages are sent according to that binding.
+
+In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`. The table below shows the supported endpoints for each binding:
 
 | Endpoint                  | URL                                                          |
 | ------------------------- | ------------------------------------------------------------ |
@@ -27,7 +29,13 @@ In authentik, you can define two SAML bindings: `HTTP Redirect` or `HTTP POST`. 
 
 SAML Metadata ensures that SAML single sign-on works reliably by exchanging and maintaining identity and connection information. SAML metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers.
 
+### Importing/Exporting SAML metadata
+
+#### Importing SP SAML metadata
+
 SAML metadata can be imported into authentik(put a link here to procedure) to automatically configure a SAML provider based on the requirements of an SP.
+
+#### Exporting authentik SAML metadata
 
 SAML metadata can also be exported from an authentik SAML provider(put a link to procedure) to an SP to automatically provide important endpoint and certificate information to an SP.
 
@@ -39,7 +47,13 @@ Certificates are vital for trust and security during SAML authentication.
 
 A signing certificate allow authentik to digitally sign SAML assertions and responses. This certificate contains a private key that creates a cryptographic signature, proving the authenticity and integrity of the transmitted data. The SP then uses the corresponding public key from this certificate to verify the signature. Ensuring the response was not tampered with and that it originated from authentik.
 
+#### Signing alogrithm
+
 Signing algorithms (such as ECDSA-SHA256) define the cryptographic method used for creating and validating the signatures.
+
+#### Digest algorithm
+
+A digest algorithm is a cryptographic hash function used to create a fixed-size hash (digest) from the data in the SAML assertion or message. authentik computes a digest value using the chosen algorithm (such as SHA-1 or SHA-256), and it is included as part of the digital signature process. The SP uses the same digest algorithm to independently compute the hash and compare it against the received digest to validate the integrity of the received assertion or message.
 
 ### Verification certificates
 
@@ -104,20 +118,24 @@ For example, some SPs require users' first name (givenname) and last name (surna
 
 The `NameID` attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the `NameID` attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the `NameID` is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
-In authentik, it's possible to set the `NameID` attribute to any property mapping that's enabled on a SAML provider. This is done via the **NameID property mapping** field on a SAML provider.
+#### `NameID` property mapping
 
-Alternatively, when the **NameID property mapping** field is left unpopulated on a SAML provider, the `NameID` attribute will be set based on the SP's request as follows:
+In authentik, it's possible to configure which property mapping will be used to create the `NameID` attribute. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the `NameID Policy` of the incoming SP request will be respected.
 
-| SAML attribute request by SP                                           | How authentik will handle the NameId                                                                                                                                                                 |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`                 | `NameID` will be set to the hashed user ID.                                                                                                                                                          |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`            | `NameID` will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | `NameID` will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                  | `NameID` will be set based on the user's session ID.                                                                                                                                                 |
-| `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`               | `NameID` will be set to the user's email address.                                                                                                                                                    |
+#### Default `NameID` policy
+
+In authentik, it's also possible to configure the default `NameID Policy` used for IDP-initiated logins or when an incoming SP assertion doesn't specify a `NameID Policy` (also applies when using a custom NameID Mapping). The following table outlines how the `NameID policies` are handled:
+
+| Default `NameID` policy                                                          | How authentik will handle the `NameID`                                                                                                                                                               |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | `NameID` will be set to the hashed user ID.                                                                                                                                                          |
+| x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | `NameID` will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
+| Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | `NameID` will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
+| Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | `NameID` will be set based on the user's session ID.                                                                                                                                                 |
+| Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | `NameID` will be set to the user's email address.                                                                                                                                                    |
 
 :::warning
-By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the `NameID` format in the SP.
+By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using an user's email address as the `NameID` attribute.
 :::
 
 ### `AuthnContextClassRef`
