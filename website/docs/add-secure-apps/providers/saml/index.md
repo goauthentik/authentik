@@ -25,15 +25,29 @@ In authentik, you can define two SAML bindings: `HTTP Redirect` or `HTTP POST`. 
 
 ## SAML metadata
 
-Describe the basics of metadata. But put any procedurals over in the How To doc (and link to from here).
+SAML Metadata ensures that SAML single sign-on works reliably by exchanging and maintaining identity and connection information. SAML metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers.
 
-BASICS: After you create your app (SP) and your SAML provider, you go back on the provider page and you can download the SP metadata.
+SAML metadata can be imported into authentik(put a link here to procedure) to automatically configure a SAML provider based on the requirements of an SP.
 
-- BUT… do our users need our IdP-generated metadata file? And if so where do they get it from? How do we create it for them?
+SAML metadata can also be exported from an authentik SAML provider(put a link to procedure) to an SP to automatically provide important endpoint and certificate information to an SP.
 
 ## Signing and certificates
 
-TODO write words here about the Signing Certificate and the other type of certs (see UI for Creating a new App (with SAML provider) under Advanced Protocols...)
+Certificates are vital for trust and security during SAML authentication.
+
+### Signing certificates
+
+A signing certificate allow authentik to digitally sign SAML assertions and responses. This certificate contains a private key that creates a cryptographic signature, proving the authenticity and integrity of the transmitted data. The SP then uses the corresponding public key from this certificate to verify the signature. Ensuring the response was not tampered with and that it originated from authentik.
+
+Signing algorithms (such as ECDSA-SHA256) define the cryptographic method used for creating and validating the signatures.
+
+### Verification certificates
+
+A verification certificate in authentik acts as the public key used to verify digital signatures on SAML responses and assertions from an SP. When a SAML message is received, authentik validates it by comparing the signature against its configured verification certificate, ensuring that messages are authentic and originated from the SP.
+
+### Encryption certificates
+
+An encryption certificate is a public key certificate used by authentik to encrypt sensitive data in SAML assertions before sending them to an SP. This ensures that sensitive data within the assertion, such as user attributes and authentication details, remain confidential and can only be decrypted by the SP possessing the corresponding private key.
 
 ## Property mappings in SAML
 
@@ -88,28 +102,28 @@ For example, some SPs require users' first name (givenname) and last name (surna
 
 ### `NameID`
 
-The NameID attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
+The `NameID` attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the `NameID` attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the `NameID` is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
-authentik defaults to setting the NameID attribute to whatever is defined by the SP using the following logic:
+In authentik, it's possible to set the `NameID` attribute to any property mapping that's enabled on a SAML provider. This is done via the **NameID property mapping** field on a SAML provider.
 
-| SAML attribute request by SP                                           | How authentik will handle the NameId                                                                                                                                                                   |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`                 | The NameID will be set to the hashed user ID.                                                                                                                                                          |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`            | The NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | The NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.name`                                                                  |
-| `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                  | The NameID will be set based on the user's session ID.upn`                                                                                                                                             |
-| `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`               | The NameID will be set to the user's email address.uid`                                                                                                                                                |
+Alternatively, when the **NameID property mapping** field is left unpopulated on a SAML provider, the `NameID` attribute will be set based on the SP's request as follows:
 
-However, it's possible to manually set the Name ID attribute to any property mapping that's enabled on a SAML provider.
+| SAML attribute request by SP                                           | How authentik will handle the NameId                                                                                                                                                                 |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`                 | `NameID` will be set to the hashed user ID.                                                                                                                                                          |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`            | `NameID` will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | `NameID` will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                  | `NameID` will be set based on the user's session ID.                                                                                                                                                 |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`               | `NameID` will be set to the user's email address.                                                                                                                                                    |
 
 :::warning
-Keep in mind that with the default settings, users are free to change their email addresses. Therefore, it is recommended to either: disallow users to change their email addresses or use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the Name ID format in the SP (if possible).
+By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, use `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` as the `NameID` format in the SP.
 :::
 
-### `AuthnContextClassRef` property mapping
+### `AuthnContextClassRef`
 
-Another special type of attribute is `AuthnContextClassRef`, used in SAML authentication requests from SPs to specify the required or preferred authentication contexts from the IdP. The authentication context specifies the desired or required level of authentication for a user. For example, Microsoft Entra ID uses the `AuthnContextClassRef` element to enforce specific authentication requirements for any applications accessing Entra ID.
+The `AuthnContextClassRef` attribute appears in the SAML assertion and contains a URI that describes the assurance level, such as password, multi-factor, or smartcard authentication. SPs use this information to understand and verify how the user was authenticated by an IdP.
 
-In authentik, you can use a property mapping to configure how the `AuthnContextClassRef` value is created. When left empty, the AuthnContextClassRef will be set based on the authentication method that the user used to authenticate.
+In authentik, it's possible to set the `AuthnContextClassRef` attribute to any property mapping that's enabled on a SAML provider. This is done via the **AuthnContextClassRef Property Mapping** on a SAML provider.
 
-... ensure that the AuthnContextClassRef element in the SAML message is a URI.
+Alternatively, when the **AuthnContextClassRef Property Mapping** field is left unpopulated on a SAML provider, the `AuthnContextClassRef` will be set based on the authentication method that the user used to authenticate.
