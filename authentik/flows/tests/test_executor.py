@@ -3,12 +3,15 @@
 from unittest.mock import MagicMock, PropertyMock, patch
 from urllib.parse import urlencode
 
+import django
 from django.http import HttpRequest, HttpResponse
 from django.test import override_settings
 from django.test.client import RequestFactory
 from django.urls import reverse
+from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import ParseError
 
+from authentik.brands.models import Brand
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.flows.markers import ReevaluateMarker, StageMarker
@@ -48,6 +51,15 @@ def to_stage_response(request: HttpRequest, source: HttpResponse):
 
 
 TO_STAGE_RESPONSE_MOCK = MagicMock(side_effect=to_stage_response)
+
+
+def const_authenticator_factory(user=None):
+
+    class ConstAuthenticator(BaseAuthentication):
+        def authenticate(self, request):
+            return (user, None)
+
+    return ConstAuthenticator
 
 
 class TestFlowExecutor(FlowTestCase):
@@ -561,6 +573,64 @@ class TestFlowExecutor(FlowTestCase):
 
         stage_view = StageView(executor)
         self.assertEqual(ident, stage_view.get_pending_user(for_display=True).username)
+
+    def test_flow_executor_should_respect_authentication_classes(self):
+        """Test with authentication_classes"""
+        flow = create_test_flow(
+            FlowDesignation.STAGE_CONFIGURATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+
+        user = User.objects.create(username="test-user")
+
+        def prepare():
+            request = self.request_factory.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            )
+            request.session = {}
+            request.brand = Brand(domain="fallback")
+
+            # Django injects an AnonymousUser initially, which is later replaced
+            # by the authentication middleware. We mimic this behavior here.
+            request.user = django.contrib.auth.models.AnonymousUser()
+
+            executor = FlowExecutorView()
+
+            executor.setup(request, flow_slug=flow.slug)
+
+            return request, executor
+
+        # Flow execution should not work in this case, since no user is authenticated,
+        # but authentication is required.
+        with self.subTest("User should not be respected without authentication middleware"):
+            request, executor = prepare()
+
+            executor.authentication_classes = []
+
+            with patch.object(
+                FlowExecutorView, "handle_invalid_flow", return_value=HttpResponse()
+            ) as handle_invalid_flow:
+                executor.dispatch(request, flow_slug=flow.slug)
+
+                handle_invalid_flow.assert_called_once()
+
+        # Authentication should work in this case, since the user is injected
+        # through a custom authentication class.
+        with self.subTest("User should be respected from authentication middleware"):
+            request, executor = prepare()
+
+            # Inject ConstAuthenticator that always returns 'user'
+            executor.authentication_classes = [const_authenticator_factory(user)]
+
+            with patch.object(
+                FlowExecutorView, "handle_invalid_flow", return_value=HttpResponse()
+            ) as handle_invalid_flow:
+                executor.dispatch(request, flow_slug=flow.slug)
+
+                handle_invalid_flow.assert_not_called()
 
     def test_invalid_restart(self):
         """Test flow that restarts on invalid entry"""
