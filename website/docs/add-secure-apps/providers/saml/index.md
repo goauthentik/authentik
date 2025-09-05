@@ -35,11 +35,11 @@ SP SAML metadata can be [imported into authentik](./create-saml-provider.md#crea
 
 ### Exporting authentik SAML metadata
 
-SAML metadata can also be [exported from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to an SP.
+SAML metadata can be [exported from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
 
-## Signing and certificates
+## Certificates
 
-Certificates are vital for trust and security during SAML authentication.
+Certificates are vital for trust and security during SAML authentication and are used for several purposes.
 
 ### Signing certificates
 
