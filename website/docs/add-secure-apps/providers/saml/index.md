@@ -10,11 +10,9 @@ Refer to the instructions to [create a SAML provider](./create-saml-provider.md)
 
 Bindings are the mechanism that handle how SAML messages are exchanged between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
 
-A binding defines how SAML messages are transported over network protocols.
+A binding defines how SAML messages are transported over network protocols. In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`.
 
-The endpoint URL specifies where and how the messages are sent according to that binding.
-
-In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`. The table below shows the supported endpoints for each binding:
+Endpoint URLs specify where and how the messages are sent according to that binding. The table below shows the supported endpoints for each binding:
 
 | Endpoint                  | URL                                                          |
 | ------------------------- | ------------------------------------------------------------ |
@@ -47,7 +45,7 @@ A signing certificate allow authentik to digitally sign SAML assertions and resp
 
 #### Signing algorithm
 
-Signing algorithms (such as ECDSA-SHA256) define the cryptographic method used for creating and validating the signatures.
+Signing algorithms (such as RSA-SHA256 or ECDSA-SHA256) define the cryptographic method used for creating and validating the signatures.
 
 #### Digest algorithm
 
