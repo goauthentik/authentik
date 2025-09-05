@@ -29,13 +29,11 @@ In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP 
 
 SAML Metadata ensures that SAML single sign-on works reliably by exchanging and maintaining identity and connection information. SAML metadata is an XML document that defines how IdPs and SPs securely interact for authentication. It includes information such as endpoints, bindings, certificates, and unique identifiers.
 
-### Importing/Exporting SAML metadata
-
-#### Importing SP SAML metadata
+### Importing SP SAML metadata
 
 SP SAML metadata can be [imported into authentik](./create-saml-provider.md#create-a-saml-provider-from-sp-metadata-import-sp-metadata) to automatically configure a SAML provider based on the requirements of an SP.
 
-#### Exporting authentik SAML metadata
+### Exporting authentik SAML metadata
 
 SAML metadata can also be [exported from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to an SP.
 
@@ -114,15 +112,15 @@ For example, some SPs require users' first name (givenname) and last name (surna
     return request.user.name.split(" ", 1)[0]
     ```
 
-### NameID
+## NameID
 
 The NameID attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
-#### NameID property mapping
+### NameID property mapping
 
 In authentik, it's possible to configure which property mapping will be used to create the NameID attribute. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
 
-#### Default NameID policy
+### Default NameID policy
 
 In authentik, it's also possible to configure the default NameID Policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
 
@@ -138,7 +136,7 @@ In authentik, it's also possible to configure the default NameID Policy used for
 By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using an user's email address as the NameID attribute.
 :::
 
-### AuthnContextClassRef
+## AuthnContextClassRef
 
 The AuthnContextClassRef attribute appears in the SAML assertion and contains a URI that describes the assurance level, such as password, multi-factor, or smartcard authentication. SPs use this information to understand and verify how the user was authenticated by an IdP.
 
