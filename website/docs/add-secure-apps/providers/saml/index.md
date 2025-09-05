@@ -118,7 +118,7 @@ The NameID attribute acts as a unique identifier for an user. While other attrib
 
 ### NameID property mapping
 
-In authentik, it's possible to configure which property mapping will be used to create the NameID attribute. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
+In authentik, it's possible to configure which property mapping will be used to create the NameID value. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
 
 ### Default NameID policy
 
@@ -126,7 +126,7 @@ In authentik, it's also possible to configure the default NameID Policy used for
 
 | Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                               |
 | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the hashed user ID.                                                                                                                                                          |
+| Persistent - `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent`              | NameID will be set to the user's hashed ID.                                                                                                                                                        |
 | x509 Subject - `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName`       | NameID will be set to the user's `distinguishedName` attribute. This attribute is set by the LDAP source by default. If the attribute does not exist, it will fall back the persistent identifier. |
 | Windows - `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` | NameID will be set to the user's UPN. This is also set by the LDAP source, and also falls back to the persistent identifier.                                                                       |
 | Transient - `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`                | NameID will be set based on the user's session ID.                                                                                                                                                 |
@@ -142,4 +142,4 @@ The AuthnContextClassRef attribute appears in the SAML assertion and contains a 
 
 In authentik, it's possible to set the AuthnContextClassRef attribute to any property mapping that's enabled on a SAML provider. This is done via the **AuthnContextClassRef Property Mapping** on a SAML provider.
 
-Alternatively, when the **AuthnContextClassRef Property Mapping** field is left unpopulated on a SAML provider, the AuthnContextClassRef will be set based on the authentication method that the user used to authenticate.
+Alternatively, when the **AuthnContextClassRef Property Mapping** field is left unpopulated on a SAML provider, the AuthnContextClassRef will be set based on the method that the user authenticated with.
