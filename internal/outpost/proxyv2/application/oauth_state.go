@@ -68,11 +68,16 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	return u.String(), true
 }
 
-func (a *Application) createState(r *http.Request, fwd string) (string, error) {
+func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
 	s, _ := a.sessions.Get(r, a.SessionName())
 	if s.ID == "" {
 		// Ensure session has an ID
 		s.ID = base32RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+		// Save the session immediately so it persists
+		err := s.Save(r, w)
+		if err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
 	}
 	st := &OAuthState{
 		Issuer:    fmt.Sprintf("goauthentik.io/outpost/%s", a.proxyConfig.GetClientId()),
