@@ -84,7 +84,7 @@ jobs:
           - rac
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
       - name: Set up QEMU
@@ -147,7 +147,7 @@ jobs:
         goarch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v5
