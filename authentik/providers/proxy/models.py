@@ -25,6 +25,28 @@ SCOPE_AK_PROXY = "ak_proxy"
 OUTPOST_CALLBACK_SIGNATURE = "X-authentik-auth-callback"
 
 
+class OutpostProxySession(models.Model):
+    """Session storage for proxyv2 outposts using PostgreSQL"""
+
+    id = models.AutoField(primary_key=True)
+    session_key = models.TextField(unique=True, db_index=True)
+    user_id = models.UUIDField(null=True, blank=True, db_index=True)
+
+    # Session data
+    session_data = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        verbose_name = _("Outpost Proxy Session")
+        verbose_name_plural = _("Outpost Proxy Sessions")
+        db_table = "authentik_outposts_proxy_session"
+        indexes = [
+            models.Index(fields=["user_id"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"Session {self.session_key[:8]}..."
+
+
 def get_cookie_secret():
     """Generate random 32-character string for cookie-secret"""
     return "".join(SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
