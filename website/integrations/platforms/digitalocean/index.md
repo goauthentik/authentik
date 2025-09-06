@@ -76,7 +76,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 1. Log in to the [DigitalOcean control panel](https://cloud.digitalocean.com/) as an administrator.
 2. Navigate to **Settings** (bottom left) > **Single sign-on (OIDC)**, then click **Create**.
 3. Configure the following required settings:
-    - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>`
+    - **OpenID provider URL**: `https://authentik.company/application/o/<application_slug>/`
     - **OpenID client ID**: Set the client ID from authentik.
     - **OpenID client secret**: Set the client secret from authentik.
 4. Click **Test SSO config to continue**.
