@@ -309,7 +309,7 @@ docs-api-clean: ## Clean generated API documentation
 
 docker:  ## Build a docker image of the current source tree
 	mkdir -p ${GEN_API_TS}
-	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
+	DOCKER_BUILDKIT=1 docker build . -f lifecycle/container/Dockerfile --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
 	BUILD=true ${PWD}/scripts/test_docker.sh
