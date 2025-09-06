@@ -61,6 +61,8 @@ class InitialPermissionsMiddleware:
     ):
         if not created:
             return
+        if not hasattr(request, "request_id"):
+            return
         if request.request_id != _CTX_REQUEST.get().request_id:
             return
         user: User = request.user
