@@ -6,15 +6,18 @@ from tempfile import mkstemp
 from django.test import TransactionTestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.blueprints.v1.exporter import FlowExporter
+from authentik.blueprints.v1.exporter import Exporter, FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
-from authentik.core.models import Group
+from authentik.core.models import Application, Group, User
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.saml.models import SAMLProvider
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.consent.models import UserConsent
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -328,3 +331,65 @@ class TestBlueprintsV1(TransactionTestCase):
 
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
+
+    def test_exporter_excludes_user_consent_oauth(self):
+        """Test that UserConsent is excluded from export with OAuth provider"""
+        with transaction_rollback():
+            # Set up OIDC provider with explicit consent
+            user = User.objects.create(username=generate_id(), name=generate_id())
+            provider = OAuth2Provider.objects.create(
+                name=generate_id(),
+                client_id=generate_id(),
+                client_secret=generate_id(),
+                authorization_flow=None,
+            )
+            app = Application.objects.create(
+                name=generate_id(),
+                slug=generate_id(),
+                provider=provider,
+            )
+
+            # Simulate consent being granted
+            UserConsent.objects.create(
+                user=user, application=app, permissions="openid profile email"
+            )
+
+            # Run the general exporter - `ak export_blueprint`
+            exporter = Exporter()
+            export_yaml = exporter.export_to_string()
+            self.assertIsNotNone(export_yaml)
+            # Verify key models are in the export
+            self.assertIn("authentik_core.user", export_yaml)
+            self.assertIn("authentik_providers_oauth2.oauth2provider", export_yaml)
+            # UserConsent should NOT be in export (excluded to avoid nested serializer issues)
+            self.assertNotIn("authentik_stages_consent.userconsent", export_yaml)
+
+    def test_exporter_excludes_user_consent_saml(self):
+        """Test that UserConsent is excluded from export with SAML provider"""
+        with transaction_rollback():
+            # Set up SAML provider with explicit consent
+            user = User.objects.create(username=generate_id(), name=generate_id())
+            provider = SAMLProvider.objects.create(
+                name=generate_id(),
+                acs_url="https://example.com/acs",
+                issuer="https://authentik.example.com",
+                authorization_flow=None,
+            )
+            app = Application.objects.create(
+                name=generate_id(),
+                slug=generate_id(),
+                provider=provider,
+            )
+
+            # Simulate consent being granted
+            UserConsent.objects.create(user=user, application=app, permissions="email profile")
+
+            # Run the general exporter - `ak export_blueprint`
+            exporter = Exporter()
+            export_yaml = exporter.export_to_string()
+            self.assertIsNotNone(export_yaml)
+            # Verify key models are in the export
+            self.assertIn("authentik_core.user", export_yaml)
+            self.assertIn("authentik_providers_saml.samlprovider", export_yaml)
+            # UserConsent should NOT be in export (excluded to avoid nested serializer issues)
+            self.assertNotIn("authentik_stages_consent.userconsent", export_yaml)

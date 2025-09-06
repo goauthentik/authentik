@@ -21,6 +21,7 @@ from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_GENERATED
 from authentik.events.models import Event
 from authentik.flows.models import Flow, FlowStageBinding, Stage
 from authentik.policies.models import Policy, PolicyBinding
+from authentik.stages.consent.models import UserConsent
 from authentik.stages.prompt.models import PromptStage
 
 
@@ -30,8 +31,10 @@ class Exporter:
     excluded_models: list[type[Model]] = []
 
     def __init__(self):
+
         self.excluded_models = [
             Event,
+            UserConsent,  # Excluded due to nested serializer issues with groups_obj
         ]
 
     def get_entries(self) -> Iterable[BlueprintEntry]:
