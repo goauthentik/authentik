@@ -59,7 +59,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol settings**:
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
             - Strict: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
