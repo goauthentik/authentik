@@ -66,7 +66,7 @@ To support the integration of DigitalOcean with authentik, you need to create a 
         - Set a `Strict` redirect URI to `https://cloud.digitalocean.com/sessions/sso/callback`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - Add the `profile` scope which was created in the previous section. Do not remove authentik's `authentik default OAuth Mapping: OpenID 'profile'` as some attributes such as `name` are required by DigitalOcean.
+            - Add the `profile` scope created in the previous section. Do not remove authentik’s `authentik default OAuth Mapping: OpenID 'profile'`, as attributes such as `name` are required by DigitalOcean.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
