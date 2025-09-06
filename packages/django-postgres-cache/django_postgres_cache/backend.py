@@ -25,6 +25,12 @@ class DatabaseCache(BaseDatabaseCache):
             return {}
 
     def keys(self, keys_pattern: str, version=None) -> list[str]:
+        try:
+            return self._keys(keys_pattern, version=version)
+        except ProgrammingError:
+            return []
+
+    def _keys(self, keys_pattern: str, version=None) -> list[str]:
         keys_pattern = self.make_key(keys_pattern.replace("*", ".*"), version=version)
         db = router.db_for_read(self.cache_model_class)
         connection = connections[db]
