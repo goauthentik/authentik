@@ -51,7 +51,7 @@ To support the integration of Home Assistant with authentik you need to create a
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID** as the provider type.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - **Signing Key**: Select any available signing key.
         - **Redirect URIs**:
             - Strict: `http://hass.company:8123/auth/openid/callback`
