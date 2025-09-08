@@ -14,6 +14,7 @@ from django_redis import get_redis_connection
 from dramatiq.broker import Broker
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
+from psycopg.errors import Error
 from redis.exceptions import RedisError
 from structlog.stdlib import get_logger
 
@@ -26,6 +27,7 @@ from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
+DB_ERRORS = (OperationalError, Error, RedisError)
 
 
 class TenantMiddleware(Middleware):
@@ -175,7 +177,7 @@ class _healthcheck_handler(BaseHTTPRequestHandler):
             redis_conn = get_redis_connection()
             redis_conn.ping()
             self.send_response(200)
-        except (OperationalError, RedisError):  # pragma: no cover
+        except DB_ERRORS:  # pragma: no cover
             self.send_response(503)
         self.send_header("Content-Type", "text/plain; charset=utf-8")
         self.send_header("Content-Length", "0")
@@ -216,6 +218,14 @@ class WorkerStatusMiddleware(Middleware):
             hostname=socket.gethostname(),
             version=authentik_full_version(),
         )
+        while True:
+            try:
+                WorkerStatusMiddleware.keep(status)
+            except DB_ERRORS:  # pragma: no cover
+                sleep(10)
+                pass
+
+    def keep(status: WorkerStatus):
         lock_id = f"goauthentik.io/worker/status/{status.pk}"
         with pglock.advisory(lock_id, side_effect=pglock.Raise):
             while True:
