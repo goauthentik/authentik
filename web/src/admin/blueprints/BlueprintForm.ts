@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#components/ak-toggle-group";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
@@ -140,30 +141,36 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           </ak-form-element-horizontal>`
                         : nothing}
                     ${this.source === blueprintSource.oci
-                        ? html`<ak-form-element-horizontal label=${msg("URL")} name="path">
-                              <input
-                                  type="text"
-                                  value="${ifDefined(this.instance?.path)}"
-                                  class="pf-c-form-control"
-                                  required
-                              />
-                              <p class="pf-c-form__helper-text">
-                                  ${msg(
-                                      "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.",
-                                  )}
-                              </p>
-                              <p class="pf-c-form__helper-text">
-                                  ${msg("See more about OCI support here:")}&nbsp;
-                                  <a
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      href="${docLink(
-                                          "/docs/customize/blueprints/?utm_source=authentik#storage---oci",
-                                      )}"
-                                      >${msg("Documentation")}</a
-                                  >
-                              </p>
-                          </ak-form-element-horizontal>`
+                        ? html` <ak-text-input
+                              name="path"
+                              label=${msg("OCI URL")}
+                              input-hint="code"
+                              required
+                              placeholder="oci://..."
+                              value="${ifDefined(this.instance?.path)}"
+                              .bighelp=${html`<p class="pf-c-form__helper-text">
+                                      ${msg(
+                                          html` A valid OCI manifest URL, prefixed with the protocol
+                                              e.g.&nbsp;<code
+                                                  >oci://registry.domain.tld/path/to/manifest</code
+                                              >`,
+                                      )}
+                                  </p>
+                                  <p class="pf-c-form__helper-text">
+                                      <span>
+                                          ${msg("Read more about")}&nbsp;
+                                          <a
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              href=${docLink(
+                                                  "/customize/blueprints/#storage---oci",
+                                              )}
+                                              >${msg("OCI Support")}</a
+                                          >.
+                                      </span>
+                                  </p> `}
+                          >
+                          </ak-text-input>`
                         : nothing}
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">

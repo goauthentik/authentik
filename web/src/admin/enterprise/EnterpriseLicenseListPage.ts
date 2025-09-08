@@ -9,6 +9,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -251,7 +252,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__body">
-                <a target="_blank" href="https://docs.goauthentik.io/docs/enterprise/get-started"
+                <a target="_blank" href=${docLink("/enterprise/get-started")}
                     >${msg("Learn more")}</a
                 >
             </div>
