@@ -10457,6 +10457,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /outposts/instances/{uuid}/force_refresh/:
+    post:
+      operationId: outposts_instances_force_refresh_create
+      description: Force an outpost to refresh its configuration. Will also clear
+        its cache.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Outpost.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully refreshed outpost
+        '400':
+          description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /outposts/instances/{uuid}/health/:
     get:
       operationId: outposts_instances_health_list
