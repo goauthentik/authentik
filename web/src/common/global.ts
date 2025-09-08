@@ -49,11 +49,19 @@ export function globalAK(): GlobalAuthentik {
     return ak;
 }
 
-export function docLink(path: string): string {
-    const ak = globalAK();
+export function docsURL(urlLike: string | URL): URL {
+    const { build, versionSubdomain } = globalAK();
+
+    let url: URL;
+
     // Default case or beta build which should always point to latest
-    if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
+    if (!build || build === "dev" || import.meta.env.NODE_ENV === "development") {
+        url = new URL(urlLike, "https://next.goauthentik.io");
+    } else {
+        url = new URL(urlLike, `https://${versionSubdomain}.goauthentik.io`);
     }
-    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
+
+    url.searchParams.append("utm_source", "authentik");
+
+    return url;
 }

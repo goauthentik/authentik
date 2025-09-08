@@ -1,6 +1,6 @@
 import "#elements/buttons/TokenCopyButton/index";
 
-import { docLink } from "#common/global";
+import { docsURL } from "#common/global";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
 
@@ -24,9 +24,7 @@ export class OutpostDeploymentModal extends ModalButton {
                 <p>
                     <a
                         target="_blank"
-                        href="${docLink(
-                            "/docs/add-secure-apps/outposts?utm_source=authentik#deploy",
-                        )}"
+                        href=${docsURL("/add-secure-apps/outposts#deploy")}
                         rel="noopener noreferrer"
                         >${msg("View deployment documentation")}</a
                     >

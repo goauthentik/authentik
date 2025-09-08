@@ -1,4 +1,4 @@
-import { docLink } from "#common/global";
+import { docsURL } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -16,9 +16,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     T,
     string
 > {
-    docLink(): string {
-        return "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik";
-    }
+    protected docLink: string | URL = "/add-secure-apps/providers/property-mappings/expression";
 
     getSuccessMessage(): string {
         return this.instance
@@ -48,7 +46,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
-                    <a target="_blank" rel="noopener noreferrer" href="${docLink(this.docLink())}">
+                    <a target="_blank" rel="noopener noreferrer" href=${docsURL(this.docLink)}>
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>

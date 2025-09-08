@@ -1,4 +1,4 @@
-import { docLink, globalAK } from "#common/global";
+import { docsURL, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 import { paramURL } from "#elements/router/RouterOutlet";
@@ -60,7 +60,7 @@ export class LibraryPageApplicationEmptyList
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a rel="noopener noreferrer" href="${docLink("/docs/applications")}" target="_blank"
+                <a rel="noopener noreferrer" href=${docsURL("/applications")} target="_blank"
                     >${msg("Refer to documentation")}</a
                 >
             </div>
