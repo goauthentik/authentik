@@ -151,7 +151,7 @@
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.1",
-        "eslint": "^9.34.0",
+        "eslint": "^9.35.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "fuse.js": "^7.1.0",
