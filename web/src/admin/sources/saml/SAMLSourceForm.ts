@@ -108,7 +108,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "When enabled, Authentik will look for a Signature inside of the Assertion element.",
+                        "When enabled, authentik will look for a Signature inside of the Assertion element.",
                     )}
                 </p>
             </ak-form-element-horizontal>
