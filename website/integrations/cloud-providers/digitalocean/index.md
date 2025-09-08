@@ -96,4 +96,4 @@ To support the integration of DigitalOcean with authentik, you need to create a 
 
 ## Configuration verification
 
-To verify the integration of authentik with DigitalOcean, navigate to the authentik User interface and click the DigitalOcean application to initiate a Single Sign-On login. Upon successful login, you should be redirected to the DigitalOcean dashboard and have the appropriate permissions set by your authentik groups
+To verify the integration of authentik with DigitalOcean, navigate to the authentik User interface and click the DigitalOcean application to initiate a Single Sign-On login. Upon successful login, you should be redirected to the DigitalOcean dashboard and have the appropriate permissions set by your authentik groups.
