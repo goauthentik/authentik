@@ -1,28 +1,20 @@
 """GoogleChromeConnector API Views"""
 
 from rest_framework.viewsets import ModelViewSet
-from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.endpoints.api.connectors import ConnectorSerializer
 from authentik.enterprise.endpoints.connectors.google_chrome.models import (
     GoogleChromeConnector,
 )
-from authentik.flows.api.stages import StageSerializer
-
-LOGGER = get_logger()
 
 
-class GoogleChromeConnectorSerializer(EnterpriseRequiredMixin, StageSerializer):
+class GoogleChromeConnectorSerializer(ConnectorSerializer):
     """GoogleChromeConnector Serializer"""
 
-    class Meta:
+    class Meta(ConnectorSerializer.Meta):
         model = GoogleChromeConnector
-        fields = StageSerializer.Meta.fields + [
-            "configure_flow",
-            "friendly_name",
-            "credentials",
-        ]
+        fields = ConnectorSerializer.Meta.fields
 
 
 class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):
@@ -32,7 +24,6 @@ class GoogleChromeConnectorViewSet(UsedByMixin, ModelViewSet):
     serializer_class = GoogleChromeConnectorSerializer
     filterset_fields = [
         "name",
-        "configure_flow",
     ]
     search_fields = ["name"]
     ordering = ["name"]
