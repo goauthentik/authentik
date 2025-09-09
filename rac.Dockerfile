@@ -15,6 +15,7 @@ WORKDIR /go/src/goauthentik.io
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     dpkg --add-architecture arm64 && \
     apt-get update && \
+    apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
@@ -50,7 +51,7 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
 
 USER root
 RUN apt-get update && \
-    apt-get upgrade -y && \
+    apt-get dist-upgrade -y && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/*
 USER 1000
