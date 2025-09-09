@@ -3,7 +3,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { docsURL } from "#common/global";
+import { docLink } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 
@@ -87,7 +87,7 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                             <a
                                 rel="noopener noreferrer"
                                 target="_blank"
-                                href=${docsURL("/customize/policies/expression")}
+                                href=${docLink("/customize/policies/expression")}
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>

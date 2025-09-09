@@ -5,7 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { docsURL } from "#common/global";
+import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
@@ -217,7 +217,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href=${docsURL("/add-secure-apps/outposts")}
+                        href=${docLink("/add-secure-apps/outposts")}
                         >${msg("See documentation")}</a
                     >.
                 </p>
@@ -251,7 +251,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href=${docsURL("/add-secure-apps/outposts#configuration")}
+                                href=${docLink("/add-secure-apps/outposts#configuration")}
                                 >${msg("Documentation")}</a
                             >
                         </p>

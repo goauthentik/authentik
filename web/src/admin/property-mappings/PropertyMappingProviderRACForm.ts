@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { docsURL } from "#common/global";
+import { docLink } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import type { RadioOption } from "#elements/forms/Radio";
@@ -146,7 +146,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                             <a
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                href=${docsURL(
+                                href=${docLink(
                                     "/add-secure-apps/providers/property-mappings/expression",
                                 )}
                             >

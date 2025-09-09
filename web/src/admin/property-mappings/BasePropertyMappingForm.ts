@@ -1,4 +1,4 @@
-import { docsURL } from "#common/global";
+import { docLink } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -46,7 +46,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}
-                    <a target="_blank" rel="noopener noreferrer" href=${docsURL(this.docLink)}>
+                    <a target="_blank" rel="noopener noreferrer" href=${docLink(this.docLink)}>
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>

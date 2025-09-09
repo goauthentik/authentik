@@ -49,7 +49,7 @@ export function globalAK(): GlobalAuthentik {
     return ak;
 }
 
-export function docsURL(urlLike: string | URL, base = import.meta.env.AK_DOCS_URL): string {
+export function docLink(urlLike: string | URL, base = import.meta.env.AK_DOCS_URL): string {
     const url = new URL(urlLike, base);
 
     url.searchParams.append("utm_source", "authentik");

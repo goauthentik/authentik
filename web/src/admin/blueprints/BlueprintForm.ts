@@ -6,7 +6,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { docsURL } from "#common/global";
+import { docLink } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -162,7 +162,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                           <a
                                               target="_blank"
                                               rel="noopener noreferrer"
-                                              href=${docsURL(
+                                              href=${docLink(
                                                   "/customize/blueprints/#storage---oci",
                                               )}
                                               >${msg("OCI Support")}</a
