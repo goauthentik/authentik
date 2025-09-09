@@ -79,7 +79,7 @@ AppFlowy requires the private key in [PKCS#1](https://en.wikipedia.org/wiki/PKCS
 1.  Convert the private key to PKCS#1 format:
 
 ```bash
-openssl rsa -in <certificate_name>.pem -traditional -out key_pkcs1.pem
+openssl rsa -in <certificate_private_key>.pem -traditional -out key_pkcs1.pem
 ```
 
 2.  Convert the PKCS#1 private key to a single-line base64 string:
@@ -93,7 +93,7 @@ The output of this command will be required for the `GOTRUE_SAML_PRIVATE_KEY` va
 3.  Convert the certificate to a single-line format with `\n` escapes:
 
 ```bash
-awk 'NF {sub(/\r/, ""); printf "%s\\n",$0}' <certificate_name>.pem
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0}' <certificate>.pem
 ```
 
 The output of this command will be required for the `AUTH_SAML_CERT` value in a later section.
@@ -104,7 +104,7 @@ The output of this command will be required for the `AUTH_SAML_CERT` value in a 
 1.  Convert the private key to PKCS#1 format:
 
 ```powershell
-openssl rsa -in <certificate_name>.pem -traditional -out key_pkcs1.pem
+openssl rsa -in <certificate_private_key>.pem -traditional -out key_pkcs1.pem
 ```
 
 2. Convert the PKCS#1 private key to a single-line base64 string:
@@ -120,7 +120,7 @@ openssl rsa -in <certificate_name>.pem -traditional -out key_pkcs1.pem
 3. Convert the certificate to a single-line format with `\n` escapes:
 
 ```powershell
-(Get-Content <certificate_name>.pem) `
+(Get-Content <certificate>.pem) `
   | ForEach-Object { ($_ -replace "`r","") + "\n" } `
   | Out-String -Stream `
   | ForEach-Object { $_.TrimEnd() } `
