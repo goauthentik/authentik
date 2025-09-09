@@ -18,7 +18,7 @@ If the default source mappings are not enough, or if you need to get additional 
 
 Here are the steps:
 
-1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
+1. In authentik, open the Admin interface, and then navigate to **Customization > Property Mappings**.
 2. Click **Create**, select the property mapping type for your source, and then click **Next**.
 3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
 4. In the **Expression** field enter Python expressions to retrieve the value from the source. See [Expression Semantics](#expression-semantics) below for details.

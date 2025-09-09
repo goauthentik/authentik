@@ -66,7 +66,7 @@ _I'm only going to list the mandatory/important fields to complete._
 
 ## authentik
 
-26. Under _Directory -> Federation & Social login_ Click **Create Google OAuth Source**
+26. Under **Directory > Federation & Social login** click **Create Google OAuth Source**
 
 27. **Name**: Choose a name (For the example I use Google)
 28. **Slug**: google (If you choose a different slug the URLs will need to be updated to reflect the change)

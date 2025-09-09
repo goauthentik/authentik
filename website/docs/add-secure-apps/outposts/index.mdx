@@ -21,39 +21,37 @@ Any change made to the outpost's associated app or provider immediately triggers
 
 ## Create and configure an outpost
 
-    1. To create a new outpost, log in to authentik as an administrator, and open to the Admin interface.
-
-    2. Navigate to **Applications --> Outposts** and then click **Create**.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and then click **Create**.
 
 ![](./outpost-create.png)
 
-    3. Define the following values:
+3. Set the following values:
+    - **Name**: define a name for the outpost.
+    - **Type**: select the outpost type (Proxy, LDAP, Radius, RAC).
+    - **Integration**: select either Docker or Kubernetes, or optionally select `----` and [manually deploy the outpost](#outpost-integrations).
+    - **Applications**: select the applications that you want the outpost to serve.
+    - **Advanced settings (optional)**: for further optional configuration settings, refer to [Configuration](#configuration) below.
 
-    - **Name**: a name for the new outpost
-    - **Type**: select the provider type (Proxy, LDAP, Radius, RAC)
-    - **Integration** (_optional_): select either your [Docker or Kubernetes connection](#more-about-outpost-integrations)
-    - **Applications**: select the applications that you want the outpost to serve
-    - **Advanced settings** (*optional*): For further optional configuration settings, refer to [Configuration](#configuration) below.
-
-    4. Click **Create** to save your new outpost settings and close the box.
+4. Click **Create**.
 
 Upon creation, a service account and a token is generated. The service account only has permissions to read the outpost and provider configuration. This token is used by the outpost to connect to authentik.
 
-### More about outpost integrations
+## Outpost integrations
 
 authentik can manage the deployment, updating, and general lifecycle of an outpost. To communicate with the underlying platforms on which the outpost is deployed, authentik has several built-in integrations.
 
 - If you've deployed authentik on Docker Compose, authentik automatically creates an integration for the local docker socket (See [Docker](./integrations/docker.md)).
 - If you've deployed authentik on Kubernetes, with `kubernetesIntegration` set to true (default), authentik automatically creates an integrations for the local Kubernetes Cluster (see [Kubernetes](./integrations/kubernetes.md)).
 
-To deploy an outpost with these integrations, select them during the creation of an outpost. A background task is started, which creates the container/deployment. The outpost deployment can be monitored from the **Dashboards -> System Tasks** page in the Admin interface.
+To deploy an outpost with these integrations, select them during the creation of an outpost. A background task is started, which creates the container/deployment. The outpost deployment can be monitored from the **Dashboards > System Tasks** page in the Admin interface.
 
 To deploy an outpost manually, see:
 
 - [Kubernetes](./manual-deploy-kubernetes.md)
 - [Docker Compose](./manual-deploy-docker-compose.md)
 
-### Configuration
+## Configuration
 
 Outposts fetch their configuration from authentik. Below are all the options you can set, and how they influence the outpost.
 

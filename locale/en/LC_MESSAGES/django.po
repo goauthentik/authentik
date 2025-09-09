@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-18 00:11+0000\n"
+"POT-Creation-Date: 2025-09-04 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +152,10 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
 #: authentik/core/models.py
 msgid "name"
 msgstr ""
@@ -206,11 +210,11 @@ msgstr ""
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can unassign permissions from users"
 msgstr ""
 
@@ -2197,6 +2201,14 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
 msgstr ""
 
 #: authentik/rbac/models.py
