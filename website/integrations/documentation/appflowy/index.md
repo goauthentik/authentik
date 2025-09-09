@@ -4,10 +4,13 @@ sidebar_label: AppFlowy
 support_level: community
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What is AppFlowy
 
 > AppFlowy is an open-source workspace collaboration platform (similar to Notion) that lets teams create, manage, and collaborate on documents, databases, and projects.
-> 
+>
 > -- https://appflowy.com
 
 ## Preparation
@@ -27,12 +30,12 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create a certificate-key pair
 
-1. Log in to authentik as an administrator and open the authentik Admin interface. 
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Generate**.
 3. Set the following required fields:
-   - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
-   - **Validity days**: set an appropriate certificate validity period (or keep the default value of `365`).
-   - **Private key algorithm**: `RSA`
+    - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
+    - **Validity days**: set an appropriate certificate validity period (or keep the default value of `365`).
+    - **Private key algorithm**: `RSA`
 4. Click **Generate** and take note of the **Certificate** and **Private key** values as they will be required later on.
 
 ### Create an application and provider in authentik
@@ -56,32 +59,89 @@ To support the integration of AppFlowy with authentik, you need to create a cert
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 3. Click **Submit** to create the application and provider.
 
+### Copy metadata download link
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+3. Under **Related objects** > **Metadata**, click on **Copy download URL**. This URL is your **SAML Metadata URL** and it will be required in the next section.
+
 ## AppFlowy configuration
 
 Configure AppFlowy Cloud to use authentik as its SAML IdP.
 
 ### Convert the certificate and private key
 
-AppFlowy requires the private key in PKCS#1 and base64 (single-line) format.
+AppFlowy requires the private key in PKCS#1 and base64 (single-line) format so you'll need to convert the certificate and private key to these formats.
 
-1. Convert the private key to PKCS#1 (the `-traditional` flag is required with recent OpenSSL versions):
-   ```bash
-   openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
-   ```
+<Tabs>
+<TabItem value="linuxmac" label="Linux and MacOS" default>
+
+1.  Convert the private key to PKCS#1 (the `-traditional` flag is required with recent OpenSSL versions):
+
+```bash
+openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
+```
+
+2.  Convert the PKCS#1 private key to a single-line base64 string:
+
+```bash
+sed -n '/^-----BEGIN RSA PRIVATE KEY-----$/,/^-----END RSA PRIVATE KEY-----$/p' key_pkcs1.pem      | grep -v '^-----'      | tr -d '\n'
+```
+
+Copy this output for `GOTRUE_SAML_PRIVATE_KEY`.
+
+3.  Convert the certificate to a single-line format with `\n` escapes:
+
+```bash
+awk 'NF {sub(/\r/, ""); printf "%s\\n",$0}' AppFlowyCertSAML_certificate.pem
+```
+
+The output of this command will be required for the `AUTH_SAML_CERT` value in a later section.
+
+</TabItem>
+<TabItem value="windows" label="Windows">
+
+1.  Convert the private key to PKCS#1:
+
+```powershell
+openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
+```
+
 2. Convert the PKCS#1 private key to a single-line base64 string:
-   ```bash
-   sed -n '/^-----BEGIN RSA PRIVATE KEY-----$/,/^-----END RSA PRIVATE KEY-----$/p' key_pkcs1.pem      | grep -v '^-----'      | tr -d '\n'
-   ```
-   Copy this output for `GOTRUE_SAML_PRIVATE_KEY`.
+
+```powershell
+(Get-Content key_pkcs1.pem) -join "`n" `
+  | Select-String -Pattern '^-{5}' -NotMatch `
+  | ForEach-Object { $_ -replace '\s','' } `
+  | ForEach-Object { $_ } `
+  | Out-String -Stream | ForEach-Object { $_.Trim() }
+```
+
 3. Convert the certificate to a single-line format with `\n` escapes:
-   ```bash
-   awk 'NF {sub(/\r/, ""); printf "%s\\n",$0}' AppFlowyCertSAML_certificate.pem
-   ```
-   Copy this output for `AUTH_SAML_CERT`.
 
-### Configure the `.env` file in AppFlowy
+```powershell
+(Get-Content AppFlowyCertSAML_certificate.pem) `
+  | ForEach-Object { ($_ -replace "`r","") + "\n" } `
+  | Out-String -Stream `
+  | ForEach-Object { $_.TrimEnd() } `
+  | ForEach-Object { $_ -replace "`n", "\\n" }
+```
 
-In the AppFlowy root installation directory, update the `.env` file:
+The output of this command will be required for the `AUTH_SAML_CERT` value in a later section.
+
+</TabItem>
+</Tabs>
+
+### Configure Metadata URL
+
+1. Log in the AppFlowy Admin Console at `https://appflowy.company/console`.
+2. Navigate to **Admin** > **Create SSO**.
+3. Set the **Metadata URL** field to the SAML Metadata URL from authentik.
+4. Click **Create**.
+
+### Configure AppFlowy environment file
+
+Add the following lines to the `.env` file in the root directory of your AppFlowy installation:
 
 ```bash
 AUTH_SAML_ENABLED=true
@@ -100,19 +160,10 @@ AUTH_SAML_CERT="<Certificate with \\n escapes (single line)>"
 ```
 
 :::note
-Ensure `GOTRUE_DISABLE_SIGNUP=false` so first-time SAML users can sign in.
+Ensure `GOTRUE_DISABLE_SIGNUP=false` is set so that first-time SAML users can sign in.
 :::
 
-Restart the AppFlowy services.
-
-### Configure SAML SSO in the AppFlowy Admin Dashboard
-
-1. In authentik, open **Applications → Providers → Provider for AppFlowy**.
-2. Under **Metadata related objects**, copy the **download URL** (metadata URL).
-3. Open the AppFlowy Admin Console at `https://appflowy.company/console` and sign in.
-4. Go to **Admin → Create SSO**.
-5. Paste the **Metadata URL** from authentik.
-6. Click **Create**.
+Restart the AppFlowy services to apply the changes.
 
 ## Configuration verification
 
