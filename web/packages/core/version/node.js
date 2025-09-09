@@ -3,11 +3,11 @@
  *
  * @runtime node
  */
+import { NodeEnvironment } from "#environment/node";
 import { parse } from "semver";
 
 // ts-import-sorter: disable
 import PackageJSON from "../../../../package.json" with { type: "json" };
-import { NodeEnvironment } from "../environment/node.js";
 
 //#region Semantic Versioning
 
