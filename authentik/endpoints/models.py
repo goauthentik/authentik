@@ -5,8 +5,8 @@ from django.utils.functional import cached_property
 
 from authentik.core.models import User
 from authentik.endpoints.common_data import CommonDeviceData
-from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
+from authentik.policies.models import PolicyBindingModel
 
 
 class Device(SerializerModel):
@@ -15,6 +15,7 @@ class Device(SerializerModel):
     identifier = models.TextField(unique=True)
     users = models.ManyToManyField(User, through="DeviceUser")
     connections = models.ManyToManyField("Connector", through="DeviceConnection")
+    group = models.ForeignKey("DeviceGroup", null=True, on_delete=models.SET_DEFAULT, default=None)
 
     @cached_property
     def data(self) -> CommonDeviceData:
@@ -41,5 +42,10 @@ class Connector(SerializerModel):
     name = models.TextField()
 
 
-class EndpointStage(Stage):
-    pass
+# class EndpointStage(Stage):
+#     pass
+
+
+class DeviceGroup(PolicyBindingModel):
+
+    name = models.TextField(unique=True)
