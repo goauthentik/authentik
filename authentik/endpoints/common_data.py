@@ -23,7 +23,7 @@ class CommonDeviceData(BaseModel):
     class Disk(BaseModel):
         encryption: bool
 
-    class OS(BaseModel):
+    class OperatingSystem(BaseModel):
         firewall_enabled: bool
         family: OSFamily
         name: str
@@ -41,7 +41,7 @@ class CommonDeviceData(BaseModel):
         name: str
         version: str
 
-    os: OS | UNSUPPORTED
+    os: OperatingSystem | UNSUPPORTED
     disks: list[Disk] | UNSUPPORTED
     network: Network | UNSUPPORTED
     hardware: Hardware | UNSUPPORTED

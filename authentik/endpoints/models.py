@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from deepmerge import always_merger
 from django.db import models
 from django.utils.functional import cached_property
 
@@ -10,7 +11,7 @@ from authentik.policies.models import PolicyBindingModel
 
 
 class Device(SerializerModel):
-    device_uuid = models.UUIDField(default=uuid4)
+    device_uuid = models.UUIDField(default=uuid4, primary_key=True)
 
     identifier = models.TextField(unique=True)
     users = models.ManyToManyField(User, through="DeviceUser")
@@ -19,7 +20,10 @@ class Device(SerializerModel):
 
     @cached_property
     def data(self) -> CommonDeviceData:
-        pass
+        data = {}
+        for _data in self.deviceconnection_set.all().values_list("data", flat=True):
+            always_merger.merge(data, _data)
+        return data
 
 
 class DeviceUser(SerializerModel):
