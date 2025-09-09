@@ -27,41 +27,34 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create a certificate-key pair
 
-1. From the authentik Admin interface, navigate to **System** > **Certificates** and click **Generate**.
-2. Set the following required configuration items:
+1. Log in to authentik as an administrator and open the authentik Admin interface. 
+2. Navigate to **System** > **Certificates** and click **Generate**.
+3. Set the following required fields:
    - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
    - **Validity days**: set an appropriate certificate validity period (or keep the default value of `365`).
    - **Private key algorithm**: `RSA`
-3. Click **Generate** and take note of the **Certificate** and **Private key** values as they will be required later on.
+4. Click **Generate** and take note of the **Certificate** and **Private key** values as they will be required later on.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-3. Application: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-4. **Choose a Provider type**: select **SAML Provider** as the provider type.
-5. **Configure the Provider**:
-   - **Name**: `Provider for AppFlowy`
-   - **Authorization flow**: `default-provider-authorization-explicit-consent`
-   - **Protocol settings**:
-     - **ACS URL**: `https://appflowy.company/gotrue/sso/saml/acs`
-     - **Issuer**: `authentik`
-     - **Service Provider Binding**: `Post`
-     - **Audience**: `https://appflowy.company/gotrue/sso/saml/metadata`
-   - **Advanced flow settings**:
-     - **Authentication flow**: `default-authentication-flow`
-     - **Invalidation flow**: `default-provider-invalidation-flow`
-   - **Advanced protocol settings**:
-     - **Signing certificate**: select the certificate created earlier
-     - **Sign assertions**: enabled
-     - **Sign responses**: enabled
-     - **Verification certificate**: select the same certificate
-     - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
-     - **Default relay state**: `https://appflowy.company/auth/callback`
-     - **Signature algorithm**: `RSA-SHA256` (default)
-6. **Configure Bindings** (optional): create [bindings](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage which users see and can access AppFlowy on **My Applications**.
-7. Click **Submit** to create the application and provider.
-7. Navigate to **Applications → Providers → Provider for AppFlowy** and keep this page open to retrieve the SSO (POST) URL and metadata URL later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://appflowy.company/gotrue/sso/saml/acs`
+        - **Issuer**: `authentik`
+        - **Service Provider Binding**: `Post`
+        - **Audience**: `https://appflowy.company/gotrue/sso/saml/metadata`
+        - Under **Advanced protocol settings**:
+            - **Signing certificate**: select the certificate created earlier
+            - **Sign assertions**: enabled
+            - **Sign responses**: enabled
+            - **Verification certificate**: select the same certificate
+            - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
+            - **Default relay state**: `https://appflowy.company/auth/callback`
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+3. Click **Submit** to create the application and provider.
 
 ## AppFlowy configuration
 
