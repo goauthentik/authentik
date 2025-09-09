@@ -41,7 +41,7 @@ from authentik.core.models import (
     User,
     UserSourceConnection,
 )
-from authentik.endpoints.models import Device, DeviceConnection, DeviceUser
+from authentik.endpoints.models import Connector, Device, DeviceConnection, DeviceUser
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsage
 from authentik.enterprise.providers.google_workspace.models import (
@@ -106,6 +106,7 @@ def excluded_models() -> list[type[Model]]:
         OutpostServiceConnection,
         Policy,
         PolicyBindingModel,
+        Connector,
         # Classes that have other dependencies
         Session,
         AuthenticatedSession,
