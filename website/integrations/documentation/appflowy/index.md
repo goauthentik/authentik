@@ -71,12 +71,12 @@ Configure AppFlowy Cloud to use authentik as its SAML IdP.
 
 ### Convert the certificate and private key
 
-AppFlowy requires the private key in PKCS#1 and base64 (single-line) format so you'll need to convert the certificate and private key to these formats.
+AppFlowy requires the private key in [PKCS#1](https://en.wikipedia.org/wiki/PKCS_1) and base64 (single-line) format, so you'll need to convert the certificate and private key to these formats.
 
 <Tabs>
 <TabItem value="linuxmac" label="Linux and MacOS" default>
 
-1.  Convert the private key to PKCS#1 (the `-traditional` flag is required with recent OpenSSL versions):
+1.  Convert the private key to PKCS#1 format:
 
 ```bash
 openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
@@ -88,7 +88,7 @@ openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
 sed -n '/^-----BEGIN RSA PRIVATE KEY-----$/,/^-----END RSA PRIVATE KEY-----$/p' key_pkcs1.pem      | grep -v '^-----'      | tr -d '\n'
 ```
 
-Copy this output for `GOTRUE_SAML_PRIVATE_KEY`.
+The output of this command will be required for the `GOTRUE_SAML_PRIVATE_KEY` value in a later section.
 
 3.  Convert the certificate to a single-line format with `\n` escapes:
 
@@ -101,7 +101,7 @@ The output of this command will be required for the `AUTH_SAML_CERT` value in a 
 </TabItem>
 <TabItem value="windows" label="Windows">
 
-1.  Convert the private key to PKCS#1:
+1.  Convert the private key to PKCS#1 format:
 
 ```powershell
 openssl rsa -in AppFlowyCertSAML_private_key.pem -traditional -out key_pkcs1.pem
@@ -136,19 +136,19 @@ The output of this command will be required for the `AUTH_SAML_CERT` value in a 
 
 1. Log in the AppFlowy Admin Console at `https://appflowy.company/console`.
 2. Navigate to **Admin** > **Create SSO**.
-3. Set the **Metadata URL** field to the SAML Metadata URL from authentik.
+3. Set the **Metadata URL** to the **SAML Metadata URL** from authentik.
 4. Click **Create**.
 
 ### Configure AppFlowy environment file
 
-Add the following lines to the `.env` file in the root directory of your AppFlowy installation:
+Add the following environment variables to your AppFlowy installation:
 
 ```bash
 AUTH_SAML_ENABLED=true
 GOTRUE_SAML_ENABLED=true
 
 # Paste the SSO URL (POST binding) from authentik's "Provider for AppFlowy"
-AUTH_SAML_ENTRY_POINT="https://authentik.company/application/saml/appflowy/sso/binding/post"
+AUTH_SAML_ENTRY_POINT="https://authentik.company/application/saml/<application_slug>/sso/binding/post"
 
 AUTH_SAML_ISSUER="authentik"
 AUTH_SAML_CALLBACK_URL="https://appflowy.company/gotrue/sso/saml/acs"
@@ -163,11 +163,11 @@ AUTH_SAML_CERT="<Certificate with \\n escapes (single line)>"
 Ensure `GOTRUE_DISABLE_SIGNUP=false` is set so that first-time SAML users can sign in.
 :::
 
-Restart the AppFlowy services to apply the changes.
+Restart AppFlowy to apply the changes.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with AppFlowy, log out and then log back in by selecting the **AppFlowy** application from the authentik User interface. You should be automatically redirected and signed in to AppFlowy.
+To confirm that authentik is properly configured with AppFlowy, log out and then log back in by clicking the application created for AppFlowy in the authentik User interface. You should be automatically redirected and signed in to AppFlowy.
 
 ## Resources
 
