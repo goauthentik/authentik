@@ -1,5 +1,6 @@
 """Authenticator Devices API Views"""
 
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import (
@@ -15,7 +16,7 @@ from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.users import ParamUserSerializer
 from authentik.core.api.utils import MetaNameSerializer
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
+from authentik.endpoints.models import Device as EndpointDevice
 from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice

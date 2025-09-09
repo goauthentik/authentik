@@ -18,6 +18,7 @@ class OSFamily(Enum):
     iOS = "i_os"
     other = "other"
 
+
 class CommonDeviceData(BaseModel):
     class Disk(BaseModel):
         encryption: bool
