@@ -115,6 +115,9 @@ export default createDocusaurusConfig(
                     target: "_self",
                 },
             },
+            prism: {
+                additionalLanguages: ["powershell"],
+            },
         }),
 
         //#endregion
