@@ -253,7 +253,10 @@ class Prompt(SerializerModel):
             choices = self.get_choices(prompt_context, user, request)
             if not choices:
                 return ""
-            if value not in choices:
+            if not any(
+                choice == value if isinstance(choice, str) else choice.get("value") == value
+                for choice in choices
+            ):
                 return choices[0]
 
         return value
