@@ -6166,7 +6166,7 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: Successfully started impersonation
+          description: Successfully ended impersonation
         '400':
           content:
             application/json:
@@ -60498,7 +60498,8 @@ components:
         choices:
           type: array
           items:
-            type: string
+            type: object
+            additionalProperties: {}
           nullable: true
       required:
       - choices
