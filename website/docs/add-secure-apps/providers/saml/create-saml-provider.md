@@ -2,6 +2,8 @@
 title: Create a SAML provider
 ---
 
+authentik SAML providers can be created either from scratch or by using SAML metadata exported from the Service Provider (SP). Optionally, the metadata of an authentik SAML provider can be exported back to the SP. Note, however, that many SPs do not support exporting their metadata or importing Identity Provider (IdP) metadata.
+
 ## Create a SAML provider and application pair
 
 To create a provider along with the corresponding application that uses it for authentication, navigate to **Applications** > **Applications** and click **Create with provider**. We recommend this combined approach for most common use cases. Alternatively, you can use the legacy method to solely create the provider by navigating to **Applications** > **Providers** and clicking **Create**.
@@ -24,16 +26,20 @@ If you have exported SAML metadata from your SP, you can optionally create the a
 
 ## Export authentik SAML provider metadata
 
-After an authentik SAML provider has been created via any of the above methods, you can export its metadata in one of two ways:
+After an authentik SAML provider has been created via any of the above methods, you can access its metadata in one of two ways:
 
-### Download IdP metadata 
+### Download authentik metadata
+
+To download the metadata of an authentik SAML provider, follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications > Providers**.
 3. Click the name of the provider you want metadata from to open its overview tab.
 4. In the **Related objects** section, under **Metadata** click on **Download**. This will download the metadata xml file for that provider.
 
-### Metadata tab
+### Access metadata tab
+
+To view and optionally download the metadata of an authentik SAML provider, follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications > Providers**.

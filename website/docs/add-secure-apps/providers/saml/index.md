@@ -29,11 +29,11 @@ SAML Metadata ensures that SAML single sign-on works reliably by exchanging and 
 
 ### Importing SP SAML metadata
 
-SP SAML metadata can be [imported into authentik](./create-saml-provider.md#create-a-saml-provider-from-sp-metadata-import-sp-metadata) to automatically configure a SAML provider based on the requirements of an SP.
+You can [import SP SAML metadata](./create-saml-provider.md#create-a-saml-provider-from-sp-metadata-import-sp-metadata) to automatically configure a SAML provider based on the requirements of an SP.
 
 ### Exporting authentik SAML metadata
 
-SAML metadata can be [exported from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
+You can [export SAML metadata from an authentik SAML provider](./create-saml-provider.md#export-authentik-saml-provider-metadata) to an SP to automatically provide important endpoint and certificate information to the SP.
 
 ## Certificates
 
@@ -61,7 +61,7 @@ An encryption certificate is a public key certificate used by authentik to encry
 
 ## SAML property mappings
 
-During a SAML authentication process, communication between the SP and the IdP replies on property mappings to align, or "map" user attributes values between the IdP and SP.
+During a SAML authentication process, communication between the SP and the IdP relies on property mappings to align, or "map", user attributes values between the IdP and SP.
 
 Each SAML property mapping includes the following fields:
 
