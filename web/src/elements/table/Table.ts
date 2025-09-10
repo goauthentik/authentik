@@ -11,7 +11,7 @@ import { TableColumn } from "./TableColumn.js";
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { uiConfig } from "#common/ui/config";
-import { groupBy } from "#common/utils";
+import { GroupResult } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -25,6 +25,7 @@ import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "l
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
@@ -43,6 +44,12 @@ export interface PaginatedResponse<T> {
     autocomplete?: { [key: string]: string };
 
     results: Array<T>;
+}
+
+export function hasPrimaryKey<T extends string | number = string | number>(
+    item: object,
+): item is { pk: T } {
+    return Object.hasOwn(item, "pk");
 }
 
 export abstract class Table<T extends object>
@@ -83,12 +90,21 @@ export abstract class Table<T extends object>
                     --pf-global--BackgroundColor--dark-300
                 );
             }
+
+            /**
+             * Prevents text selection from interfering with click events
+             * when rapidly interacting with cells.
+             */
+            thead,
+            .pf-c-table tr.pf-m-hoverable {
+                user-select: none;
+            }
         `,
     ];
 
-    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    abstract columns(): TableColumn[];
-    abstract row(item: T): SlottedTemplateResult[];
+    protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
+    protected abstract columns(): TableColumn[];
+    protected abstract row(item: T): SlottedTemplateResult[];
 
     #loading = false;
 
@@ -143,16 +159,13 @@ export abstract class Table<T extends object>
     public checkboxChip = false;
 
     @property({ attribute: false })
-    public selectedElements: T[] = [];
+    public selectedElements: Set<T> = new Set();
 
     @property({ type: Boolean })
     public paginated = true;
 
     @property({ type: Boolean })
     public expandable = false;
-
-    @property({ attribute: false })
-    public expandedElements: T[] = [];
 
     @property({ attribute: false })
     public searchLabel?: string;
@@ -165,7 +178,12 @@ export abstract class Table<T extends object>
     //#region Lifecycle
 
     @state()
-    protected error?: APIError;
+    protected expandedElements = new Set<string | number>();
+
+    @state()
+    protected error: APIError | null = null;
+
+    #selectAllCheckboxRef = createRef<HTMLInputElement>();
 
     #refreshListener = () => {
         return this.fetch();
@@ -223,43 +241,23 @@ export abstract class Table<T extends object>
         return this.apiEndpoint()
             .then((data) => {
                 this.data = data;
-                this.error = undefined;
+                this.error = null;
 
                 this.page = this.data.pagination.current;
-                const newExpanded: T[] = [];
+                const nextExpanded = new Set<string | number>();
 
-                this.data.results.forEach((res) => {
-                    const jsonRes = JSON.stringify(res);
-                    // So because we're dealing with complex objects here, we can't use indexOf
-                    // since it checks strict equality, and we also can't easily check in findIndex()
-                    // Instead we default to comparing the JSON of both objects, which is quite slow
-                    // Hence we check if the objects have `pk` attributes set (as most models do)
-                    // and compare that instead, which will be much faster.
-                    let comp = (item: T) => {
-                        return JSON.stringify(item) === jsonRes;
-                    };
+                for (const result of data.results) {
+                    const expansionKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
 
-                    if (Object.hasOwn(res as object, "pk")) {
-                        comp = (item: T) => {
-                            return (
-                                (item as unknown as { pk: string | number }).pk ===
-                                (res as unknown as { pk: string | number }).pk
-                            );
-                        };
+                    if (this.expandedElements.has(expansionKey)) {
+                        nextExpanded.add(expansionKey);
                     }
+                }
 
-                    const expandedIndex = this.expandedElements.findIndex(comp);
+                this.expandedElements = nextExpanded;
 
-                    if (expandedIndex > -1) {
-                        newExpanded.push(res);
-                    }
-                });
-
-                this.expandedElements = newExpanded;
-
-                // Clear selections after fetch if clearOnRefresh is true
                 if (this.clearOnRefresh) {
-                    this.selectedElements = [];
+                    this.selectedElements = new Set();
                 }
             })
             .catch(async (error: unknown) => {
@@ -274,8 +272,8 @@ export abstract class Table<T extends object>
     //#region Render
 
     protected renderLoading(): TemplateResult {
-        return html`<tr role="row">
-            <td role="cell" colspan="25">
+        return html`<tr role="presentation">
+            <td role="presentation" colspan="25">
                 <div class="pf-l-bullseye">
                     <ak-empty-state default-label></ak-empty-state>
                 </div>
@@ -284,9 +282,9 @@ export abstract class Table<T extends object>
     }
 
     protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
-        return html`<tbody role="rowgroup">
-            <tr role="row">
-                <td role="cell" colspan="8">
+        return html`
+            <tr role="presentation">
+                <td role="presentation" colspan="8">
                     <div class="pf-l-bullseye">
                         ${inner ??
                         html`<ak-empty-state
@@ -296,7 +294,7 @@ export abstract class Table<T extends object>
                     </div>
                 </td>
             </tr>
-        </tbody>`;
+        `;
     }
 
     /**
@@ -338,147 +336,213 @@ export abstract class Table<T extends object>
         return msg(str`${name}`);
     }
 
-    private renderRows(): TemplateResult[] | undefined {
+    private renderRows(): SlottedTemplateResult | SlottedTemplateResult[] {
         if (this.error) {
-            return [this.renderEmpty(this.renderError())];
+            return this.renderEmpty(this.renderError());
         }
+
         if (!this.data || this.#loading) {
-            return [this.renderLoading()];
+            return this.renderLoading();
         }
+
         if (this.data.pagination.count === 0) {
-            return [this.renderEmpty()];
+            return this.renderEmpty();
         }
-        const groupedResults = this.groupBy(this.data.results);
-        if (groupedResults.length === 1 && groupedResults[0][0] === "") {
-            return this.renderRowGroup(groupedResults[0][1]);
+
+        const groups = this.groupBy(this.data.results);
+
+        if (groups.length === 1) {
+            const [firstGroup] = groups;
+            const [groupKey, groupItems] = firstGroup;
+
+            if (!groupKey) {
+                return html`<tbody>
+                    ${groupItems.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, groupItems, 0, groups),
+                    )}
+                </tbody>`;
+            }
         }
-        return groupedResults.map(([group, items]) => {
-            return html`<thead>
-                    <tr role="row">
-                        <th role="columnheader" scope="row" colspan="200">${group}</th>
+
+        const columnCount = this.columns().length + (this.checkbox ? 1 : 0);
+
+        return groups.map(([group, items], groupIndex) => {
+            const groupHeaderID = `table-group-${groupIndex}`;
+
+            return html`<thead role="presentation">
+                    <tr>
+                        <th
+                            id=${groupHeaderID}
+                            role="columnheader"
+                            scope="colgroup"
+                            colspan=${columnCount}
+                        >
+                            ${group}
+                        </th>
                     </tr>
                 </thead>
-                ${this.renderRowGroup(items)}`;
+                <tbody>
+                    ${items.map((item, itemIndex) =>
+                        this.#renderRowGroupItem(item, itemIndex, items, groupIndex, groups),
+                    )}
+                </tbody>`;
         });
     }
 
     //#region Grouping
 
-    public groupBy(items: T[]): [SlottedTemplateResult, T[]][] {
-        return groupBy(items, () => "");
+    protected groupBy(items: T[]): GroupResult<T>[] {
+        return [["", items]];
     }
 
-    renderExpanded(_item: T): SlottedTemplateResult {
+    protected renderExpanded(_item: T): SlottedTemplateResult {
         if (this.expandable) {
-            throw new Error("Expandable is enabled but renderExpanded is not overridden!");
+            throw new TypeError("Expandable is enabled but renderExpanded is not overridden!");
         }
 
         return nothing;
     }
 
-    private renderRowGroup(items: T[]): TemplateResult[] {
-        const columns = this.columns();
+    #toggleExpansion = (expansionKey: string | number, event?: PointerEvent) => {
+        event?.stopPropagation();
 
-        return items.map((item) => {
-            const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
-                const target = ev.target as HTMLElement;
-                if (ev instanceof PointerEvent && target.classList.contains("ignore-click")) {
-                    return;
-                }
+        const currentTarget = event?.currentTarget as HTMLElement | null;
 
-                const selected = this.selectedElements.includes(item);
-                const checked =
-                    ev instanceof PointerEvent ? !selected : (target as HTMLInputElement).checked;
+        if (this.expandedElements.has(expansionKey)) {
+            this.expandedElements.delete(expansionKey);
+        } else {
+            this.expandedElements.add(expansionKey);
+            requestAnimationFrame(() => {
+                currentTarget?.scrollIntoView({
+                    behavior: "smooth",
+                });
+            });
+        }
 
-                if ((checked && selected) || !(checked || selected)) {
-                    return;
-                }
+        // Lit isn't aware of stateful properties,
+        // so we need to request an update.
+        this.requestUpdate("expandedElements");
+    };
 
-                this.selectedElements = this.selectedElements.filter((i) => i !== item);
-                if (checked) {
-                    this.selectedElements.push(item);
-                }
+    #selectItemListener(item: T, event: InputEvent | PointerEvent) {
+        const target = event.target as HTMLElement;
 
-                const selectAllCheckbox =
-                    this.shadowRoot?.querySelector<HTMLInputElement>("[name=select-all]");
-                if (selectAllCheckbox && this.selectedElements.length < 1) {
-                    selectAllCheckbox.checked = false;
-                }
+        if (event instanceof PointerEvent && target.classList.contains("ignore-click")) {
+            return;
+        }
 
-                this.requestUpdate();
-            };
+        const selected = this.selectedElements.has(item);
+        let checked: boolean;
 
-            const renderCheckbox = () =>
-                html`<td aria-label="${msg("Select row")}" class="pf-c-table__check" role="button">
-                    <label class="ignore-click"
-                        ><input
-                            type="checkbox"
-                            class="ignore-click"
-                            .checked=${this.selectedElements.includes(item)}
-                            @input=${itemSelectHandler}
-                            @click=${(ev: Event) => {
-                                ev.stopPropagation();
-                            }}
-                    /></label>
-                </td>`;
+        if (target instanceof HTMLInputElement) {
+            checked = target.checked;
+        } else {
+            checked = !selected;
+        }
 
-            const handleExpansion = (ev: Event) => {
-                ev.stopPropagation();
-                const expanded = this.expandedElements.includes(item);
-                this.expandedElements = this.expandedElements.filter((i) => i !== item);
-                if (!expanded) {
-                    this.expandedElements.push(item);
-                }
-                this.requestUpdate();
-            };
+        if ((checked && selected) || !(checked || selected)) {
+            return;
+        }
 
-            const expandedClass = {
-                "pf-m-expanded": this.expandedElements.includes(item),
-            };
+        this.selectedElements.delete(item);
 
-            const renderExpansion = () => {
-                return html`<td class="pf-c-table__toggle" role="cell">
-                    <button
-                        class="pf-c-button pf-m-plain ${classMap(expandedClass)}"
-                        @click=${handleExpansion}
-                    >
-                        <div class="pf-c-table__toggle-icon">
-                            &nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i>&nbsp;
-                        </div>
-                    </button>
-                </td>`;
-            };
+        if (checked) {
+            this.selectedElements.add(item);
+        }
 
-            return html`<tbody class="${classMap(expandedClass)}">
-                <tr
-                    aria-label="${this.rowLabel(item)}"
-                    class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
-                    @click=${this.clickable
-                        ? () => {
-                              this.clickHandler(item);
-                          }
-                        : itemSelectHandler}
+        const selectAllCheckbox = this.#selectAllCheckboxRef.value;
+        const currentItems = this.data?.results || [];
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = !!this.selectedElements.size;
+            selectAllCheckbox.indeterminate =
+                currentItems.length > 0 && this.selectedElements.size < currentItems.length;
+        }
+
+        this.requestUpdate();
+    }
+
+    #renderRowGroupItem(
+        item: T,
+        itemIndex: number,
+        items: T[],
+        groupIndex: number,
+        groups: GroupResult<T>[],
+    ): TemplateResult {
+        const groupHeaderID = groups.length > 1 ? `table-group-${groupIndex}` : null;
+
+        const expansionKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
+        const expanded = this.expandedElements.has(expansionKey);
+        const selected = this.selectedElements.has(item);
+        const rowLabel = this.rowLabel(item);
+
+        const renderCheckbox = () =>
+            html`<td class="pf-c-table__check" role="presentation">
+                <label aria-label="${msg(str`Select "${rowLabel}" row`)}" class="ignore-click"
+                    ><input
+                        type="checkbox"
+                        class="ignore-click"
+                        .checked=${selected}
+                        @input=${this.#selectItemListener.bind(this, item)}
+                        @click=${(ev: PointerEvent) => {
+                            ev.stopPropagation();
+                        }}
+                /></label>
+            </td>`;
+
+        const renderExpansion = () => {
+            return html`<td
+                class="pf-c-table__toggle pf-m-pressable"
+                role="presentation"
+                @click=${this.#toggleExpansion.bind(this, expansionKey)}
+            >
+                <button
+                    class="pf-c-button pf-m-plain ${classMap({
+                        "pf-m-expanded": expanded,
+                    })}"
+                    @click=${this.#toggleExpansion.bind(this, expansionKey)}
+                    aria-label=${expanded ? msg("Collapse row") : msg("Expand row")}
+                    aria-expanded=${expanded ? "true" : "false"}
                 >
-                    ${this.checkbox ? renderCheckbox() : nothing}
-                    ${this.expandable ? renderExpansion() : nothing}
-                    ${this.row(item).map((column, columnIndex) => {
-                        const columnLabel = columns[columnIndex]?.title;
+                    <div class="pf-c-table__toggle-icon">
+                        &nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i>&nbsp;
+                    </div>
+                </button>
+            </td>`;
+        };
 
-                        return html`<td
-                            aria-label=${ifDefined(columnLabel)}
-                            data-column-index="${columnIndex}"
-                            role="cell"
-                        >
-                            ${column}
-                        </td>`;
-                    })}
-                </tr>
-                <tr class="pf-c-table__expandable-row ${classMap(expandedClass)}" role="row">
-                    <td></td>
-                    ${this.expandedElements.includes(item) ? this.renderExpanded(item) : nothing}
-                </tr>
-            </tbody>`;
-        });
+        return html`
+            <tr
+                aria-label=${rowLabel}
+                aria-selected=${selected ? "true" : "false"}
+                class="${classMap({
+                    "pf-m-hoverable": this.checkbox || this.clickable,
+                })}"
+                @click=${this.clickable
+                    ? this.clickHandler.bind(this, item)
+                    : this.#selectItemListener.bind(this, item)}
+            >
+                ${this.checkbox ? renderCheckbox() : nothing}
+                ${this.expandable ? renderExpansion() : nothing}
+                ${this.row(item).map((column, columnIndex) => {
+                    const columnHeaderID = `table-header-${columnIndex}`;
+                    const headers = groupHeaderID
+                        ? `${groupHeaderID} ${columnHeaderID}`
+                        : columnHeaderID;
+
+                    return html`<td headers=${headers} role="cell">${column}</td>`;
+                })}
+            </tr>
+            <tr
+                class="pf-c-table__expandable-row ${classMap({
+                    "pf-m-expanded": expanded,
+                })}"
+                role="row"
+            >
+                <td></td>
+                ${expanded ? this.renderExpanded(item) : nothing}
+            </tr>
+        `;
     }
 
     //#endregion
@@ -562,29 +626,38 @@ export abstract class Table<T extends object>
 
     //#region Chips
 
+    #synchronizeCheckboxAll = () => {
+        const checkbox = this.#selectAllCheckboxRef.value;
+
+        if (!checkbox) return;
+
+        checkbox.indeterminate = false;
+
+        if (checkbox.checked) {
+            const items = this.data?.results || [];
+            this.selectedElements = new Set(items);
+        } else {
+            this.selectedElements = new Set();
+        }
+    };
+
     /**
      * The checkbox on the table header row that allows the user to
      * "activate all on this page,"
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const checked =
-            this.selectedElements.length === this.data?.results.length &&
-            this.selectedElements.length > 0;
-
-        const onInput = (ev: InputEvent) => {
-            this.selectedElements = (ev.target as HTMLInputElement).checked
-                ? this.data?.results.slice(0) || []
-                : [];
-        };
+        const itemsCount = this.data?.results?.length ?? -1;
+        const checked = itemsCount !== -1 && this.selectedElements.size === itemsCount;
 
         return html`<td class="pf-c-table__check" role="cell">
             <input
+                ${ref(this.#selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
                 aria-label=${msg("Select all rows")}
                 .checked=${checked}
-                @input=${onInput}
+                @input=${this.#synchronizeCheckboxAll}
             />
         </td>`;
     }
@@ -606,7 +679,7 @@ export abstract class Table<T extends object>
 
     protected renderChipGroup(): TemplateResult {
         return html`<ak-chip-group>
-            ${this.selectedElements.map((el) => {
+            ${Array.from(this.selectedElements, (el) => {
                 return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
             })}
         </ak-chip-group>`;
@@ -641,11 +714,11 @@ export abstract class Table<T extends object>
                 aria-label=${this.label ? msg(str`Table of ${this.label}`) : msg("Table content")}
                 class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
             >
-                <thead aria-label=${msg("Table actions")}>
+                <thead aria-label=${msg("Column actions")}>
                     <tr role="presentation" class="pf-c-table__header-row">
                         ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                         ${this.expandable ? html`<td role="cell"></td>` : nothing}
-                        ${this.columns().map((col) => col.render(this))}
+                        ${this.columns().map((col, idx) => col.render(this, idx))}
                     </tr>
                 </thead>
                 ${this.renderRows()}
