@@ -2,17 +2,16 @@
  * @file Client-side observer for ESBuild events.
  *
  * @import { Logger } from "#shared";
+ * @import { Message as ESBuildMessage } from "esbuild";
  */
 
 /// <reference types="./types.js" />
 
-import { createLogger } from "../shared/index.js";
+import { createLogger } from "#shared";
 
-/**
- * @file Client-side observer for ESBuild events.
- *
- * @import { Message as ESBuildMessage } from "esbuild";
- */
+if (typeof EventSource === "undefined") {
+    throw new TypeError("Environment doesn't appear to have an EventSource constructor");
+}
 
 /**
  * @template {unknown} [Data=unknown]
