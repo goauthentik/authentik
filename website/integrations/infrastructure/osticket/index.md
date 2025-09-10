@@ -66,6 +66,10 @@ To support the integration of osTicket with authentik, you need to create an app
 
 7. Click on **Save Changes**.
 
+## Configuration verification
+
+To verify that authentik is correctly integrated with osTicket, first log out of your account. Then, log back in using the **Sign in with authentik** button. You should be redirected to your authentik instance and after successfully authenticating, you should be redirected to osTicket and logged in.
+
 ## Resources
 
 - [osTicket Docs - OAuth2 Guide](https://docs.osticket.com/en/latest/Guides/OAuth2%20Guide.html)
