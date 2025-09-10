@@ -28,7 +28,7 @@ export function globalAK(): GlobalAuthentik {
         ak.brand = CurrentBrandFromJSON(ak.brand);
         ak.config = ConfigFromJSON(ak.config);
     }
-    const apiBase = new URL(process.env.AK_API_BASE_PATH || window.location.origin);
+    const apiBase = new URL(import.meta.env.AK_API_BASE_PATH || window.location.origin);
     if (!ak) {
         return {
             config: ConfigFromJSON({
