@@ -5030,7 +5030,7 @@ paths:
   /core/groups/{group_uuid}/remove_user/:
     post:
       operationId: core_groups_remove_user_create
-      description: Add user to group
+      description: Remove user from group
       parameters:
       - in: path
         name: group_uuid
@@ -5051,7 +5051,7 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: User added
+          description: User removed
         '404':
           description: User not found
         '400':
@@ -6166,7 +6166,7 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: Successfully started impersonation
+          description: Successfully ended impersonation
         '400':
           content:
             application/json:
