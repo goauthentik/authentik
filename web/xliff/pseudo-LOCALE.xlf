@@ -7418,10 +7418,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Host</source>
   <target>Ĥōśţ</target>
 </trans-unit>
-<trans-unit id="sb474f652a2c2fc76">
-  <source>Hostname/IP to connect to.</source>
-  <target>Ĥōśţńàḿē/ĨƤ ţō ćōńńēćţ ţō.</target>
-</trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
   <target>Ēńďƥōĩńţ(ś)</target>
@@ -9766,5 +9762,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s700456b0667029f9">
   <source>Applications library</source>
+</trans-unit>
+<trans-unit id="s48a0d160d9e0a7be">
+  <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
 </body></file></xliff>

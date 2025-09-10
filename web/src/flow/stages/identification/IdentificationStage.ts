@@ -383,7 +383,9 @@ export class IdentificationStage extends BaseStage<
 
             <div class="pf-c-form__group ${this.challenge.captchaStage ? "" : "pf-m-action"}">
                 <button
-                    ?disabled=${this.challenge.captchaStage && !this.captchaLoaded}
+                    ?disabled=${this.challenge.captchaStage &&
+                    this.challenge.captchaStage.interactive &&
+                    !this.captchaLoaded}
                     type="submit"
                     class="pf-c-button pf-m-primary pf-m-block"
                 >

@@ -135,7 +135,7 @@ Start by logging into your authentik instance as an administrator and navigating
 
 ### Create a Federation Source
 
-In the Admin interface, navigate to **Directory -> Federation & Social login** and press **Create**.
+In the Admin interface, navigate to **Directory > Federation & Social login** and press **Create**.
 
 In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
 
@@ -186,7 +186,7 @@ Confirm that the entity ID (AKA "Issuer") matches the value you've provided both
 
 ### `403 app_not_enabled_for_user`
 
-In the Google Workspace Admin Console, go to **Menu -> Apps -> Web and mobile apps**.
+In the Google Workspace Admin Console, go to **Menu > Apps > Web and mobile apps**.
 
 1. In the application list, locate the SAML app generating the error.
 2. Click the application to open its Settings page.

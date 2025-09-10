@@ -7469,10 +7469,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Host</source>
   <target>Hôte</target>
 </trans-unit>
-<trans-unit id="sb474f652a2c2fc76">
-  <source>Hostname/IP to connect to.</source>
-  <target>Nom d'hôte/IP à laquelle se connecter.</target>
-</trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
   <target>Point(s) de terminaison</target>
@@ -10182,6 +10178,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s700456b0667029f9">
   <source>Applications library</source>
+</trans-unit>
+<trans-unit id="s48a0d160d9e0a7be">
+  <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
     </body>
   </file>

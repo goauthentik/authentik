@@ -51,7 +51,6 @@
 /flow/*                                                     /add-secure-apps/flows-stages/flow/:splat 301!
 /flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
 /outposts/*                                                 /add-secure-apps/outposts/:splat 301!
-/providers/*                                                /add-secure-apps/providers/:splat 301!
 #endregion
 
 #region Sources

@@ -38,6 +38,7 @@ from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
+from authentik.tasks.apps import PRIORITY_HIGH
 from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
@@ -111,6 +112,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
 @actor(
     description=_("Find blueprints as `blueprints_find` does, but return a safe dict."),
     throws=(DatabaseError, ProgrammingError, InternalError),
+    priority=PRIORITY_HIGH,
 )
 def blueprints_find_dict():
     blueprints = []

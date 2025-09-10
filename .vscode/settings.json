@@ -1,4 +1,16 @@
 {
+    "[css]": {
+        "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)\\*/$"
+    },
+    "[makefile]": {
+        "editor.minimap.markSectionHeaderRegex": "^#{25}\n##\\s\\s*(?<separator>-?)\\s*(?<label>[^\n]*)\n#{25}$"
+    },
+    "[dockerfile]": {
+        "editor.minimap.markSectionHeaderRegex": "\\bStage\\s*\\d:(?<separator>-?)\\s*(?<label>.*)$"
+    },
+    "[jsonc]": {
+        "editor.minimap.markSectionHeaderRegex": "#\\bregion\\s*(?<separator>-?)\\s*(?<label>.*)$"
+    },
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [

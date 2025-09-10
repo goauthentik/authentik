@@ -1,6 +1,6 @@
 import { EVENT_THEME_CHANGE } from "#common/constants";
 
-import { AKElement } from "#elements/Base";
+import { FormAssociatedElement } from "#elements/forms/form-associated-element";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -20,54 +20,88 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { drawSelection, EditorView, keymap, lineNumbers, ViewUpdate } from "@codemirror/view";
+import { Jsonifiable } from "type-fest";
 import YAML from "yaml";
 
+import { msg } from "@lit/localize";
 import { css, CSSResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-export enum CodeMirrorMode {
-    XML = "xml",
-    JavaScript = "javascript",
-    HTML = "html",
-    CSS = "css",
-    Python = "python",
-    YAML = "yaml",
+//#region Enums
+
+export const CodeMirrorMode = {
+    XML: "xml",
+    JavaScript: "javascript",
+    HTML: "html",
+    CSS: "css",
+    Python: "python",
+    YAML: "yaml",
+} as const satisfies Record<string, string>;
+
+export type CodeMirrorMode = (typeof CodeMirrorMode)[keyof typeof CodeMirrorMode];
+
+//#endregion
+
+//#region Serialization
+
+function stringify(value: unknown, mode: CodeMirrorMode): string {
+    if (typeof value === "string" || value instanceof String) {
+        return value.toString();
+    }
+
+    switch (mode.toLowerCase()) {
+        case "yaml":
+            return YAML.stringify(value);
+        case "javascript":
+            return JSON.stringify(value);
+    }
+
+    return String(value).toString();
 }
 
+function parse<T = unknown>(value: string, mode: CodeMirrorMode): T {
+    switch (mode) {
+        case CodeMirrorMode.YAML:
+            return YAML.parse(value);
+        case CodeMirrorMode.JavaScript:
+            return JSON.parse(value);
+    }
+
+    return value as T;
+}
+
+//#endregion
+
+//#region Language support
+
+function createLanguageSupport(mode: CodeMirrorMode): LanguageSupport {
+    switch (mode) {
+        case CodeMirrorMode.XML:
+            return xml();
+        case CodeMirrorMode.JavaScript:
+            return javascript();
+        case CodeMirrorMode.HTML:
+            return htmlLang();
+        case CodeMirrorMode.Python:
+            return python();
+        case CodeMirrorMode.CSS:
+            return cssLang();
+        case CodeMirrorMode.YAML:
+            return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
+    }
+
+    throw new TypeError(`Unrecognized CodeMirror mode: ${mode}`) as never;
+}
+
+//#endregion
+
 @customElement("ak-codemirror")
-export class CodeMirrorTextarea<T> extends AKElement {
-    @property({ type: Boolean })
-    readOnly = false;
+export class CodeMirrorTextarea<
+    T extends Jsonifiable = Jsonifiable,
+> extends FormAssociatedElement<string> {
+    //#region Styles
 
-    @property()
-    mode: CodeMirrorMode = CodeMirrorMode.YAML;
-
-    @property()
-    name?: string;
-
-    @property({ type: Boolean })
-    parseValue = true;
-
-    editor?: EditorView;
-
-    _value?: string;
-
-    theme: Compartment = new Compartment();
-    syntaxHighlighting: Compartment = new Compartment();
-
-    themeLight = EditorView.theme(
-        {
-            "&": {
-                backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
-            },
-        },
-        { dark: false },
-    );
-    themeDark = oneDark;
-    syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
-    syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
-
-    static styles: CSSResult[] = [
+    public static styles: CSSResult[] = [
         // Better alignment with patternfly components
         css`
             .cm-editor {
@@ -83,93 +117,121 @@ export class CodeMirrorTextarea<T> extends AKElement {
         `,
     ];
 
+    //#endregion
+
+    //#region Properties
+
+    @property({ type: String })
+    public mode: CodeMirrorMode = CodeMirrorMode.YAML;
+
+    @property({ type: Boolean })
+    public raw?: boolean;
+
     @property()
-    set value(v: T | string) {
-        if (v === null || v === undefined) {
+    public set value(nextValue: T) {
+        if (!nextValue) {
             return;
         }
-        // Value might be an object if within an iron-form, as that calls the getter of value
-        // in the beginning and the calls this setter on reset
-        let textValue = v;
-        if (!(typeof v === "string" || v instanceof String)) {
-            switch (this.mode.toLowerCase()) {
-                case "yaml":
-                    textValue = YAML.stringify(v);
-                    break;
-                case "javascript":
-                    textValue = JSON.stringify(v);
-                    break;
-                default:
-                    textValue = v.toString();
-                    break;
-            }
-        }
-        if (this.editor) {
-            this.editor.dispatch({
-                changes: { from: 0, to: this.editor.state.doc.length, insert: textValue as string },
-            });
-        } else {
-            this._value = textValue as string;
-        }
+
+        this.#parsedValue = stringify(nextValue, this.mode);
+
+        this.#syncValidity();
+
+        // This is only relevant when a value has been set after the editor has been created.
+        this.#editor?.dispatch({
+            changes: {
+                from: 0,
+                to: this.#editor.state.doc.length,
+                insert: this.#parsedValue,
+            },
+        });
     }
 
-    get value(): T | string {
-        if (!this.parseValue) {
-            return this.getInnerValue();
-        }
-        try {
-            switch (this.mode) {
-                case CodeMirrorMode.YAML:
-                    return YAML.parse(this.getInnerValue());
-                case CodeMirrorMode.JavaScript:
-                    return JSON.parse(this.getInnerValue());
-                default:
-                    return this.getInnerValue();
-            }
-        } catch (_e: unknown) {
-            return this.getInnerValue();
-        }
+    public get value(): string {
+        return this.#parse(this.#editor?.state);
     }
 
-    private getInnerValue(): string {
-        if (!this.editor) {
+    public toJSON(): string {
+        return this.value;
+    }
+
+    #syncValidity() {
+        this.internals.setFormValue(this.#parsedValue || "");
+
+        let message: string | undefined;
+        const flags: ValidityStateFlags = {};
+
+        if (this.required && !this.#parsedValue) {
+            message = msg("This field is required.");
+            flags.valueMissing = true;
+        }
+
+        this.internals.setValidity(flags, message, this.#editor?.dom);
+    }
+
+    //#endregion
+
+    //#region Codemirror Internals
+
+    #editor?: EditorView;
+
+    #theme: Compartment = new Compartment();
+    #syntaxHighlighting: Compartment = new Compartment();
+
+    #themeLight = EditorView.theme(
+        {
+            "&": {
+                backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+            },
+        },
+        { dark: false },
+    );
+    #themeDark = oneDark;
+
+    #syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
+    #syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
+
+    //#region Value State
+
+    #parsedValue?: string;
+
+    #parse(editorState?: EditorState): string {
+        if (!editorState) {
             return "";
         }
-        return this.editor.state.doc.toString();
-    }
 
-    getLanguageExtension(): LanguageSupport | undefined {
-        switch (this.mode.toLowerCase()) {
-            case CodeMirrorMode.XML:
-                return xml();
-            case CodeMirrorMode.JavaScript:
-                return javascript();
-            case CodeMirrorMode.HTML:
-                return htmlLang();
-            case CodeMirrorMode.Python:
-                return python();
-            case CodeMirrorMode.CSS:
-                return cssLang();
-            case CodeMirrorMode.YAML:
-                return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
+        const innerValue = editorState.doc.toString();
+
+        if (this.raw) {
+            return innerValue;
         }
-        return undefined;
+
+        try {
+            return parse(innerValue, this.mode);
+        } catch (error: unknown) {
+            console.warn("codemirror/parse-error", error);
+            return innerValue;
+        }
     }
 
-    firstUpdated(): void {
+    //#endregion
+
+    //#region Lifecycle
+
+    #initialize(root: ShadowRoot | Document) {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
-                this.editor?.dispatch({
+                this.#editor?.dispatch({
                     effects: [
-                        this.theme.reconfigure(this.themeDark),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
+                        this.#theme.reconfigure(this.#themeDark),
+                        this.#syntaxHighlighting.reconfigure(this.#syntaxHighlightingDark),
                     ],
                 });
             } else {
-                this.editor?.dispatch({
+                this.#editor?.dispatch({
                     effects: [
-                        this.theme.reconfigure(this.themeLight),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
+                        this.#theme.reconfigure(this.#themeLight),
+                        this.#syntaxHighlighting.reconfigure(this.#syntaxHighlightingLight),
                     ],
                 });
             }
@@ -177,41 +239,77 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
         const dark = this.activeTheme === UiThemeEnum.Dark;
 
-        const extensions = [
+        const extensions: Array<Extension | null> = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
-            this.getLanguageExtension(),
+            createLanguageSupport(this.mode),
             lineNumbers(),
             drawSelection(),
             EditorView.lineWrapping,
-            EditorView.updateListener.of((v: ViewUpdate) => {
-                if (!v.docChanged) {
+            EditorView.updateListener.of((view: ViewUpdate) => {
+                if (!view.docChanged) {
                     return;
                 }
+
+                this.#parsedValue = this.#parse(view.state);
+                this.#syncValidity();
+
                 this.dispatchEvent(
                     new CustomEvent("change", {
-                        detail: v,
+                        detail: view,
                     }),
                 );
             }),
-            EditorState.readOnly.of(this.readOnly),
+            EditorState.readOnly.of(!!this.readOnly),
             EditorState.tabSize.of(2),
-            this.syntaxHighlighting.of(
-                dark ? this.syntaxHighlightingDark : this.syntaxHighlightingLight,
+            this.#syntaxHighlighting.of(
+                dark ? this.#syntaxHighlightingDark : this.#syntaxHighlightingLight,
             ),
-            this.theme.of(dark ? this.themeDark : this.themeLight),
+            this.#theme.of(dark ? this.#themeDark : this.#themeLight),
         ];
-        this.editor = new EditorView({
-            extensions: extensions.filter((p) => p) as Extension[],
-            root: this.shadowRoot || document,
-            doc: this._value,
+
+        this.#editor = new EditorView({
+            extensions: extensions.filter(Boolean) as Extension[],
+            root,
+            doc: this.#parsedValue,
         });
-        this.shadowRoot?.appendChild(this.editor.dom);
+
+        this.#editor.contentDOM.tabIndex = 0;
+        root.appendChild(this.#editor.dom);
     }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        if (this.getAttribute("tabindex") === null) {
+            this.setAttribute("tabindex", "0");
+        }
+
+        this.addEventListener("focus", this.#focusListener);
+
+        this.#initialize(this.shadowRoot || document);
+    }
+
+    public override disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.removeEventListener("focus", this.#focusListener);
+
+        if (this.#editor) {
+            console.debug("ak-codemirror: destroying editor");
+            this.#editor.destroy();
+        }
+    }
+
+    #focusListener = () => {
+        this.#editor?.contentDOM?.focus();
+    };
+
+    //#endregion
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-codemirror": CodeMirrorTextarea<unknown>;
+        "ak-codemirror": CodeMirrorTextarea;
     }
 }

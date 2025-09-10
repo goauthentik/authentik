@@ -75,7 +75,7 @@ export default defineConfig({
                         log = logger.debug;
                     }
 
-                    log.call(logger, message.toString(), args);
+                    log.call(logger, message.toString());
                 },
             },
         },

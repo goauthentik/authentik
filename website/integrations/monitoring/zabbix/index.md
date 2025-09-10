@@ -72,7 +72,7 @@ $SSO['SP_KEY'] = '<path to the SP private key file>';
 $SSO['SP_CERT'] = '<path to the SP cert file>';
 ```
 
-For additional security you can enable the Verification Certificate by checking the `Sign -> AuthN requests` in the Zabbix configuration and adding the IDP Certificate to the cert path above or defining it in your Zabbix frontend configuration file.
+For additional security you can enable the Verification Certificate by checking the `Sign > AuthN requests` in the Zabbix configuration and adding the IDP Certificate to the cert path above or defining it in your Zabbix frontend configuration file.
 
 ```
 $SSO['IDP_CERT'] = '<path to the IDP cert file>';

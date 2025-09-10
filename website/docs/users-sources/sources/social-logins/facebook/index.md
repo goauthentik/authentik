@@ -34,12 +34,12 @@ After you create the app you need to customize the login settings.
 7. On the **Customize** page, click **Go to settings**.
 8. On the **Facebook Login settings** page set the **Valid OAuth redirect URIs** field to `https://authentik.company/source/oauth/callback/facebook/` and then click **Save**.
 
-9. Navigate to the **Use cases -> Customize** page.
+9. Navigate to the **Use cases > Customize** page.
 10. Under **Permissions** click **Add** for the **email** permission.
 
 Next, you need to obtain the App ID and the App Secret for the Facebook app, and enter those into your authentik source configuration.
 
-11. Go back to the Dashboard, and in the bottom left in the navigation pane, click on **App settings -> Basic**.
+11. Go back to the Dashboard, and in the bottom left in the navigation pane, click on **App settings > Basic**.
 12. Copy the **App ID** and the **App secret** values and temporarily store them in a safe place until you enter them into authentik.
 
 Finally, you need to publish the Facebook app.
@@ -48,7 +48,7 @@ Finally, you need to publish the Facebook app.
 
 ## authentik configuration
 
-1. Log in to authentik as admin, and then navigate to **Directory -> Federation & Social login**
+1. Log in to authentik as administrator, and then navigate to **Directory > Federation & Social login**.
 2. Click **Create**.
 3. In the **New Source** box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
 4. Define the following fields:
@@ -66,7 +66,7 @@ Finally, you need to publish the Facebook app.
         - **Enrollment flow**: leave the default `default-source-enrollment` option.
 5. Click **Finish** to save your settings and close the box.
 
-You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
+You now have Facebook as a source. Verify by checking that appears on the **Directory > Federation & Social login** page in authentik.
 
 :::note
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).

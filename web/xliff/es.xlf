@@ -7471,10 +7471,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
   <source>Host</source>
   <target>Anfitrión</target>
 </trans-unit>
-<trans-unit id="sb474f652a2c2fc76">
-  <source>Hostname/IP to connect to.</source>
-  <target>Nombre de Host o IP para conectar.</target>
-</trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
   <target>Punto(s) de Conexión</target>
@@ -10159,6 +10155,9 @@ El valor de este campo se compara con el atributo de pertenencia del usuario.</t
 </trans-unit>
 <trans-unit id="s700456b0667029f9">
   <source>Applications library</source>
+</trans-unit>
+<trans-unit id="s48a0d160d9e0a7be">
+  <source>Hostname/IP to connect to. Optionally specify the port.</source>
 </trans-unit>
     </body>
   </file>
