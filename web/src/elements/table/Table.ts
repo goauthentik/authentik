@@ -159,7 +159,15 @@ export abstract class Table<T extends object>
     public checkboxChip = false;
 
     @property({ attribute: false })
-    public selectedElements: Set<T> = new Set();
+    public get selectedElements(): T[] {
+        return Array.from(this.#selectedElements);
+    }
+
+    public set selectedElements(value: T[]) {
+        this.#selectedElements = new Set(value);
+    }
+
+    #selectedElements = new Set<T>();
 
     @property({ type: Boolean })
     public paginated = true;
@@ -257,7 +265,8 @@ export abstract class Table<T extends object>
                 this.expandedElements = nextExpanded;
 
                 if (this.clearOnRefresh) {
-                    this.selectedElements = new Set();
+                    this.#selectedElements = new Set();
+                    this.requestUpdate();
                 }
             })
             .catch(async (error: unknown) => {
@@ -431,7 +440,7 @@ export abstract class Table<T extends object>
             return;
         }
 
-        const selected = this.selectedElements.has(item);
+        const selected = this.#selectedElements.has(item);
         let checked: boolean;
 
         if (target instanceof HTMLInputElement) {
@@ -444,19 +453,19 @@ export abstract class Table<T extends object>
             return;
         }
 
-        this.selectedElements.delete(item);
+        this.#selectedElements.delete(item);
 
         if (checked) {
-            this.selectedElements.add(item);
+            this.#selectedElements.add(item);
         }
 
         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
         const currentItems = this.data?.results || [];
 
         if (selectAllCheckbox) {
-            selectAllCheckbox.checked = !!this.selectedElements.size;
+            selectAllCheckbox.checked = !!this.#selectedElements.size;
             selectAllCheckbox.indeterminate =
-                currentItems.length > 0 && this.selectedElements.size < currentItems.length;
+                currentItems.length > 0 && this.#selectedElements.size < currentItems.length;
         }
 
         this.requestUpdate();
@@ -473,7 +482,7 @@ export abstract class Table<T extends object>
 
         const expansionKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
         const expanded = this.expandedElements.has(expansionKey);
-        const selected = this.selectedElements.has(item);
+        const selected = this.#selectedElements.has(item);
         const rowLabel = this.rowLabel(item);
 
         const renderCheckbox = () =>
@@ -635,10 +644,12 @@ export abstract class Table<T extends object>
 
         if (checkbox.checked) {
             const items = this.data?.results || [];
-            this.selectedElements = new Set(items);
+            this.#selectedElements = new Set(items);
         } else {
-            this.selectedElements = new Set();
+            this.#selectedElements = new Set();
         }
+
+        this.requestUpdate();
     };
 
     /**
@@ -648,7 +659,7 @@ export abstract class Table<T extends object>
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
         const itemsCount = this.data?.results?.length ?? -1;
-        const checked = itemsCount !== -1 && this.selectedElements.size === itemsCount;
+        const checked = itemsCount !== -1 && this.#selectedElements.size === itemsCount;
 
         return html`<td class="pf-c-table__check" role="cell">
             <input
@@ -679,7 +690,7 @@ export abstract class Table<T extends object>
 
     protected renderChipGroup(): TemplateResult {
         return html`<ak-chip-group>
-            ${Array.from(this.selectedElements, (el) => {
+            ${Array.from(this.#selectedElements, (el) => {
                 return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
             })}
         </ak-chip-group>`;
