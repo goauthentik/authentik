@@ -23,7 +23,6 @@ import { readBuildIdentifier } from "@goauthentik/core/version/node";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { copy } from "esbuild-plugin-copy";
-import { polyfillNode } from "esbuild-plugin-polyfill-node";
 
 /// <reference types="../types/esbuild.js" />
 
@@ -80,11 +79,6 @@ const BASE_ESBUILD_OPTIONS = {
                     to: "./assets/icons",
                 },
             ],
-        }),
-        polyfillNode({
-            polyfills: {
-                path: true,
-            },
         }),
         mdxPlugin({
             root: MonoRepoRoot,
