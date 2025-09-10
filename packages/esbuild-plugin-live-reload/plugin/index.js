@@ -4,13 +4,13 @@
  * @import { ListenOptions } from "node:net";
  * @import {Server as HTTPServer} from "node:http";
  * @import {Server as HTTPSServer} from "node:https";
- * @import { Logger } from "#shared";
+ * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
  */
 
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
 
-import { createLogger } from "#shared";
+import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
 
 import { findFreePorts } from "find-free-ports";
 

@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "scripts": {
@@ -18,6 +18,10 @@
             "types": "./out/index.d.ts",
             "import": "./index.js"
         },
+        "./shared": {
+            "types": "./out/shared/index.d.ts",
+            "import": "./shared/index.js"
+        },
         "./client": {
             "types": "./out/client/index.d.ts",
             "import": "./client/index.js"
@@ -26,9 +30,6 @@
             "types": "./out/plugin/index.d.ts",
             "import": "./plugin/index.js"
         }
-    },
-    "imports": {
-        "#shared": "./shared/index.js"
     },
     "dependencies": {
         "find-free-ports": "^3.1.1"
@@ -69,6 +70,7 @@
         "./index.js",
         "client/**/*",
         "plugin/**/*",
+        "shared/**/*",
         "out/**/*"
     ],
     "prettier": "@goauthentik/prettier-config",
