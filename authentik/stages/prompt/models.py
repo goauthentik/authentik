@@ -254,7 +254,7 @@ class Prompt(SerializerModel):
             if not choices:
                 return ""
             if not any(
-                choice == value if isinstance(choice, str) else choice.get("value") == value
+                choice.get("value") == value if isinstance(choice, dict) else choice == value
                 for choice in choices
             ):
                 return choices[0]
