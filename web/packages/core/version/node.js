@@ -72,7 +72,9 @@ export const BuildIdentifier = /** @type {SemVerSource | `${SemVerSource}+${stri
 /**
  * The published subdomain for the current version of authentik.
  */
-export const VersionSubdomain = /** @type {`${number}-${number}`} */ ([major, minor].join("-"));
+export const VersionSubdomain = /** @type {`version-${number}-${number}`} */ (
+    ["version", major, minor].join("-")
+);
 
 /**
  * The published path to the current version of authentik.
