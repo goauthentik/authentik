@@ -46,10 +46,6 @@ class Connector(SerializerModel):
     name = models.TextField()
 
 
-# class EndpointStage(Stage):
-#     pass
-
-
 class DeviceGroup(PolicyBindingModel):
 
     name = models.TextField(unique=True)
