@@ -471,7 +471,7 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
         self.assertEqual(
             prompt.get_initial_value(context, self.user, self.factory.get("/")),
-            context["foo"]["value"]
+            context["foo"]["value"],
         )
         self.assertEqual(
             prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
@@ -489,7 +489,7 @@ class TestPromptStage(FlowTestCase):
         self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
         self.assertEqual(
             prompt.get_initial_value(context, self.user, self.factory.get("/")),
-            context["foo"]["value"]
+            context["foo"]["value"],
         )
         self.assertEqual(
             prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
@@ -537,41 +537,47 @@ class TestPromptStage(FlowTestCase):
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
             type=FieldTypes.RADIO_BUTTON_GROUP,
-            placeholder="return [" \
-            "{'label': 'Option 1', 'value': 'value1'}," \
-            "{'label': 'Option 2', 'value': 'value2'}" \
+            placeholder="return ["
+            "{'label': 'Option 1', 'value': 'value1'},"
+            "{'label': 'Option 2', 'value': 'value2'}"
             "]",
             placeholder_expression=True,
         )
         self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
         self.assertEqual(
             prompt.get_initial_value(context, self.user, self.factory.get("/")).get("value"),
-            "value1"
+            "value1",
         )
         self.assertEqual(
-            tuple((choice["label"], choice["value"])
-                  for choice in prompt.get_choices(context, self.user, self.factory.get("/"))),
-            (("Option 1", "value1"), ("Option 2", "value2"))
+            tuple(
+                (choice["label"], choice["value"])
+                for choice in prompt.get_choices(context, self.user, self.factory.get("/"))
+            ),
+            (("Option 1", "value1"), ("Option 2", "value2")),
         )
 
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
             type=FieldTypes.RADIO_BUTTON_GROUP,
-            placeholder="return [" \
-            "{'label': 'Option 1', 'value': 'value1'}," \
-            "{'label': 'Option 2', 'value': 'value2'}" \
+            placeholder="return ["
+            "{'label': 'Option 1', 'value': 'value1'},"
+            "{'label': 'Option 2', 'value': 'value2'}"
             "]",
             placeholder_expression=True,
             initial_value="return 'value2'",
             initial_value_expression=True,
         )
         self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
-        self.assertEqual(prompt.get_initial_value(context, self.user, self.factory.get("/")), 'value2')
         self.assertEqual(
-            tuple((choice["label"], choice["value"])
-                  for choice in prompt.get_choices(context, self.user, self.factory.get("/"))),
-            (("Option 1", "value1"), ("Option 2", "value2"))
+            prompt.get_initial_value(context, self.user, self.factory.get("/")), "value2"
+        )
+        self.assertEqual(
+            tuple(
+                (choice["label"], choice["value"])
+                for choice in prompt.get_choices(context, self.user, self.factory.get("/"))
+            ),
+            (("Option 1", "value1"), ("Option 2", "value2")),
         )
 
     def test_choice_prompts_placeholder_and_initial_value_from_context(self):

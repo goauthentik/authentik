@@ -235,12 +235,11 @@ class PromptStageView(ChallengeStageView):
         clean = []
         for choice in choices:
             if isinstance(choice, dict):
-                clean.append({
-                    "value": str(choice.get("value", "")),
-                    "label": str(choice.get("label", ""))
-                })
+                clean.append(
+                    {"value": str(choice.get("value", "")), "label": str(choice.get("label", ""))}
+                )
             else:
-                clean.append(str(choice)) # Should we force it to be a dict with value + label?
+                clean.append(str(choice))  # Should we force it to be a dict with value + label?
 
         return clean
 
