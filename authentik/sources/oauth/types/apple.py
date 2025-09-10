@@ -88,9 +88,6 @@ class AppleOAuth2Callback(OAuthCallback):
 
     client_class = AppleOAuthClient
 
-    def get_user_id(self, info: dict[str, Any]) -> str | None:
-        return info["sub"]
-
 
 @registry.register()
 class AppleType(SourceType):
@@ -129,6 +126,7 @@ class AppleType(SourceType):
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {
+            "id": info.get("sub"),
             "email": info.get("email"),
             "name": info.get("name"),
         }
