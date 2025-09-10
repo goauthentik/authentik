@@ -24,9 +24,9 @@ If you have exported SAML metadata from your SP, you can optionally create the a
 
 ## Export authentik SAML provider metadata
 
-Once an authentik SAML provider has been created via any of the above methods, you can export its metadata in one of two ways:
+After an authentik SAML provider has been created via any of the above methods, you can export its metadata in one of two ways:
 
-### Metadata download
+### Download IdP metadata 
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications > Providers**.
