@@ -1,14 +1,8 @@
-from enum import Enum
-
-from pydantic import BaseModel
-
-
-class UNSUPPORTED(BaseModel):
-    pass
+from django.db.models import TextChoices
+from rest_framework.serializers import BooleanField, CharField, ChoiceField, ListField, Serializer
 
 
-class OSFamily(Enum):
-
+class OSFamily(TextChoices):
     linux = "linux"
     unix = "unix"
     bsd = "bsd"
@@ -19,30 +13,35 @@ class OSFamily(Enum):
     other = "other"
 
 
-class CommonDeviceData(BaseModel):
-    class Disk(BaseModel):
-        encryption: bool
+class DiskSerializer(Serializer):
+    encryption = BooleanField()
 
-    class OperatingSystem(BaseModel):
-        firewall_enabled: bool
-        family: OSFamily
-        name: str
-        version: str
 
-    class Network(BaseModel):
-        hostname: str
-        dns_servers: list[str]
+class OperatingSystemSerializer(Serializer):
+    firewall_enabled = BooleanField()
+    family = ChoiceField(OSFamily.choices)
+    name = CharField()
+    version = CharField()
 
-    class Hardware(BaseModel):
-        model: str
-        manufacturer: str
 
-    class Software(BaseModel):
-        name: str
-        version: str
+class NetworkSerializer(Serializer):
+    hostname = CharField()
+    dns_servers = ListField(child=CharField(), allow_empty=True)
 
-    os: OperatingSystem | UNSUPPORTED
-    disks: list[Disk] | UNSUPPORTED
-    network: Network | UNSUPPORTED
-    hardware: Hardware | UNSUPPORTED
-    software: list[Software] | UNSUPPORTED
+
+class HardwareSerializer(Serializer):
+    model = CharField()
+    manufacturer = CharField()
+
+
+class SoftwareSerializer(Serializer):
+    name = CharField()
+    version = CharField()
+
+
+class CommonDeviceDataSerializer(Serializer):
+    os = OperatingSystemSerializer(required=False, allow_null=True)
+    disks = ListField(child=DiskSerializer(), required=False, allow_null=True)
+    network = NetworkSerializer(required=False, allow_null=True)
+    hardware = HardwareSerializer(required=False, allow_null=True)
+    software = ListField(child=SoftwareSerializer(), required=False, allow_null=True)
