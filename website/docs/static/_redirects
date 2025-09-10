@@ -16,6 +16,7 @@
 #endregion
 
 #region Applications
+/add-secure-apps/providers/azure-ad/                        /add-secure-apps/providers/entra/ 301!
 /add-secure-apps/flows-stages/flow/layouts                  /add-secure-apps/flows-stages/flow/executors/if-flow/ 301!
 /core/applications                                          /add-secure-apps/applications/ 301!
 /applications/*                                             /add-secure-apps/applications/:splat 301!
@@ -29,9 +30,9 @@
 #region Customize
 /core/brands                                                /customize/brands/ 301!
 /customize/brands                                           /customize/branding/ 301!
-/customize/interfaces/admin/customization	                /customize/interfaces/admin/ 301!
-/customize/interfaces/flow/customization	                /customize/interfaces/flow/ 301!
-/customize/interfaces/user/customization	                /customize/interfaces/user/ 301!
+/customize/interfaces/admin/customization                   /customize/interfaces/admin/ 301!
+/customize/interfaces/flow/customization                    /customize/interfaces/flow/ 301!
+/customize/interfaces/user/customization                    /customize/interfaces/user/ 301!
 /customize/policies/working_with_policies/unique_email	    /customize/policies/expression/unique_email/ 301!
 /customize/policies/working_with_policies/whitelist_email   /customize/policies/expression/whitelist_email/ 301!
 /interfaces/*                                               /customize/interfaces/:splat 301!
@@ -50,7 +51,6 @@
 /flow/*                                                     /add-secure-apps/flows-stages/flow/:splat 301!
 /flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
 /outposts/*                                                 /add-secure-apps/outposts/:splat 301!
-/providers/*                                                /add-secure-apps/providers/:splat 301!
 #endregion
 
 #region Sources

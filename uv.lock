@@ -266,7 +266,7 @@ requires-dist = [
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
     { name = "defusedxml", specifier = "==0.7.1" },
-    { name = "django", specifier = "==5.1.11" },
+    { name = "django", specifier = "==5.1.12" },
     { name = "django-countries", specifier = "==7.6.1" },
     { name = "django-cte", specifier = "==2.0.0" },
     { name = "django-dramatiq-postgres", editable = "packages/django-dramatiq-postgres" },
@@ -899,16 +899,16 @@ wheels = [
 
 [[package]]
 name = "django"
-version = "5.1.11"
+version = "5.1.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "sqlparse" },
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/83/80/bf0f9b0aa434fca2b46fc6a31c39b08ea714b87a0a72a16566f053fb05a8/django-5.1.11.tar.gz", hash = "sha256:3bcdbd40e4d4623b5e04f59c28834323f3086df583058e65ebce99f9982385ce", size = 10734926, upload-time = "2025-06-10T10:12:48.229Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/99/a951d93a27a5bc59fb96edbcdbc03fb9bfac51177f1bc0110888de85af3f/django-5.1.12.tar.gz", hash = "sha256:8a8991b1ec052ef6a44fefd1ef336ab8daa221287bcb91a4a17d5e1abec5bbcc", size = 10737777, upload-time = "2025-09-03T13:09:45.855Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/59/91/2972ce330c6c0bd5b3200d4c2ad5cbf47eecff5243220c5a56444d3267a0/django-5.1.11-py3-none-any.whl", hash = "sha256:e48091f364007068728aca938e7450fbfe3f2217079bfd2b8af45122585acf64", size = 8277453, upload-time = "2025-06-10T10:12:42.236Z" },
+    { url = "https://files.pythonhosted.org/packages/1e/1c/a9520c8263e980b0b9933c9b5ce8f22c9ddf007b062e4eb428b557ff0932/django-5.1.12-py3-none-any.whl", hash = "sha256:9eb695636cea3601b65690f1596993c042206729afb320ca0960b55f8ed4477b", size = 8277454, upload-time = "2025-09-03T13:09:30.997Z" },
 ]
 
 [[package]]
