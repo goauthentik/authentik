@@ -1,13 +1,13 @@
 /**
  * @file Client-side observer for ESBuild events.
  *
- * @import { Logger } from "#shared";
+ * @import { Logger } from "@goauthentik/esbuild-plugin-live-reload/shared";
  * @import { Message as ESBuildMessage } from "esbuild";
  */
 
 /// <reference types="./types.js" />
 
-import { createLogger } from "#shared";
+import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
 
 if (typeof EventSource === "undefined") {
     throw new TypeError("Environment doesn't appear to have an EventSource constructor");
