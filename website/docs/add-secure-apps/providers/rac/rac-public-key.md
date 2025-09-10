@@ -29,7 +29,7 @@ SSH private keys can be configured via several methods:
 5. Click **Update**.
 
 :::note
-The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the (YAML spec)[https://yaml.org/spec/1.2.2/#literal-style] for more information.
+The pipe character (`|`) is required to preserve linebreaks in the YAML text. See the [YAML spec](https://yaml.org/spec/1.2.2/#literal-style) for more information.
 :::
 
 ## Apply a private key to an RAC endpoint
