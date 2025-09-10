@@ -104,7 +104,7 @@ let ReleaseNotesURL;
 if (prerelease) {
     ReleaseNotesURL = new URL("/releases", PreReleaseDocsURL);
 } else {
-    ReleaseNotesURL = new URL(`releases/${VersionPath}`, PreReleaseDocsURL);
+    ReleaseNotesURL = new URL(`releases/${VersionPath}`, CurrentReleaseDocsURL);
 
     ReleaseNotesURL.hash = `fixed-in-${[major, minor, patch].join("")}`;
 }
