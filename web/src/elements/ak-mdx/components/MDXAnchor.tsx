@@ -2,8 +2,6 @@ import { useMDXModule } from "#elements/ak-mdx/MDXModuleContext";
 
 import React from "react";
 
-const DOCS_DOMAIN = "https://docs.goauthentik.io";
-
 /**
  * A simplified version of Node's `path.resolve`:
  */
@@ -33,7 +31,7 @@ export const MDXAnchor = ({
     if (href?.startsWith(".") && publicDirectory) {
         const nextPathname = resolvePath(publicDirectory, href);
 
-        const nextURL = new URL(nextPathname, DOCS_DOMAIN);
+        const nextURL = new URL(nextPathname, import.meta.env.AK_DOCS_URL);
         // Remove trailing .md and .mdx, and trailing "index".
         nextURL.pathname = nextURL.pathname.replace(/(index)?\.mdx?$/, "");
         href = nextURL.toString();
