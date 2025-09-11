@@ -308,6 +308,33 @@ import Tabs from "@theme/Tabs";
 </Tabs>;
 ```
 
+### Tabs with automatic OS detection
+
+Use **Tabs** with automatic OS detection to show OS-specific instructions. The tab for the detected OS will be selected by default, but users can switch to other OS tabs if needed. For example:
+
+```tsx
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+<Tabs
+    automaticallyDetectPlatform={true}
+    defaultValue="macos"
+    values={[
+        { label: "macOS", value: "macos" },
+        { label: "Windows", value: "windows" },
+        { label: "Linux", value: "linux" },
+    ]}
+>
+    <TabItem value="macos">macOS-specific instructions go here.</TabItem>
+    <TabItem value="windows">Windows-specific instructions go here.</TabItem>
+    <TabItem value="linux">Linux-specific instructions go here.</TabItem>
+</Tabs>;
+```
+
+The OS detection supports: `macos`, `windows`, `linux`, `android`, and `unknown`. 
+
+By default, only the tabs with the right labels are detected and you must use the exact labels above for the platform to be detected.
+
 ---
 
 ## Error message formatting and troubleshooting
