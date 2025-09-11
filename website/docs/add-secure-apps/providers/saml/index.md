@@ -49,7 +49,7 @@ Signing algorithms (such as RSA-SHA256 or ECDSA-SHA256) define the cryptographic
 
 #### Digest algorithm
 
-A digest algorithm is a cryptographic hash function used to create a fixed-size hash (digest) from the data in the SAML assertion or message. authentik computes a digest value using the chosen algorithm (such as SHA-1 or SHA-256), and it is included as part of the digital signature process. The SP uses the same digest algorithm to independently compute the hash and compare it against the received digest to validate the integrity of the received assertion or message.
+A digest algorithm is a cryptographic hash function used to create a fixed-size hash (digest) from the data in the SAML assertion or message. authentik computes a digest value using the chosen algorithm (such as SHA-1 or SHA-256), and it is included as part of the digital signature process. The SP uses the same digest algorithm to independently compare it with the received digest to validate the integrity of the received assertion or message.
 
 ### Verification certificates
 
