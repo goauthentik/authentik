@@ -1,14 +1,15 @@
 """authentik events models"""
 
+from collections.abc import Generator
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
-from smtplib import SMTPException
+from typing import Any
 from uuid import uuid4
 
 from django.apps import apps
-from django.db import connection, models
+from django.db import models
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -17,7 +18,7 @@ from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -25,7 +26,6 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.apps import GAUGE_TASKS, SYSTEM_TASK_STATUS, SYSTEM_TASK_TIME
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -36,11 +36,14 @@ from authentik.events.utils import (
 )
 from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
 
@@ -161,6 +164,12 @@ class Event(SerializerModel, ExpiringModel):
         event = Event(action=action, app=app, context=cleaned_kwargs)
         return event
 
+    def with_exception(self, exc: Exception) -> "Event":
+        """Add data from 'exc' to the event in a database-saveable format"""
+        self.context.setdefault("message", str(exc))
+        self.context["exception"] = exception_to_dict(exc)
+        return self
+
     def set_user(self, user: User) -> "Event":
         """Set `.user` based on user, ensuring the correct attributes are copied.
         This should only be used when self.from_http is *not* used."""
@@ -191,17 +200,32 @@ class Event(SerializerModel, ExpiringModel):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
         if hasattr(request, "user"):
-            original_user = None
-            if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
-            self.user = get_user(request.user, original_user)
+            self.user = get_user(request.user)
         if user:
             self.user = get_user(user)
-        # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
+            from authentik.flows.views.executor import SESSION_KEY_PLAN
+
+            # Check if we're currently impersonating, and add that user
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
                 self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
                 self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
+            # Special case for events that happen during a flow, the user might not be authenticated
+            # yet but is a pending user instead
+            if SESSION_KEY_PLAN in request.session:
+                from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+
+                plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+                pending_user = plan.context.get(PLAN_CONTEXT_PENDING_USER, None)
+                # Only save `authenticated_as` if there's a different pending user in the flow
+                # than the user that is authenticated
+                if pending_user and (
+                    (pending_user.pk and pending_user.pk != self.user.get("pk"))
+                    or (not pending_user.pk)
+                ):
+                    orig_user = self.user.copy()
+
+                    self.user = {"authenticated_as": orig_user, **get_user(pending_user)}
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
@@ -250,7 +274,8 @@ class Event(SerializerModel, ExpiringModel):
             models.Index(fields=["created"]),
             models.Index(fields=["client_ip"]),
             models.Index(
-                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+                models.F("context__authorized_application"),
+                name="authentik_e_ctx_app__idx",
             ),
         ]
 
@@ -264,13 +289,22 @@ class TransportMode(models.TextChoices):
     EMAIL = "email", _("Email")
 
 
-class NotificationTransport(SerializerModel):
+class NotificationTransport(TasksModel, SerializerModel):
     """Action which is executed when a Rule matches"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField(unique=True)
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
+    send_once = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Only send notification once, for example when sending a webhook into a chat channel."
+        ),
+    )
+
+    email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
+    email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
     webhook_mapping_body = models.ForeignKey(
@@ -293,12 +327,6 @@ class NotificationTransport(SerializerModel):
         help_text=_(
             "Configure additional headers to be sent. "
             "Mapping should return a dictionary of key-value pairs"
-        ),
-    )
-    send_once = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Only send notification once, for example when sending a webhook into a chat channel."
         ),
     )
 
@@ -410,7 +438,7 @@ class NotificationTransport(SerializerModel):
                     "title": notification.body,
                     "color": "#fd4b2d",
                     "fields": fields,
-                    "footer": f"authentik {get_full_version()}",
+                    "footer": f"authentik {authentik_full_version()}",
                 }
             ],
         }
@@ -429,6 +457,8 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        from authentik.stages.email.tasks import send_mail
+
         if notification.user.email.strip() == "":
             LOGGER.info(
                 "Discarding notification as user has no email address",
@@ -436,7 +466,6 @@ class NotificationTransport(SerializerModel):
                 notification=notification,
             )
             return None
-        subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
                 "user_email": notification.user.email,
@@ -464,23 +493,20 @@ class NotificationTransport(SerializerModel):
                 "from": self.name,
             }
         mail = TemplateEmailMessage(
-            subject=subject_prefix + context["title"],
+            subject=self.email_subject_prefix + context["title"],
             to=[(notification.user.name, notification.user.email)],
             language=notification.user.locale(),
-            template_name="email/event_notification.html",
+            template_name=self.email_template,
             template_context=context,
         )
-        # Email is sent directly here, as the call to send() should have been from a task.
-        try:
-            from authentik.stages.email.tasks import send_mail
-
-            return send_mail(mail.__dict__)
-        except (SMTPException, ConnectionError, OSError) as exc:
-            raise NotificationTransportError(exc) from exc
+        send_mail.send_with_options(args=(mail.__dict__,), rel_obj=self)
+        return []
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.events.api.notification_transports import NotificationTransportSerializer
+        from authentik.events.api.notification_transports import (
+            NotificationTransportSerializer,
+        )
 
         return NotificationTransportSerializer
 
@@ -530,7 +556,7 @@ class Notification(SerializerModel):
         verbose_name_plural = _("Notifications")
 
 
-class NotificationRule(SerializerModel, PolicyBindingModel):
+class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     """Decide when to create a Notification based on policies attached to this object."""
 
     name = models.TextField(unique=True)
@@ -547,7 +573,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         default=NotificationSeverity.NOTICE,
         help_text=_("Controls which severity level the created notifications will have."),
     )
-    group = models.ForeignKey(
+    destination_group = models.ForeignKey(
         Group,
         help_text=_(
             "Define which group of users this notification should be sent and shown to. "
@@ -557,6 +583,19 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+    destination_event_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, notification will be sent to user the user that triggered the event."
+            "When destination_group is configured, notification is sent to both."
+        ),
+    )
+
+    def destination_users(self, event: Event) -> Generator[User, Any]:
+        if self.destination_event_user and event.user.get("pk"):
+            yield User(pk=event.user.get("pk"))
+        if self.destination_group:
+            yield from self.destination_group.users.all()
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -581,7 +620,9 @@ class NotificationWebhookMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[type[Serializer]]:
-        from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
+        from authentik.events.api.notification_mappings import (
+            NotificationWebhookMappingSerializer,
+        )
 
         return NotificationWebhookMappingSerializer
 
@@ -594,7 +635,7 @@ class NotificationWebhookMapping(PropertyMapping):
 
 
 class TaskStatus(models.TextChoices):
-    """Possible states of tasks"""
+    """DEPRECATED do not use"""
 
     UNKNOWN = "unknown"
     SUCCESSFUL = "successful"
@@ -602,8 +643,8 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class SystemTask(SerializerModel, ExpiringModel):
-    """Info about a system task running in the background along with details to restart the task"""
+class SystemTask(ExpiringModel):
+    """DEPRECATED do not use"""
 
     uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     name = models.TextField()
@@ -623,41 +664,13 @@ class SystemTask(SerializerModel, ExpiringModel):
     task_call_args = models.JSONField(default=list)
     task_call_kwargs = models.JSONField(default=dict)
 
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.events.api.tasks import SystemTaskSerializer
-
-        return SystemTaskSerializer
-
-    def update_metrics(self):
-        """Update prometheus metrics"""
-        # TODO: Deprecated metric - remove in 2024.2 or later
-        GAUGE_TASKS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).set(self.duration)
-        SYSTEM_TASK_TIME.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-        ).observe(self.duration)
-        SYSTEM_TASK_STATUS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).inc()
-
     def __str__(self) -> str:
         return f"System Task {self.name}"
 
     class Meta:
         unique_together = (("name", "uid"),)
-        # Remove "add", "change" and "delete" permissions as those are not used
-        default_permissions = ["view"]
-        permissions = [("run_task", _("Run task"))]
+        default_permissions = ()
+        permissions = ()
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")
         indexes = ExpiringModel.Meta.indexes

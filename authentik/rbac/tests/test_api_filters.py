@@ -38,6 +38,7 @@ class TestAPIPerms(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -73,6 +74,7 @@ class TestAPIPerms(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,

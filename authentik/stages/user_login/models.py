@@ -63,6 +63,15 @@ class UserLoginStage(Stage):
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
     )
+    remember_device = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "When set to a non-zero value, authentik will save a cookie with a longer expiry,"
+            "to remember the device the user is logging in from. "
+            "(Format: hours=-1;minutes=-2;seconds=-3)"
+        ),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

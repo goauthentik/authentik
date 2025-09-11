@@ -1,14 +1,12 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-secret-text-input.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-secret-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { RenderFlowOption } from "#admin/flows/utils";
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
     AuthenticatorDuoStage,
@@ -19,6 +17,10 @@ import {
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
@@ -80,9 +82,8 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Duo Auth API")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Duo Auth API")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
                         required
@@ -99,20 +100,18 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="clientSecret"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        required
-                        ?revealed=${this.instance === undefined}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Duo Admin API (optional)")}</span>
-                <span slot="description">
-                    ${msg(
-                        `When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.`,
-                    )}
-                </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group
+                label=${msg("Duo Admin API (optional)")}
+                description="${msg(
+                    `When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.`,
+                )}"
+            >
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
                         name="adminIntegrationKey"
@@ -129,13 +128,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         name="adminSecretKey"
                         label=${msg("Secret key")}
                         input-hint="code"
-                        ?revealed=${this.instance === undefined}
+                        ?revealed=${!this.instance}
                     ></ak-secret-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"

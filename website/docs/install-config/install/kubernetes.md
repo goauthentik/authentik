@@ -78,6 +78,13 @@ After the installation is complete, access authentik at `https://<ingress-host-n
 You will get `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
 :::
 
+### PostgreSQL production setup
+
+We recommend using another installation method for PostgreSQL than the one provided that is only intended for demonstration and testing purposes. We recommend the following operators:
+
+- [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
+- [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+
 ### Optional step: Configure global email credentials
 
 It is recommended to configure global email credentials as well. These are used by authentik to notify you about alerts and configuration issues. Additionally, they can be utilized by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification and recovery emails.

@@ -1,17 +1,22 @@
+import "#components/ak-nav-buttons";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
 import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
-import { UIConfig, UserDisplay, getConfigForUser } from "#common/ui/config";
+import { getConfigForUser, UIConfig, UserDisplay } from "#common/ui/config";
 import { me } from "#common/users";
-import "#components/ak-nav-buttons";
-import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
+
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { isAdminRoute } from "#elements/router/utils";
 import { themeImage } from "#elements/utils/images";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
+
+import { SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -22,8 +27,6 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { SessionUser } from "@goauthentik/api";
 
 /**
  * A global navbar component at the top of the page.
@@ -58,185 +61,106 @@ export class AKPageNavbar
         elementRef.hasIcon = !!icon;
     };
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFDrawer,
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFDrawer,
 
-            PFNotificationBadge,
-            PFContent,
-            PFAvatar,
-            PFDropdown,
-            css`
-                :host {
-                    position: sticky;
-                    top: 0;
-                    z-index: var(--pf-global--ZIndex--lg);
-                    --pf-c-page__header-tools--MarginRight: 0;
-                    --ak-brand-logo-height: var(--pf-global--FontSize--4xl, 2.25rem);
-                    --ak-brand-background-color: var(
-                        --pf-c-page__sidebar--m-light--BackgroundColor
-                    );
-                    --host-navbar-height: var(--ak-c-page-header--height, 7.5rem);
+        PFNotificationBadge,
+        PFContent,
+        PFAvatar,
+        PFDropdown,
+        css`
+            :host {
+                position: sticky;
+                top: 0;
+                z-index: var(--pf-global--ZIndex--lg);
+                --pf-c-page__header-tools--MarginRight: 0;
+                --ak-brand-logo-height: var(--pf-global--FontSize--4xl, 2.25rem);
+                --ak-brand-background-color: var(--pf-c-page__sidebar--m-light--BackgroundColor);
+                --host-navbar-height: var(--ak-c-page-header--height, 7.5rem);
+            }
+
+            :host([theme="dark"]) {
+                --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
+                --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
+                color: var(--ak-dark-foreground);
+            }
+
+            .main-content {
+                border-bottom: var(--pf-global--BorderWidth--sm);
+                border-bottom-style: solid;
+                border-bottom-color: var(--pf-global--BorderColor--100);
+                background-color: var(--pf-c-page--BackgroundColor);
+
+                display: flex;
+                flex-direction: row;
+
+                display: grid;
+                column-gap: var(--pf-global--spacer--sm);
+                grid-template-columns: [brand] auto [toggle] auto [primary] 1fr [secondary] auto;
+                grid-template-rows: auto auto;
+                grid-template-areas:
+                    "brand toggle primary secondary"
+                    "brand toggle description secondary";
+
+                @media (min-width: 769px) {
+                    height: var(--host-navbar-height);
                 }
 
-                :host([theme="dark"]) {
-                    --ak-brand-background-color: var(--pf-c-page__sidebar--BackgroundColor);
-                    --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
-                    color: var(--ak-dark-foreground);
-                }
+                @media (max-width: 768px) {
+                    row-gap: var(--pf-global--spacer--xs);
 
-                navbar {
-                    border-bottom: var(--pf-global--BorderWidth--sm);
-                    border-bottom-style: solid;
-                    border-bottom-color: var(--pf-global--BorderColor--100);
-                    background-color: var(--pf-c-page--BackgroundColor);
-
-                    display: flex;
-                    flex-direction: row;
-
-                    display: grid;
-                    column-gap: var(--pf-global--spacer--sm);
-                    grid-template-columns: [brand] auto [toggle] auto [primary] 1fr [secondary] auto;
-                    grid-template-rows: auto auto;
+                    align-items: center;
                     grid-template-areas:
-                        "brand toggle primary secondary"
-                        "brand toggle description secondary";
+                        "toggle primary secondary"
+                        "toggle description description";
+                    justify-content: space-between;
+                    width: 100%;
+                }
+            }
 
-                    @media (min-width: 769px) {
-                        height: var(--host-navbar-height);
-                    }
+            .items {
+                display: block;
+
+                &.primary {
+                    grid-column: primary;
+                    grid-row: primary / description;
+
+                    align-self: center;
+                    padding-block: var(--pf-global--spacer--md);
 
                     @media (max-width: 768px) {
-                        row-gap: var(--pf-global--spacer--xs);
-
-                        align-items: center;
-                        grid-template-areas:
-                            "toggle primary secondary"
-                            "toggle description description";
-                        justify-content: space-between;
-                        width: 100%;
+                        padding-block: var(--pf-global--spacer--sm);
                     }
-                }
 
-                .items {
-                    display: block;
+                    &.block-sibling {
+                        align-self: end;
+                    }
 
-                    &.primary {
-                        grid-column: primary;
-                        grid-row: primary / description;
+                    @media (min-width: 426px) {
+                        &.block-sibling {
+                            padding-block-end: 0;
+                            grid-row: primary;
+                        }
+                    }
 
-                        align-self: center;
-                        padding-block: var(--pf-global--spacer--md);
+                    .accent-icon {
+                        height: 1.2em;
+                        width: 1em;
 
                         @media (max-width: 768px) {
-                            padding-block: var(--pf-global--spacer--sm);
-                        }
-
-                        &.block-sibling {
-                            align-self: end;
-                        }
-
-                        @media (min-width: 426px) {
-                            &.block-sibling {
-                                padding-block-end: 0;
-                                grid-row: primary;
-                            }
-                        }
-
-                        .accent-icon {
-                            height: 1.2em;
-                            width: 1em;
-
-                            @media (max-width: 768px) {
-                                display: none;
-                            }
-                        }
-                    }
-
-                    &.page-description {
-                        padding-top: 0.3em;
-                        grid-area: description;
-                        margin-block-end: var(--pf-global--spacer--md);
-
-                        display: box;
-                        display: -webkit-box;
-                        line-clamp: 2;
-                        -webkit-line-clamp: 2;
-                        box-orient: vertical;
-                        -webkit-box-orient: vertical;
-                        overflow: hidden;
-
-                        @media (max-width: 425px) {
                             display: none;
                         }
-
-                        @media (min-width: 769px) {
-                            text-wrap: balance;
-                        }
-                    }
-
-                    &.secondary {
-                        grid-area: secondary;
-                        flex: 0 0 auto;
-                        justify-self: end;
-                        padding-block: var(--pf-global--spacer--sm);
-                        padding-inline-end: var(--pf-global--spacer--sm);
-
-                        @media (min-width: 769px) {
-                            align-content: center;
-                            padding-block: var(--pf-global--spacer--md);
-                            padding-inline-end: var(--pf-global--spacer--xl);
-                        }
                     }
                 }
 
-                .brand {
-                    grid-area: brand;
-                    background-color: var(--ak-brand-background-color);
-                    height: 100%;
-                    width: var(--pf-c-page__sidebar--Width);
-                    align-items: center;
-                    padding-inline: var(--pf-global--spacer--sm);
+                &.page-description {
+                    padding-top: 0.3em;
+                    grid-area: description;
+                    margin-block-end: var(--pf-global--spacer--md);
 
-                    display: flex;
-                    justify-content: center;
-
-                    &.pf-m-collapsed {
-                        display: none;
-                    }
-
-                    @media (max-width: 1199px) {
-                        display: none;
-                    }
-                }
-
-                .sidebar-trigger {
-                    grid-area: toggle;
-                    height: 100%;
-                }
-
-                .logo {
-                    flex: 0 0 auto;
-                    height: var(--ak-brand-logo-height);
-
-                    & img {
-                        height: 100%;
-                    }
-                }
-
-                .sidebar-trigger,
-                .notification-trigger {
-                    font-size: 1.5rem;
-                }
-
-                .notification-trigger.has-notifications {
-                    color: var(--pf-global--active-color--100);
-                }
-
-                .pf-c-content .page-title {
                     display: box;
                     display: -webkit-box;
                     line-clamp: 2;
@@ -244,16 +168,91 @@ export class AKPageNavbar
                     box-orient: vertical;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
+
+                    @media (max-width: 425px) {
+                        display: none;
+                    }
+
+                    @media (min-width: 769px) {
+                        text-wrap: balance;
+                    }
                 }
 
-                h1 {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center !important;
+                &.secondary {
+                    grid-area: secondary;
+                    flex: 0 0 auto;
+                    justify-self: end;
+                    padding-block: var(--pf-global--spacer--sm);
+                    padding-inline-end: var(--pf-global--spacer--sm);
+
+                    @media (min-width: 769px) {
+                        align-content: center;
+                        padding-block: var(--pf-global--spacer--md);
+                        padding-inline-end: var(--pf-global--spacer--xl);
+                    }
                 }
-            `,
-        ];
-    }
+            }
+
+            .brand {
+                grid-area: brand;
+                background-color: var(--ak-brand-background-color);
+                height: 100%;
+                width: var(--pf-c-page__sidebar--Width);
+                align-items: center;
+                padding-inline: var(--pf-global--spacer--sm);
+
+                display: flex;
+                justify-content: center;
+
+                &.pf-m-collapsed {
+                    display: none;
+                }
+
+                @media (max-width: 1199px) {
+                    display: none;
+                }
+            }
+
+            .sidebar-trigger {
+                grid-area: toggle;
+                height: 100%;
+            }
+
+            .logo {
+                flex: 0 0 auto;
+                height: var(--ak-brand-logo-height);
+
+                & img {
+                    height: 100%;
+                }
+            }
+
+            .sidebar-trigger,
+            .notification-trigger {
+                font-size: 1.5rem;
+            }
+
+            .notification-trigger.has-notifications {
+                color: var(--pf-global--active-color--100);
+            }
+
+            .pf-c-content .page-title {
+                display: box;
+                display: -webkit-box;
+                line-clamp: 2;
+                -webkit-line-clamp: 2;
+                box-orient: vertical;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            h1 {
+                display: flex;
+                flex-direction: row;
+                align-items: center !important;
+            }
+        `,
+    ];
 
     //#endregion
 
@@ -351,7 +350,12 @@ export class AKPageNavbar
     renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
-                return html`<img class="accent-icon pf-icon" src="${this.icon}" alt="page icon" />`;
+                return html`<img
+                    aria-hidden="true"
+                    class="accent-icon pf-icon"
+                    src="${this.icon}"
+                    alt="page icon"
+                />`;
             }
 
             const icon = this.icon.replaceAll("fa://", "fa ");
@@ -363,9 +367,9 @@ export class AKPageNavbar
 
     render(): TemplateResult {
         return html` <slot></slot>
-            <navbar aria-label="Main" class="navbar">
-                <aside class="brand ${this.open ? "" : "pf-m-collapsed"}">
-                    <a href="#/">
+            <div role="banner" aria-label="Main" class="main-content">
+                <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
+                    <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
                             <img
                                 src=${themeImage(this.brandingLogo)}
@@ -376,31 +380,35 @@ export class AKPageNavbar
                     </a>
                 </aside>
                 <button
+                    aria-controls="global-nav"
                     class="sidebar-trigger pf-c-button pf-m-plain"
                     @click=${this.#toggleSidebar}
-                    aria-label=${msg("Toggle sidebar")}
+                    aria-label=${this.open ? msg("Collapse navigation") : msg("Expand navigation")}
                     aria-expanded=${this.open ? "true" : "false"}
                 >
-                    <i class="fas fa-bars"></i>
+                    <i aria-hidden="true" class="fas fa-bars"></i>
                 </button>
 
-                <section
-                    class="items primary pf-c-content ${this.description ? "block-sibling" : ""}"
-                >
-                    <h1 class="page-title">
+                <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
+                    <h1 aria-labelledby="page-navbar-heading" class="page-title">
                         ${this.hasIcon
-                            ? html`<slot name="icon">${this.renderIcon()}</slot>`
+                            ? html`<slot aria-hidden="true" name="icon">${this.renderIcon()}</slot>`
                             : nothing}
-                        ${this.header}
+                        <span id="page-navbar-heading">${this.header}</span>
                     </h1>
-                </section>
+                </div>
                 ${this.description
-                    ? html`<section class="items page-description pf-c-content">
+                    ? html`<div
+                          role="heading"
+                          aria-level="2"
+                          aria-label="${this.description}"
+                          class="items page-description pf-c-content"
+                      >
                           <p>${this.description}</p>
-                      </section>`
+                      </div>`
                     : nothing}
 
-                <section class="items secondary">
+                <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
                         <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
                             <a
@@ -412,8 +420,8 @@ export class AKPageNavbar
                             </a>
                         </ak-nav-buttons>
                     </div>
-                </section>
-            </navbar>`;
+                </div>
+            </div>`;
     }
 
     //#endregion

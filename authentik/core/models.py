@@ -18,7 +18,7 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTEQuerySet, With
+from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -136,7 +136,7 @@ class AttributesMixin(models.Model):
         return instance, False
 
 
-class GroupQuerySet(CTEQuerySet):
+class GroupQuerySet(QuerySet):
     def with_children_recursive(self):
         """Recursively get all groups that have the current queryset as parents
         or are indirectly related."""
@@ -165,9 +165,9 @@ class GroupQuerySet(CTEQuerySet):
             )
 
         # Build the recursive query, see above
-        cte = With.recursive(make_cte)
+        cte = CTE.recursive(make_cte)
         # Return the result, as a usable queryset for Group.
-        return cte.join(Group, group_uuid=cte.col.group_uuid).with_cte(cte)
+        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
 
 
 class Group(SerializerModel, AttributesMixin):
@@ -274,6 +274,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
 
+    last_updated = models.DateTimeField(auto_now=True)
+
     objects = UserManager()
 
     class Meta:
@@ -293,6 +295,8 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
+            models.Index(fields=["date_joined"]),
+            models.Index(fields=["last_updated"]),
         ]
 
     def __str__(self):
@@ -543,6 +547,9 @@ class Application(SerializerModel, PolicyBindingModel):
     meta_publisher = models.TextField(default="", blank=True)
 
     objects = ApplicationQuerySet.as_manager()
+
+    # Reserved slugs that would clash with OAuth2 provider endpoints
+    reserved_slugs = ["authorize", "token", "device", "userinfo", "introspect", "revoke"]
 
     @property
     def serializer(self) -> Serializer:
@@ -953,7 +960,10 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
-        permissions = [("view_token_key", _("View token's key"))]
+        permissions = [
+            ("view_token_key", _("View token's key")),
+            ("set_token_key", _("Set a token's key")),
+        ]
 
     def __str__(self):
         description = f"{self.identifier}"
@@ -1081,6 +1091,12 @@ class AuthenticatedSession(SerializerModel):
     uuid = models.UUIDField(default=uuid4, unique=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
+
+        return AuthenticatedSessionSerializer
 
     class Meta:
         verbose_name = _("Authenticated Session")

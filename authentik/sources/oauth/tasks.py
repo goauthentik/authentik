@@ -2,23 +2,27 @@
 
 from json import dumps
 
+from django.utils.translation import gettext_lazy as _
+from django_dramatiq_postgres.middleware import CurrentTask
+from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
-from authentik.root.celery import CELERY_APP
 from authentik.sources.oauth.models import OAuthSource
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-def update_well_known_jwks(self: SystemTask):
-    """Update OAuth sources' config from well_known, and JWKS info from the configured URL"""
+@actor(
+    description=_(
+        "Update OAuth sources' config from well_known, and JWKS info from the configured URL."
+    )
+)
+def update_well_known_jwks():
+    self: Task = CurrentTask.get_task()
     session = get_http_session()
-    messages = []
     for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):
         try:
             well_known_config = session.get(source.oidc_well_known_url)
@@ -26,7 +30,7 @@ def update_well_known_jwks(self: SystemTask):
         except RequestException as exc:
             text = exc.response.text if exc.response else str(exc)
             LOGGER.warning("Failed to update well_known", source=source, exc=exc, text=text)
-            messages.append(f"Failed to update OIDC configuration for {source.slug}")
+            self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
         config: dict = well_known_config.json()
         try:
@@ -51,7 +55,7 @@ def update_well_known_jwks(self: SystemTask):
                 source=source,
                 exc=exc,
             )
-            messages.append(f"Failed to update OIDC configuration for {source.slug}")
+            self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
         if dirty:
             LOGGER.info("Updating sources' OpenID Configuration", source=source)
@@ -64,11 +68,10 @@ def update_well_known_jwks(self: SystemTask):
         except RequestException as exc:
             text = exc.response.text if exc.response else str(exc)
             LOGGER.warning("Failed to update JWKS", source=source, exc=exc, text=text)
-            messages.append(f"Failed to update JWKS for {source.slug}")
+            self.info(f"Failed to update JWKS for {source.slug}")
             continue
         config = jwks_config.json()
         if dumps(source.oidc_jwks, sort_keys=True) != dumps(config, sort_keys=True):
             source.oidc_jwks = config
             LOGGER.info("Updating sources' JWKS", source=source)
             source.save()
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)

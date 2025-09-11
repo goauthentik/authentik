@@ -16,7 +16,9 @@ Events in authentik that are tracked via SSF include when an MFA device is added
 
 ## Example use cases
 
-A common use case for SSF is when an Admin wants to know if a user logs out of authentik, so that the user is then also automaticlaly logged out of all other work-focused applications.
+One important use case for SFF is to [integrate Apple Business Manager](https://integrations.goauthentik.io/device-management/apple/) or any of the Apple device management platforms with authentik, so that users can enroll their Apple devices using their authentik credentials. When a user signs in with their email address, Apple redirects them to authentik for authentication. Once authenticated, Apple enrolls the user's device and grants access to Apple services.
+
+Another use case for SSF is when an Admin wants to know if a user logs out of authentik, so that the user is then also automatically logged out of all other work-focused applications.
 
 Another example use case is when an application uses SSF to subscribe to authorization events because the application needs to know if a user changed their password in authentik. If a user did change their password, then the application receives a POST request to write the fact that the password was changed.
 

@@ -1,7 +1,7 @@
 import { LitElement, ReactiveController } from "lit";
 
 interface ModalElement extends LitElement {
-    closeModal(): void | boolean;
+    close(): void | boolean;
 }
 
 export class ModalShowEvent extends Event {
@@ -81,7 +81,7 @@ export class ModalOrchestrationController implements ReactiveController {
 
         if (!modalIsLive(modal)) return;
 
-        if (modal.closeModal() !== false) {
+        if (modal.close() !== false) {
             this.#scheduleCleanup(modal);
         }
     };
@@ -99,7 +99,7 @@ export class ModalOrchestrationController implements ReactiveController {
 
             if (!modalIsLive(modal)) continue;
 
-            if (modal.closeModal() !== false) {
+            if (modal.close() !== false) {
                 this.#scheduleCleanup(modal);
             }
 

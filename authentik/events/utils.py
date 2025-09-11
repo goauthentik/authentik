@@ -74,8 +74,8 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def get_user(user: User | AnonymousUser, original_user: User | None = None) -> dict[str, Any]:
-    """Convert user object to dictionary, optionally including the original user"""
+def get_user(user: User | AnonymousUser) -> dict[str, Any]:
+    """Convert user object to dictionary"""
     if isinstance(user, AnonymousUser):
         try:
             user = get_anonymous_user()
@@ -88,10 +88,6 @@ def get_user(user: User | AnonymousUser, original_user: User | None = None) -> d
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
-    if original_user:
-        original_data = get_user(original_user)
-        original_data["on_behalf_of"] = user_data
-        return original_data
     return user_data
 
 

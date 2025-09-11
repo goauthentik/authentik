@@ -10,6 +10,7 @@ from django.utils.timezone import get_current_timezone
 from authentik.enterprise.license import CACHE_KEY_ENTERPRISE_LICENSE
 from authentik.enterprise.models import License
 from authentik.enterprise.tasks import enterprise_update_usage
+from authentik.tasks.schedules.models import Schedule
 
 
 @receiver(pre_save, sender=License)
@@ -26,7 +27,7 @@ def pre_save_license(sender: type[License], instance: License, **_):
 def post_save_license(sender: type[License], instance: License, **_):
     """Trigger license usage calculation when license is saved"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
-    enterprise_update_usage.delay()
+    Schedule.dispatch_by_actor(enterprise_update_usage)
 
 
 @receiver(post_delete, sender=License)

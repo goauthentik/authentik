@@ -1,7 +1,7 @@
-import { $ } from "@wdio/globals";
-
 import Page from "./page.js";
 import UserLibraryPage from "./user-library.page.js";
+
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page
@@ -19,7 +19,7 @@ class LoginPage extends Page {
     }
 
     async inputPassword() {
-        return await $(">>>input#ak-stage-password-input");
+        return await $('>>>input[name="password"]');
     }
 
     async passwordBtnSubmit() {
@@ -53,7 +53,7 @@ class LoginPage extends Page {
         await this.pause();
         await this.password(password);
         await this.pause();
-        await this.pause(">>>div.header h1");
+        await this.pause(">>>header h1");
         return UserLibraryPage;
     }
 

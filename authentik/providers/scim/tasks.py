@@ -1,37 +1,40 @@
 """SCIM Provider tasks"""
 
-from authentik.events.system_tasks import SystemTask
-from authentik.lib.sync.outgoing.exceptions import TransientSyncException
+from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import actor
+
 from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.providers.scim.models import SCIMProvider
-from authentik.root.celery import CELERY_APP
 
 sync_tasks = SyncTasks(SCIMProvider)
 
 
-@CELERY_APP.task(autoretry_for=(TransientSyncException,), retry_backoff=True)
+@actor(description=_("Sync SCIM provider objects."))
 def scim_sync_objects(*args, **kwargs):
     return sync_tasks.sync_objects(*args, **kwargs)
 
 
-@CELERY_APP.task(
-    base=SystemTask, bind=True, autoretry_for=(TransientSyncException,), retry_backoff=True
-)
-def scim_sync(self, provider_pk: int, *args, **kwargs):
+@actor(description=_("Full sync for SCIM provider."))
+def scim_sync(provider_pk: int, *args, **kwargs):
     """Run full sync for SCIM provider"""
-    return sync_tasks.sync_single(self, provider_pk, scim_sync_objects)
+    return sync_tasks.sync(provider_pk, scim_sync_objects)
 
 
-@CELERY_APP.task()
-def scim_sync_all():
-    return sync_tasks.sync_all(scim_sync)
-
-
-@CELERY_APP.task(autoretry_for=(TransientSyncException,), retry_backoff=True)
+@actor(description=_("Sync a direct object (user, group) for SCIM provider."))
 def scim_sync_direct(*args, **kwargs):
     return sync_tasks.sync_signal_direct(*args, **kwargs)
 
 
-@CELERY_APP.task(autoretry_for=(TransientSyncException,), retry_backoff=True)
+@actor(description=_("Dispatch syncs for a direct object (user, group) for SCIM providers."))
+def scim_sync_direct_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_direct_dispatch(scim_sync_direct, *args, **kwargs)
+
+
+@actor(description=_("Sync a related object (memberships) for SCIM provider."))
 def scim_sync_m2m(*args, **kwargs):
     return sync_tasks.sync_signal_m2m(*args, **kwargs)
+
+
+@actor(description=_("Dispatch syncs for a related object (memberships) for SCIM providers."))
+def scim_sync_m2m_dispatch(*args, **kwargs):
+    return sync_tasks.sync_signal_m2m_dispatch(scim_sync_m2m, *args, **kwargs)

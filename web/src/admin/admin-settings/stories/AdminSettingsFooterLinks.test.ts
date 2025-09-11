@@ -1,9 +1,10 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../AdminSettingsFooterLinks.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
-
-import "../AdminSettingsFooterLinks.js";
 
 describe("ak-admin-settings-footer-link", () => {
     afterEach(async () => {

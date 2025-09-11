@@ -66,7 +66,10 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
         self.token = (
-            ConnectionToken.filter_not_expired(token=self.scope["url_route"]["kwargs"]["token"])
+            ConnectionToken.filter_not_expired(
+                token=self.scope["url_route"]["kwargs"]["token"],
+                session__session__session_key=self.scope["session"].session_key,
+            )
             .select_related("endpoint", "provider", "session", "session__user")
             .first()
         )

@@ -3,10 +3,10 @@
 from typing import Any
 
 from django.db import models
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, ListField
+from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -18,6 +18,8 @@ from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.rbac.filters import SecretKeyFilter
+from authentik.tenants.api.settings import FlagJSONField
+from authentik.tenants.flags import Flag
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -110,6 +112,16 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
 
     default_locale = CharField(read_only=True)
+    flags = SerializerMethodField()
+
+    @extend_schema_field(field=FlagJSONField)
+    def get_flags(self, _):
+        values = {}
+        for flag in Flag.available():
+            _flag = flag()
+            if _flag.visibility == "public":
+                values[_flag.key] = _flag.get()
+        return values
 
 
 class BrandViewSet(UsedByMixin, ModelViewSet):

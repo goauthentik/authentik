@@ -6,7 +6,7 @@ import json
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import (
@@ -42,10 +42,13 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.id_token import IDToken, SubModes
+from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+if TYPE_CHECKING:
+    from authentik.providers.oauth2.id_token import IDToken
 
 LOGGER = get_logger()
 
@@ -193,8 +196,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=generate_client_secret,
     )
     _redirect_uris = models.JSONField(
-        default=dict,
+        default=list,
         verbose_name=_("Redirect URIs"),
+    )
+    backchannel_logout_uri = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Back-Channel Logout URI"),
+        blank=True,
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -480,14 +488,16 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
-        self.token = value.to_access_token(self.provider)
+    def id_token(self, value: "IDToken"):
+        self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -531,13 +541,15 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
+    def id_token(self, value: "IDToken"):
         self._id_token = json.dumps(asdict(value))
 
     @property

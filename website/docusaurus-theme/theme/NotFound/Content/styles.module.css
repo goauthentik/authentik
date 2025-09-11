@@ -1,0 +1,22 @@
+.container {
+    flex: 1 1 auto;
+    place-content: center;
+}
+
+.delayedReveal {
+    visibility: hidden;
+    animation: delayedReveal 0.25s var(--ifm-transition-timing-default) forwards;
+    animation-delay: 3s;
+}
+
+@keyframes delayedReveal {
+    0% {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    100% {
+        visibility: visible;
+        opacity: 1;
+    }
+}

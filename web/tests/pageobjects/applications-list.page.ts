@@ -1,6 +1,6 @@
-import { $ } from "@wdio/globals";
-
 import AdminPage from "./admin.page.js";
+
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page

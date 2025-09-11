@@ -1,13 +1,12 @@
 """SCIM Utils"""
 
 from typing import Any
-from urllib.parse import urlparse
+from uuid import UUID
 
 from django.conf import settings
 from django.core.paginator import Page, Paginator
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
-from django.urls import resolve
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -23,6 +22,7 @@ from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
+from authentik.sources.scim.views.v2.exceptions import SCIMNotFoundError
 
 SCIM_CONTENT_TYPE = "application/scim+json"
 
@@ -46,7 +46,7 @@ class SCIMView(APIView):
     logger: BoundLogger
 
     permission_classes = [IsAuthenticated]
-    parser_classes = [SCIMParser]
+    parser_classes = [SCIMParser, JSONParser]
     renderer_classes = [SCIMRenderer]
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
@@ -56,27 +56,12 @@ class SCIMView(APIView):
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
 
-    def patch_resolve_value(self, raw_value: dict) -> User | Group | None:
-        """Attempt to resolve a raw `value` attribute of a patch operation into
-        a database model"""
-        model = User
-        query = {}
-        if "$ref" in raw_value:
-            url = urlparse(raw_value["$ref"])
-            if match := resolve(url.path):
-                if match.url_name == "v2-users":
-                    model = User
-                    query = {"pk": int(match.kwargs["user_id"])}
-        elif "type" in raw_value:
-            match raw_value["type"]:
-                case "User":
-                    model = User
-                    query = {"pk": int(raw_value["value"])}
-                case "Group":
-                    model = Group
-        else:
-            return None
-        return model.objects.filter(**query).first()
+    def remove_excluded_attributes(self, data: dict):
+        """Remove attributes specified in excludedAttributes"""
+        excluded: str = self.request.query_params.get("excludedAttributes", "")
+        for key in excluded.split(","):
+            data.pop(key.strip(), None)
+        return data
 
     def filter_parse(self, request: Request):
         """Parse the path of a Patch Operation"""
@@ -127,6 +112,12 @@ class SCIMObjectView(SCIMView):
         # a source attribute before
         self.mapper = SourceMapper(self.source)
         self.manager = self.mapper.get_manager(self.model, ["data"])
+        for key, value in kwargs.items():
+            if key.endswith("_id"):
+                try:
+                    UUID(value)
+                except ValueError:
+                    raise SCIMNotFoundError("Invalid ID") from None
 
     def build_object_properties(self, data: dict[str, Any]) -> dict[str, Any | dict[str, Any]]:
         return self.mapper.build_object_properties(

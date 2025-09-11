@@ -1,16 +1,16 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
+import "#elements/EmptyState";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
@@ -51,25 +51,19 @@ export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<
         }
         const errors = this.challenge.responseErrors?.duo || [];
         const errorMessage = errors.map((err) => err.string);
-        return html`<div class="pf-c-login__main-body">
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                ${this.renderUserInfo()}
-                <ak-empty-state
-                    ?loading="${this.authenticating}"
-                    header=${this.authenticating
+        return html` <form class="pf-c-form" @submit=${this.submitForm}>
+            ${this.renderUserInfo()}
+            <ak-empty-state ?loading="${this.authenticating}" icon="fas fa-times"
+                ><span
+                    >${this.authenticating
                         ? msg("Sending Duo push notification...")
-                        : errorMessage.join(", ") || msg("Failed to authenticate")}
-                    icon="fas fa-times"
+                        : errorMessage.join(", ") || msg("Failed to authenticate")}</span
                 >
-                </ak-empty-state>
-                <div class="pf-c-form__group pf-m-action">${this.renderReturnToDevicePicker()}</div>
-            </form>
-        </div>`;
+            </ak-empty-state>
+            ${this.showBackButton
+                ? html`<div class="pf-c-form__group">${this.renderReturnToDevicePicker()}</div>`
+                : nothing}
+        </form>`;
     }
 }
 

@@ -1,8 +1,8 @@
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 @customElement("ak-textarea-input")
 export class AkTextareaInput extends HorizontalLightComponent<string> {
@@ -17,6 +17,7 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
         // Prevent the leading spaces added by Prettier's whitespace algo
         // prettier-ignore
         return html`<textarea
+            id=${ifDefined(this.fieldID)}
             @input=${setValue}
             class="pf-c-form-control"
             ?required=${this.required}

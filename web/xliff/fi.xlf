@@ -451,7 +451,7 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of <x id="0" equiv-text="${event.user.on_behalf_of.username}"/></source>
+        <source>On behalf of <x id="0" equiv-text="${renderUsername(event.user.on_behalf_of)}"/></source>
         <target>        <x id="0" equiv-text="${event.user.on_behalf_of.username}"/> puolesta</target>
         
       </trans-unit>
@@ -553,7 +553,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -661,12 +661,6 @@
         <target>Sovellukset, joilla suurin käyttöaste</target>
         
       </trans-unit>
-      <trans-unit id="sda5e1499f93146ad">
-        <source><x id="0" equiv-text="${ago}"/> days ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>pv sitten</target>
-        
-      </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>Objekteja luotu</target>
@@ -712,11 +706,6 @@
         <target>Kuvaus</target>
         
       </trans-unit>
-      <trans-unit id="sa9b2a245441557dc">
-        <source>Last run</source>
-        <target>Viimeisin suoritus</target>
-        
-      </trans-unit>
       <trans-unit id="sad3e3c8146fc920f">
         <source>Status</source>
         <target>Tila</target>
@@ -740,17 +729,6 @@
       <trans-unit id="sc592307ea80f16b9">
         <source>Unknown</source>
         <target>Tuntematon</target>
-        
-      </trans-unit>
-      <trans-unit id="s92921878e886e36d">
-        <source>Duration</source>
-        <target>Kesto</target>
-        
-      </trans-unit>
-      <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
-        <target>
-        <x id="0" equiv-text="${item.duration.toFixed(2)}"/>sekuntia</target>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -1733,11 +1711,6 @@
         <target>Sovelluksen luonti onnistui.</target>
         
       </trans-unit>
-      <trans-unit id="s03907d7a66c6164e">
-        <source>Application's display Name.</source>
-        <target>Sovelluksen näytettävä nimi.</target>
-        
-      </trans-unit>
       <trans-unit id="s91f70424f5d5d23e">
         <source>Slug</source>
         <target>polkutunniste</target>
@@ -2126,11 +2099,6 @@
       <trans-unit id="sc6c575c5ff64cdb1">
         <source>Update SCIM Provider</source>
         <target>Päivitä SCIM-palveluntarjoaja</target>
-        
-      </trans-unit>
-      <trans-unit id="sbecf8dc03c978d15">
-        <source>Run sync again</source>
-        <target>Aja synkronointi uudelleen</target>
         
       </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
@@ -2818,19 +2786,9 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
         <target>Käyttäjän polku</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>Lisäys User DN</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>Lisäys User DN:ään, liitetään Base DN:n alkuun</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>Lisäys Group DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -3028,11 +2986,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
         <target>Lataa palvelimet</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Tunnistaudu uudelleen Plexiin</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>Salli ystävien tunnistautua Plexin kautta, vaikkei heillä olisi käytössä samoja palvelimia.</target>
@@ -3201,11 +3154,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
       <trans-unit id="s52b500138a2d2b8a">
         <source>Update LDAP Source</source>
         <target>Päivitä LDAP-lähde</target>
-        
-      </trans-unit>
-      <trans-unit id="s31a2d43bc1cf1790">
-        <source>Not synced yet.</source>
-        <target>Ei vielä synkronoitu</target>
         
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
@@ -4570,12 +4518,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
         <target>Duo hallintarajapinta (valinnainen)</target>
         
       </trans-unit>
-      <trans-unit id="s7f13f4a2d0370cf6">
-        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
-            This will allow authentik to import devices automatically.</source>
-        <target>Käytettäessä Duo MFA, Access tai Beyond -tilauksia, voidaan luoda hallintarajapintasovellus.
-            Tämä sallii authentikin tuoda laitteita automaattisesti.</target>
-      </trans-unit>
       <trans-unit id="s9a34d1520e320465">
         <source>Stage-specific settings</source>
         <target>Vaihekohtaiset asetukset</target>
@@ -4654,11 +4596,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
       <trans-unit id="sa92398dba8b12d85">
         <source>Mapping</source>
         <target>Kytkentä</target>
-        
-      </trans-unit>
-      <trans-unit id="s38162f615710c7b4">
-        <source>Modify the payload sent to the custom provider.</source>
-        <target>Muokkaa tietosisältöä, joka lähetetään mukautetulle palveluntarjoajalle.</target>
         
       </trans-unit>
       <trans-unit id="s5e830ae7688d1219">
@@ -5724,11 +5661,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
         <target>Säännön luonti onnistui.</target>
         
       </trans-unit>
-      <trans-unit id="sa55ee64c5c51df0f">
-        <source>Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.</source>
-        <target>Valitse käyttäjäryhmä, jolle hälytykset lähetetään. Jos ryhmää ei ole valittu, sääntö ei ole käytössä.</target>
-        
-      </trans-unit>
       <trans-unit id="sffa171e11d4ae513">
         <source>Transports</source>
         <target>Väylät</target>
@@ -5762,11 +5694,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
       <trans-unit id="sc92ed9d5e01d3f24">
         <source>Notification rule(s)</source>
         <target>Notifikaatiosäännöt</target>
-        
-      </trans-unit>
-      <trans-unit id="s5140d157642d7362">
-        <source>None (rule disabled)</source>
-        <target>Ei mitään (sääntö ei käytössä)</target>
         
       </trans-unit>
       <trans-unit id="sd1146418b344f81f">
@@ -6129,19 +6056,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
         <target>Lataa yksityinen avain</target>
         
       </trans-unit>
-      <trans-unit id="s3a5fec3d73ac9edc">
-        <source>Create Certificate-Key Pair</source>
-        <target>Luo sertifikaatti-avainpari</target>
-        
-      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>Luo</target>
-        
-      </trans-unit>
-      <trans-unit id="sf9bddaf910f4eea5">
-        <source>Generate Certificate-Key Pair</source>
-        <target>Luo sertifikaatti-avainpari</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -6596,11 +6513,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
         <target>Yritä uudelleen</target>
         
       </trans-unit>
-      <trans-unit id="sc1589121ae2f5f92">
-        <source>Enter the code shown on your device.</source>
-        <target>Kirjoita laitteellasi näkyvä koodi.</target>
-        
-      </trans-unit>
       <trans-unit id="s67664f8ee9aea98d">
         <source>Please enter your Code</source>
         <target>Kirjoita koodisi</target>
@@ -6707,7 +6619,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
         
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
-        <source><x id="0" equiv-text="${prompt.label}"/></source>
+        <source><x id="0" equiv-text="${name}"/></source>
         <target>
           <x id="0" equiv-text="${prompt.label}"/>
         </target>
@@ -7029,10 +6941,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s9ba989e69344ff29">
   <source>Open Notification drawer</source>
   <target>Avaa notifikaatiolokero</target>
-</trans-unit>
-<trans-unit id="s14bf17e2a1a2c381">
-  <source>Restart task</source>
-  <target>Aloita tehtävä uudelleen</target>
 </trans-unit>
 <trans-unit id="s19409e8712ddd369">
   <source>Add provider</source>
@@ -7455,14 +7363,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Vendor</source>
   <target>Toimittaja</target>
 </trans-unit>
-<trans-unit id="sadadfe9dfa06d7dd">
-  <source>No sync status.</source>
-  <target>Ei synkronoinnin tilatietoja.</target>
-</trans-unit>
-<trans-unit id="s2b1c81130a65a55b">
-  <source>Sync currently running.</source>
-  <target>Synkronointi käynnissä.</target>
-</trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
   <target>Yhteydet</target>
@@ -7542,10 +7442,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
   <target>Määritä SCIM-palveluntarjoaja</target>
-</trans-unit>
-<trans-unit id="s7513372fe60f6387">
-  <source>Event volume</source>
-  <target>Tapahtumavolyymi</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -8201,10 +8097,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Verifying...</source>
   <target>Vahvistetaan...</target>
 </trans-unit>
-<trans-unit id="sc1673c93148583ba">
-  <source>Request failed. Please try again later.</source>
-  <target>Pyyntö epäonnistui. Yritä myöhemmin uudelleen.</target>
-</trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
   <target>Saatavilla olevat roolit.</target>
@@ -8341,18 +8233,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Update Microsoft Entra Provider</source>
   <target>Päivitä Microsoft Entra -palveluntarjoaja</target>
 </trans-unit>
-<trans-unit id="saf4b498d81141878">
-  <source>Finished successfully</source>
-  <target>Valmistui onnistuneesti</target>
-</trans-unit>
-<trans-unit id="s46f1d86ffec6223c">
-  <source>Finished with errors</source>
-  <target>Valmistui, mutta tapahtui virheitä</target>
-</trans-unit>
-<trans-unit id="sc3c334d642866997">
-  <source>Sync currently running</source>
-  <target>Synkronointi käynnissä</target>
-</trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
   <target>Päivitä Google Workspace -palveluntarjoaja</target>
@@ -8468,10 +8348,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="se3a34af2a05c5c98">
   <source>Internal Service account</source>
   <target>Sisäinen palvelutili</target>
-</trans-unit>
-<trans-unit id="s681c086b8f7afcae">
-  <source>Global</source>
-  <target>Yleinen</target>
 </trans-unit>
 <trans-unit id="s1b85e6ac2978a2c0">
   <source>Outpost integrations</source>
@@ -9275,10 +9151,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>No app entitlements created.</source>
   <target>Sovelluksen oikeuksia ei luotu.</target>
 </trans-unit>
-<trans-unit id="sdc8a8f29af6aa411">
-  <source>This application does currently not have any application entitlement defined.</source>
-  <target>Tällä sovelluksella ei tällä hetkellä ole määriteltyjä oikeuksia.</target>
-</trans-unit>
 <trans-unit id="sf0bd204ce3fea1de">
   <source>Create Entitlement</source>
   <target>Luo oikeus</target>
@@ -9578,9 +9450,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
 </trans-unit>
-<trans-unit id="sbb99d4ec27fbb263">
-  <source>Finished</source>
-</trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
 </trans-unit>
@@ -9589,9 +9458,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
-</trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
@@ -9674,9 +9540,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
 </trans-unit>
-<trans-unit id="sdd66c5a2e706fb81">
-  <source>Toggle sidebar</source>
-</trans-unit>
 <trans-unit id="s7d4ec232535a36f0">
   <source>Choose a Provider</source>
 </trans-unit>
@@ -9730,6 +9593,288 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+</trans-unit>
+<trans-unit id="sb7af25ce6e30d61a">
+  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+</trans-unit>
+<trans-unit id="se1d2545eda4b1600">
+  <source>Import Existing Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sb3d5c0a0501669df">
+  <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+</trans-unit>
+<trans-unit id="s2e9d5ea88f02ae68">
+  <source>Select the group of users which the alerts are sent to. </source>
+</trans-unit>
+<trans-unit id="se630f2ccd39bf9e6">
+  <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+</trans-unit>
+<trans-unit id="s47966b2a708694e2">
+  <source>Send notification to event user</source>
+</trans-unit>
+<trans-unit id="sd30f00ff2135589c">
+  <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+</trans-unit>
+<trans-unit id="sbd65aeeb8a3b9bbc">
+  <source>Maximum registration attempts</source>
+</trans-unit>
+<trans-unit id="s8495753cb15e8d8e">
+  <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+</trans-unit>
+<trans-unit id="sab4db6a3bd6abc1e">
+  <source>This application does currently not have any application entitlements defined.</source>
+</trans-unit>
+<trans-unit id="s7225aacf0eee94d2">
+  <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+</trans-unit>
+<trans-unit id="sa3ff409b84679db8">
+  <source>Remember device</source>
+</trans-unit>
+<trans-unit id="s3b123cba0bf03f29">
+  <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+</trans-unit>
+<trans-unit id="s059358bf402de018">
+  <source>Element inside the form slot is not a Form</source>
+</trans-unit>
+<trans-unit id="s8563c5a14e9a42f2">
+  <source>New Password</source>
+</trans-unit>
+<trans-unit id="s547b687213f48489">
+  <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+</trans-unit>
+<trans-unit id="s3c619d54c995d4ab">
+  <source>Modify the payload sent to the provider.</source>
+</trans-unit>
+<trans-unit id="s12d6dde9b30c3093">
+  <source>Dismiss</source>
+</trans-unit>
+<trans-unit id="sdea479482318489d">
+  <source>Status messages</source>
+</trans-unit>
+<trans-unit id="s05a4a4df6783d0cf">
+  <source>Provider name</source>
+</trans-unit>
+<trans-unit id="s19714b5520312d9a">
+  <source>Select an invalidation flow...</source>
+</trans-unit>
+<trans-unit id="sf1a3d030efd11f28">
+  <source>Open about dialog</source>
+</trans-unit>
+<trans-unit id="s95b96d7ead27527f">
+  <source>Product name</source>
+</trans-unit>
+<trans-unit id="s68b6d404c3349b18">
+  <source>Product version</source>
+</trans-unit>
+<trans-unit id="se0d7715f3211d220">
+  <source>Global navigation</source>
+</trans-unit>
+<trans-unit id="sd51d6a39208696cc">
+  <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="scce64bcfb0a73ad7">
+  <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sfe1fb536cab6c0f5">
+  <source><x id="0" equiv-text="${this.label}"/> navigation</source>
+</trans-unit>
+<trans-unit id="scbc2fd9f2bd26fdd">
+  <source>Main content</source>
+</trans-unit>
+<trans-unit id="sd2b106933823b754">
+  <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+</trans-unit>
+<trans-unit id="sd5e9b70ffb7a8b46">
+  <source>Skip to content</source>
+</trans-unit>
+<trans-unit id="s334b3924d2bd5d55">
+  <source>Kerberos Source</source>
+</trans-unit>
+<trans-unit id="sbcdf61483337948a">
+  <source>Successfully updated schedule.</source>
+</trans-unit>
+<trans-unit id="sd372fe5b712f6b30">
+  <source>Crontab</source>
+</trans-unit>
+<trans-unit id="s95bc8722b2708f8b">
+  <source>Paused</source>
+</trans-unit>
+<trans-unit id="se41af830054194bc">
+  <source>Pause this schedule</source>
+</trans-unit>
+<trans-unit id="sd091e43d5e99dea4">
+  <source>Waiting to run</source>
+</trans-unit>
+<trans-unit id="s85994a70cd39166c">
+  <source>Running</source>
+</trans-unit>
+<trans-unit id="sc7637275f670c938">
+  <source>Queue</source>
+</trans-unit>
+<trans-unit id="sb91d1be10eb2c7da">
+  <source>Last updated</source>
+</trans-unit>
+<trans-unit id="s911c2c952e64b223">
+  <source>Show only standalone tasks</source>
+</trans-unit>
+<trans-unit id="s14053a4609676b8b">
+  <source>Exclude successful tasks</source>
+</trans-unit>
+<trans-unit id="s8ff646d0515aab2a">
+  <source>Retry task</source>
+</trans-unit>
+<trans-unit id="s9b8dccb514a0e34c">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="sf92789320708efed">
+  <source>Next run</source>
+</trans-unit>
+<trans-unit id="s1aecc6c0d6cbf4ed">
+  <source>Last status</source>
+</trans-unit>
+<trans-unit id="s6089c283e28012fb">
+  <source>Show only standalone schedules</source>
+</trans-unit>
+<trans-unit id="s48006fb6e0b1860a">
+  <source>Run scheduled task now</source>
+</trans-unit>
+<trans-unit id="s6492593d534108e1">
+  <source>Update Schedule</source>
+</trans-unit>
+<trans-unit id="sf2d616b20d62240d">
+  <source>Schedules</source>
+</trans-unit>
+<trans-unit id="sc797fd9076cc136d">
+  <source>Tasks</source>
+</trans-unit>
+<trans-unit id="s3f63421908094590">
+  <source>Current status</source>
+</trans-unit>
+<trans-unit id="s4412853e1655ebb3">
+  <source>Sync is currently running.</source>
+</trans-unit>
+<trans-unit id="s08661004803c26b0">
+  <source>Sync is not currently running.</source>
+</trans-unit>
+<trans-unit id="s81d16aa9ec62262c">
+  <source>Last successful sync</source>
+</trans-unit>
+<trans-unit id="sd1eb8f8acdbcd1d3">
+  <source>No successful sync found.</source>
+</trans-unit>
+<trans-unit id="s6b0eeb3de1789c6e">
+  <source>Last sync status</source>
+</trans-unit>
+<trans-unit id="sac44b0f4dc14c227">
+  <source>Current execution logs</source>
+</trans-unit>
+<trans-unit id="s5e13dff03b580216">
+  <source>Previous executions logs</source>
+</trans-unit>
+<trans-unit id="s6abb1cd87fe0114e">
+  <source>Home</source>
+</trans-unit>
+<trans-unit id="se58e6ed983bf34b0">
+  <source>Collapse navigation</source>
+</trans-unit>
+<trans-unit id="sc6ef25894ed00175">
+  <source>Expand navigation</source>
+</trans-unit>
+<trans-unit id="s148b5e365440a7c1">
+  <source>Table pagination</source>
+</trans-unit>
+<trans-unit id="s5d929ff1619ac0c9">
+  <source>Search</source>
+</trans-unit>
+<trans-unit id="sd2c2366d13599d8c">
+  <source>Table actions</source>
+</trans-unit>
+<trans-unit id="s3d195621e562d805">
+  <source>Select row</source>
+</trans-unit>
+<trans-unit id="s572d21b6a41e24fa">
+  <source>Table of <x id="0" equiv-text="${this.label}"/></source>
+</trans-unit>
+<trans-unit id="sa25b60b4fac481aa">
+  <source>Table content</source>
+</trans-unit>
+<trans-unit id="s5eba8fa19126f70a">
+  <source>Learn more about the enterprise license.</source>
+</trans-unit>
+<trans-unit id="s9db1679f3b234d4e">
+  <source>Search for providers…</source>
+</trans-unit>
+<trans-unit id="s76790480b7b28ad2">
+  <source>Edit provider</source>
+</trans-unit>
+<trans-unit id="s9839619155ed2cf6">
+  <source>Default NameID Policy</source>
+</trans-unit>
+<trans-unit id="s0c48c5f754275796">
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+</trans-unit>
+<trans-unit id="s6c973fe9014080fc">
+  <source>Application name</source>
+</trans-unit>
+<trans-unit id="s704091f8e3dbd721">
+  <source>The name displayed in the application library.</source>
+</trans-unit>
+<trans-unit id="s418c59028ef6bc2a">
+  <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+</trans-unit>
+<trans-unit id="sa091b3064afa00f5">
+  <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+</trans-unit>
+<trans-unit id="s6d364031a996b540">
+  <source>Back-Channel Logout URI</source>
+</trans-unit>
+<trans-unit id="sc22c7703fd074f5f">
+  <source>e.g. Collaboration, Communication, Internal, etc.</source>
+</trans-unit>
+<trans-unit id="sb6fcdabf769208a1">
+  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+</trans-unit>
+<trans-unit id="s32fc592c4a264edd">
+  <source>Account Recovery Max Attempts</source>
+</trans-unit>
+<trans-unit id="s8341dba451980abe">
+  <source>Account Recovery Cache Timeout</source>
+</trans-unit>
+<trans-unit id="sede4ad68849ce0c5">
+  <source>The time window used to count recent account recovery attempts.</source>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
 </trans-unit>
     </body>
   </file>

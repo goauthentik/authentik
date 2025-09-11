@@ -20,6 +20,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/filesystemstore"
 	"goauthentik.io/internal/outpost/proxyv2/redisstore"
 	"goauthentik.io/internal/utils"
 )
@@ -90,7 +91,10 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		return rs, nil
 	}
 	dir := os.TempDir()
-	cs := sessions.NewFilesystemStore(dir)
+	cs, err := filesystemstore.GetPersistentStore(dir)
+	if err != nil {
+		return nil, err
+	}
 	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
 	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
 	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
@@ -123,7 +127,7 @@ func (a *Application) getAllCodecs() []securecookie.Codec {
 }
 
 func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) error {
-	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
+	if _, ok := a.sessions.(*filesystemstore.Store); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {
 			return err

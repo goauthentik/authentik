@@ -84,6 +84,8 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
 
+    max_attempts = models.PositiveIntegerField(default=0)
+
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_webauthn.api.stages import (

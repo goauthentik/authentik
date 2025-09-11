@@ -1,36 +1,37 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderRACForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/property-mappings/PropertyMappingNotification";
+import "#admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
+import "#admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
+import "#admin/property-mappings/PropertyMappingProviderRACForm";
+import "#admin/property-mappings/PropertyMappingProviderRadiusForm";
+import "#admin/property-mappings/PropertyMappingProviderSAMLForm";
+import "#admin/property-mappings/PropertyMappingProviderSCIMForm";
+import "#admin/property-mappings/PropertyMappingProviderScopeForm";
+import "#admin/property-mappings/PropertyMappingSourceKerberosForm";
+import "#admin/property-mappings/PropertyMappingSourceLDAPForm";
+import "#admin/property-mappings/PropertyMappingSourceOAuthForm";
+import "#admin/property-mappings/PropertyMappingSourcePlexForm";
+import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
+import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
+import "#admin/property-mappings/PropertyMappingTestForm";
+import "#admin/property-mappings/PropertyMappingWizard";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {

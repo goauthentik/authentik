@@ -6,36 +6,49 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
-import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
 import "#admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG } from "#common/api/config";
-import { EVENT_REFRESH } from "#common/constants";
-import { PFSize } from "#common/enums";
-import { userTypeToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
-import { me } from "#common/users";
 import "#components/DescriptionList";
-import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 import "#components/ak-page-header";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
-import { AKElement } from "#elements/Base";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
-import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "#elements/oauth/UserAccessTokenList";
 import "#elements/oauth/UserRefreshTokenList";
 import "#elements/user/SessionList";
 import "#elements/user/UserConsentList";
 import "#elements/user/UserReputationList";
 import "#elements/user/sources/SourceSettings";
+import "./UserDevicesTable.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
+import { userTypeToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+import { me } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+
+import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
+
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SessionUser,
+    User,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -49,16 +62,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SessionUser,
-    User,
-} from "@goauthentik/api";
-
-import "./UserDevicesTable";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
@@ -82,41 +85,39 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     @state()
     me?: SessionUser;
 
-    static get styles() {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDisplay,
-            PFGrid,
-            PFContent,
-            PFCard,
-            PFDescriptionList,
-            PFSizing,
-            PFBanner,
-            css`
-                .ak-button-collection {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.375rem;
-                    max-width: 12rem;
-                }
-                .ak-button-collection > * {
-                    flex: 1 0 100%;
-                }
-                #reset-password-button {
-                    margin-right: 0;
-                }
+    static styles = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDisplay,
+        PFGrid,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+        PFSizing,
+        PFBanner,
+        css`
+            .ak-button-collection {
+                display: flex;
+                flex-direction: column;
+                gap: 0.375rem;
+                max-width: 12rem;
+            }
+            .ak-button-collection > * {
+                flex: 1 0 100%;
+            }
+            #reset-password-button {
+                margin-right: 0;
+            }
 
-                #ak-email-recovery-request,
-                #update-password-request .pf-c-button,
-                #ak-email-recovery-request .pf-c-button {
-                    margin: 0;
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+            #ak-email-recovery-request,
+            #update-password-request .pf-c-button,
+            #ak-email-recovery-request .pf-c-button {
+                margin: 0;
+                width: 100%;
+            }
+        `,
+    ];
 
     constructor() {
         super();
@@ -234,8 +235,17 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         return html`<div class="ak-button-collection">
             <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                 <span slot="submit">${msg("Update password")}</span>
-                <span slot="header">${msg("Update password")}</span>
-                <ak-user-password-form slot="form" .instancePk=${user.pk}></ak-user-password-form>
+                <span slot="header">
+                    ${msg(str`Update ${user.name || user.username}'s password`)}
+                </span>
+
+                <ak-user-password-form
+                    username=${user.username}
+                    email=${ifDefined(user.email)}
+                    slot="form"
+                    .instancePk=${user.pk}
+                >
+                </ak-user-password-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
                     <pf-tooltip position="top" content=${msg("Enter a new password for this user")}>
                         ${msg("Set password")}
@@ -378,12 +388,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl pf-m-5-col-on-2xl"
                     >
                         ${this.renderUserCard()}
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-7-col-on-xl pf-m-7-col-on-2xl"
                     >
                         <div class="pf-c-card__title">
                             ${msg("Actions over the last week (per 8 hours)")}

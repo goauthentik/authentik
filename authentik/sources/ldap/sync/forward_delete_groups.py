@@ -19,7 +19,7 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups or not self._source.delete_not_found_objects:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return iter(())
 
         uuid = uuid4()
@@ -54,7 +54,7 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
     def sync(self, group_pks: tuple) -> int:
         """Delete authentik groups"""
         if not self._source.sync_groups or not self._source.delete_not_found_objects:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return -1
         self._logger.debug("Deleting groups", group_pks=group_pks)
         _, deleted_per_type = Group.objects.filter(pk__in=group_pks).delete()

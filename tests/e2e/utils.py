@@ -4,7 +4,7 @@ import json
 import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
-from os import environ
+from os import environ, getenv
 from sys import stderr
 from time import sleep
 from typing import Any
@@ -44,6 +44,8 @@ RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
 
 def get_local_ip() -> str:
     """Get the local machine's IP"""
+    if local_ip := getenv("LOCAL_IP"):
+        return local_ip
     hostname = socket.gethostname()
     ip_addr = socket.gethostbyname(hostname)
     return ip_addr
@@ -52,7 +54,7 @@ def get_local_ip() -> str:
 class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
 
-    max_healthcheck_attempts = 30
+    max_healthcheck_attempts = 45
 
     __client: DockerClient
     __network: Network
@@ -86,7 +88,7 @@ class DockerTestCase(TestCase):
             sleep(1)
             attempt += 1
             if attempt >= self.max_healthcheck_attempts:
-                self.failureException("Container failed to start")
+                raise self.failureException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""

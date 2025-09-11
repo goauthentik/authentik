@@ -16,14 +16,12 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 ### Create the Entra ID provider in authentik
 
 1.  Log in as an admin to authentik, and go to the Admin interface.
-2.  In the Admin interface, navigate to **Applications -> Providers**.
+2.  In the Admin interface, navigate to **Applications > Providers**.
 3.  Click **Create**, and in the **New provider** box select **Microsoft Entra Provider** as the type and click **Next**.
 4.  Define the following fields:
-
     - **Name**: define a descriptive name, such as "Entra provider".
 
     - **Protocol settings**
-
         - **Client ID**: enter the Client ID that you [copied from your Entra app](./setup-entra.md).
         - **Client Secret**: enter the secret from Entra.
         - **Tenant ID**: enter the Tenant ID from Entra.
@@ -45,9 +43,8 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 ### Create an Entra ID application in authentik
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Applications -> Applications**.
+2. In the Admin interface, navigate to **Applications > Applications**.
 3. Click **Create**, and define the following fields:
-
     - **Name**: provide a descriptive name.
     - **Slug**: enter the name of the app as you want it to appear in the URL.
     - **Group**: optionally, chose a group; apps in the same group are displayed together on the **My applications** page.

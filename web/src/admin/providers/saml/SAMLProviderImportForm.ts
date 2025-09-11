@@ -1,15 +1,17 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { Form } from "#elements/forms/Form";
 
 import { FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
@@ -18,7 +20,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     }
 
     async send(data: SAMLProvider): Promise<void> {
-        const file = this.getFormFiles().metadata;
+        const file = this.files().get("metadata");
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }

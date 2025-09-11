@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AKElement } from "#elements/Base";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -25,19 +25,17 @@ type Pair = [string, string];
 
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
-    static get styles() {
-        return [
-            PFBase,
-            PFToggleGroup,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFToggleGroup,
+        css`
+            .pf-c-toggle-group {
+                justify-content: center;
+            }
+        `,
+    ];
 
-    /*
+    /**
      * The value (causes highlighting, value is returned)
      *
      * @attr

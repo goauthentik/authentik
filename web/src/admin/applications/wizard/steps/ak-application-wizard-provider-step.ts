@@ -1,13 +1,3 @@
-import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-
-import { msg } from "@lit/localize";
-import { PropertyValues, nothing } from "lit";
-import { customElement, query, state } from "lit/decorators.js";
-import { html, unsafeStatic } from "lit/static-html.js";
-
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { OneOfProvider } from "../types.js";
-import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
 import "./providers/ak-application-wizard-provider-for-ldap.js";
 import "./providers/ak-application-wizard-provider-for-oauth.js";
 import "./providers/ak-application-wizard-provider-for-proxy.js";
@@ -15,6 +5,17 @@ import "./providers/ak-application-wizard-provider-for-rac.js";
 import "./providers/ak-application-wizard-provider-for-radius.js";
 import "./providers/ak-application-wizard-provider-for-saml.js";
 import "./providers/ak-application-wizard-provider-for-scim.js";
+
+import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
+import { OneOfProvider } from "../types.js";
+import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
+
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+
+import { msg } from "@lit/localize";
+import { nothing, PropertyValues } from "lit";
+import { customElement, query, state } from "lit/decorators.js";
+import { html, unsafeStatic } from "lit/static-html.js";
 
 const providerToTag = new Map([
     ["ldapprovider", "ak-application-wizard-provider-for-ldap"],
@@ -32,7 +33,24 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     label = msg("Configure Provider");
 
     @query("#providerform")
-    element!: ApplicationWizardProviderForm<OneOfProvider>;
+    protected element!: ApplicationWizardProviderForm<OneOfProvider>;
+
+    get form(): HTMLFormElement | null {
+        const providerForm = this.element.form;
+
+        if (!providerForm) {
+            // TODO: This needs to be removed once all steps can report their validity.
+            console.debug(
+                "authentik/wizard: Form not found within provider step",
+                this,
+                this.element,
+            );
+
+            return null;
+        }
+
+        return providerForm;
+    }
 
     get valid() {
         return this.element.valid;
@@ -99,6 +117,7 @@ export class ApplicationWizardProviderStep extends ApplicationWizardStep {
     updated(changed: PropertyValues<this>) {
         if (changed.has("wizard")) {
             const label = this.element?.label ?? this.label;
+
             if (label !== this.label) {
                 this.label = label;
             }

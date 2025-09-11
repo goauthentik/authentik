@@ -1,11 +1,11 @@
 """authentik policy engine"""
 
-from collections.abc import Iterator
+from collections.abc import Iterable
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from time import perf_counter
 
 from django.core.cache import cache
+from django.db.models import Count, Q, QuerySet
 from django.http import HttpRequest
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
@@ -67,14 +67,11 @@ class PolicyEngine:
         self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
+        self.__static_result: PolicyResult | None = None
 
-    def iterate_bindings(self) -> Iterator[PolicyBinding]:
+    def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
-        return (
-            PolicyBinding.objects.filter(target=self.__pbm, enabled=True)
-            .order_by("order")
-            .iterator()
-        )
+        return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by("order")
 
     def _check_policy_type(self, binding: PolicyBinding):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
@@ -84,29 +81,64 @@ class PolicyEngine:
     def _check_cache(self, binding: PolicyBinding):
         if not self.use_cache:
             return False
-        before = perf_counter()
-        key = cache_key(binding, self.request)
-        cached_policy = cache.get(key, None)
-        duration = max(perf_counter() - before, 0)
-        if not cached_policy:
-            return False
+        # It's a bit silly to time this, but
+        with HIST_POLICIES_EXECUTION_TIME.labels(
+            binding_order=binding.order,
+            binding_target_type=binding.target_type,
+            binding_target_name=binding.target_name,
+            object_type=class_to_path(self.request.obj.__class__),
+            mode="cache_retrieve",
+        ).time():
+            key = cache_key(binding, self.request)
+            cached_policy = cache.get(key, None)
+            if not cached_policy:
+                return False
         self.logger.debug(
             "P_ENG: Taking result from cache",
             binding=binding,
             cache_key=key,
             request=self.request,
         )
-        HIST_POLICIES_EXECUTION_TIME.labels(
-            binding_order=binding.order,
-            binding_target_type=binding.target_type,
-            binding_target_name=binding.target_name,
-            object_pk=str(self.request.obj.pk),
-            object_type=class_to_path(self.request.obj.__class__),
-            mode="cache_retrieve",
-        ).observe(duration)
-        # It's a bit silly to time this, but
         self.__cached_policies.append(cached_policy)
         return True
+
+    def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
+        """Check static bindings if possible"""
+        aggrs = {
+            "total": Count(
+                "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
+            ),
+        }
+        if self.request.user.pk:
+            all_groups = self.request.user.all_groups()
+            aggrs["passing"] = Count(
+                "pk",
+                filter=Q(
+                    Q(
+                        Q(user=self.request.user) | Q(group__in=all_groups),
+                        negate=False,
+                    )
+                    | Q(
+                        Q(~Q(user=self.request.user), user__isnull=False)
+                        | Q(~Q(group__in=all_groups), group__isnull=False),
+                        negate=True,
+                    ),
+                    enabled=True,
+                ),
+            )
+        matched_bindings = bindings.aggregate(**aggrs)
+        passing = False
+        if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
+            # If we didn't find any static bindings, do nothing
+            return
+        self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
+        if matched_bindings.get("passing", 0) > 0:
+            # Any passing static binding -> passing
+            passing = True
+        elif matched_bindings["total"] > 0 and matched_bindings.get("passing", 0) < 1:
+            # No matching static bindings but at least one is configured -> not passing
+            passing = False
+        self.__static_result = PolicyResult(passing)
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
@@ -123,7 +155,12 @@ class PolicyEngine:
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
-            for binding in self.iterate_bindings():
+            bindings = self.bindings()
+            policy_bindings = bindings
+            if isinstance(bindings, QuerySet):
+                self.compute_static_bindings(bindings)
+                policy_bindings = [x for x in bindings if x.policy]
+            for binding in policy_bindings:
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)
@@ -153,10 +190,13 @@ class PolicyEngine:
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
+        self.__processes.sort(key=lambda x: x.binding.order)
         process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
         all_results = list(process_results + self.__cached_policies)
         if len(all_results) < self.__expected_result_count:  # pragma: no cover
             raise AssertionError("Got less results than polices")
+        if self.__static_result:
+            all_results.append(self.__static_result)
         # No results, no policies attached -> passing
         if len(all_results) == 0:
             return PolicyResult(self.empty_result)

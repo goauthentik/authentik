@@ -1,8 +1,9 @@
 import "#components/ak-nav-buttons";
-import { AKPageNavbar } from "#components/ak-page-navbar";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { CSSResult, LitElement, css } from "lit";
+import { AKPageNavbar } from "#components/ak-page-navbar";
+
+import { css, CSSResult, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export interface PageHeaderInit {
@@ -44,15 +45,13 @@ export class AKPageHeader extends LitElement implements PageHeaderInit {
     @property({ type: Boolean })
     iconImage = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: none;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        css`
+            :host {
+                display: none;
+            }
+        `,
+    ];
 
     connectedCallback(): void {
         super.connectedCallback();

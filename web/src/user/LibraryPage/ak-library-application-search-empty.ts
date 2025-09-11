@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -18,9 +18,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 @customElement("ak-library-application-search-empty")
 export class LibraryPageApplicationSearchEmpty extends AKElement {
-    static get styles() {
-        return [PFBase, PFEmptyState, PFContent, PFSpacing];
-    }
+    static styles = [PFBase, PFEmptyState, PFContent, PFSpacing];
 
     render() {
         return html` <div class="pf-c-empty-state pf-m-full-height">

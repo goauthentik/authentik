@@ -13,6 +13,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.utils.encoding import PEM_FOOTER, PEM_HEADER
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     NS_MAP,
     NS_SAML_METADATA,
@@ -46,6 +47,7 @@ class ServiceProviderMetadata:
 
     auth_n_request_signed: bool
     assertion_signed: bool
+    name_id_policy: SAMLNameIDPolicy
 
     signing_keypair: CertificateKeyPair | None = None
 
@@ -60,6 +62,7 @@ class ServiceProviderMetadata:
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding
         provider.acs_url = self.acs_location
+        provider.default_name_id_policy = self.name_id_policy
         if self.signing_keypair and self.auth_n_request_signed:
             self.signing_keypair.name = f"Provider {name} - SAML Signing Certificate"
             self.signing_keypair.save()
@@ -148,6 +151,11 @@ class ServiceProviderMetadataParser:
         if signing_keypair:
             self.check_signature(root, signing_keypair)
 
+        name_id_format = descriptor.findall(f"{{{NS_SAML_METADATA}}}NameIDFormat")
+        name_id_policy = SAMLNameIDPolicy.UNSPECIFIED
+        if len(name_id_format) > 0:
+            name_id_policy = SAMLNameIDPolicy(name_id_format[0].text)
+
         return ServiceProviderMetadata(
             entity_id=entity_id,
             acs_binding=acs_binding,
@@ -155,4 +163,5 @@ class ServiceProviderMetadataParser:
             auth_n_request_signed=auth_n_request_signed,
             assertion_signed=assertion_signed,
             signing_keypair=signing_keypair,
+            name_id_policy=name_id_policy,
         )

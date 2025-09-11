@@ -1,17 +1,18 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TableModal } from "#elements/table/TableModal";
+
+import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { CoreApi, Group } from "@goauthentik/api";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {
@@ -27,9 +28,7 @@ export class GroupSelectModal extends TableModal<Group> {
 
     order = "name";
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFBanner);
-    }
+    static styles: CSSResult[] = [...super.styles, PFBanner];
 
     async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -51,7 +50,7 @@ export class GroupSelectModal extends TableModal<Group> {
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html` <ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,
+            html` <ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`${(item.users || []).length}`,
         ];
     }

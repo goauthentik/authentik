@@ -1,6 +1,6 @@
-import { msg } from "@lit/localize";
-
 import { InitialPermissionsModeEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
 
 export function InitialPermissionsModeToLabel(mode: InitialPermissionsModeEnum): string {
     switch (mode) {

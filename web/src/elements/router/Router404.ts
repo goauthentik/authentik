@@ -1,7 +1,7 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -13,9 +13,7 @@ export class Router404 extends AKElement {
     @property()
     url = "";
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle];
-    }
+    static styles: CSSResult[] = [PFBase, PFEmptyState, PFTitle];
 
     render(): TemplateResult {
         return html`<div class="pf-c-empty-state pf-m-full-height">

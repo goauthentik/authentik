@@ -35,7 +35,7 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 
 ## authentik
 
-1. Under _Directory -> Federation & Social login_ Click **Create Twitter OAuth Source**
+1. Under **Directory > Federation & Social login** click **Create Twitter OAuth Source**
 
 2. **Name**: Choose a name (For the example I use Google)
 3. **Slug**: twitter (If you choose a different slug the URLs will need to be updated to reflect the change)

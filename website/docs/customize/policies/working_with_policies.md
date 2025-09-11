@@ -15,7 +15,7 @@ To learn more see also [bindings](../../add-secure-apps/flows-stages/bindings/in
 To create a new policy, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
-2. In the Admin interface, navigate to **Customization -> Policies**.
+2. In the Admin interface, navigate to **Customization > Policies**.
 3. Click **Create**, and select the type of policy.
 4. Define the policy and click **Finish**.
 
@@ -32,7 +32,7 @@ Bindings are instantiated objects themselves, and conceptually can be considered
 These bindings control which users can access a flow.
 
 1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click on the name of the flow to which you want to bind a policy.
 4. Click on the **Policy/Group/User Bindings** tab at the top of the page.
 5. Here, you can decide if you want to create a new policy and bind it to the flow (**Create and bind Policy**), or if you want to select an existing policy and bind it to the flow (**Bind existing policy/group/user**).
@@ -42,7 +42,7 @@ These bindings control which users can access a flow.
 These bindings control which stages are applied to a flow.
 
 1. Log in as an admin to authentik, and open the Admin interface.
-2. In the Admin interface, navigate to **Flows and Stages -> Flows**.
+2. In the Admin interface, navigate to **Flows and Stages > Flows**.
 3. In the list of flows, click on the name of the flow to which you want to bind a policy.
 4. Click on the **Stage Bindings** tab at the top of the page.
 5. Click the arrow (**>**) beside the name of the stage to which you want to bind a policy.

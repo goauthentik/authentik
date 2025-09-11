@@ -1,11 +1,14 @@
-import "@goauthentik/admin/rbac/RoleObjectPermissionTable";
-import "@goauthentik/admin/rbac/UserObjectPermissionTable";
-import "@goauthentik/admin/roles/RoleAssignedGlobalPermissionsTable";
-import "@goauthentik/admin/roles/RoleAssignedObjectPermissionTable";
-import "@goauthentik/admin/users/UserAssignedGlobalPermissionsTable";
-import "@goauthentik/admin/users/UserAssignedObjectPermissionsTable";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
+import "#admin/rbac/RoleObjectPermissionTable";
+import "#admin/rbac/UserObjectPermissionTable";
+import "#admin/roles/RoleAssignedGlobalPermissionsTable";
+import "#admin/roles/RoleAssignedObjectPermissionTable";
+import "#admin/users/UserAssignedGlobalPermissionsTable";
+import "#admin/users/UserAssignedObjectPermissionsTable";
+import "#elements/Tabs";
+
+import { AKElement } from "#elements/Base";
+
+import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -15,8 +18,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
@@ -29,9 +30,7 @@ export class ObjectPermissionPage extends AKElement {
     @property({ type: Boolean })
     embedded = false;
 
-    static get styles() {
-        return [PFBase, PFGrid, PFPage, PFCard];
-    }
+    static styles = [PFBase, PFGrid, PFPage, PFCard];
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>

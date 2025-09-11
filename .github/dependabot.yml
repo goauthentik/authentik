@@ -25,7 +25,7 @@ updates:
       - "/web"
       - "/web/packages/sfe"
       - "/web/packages/core"
-      - "/web/packages/esbuild-plugin-live-reload"
+      - "/packages/esbuild-plugin-live-reload"
       - "/packages/prettier-config"
       - "/packages/tsconfig"
       - "/packages/docusaurus-config"
@@ -77,6 +77,12 @@ updates:
       goauthentik:
         patterns:
           - "@goauthentik/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: npm
     directory: "/website"
     schedule:

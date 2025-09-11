@@ -81,7 +81,7 @@ class Reputation(ExpiringModel, SerializerModel):
 
     expires = models.DateTimeField(default=reputation_expiry)
 
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

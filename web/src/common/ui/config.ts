@@ -1,8 +1,10 @@
-import { me } from "@goauthentik/common/users.js";
-import { isUserRoute } from "@goauthentik/elements/router/utils.js";
+import { me } from "#common/users";
 
-import { UiThemeEnum, UserSelf } from "@goauthentik/api";
-import { CurrentBrand } from "@goauthentik/api";
+import { isUserRoute } from "#elements/router/utils";
+
+import { CurrentBrand, UiThemeEnum, UserSelf } from "@goauthentik/api";
+
+import { deepmerge } from "deepmerge-ts";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
@@ -13,6 +15,9 @@ export const DefaultBrand = {
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
     defaultLocale: "",
+    flags: {
+        policiesBufferedAccessView: false,
+    },
 } as const satisfies CurrentBrand;
 
 export enum UserDisplay {
@@ -96,13 +101,12 @@ export class DefaultUIConfig implements UIConfig {
 let globalUiConfig: Promise<UIConfig>;
 
 export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings;
-    let config = new DefaultUIConfig();
+    const settings = user.settings as UIConfig;
+    const config = new DefaultUIConfig();
     if (!settings) {
         return config;
     }
-    config = Object.assign(new DefaultUIConfig(), settings);
-    return config;
+    return deepmerge({ ...config }, settings);
 }
 
 export function uiConfig(): Promise<UIConfig> {

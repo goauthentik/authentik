@@ -4,7 +4,7 @@ from hashlib import sha256
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.http import HttpResponseBadRequest
+from django.http import HttpRequest, HttpResponseBadRequest
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from requests.exceptions import RequestException
@@ -19,7 +19,6 @@ from authentik.events.models import Event, EventAction, NotificationWebhookMappi
 from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
 from authentik.stages.authenticator.models import SideChannelDevice
 
@@ -69,32 +68,44 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_("Optionally modify the payload being sent to custom providers."),
     )
 
-    def send(self, token: str, device: "SMSDevice"):
+    def send(self, request: HttpRequest, token: str, device: "SMSDevice"):
         """Send message via selected provider"""
         if self.provider == SMSProviders.TWILIO:
-            return self.send_twilio(token, device)
+            return self.send_twilio(request, token, device)
         if self.provider == SMSProviders.GENERIC:
-            return self.send_generic(token, device)
+            return self.send_generic(request, token, device)
         raise ValueError(f"invalid provider {self.provider}")
 
     def get_message(self, token: str) -> str:
         """Get SMS message"""
         return _("Use this code to authenticate in authentik: {token}".format_map({"token": token}))
 
-    def send_twilio(self, token: str, device: "SMSDevice"):
+    def send_twilio(self, request: HttpRequest, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
         client = Client(self.account_sid, self.auth)
+        message_body = str(self.get_message(token))
+        if self.mapping:
+            payload = sanitize_item(
+                self.mapping.evaluate(
+                    user=device.user,
+                    request=request,
+                    device=device,
+                    token=token,
+                    stage=self,
+                )
+            )
+            message_body = payload.get("message", message_body)
 
         try:
             message = client.messages.create(
-                to=device.phone_number, from_=self.from_number, body=str(self.get_message(token))
+                to=device.phone_number, from_=self.from_number, body=message_body
             )
             LOGGER.debug("Sent SMS", to=device, message=message.sid)
         except TwilioRestException as exc:
             LOGGER.warning("Error sending token by Twilio SMS", exc=exc, msg=exc.msg)
             raise ValidationError(exc.msg) from None
 
-    def send_generic(self, token: str, device: "SMSDevice"):
+    def send_generic(self, request: HttpRequest, token: str, device: "SMSDevice"):
         """Send SMS via outside API"""
         payload = {
             "From": self.from_number,
@@ -107,7 +118,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             payload = sanitize_item(
                 self.mapping.evaluate(
                     user=device.user,
-                    request=None,
+                    request=request,
                     device=device,
                     token=token,
                     stage=self,
@@ -142,10 +153,9 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
                 message="Error sending SMS",
-                exc=exception_to_string(exc),
                 status_code=response.status_code,
                 body=response.text,
-            ).set_user(device.user).save()
+            ).with_exception(exc).set_user(device.user).save()
             if response.status_code >= HttpResponseBadRequest.status_code:
                 raise ValidationError(response.text) from None
             raise

@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-status-label.js";
+
+import AkStatusLabel from "../ak-status-label.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../ak-status-label";
-import AkStatusLabel from "../ak-status-label";
+import { html, TemplateResult } from "lit";
 
 const metadata: Meta<AkStatusLabel> = {
     title: "Components / App Status Label",
@@ -20,17 +21,16 @@ const metadata: Meta<AkStatusLabel> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
-        <style>
-            dl {
-                display: grid;
-                grid-template-columns: 22ch 1fr;
-                gap: 0.5rem;
-            }
-        </style>
-        ${testItem}
-    </div>`;
+const container = (testItem: TemplateResult) => html`
+    <style>
+        dl {
+            display: grid;
+            grid-template-columns: 22ch 1fr;
+            gap: 0.5rem;
+        }
+    </style>
+    ${testItem}
+`;
 
 export const AppIcon = () => {
     // prettier-ignore

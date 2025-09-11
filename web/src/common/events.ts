@@ -4,14 +4,17 @@ export interface EventUser {
     pk: number;
     email?: string;
     username: string;
-    on_behalf_of?: EventUser;
     is_anonymous?: boolean;
+    on_behalf_of?: EventUser;
+    authenticated_as?: EventUser;
 }
 
 export interface EventGeo {
     city?: string;
     country?: string;
     continent?: string;
+    lat?: number;
+    long?: number;
 }
 
 export interface EventModel {

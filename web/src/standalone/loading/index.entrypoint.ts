@@ -1,9 +1,10 @@
 import { globalAK } from "#common/global";
 import { applyDocumentTheme } from "#common/theme";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { css, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -32,11 +33,12 @@ export class Loading extends AKElement {
     }
 
     public connectedCallback(): void {
+        super.connectedCallback();
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
     }
 
     render(): TemplateResult {
-        return html` <section
+        return html`<section
             class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl"
         >
             <div class="pf-c-empty-state" style="height: 100vh;">

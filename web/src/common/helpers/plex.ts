@@ -1,4 +1,4 @@
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { SentryIgnoredError } from "#common/sentry/index";
 
 export interface PlexPinResponse {
     // Only has the fields we care about

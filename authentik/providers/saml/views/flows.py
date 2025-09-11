@@ -35,8 +35,8 @@ REQUEST_KEY_SAML_SIG_ALG = "SigAlg"
 REQUEST_KEY_SAML_RESPONSE = "SAMLResponse"
 REQUEST_KEY_RELAY_STATE = "RelayState"
 
-SESSION_KEY_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
-SESSION_KEY_LOGOUT_REQUEST = "authentik/providers/saml/logout_request"
+PLAN_CONTEXT_SAML_AUTH_N_REQUEST = "authentik/providers/saml/authn_request"
+PLAN_CONTEXT_SAML_LOGOUT_REQUEST = "authentik/providers/saml/logout_request"
 
 
 # This View doesn't have a URL on purpose, as its called by the FlowExecutor
@@ -50,10 +50,11 @@ class SAMLFlowFinalView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         provider: SAMLProvider = get_object_or_404(SAMLProvider, pk=application.provider_id)
-        if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
+        if PLAN_CONTEXT_SAML_AUTH_N_REQUEST not in self.executor.plan.context:
+            self.logger.warning("No AuthNRequest in context")
             return self.executor.stage_invalid()
 
-        auth_n_request: AuthNRequest = self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST)
+        auth_n_request: AuthNRequest = self.executor.plan.context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST]
         try:
             response = AssertionProcessor(provider, request, auth_n_request).build_response()
         except SAMLException as exc:
@@ -106,6 +107,3 @@ class SAMLFlowFinalView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # We'll never get here since the challenge redirects to the SP
         return HttpResponseBadRequest()
-
-    def cleanup(self):
-        self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST, None)

@@ -1,8 +1,8 @@
 ---
-title: User login stage
+title: User Login stage
 ---
 
-This stage attaches a currently pending user to the current session.
+The User Login stage attaches a currently pending user to the current session.
 
 It can be used after `user_write` during an enrollment flow, or after a `password` stage during an authentication flow.
 
@@ -21,7 +21,6 @@ When creating or editing this stage in the UI of the Admin interface, you can se
     :::
 
     You can set the session to expire after any duration using the syntax of `hours=1,minutes=2,seconds=3`. The following keys are allowed:
-
     - Microseconds
     - Milliseconds
     - Seconds
@@ -40,7 +39,7 @@ When creating or editing this stage in the UI of the Admin interface, you can se
 
     When configured, all sessions authenticated by this stage will be bound to the selected network and/or GeoIP criteria.
 
-    Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/index.md#logout) event will contain additional data related to what caused the binding to be broken:
+    Sessions that break this binding will be terminated on use. The created [`logout`](../../../../sys-mgmt/events/event-actions#logout) event will contain additional data related to what caused the binding to be broken:
 
     ```json
     {

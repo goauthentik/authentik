@@ -71,7 +71,7 @@ class AuthenticatorSMSStageView(ChallengeStageView):
             raise ValidationError(_("Invalid phone number"))
         # No code yet, but we have a phone number, so send a verification message
         device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
-        stage.send(device.token, device)
+        stage.send(self.request, device.token, device)
 
     def _has_phone_number(self) -> str | None:
         context = self.executor.plan.context

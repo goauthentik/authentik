@@ -1,27 +1,29 @@
-import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#admin/applications/entitlements/ApplicationEntitlementForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#elements/Tabs";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import {
     ApplicationEntitlement,
     CoreApi,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
@@ -118,13 +120,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                header=${msg("No app entitlements created.")}
-                icon="pf-icon-module"
-            >
+            html`<ak-empty-state icon="pf-icon-module"
+                ><span>${msg("No app entitlements created.")}</span>
+
                 <div slot="body">
                     ${msg(
-                        "This application does currently not have any application entitlement defined.",
+                        "This application does currently not have any application entitlements defined.",
                     )}
                 </div>
                 <div slot="primary"></div>

@@ -13,6 +13,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
     NS_MAP,
@@ -175,7 +176,9 @@ class AuthNRequestParser:
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""
-        relay_state = None
+        request = AuthNRequest(relay_state=None)
         if self.provider.default_relay_state != "":
-            relay_state = self.provider.default_relay_state
-        return AuthNRequest(relay_state=relay_state)
+            request.relay_state = self.provider.default_relay_state
+        if self.provider.default_name_id_policy != SAMLNameIDPolicy.UNSPECIFIED:
+            request.name_id_policy = self.provider.default_name_id_policy
+        return request

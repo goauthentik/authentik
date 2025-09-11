@@ -23,7 +23,6 @@ from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
@@ -142,9 +141,9 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             # Value error can be raised when assigning invalid data to an attribute
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
-                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
+                message="Failed to evaluate property-mapping",
                 mapping=exc.mapping,
-            ).save()
+            ).with_exception(exc).save()
             return None
         return b64encode(packet.RequestPacket()).decode()
 

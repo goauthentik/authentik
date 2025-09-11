@@ -1,5 +1,6 @@
 import { globalAK } from "#common/global";
 import { applyDocumentTheme } from "#common/theme";
+
 import { AKElement } from "#elements/Base";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
 import { ConfigContextController } from "#elements/controllers/ConfigContextController";
@@ -27,6 +28,6 @@ export abstract class Interface extends AKElement {
 
     public connectedCallback(): void {
         super.connectedCallback();
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+        this.dataset.testId = "interface-root";
     }
 }

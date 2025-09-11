@@ -18,6 +18,7 @@ class SCIMSourceUserSerializer(SourceSerializer):
         model = SCIMSourceUser
         fields = [
             "id",
+            "external_id",
             "user",
             "user_obj",
             "source",
@@ -31,5 +32,5 @@ class SCIMSourceUserViewSet(UsedByMixin, ModelViewSet):
     queryset = SCIMSourceUser.objects.all().select_related("user")
     serializer_class = SCIMSourceUserSerializer
     filterset_fields = ["source__slug", "user__username", "user__id"]
-    search_fields = ["source__slug", "user__username", "attributes"]
+    search_fields = ["source__slug", "user__username", "attributes", "user__uuid", "external_id"]
     ordering = ["user__username"]

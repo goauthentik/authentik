@@ -6,7 +6,7 @@ To add a provider (and the application that uses the provider for authentication
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 
-2. Navigate to **Applications -> Applications** and click **Create with provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+2. Navigate to **Applications > Applications** and click **Create with provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
 3. In the **New application** box, define the application details, and then click **Next**.
 

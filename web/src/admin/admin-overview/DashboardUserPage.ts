@@ -1,10 +1,13 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
 import "#components/ak-page-header";
-import { AKElement } from "#elements/Base";
 import "#elements/cards/AggregatePromiseCard";
 
+import { AKElement } from "#elements/Base";
+
+import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -13,27 +16,23 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
-
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {
-    static get styles(): CSSResult[] {
-        return [
-            PFGrid,
-            PFPage,
-            PFContent,
-            PFList,
-            PFDivider,
-            css`
-                .big-graph-container {
-                    height: 35em;
-                }
-                .card-container {
-                    max-height: 10em;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFList,
+        PFDivider,
+        css`
+            .big-graph-container {
+                height: 35em;
+            }
+            .card-container {
+                max-height: 10em;
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User Statistics")}>

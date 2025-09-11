@@ -13,7 +13,7 @@ from authentik.enterprise.providers.ssf.models import (
     SSFProvider,
     Stream,
 )
-from authentik.enterprise.providers.ssf.tasks import send_ssf_event
+from authentik.enterprise.providers.ssf.tasks import send_ssf_events
 from authentik.enterprise.providers.ssf.views.base import SSFView
 
 LOGGER = get_logger()
@@ -109,7 +109,7 @@ class StreamView(SSFView):
                 "User does not have permission to create stream for this provider."
             )
         instance: Stream = stream.save(provider=self.provider)
-        send_ssf_event(
+        send_ssf_events(
             EventTypes.SET_VERIFICATION,
             {
                 "state": None,

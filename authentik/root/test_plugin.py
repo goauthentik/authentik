@@ -5,7 +5,7 @@ from ssl import OPENSSL_VERSION
 import pytest
 from cryptography.hazmat.backends.openssl.backend import backend
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 
 IS_CI = "CI" in environ
 
@@ -22,7 +22,7 @@ def pytest_sessionstart(*_, **__):
 def pytest_report_header(*_, **__):
     """Add authentik version to pytest output"""
     return [
-        f"authentik version: {get_full_version()}",
+        f"authentik version: {authentik_full_version()}",
         f"OpenSSL version: {OPENSSL_VERSION}, FIPS: {backend._fips_enabled}",
     ]
 

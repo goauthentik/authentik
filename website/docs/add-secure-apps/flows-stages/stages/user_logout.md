@@ -1,5 +1,5 @@
 ---
-title: User logout stage
+title: User Logout stage
 ---
 
 Opposite stage of [User Login Stages](./user_login/index.md). It removes the user from the current session.

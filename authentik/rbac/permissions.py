@@ -5,8 +5,11 @@ from django.db.models import Model
 from guardian.shortcuts import assign_perm
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 from rest_framework.request import Request
+from structlog.stdlib import get_logger
 
 from authentik.rbac.models import InitialPermissions, InitialPermissionsMode
+
+LOGGER = get_logger()
 
 
 class ObjectPermissions(DjangoObjectPermissions):
@@ -70,5 +73,11 @@ def assign_initial_permissions(user, instance: Model):
                 user
                 if initial_permissions.mode == InitialPermissionsMode.USER
                 else initial_permissions.role.group
+            )
+            LOGGER.debug(
+                "Adding initial permission",
+                initial_permission=permission,
+                subject=assign_to,
+                object=instance,
             )
             assign_perm(permission, assign_to, instance)

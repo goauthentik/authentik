@@ -1,9 +1,13 @@
-import { css, html } from "lit";
+import {
+    AkHiddenTextInput,
+    type AkHiddenTextInputProps,
+    InputListener,
+} from "./ak-hidden-text-input.js";
+
+import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AkHiddenTextInput, type AkHiddenTextInputProps } from "./ak-hidden-text-input.js";
 
 export interface AkHiddenTextAreaInputProps extends AkHiddenTextInputProps {
     /**
@@ -96,7 +100,7 @@ export class AkHiddenTextAreaInput
     // in the LightDom so the inner components actually inherit styling, the normal `css` options
     // aren't available. Embedding styles is bad styling, and we'll fix it in the next style
     // refresh.
-    protected override renderInputField(setValue: (ev: InputEvent) => void, code: boolean) {
+    protected override renderInputField(setValue: InputListener, code: boolean) {
         const wrap = this.revealed ? this.wrap : "soft";
 
         return html`
@@ -105,6 +109,7 @@ export class AkHiddenTextAreaInput
                 part="textarea"
                 @input=${setValue}
                 placeholder=${ifDefined(this.placeholder)}
+                aria-label=${ifDefined(this.label)}
                 rows=${ifDefined(this.rows)}
                 cols=${ifDefined(this.cols)}
                 wrap=${ifDefined(wrap)}

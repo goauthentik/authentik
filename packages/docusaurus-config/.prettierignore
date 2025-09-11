@@ -1,0 +1,10 @@
+# Prettier Ignorefile
+
+## Static Files
+**/LICENSE
+
+## Build asset directories
+coverage
+dist
+out
+.docusaurus

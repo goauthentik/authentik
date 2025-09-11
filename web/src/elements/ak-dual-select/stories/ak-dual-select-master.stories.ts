@@ -1,15 +1,16 @@
-import "@goauthentik/elements/messages/MessageContainer";
-import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import "#elements/messages/MessageContainer";
+import "../ak-dual-select.js";
 
-import { LitElement, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { AkDualSelect } from "../ak-dual-select.js";
+import { DualSelectEventType, type DualSelectPair } from "../types.js";
 
 import { Pagination } from "@goauthentik/api";
 
-import "../ak-dual-select";
-import { AkDualSelect } from "../ak-dual-select";
-import { DualSelectEventType, type DualSelectPair } from "../types";
+import { Meta, StoryObj } from "@storybook/web-components";
+import { slug } from "github-slugger";
+
+import { html, LitElement, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
@@ -125,7 +126,7 @@ export class AkSbFruity extends LitElement {
 }
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;

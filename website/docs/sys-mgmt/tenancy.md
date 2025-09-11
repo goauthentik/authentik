@@ -3,21 +3,21 @@ title: Tenancy
 authentik_enterprise: true
 ---
 
-::::warning
+:::warning
 This feature is in alpha. Use at your own risk.
-::::
+:::
 
-::::info
+:::info
 This feature is available from 2024.2 and is not to be confused with [brands](../sys-mgmt/brands.md), which were previously called tenants.
-::::
+:::
 
 ## About tenants
 
 Starting with version 2024.2, authentik allows an administrator or operator to create multiple tenants. This means that an operator can manage several different and distinct authentik installations, each with it's own Install ID and license(s). The relationships between tenant and installation (Install ID) is a 1:1 relationship, so for each tenant, there is a unique Install ID.
 
-::::danger
+:::danger
 Expression policies currently have access to all tenants.
-::::
+:::
 
 The data for each tenant is stored in a separate PostgreSQL schema, providing full separation of user data. License data for the tenant is also stored in the schema.
 
@@ -55,7 +55,7 @@ Be sure to disable the embedded outpost with `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDD
 
 ### 2. Create a new tenant with authentik API endpoints
 
-Tenants are created using the API routes associated. Search for `tenant` in the [API browser](../developer-docs/api/reference/authentik) for the available endpoints.
+Tenants are created using the API routes associated. Search for `tenant` in the [API browser](/api/reference/authentik) for the available endpoints.
 
 When creating a tenant you must specify a `name`, used for display purposes, and a `schema_name`, used to create the PostgreSQL schema associated with the tenant.
 

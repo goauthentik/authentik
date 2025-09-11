@@ -1,14 +1,13 @@
-import "@goauthentik/admin/applications/wizard/ak-application-wizard";
-import {
-    ShowHintController,
-    ShowHintControllerHost,
-} from "@goauthentik/components/ak-hint/ShowHintController";
-import "@goauthentik/components/ak-hint/ak-hint";
-import "@goauthentik/components/ak-hint/ak-hint-body";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import "#admin/applications/wizard/ak-application-wizard";
+import "#components/ak-hint/ak-hint";
+import "#components/ak-hint/ak-hint-body";
+import "#elements/Label";
+import "#elements/buttons/ActionButton/ak-action-button";
+
+import { AKElement } from "#elements/Base";
+import { getURLParam } from "#elements/router/RouteMatch";
+
+import { ShowHintController, ShowHintControllerHost } from "#components/ak-hint/ShowHintController";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -36,22 +35,20 @@ const closeButtonIcon = html`<svg
 
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
-    static get styles() {
-        return [
-            PFBase,
-            PFButton,
-            PFPage,
-            PFLabel,
-            css`
-                .pf-c-page__main-section {
-                    padding-bottom: 0;
-                }
-                .ak-hint-text {
-                    padding-bottom: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFButton,
+        PFPage,
+        PFLabel,
+        css`
+            .pf-c-page__main-section {
+                padding-bottom: 0;
+            }
+            .ak-hint-text {
+                padding-bottom: var(--pf-global--spacer--md);
+            }
+        `,
+    ];
 
     @property({ type: Boolean, attribute: "show-hint" })
     forceHint: boolean = false;

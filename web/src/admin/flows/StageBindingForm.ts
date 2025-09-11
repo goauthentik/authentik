@@ -1,24 +1,27 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
-    FlowStageBinding,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowStageBinding,
     InvalidResponseActionEnum,
-    PolicyEngineMode,
     Stage,
     StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
@@ -200,22 +203,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 required
                 name="policyEngineMode"
             >
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "any",
-                            value: PolicyEngineMode.Any,
-                            default: true,
-                            description: html`${msg("Any policy must match to grant access")}`,
-                        },
-                        {
-                            label: "all",
-                            value: PolicyEngineMode.All,
-                            description: html`${msg("All policies must match to grant access")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.policyEngineMode}
-                >
+                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }

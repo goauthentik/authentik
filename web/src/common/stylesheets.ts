@@ -1,7 +1,8 @@
 /**
  * @file Stylesheet utilities.
  */
-import { CSSResultOrNative, ReactiveElement, adoptStyles as adoptStyleSheetsShim, css } from "lit";
+
+import { adoptStyles as adoptStyleSheetsShim, css, CSSResultOrNative, ReactiveElement } from "lit";
 
 /**
  * Element-like objects containing adoptable stylesheets.

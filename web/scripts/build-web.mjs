@@ -1,4 +1,12 @@
-/// <reference types="../types/esbuild.js" />
+/**
+ * @file ESBuild script for building the authentik web UI.
+ */
+
+import "@goauthentik/core/environment/load/node";
+
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+
 /**
  * @file ESBuild script for building the authentik web UI.
  *
@@ -6,18 +14,27 @@
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
+import { ConsoleLogger } from "#logger/node";
 import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
+
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
 import { readBuildIdentifier } from "@goauthentik/core/version/node";
+
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
-import copy from "esbuild-plugin-copy";
-import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
+import { copy } from "esbuild-plugin-copy";
 
-const logPrefix = "[Build]";
+/// <reference types="../types/esbuild.js" />
+
+const logger = ConsoleLogger.child({ name: "Build" });
+
+const bundleDefinitions = createBundleDefinitions();
+
+const publicBundledDefinitions = Object.fromEntries(
+    Object.entries(bundleDefinitions).map(([name, value]) => [name, JSON.parse(value)]),
+);
+logger.info(publicBundledDefinitions, "Bundle definitions");
 
 const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
@@ -45,6 +62,11 @@ const BASE_ESBUILD_OPTIONS = {
         copy({
             assets: [
                 {
+                    from: path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup", "**"),
+                    to: path.dirname(EntryPoint.StandaloneLoading.out),
+                },
+
+                {
                     from: path.join(patternflyPath, "patternfly.min.css"),
                     to: ".",
                 },
@@ -66,16 +88,11 @@ const BASE_ESBUILD_OPTIONS = {
                 },
             ],
         }),
-        polyfillNode({
-            polyfills: {
-                path: true,
-            },
-        }),
         mdxPlugin({
             root: MonoRepoRoot,
         }),
     ],
-    define: createBundleDefinitions(),
+    define: bundleDefinitions,
     format: "esm",
     logOverride: {
         /**
@@ -89,9 +106,7 @@ const BASE_ESBUILD_OPTIONS = {
 };
 
 async function cleanDistDirectory() {
-    const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
-
-    console.time(timerLabel);
+    logger.info(`♻️ Cleaning previous builds...`);
 
     await fs.rm(DistDirectory, {
         recursive: true,
@@ -102,7 +117,7 @@ async function cleanDistDirectory() {
         recursive: true,
     });
 
-    console.timeEnd(timerLabel);
+    logger.info(`♻️ Done!`);
 }
 
 /**
@@ -121,7 +136,7 @@ export function createESBuildOptions(overrides) {
 }
 
 function doHelp() {
-    console.log(`Build the authentik UI
+    logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
@@ -133,20 +148,15 @@ function doHelp() {
 }
 
 async function doWatch() {
-    console.group(`${logPrefix} 🤖 Watching entry points`);
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
-
-        return target;
-    });
-
-    console.groupEnd();
+    const entryPoints = Object.values(EntryPoint);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
+                logger: logger.child({ name: "Live Reload" }),
             }),
         ])
         .catch(() => []);
@@ -167,12 +177,10 @@ async function doWatch() {
     const httpsURL = new URL("https://localhost");
     httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
 
-    console.log(`\n${logPrefix} 🚀 Server running\n\n`);
+    logger.info(`🚀 Server running`);
 
-    console.log(`  🔓 ${httpURL.href}`);
-    console.log(`  🔒 ${httpsURL.href}`);
-
-    console.log(`\n---`);
+    logger.info(`🔓 ${httpURL.href}`);
+    logger.info(`🔒 ${httpsURL.href}`);
 
     return /** @type {Promise<void>} */ (
         new Promise((resolve) => {
@@ -184,15 +192,13 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    console.group(`${logPrefix} 🚀 Building entry points:`);
+    logger.info(`🚀 Building entry points:`);
 
     const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        console.log(entrypointID);
+        logger.info(entrypointID);
 
         return target;
     });
-
-    console.groupEnd();
 
     const buildOptions = createESBuildOptions({
         entryPoints,
@@ -200,7 +206,7 @@ async function doBuild() {
 
     await esbuild.build(buildOptions);
 
-    console.log("Build complete");
+    logger.info("Build complete");
 }
 
 async function doProxy() {
@@ -211,7 +217,7 @@ async function doProxy() {
     });
 
     await esbuild.build(buildOptions);
-    console.log("Proxy build complete");
+    logger.info("Proxy build complete");
 }
 
 async function delegateCommand() {
@@ -241,7 +247,7 @@ await cleanDistDirectory()
                 process.exit(0);
             })
             .catch((error) => {
-                console.error(error);
+                logger.error(error);
                 process.exit(1);
             }),
     );

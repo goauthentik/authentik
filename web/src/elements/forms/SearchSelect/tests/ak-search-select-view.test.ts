@@ -1,13 +1,15 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../ak-search-select-view.js";
+
+import { sampleData } from "../stories/sampleData.js";
+import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { Key } from "webdriverio";
 
 import { html } from "lit";
-
-import "../ak-search-select-view.js";
-import { sampleData } from "../stories/sampleData.js";
-import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";
 
 const longGoodForYouPairs = {
     grouped: false,

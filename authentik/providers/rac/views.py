@@ -18,14 +18,14 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import BufferedPolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 PLAN_CONNECTION_SETTINGS = "connection_settings"
 
 
-class RACStartView(PolicyAccessView):
+class RACStartView(BufferedPolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
     endpoint: Endpoint
@@ -68,7 +68,10 @@ class RACInterface(InterfaceView):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         # Early sanity check to ensure token still exists
-        token = ConnectionToken.filter_not_expired(token=self.kwargs["token"]).first()
+        token = ConnectionToken.filter_not_expired(
+            token=self.kwargs["token"],
+            session__session__session_key=request.session.session_key,
+        ).first()
         if not token:
             return redirect("authentik_core:if-user")
         self.token = token

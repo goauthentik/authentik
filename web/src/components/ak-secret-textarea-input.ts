@@ -1,11 +1,11 @@
-import { ifNotEmpty } from "@goauthentik/elements/utils/ifNotEmpty.js";
+import { AkSecretTextInput } from "./ak-secret-text-input.js";
+
+import { ifNotEmpty } from "#elements/utils/ifNotEmpty";
 
 import { html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AkSecretTextInput } from "./ak-secret-text-input.js";
 
 @customElement("ak-secret-textarea-input")
 export class AkSecretTextAreaInput extends AkSecretTextInput {

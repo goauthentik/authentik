@@ -163,7 +163,7 @@ func (ac *APIController) startEventHandler() {
 					"outpost_name": ac.Outpost.Name,
 					"outpost_type": ac.Server.Type(),
 					"uuid":         ac.instanceUUID.String(),
-					"version":      constants.VERSION,
+					"version":      constants.VERSION(),
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
@@ -228,7 +228,7 @@ func (ac *APIController) startIntervalUpdater() {
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
-				"version":      constants.VERSION,
+				"version":      constants.VERSION(),
 				"build":        constants.BUILD(""),
 			}).SetToCurrentTime()
 		}

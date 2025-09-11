@@ -90,14 +90,17 @@ class TestSourceStage(FlowTestCase):
         plan: FlowPlan = session[SESSION_KEY_PLAN]
         plan.insert_stage(in_memory_stage(SourceStageFinal), index=0)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = flow_token
+        plan.context["foo"] = "bar"
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
         # Pretend we've just returned from the source
-        response = self.client.get(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertStageRedirects(
-            response, reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
-        )
+        with self.assertFlowFinishes() as ff:
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertStageRedirects(
+                response, reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+            )
+        self.assertEqual(ff().context["foo"], "bar")
