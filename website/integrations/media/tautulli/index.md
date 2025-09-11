@@ -66,9 +66,9 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 
 ### Configure proxy outpost
 
-The proxy provider requires an authentik proxy outpost to be configured. See the [outpost documentation](../../../docs/add-secure-apps/outposts/index.mdx#create-and-configure-an-outpost) for more information.
+The proxy provider requires an authentik proxy outpost to be configured. See the [outpost documentation](/docs/add-secure-apps/outpost/index.mdx) for more information.
 
-Optinally, you can use the built-in authentik embedded outpost:
+Optionally, you can use the built-in authentik embedded outpost:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Outposts**
