@@ -109,7 +109,7 @@ export class AkHiddenTextAreaInput
                 part="textarea"
                 @input=${setValue}
                 placeholder=${ifDefined(this.placeholder)}
-                aria-label=${ifDefined(this.label)}
+                aria-label=${ifDefined(this.label || undefined)}
                 rows=${ifDefined(this.rows)}
                 cols=${ifDefined(this.cols)}
                 wrap=${ifDefined(wrap)}

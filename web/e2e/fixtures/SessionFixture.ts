@@ -91,7 +91,11 @@ export class SessionFixture extends PageFixture {
 
         const expectedPathname = typeof to === "string" ? to : to.pathname;
 
-        await this.page.waitForURL(`**${expectedPathname}`);
+        this.logger.info(`Waiting for URL to change to ${expectedPathname}`);
+
+        await this.page.waitForURL(`**${expectedPathname}**`);
+
+        this.logger.info(`URL changed to ${this.page.url()}`);
     }
 
     //#endregion
