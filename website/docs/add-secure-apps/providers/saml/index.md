@@ -112,7 +112,7 @@ For example, some SPs require users' first name (givenname) and last name (surna
 
 ## NameID
 
-The NameID attribute acts as a unique identifier for an user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
+The NameID attribute acts as a unique identifier for a user. While other attributes might change (givenname, email address, etc) the NameID attribute is persistent and should never change. When the IdP sends a SAML assertion to the SP, the NameID is the unique identifier used to represent a specific user in the assertion. It's not used for authentication itself, only for identification purposes in the assertion.
 
 ### NameID property mapping
 
