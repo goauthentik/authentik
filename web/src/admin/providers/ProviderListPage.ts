@@ -51,7 +51,7 @@ export class ProviderListPage extends TablePage<Provider> {
     @property()
     public order = "name";
 
-    public searchLabel = msg("Provider name");
+    public searchLabel = msg("Provider Search");
     public searchPlaceholder = msg("Search for providers…");
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {

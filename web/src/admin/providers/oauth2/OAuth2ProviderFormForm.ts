@@ -131,8 +131,8 @@ export function renderForm(
 ) {
     return html` <ak-text-input
             name="name"
-            placeholder=${msg("Provider name")}
-            label=${msg("Name")}
+            placeholder=${msg("Provider name...")}
+            label=${msg("Provider Name")}
             value=${ifDefined(provider?.name)}
             .errorMessages=${errors?.name}
             required
