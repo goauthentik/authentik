@@ -55,7 +55,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
     - **External host**: set this to the external URL you will use to access Tautulli.
     - **Internal host**:
         - If Tautulli and the authentik proxy outpost are both running in the same Docker deployment, set the value to `http://<tautulli_container_name>:<tautulli_port>`.
-        - If Tautulli and the authentik proxy outpost are both running in the same Kubernetes deployment, set the value to `<tautulli_service_name>.<namespace>.svc.cluster.local`
+        - If Tautulli and the authentik proxy outpost are both running in the same Kubernetes deployment, set the value to `http://<tautulli_service_name>.<namespace>.svc.cluster.local:<tautulli_port>`
         - If Tautulli is running on a different server to the authentik proxy outpost, set the value to `http://tautulli.company` or `http://tautulli.company:<tautulli_port>`.
     - Under **Authentication settings**:
         - **Send HTTP-Basic Authentication**: enabled
