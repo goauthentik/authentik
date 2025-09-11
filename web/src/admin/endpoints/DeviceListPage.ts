@@ -2,8 +2,7 @@ import "#elements/cards/AggregateCard";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { PaginatedResponse } from "#elements/table/Table";
-import { TableColumn } from "#elements/table/TableColumn";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -17,25 +16,21 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 @customElement("ak-endpoints-device-list")
 export class DeviceListPage extends TablePage<EndpointDevice> {
-    pageTitle(): string {
-        return msg("Devices");
-    }
-    pageDescription(): string | undefined {
-        return undefined;
-    }
-    pageIcon(): string {
-        return "fa fa-laptop";
-    }
+    public pageTitle = msg("Device");
+    public pageDescription = "";
+    public pageIcon = "fa fa-laptop";
 
     static styles: CSSResult[] = [...super.styles, PFGrid];
+
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("OS")],
+    ];
 
     async apiEndpoint(): Promise<PaginatedResponse<EndpointDevice>> {
         return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesList(
             await this.defaultEndpointConfig(),
         );
-    }
-    columns(): TableColumn[] {
-        return [new TableColumn("Name"), new TableColumn("OS")];
     }
 
     renderSectionBefore() {
@@ -58,8 +53,8 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
-            html`${item.data.network.hostname}`,
-            html`${item.data.os.family} ${item.data.os.version}`,
+            html`${item.data.network?.hostname}`,
+            html`${item.data.os?.family} ${item.data.os?.version}`,
         ];
     }
 }
