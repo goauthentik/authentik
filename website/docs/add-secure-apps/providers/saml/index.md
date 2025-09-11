@@ -8,7 +8,7 @@ Refer to the instructions to [create a SAML provider](./create-saml-provider.md)
 
 ## SAML bindings and endpoints
 
-Bindings are the mechanism that handle how SAML messages are exchanged between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
+Bindings define how SAML messages are exchanged between an Identity Provider (IdP) and a Service Provider (SP), typically a service or application. Both IdPs and SPs define various endpoints in their metadata, each associated with a specific SAML binding.
 
 A binding defines how SAML messages are transported over network protocols. In authentik, you can select one of two SAML bindings: `HTTP Redirect` or `HTTP POST`.
 
@@ -41,7 +41,7 @@ Certificates are vital for trust and security during SAML authentication and are
 
 ### Signing certificates
 
-A signing certificate allow authentik to digitally sign SAML assertions and responses. This certificate contains a private key that creates a cryptographic signature, proving the authenticity and integrity of the transmitted data. The SP then uses the corresponding public key from this certificate to verify the signature. Ensuring the response was not tampered with and that it originated from authentik.
+A signing certificate allows authentik to digitally sign SAML assertions and responses. This certificate contains a private key that creates a cryptographic signature, proving the authenticity and integrity of the transmitted data. The SP then uses the corresponding public key from this certificate to verify the signature. Ensuring the response was not tampered with and that it originated from authentik.
 
 #### Signing algorithm
 
