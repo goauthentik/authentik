@@ -149,6 +149,10 @@ Your choice of `slug` should match the ACS URL you provided to Google Workspace.
 You can choose a different slug, but you will need to update the ACS URL in Google Workspace to match.
 :::
 
+:::note
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
+:::
+
 #### Protocol settings
 
 Next, we'll configure the SAML protocol settings for the source. Fill in the following fields with the values you copied from Google Workspace:
@@ -202,7 +206,3 @@ This may take a few minutes to propagate, so try logging in again after a short 
 - [Setting up SAML with Google Workspace](https://support.google.com/a/answer/6087519)
 - [SAML app error messages](https://support.google.com/a/answer/6301076)
 - [SAML authentication flow](https://infosec.mozilla.org/guidelines/iam/saml.html)
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
-:::
