@@ -47,7 +47,7 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues.
 
-See the [LDAP Source documentation](../../protocols/ldap/index.mdx) for more information on these settings.
+See the [LDAP Source documentation](../../protocols/ldap) for more information on these settings.
 :::
 
 To create a new LDAP Source in authentik:
@@ -65,7 +65,7 @@ To create a new LDAP Source in authentik:
           :::tip
           You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
           :::
-        - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`
+        - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`.
         - **TLS Verification Certificate**: Used to validate the remote certificate.
         - **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
         - **Bind Password**: The password for the above user account.
@@ -76,7 +76,7 @@ To create a new LDAP Source in authentik:
         - **Group property mappings**: Select `authentik default OpenLDAP Mapping: cn`
 
     - Under **Additional settings**:
-        - **Parent Group**: If selected, all synchronized groups will be given this group as a parent.
+        - **Parent Group**: If selected, all synchronized groups will be given this authentik group as a parent.
         - **User Path**: The path that users will be saved under in authentik.
         - **Addition User/Group DN**: `cn=users,cn=accounts`
         - **Addition Group DN**: `cn=groups,cn=accounts`
@@ -84,7 +84,7 @@ To create a new LDAP Source in authentik:
         - **Group object filter**: `(objectClass=groupofnames)`
         - **Group membership field**: `memberOf`
         - **User membership attribute**: `distinguishedName`
-        - **Lookup using user attribute**: Enabled
+        - **Lookup using user attribute**: Enabled.
         - **Object uniqueness field**: `ipaUniqueID`
 
     :::caution
@@ -93,8 +93,10 @@ To create a new LDAP Source in authentik:
     If you want to sync only direct group memberships, use the following settings:
     - **Group membership field**: `member`
     - **User membership attribute**: `distinguishedName`
-    - **Lookup using user attribute**: Disabled
+    - **Lookup using user attribute**: Disabled.
       :::
+
+4. Click **Finish** to create the LDAP Source.
 
 ### Manual synchronization
 
