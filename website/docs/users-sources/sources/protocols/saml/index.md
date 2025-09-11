@@ -2,7 +2,7 @@
 title: SAML Source
 ---
 
-This source allows authentik to act as a SAML Service Provider. Just like the [SAML provider](/integrations/), it supports signed requests. Vendor-specific documentation can be found in the Integrations section.
+This source allows authentik to act as a SAML Service Provider. Just like the [SAML provider](../../../../add-secure-apps/providers/saml/index.md), it supports signed requests. Vendor-specific documentation can be found in the Integrations section.
 
 ## Terminology
 
