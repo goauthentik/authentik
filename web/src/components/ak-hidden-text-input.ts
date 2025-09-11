@@ -73,15 +73,6 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     public placeholder?: string;
 
     /**
-     * Text for when the input has no set value
-     *
-     * @property
-     * @attribute
-     */
-    @property({ type: String })
-    public label?: string;
-
-    /**
      * Specify kind of help the browser should try to provide
      *
      * @property
@@ -116,7 +107,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
             part="input"
             autocomplete=${ifDefined(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifDefined(this.label || undefined)}
             @input=${setValue}
             value=${ifDefined(this.value)}
             placeholder=${ifDefined(this.placeholder)}

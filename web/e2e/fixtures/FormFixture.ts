@@ -31,8 +31,7 @@ export class FormFixture extends PageFixture {
                 parent.getByRole("spinbutton", {
                     name: fieldName,
                 }),
-            )
-            .first();
+            );
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
@@ -80,14 +79,12 @@ export class FormFixture extends PageFixture {
         fieldName: string,
         parent: LocatorContext = this.page,
     ): Promise<void> => {
-        const group = parent.getByRole("group", { name: groupName });
+        const group = parent.getByRole("radiogroup", { name: groupName });
 
         await expect(group, `Field "${groupName}" should be visible`).toBeVisible();
         const control = parent.getByRole("radio", { name: fieldName });
 
-        await control.setChecked(true, {
-            force: true,
-        });
+        await control.setChecked(true);
     };
 
     /**
