@@ -205,7 +205,7 @@
         "@wdio/cli": "^9.19.2",
         "@wdio/spec-reporter": "^9.19.2",
         "@web/test-runner": "^0.20.2",
-        "chromedriver": "^140.0.0",
+        "chromedriver": "^140.0.1",
         "p-iteration": "^1.1.8"
     },
     "wireit": {
