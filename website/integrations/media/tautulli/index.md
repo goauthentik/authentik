@@ -32,7 +32,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set the following fields for the group:
-    - **Name**: `tautulli users`
+    - **Name**: `Tautulli users`
     - **Attributes**:
 
     ```yaml
@@ -40,7 +40,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
     tautulli_password: <tautulli_password>
     ```
 
-4. Click **Create** to save the group.
+4. Click **Create**.
 5. Click the name of the newly created group and navigate to the **Users** tab.
 6. Click **Add existing user**, select the user that needs Tautulli access, and then click **Add**.
 
@@ -54,7 +54,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **External host**: set this to the external URL you will use to access Tautulli.
     - **Internal host**:
-        - If Tautulli is running in docker, and the authentik proxy outpost is on the same host, set the value to `http://tautulli:3579`, where `tautulli` is the name of the Tautulli container.
+        - If Tautulli is running in Docker, and the authentik proxy outpost is on the same host, set the value to `http://tautulli:3579`, where `tautulli` is the name of the Tautulli container.
         - If Tautulli is running on a different server to the authentik proxy outpost, set the value to `http://tautulli.company:3579`.
     - Under **Authentication settings**:
         - **Send HTTP-Basic Authentication**: enabled
