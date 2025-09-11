@@ -72,6 +72,7 @@ if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
     export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
 fi
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
+chown authentik:authentik "${PROMETHEUS_MULTIPROC_DIR}"
 
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
