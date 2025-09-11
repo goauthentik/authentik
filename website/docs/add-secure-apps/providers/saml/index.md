@@ -2,7 +2,7 @@
 title: SAML Provider
 ---
 
-The SAML provider allows you to integrate with services and applications using the [SAML2 protocol](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf). It supports signed requests and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to determine which fields are exposed and what values they return. This makes it possible to expose application-specific fields. Default fields are exposed through auto-generated property mappings, which are prefixed with "authentik default".
+The SAML provider allows you to integrate with Service Providers using the SAML2 protocol. It supports [importing and exporting SAML metadata](#saml-metadata), [signed requests](#certificates) and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to align, or "map", Service Provider and authentik attributes.
 
 Refer to the instructions to [create a SAML provider](./create-saml-provider.md).
 
