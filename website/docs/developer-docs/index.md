@@ -92,7 +92,11 @@ authentik
 └── tenants - Soft tennancy, configure defaults and branding per domain
 ```
 
+<<<<<<< HEAD:website/docs/developer-docs/index.md
 This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application which reverse-proxies it, handles static files and will eventually gain more functionality as more code is migrated to go.
+=======
+This Django project is running in gunicorn, which spawns multiple workers and threads. Gunicorn is run from a lightweight Go application that reverse-proxies it and handles static files.
+>>>>>>> e582a178e (website/docs: remove reference to Go migration (#16724)):website/docs/developer-docs/contributing.md
 
 There are also several background tasks that run in Dramatiq, via the `django-dramatiq-postgres` package, with some additional helpers in `authentik.tasks`.
 
