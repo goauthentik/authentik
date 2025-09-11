@@ -68,7 +68,7 @@ Each SAML property mapping includes the following fields:
     - **Name**: The name of the property mapping that's displayed in the authentik admin interface.
     - **SAML Attribute Name**: The label that maps IdP user information to SP expectations. Can be a URN OID, a schema reference, or any other string.
     - **Friendly Name**: A human-friendly identifier for a SAML attribute.
-    - **Expression**: The python expression that maps an authentik user attribute to a value that an SP is expecting.
+    - **Expression**: The Python expression that maps an authentik user attribute to a value that an SP is expecting.
 
 ### Default SAML property mappings
 
