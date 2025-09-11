@@ -49,13 +49,14 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- **Application**: provide a descriptive name (e.g., `Tautulli`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **Proxy Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **External host**: set this to the external URL you will use to access Tautulli.
     - **Internal host**:
-        - If Tautulli is running in Docker, and the authentik proxy outpost is on the same host, set the value to `http://tautulli:3579`, where `tautulli` is the name of the Tautulli container.
-        - If Tautulli is running on a different server to the authentik proxy outpost, set the value to `http://tautulli.company:3579`.
+        - If Tautulli and the authentik proxy outpost are both running in the same Docker deployment, set the value to `http://<tautulli_container_name>:<tautulli_port>`.
+        - If Tautulli and the authentik proxy outpost are both running in the same Kubernetes deployment, set the value to `<tautulli_service_name>.<namespace>.svc.cluster.local`
+        - If Tautulli is running on a different server to the authentik proxy outpost, set the value to `http://tautulli.company` or `http://tautulli.company:<tautulli_port>`.
     - Under **Authentication settings**:
         - **Send HTTP-Basic Authentication**: enabled
         - **HTTP-Basic Username Key**: `tautulli_user`
