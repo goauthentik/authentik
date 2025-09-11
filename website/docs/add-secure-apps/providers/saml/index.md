@@ -4,7 +4,7 @@ title: SAML Provider
 
 The SAML provider allows you to integrate with Service Providers using the SAML2 protocol. It supports [importing and exporting SAML metadata](#saml-metadata), [signed requests](#certificates) and uses [property mappings](../property-mappings/index.md#saml-property-mappings) to align, or "map", Service Provider and authentik attributes.
 
-Refer to the instructions to [create a SAML provider](./create-saml-provider.md).
+Refer to our documentation to learn how to [create a SAML provider](./create-saml-provider.md).
 
 ## SAML bindings and endpoints
 
