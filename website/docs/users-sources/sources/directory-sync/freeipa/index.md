@@ -45,20 +45,22 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 ## authentik Setup
 
 :::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues.
 
-All the settings are described in [LDAP sources](../../protocols/ldap/index.mdx).
+See the [LDAP Source documentation](../../protocols/ldap/index.mdx) for more information on these settings.
 :::
 
-In authentik, create a new LDAP Source: go to **Directory** > **Federation and Social Login**, click **Create**,
-select **LDAP source**.
+To create a new LDAP Source in authentik: 
 
-These settings are required for FreeIPA: 
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social Login**, click **Create**, select **LDAP Source**, and click **Next**.
+3. Configure the following settings:
 
-- **Name**: `Company FreeIPA`
-- **Slug**: `company-freeipa`
-- **Update internal password on login**: enable if you want your users to be able to login if FreeIPA is not accessible
-- **Delete not found object**: enable to delete users from Authentik when they are deleted in FreIPA
+
+- **Name**: Provide a descriptive name for the LDAP source.
+- **Slug**: Provide a slug for the LDAP source.
+- **Update internal password on login**: Enable if you want your users to be able to log in if FreeIPA is not accessible.
+- **Delete not found object**: Enable to delete users from authentik when they are deleted in FreeIPA.
 
 ### Connection settings
 
@@ -73,7 +75,7 @@ These settings are required for FreeIPA:
 - **Enable StartTLS**: enable for `ldap://` protocol, disable for `ldaps://`
 - **TLS Verification Certificate**: **FIXME**
 - **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
-- **Bind Password**: The password you've given the user above
+- **Bind Password**: The password for the above user account.
 - **Base DN**: `dc=freeipa,dc=company`
 
 ### LDAP Attribute mapping
@@ -95,10 +97,10 @@ These settings are required for FreeIPA:
 - **Object uniqueness field**: `ipaUniqueID`
 
 :::caution
-In FreeIPA, groups can have other groups as members. Indirect member users are not listed in the parent group's `member` attribute.
-Because of this, the sync havs to be done by the user's attribute `memberOf`. These are present for every membership, even indirect one.
+FreeIPA groups can contain nested groups. The `memberOf` user attribute lists all group memberships, direct and indirect.
 
-In the improbable case that you want to sync only direct memberships, you can use the following settings:
+If you want to sync only direct group memberships, use the following settings:
+
 - Group membership field: `member`
 - User membership attribute: `distinguishedName`
 - Lookup using user attribute: *disabled*
