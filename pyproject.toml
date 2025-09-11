@@ -7,7 +7,7 @@ requires-python = "==3.13.*"
 dependencies = [
   "argon2-cffi==25.1.0",
   "channels==4.3.1",
-  "channels-redis==4.3.0",
+  "channels-postgres==1.1.2",
   "cryptography==45.0.5",
   "dacite==1.9.2",
   "deepmerge==2.0",
