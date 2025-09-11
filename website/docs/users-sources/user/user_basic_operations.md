@@ -39,7 +39,7 @@ You can create advanced queries to locate specific users within the list shown u
 
 - **Field**: `username`, `path`, `name`, `email`, `path`, `is_active`, `type`, `attributes`
 
-- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswidth`, `not endswith`, `in`, `not in`
+- **Operators**: `=`, `!=`, `~`, `!~`, `startswith`, `not startswith`, `endswith`, `not endswith`, `in`, `not in`
 
 - **Values**: `True`, `False`, `None`, and more
 
@@ -117,7 +117,7 @@ This option is only available if a default recovery flow was configured for the 
 You can send a link with the URL for the user to reset their password via Email. This option will only work if you have properly [configured a SMTP server during the installation](../../install-config/install/docker-compose.mdx#email-configuration-optional-but-recommended) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To send the email to the user, click **Email recovery link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
