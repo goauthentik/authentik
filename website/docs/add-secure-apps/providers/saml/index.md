@@ -131,7 +131,7 @@ In authentik, it's also possible to configure the default NameID Policy used for
 | Email address - `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`         | NameID will be set to the user's email address.                                                                                                                                                    |
 
 :::warning
-By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using an user's email address as the NameID attribute.
+By default, users are free to change their email addresses. Therefore, it is recommended to either: disallow changing email addresses or, if possible, avoid using a user's email address as the NameID attribute.
 :::
 
 ## AuthnContextClassRef
