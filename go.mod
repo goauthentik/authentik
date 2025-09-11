@@ -6,7 +6,7 @@ require (
 	beryju.io/ldap v0.1.0
 	github.com/avast/retry-go/v4 v4.6.1
 	github.com/coreos/go-oidc/v3 v3.15.0
-	github.com/getsentry/sentry-go v0.35.1
+	github.com/getsentry/sentry-go v0.35.2
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.11
 	github.com/go-openapi/runtime v0.28.0
