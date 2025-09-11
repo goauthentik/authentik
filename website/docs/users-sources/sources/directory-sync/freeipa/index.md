@@ -57,13 +57,13 @@ To create a new LDAP Source in authentik:
 3. Configure the following settings:
     - **Name**: Provide a descriptive name for the LDAP source.
     - **Slug**: Provide a slug for the LDAP source.
-    - **Update internal password on login**: Enable if you want your users to be able to log in if FreeIPA is not accessible.
+    - **Update internal password on login**: Enable this if you want users to still be able to log in when FreeIPA is unavailable.
     - **Delete not found object**: Enable to delete users from authentik when they are deleted in FreeIPA.
 
     - Under **Connection settings**:
         - **Server URI**: `ldaps://ipa1.freeipa.company`
           :::tip
-          You can specify multiple servers by separating URIs with a comma, like `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`. When using a DNS entry with multiple Records, authentik will select a random entry when first connecting.
+          You can specify multiple server URIs separated by commas (e.g. `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`); if using a DNS record with multiple entries, authentik will pick one at random on first connection.
           :::
         - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`.
         - **TLS Verification Certificate**: Used to validate the remote certificate.
@@ -72,7 +72,7 @@ To create a new LDAP Source in authentik:
         - **Base DN**: `dc=freeipa,dc=company`
 
     - Under **LDAP Attribute mapping**:
-        - **User Property Mappings**: Select all Mappings which start with `authentik default LDAP` and `authentik default OpenLDAP`. Remove the mappings that are selected by default.
+        - **User Property Mappings**: Select all Mappings whose names begin with `authentik default LDAP` and `authentik default OpenLDAP`. Deselect any other Mappings that are selected by default.
         - **Group property mappings**: Select `authentik default OpenLDAP Mapping: cn`
 
     - Under **Additional settings**:
@@ -96,13 +96,13 @@ To create a new LDAP Source in authentik:
     - **Lookup using user attribute**: Disabled.
       :::
 
-4. Click **Finish** to create the LDAP Source.
+4. Click **Finish**.
 
 ### Manual synchronization
 
-After you save the source, you can kick off a synchronization by navigating to the source, clicking on the **Sync** tab, and clicking the **Run sync again** button.
+After saving the source, start a synchronization by opening the source, going to the **Sync** tab, and clicking **Run sync again**.
 
-Lastly, verify that the **User database + LDAP password** backend is selected in the **Password Stage** under **Flows and Stages > Stages**.
+Finally, confirm that the **User database + LDAP password** backend is selected in **Flows and Stages** > **Stages** > **Password Stage**.
 
 ![](./07_password_stage.png)
 
