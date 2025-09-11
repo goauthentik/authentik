@@ -28,7 +28,7 @@ For instances with a high level of traffic, such as many users logging in, many 
 To prevent losing tasks during the upgrade, instances with a high level of traffic should follow these instructions:
 
 1. Start by upgrading the authentik server.
-2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-ugpraded worker container:
+2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-upgraded worker container:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -146,7 +146,7 @@ From this point on, we recommend using the bundled PostgreSQL dependency for dem
 
 ## New integration guides
 
-An integration is a how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
 
 - [1Password](https://integrations.goauthentik.io/security/1password/)
 - [Bitwarden](https://integrations.goauthentik.io/security/bitwarden/)
@@ -161,7 +161,7 @@ An integration is a how authentik connects to third-party applications, director
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
