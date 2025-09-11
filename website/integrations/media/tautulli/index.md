@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik Setup
+## authentik configuration
 
 To support the integration of Tautulli with authentik, you need to create a group, a proxy outpost, and an application/provider pair in authentik.
 
@@ -42,7 +42,7 @@ Because Tautulli requires valid HTTP Basic credentials, you must save your HTTP 
 
 4. Click **Create** to save the group.
 5. Click the name of the newly created group and navigate to the **Users** tab.
-6. Click **Add existing user**, select the user that needs Tautulli access and click **Add**.
+6. Click **Add existing user**, select the user that needs Tautulli access, and then click **Add**.
 
 ### Create an application and provider
 
@@ -76,7 +76,7 @@ Optionally, you can use the built-in authentik embedded outpost:
 4. Under **Available Applications**, select the Tautulli application and move it to **Selected Applications**.
 5. Click **Update** to save your changes.
 
-## Tautulli Setup
+## Tautulli configuration
 
 To configure basic authentication, set the following variables in the `config.ini` file of you Tautulli deployment:
 
@@ -91,4 +91,4 @@ Redeploy Tautulli after updating your `config.ini` file.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Tautulli, log out of Tautulli. Open the authentik application dashboard and select the Tautulli application. You should be redirected to Tautulli and automatically logged in.
+To confirm that authentik is properly configured with Tautulli, log out of Tautulli. Open the authentik application dashboard (**My Applications**) and select the Tautulli application. You should be redirected to Tautulli and automatically logged in.
