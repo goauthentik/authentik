@@ -11,7 +11,7 @@ import { html } from "lit";
 
 const sampleItems: FooterLink[] = [
     { name: "authentik", href: "https://goauthentik.io" },
-    { name: "authentik docs", href: "https://docs.goauthentik.io/docs/" },
+    { name: "authentik docs", href: "https://docs.goauthentik.io" },
 ];
 
 describe("ak-array-input", () => {

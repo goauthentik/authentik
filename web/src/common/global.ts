@@ -49,11 +49,10 @@ export function globalAK(): GlobalAuthentik {
     return ak;
 }
 
-export function docLink(path: string): string {
-    const ak = globalAK();
-    // Default case or beta build which should always point to latest
-    if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
-    }
-    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
+export function docLink(urlLike: string | URL, base = import.meta.env.AK_DOCS_URL): string {
+    const url = new URL(urlLike, base);
+
+    url.searchParams.append("utm_source", "authentik");
+
+    return url.href;
 }
