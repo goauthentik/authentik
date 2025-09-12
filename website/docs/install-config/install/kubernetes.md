@@ -87,9 +87,9 @@ We recommend using another installation method for PostgreSQL than the one provi
 
 ### Optional step: Configure global email credentials
 
-It is recommended to configure global email credentials as well. These are used by authentik to notify you about alerts and configuration issues. Additionally, they can be utilized by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification and recovery emails.
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
 
-To configure this, append this block to your `values.yaml` file:
+To configure email settings, append this block to your `values.yaml` file:
 
 ```yaml
 # add this block under the `authentik:` block in your values.yaml file

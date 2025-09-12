@@ -66,11 +66,11 @@ echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 
 ## Email configuration (optional but recommended)
 
-It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
+It is also recommended to configure global email settings. These are used by authentik to notify administrators about alerts, configuration issues and new releases. They can also be used by [Email stages](../../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
 
-To configure email credentials, append this block to your `.env` file
+To configure email settings, append this block to your `.env` file
 
-```shell
+```yaml
 # SMTP Host Emails are sent to
 AUTHENTIK_EMAIL__HOST=localhost
 AUTHENTIK_EMAIL__PORT=25
@@ -86,7 +86,7 @@ AUTHENTIK_EMAIL__TIMEOUT=10
 AUTHENTIK_EMAIL__FROM=authentik@localhost
 ```
 
-For more information, refer to our [Email configuration](../configuration/email.mdx) documentation.
+For more information, refer to our [Email configuration](../email.mdx) documentation.
 
 ## Startup
 
