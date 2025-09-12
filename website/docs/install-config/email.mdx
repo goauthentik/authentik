@@ -76,13 +76,17 @@ email:
 
 ## Testing email configuration
 
-To test if an email stage, or the global email settings are configured correctly, you can use the following command on your authentik server:
+To test if the global email settings are configured correctly, you can use the following command on your authentik server:
+
+```shell
+ak test_email <to_address>
+```
+
+To test the email settings of a specific email stage, you can utilize the `-S` parameter:
 
 ```shell
 ak test_email <to_address> [-S <stage_name>]
 ```
-
-If you omit the `-S` parameter, the email will be sent using the global settings. Otherwise, the settings of the specified stage will be used.
 
 <Tabs
   groupId="deployment"
@@ -125,6 +129,15 @@ First, confirm the outbound IP address that authentik will use to send emails. [
     - Do not set **Require SMTP Authentication**.
     - Select **Require TLS encryption**.
 
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
 If you are using Docker Compose, set the following environment variables for authentik:
 
 ```yaml
@@ -135,7 +148,12 @@ AUTHENTIK_EMAIL__USE_SSL=false
 AUTHENTIK_EMAIL__TIMEOUT=30
 ```
 
-Or, if you are using the Kubernetes Helm chart, set the following variables in the `email` section:
+Redeploy the authentik containers, and use the `ak test_email` command to confirm that email is working.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+If you are using the Kubernetes Helm chart, set the following variables in the `email` section:
 
 ```yaml
 email:
@@ -147,3 +165,6 @@ email:
 ```
 
 Redeploy the authentik containers, and use the `ak test_email` command to confirm that email is working.
+
+  </TabItem>
+</Tabs>
