@@ -17,15 +17,15 @@ The following placeholders are used in this guide:
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
-    ![](./01_user_create.png)
+    ![](./user_create.png)
 
 3. In the user management screen, select the Roles tab.
 
-    ![](./02_user_roles.png)
+    ![](./user_roles.png)
 
 4. Add a role that has privileges to change user passwords, the default `User Administrators` role is sufficient. This is needed to support password resets from within authentik.
 
-    ![](./03_add_user_role.png)
+    ![](./add_user_role.png)
 
 5. By default, if an administrator account resets a user's password in FreeIPA the user's password expires after the first use and must be reset again. This is a security feature to ensure password complexity and history policies are enforced. To bypass this feature for a more seamless experience, you can make the following modification on each of your FreeIPA servers:
 
@@ -66,7 +66,7 @@ To create a new LDAP Source in authentik:
           You can specify multiple server URIs separated by commas (e.g. `ldap://ipa1.freeipa.company,ldap://ipa2.freeipa.company`); if using a DNS record with multiple entries, authentik will pick one at random on first connection.
           :::
         - **Enable StartTLS**: Enable for `ldap://` protocol, disable for `ldaps://`.
-        - **TLS Verification Certificate**: Used to validate the remote certificate.
+        - **TLS Verification Certificate**: Optionally select the certificate used to validate the remote certificate.
         - **Bind CN**: `uid=svc_authentik,cn=users,cn=accounts,dc=freeipa,dc=company`
         - **Bind Password**: The password for the above user account.
         - **Base DN**: `dc=freeipa,dc=company`
@@ -104,11 +104,15 @@ After saving the source, start a synchronization by opening the source, going to
 
 Finally, confirm that the **User database + LDAP password** backend is selected in **Flows and Stages** > **Stages** > **Password Stage**.
 
-![](./07_password_stage.png)
+![](./password_stage.png)
 
 ### Blueprints
 
 You can also configure the LDAP source with a blueprint:
+
+:::note
+You must set the username (dn) and password in the environment variables `FREEIPA_DN` and `FREEIPA_PASSWORD`.
+:::
 
 ```yaml
 # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
@@ -167,5 +171,3 @@ entries:
                     [managed, goauthentik.io/sources/ldap/openldap-cn],
                 ]
 ```
-
-You must set the username (dn) and password in the environment variables FREEIPA_DN and FREEIPA_PASSWORD.
