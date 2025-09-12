@@ -17,8 +17,6 @@ Some hosting providers block outgoing SMTP ports, in which case you'll have to h
 
 ## Global email settings
 
-It is recommended to configure global email settings. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../add-secure-apps/flows-stages/stages/email/index.mdx) to send verification/recovery emails.
-
 <Tabs
   groupId="deployment"
   defaultValue="docker"
@@ -29,7 +27,7 @@ It is recommended to configure global email settings. These are used by authenti
 >
   <TabItem value="docker">
 
-To configure email settings, append this block to your `.env` file
+To configure global email settings, append this block to your `.env` file
 
 ```sh
 # SMTP Host Emails are sent to
@@ -50,7 +48,7 @@ AUTHENTIK_EMAIL__FROM=authentik@localhost
   </TabItem>
   <TabItem value="kubernetes">
 
-To configure email settings, append this block to your `values.yaml` file:
+To configure global email settings, append this block to your `values.yaml` file:
 
 ```yaml
 # add this block under the `authentik:` block in your values.yaml file
