@@ -171,3 +171,7 @@ entries:
                     [managed, goauthentik.io/sources/ldap/openldap-cn],
                 ]
 ```
+
+:::note
+If using LDAP, prepend the server URI with `ldap://` and include `start_tls: true`.
+:::
