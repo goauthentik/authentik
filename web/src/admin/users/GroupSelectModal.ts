@@ -60,7 +60,8 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     renderModalInner(): TemplateResult {
-        const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
+        const willSuperuser = Iterator.from(this.selectedElements).some((g) => g.isSuperuser);
+
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${msg("Select groups to add user to")}</h1>
@@ -79,7 +80,7 @@ export class GroupSelectModal extends TableModal<Group> {
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
-                        return this.confirm(this.selectedElements).then(() => {
+                        return this.confirm(Array.from(this.selectedElements)).then(() => {
                             this.open = false;
                         });
                     }}

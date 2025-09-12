@@ -79,12 +79,14 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     }
 
     renderToolbarSelected(): TemplateResult {
+        const selectedElements = Array.from(this.selectedElements);
+
         const disabled =
-            this.selectedElements.length < 1 ||
-            this.selectedElements.filter((item) => item.isSuperuser).length > 0;
+            selectedElements.length === 0 || selectedElements.some((item) => item.isSuperuser);
+
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
-            .objects=${this.selectedElements.filter((item) => !item.isSuperuser)}
+            .objects=${selectedElements.filter((item) => !item.isSuperuser)}
             .metadata=${(item: UserAssignedObjectPermission) => {
                 return [{ key: msg("Permission"), value: item.name }];
             }}
