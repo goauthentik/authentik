@@ -60498,7 +60498,8 @@ components:
         choices:
           type: array
           items:
-            type: string
+            type: object
+            additionalProperties: {}
           nullable: true
       required:
       - choices
