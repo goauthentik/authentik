@@ -72,7 +72,7 @@ const Template: Story = {
     },
     render: (args) => html`
         <ak-hidden-text-input
-            label=${ifDefined(args.label)}
+            label=${ifDefined(args.label || undefined)}
             value=${ifDefined(args.value)}
             ?revealed=${args.revealed}
             placeholder=${ifDefined(args.placeholder)}

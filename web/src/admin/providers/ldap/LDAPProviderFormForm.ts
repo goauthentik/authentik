@@ -48,9 +48,9 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
-            placeholder=${msg("Provider name")}
+            placeholder=${msg("Provider name...")}
             value=${ifDefined(provider?.name)}
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
             .errorMessages=${errors?.name}
             required
             help=${msg("Method's display Name.")}
@@ -140,6 +140,8 @@ export function renderForm(
                     .errorMessages=${errors?.certificate}
                 >
                     <ak-crypto-certificate-search
+                        label=${msg("Certificate")}
+                        placeholder=${msg("Select a certificate...")}
                         certificate=${ifDefined(provider?.certificate ?? nothing)}
                         name="certificate"
                     >

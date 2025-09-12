@@ -51,7 +51,7 @@ test.describe("Provider Wizard", () => {
         const providerName = providerNames.get(testId)!;
 
         const $provider = await test.step("Find provider via search", async () => {
-            const searchInput = page.getByRole("search").getByPlaceholder("Search for providers");
+            const searchInput = page.getByLabel("Provider Search");
 
             await searchInput.fill(providerName);
 

@@ -21,7 +21,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
         return html`<input
             type="number"
             @input=${setValue}
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifDefined(this.label || undefined)}
             value=${ifDefined(this.value)}
             min=${ifDefined(this.min)}
             class="pf-c-form-control"

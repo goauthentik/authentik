@@ -7,7 +7,7 @@ export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => string;
+    value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
 }
@@ -47,18 +47,26 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
     static styles = [...SearchSelectBase.styles];
 
-    @property({ type: Object, attribute: false })
-    config!: ISearchSelectApi<T>;
+    public fetchObjects!: (query?: string) => Promise<T[]>;
+    public renderElement!: (element: T) => string;
+    public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
+    public value!: (element: T | null) => string;
+    public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
-    connectedCallback() {
+    @property({ type: Object, attribute: false })
+    public config!: ISearchSelectApi<T>;
+
+    public override connectedCallback() {
         this.fetchObjects = this.config.fetchObjects;
         this.renderElement = this.config.renderElement;
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
-        if (this.config.groupBy !== undefined) {
+
+        if (this.config.groupBy) {
             this.groupBy = this.config.groupBy;
         }
+
         super.connectedCallback();
     }
 }
