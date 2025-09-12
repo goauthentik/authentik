@@ -29,7 +29,7 @@
         "@docusaurus/theme-common": "^3.8.1",
         "@docusaurus/tsconfig": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.1.1",
+        "@goauthentik/docusaurus-config": "^2.1.2",
         "@goauthentik/docusaurus-theme": "*",
         "@goauthentik/tsconfig": "^1.0.4",
         "@mdx-js/react": "^3.1.1",
@@ -45,9 +45,9 @@
         "typescript": "^5.9.2"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.5.2",
-        "@rspack/binding-linux-arm64-gnu": "1.5.2",
-        "@rspack/binding-linux-x64-gnu": "1.5.2",
+        "@rspack/binding-darwin-arm64": "1.5.3",
+        "@rspack/binding-linux-arm64-gnu": "1.5.3",
+        "@rspack/binding-linux-x64-gnu": "1.5.3",
         "@swc/core-darwin-arm64": "1.13.5",
         "@swc/core-linux-arm64-gnu": "1.13.5",
         "@swc/core-linux-x64-gnu": "1.13.5",
