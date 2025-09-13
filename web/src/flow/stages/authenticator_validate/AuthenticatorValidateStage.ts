@@ -105,13 +105,17 @@ export class AuthenticatorValidateStage
         }
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
+
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
             flowSlug: this.host?.flowSlug || "",
             query: window.location.search.substring(1),
             flowChallengeResponseRequest: {
                 // @ts-ignore
                 component: this.challenge.component || "",
-                selectedChallenge: value,
+                selectedChallenge: {
+                    ...value,
+                    lastUsed: value.lastUsed ? value.lastUsed : new Date(),
+                },
             },
         });
     }

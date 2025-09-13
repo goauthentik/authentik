@@ -1,5 +1,7 @@
 import "#flow/components/ak-flow-card";
 
+import { isActiveElement } from "#elements/utils/focus";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -15,12 +17,18 @@ import {
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
+import { createRef, ref, Ref } from "lit/directives/ref.js";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
+    //#region Refs
+
+    inputRef: Ref<HTMLInputElement> = createRef();
+    //#endregion
+
     static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -70,6 +78,53 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         return "fa-mobile-alt";
     }
 
+    //#region Lifecycle
+
+    /**
+     * Interval ID for the focus observer.
+     *
+     * @see {@linkcode observeInputFocus}
+     */
+    inputFocusIntervalID?: ReturnType<typeof setInterval>;
+
+    /**
+     * Periodically attempt to focus the input field until it is focused.
+     *
+     * This is some-what of a crude way to get autofocus, but in most cases
+     * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
+     */
+    observeInputFocus(): void {
+        this.inputFocusIntervalID = setInterval(() => {
+            const input = this.inputRef.value;
+
+            if (!input) return;
+
+            if (isActiveElement(input, document.activeElement)) {
+                console.debug(
+                    "authentik/stages/authenticator-validate-code: cleared focus observer",
+                );
+                clearInterval(this.inputFocusIntervalID);
+            }
+
+            input.focus();
+        }, 10);
+
+        console.debug("authentik/stages/authenticator-validate-code: started focus observer");
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.observeInputFocus();
+    }
+
+    disconnectedCallback() {
+        if (this.inputFocusIntervalID) {
+            clearInterval(this.inputFocusIntervalID);
+        }
+
+        super.disconnectedCallback();
+    }
+
     render(): TemplateResult {
         return html`<form class="pf-c-form" @submit=${this.submitForm}>
             ${this.renderUserInfo()}
@@ -100,6 +155,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                     class="pf-c-form-control"
                     value="${PasswordManagerPrefill.totp || ""}"
                     required
+                    ${ref(this.inputRef)}
                 />
                 ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
             </div>
