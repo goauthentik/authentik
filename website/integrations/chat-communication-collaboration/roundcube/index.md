@@ -74,8 +74,8 @@ Set the following variables in you Roundcube configuration file:
 ```sh
 $config['oauth_provider'] = 'generic';
 $config['oauth_provider_name'] = 'authentik';
-$config['oauth_client_id'] = '<Client ID>';
-$config['oauth_client_secret'] = '<Client Secret>';
+$config['oauth_client_id'] = '<client_ID>';
+$config['oauth_client_secret'] = '<client_secret>';
 $config['oauth_auth_uri'] = 'https://authentik.company/application/o/authorize/';
 $config['oauth_token_uri'] = 'https://authentik.company/application/o/token/';
 $config['oauth_identity_uri'] = 'https://authentik.company/application/o/userinfo/';
@@ -90,7 +90,7 @@ Add XOAUTH2 as an authentication mechanism and configure the following variables
 
 ```sh
 tokeninfo_url = https://authentik.company/application/o/userinfo/?access_token=
-introspection_url = https://<Client ID>:<Client Secret>@authentik.company/application/o/introspect/
+introspection_url = https://<client_ID>:<client_secret>@authentik.company/application/o/introspect/
 introspection_mode = post
 force_introspection = yes
 active_attribute = active
