@@ -6,13 +6,9 @@ support_level: community
 
 ## What is Roundcube
 
-> **Roundcube** is a browser-based multilingual IMAP client with an application-like user interface.
-> It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking
+> Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
 >
 > -- https://roundcube.net
-
-This integration describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
-The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with xoauth2 capability without configuring it separately.
 
 ## Preparation
 
@@ -20,6 +16,12 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `roudcube.company` is the FQDN of the Roundcube installation.
+
+:::note
+This document describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
+
+The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with XOAUTH2 capability without configuring it separately.
+:::
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -31,7 +33,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
 
 ### Create property mappings
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
     - **Name**: Set an appropriate name.
     - **Scope Name**: `dovecotprofile`
@@ -44,12 +46,13 @@ To support the integration of Roundcube with authentik, you need to create an ap
             "family_name": "",
             "preferred_username": request.user.username,
             "nickname": request.user.username,
+            "active": True,
         }
         ```
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -58,14 +61,17 @@ To support the integration of Roundcube with authentik, you need to create an ap
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://roundcube.company/index.php?\_task=settings&\_action=plugin.oauth_redirect`.
     - Select any available signing key.
-    - Under **Advanced protocol settings**, add the scope you just created to the list of selected scopes.
+    - Under **Advanced protocol settings**:
+        - Add the `dovecotprofile` and `authentik default OAuth Mapping: OpenID 'offline_access'` scopes to selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Roundcube Configuration
+## Roundcube configuration
 
-```
+Set the following variables in you Roundcube configuration file:
+
+```sh
 $config['oauth_provider'] = 'generic';
 $config['oauth_provider_name'] = 'authentik';
 $config['oauth_client_id'] = '<Client ID>';
@@ -73,16 +79,16 @@ $config['oauth_client_secret'] = '<Client Secret>';
 $config['oauth_auth_uri'] = 'https://authentik.company/application/o/authorize/';
 $config['oauth_token_uri'] = 'https://authentik.company/application/o/token/';
 $config['oauth_identity_uri'] = 'https://authentik.company/application/o/userinfo/';
-$config['oauth_scope'] = "email openid dovecotprofile";
+$config['oauth_scope'] = "email openid dovecotprofile offline_access";
 $config['oauth_auth_parameters'] = [];
 $config['oauth_identity_fields'] = ['email'];
 ```
 
-## Dovecot Configuration
+## Dovecot configuration
 
-Add xoauth2 as an authentication mechanism and configure the following parameters in your Dovecot configuration.
+Add XOAUTH2 as an authentication mechanism and configure the following variables in your Dovecot configuration:
 
-```
+```sh
 tokeninfo_url = https://authentik.company/application/o/userinfo/?access_token=
 introspection_url = https://<Client ID>:<Client Secret>@authentik.company/application/o/introspect/
 introspection_mode = post
@@ -94,15 +100,10 @@ tls_ca_cert_file = /etc/ssl/certs/ca-certificates.crt
 ```
 
 :::note
-With this setup Dovecot can also be used with other email clients that support XOAUTH2 authentication, however
-most available software (including Fair Email for Android and Thunderbird) only come with support for Gmail,
-Outlook etc with no way to configure custom email servers.
+With this setup Dovecot can also be used with other email clients that support XOAUTH2 authentication, however most available software (including Fair Email for Android and Thunderbird) only come with support for Gmail, Outlook etc with no way to configure custom email servers.
 :::
 
-## Additional Resources
+## References
 
-Please refer to the following for further configuration information:
-
-- https://roundcube.net
-- https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2
-- https://doc.dovecot.org/main/core/config/auth/databases/oauth2.html
+- [Roundcube documentation - Configuration: OAuth2](https://github.com/roundcube/roundcubemail/wiki/Configuration:-OAuth2)
+- [Dovecot documentation - Open Authentication v2.0 Database](https://doc.dovecot.org/main/core/config/auth/databases/oauth2.html)
