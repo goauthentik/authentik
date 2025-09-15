@@ -192,6 +192,15 @@ environment:
     - SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
 ```
 
+Or if the certificate is located elsewhere:
+
+```yaml
+volumes:
+    - /path/to/<cert_name>.crt:/etc/ssl/certs/<cert_name>.crt:ro
+environment:
+    - SSL_CERT_FILE="/etc/ssl/certs/<cert_name>.crt"
+```
+
   </TabItem>
   <TabItem value="kubernetes">
 
