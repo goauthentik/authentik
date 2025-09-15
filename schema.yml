@@ -54313,6 +54313,10 @@ components:
         request_message_access:
           type: boolean
           description: Request access to send messages from your bot.
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
     PatchedTenantRequest:
       type: object
       description: Tenant Serializer
@@ -59428,6 +59432,10 @@ components:
         request_message_access:
           type: boolean
           description: Request access to send messages from your bot.
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
       required:
       - bot_username
       - component
@@ -59436,6 +59444,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - pre_authentication_flow
       - slug
       - verbose_name
       - verbose_name_plural
@@ -59564,10 +59573,15 @@ components:
         request_message_access:
           type: boolean
           description: Request access to send messages from your bot.
+        pre_authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used before authentication.
       required:
       - bot_token
       - bot_username
       - name
+      - pre_authentication_flow
       - slug
     Tenant:
       type: object

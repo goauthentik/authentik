@@ -17,6 +17,7 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.flows.models import Flow
 
 
 class TelegramSource(Source):
@@ -24,8 +25,16 @@ class TelegramSource(Source):
 
     bot_username = models.TextField(help_text=_("Telegram bot username"))
     bot_token = models.TextField(help_text=_("Telegram bot token"))
+
     request_message_access = models.BooleanField(
         default=False, help_text=_("Request access to send messages from your bot.")
+    )
+
+    pre_authentication_flow = models.ForeignKey(
+        Flow,
+        on_delete=models.CASCADE,
+        help_text=_("Flow used before authentication."),
+        related_name="telegram_source_pre_authentication",
     )
 
     @property

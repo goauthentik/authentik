@@ -55,6 +55,7 @@ class TestTelegramSource(MockTelegramResponseMixin, TestCase):
             bot_username="test_bot",
             bot_token="modern_token",  # nosec
             request_message_access=True,
+            pre_authentication_flow=create_test_flow(),
         )
         self.mock_stage = Mock()
         self.mock_stage.source = self.source
@@ -117,6 +118,8 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
         super().setUp()
         from authentik.sources.telegram.models import TelegramSource
 
+        self.pre_auth_flow = create_test_flow()
+
         self.source = TelegramSource.objects.create(
             name="test",
             slug="test",
@@ -124,6 +127,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
             bot_token="modern_token",  # nosec
             request_message_access=True,
             enrollment_flow=create_test_flow(),
+            pre_authentication_flow=self.pre_auth_flow,
         )
 
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
@@ -159,7 +163,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.redirect_chain[0][0],
-            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug}),
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": self.pre_auth_flow.slug}),
         )
 
     def test_challenge_view(self):
@@ -169,7 +173,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
 
         form_data = self._make_valid_response()
         form_data["component"] = "ak-source-telegram"
-        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.pre_auth_flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(

@@ -12,6 +12,7 @@ class TelegramSourceSerializer(SourceSerializer):
             "bot_username",
             "bot_token",
             "request_message_access",
+            "pre_authentication_flow",
         ]
         extra_kwargs = {
             "bot_token": {"write_only": True},

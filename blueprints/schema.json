@@ -12397,6 +12397,12 @@
                     "type": "boolean",
                     "title": "Request message access",
                     "description": "Request access to send messages from your bot."
+                },
+                "pre_authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Pre authentication flow",
+                    "description": "Flow used before authentication."
                 }
             },
             "required": []
