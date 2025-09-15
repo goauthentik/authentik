@@ -370,6 +370,26 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
 - web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
 
+## Fixed in 2025.8.2
+
+- core: bump django from 5.1.11 to v5.1.12 (cherry-pick #16584) (#16591)
+- core: bump h2 from 4.2.0 to 4.3.0 (cherry-pick #16446) (#16449)
+- core: fix client-side only validation allowing admin to set blank user password (cherry-pick #16467) (#16469)
+- lib/logging: only show locals when in debug mode (cherry-pick #16772) #16774
+- lib/sync/outgoing: fix single object sync timeout (cherry-pick #16447) (#16453)
+- lib/sync: fix missing f for string (cherry-pick #16423) (#16427)
+- lifecycle: fix PROMETHEUS_MULTIPROC_DIR missing suffix (cherry-pick #16401) (#16407)
+- policies: remove object pk from authentik_policies_execution_time to reduce cardinality (cherry-pick #16500) (#16501)
+- providers/oauth2: add missing exp claim for logout token (cherry-pick #16593) (#16598)
+- providers/oauth2: avoid deadlock during session migration (cherry-pick #16361) (#16364)
+- providers/rac: fix AuthenticatedSession migration (cherry-pick #16400) (#16419)
+- providers/scim: improve error message when object fails to sync (cherry-pick #16625) (#16643)
+- sources/ldap: fix malformed filter error with special characters in group DN (cherry-pick #16243) (#16585)
+- sources/oauth/entra_id: do not assume group_id comes from entra (cherry-pick #16456) (#16777)
+- tasks/schedules: fix api search fields (cherry-pick #16405) (#16410)
+- tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
+- web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
+
 ## API Changes
 
 #### What's New
