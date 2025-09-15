@@ -84,6 +84,15 @@ $config['oauth_auth_parameters'] = [];
 $config['oauth_identity_fields'] = ['email'];
 ```
 
+:::tip Roundcube debugging
+Add the following variable to your Roundcube configuration file to enable debugging:
+
+```sh
+$config['debug_level'] = 4;
+```
+
+:::
+
 ## Dovecot configuration
 
 Add XOAUTH2 as an authentication mechanism and configure the following variables in your Dovecot configuration:
@@ -99,9 +108,23 @@ username_attribute = email
 tls_ca_cert_file = /etc/ssl/certs/ca-certificates.crt
 ```
 
+:::tip Dovecot debugging
+Add the following variables to your Dovecot configuration to enable debugging:
+
+```
+auth_debug = yes
+auth_verbose = yes
+```
+
+:::
+
 :::note
 With this setup, Dovecot can also be used with other email clients that support XOAUTH2 authentication. However, most commonly available clients, such as FairEmail for Android and Thunderbird, only provide built-in support for providers like Gmail and Outlook, with no option to configure custom mail servers.
 :::
+
+## Configuration verification
+
+To verify that authentik is correctly integrated with Roundcube, first log out of Roundcube. Log in to roundcube using authentik credentials. A mailbox should open and you should be able to send and receive mail.
 
 ## References
 
