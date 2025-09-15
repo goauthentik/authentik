@@ -98,7 +98,7 @@ export class AuthenticatorValidateStage
     #selectedDeviceChallenge?: DeviceChallenge;
 
     @state()
-    protected set selectedDeviceChallenge(value: DeviceChallenge) {
+    protected set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         const previousChallenge = this.#selectedDeviceChallenge;
         this.#selectedDeviceChallenge = value;
 
@@ -129,11 +129,15 @@ export class AuthenticatorValidateStage
         return this.#selectedDeviceChallenge;
     }
 
-    submit(
+    public submit(
         payload: AuthenticatorValidationChallengeResponseRequest,
         options?: SubmitOptions,
     ): Promise<boolean> {
         return this.host?.submit(payload, options) || Promise.resolve();
+    }
+
+    public reset(): void {
+        this.selectedDeviceChallenge = undefined;
     }
 
     willUpdate(_changed: PropertyValues<this>) {
