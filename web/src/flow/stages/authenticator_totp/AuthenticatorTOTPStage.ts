@@ -86,10 +86,13 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 navigator.clipboard
                                     .writeText(this.challenge?.configUrl)
                                     .then(() => {
-                                        showMessage({
-                                            level: MessageLevel.success,
-                                            message: msg("Successfully copied TOTP Config."),
-                                        });
+                                        showMessage(
+                                            {
+                                                level: MessageLevel.success,
+                                                message: msg("Successfully copied TOTP Config."),
+                                            },
+                                            true,
+                                        );
                                     });
                             }}
                         >
