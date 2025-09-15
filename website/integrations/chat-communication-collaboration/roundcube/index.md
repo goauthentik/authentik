@@ -18,9 +18,9 @@ The following placeholders are used in this guide:
 - `roudcube.company` is the FQDN of the Roundcube installation.
 
 :::note
-This document describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
+Roundcube is often used alongside Postfix and Dovecot. Postfix sends/receives email (SMTP), Dovecot stores/retrieves mail (IMAP/POP3), and Roundcube acts as a webmail client.
 
-The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with XOAUTH2 capability without configuring it separately.
+Whichever mail server is used in conjunction with Roundcube must support XOAUTH2 for both SMTPD and IMAP/POP. A Postfix SMTP server can use Dovecot for authentication, which allows XOAUTH2 support in Postfix without requiring separate configuration.
 :::
 
 :::note
@@ -33,7 +33,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
 
 ### Create property mappings
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
     - **Name**: Set an appropriate name.
     - **Scope Name**: `dovecotprofile`
@@ -52,7 +52,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -62,16 +62,16 @@ To support the integration of Roundcube with authentik, you need to create an ap
     - Set a `Strict` redirect URI to `https://roundcube.company/index.php?\_task=settings&\_action=plugin.oauth_redirect`.
     - Select any available signing key.
     - Under **Advanced protocol settings**:
-        - Add the `dovecotprofile` and `authentik default OAuth Mapping: OpenID 'offline_access'` scopes to selected scopes.
+        - Under **Scopes**, add `dovecotprofile` and `authentik default OAuth Mapping: OpenID 'offline_access'` to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Roundcube configuration
 
-Set the following variables in you Roundcube configuration file:
+Set the following variables in your Roundcube configuration file:
 
-```sh
+```sh title="config/config.inc.php"
 $config['oauth_provider'] = 'generic';
 $config['oauth_provider_name'] = 'authentik';
 $config['oauth_client_id'] = '<client_ID>';
@@ -88,7 +88,7 @@ $config['oauth_identity_fields'] = ['email'];
 
 Add XOAUTH2 as an authentication mechanism and configure the following variables in your Dovecot configuration:
 
-```sh
+```sh title="/etc/dovecot/dovecot.conf"
 tokeninfo_url = https://authentik.company/application/o/userinfo/?access_token=
 introspection_url = https://<client_ID>:<client_secret>@authentik.company/application/o/introspect/
 introspection_mode = post
@@ -100,7 +100,7 @@ tls_ca_cert_file = /etc/ssl/certs/ca-certificates.crt
 ```
 
 :::note
-With this setup Dovecot can also be used with other email clients that support XOAUTH2 authentication, however most available software (including Fair Email for Android and Thunderbird) only come with support for Gmail, Outlook etc with no way to configure custom email servers.
+With this setup, Dovecot can also be used with other email clients that support XOAUTH2 authentication. However, most commonly available clients, such as FairEmail for Android and Thunderbird, only provide built-in support for providers like Gmail and Outlook, with no option to configure custom mail servers.
 :::
 
 ## References
