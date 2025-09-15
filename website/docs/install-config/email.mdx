@@ -168,3 +168,38 @@ Redeploy the authentik containers, and use the `ak test_email` command to confir
 
   </TabItem>
 </Tabs>
+
+## SMTP server with TLS verification
+
+If you're configuring authentik to send email via an SMTP server that has TLS enabled...
+
+<Tabs
+  groupId="deployment"
+  defaultValue="docker"
+  values={[
+    { label: "Docker", value: "docker" },
+    { label: "Kubernetes", value: "kubernetes" },
+  ]}
+>
+  <TabItem value="docker">
+
+Add the following to your Docker compose confgiuration so that your authentik container trusts the same root certificates as the docker host:
+
+```yaml
+volumes:
+    - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+environment:
+    - SSL_CERT_FILE="/etc/ssl/certs/ca-certificates.crt"
+```
+
+  </TabItem>
+  <TabItem value="kubernetes">
+
+Add the following to your Kubernetes `values.yaml` file
+
+```yaml
+
+```
+
+  </TabItem>
+</Tabs>
