@@ -20,6 +20,10 @@ The User object has the following properties:
 - `ak_groups`: This is a queryset of all the user's direct groups.
 - `all_groups()`: This is a queryset of all the user's direct and indirect groups.
 
+:::note Clarifying direct vs indirect group membership
+A user is a member of a group (direct member). That group in turn has a parent group. The user is an indrect member of that parent group.
+:::
+
 ## Examples
 
 These are examples of how User objects can be used within Policies and Property Mappings.
@@ -43,7 +47,7 @@ user.ak_groups.filter(name__startswith='test')
 
 ### List a user's group memberships including parent groups
 
-Use the following example to list all groups that a user object is a direct and indirect member of (including parent groups):
+Use the following example to list all groups that a user object is a direct and indirect member of:
 
 ```python
 groups = [group.name for group in request.user.all_groups()]
