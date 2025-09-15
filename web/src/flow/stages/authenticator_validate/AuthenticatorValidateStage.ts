@@ -14,6 +14,7 @@ import {
     CurrentBrand,
     DeviceChallenge,
     DeviceClassesEnum,
+    FlowChallengeResponseRequest,
     FlowsApi,
 } from "@goauthentik/api";
 
@@ -94,30 +95,38 @@ export class AuthenticatorValidateStage
     @state()
     _firstInitialized: boolean = false;
 
-    @state()
-    _selectedDeviceChallenge?: DeviceChallenge;
+    #selectedDeviceChallenge?: DeviceChallenge;
 
-    set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
-        const previousChallenge = this._selectedDeviceChallenge;
-        this._selectedDeviceChallenge = value;
-        if (value === undefined || value === previousChallenge) {
+    @state()
+    protected set selectedDeviceChallenge(value: DeviceChallenge) {
+        const previousChallenge = this.#selectedDeviceChallenge;
+        this.#selectedDeviceChallenge = value;
+
+        if (!value || value === previousChallenge) {
             return;
         }
+
+        const component = (this.challenge.component ||
+            "") as unknown as "ak-stage-authenticator-validate";
+
+        value.lastUsed ??= new Date();
+
+        const flowChallengeResponseRequest = {
+            component,
+            selectedChallenge: value,
+        } satisfies FlowChallengeResponseRequest;
+
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
             flowSlug: this.host?.flowSlug || "",
             query: window.location.search.substring(1),
-            flowChallengeResponseRequest: {
-                // @ts-ignore
-                component: this.challenge.component || "",
-                selectedChallenge: value,
-            },
+            flowChallengeResponseRequest,
         });
     }
 
-    get selectedDeviceChallenge(): DeviceChallenge | undefined {
-        return this._selectedDeviceChallenge;
+    protected get selectedDeviceChallenge(): DeviceChallenge | undefined {
+        return this.#selectedDeviceChallenge;
     }
 
     submit(
@@ -154,9 +163,10 @@ export class AuthenticatorValidateStage
         }
 
         // If the last used device is not Static, autoselect that device.
-        const lastUsedChallenge = this.challenge.deviceChallenges
+        const [lastUsedChallenge = null] = this.challenge.deviceChallenges
             .filter((deviceChallenge) => deviceChallenge.lastUsed)
-            .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf())[0];
+            .sort((a, b) => b.lastUsed!.valueOf() - a.lastUsed!.valueOf());
+
         if (lastUsedChallenge && lastUsedChallenge.deviceClass !== DeviceClassesEnum.Static) {
             this.selectedDeviceChallenge = lastUsedChallenge;
         }
