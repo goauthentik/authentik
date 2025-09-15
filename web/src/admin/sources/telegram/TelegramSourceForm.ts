@@ -157,6 +157,21 @@ export class TelegramSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Te
             <ak-form-group label="${msg("Flow settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
+                        label=${msg("Pre-authentication flow")}
+                        required
+                        name="preAuthenticationFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.preAuthenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-pre-authentication"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used before authentication.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
                     >
