@@ -9,3 +9,7 @@ To create a provider along with the corresponding application that uses it for a
 3. On the **New application** page, define the application settings, and then click **Next**.
 4. Select **OAuth2/OIDC** as the **Provider Type**, and then click **Next**.
 5. On the **Configure OAuth2/OpenId Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
+
+:::info
+Optionally, configure the provider with the `offline_access` scope mapping. By default, applications only receive an access token. To receive a refresh token, applications and authentik must be configured to request the `offline_access` scope. Do this in the Scope mapping area on the **Configure OAuth2/OpenId Provider** page.
+:::
