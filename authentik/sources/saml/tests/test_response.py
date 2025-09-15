@@ -9,7 +9,7 @@ from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import dummy_get_response, load_fixture
-from authentik.sources.saml.exceptions import InvalidEncryption
+from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.response import ResponseProcessor
 
@@ -201,3 +201,58 @@ class TestResponseProcessor(TestCase):
 
         parser = ResponseProcessor(self.source, request)
         parser.parse()
+
+    def test_verification_wrong_signature(self):
+        """Test invalid signature fails"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    # Same as response_signed_assertion.xml but the role name is altered
+                    load_fixture("fixtures/response_signed_error.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
+
+    def test_verification_no_signature(self):
+        """Test rejecting response without signature when signed_assertion is True"""
+        key = load_fixture("fixtures/signature_cert.pem")
+        kp = CertificateKeyPair.objects.create(
+            name=generate_id(),
+            certificate_data=key,
+        )
+        self.source.verification_kp = kp
+        self.source.signed_assertion = True
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+
+        middleware = SessionMiddleware(dummy_get_response)
+        middleware.process_request(request)
+        request.session.save()
+
+        parser = ResponseProcessor(self.source, request)
+
+        with self.assertRaisesMessage(InvalidSignature, ""):
+            parser.parse()
