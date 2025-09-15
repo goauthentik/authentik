@@ -83,6 +83,10 @@ To support the integration of Omada Controller with authentik, you need to creat
 4. Click the name of the newly created group, then switch to the **Users** tab.
 5. Click **Add existing user**, select the user who needs Omada Controller administrator access, and click **Add**.
 
+:::warning
+Omada can't handle a user being in multiple groups/roles. Therefore, ensure that you only add a user to a single `Omada-` group.
+:::
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
