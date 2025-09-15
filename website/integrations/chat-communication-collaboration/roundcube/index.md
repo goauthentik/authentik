@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Roundcube
 
-> Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
+> Roundcube is a browser-based multilingual IMAP client with an application-like user interface. It provides the full functionality you expect from an email client, including MIME support, address book, folder manipulation, message searching and spell checking.
 >
 > -- https://roundcube.net
 
