@@ -158,16 +158,38 @@ export abstract class Table<T extends object>
     @property({ type: Boolean })
     public checkboxChip = false;
 
+    #itemKeys = new WeakMap<T, string | number>();
+
     @property({ attribute: false })
     public get selectedElements(): T[] {
-        return Array.from(this.#selectedElements);
+        const items = this.data?.results ?? [];
+
+        return items.filter((item) => {
+            const itemKey = this.#itemKeys.get(item);
+
+            if (!itemKey) return false;
+
+            return this.#selectedElements.has(itemKey);
+        });
     }
 
-    public set selectedElements(value: T[]) {
-        this.#selectedElements = new Set(value);
+    public set selectedElements(value: Iterable<T>) {
+        const nextSelected = new Map<string | number, T>();
+
+        for (const item of value) {
+            const itemKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
+
+            this.#itemKeys.set(item, itemKey);
+
+            if (this.#selectedElements.has(itemKey)) {
+                nextSelected.set(itemKey, item);
+            }
+        }
+
+        this.#selectedElements = nextSelected;
     }
 
-    #selectedElements = new Set<T>();
+    #selectedElements = new Map<string | number, T>();
 
     @property({ type: Boolean })
     public paginated = true;
@@ -255,17 +277,19 @@ export abstract class Table<T extends object>
                 const nextExpanded = new Set<string | number>();
 
                 for (const result of data.results) {
-                    const expansionKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
+                    const itemKey = hasPrimaryKey(result) ? result.pk : JSON.stringify(result);
 
-                    if (this.expandedElements.has(expansionKey)) {
-                        nextExpanded.add(expansionKey);
+                    this.#itemKeys.set(result, itemKey);
+
+                    if (this.expandedElements.has(itemKey)) {
+                        nextExpanded.add(itemKey);
                     }
                 }
 
                 this.expandedElements = nextExpanded;
 
                 if (this.clearOnRefresh) {
-                    this.#selectedElements = new Set();
+                    this.#selectedElements.clear();
                     this.requestUpdate();
                 }
             })
@@ -412,15 +436,18 @@ export abstract class Table<T extends object>
         return nothing;
     }
 
-    #toggleExpansion = (expansionKey: string | number, event?: PointerEvent) => {
+    #toggleExpansion = (itemKey?: string | number, event?: PointerEvent) => {
+        // An unlikely scenario but possible if items shift between fetches
+        if (typeof itemKey === "undefined") return;
+
         event?.stopPropagation();
 
         const currentTarget = event?.currentTarget as HTMLElement | null;
 
-        if (this.expandedElements.has(expansionKey)) {
-            this.expandedElements.delete(expansionKey);
+        if (this.expandedElements.has(itemKey)) {
+            this.expandedElements.delete(itemKey);
         } else {
-            this.expandedElements.add(expansionKey);
+            this.expandedElements.add(itemKey);
             requestAnimationFrame(() => {
                 currentTarget?.scrollIntoView({
                     behavior: "smooth",
@@ -440,7 +467,8 @@ export abstract class Table<T extends object>
             return;
         }
 
-        const selected = this.#selectedElements.has(item);
+        const itemKey = this.#itemKeys.get(item);
+        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
         let checked: boolean;
 
         if (target instanceof HTMLInputElement) {
@@ -453,19 +481,21 @@ export abstract class Table<T extends object>
             return;
         }
 
-        this.#selectedElements.delete(item);
-
-        if (checked) {
-            this.#selectedElements.add(item);
+        if (itemKey) {
+            if (checked) {
+                this.#selectedElements.set(itemKey, item);
+            } else {
+                this.#selectedElements.delete(itemKey);
+            }
         }
 
         const selectAllCheckbox = this.#selectAllCheckboxRef.value;
-        const currentItems = this.data?.results || [];
+        const pageItemCount = this.data?.results?.length ?? 0;
+        const selectedCount = this.#selectedElements.size;
 
         if (selectAllCheckbox) {
-            selectAllCheckbox.checked = !!this.#selectedElements.size;
-            selectAllCheckbox.indeterminate =
-                currentItems.length > 0 && this.#selectedElements.size < currentItems.length;
+            selectAllCheckbox.checked = pageItemCount !== 0 && selectedCount !== 0;
+            selectAllCheckbox.indeterminate = pageItemCount !== 0 && selectedCount < pageItemCount;
         }
 
         this.requestUpdate();
@@ -480,9 +510,10 @@ export abstract class Table<T extends object>
     ): TemplateResult {
         const groupHeaderID = groups.length > 1 ? `table-group-${groupIndex}` : null;
 
-        const expansionKey = hasPrimaryKey(item) ? item.pk : JSON.stringify(item);
-        const expanded = this.expandedElements.has(expansionKey);
-        const selected = this.#selectedElements.has(item);
+        const itemKey = this.#itemKeys.get(item);
+        const expanded = !!(itemKey && this.expandedElements.has(itemKey));
+        const selected = !!(itemKey && this.#selectedElements.has(itemKey));
+
         const rowLabel = this.rowLabel(item);
 
         const renderCheckbox = () =>
@@ -503,13 +534,13 @@ export abstract class Table<T extends object>
             return html`<td
                 class="pf-c-table__toggle pf-m-pressable"
                 role="presentation"
-                @click=${this.#toggleExpansion.bind(this, expansionKey)}
+                @click=${this.#toggleExpansion.bind(this, itemKey)}
             >
                 <button
                     class="pf-c-button pf-m-plain ${classMap({
                         "pf-m-expanded": expanded,
                     })}"
-                    @click=${this.#toggleExpansion.bind(this, expansionKey)}
+                    @click=${this.#toggleExpansion.bind(this, itemKey)}
                     aria-label=${expanded ? msg("Collapse row") : msg("Expand row")}
                     aria-expanded=${expanded ? "true" : "false"}
                 >
@@ -644,9 +675,19 @@ export abstract class Table<T extends object>
 
         if (checkbox.checked) {
             const items = this.data?.results || [];
-            this.#selectedElements = new Set(items);
+            const nextSelected = new Map<string | number, T>();
+
+            for (const item of items) {
+                const itemKey = this.#itemKeys.get(item);
+
+                if (itemKey) {
+                    nextSelected.set(itemKey, item);
+                }
+            }
+
+            this.#selectedElements = nextSelected;
         } else {
-            this.#selectedElements = new Set();
+            this.#selectedElements.clear();
         }
 
         this.requestUpdate();
@@ -658,15 +699,22 @@ export abstract class Table<T extends object>
      * "deactivate all on this page" with a single click.
      */
     renderAllOnThisPageCheckbox(): TemplateResult {
-        const itemsCount = this.data?.results?.length ?? -1;
-        const checked = itemsCount !== -1 && this.#selectedElements.size === itemsCount;
+        const selectedCount = this.#selectedElements.size;
+        const pageItemCount = this.data?.results?.length ?? 0;
+
+        const checked = pageItemCount !== 0 && selectedCount === pageItemCount;
+        const indeterminate =
+            pageItemCount !== 0 && selectedCount !== 0 && selectedCount < pageItemCount;
 
         return html`<td class="pf-c-table__check" role="cell">
             <input
                 ${ref(this.#selectAllCheckboxRef)}
                 name="select-all"
                 type="checkbox"
-                aria-label=${msg("Select all rows")}
+                aria-label=${msg(
+                    str`Select all rows on page (${selectedCount} of ${pageItemCount} selected)`,
+                )}
+                .indeterminate=${indeterminate}
                 .checked=${checked}
                 @input=${this.#synchronizeCheckboxAll}
             />
@@ -690,8 +738,8 @@ export abstract class Table<T extends object>
 
     protected renderChipGroup(): TemplateResult {
         return html`<ak-chip-group>
-            ${Array.from(this.#selectedElements, (el) => {
-                return html`<ak-chip>${this.renderSelectedChip(el)}</ak-chip>`;
+            ${Array.from(this.#selectedElements.values(), (item) => {
+                return html`<ak-chip>${this.renderSelectedChip(item)}</ak-chip>`;
             })}
         </ak-chip-group>`;
     }
@@ -716,6 +764,8 @@ export abstract class Table<T extends object>
     }
 
     protected renderTable(): TemplateResult {
+        const totalItemCount = this.data?.pagination.count ?? -1;
+
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 
@@ -723,6 +773,7 @@ export abstract class Table<T extends object>
             ${this.renderToolbarContainer()}
             <table
                 aria-label=${this.label ? msg(str`Table of ${this.label}`) : msg("Table content")}
+                aria-rowcount=${totalItemCount}
                 class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
             >
                 <thead aria-label=${msg("Column actions")}>
