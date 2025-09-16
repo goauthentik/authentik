@@ -6449,11 +6449,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         <target>Opnieuw proberen</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Voer uw code in</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>U heeft uw apparaat succesvol geauthenticeerd.</target>

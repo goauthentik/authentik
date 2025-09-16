@@ -2,7 +2,7 @@
 title: Kubernetes installation
 ---
 
-You can install authentik to run on Kubernetes using Helm Chart.
+You can install authentik to run on Kubernetes using a Helm Chart.
 
 :::info
 You can also [view a video walk-through](https://www.youtube.com/watch?v=O1qUbrk4Yc8) of the installation process on Kubernetes (with bonus details about email configuration and other important options).
@@ -75,7 +75,7 @@ During the installation process, the database migrations will be applied automat
 After the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default `akadmin` user.
 
 :::info
-You will get `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
+You will get a `Not Found` error if initial setup URL doesn't include the trailing forward slash `/`. Make sure you use the complete url (`http://<ingress-host-name>/if/flow/initial-setup/`) including the trailing forward slash.
 :::
 
 ### PostgreSQL production setup

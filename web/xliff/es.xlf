@@ -6509,11 +6509,6 @@ Las vinculaciones a grupos/usuarios se verifican en función del usuario del eve
         <target>Intentar de nuevo</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Por favor, introduzca su código</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>Has autenticado tu dispositivo correctamente.</target>

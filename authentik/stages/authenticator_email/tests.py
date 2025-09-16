@@ -108,6 +108,17 @@ class TestAuthenticatorEmailStage(FlowTestCase):
     )
     def test_stage_submit(self):
         """Test stage email submission"""
+        # test fail because of existing device
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            self.user,
+            component="ak-stage-access-denied",
+        )
+        self.device.delete()
         # Initialize the flow
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -232,6 +243,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
     def test_challenge_generation(self):
         """Test challenge generation"""
         # Test with masked email
+        self.device.delete()
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )

@@ -81,6 +81,7 @@ environment:
         }
     PAPERLESS_AUTO_LOGIN=true
     PAPERLESS_AUTO_CREATE=true
+    PAPERLESS_LOGOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
 ```
 
 Now restart your container:

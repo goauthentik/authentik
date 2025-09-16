@@ -40,7 +40,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-30 00:10+0000\n"
+"POT-Creation-Date: 2025-09-04 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: datenschmutz, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
@@ -204,6 +204,10 @@ msgstr "Es sind keine führenden oder abschließenden Schrägstriche erlaubt."
 #: authentik/core/api/users.py
 msgid "No empty segments in user path allowed."
 msgstr "Im Benutzerpfad sind keine leeren Segmente erlaubt."
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
 
 #: authentik/core/models.py
 msgid "name"

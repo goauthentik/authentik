@@ -6509,11 +6509,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
         <target>Ponów</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Wprowadź swój kod</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>Pomyślnie uwierzytelniłeś swoje urządzenie.</target>

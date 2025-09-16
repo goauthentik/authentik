@@ -1,6 +1,8 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
+import { FocusTarget } from "#elements/utils/focus";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -12,7 +14,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -28,6 +30,8 @@ export class OAuth2DeviceCode extends BaseStage<
     OAuthDeviceCodeChallenge,
     OAuthDeviceCodeChallengeResponseRequest
 > {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles: CSSResult[] = [
         PFBase,
         PFLogin,
@@ -38,6 +42,12 @@ export class OAuth2DeviceCode extends BaseStage<
         PFInputGroup,
     ];
 
+    #focusTarget = new FocusTarget<HTMLInputElement>();
+
+    protected override firstUpdated(): void {
+        this.#focusTarget.focus();
+    }
+
     render(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
             <form class="pf-c-form" @submit=${this.submitForm}>
@@ -45,13 +55,14 @@ export class OAuth2DeviceCode extends BaseStage<
                     ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
 
                     <input
+                        ${this.#focusTarget.toRef()}
                         id="device-code-input"
                         type="text"
                         name="code"
                         inputmode="numeric"
                         pattern="[0-9]*"
-                        placeholder="${msg("Please enter your Code")}"
-                        autofocus=""
+                        placeholder="${msg("Please enter your code")}"
+                        autofocus
                         autocomplete="off"
                         class="pf-c-form-control"
                         value=""

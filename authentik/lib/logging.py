@@ -43,7 +43,9 @@ def structlog_configure():
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
-            structlog.processors.dict_tracebacks,
+            structlog.processors.ExceptionRenderer(
+                structlog.processors.ExceptionDictTransformer(show_locals=CONFIG.get_bool("debug"))
+            ),
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -65,7 +67,14 @@ def get_logger_config():
             "json": {
                 "()": structlog.stdlib.ProcessorFormatter,
                 "processor": structlog.processors.JSONRenderer(sort_keys=True),
-                "foreign_pre_chain": LOG_PRE_CHAIN + [structlog.processors.dict_tracebacks],
+                "foreign_pre_chain": LOG_PRE_CHAIN
+                + [
+                    structlog.processors.ExceptionRenderer(
+                        structlog.processors.ExceptionDictTransformer(
+                            show_locals=CONFIG.get_bool("debug")
+                        )
+                    ),
+                ],
             },
             "console": {
                 "()": structlog.stdlib.ProcessorFormatter,

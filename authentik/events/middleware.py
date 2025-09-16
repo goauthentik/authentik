@@ -197,7 +197,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -212,7 +213,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -239,7 +241,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 

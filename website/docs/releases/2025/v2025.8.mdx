@@ -28,7 +28,7 @@ For instances with a high level of traffic, such as many users logging in, many 
 To prevent losing tasks during the upgrade, instances with a high level of traffic should follow these instructions:
 
 1. Start by upgrading the authentik server.
-2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-ugpraded worker container:
+2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-upgraded worker container:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -146,7 +146,7 @@ From this point on, we recommend using the bundled PostgreSQL dependency for dem
 
 ## New integration guides
 
-An integration is a how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
 
 - [1Password](https://integrations.goauthentik.io/security/1password/)
 - [Bitwarden](https://integrations.goauthentik.io/security/bitwarden/)
@@ -161,7 +161,7 @@ An integration is a how authentik connects to third-party applications, director
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
@@ -369,6 +369,33 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: Improvements to ReCaptcha resizing (cherry-pick #16171) (#16281)
 - web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
 - web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
+
+## Fixed in 2025.8.2
+
+- core: bump django from 5.1.11 to v5.1.12 (cherry-pick #16584) (#16591)
+- core: bump h2 from 4.2.0 to 4.3.0 (cherry-pick #16446) (#16449)
+- core: fix client-side only validation allowing admin to set blank user password (cherry-pick #16467) (#16469)
+- lib/logging: only show locals when in debug mode (cherry-pick #16772) #16774
+- lib/sync/outgoing: fix single object sync timeout (cherry-pick #16447) (#16453)
+- lib/sync: fix missing f for string (cherry-pick #16423) (#16427)
+- lifecycle: fix PROMETHEUS_MULTIPROC_DIR missing suffix (cherry-pick #16401) (#16407)
+- policies: remove object pk from authentik_policies_execution_time to reduce cardinality (cherry-pick #16500) (#16501)
+- providers/oauth2: add missing exp claim for logout token (cherry-pick #16593) (#16598)
+- providers/oauth2: avoid deadlock during session migration (cherry-pick #16361) (#16364)
+- providers/rac: fix AuthenticatedSession migration (cherry-pick #16400) (#16419)
+- providers/scim: improve error message when object fails to sync (cherry-pick #16625) (#16643)
+- sources/ldap: fix malformed filter error with special characters in group DN (cherry-pick #16243) (#16585)
+- sources/oauth/entra_id: do not assume group_id comes from entra (cherry-pick #16456) (#16777)
+- tasks/schedules: fix api search fields (cherry-pick #16405) (#16410)
+- tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
+- web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
+
+## Fixed in 2025.8.3
+
+- lifecycle: fix permission error when running worker as root (cherry-pick #16735) (#16784)
+- stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
+- website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
+- website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
 
 ## API Changes
 
