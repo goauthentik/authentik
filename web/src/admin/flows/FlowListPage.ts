@@ -100,7 +100,7 @@ export class FlowListPage extends TablePage<Flow> {
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -119,7 +119,7 @@ export class FlowListPage extends TablePage<Flow> {
                 </button>
                 <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
                     <pf-tooltip position="top" content=${msg("Export")}>
-                        <i class="fas fa-download"></i>
+                        <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>
                 </a>`,
         ];

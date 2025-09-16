@@ -92,7 +92,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     #rowApp(item: Provider): TemplateResult {
         if (item.assignedApplicationName) {
-            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+            return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application ")}
                 <a href="#/core/applications/${item.assignedApplicationSlug}"
                     >${item.assignedApplicationName}</a
@@ -100,7 +100,7 @@ export class ProviderListPage extends TablePage<Provider> {
         }
 
         if (item.assignedBackchannelApplicationName) {
-            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+            return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application (backchannel) ")}
                 <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
                     >${item.assignedBackchannelApplicationName}</a

@@ -169,7 +169,7 @@ export class UserTokenList extends Table<Token> {
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i aria-hidden="true" class="fas fa-edit"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -178,7 +178,7 @@ export class UserTokenList extends Table<Token> {
                     identifier="${item.identifier}"
                 >
                     <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy"></i>
+                        <i class="fas fa-copy" aria-hidden="true"></i>
                     </pf-tooltip>
                 </ak-token-copy-button>
             `,

@@ -89,7 +89,7 @@ export class RoleListPage extends TablePage<Role> {
                 <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,

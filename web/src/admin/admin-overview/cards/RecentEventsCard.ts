@@ -62,7 +62,7 @@ export class RecentEventsCard extends Table<Event> {
 
     renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
-            <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
+            <i class="pf-icon pf-icon-catalog" aria-hidden="true"></i>&nbsp;${msg("Recent events")}
         </div>`;
     }
 

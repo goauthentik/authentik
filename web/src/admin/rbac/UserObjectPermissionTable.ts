@@ -116,14 +116,14 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     row(item: UserAssignedObjectPermission): TemplateResult[] {
         const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
         this.modelPermissions?.results.forEach((perm) => {
-            let cell = html`<i class="fas fa-times pf-m-danger"></i>`;
+            let cell = html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`;
             if (item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0) {
                 cell = html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                    ><i class="fas fa-check pf-m-success"></i
+                    ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
                 ></pf-tooltip>`;
             } else if (item.isSuperuser) {
                 cell = html`<pf-tooltip position="top" content=${msg("Superuser")}
-                    ><i class="fas fa-check pf-m-success"></i
+                    ><i class="fas fa-check pf-m-success" aria-hidden="true"></i
                 ></pf-tooltip>`;
             }
             baseRow.push(cell);

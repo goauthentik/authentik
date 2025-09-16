@@ -50,7 +50,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
                 <div class="pf-c-text-input-group__main pf-m-icon">
                     <span class="pf-c-text-input-group__text"
                         ><span class="pf-c-text-input-group__icon"
-                            ><i class="fa fa-search fa-fw"></i></span
+                            ><i class="fa fa-search fa-fw" aria-hidden="true"></i></span
                         ><input
                             type="search"
                             class="pf-c-text-input-group__text-input"

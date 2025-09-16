@@ -88,7 +88,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                   >
                       <pre>${item.objectPk}</pre>
                   </pf-tooltip>`}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

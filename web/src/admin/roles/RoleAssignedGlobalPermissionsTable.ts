@@ -82,7 +82,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

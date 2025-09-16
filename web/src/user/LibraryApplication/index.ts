@@ -87,7 +87,7 @@ export class LibraryApplication extends AKElement {
                           href="${globalAK().api
                               .base}if/admin/#/core/applications/${application?.slug}"
                       >
-                          <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
+                          <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;${msg("Edit")}
                       </a>
                   `
                 : html``}

@@ -190,7 +190,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 ? html`<div slot="notice" class="pf-c-form__alert">
                       <div class="pf-c-alert pf-m-inline pf-m-warning">
                           <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle"></i>
+                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
@@ -257,7 +257,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>

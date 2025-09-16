@@ -138,14 +138,14 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
                           <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square"></i>
+                              <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
                     : html``}`,

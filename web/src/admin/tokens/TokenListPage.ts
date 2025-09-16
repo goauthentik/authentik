@@ -118,7 +118,7 @@ export class TokenListPage extends TablePage<Token> {
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
                               <pf-tooltip position="top" content=${msg("Edit")}>
-                                  <i class="fas fa-edit"></i>
+                                  <i class="fas fa-edit" aria-hidden="true"></i>
                               </pf-tooltip>
                           </button>
                       </ak-forms-modal>`
@@ -127,7 +127,7 @@ export class TokenListPage extends TablePage<Token> {
                               position="top"
                               content=${msg("Editing is disabled for managed tokens")}
                           >
-                              <i class="fas fa-edit"></i>
+                              <i class="fas fa-edit" aria-hidden="true"></i>
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
@@ -140,7 +140,7 @@ export class TokenListPage extends TablePage<Token> {
                     identifier="${item.identifier}"
                 >
                     <pf-tooltip position="top" content=${msg("Copy token")}>
-                        <i class="fas fa-copy"></i>
+                        <i class="fas fa-copy" aria-hidden="true"></i>
                     </pf-tooltip>
                 </ak-token-copy-button>
             `,

@@ -65,7 +65,7 @@ export class ObjectPermissionModal extends AKElement {
                 ></ak-rbac-object-permission-modal-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Permissions")}>
-                        <i class="fas fa-lock"></i>
+                        <i class="fas fa-lock" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>

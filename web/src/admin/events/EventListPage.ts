@@ -114,7 +114,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>
-                    <i class="fas fa-share-square"></i>
+                    <i class="fas fa-share-square" aria-hidden="true"></i>
                 </pf-tooltip>
             </a>`,
         ];

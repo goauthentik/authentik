@@ -71,7 +71,7 @@ export class TableColumn {
             <div class="pf-c-table__button-content">
                 <span part="column-text" class="pf-c-table__text">${this.value}</span>
                 <span part="column-sort" class="pf-c-table__sort-indicator">
-                    <i class="fas ${this.sortIndicator(orderBy)}"></i>
+                    <i class="fas ${this.sortIndicator(orderBy)}" aria-hidden="true"></i>
                 </span>
             </div>
         </button>`;

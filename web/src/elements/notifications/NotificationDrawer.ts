@@ -109,7 +109,7 @@ export class NotificationDrawer extends AKElement {
                         href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
-                            <i class="fas fa-share-square"></i>
+                            <i class="fas fa-share-square" aria-hidden="true"></i>
                         </pf-tooltip>
                     </a>
                 `}
@@ -135,7 +135,7 @@ export class NotificationDrawer extends AKElement {
                             });
                     }}
                 >
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
