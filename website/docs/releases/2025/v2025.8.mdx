@@ -390,6 +390,13 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
 - web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
 
+## Fixed in 2025.8.3
+
+- lifecycle: fix permission error when running worker as root (cherry-pick #16735) (#16784)
+- stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
+- website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
+- website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
+
 ## API Changes
 
 #### What's New
