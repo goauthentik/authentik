@@ -84,14 +84,12 @@ export class InvitationListPage extends TablePage<Invitation> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Created by"), "created_by"),
-            new TableColumn(msg("Expiry")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Created by"), "created_by"],
+        [msg("Expiry")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

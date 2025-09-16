@@ -40,13 +40,7 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [[msg("Model"), "model"], [msg("Permission"), ""], [""]];
 
     renderObjectCreate(): TemplateResult {
         return html`

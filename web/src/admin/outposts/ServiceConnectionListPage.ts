@@ -67,15 +67,13 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     @state()
     state: { [key: string]: ServiceConnectionState } = {};
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Local"), "local"),
-            new TableColumn(msg("State")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type")],
+        [msg("Local"), "local"],
+        [msg("State")],
+        [msg("Actions")],
+    ];
 
     @property()
     order = "name";

@@ -72,9 +72,11 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
 
     row(item: SCIMProviderGroup): TemplateResult[] {
         return [

@@ -75,9 +75,11 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
 
     row(item: MicrosoftEntraProviderUser): TemplateResult[] {
         return [

@@ -25,9 +25,11 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
 
     renderExpanded(item: SCIMSourceGroup): TemplateResult {
         return html`<td role="cell" colspan="4">

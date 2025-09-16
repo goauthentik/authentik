@@ -105,14 +105,12 @@ export class RelatedGroupList extends Table<Group> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Parent"), "parent"),
-            new TableColumn(msg("Superuser privileges?")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Parent"), "parent"],
+        [msg("Superuser privileges?")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

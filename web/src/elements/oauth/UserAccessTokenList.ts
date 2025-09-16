@@ -35,14 +35,12 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     checkbox = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Provider"), "provider"),
-            new TableColumn(msg("Revoked?"), "revoked"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Scopes"), "scope"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Provider"), "provider"],
+        [msg("Revoked?"), "revoked"],
+        [msg("Expires"), "expires"],
+        [msg("Scopes"), "scope"],
+    ];
 
     renderExpanded(item: TokenModel): TemplateResult {
         return html` <td role="cell" colspan="4">

@@ -36,14 +36,12 @@ export class UserReputationList extends Table<Reputation> {
     clearOnRefresh = true;
     order = "identifier";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "identifier"),
-            new TableColumn(msg("IP"), "ip"),
-            new TableColumn(msg("Score"), "score"),
-            new TableColumn(msg("Updated"), "updated"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "identifier"],
+        [msg("IP"), "ip"],
+        [msg("Score"), "score"],
+        [msg("Updated"), "updated"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

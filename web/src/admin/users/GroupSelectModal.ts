@@ -37,13 +37,11 @@ export class GroupSelectModal extends TableModal<Group> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Superuser"), "is_superuser"),
-            new TableColumn(msg("Members"), ""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Superuser"), "is_superuser"],
+        [msg("Members"), ""],
+    ];
 
     row(item: Group): TemplateResult[] {
         return [

@@ -52,15 +52,13 @@ export class RecentEventsCard extends Table<Event> {
         `,
     ];
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "user"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-            new TableColumn(msg("Brand"), "brand_name"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "user"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+        [msg("Brand"), "brand_name"],
+    ];
 
     renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">

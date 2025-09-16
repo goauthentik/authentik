@@ -48,16 +48,13 @@ export class MFADevicesPage extends Table<Device> {
         };
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Created at"),
-            msg("Last used at"),
-            ""
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Created at")],
+        [msg("Last used at")],
+        [""],
+    ];
 
     renderToolbar(): TemplateResult {
         const settings = (this.userSettings || []).filter((stage) => {

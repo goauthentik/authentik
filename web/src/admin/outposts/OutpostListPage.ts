@@ -89,16 +89,14 @@ export class OutpostListPage extends TablePage<Outpost> {
     @state()
     health: { [key: string]: OutpostHealth[] } = {};
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Providers")),
-            new TableColumn(msg("Integration"), "service_connection__name"),
-            new TableColumn(msg("Health and Version")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type"), "type"],
+        [msg("Providers")],
+        [msg("Integration"), "service_connection__name"],
+        [msg("Health and Version")],
+        [msg("Actions")],
+    ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 

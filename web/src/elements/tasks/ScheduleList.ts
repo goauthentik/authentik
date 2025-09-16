@@ -69,15 +69,13 @@ export class ScheduleList extends Table<Schedule> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Schedule"), "actor_name"),
-            new TableColumn(msg("Crontab"), "crontab"),
-            new TableColumn(msg("Next run"), "next_run"),
-            new TableColumn(msg("Last status")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Schedule"), "actor_name"],
+        [msg("Crontab"), "crontab"],
+        [msg("Next run"), "next_run"],
+        [msg("Last status")],
+        [msg("Actions")],
+    ];
 
     renderToolbarAfter(): TemplateResult {
         if (this.relObjId !== undefined) {

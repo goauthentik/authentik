@@ -40,9 +40,11 @@ export class RoleListPage extends TablePage<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

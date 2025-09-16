@@ -53,15 +53,13 @@ export class FlowListPage extends TablePage<Flow> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "slug"),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Stages")),
-            new TableColumn(msg("Policies")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "slug"],
+        [msg("Name"), "name"],
+        [msg("Stages")],
+        [msg("Policies")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

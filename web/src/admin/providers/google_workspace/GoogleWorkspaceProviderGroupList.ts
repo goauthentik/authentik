@@ -75,9 +75,11 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
 
     row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
         return [

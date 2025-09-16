@@ -75,9 +75,11 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
 
     row(item: GoogleWorkspaceProviderUser): TemplateResult[] {
         return [

@@ -59,16 +59,14 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "user"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-            new TableColumn(msg("Brand"), "brand_name"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "user"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+        [msg("Brand"), "brand_name"],
+        [msg("Actions")],
+    ];
 
     renderSectionBefore(): TemplateResult {
         if (this.hasEnterpriseLicense) {

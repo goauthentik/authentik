@@ -29,13 +29,11 @@ export class UserConsentList extends Table<UserConsent> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Application"), "application"),
-            new TableColumn(msg("Expires"), "expires"),
-            new TableColumn(msg("Permissions"), "permissions"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Application"), "application"],
+        [msg("Expires"), "expires"],
+        [msg("Permissions"), "permissions"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

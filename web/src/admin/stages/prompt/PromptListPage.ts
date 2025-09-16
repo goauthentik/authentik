@@ -45,16 +45,14 @@ export class PromptListPage extends TablePage<Prompt> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Field"), "field_key"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(msg("Stages")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Field"), "field_key"],
+        [msg("Type"), "type"],
+        [msg("Order"), "order"],
+        [msg("Stages")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

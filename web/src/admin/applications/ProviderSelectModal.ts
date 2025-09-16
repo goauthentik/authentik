@@ -35,9 +35,11 @@ export class ProviderSelectModal extends TableModal<Provider> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "username"), new TableColumn(msg("Type"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "username"],
+        [msg("Type")],
+    ];
 
     row(item: Provider): TemplateResult[] {
         return [

@@ -71,16 +71,17 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    columns(): TableColumn[] {
+    protected get columns(): TableColumn[] {
         if (this.provider) {
             return [
-                new TableColumn(msg("Endpoint"), "endpoint__name"),
-                new TableColumn(msg("User"), "session__user"),
+                [msg("Endpoint"), "endpoint__name"],
+                [msg("User"), "session__user"],
             ];
         }
+
         return [
-            new TableColumn(msg("Provider"), "provider__name"),
-            new TableColumn(msg("Endpoint"), "endpoint__name"),
+            [msg("Provider"), "provider__name"],
+            [msg("Endpoint"), "endpoint__name"],
         ];
     }
 

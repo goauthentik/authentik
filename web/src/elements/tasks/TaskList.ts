@@ -95,15 +95,13 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Task"), "actor_name"),
-            new TableColumn(msg("Queue"), "queue_name"),
-            new TableColumn(msg("Last updated"), "mtime"),
-            new TableColumn(msg("Status"), "aggregated_status"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Task"), "actor_name"],
+        [msg("Queue"), "queue_name"],
+        [msg("Last updated"), "mtime"],
+        [msg("Status"), "aggregated_status"],
+        [msg("Actions")],
+    ];
 
     renderToolbarAfter(): TemplateResult {
         return html`&nbsp;

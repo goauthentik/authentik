@@ -5,8 +5,8 @@ import "#elements/chips/ChipGroup";
 import "#elements/table/TablePagination";
 import "#elements/table/TableSearch";
 
-import { TableLike } from "./shared.js";
-import { TableColumn } from "./TableColumn.js";
+import { BaseTableListRequest, TableLike } from "./shared.js";
+import { renderTableColumn, TableColumn } from "./TableColumn.js";
 
 import { EVENT_REFRESH } from "#common/constants";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
@@ -103,7 +103,11 @@ export abstract class Table<T extends object>
     ];
 
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    protected abstract columns(): TableColumn[];
+    /**
+     * The columns to display in the table.
+     */
+    protected abstract columns: TableColumn[];
+
     protected abstract row(item: T): SlottedTemplateResult[];
 
     #loading = false;
@@ -252,7 +256,7 @@ export abstract class Table<T extends object>
 
     //#endregion
 
-    async defaultEndpointConfig() {
+    async defaultEndpointConfig(): Promise<BaseTableListRequest> {
         return {
             ordering: this.order,
             page: this.page,
@@ -354,16 +358,17 @@ export abstract class Table<T extends object>
     }
 
     //#region Rows
+
     /**
      * Render a row for a given item.
      *
      * @param item The item to render.
      */
-    protected rowLabel<T extends object>(item: T): string | typeof nothing {
+    protected rowLabel(item: T): string | null {
         const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
 
         if (!name) {
-            return nothing;
+            return null;
         }
 
         return msg(str`${name}`);
@@ -397,7 +402,7 @@ export abstract class Table<T extends object>
             }
         }
 
-        const columnCount = this.columns().length + (this.checkbox ? 1 : 0);
+        const columnCount = this.columns.length + (this.checkbox ? 1 : 0);
 
         return groups.map(([group, items], groupIndex) => {
             const groupHeaderID = `table-group-${groupIndex}`;
@@ -503,7 +508,7 @@ export abstract class Table<T extends object>
 
     #renderRowGroupItem(
         item: T,
-        itemIndex: number,
+        rowIndex: number,
         items: T[],
         groupIndex: number,
         groups: GroupResult<T>[],
@@ -514,7 +519,7 @@ export abstract class Table<T extends object>
         const expanded = !!(itemKey && this.expandedElements.has(itemKey));
         const selected = !!(itemKey && this.#selectedElements.has(itemKey));
 
-        const rowLabel = this.rowLabel(item);
+        const rowLabel = this.rowLabel(item) || `#${rowIndex + 1}`;
 
         const renderCheckbox = () =>
             html`<td class="pf-c-table__check" role="presentation">
@@ -577,9 +582,8 @@ export abstract class Table<T extends object>
                 class="pf-c-table__expandable-row ${classMap({
                     "pf-m-expanded": expanded,
                 })}"
-                role="row"
             >
-                <td></td>
+                <td aria-hidden="true"></td>
                 ${expanded ? this.renderExpanded(item) : nothing}
             </tr>
         `;
@@ -706,7 +710,7 @@ export abstract class Table<T extends object>
         const indeterminate =
             pageItemCount !== 0 && selectedCount !== 0 && selectedCount < pageItemCount;
 
-        return html`<td class="pf-c-table__check" role="cell">
+        return html`<th class="pf-c-table__check" role="cell">
             <input
                 ${ref(this.#selectAllCheckboxRef)}
                 name="select-all"
@@ -718,7 +722,7 @@ export abstract class Table<T extends object>
                 .checked=${checked}
                 @input=${this.#synchronizeCheckboxAll}
             />
-        </td>`;
+        </th>`;
     }
 
     /**
@@ -780,7 +784,14 @@ export abstract class Table<T extends object>
                     <tr role="presentation" class="pf-c-table__header-row">
                         ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                         ${this.expandable ? html`<td role="cell"></td>` : nothing}
-                        ${this.columns().map((col, idx) => col.render(this, idx))}
+                        ${this.columns.map(([label, orderBy], idx) =>
+                            renderTableColumn({
+                                label,
+                                orderBy,
+                                table: this,
+                                columnIndex: idx,
+                            }),
+                        )}
                     </tr>
                 </thead>
                 ${this.renderRows()}

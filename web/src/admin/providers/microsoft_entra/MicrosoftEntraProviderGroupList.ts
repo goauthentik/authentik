@@ -72,9 +72,11 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
 
     row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
         return [

@@ -52,10 +52,8 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         });
     }
 
-    columns(): TableColumn[] {
-        return this.metadata(this.objects[0]).map((element) => {
-            return new TableColumn(element.key);
-        });
+    protected get columns(): TableColumn[] {
+        return this.metadata(this.objects[0]).map((element) => [element.key]);
     }
 
     row(item: T): TemplateResult[] {

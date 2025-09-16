@@ -25,9 +25,11 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
 
     renderExpanded(item: SCIMSourceUser): TemplateResult {
         return html`<td role="cell" colspan="4">

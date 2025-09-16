@@ -43,15 +43,13 @@ export class GroupListPage extends TablePage<Group> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Parent"), "parent"),
-            new TableColumn(msg("Members")),
-            new TableColumn(msg("Superuser privileges?")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Parent"), "parent"],
+        [msg("Members")],
+        [msg("Superuser privileges?")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

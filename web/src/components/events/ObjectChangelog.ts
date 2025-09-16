@@ -56,14 +56,12 @@ export class ObjectChangelog extends Table<Event> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Action"), "action"),
-            new TableColumn(msg("User"), "enabled"),
-            new TableColumn(msg("Creation Date"), "created"),
-            new TableColumn(msg("Client IP"), "client_ip"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Action"), "action"],
+        [msg("User"), "enabled"],
+        [msg("Creation Date"), "created"],
+        [msg("Client IP"), "client_ip"],
+    ];
 
     willUpdate(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("targetModelName") && this.targetModelName) {

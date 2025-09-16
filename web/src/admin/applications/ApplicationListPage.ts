@@ -73,16 +73,14 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(""),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Group"), "group"),
-            new TableColumn(msg("Provider")),
-            new TableColumn(msg("Provider Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [""],
+        [msg("Name"), "name"],
+        [msg("Group"), "group"],
+        [msg("Provider")],
+        [msg("Provider Type")],
+        [msg("Actions")],
+    ];
 
     protected renderSidebarAfter(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">

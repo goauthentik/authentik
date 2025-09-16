@@ -72,9 +72,11 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Username")), new TableColumn(msg("ID"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Username")],
+        [msg("ID")],
+    ];
 
     row(item: SCIMProviderUser): TemplateResult[] {
         return [

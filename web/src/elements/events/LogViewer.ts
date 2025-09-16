@@ -77,14 +77,12 @@ export class LogViewer extends Table<LogEvent> {
         return html``;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Time")),
-            new TableColumn(msg("Level")),
-            new TableColumn(msg("Event")),
-            new TableColumn(msg("Logger")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Time")],
+        [msg("Level")],
+        [msg("Event")],
+        [msg("Logger")],
+    ];
 
     statusForItem(item: LogEvent): string {
         switch (item.logLevel) {

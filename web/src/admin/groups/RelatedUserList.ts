@@ -139,14 +139,12 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return users;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

@@ -54,13 +54,7 @@ export class PolicyListPage extends TablePage<Policy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("Type")], [msg("Actions")]];
 
     row(item: Policy): TemplateResult[] {
         return [

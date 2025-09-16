@@ -28,16 +28,14 @@ export class UserApplicationTable extends Table<Application> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(""),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Group"), "group"),
-            new TableColumn(msg("Provider")),
-            new TableColumn(msg("Provider Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [""],
+        [msg("Name"), "name"],
+        [msg("Group"), "group"],
+        [msg("Provider")],
+        [msg("Provider Type")],
+        [msg("Actions")],
+    ];
 
     row(item: Application): TemplateResult[] {
         return [

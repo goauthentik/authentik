@@ -37,14 +37,12 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(msg("Object"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        [msg("Object"), ""],
+        [""],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

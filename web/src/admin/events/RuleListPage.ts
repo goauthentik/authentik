@@ -53,15 +53,13 @@ export class RuleListPage extends TablePage<NotificationRule> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Enabled")),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Severity"), "severity"),
-            new TableColumn(msg("Sent to group"), "group"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Enabled")],
+        [msg("Name"), "name"],
+        [msg("Severity"), "severity"],
+        [msg("Sent to group"), "group"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

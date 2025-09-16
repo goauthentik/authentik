@@ -74,15 +74,13 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Status"), "status"),
-            new TableColumn(msg("Last applied"), "last_applied"),
-            new TableColumn(msg("Enabled"), "enabled"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Status"), "status"],
+        [msg("Last applied"), "last_applied"],
+        [msg("Enabled"), "enabled"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

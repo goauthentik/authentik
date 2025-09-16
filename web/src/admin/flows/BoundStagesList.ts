@@ -40,14 +40,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(msg("Name"), "stage__name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [msg("Name"), "stage__name"],
+        [msg("Type")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

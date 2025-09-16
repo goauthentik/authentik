@@ -40,9 +40,10 @@ export class PermissionSelectModal extends TableModal<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "codename"],
+        [msg("Model"), ""],
+    ];
 
     row(item: Permission): TemplateResult[] {
         return [

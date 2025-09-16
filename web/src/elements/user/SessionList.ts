@@ -29,13 +29,11 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     clearOnRefresh = true;
     order = "-expires";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Last IP"), "last_ip"),
-            new TableColumn(msg("Last used"), "last_used"),
-            new TableColumn(msg("Expires"), "expires"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Last IP"), "last_ip"],
+        [msg("Last used"), "last_used"],
+        [msg("Expires"), "expires"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

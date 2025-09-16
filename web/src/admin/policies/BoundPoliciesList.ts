@@ -69,15 +69,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(this.allowedTypesLabel),
-            new TableColumn(msg("Enabled"), "enabled"),
-            new TableColumn(msg("Timeout"), "timeout"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [this.allowedTypesLabel],
+        [msg("Enabled"), "enabled"],
+        [msg("Timeout"), "timeout"],
+        [msg("Actions")],
+    ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {

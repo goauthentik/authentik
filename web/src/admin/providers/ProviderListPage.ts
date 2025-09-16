@@ -60,14 +60,12 @@ export class ProviderListPage extends TablePage<Provider> {
         );
     }
 
-    override columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Application")),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected override columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Application")],
+        [msg("Type")],
+        [msg("Actions")],
+    ];
 
     override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

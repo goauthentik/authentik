@@ -42,14 +42,12 @@ export class BrandListPage extends TablePage<Brand> {
         return new CoreApi(DEFAULT_CONFIG).coreBrandsList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Domain"), "domain"),
-            new TableColumn(msg("Brand name"), "branding_title"),
-            new TableColumn(msg("Default?"), "default"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Domain"), "domain"],
+        [msg("Brand name"), "branding_title"],
+        [msg("Default?"), "default"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

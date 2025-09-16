@@ -52,16 +52,14 @@ export class TokenListPage extends TablePage<Token> {
         return new CoreApi(DEFAULT_CONFIG).coreTokensList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "identifier"),
-            new TableColumn(msg("User"), "user"),
-            new TableColumn(msg("Expires?"), "expiring"),
-            new TableColumn(msg("Expiry date"), "expires"),
-            new TableColumn(msg("Intent"), "intent"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "identifier"],
+        [msg("User"), "user"],
+        [msg("Expires?"), "expiring"],
+        [msg("Expiry date"), "expires"],
+        [msg("Intent"), "intent"],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

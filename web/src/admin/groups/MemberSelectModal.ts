@@ -61,13 +61,11 @@ export class MemberSelectTable extends TableModal<User> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+    ];
 
     renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {

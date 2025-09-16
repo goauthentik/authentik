@@ -45,11 +45,17 @@ export class UserTokenList extends Table<Token> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Identifier"), "identifier"), new TableColumn("")];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Identifier"), "identifier"],
+        [""],
+    ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
+    protected override rowLabel(item: Token): string | null {
+        return item.identifier;
+    }
 
     renderToolbar(): TemplateResult {
         return html`

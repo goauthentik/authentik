@@ -57,14 +57,12 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Private key available?")),
-            new TableColumn(msg("Expiry date")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Private key available?")],
+        [msg("Expiry date")],
+        [msg("Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

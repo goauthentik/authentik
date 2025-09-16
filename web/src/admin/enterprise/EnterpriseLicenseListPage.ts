@@ -94,14 +94,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Users")),
-            new TableColumn(msg("Expiry date")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Users")],
+        [msg("Expiry date")],
+        [msg("Actions")],
+    ];
 
     // TODO: Make this more generic, maybe automatically get the plural name
     // of the object to use in the renderEmpty

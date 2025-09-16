@@ -42,17 +42,14 @@ export class UserDeviceTable extends Table<Device> {
             });
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Confirmed"),
-            msg("Created at"),
-            msg("Last updated at"),
-            msg("Last used at"),
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Confirmed")],
+        [msg("Created at")],
+        [msg("Last updated at")],
+        [msg("Last used at")],
+    ];
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);

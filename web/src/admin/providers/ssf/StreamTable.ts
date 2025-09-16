@@ -35,9 +35,10 @@ export class SSFProviderStreamList extends Table<SSFStream> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Audience"), "aud")];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Audience"), "aud"],
+    ];
 
     row(item: SSFStream): TemplateResult[] {
         return [html`${item.aud}`];

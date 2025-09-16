@@ -53,13 +53,14 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return perms;
     }
 
-    columns(): TableColumn[] {
-        const baseColumns = [new TableColumn(msg("User"), "user")];
-        // We don't check pagination since models shouldn't need to have that many permissions?
-        this.modelPermissions?.results.forEach((perm) => {
-            baseColumns.push(new TableColumn(perm.name, perm.codename));
-        });
-        return baseColumns;
+    protected get columns(): TableColumn[] {
+        const permissions = this.modelPermissions?.results ?? [];
+
+        return [
+            [msg("User"), "user"],
+            // We don't check pagination since models shouldn't need to have that many permissions?
+            ...permissions.map(({ name, codename }): TableColumn => [name, codename]),
+        ];
     }
 
     renderObjectCreate(): TemplateResult {
