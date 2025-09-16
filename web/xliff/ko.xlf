@@ -6441,11 +6441,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>재시도</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>코드를 입력하세요.</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>디바이스 인증에 성공했습니다.</target>

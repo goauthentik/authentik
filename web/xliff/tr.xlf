@@ -6471,11 +6471,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
         <target>Yeniden dene</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Lütfen Kodunuzu girin</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>Cihazınızın kimliğini başarıyla doğruladınız.</target>
