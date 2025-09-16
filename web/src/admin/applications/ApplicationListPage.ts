@@ -83,13 +83,16 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     ];
 
     protected renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+        return html`<aside
+            aria-label=${msg("Applications Documentation")}
+            class="pf-c-sidebar__panel pf-m-width-25"
+        >
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
                     <ak-mdx .url=${MDApplication}></ak-mdx>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 
     renderToolbarSelected(): TemplateResult {

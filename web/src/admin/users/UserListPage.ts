@@ -412,9 +412,19 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     protected renderSidebarBefore(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+        return html`<aside
+            aria-labelledby="sidebar-left-panel-header"
+            class="pf-c-sidebar__panel pf-m-width-25"
+        >
             <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("User folders")}</div>
+                <div
+                    role="heading"
+                    aria-level="2"
+                    id="sidebar-left-panel-header"
+                    class="pf-c-card__title"
+                >
+                    ${msg("User folders")}
+                </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
@@ -425,7 +435,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     ></ak-treeview>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

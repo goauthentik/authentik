@@ -113,21 +113,17 @@ export abstract class TablePage<T extends object> extends Table<T> {
             >
             </ak-page-header>
             ${this.renderSectionBefore?.()}
-            <section
-                id="table-page-main"
-                aria-label=${this.pageTitle()}
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
                         ${this.renderSidebarBefore?.()}
-                        <div class="pf-c-sidebar__content">
+                        <main aria-label=${this.pageTitle()} class="pf-c-sidebar__content">
                             <div class="pf-c-card">${this.renderTable()}</div>
-                        </div>
+                        </main>
                         ${this.renderSidebarAfter?.()}
                     </div>
                 </div>
-            </section>
+            </div>
             ${this.renderSectionAfter?.()}`;
     }
 }
