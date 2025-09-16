@@ -25,12 +25,10 @@
     background-color: var(--ifm-color-primary-contrast-foreground);
 }
 
-/* Light mode */
 [data-theme="light"] .theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item::before {
     background-color: var(--ifm-color-primary-contrast-foreground);
 }
 
-/* Dark mode */
 [data-theme="dark"] .theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item::before {
     background-color: var(--ifm-color-primary);
 }
