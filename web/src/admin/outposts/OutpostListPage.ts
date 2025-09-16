@@ -158,7 +158,29 @@ export class OutpostListPage extends TablePage<Outpost> {
                               ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
-                    : html``}`,
+                    : html``}
+                <ak-forms-confirm
+                    successMessage=${msg("Successfully refreshed outpost")}
+                    errorMessage=${msg("Failed to refresh outpost")}
+                    action=${msg("Refresh configuration")}
+                    .onConfirm=${() => {
+                        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesForceRefreshCreate({
+                            uuid: item.pk,
+                        });
+                    }}
+                >
+                    <span slot="header"> ${msg("Refresh outpost")} </span>
+                    <p slot="body">
+                        ${msg(
+                            `Are you sure you want to refresh this outpost?
+                            This will cause the outpost cache to be cleared.`,
+                        )}
+                    </p>
+                    <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                        ${msg("Refresh configuration")}
+                    </button>
+                    <div slot="modal"></div>
+                </ak-forms-confirm> `,
         ];
     }
 

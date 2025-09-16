@@ -4,7 +4,8 @@ from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
@@ -28,10 +29,12 @@ from authentik.outposts.models import (
     OutpostType,
     default_outpost_config,
 )
+from authentik.outposts.tasks import outpost_send_update
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
+from authentik.rbac.decorators import permission_required
 
 
 class OutpostSerializer(ModelSerializer):
@@ -205,3 +208,18 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
         """Global default outpost config"""
         host = self.request.build_absolute_uri("/")
         return Response({"config": default_outpost_config(host)})
+
+    @permission_required("authentik_outposts.refresh_outpost")
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            204: OpenApiResponse(description="Successfully refreshed outpost"),
+            400: OpenApiResponse(description="Bad request"),
+        },
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[])
+    def force_refresh(self, request: Request, pk: int) -> Response:
+        """Force an outpost to refresh its configuration. Will also clear its cache."""
+        outpost: Outpost = self.get_object()
+        outpost_send_update.delay(outpost)
+        return Response(status=204)
