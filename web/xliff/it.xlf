@@ -6508,11 +6508,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Riprova</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Per favore inserisci il tuo Codice</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>Hai autenticato correttamente il tuo dispositivo.</target>

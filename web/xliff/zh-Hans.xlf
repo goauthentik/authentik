@@ -6508,11 +6508,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>重试</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>请输入您的验证码</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>您成功验证了此设备的身份。</target>
