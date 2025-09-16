@@ -66,6 +66,17 @@ export abstract class Table<T extends object>
         PFDropdown,
         PFPagination,
         css`
+            .pf-c-table {
+                --pf-c-table--cell--MinWidth: 9em;
+            }
+
+            td,
+            th {
+                &:last-child {
+                    white-space: nowrap;
+                }
+            }
+
             .pf-c-toolbar__group.pf-m-search-filter.ql {
                 flex-grow: 1;
             }
