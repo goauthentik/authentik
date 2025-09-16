@@ -74,7 +74,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
     protected columns: TableColumn[] = [
-        [""],
+        ["", undefined, msg("Application Icon")],
         [msg("Name"), "name"],
         [msg("Group"), "group"],
         [msg("Provider")],
@@ -120,6 +120,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     row(item: Application): TemplateResult[] {
         return [
             html`<ak-app-icon
+                aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
                 icon=${ifDefined(item.metaIcon || undefined)}
             ></ak-app-icon>`,

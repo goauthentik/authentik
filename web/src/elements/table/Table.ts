@@ -710,7 +710,7 @@ export abstract class Table<T extends object>
         const indeterminate =
             pageItemCount !== 0 && selectedCount !== 0 && selectedCount < pageItemCount;
 
-        return html`<th class="pf-c-table__check" role="cell">
+        return html`<th class="pf-c-table__check" role="presentation">
             <input
                 ${ref(this.#selectAllCheckboxRef)}
                 name="select-all"
@@ -783,10 +783,11 @@ export abstract class Table<T extends object>
                 <thead aria-label=${msg("Column actions")}>
                     <tr role="presentation" class="pf-c-table__header-row">
                         ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
-                        ${this.expandable ? html`<td role="cell"></td>` : nothing}
-                        ${this.columns.map(([label, orderBy], idx) =>
+                        ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
+                        ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
                             renderTableColumn({
                                 label,
+                                ariaLabel,
                                 orderBy,
                                 table: this,
                                 columnIndex: idx,

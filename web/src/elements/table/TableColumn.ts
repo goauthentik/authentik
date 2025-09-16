@@ -29,12 +29,13 @@ function formatSortDirection(table: TableLike, orderBy?: string): SortDirection 
     }
 }
 
-export type TableColumn = [label: string, orderBy?: string];
+export type TableColumn = [label: string, orderBy?: string, ariaLabel?: string];
 
 const formatColumnID = (columnIndex: number): string => `table-header-${columnIndex}`;
 
 export interface TableColumnProps {
     label: string;
+    ariaLabel?: string;
     orderBy?: string;
     table: TableLike;
     columnIndex: number;
@@ -42,6 +43,7 @@ export interface TableColumnProps {
 
 export function renderTableColumn({
     label,
+    ariaLabel,
     orderBy,
     table,
     columnIndex,
@@ -77,7 +79,7 @@ export function renderTableColumn({
 
     return html`<th
         id=${formatColumnID(columnIndex)}
-        aria-label=${ifDefined(label)}
+        aria-label=${ifDefined(ariaLabel ?? label)}
         data-column-id=${ifDefined(orderBy)}
         role="columnheader"
         scope="col"
