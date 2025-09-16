@@ -3,9 +3,8 @@ import "#elements/forms/DeleteBulkForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
@@ -108,18 +107,9 @@ export class UserDeviceTable extends Table<Device> {
                 </div>
                 ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
-            html`${item.created.getTime() > 0
-                ? html`<div>${formatElapsedTime(item.created)}</div>
-                      <small>${item.created.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUpdated
-                ? html`<div>${formatElapsedTime(item.lastUpdated)}</div>
-                      <small>${item.lastUpdated.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUsed
-                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                      <small>${item.lastUsed.toLocaleString()}</small>`
-                : html`-`}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUpdated),
+            Timestamp(item.lastUsed),
         ];
     }
 }

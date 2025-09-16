@@ -16,7 +16,6 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
-import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
 
 import { Form } from "#elements/forms/Form";
@@ -24,7 +23,7 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { UserOption } from "#elements/user/utils";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
@@ -187,10 +186,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <small>${item.name}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
+
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update User")} </span>

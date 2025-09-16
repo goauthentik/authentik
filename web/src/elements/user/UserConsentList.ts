@@ -3,9 +3,8 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { CoreApi, UserConsent } from "@goauthentik/api";
 
@@ -60,10 +59,7 @@ export class UserConsentList extends Table<UserConsent> {
     row(item: UserConsent): TemplateResult[] {
         return [
             html`${item.application.name}`,
-            html`${item.expires && item.expiring
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${item.permissions
                 ? html`<ak-chip-group>
                       ${item.permissions.split(" ").map((perm) => {

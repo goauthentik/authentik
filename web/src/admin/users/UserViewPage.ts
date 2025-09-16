@@ -29,11 +29,11 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
 
 import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { Timestamp } from "#elements/table/shared";
 
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
@@ -149,14 +149,8 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             [msg("Username"), user.username],
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
-            [msg("Last login"), user.lastLogin
-                ? html`<div>${formatElapsedTime(user.lastLogin)}</div>
-                      <small>${user.lastLogin.toLocaleString()}</small>`
-                : html`${msg("-")}`],
-            [msg("Last password change"), user.passwordChangeDate
-                ? html`<div>${formatElapsedTime(user.passwordChangeDate)}</div>
-                      <small>${user.passwordChangeDate.toLocaleString()}</small>`
-                : html`${msg("-")}`],
+            [msg("Last login"), Timestamp(user.lastLogin)],
+            [msg("Last password change"), Timestamp(user.passwordChangeDate)],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],

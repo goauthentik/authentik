@@ -10,9 +10,8 @@ import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -137,14 +136,8 @@ export class MFADevicesPage extends Table<Device> {
                           </pf-tooltip>
                       `
                     : nothing} `,
-            html`${item.created.getTime() > 0
-                ? html`<div>${formatElapsedTime(item.created)}</div>
-                      <small>${item.created.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUsed
-                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                      <small>${item.lastUsed.toLocaleString()}</small>`
-                : html`-`}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUsed),
             html`
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>

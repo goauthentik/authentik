@@ -5,9 +5,8 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
 import {
@@ -89,8 +88,7 @@ export class ReputationListPage extends TablePage<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${formatElapsedTime(item.updated)}</div>
-                <small>${item.updated.toLocaleString()}</small>`,
+            Timestamp(item.updated),
             html`
                 <ak-rbac-object-permission-modal
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesReputationReputationpolicy}

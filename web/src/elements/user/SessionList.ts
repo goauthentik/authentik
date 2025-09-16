@@ -1,9 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
 
@@ -73,10 +72,8 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                     ${item.lastIp}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
-            html`<div>${formatElapsedTime(item.lastUsed)}</div>
-                <small>${item.lastUsed?.toLocaleString()}</small>`,
-            html`<div>${formatElapsedTime(item.expires || new Date())}</div>
-                <small>${item.expires?.toLocaleString()}</small>`,
+            Timestamp(item.lastUsed),
+            Timestamp(item.expires ?? new Date()),
         ];
     }
 }

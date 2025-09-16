@@ -9,9 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { intentToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
 import {
@@ -105,10 +104,7 @@ export class TokenListPage extends TablePage<Token> {
                     : html``}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
-            html`${item.expires && item.expiring
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires && item.expiring ? item.expires : null),
             html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
             html`
                 ${!item.managed

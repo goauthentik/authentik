@@ -9,10 +9,9 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
 import { PFColor } from "#elements/Label";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
 import {
@@ -182,8 +181,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     >
                         ${this.summary &&
                         this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? html`<div>${formatElapsedTime(this.summary.latestValid)}</div>
-                                  <small>${this.summary.latestValid.toLocaleString()}</small>`
+                            ? Timestamp(this.summary.latestValid)
                             : "-"}
                     </ak-aggregate-card>
                 </div>

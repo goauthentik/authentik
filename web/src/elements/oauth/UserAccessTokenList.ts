@@ -4,9 +4,8 @@ import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
@@ -88,10 +87,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
                 good-label=${msg("No")}
                 bad-label=${msg("Yes")}
             ></ak-status-label>`,
-            html`${item.expires
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
-                      <small>${item.expires.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.expires),
             html`<ak-chip-group>
                 ${item.scope.sort().map((scope) => {
                     return html`<ak-chip>${scope}</ak-chip>`;

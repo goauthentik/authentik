@@ -9,9 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
@@ -111,14 +110,7 @@ export class ScheduleList extends Table<Schedule> {
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.crontab}`,
-            html`
-                ${item.paused
-                    ? html`${msg("Paused")}`
-                    : html`
-                          <div>${formatElapsedTime(item.nextRun)}</div>
-                          <small>${item.nextRun.toLocaleString()}</small>
-                      `}
-            `,
+            html` ${item.paused ? html`${msg("Paused")}` : Timestamp(item.nextRun)} `,
             html`<ak-task-status .status=${item.lastTaskStatus}></ak-task-status>`,
             html`<ak-action-button
                     class="pf-m-plain"

@@ -7,10 +7,9 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -68,6 +67,10 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
+    protected rowLabel(item: Event): string | null {
+        return actionToLabel(item.action);
+    }
+
     renderSectionBefore(): TemplateResult {
         if (this.hasEnterpriseLicense) {
             return html`<div
@@ -107,8 +110,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            html`<div>${formatElapsedTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            Timestamp(item.created),
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,

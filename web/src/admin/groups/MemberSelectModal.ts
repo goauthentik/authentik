@@ -2,9 +2,8 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
 
 import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
@@ -102,10 +101,7 @@ export class MemberSelectTable extends TableModal<User> {
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
             html` <ak-status-label type="warning" ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
         ];
     }
 

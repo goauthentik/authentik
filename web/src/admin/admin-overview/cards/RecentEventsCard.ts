@@ -7,9 +7,8 @@ import "#elements/buttons/SpinnerButton/index";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
@@ -71,8 +70,7 @@ export class RecentEventsCard extends Table<Event> {
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
-            html`<div>${formatElapsedTime(item.created)}</div>
-                <small>${item.created.toLocaleString()}</small>`,
+            Timestamp(item.created),
             html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,

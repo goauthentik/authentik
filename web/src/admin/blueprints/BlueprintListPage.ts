@@ -10,9 +10,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 
 import {
@@ -157,8 +156,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<div>${item.name}</div>
                 ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
-            html`<div>${formatElapsedTime(item.lastApplied)}</div>
-                <small>${item.lastApplied.toLocaleString()}</small>`,
+            Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

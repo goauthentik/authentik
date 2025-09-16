@@ -16,7 +16,6 @@ import { PFSize } from "#common/enums";
 import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
-import { formatElapsedTime } from "#common/temporal";
 import { rootInterface } from "#common/theme";
 import { DefaultUIConfig, uiConfig } from "#common/ui/config";
 import { me } from "#common/users";
@@ -25,7 +24,7 @@ import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageCont
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
@@ -246,10 +245,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>

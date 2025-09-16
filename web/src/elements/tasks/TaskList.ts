@@ -9,9 +9,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import {
     Task,
@@ -152,8 +151,7 @@ export class TaskList extends Table<Task> {
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
-            html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
-                <small>${item.mtime?.toLocaleString()}</small>`,
+            Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
             item.state === TasksTasksListStateEnum.Done

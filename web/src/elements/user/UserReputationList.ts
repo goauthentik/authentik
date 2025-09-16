@@ -1,9 +1,8 @@
 import "#elements/forms/DeleteBulkForm";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 
 import { PoliciesApi, Reputation } from "@goauthentik/api";
 
@@ -73,8 +72,7 @@ export class UserReputationList extends Table<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${formatElapsedTime(item.updated)}</div>
-                <small>${item.updated.toLocaleString()}</small>`,
+            Timestamp(item.updated),
         ];
     }
 }
