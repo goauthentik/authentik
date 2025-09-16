@@ -647,6 +647,11 @@ const items = [
                 label: "API Overview",
                 className: "api-overview",
             },
+            {
+                type: "doc",
+                id: "developer-docs/contributing",
+                label: "Contributing",
+            },
 
             {
                 //#endregion
@@ -654,6 +659,10 @@ const items = [
                 //#region Development environment
                 type: "category",
                 label: "Development environment",
+                link: {
+                    type: "doc",
+                    id: "developer-docs/setup/index",
+                },
                 items: [
                     "developer-docs/setup/full-dev-environment",
                     "developer-docs/setup/frontend-dev-environment",

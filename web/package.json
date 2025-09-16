@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "2025.8.1",
+    "version": "2025.8.2",
     "license": "MIT",
     "private": true,
     "scripts": {
