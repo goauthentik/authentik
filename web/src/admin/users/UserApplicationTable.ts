@@ -34,7 +34,7 @@ export class UserApplicationTable extends Table<Application> {
         [msg("Group"), "group"],
         [msg("Provider")],
         [msg("Provider Type")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     row(item: Application): TemplateResult[] {

@@ -18,7 +18,7 @@ function formatSortIndicator(direction: SortDirection): string {
     }
 }
 
-function formatSortDirection(table: TableLike, orderBy?: string): SortDirection {
+function formatSortDirection(table: TableLike, orderBy?: string | null): SortDirection {
     switch (table.order) {
         case orderBy:
             return "ascending";
@@ -29,14 +29,14 @@ function formatSortDirection(table: TableLike, orderBy?: string): SortDirection 
     }
 }
 
-export type TableColumn = [label: string, orderBy?: string, ariaLabel?: string];
+export type TableColumn = [label: string, orderBy?: string | null, ariaLabel?: string | null];
 
 const formatColumnID = (columnIndex: number): string => `table-header-${columnIndex}`;
 
 export interface TableColumnProps {
     label: string;
-    ariaLabel?: string;
-    orderBy?: string;
+    ariaLabel?: string | null;
+    orderBy?: string | null;
     table: TableLike;
     columnIndex: number;
 }
@@ -80,7 +80,7 @@ export function renderTableColumn({
     return html`<th
         id=${formatColumnID(columnIndex)}
         aria-label=${ifDefined(ariaLabel ?? label)}
-        data-column-id=${ifDefined(orderBy)}
+        data-column-id=${ifDefined(orderBy ?? undefined)}
         role="columnheader"
         scope="col"
         aria-sort=${direction}

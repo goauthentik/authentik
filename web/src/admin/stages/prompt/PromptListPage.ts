@@ -51,7 +51,7 @@ export class PromptListPage extends TablePage<Prompt> {
         [msg("Type"), "type"],
         [msg("Order"), "order"],
         [msg("Stages")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

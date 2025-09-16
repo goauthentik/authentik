@@ -143,7 +143,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],
         [msg("Last login"), "last_login"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

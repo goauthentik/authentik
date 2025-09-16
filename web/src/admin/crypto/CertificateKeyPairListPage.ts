@@ -61,7 +61,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         [msg("Name"), "name"],
         [msg("Private key available?")],
         [msg("Expiry date")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

@@ -74,7 +74,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         [this.allowedTypesLabel],
         [msg("Enabled"), "enabled"],
         [msg("Timeout"), "timeout"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {

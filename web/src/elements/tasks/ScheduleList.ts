@@ -74,7 +74,7 @@ export class ScheduleList extends Table<Schedule> {
         [msg("Crontab"), "crontab"],
         [msg("Next run"), "next_run"],
         [msg("Last status")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarAfter(): TemplateResult {

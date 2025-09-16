@@ -156,7 +156,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         [msg("Active"), "is_active"],
         [msg("Last login"), "last_login"],
         [msg("Type"), "type"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

@@ -64,7 +64,7 @@ export class ProviderListPage extends TablePage<Provider> {
         [msg("Name"), "name"],
         [msg("Application")],
         [msg("Type")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     override renderToolbarSelected(): TemplateResult {

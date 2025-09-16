@@ -98,7 +98,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         [msg("Name"), "name"],
         [msg("Users")],
         [msg("Expiry date")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     // TODO: Make this more generic, maybe automatically get the plural name

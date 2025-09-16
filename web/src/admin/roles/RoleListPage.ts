@@ -43,7 +43,7 @@ export class RoleListPage extends TablePage<Role> {
     protected columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

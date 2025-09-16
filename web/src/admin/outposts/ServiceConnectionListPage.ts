@@ -72,7 +72,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         [msg("Type")],
         [msg("Local"), "local"],
         [msg("State")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     @property()

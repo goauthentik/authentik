@@ -45,7 +45,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     protected columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

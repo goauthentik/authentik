@@ -52,7 +52,7 @@ export class EndpointListPage extends Table<Endpoint> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Host"), "host"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

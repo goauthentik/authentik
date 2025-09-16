@@ -56,7 +56,7 @@ export class ReputationListPage extends TablePage<Reputation> {
         [msg("IP"), "ip"],
         [msg("Score"), "score"],
         [msg("Updated"), "updated"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

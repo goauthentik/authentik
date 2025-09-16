@@ -46,7 +46,7 @@ export class BrandListPage extends TablePage<Brand> {
         [msg("Domain"), "domain"],
         [msg("Brand name"), "branding_title"],
         [msg("Default?"), "default"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

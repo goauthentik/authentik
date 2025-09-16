@@ -67,7 +67,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Type"), "type"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

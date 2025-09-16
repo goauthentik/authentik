@@ -79,7 +79,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         [msg("Status"), "status"],
         [msg("Last applied"), "last_applied"],
         [msg("Enabled"), "enabled"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

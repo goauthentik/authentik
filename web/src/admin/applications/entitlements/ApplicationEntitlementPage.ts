@@ -46,7 +46,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     protected columns: TableColumn[] = [
         // ---
         [msg("Name"), "name"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

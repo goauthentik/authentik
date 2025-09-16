@@ -58,7 +58,7 @@ export class FlowListPage extends TablePage<Flow> {
         [msg("Name"), "name"],
         [msg("Stages")],
         [msg("Policies")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

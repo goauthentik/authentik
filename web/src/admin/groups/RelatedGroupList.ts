@@ -109,7 +109,7 @@ export class RelatedGroupList extends Table<Group> {
         [msg("Name"), "name"],
         [msg("Parent"), "parent"],
         [msg("Superuser privileges?")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

@@ -58,7 +58,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         [msg("Name"), "name"],
         [msg("Severity"), "severity"],
         [msg("Sent to group"), "group"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

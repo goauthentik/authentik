@@ -79,7 +79,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         [msg("Group"), "group"],
         [msg("Provider")],
         [msg("Provider Type")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     protected renderSidebarAfter(): TemplateResult {
@@ -128,7 +128,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
-            html`${item.group || msg("-")}`,
+            item.group ? html`${item.group}` : html`<span aria-label="None">${msg("-")}</span>`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}
@@ -140,14 +140,19 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     <span slot="header"> ${msg("Update Application")} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button slot="trigger" class="pf-c-button pf-m-plain" aria-label=${msg("Edit")}>
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
-                    ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
+                    ? html`<a
+                          href=${item.launchUrl}
+                          target="_blank"
+                          class="pf-c-button pf-m-plain"
+                          aria-label=${msg("Open")}
+                      >
                           <pf-tooltip position="top" content=${msg("Open")}>
                               <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>

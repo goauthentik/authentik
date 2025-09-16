@@ -100,7 +100,7 @@ export class TaskList extends Table<Task> {
         [msg("Queue"), "queue_name"],
         [msg("Last updated"), "mtime"],
         [msg("Status"), "aggregated_status"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarAfter(): TemplateResult {

@@ -54,7 +54,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     protected columns: TableColumn[] = [
         [msg("Name"), "name"],
         [msg("Mode"), "mode"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

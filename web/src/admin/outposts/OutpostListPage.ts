@@ -95,7 +95,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         [msg("Providers")],
         [msg("Integration"), "service_connection__name"],
         [msg("Health and Version")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];

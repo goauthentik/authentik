@@ -44,7 +44,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         [msg("Order"), "order"],
         [msg("Name"), "stage__name"],
         [msg("Type")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

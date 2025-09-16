@@ -48,7 +48,7 @@ export class GroupListPage extends TablePage<Group> {
         [msg("Parent"), "parent"],
         [msg("Members")],
         [msg("Superuser privileges?")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

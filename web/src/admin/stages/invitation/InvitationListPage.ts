@@ -88,7 +88,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         [msg("Name"), "name"],
         [msg("Created by"), "created_by"],
         [msg("Expiry")],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {

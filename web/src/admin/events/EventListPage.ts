@@ -65,7 +65,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         [msg("Creation Date"), "created"],
         [msg("Client IP"), "client_ip"],
         [msg("Brand"), "brand_name"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderSectionBefore(): TemplateResult {

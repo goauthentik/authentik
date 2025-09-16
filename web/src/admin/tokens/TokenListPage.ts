@@ -58,7 +58,7 @@ export class TokenListPage extends TablePage<Token> {
         [msg("Expires?"), "expiring"],
         [msg("Expiry date"), "expires"],
         [msg("Intent"), "intent"],
-        [msg("Actions")],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbarSelected(): TemplateResult {
