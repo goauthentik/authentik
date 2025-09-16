@@ -41945,7 +41945,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         client_id:
           type: string
         api_hostname:
@@ -42004,8 +42003,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -42106,7 +42103,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -42166,8 +42162,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -42247,7 +42241,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         credentials:
           type: object
           additionalProperties: {}
@@ -42278,8 +42271,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         credentials:
           type: object
           additionalProperties: {}
@@ -42363,7 +42354,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -42416,8 +42406,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -42523,7 +42511,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         token_count:
           type: integer
           maximum: 2147483647
@@ -42558,8 +42545,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -42646,7 +42631,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         digits:
           $ref: '#/components/schemas/DigitsEnum'
       required:
@@ -42676,8 +42660,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         digits:
           $ref: '#/components/schemas/DigitsEnum'
       required:
@@ -42928,7 +42910,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -42978,8 +42959,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -52821,8 +52800,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -52857,8 +52834,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -52916,8 +52891,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         credentials:
           type: object
           additionalProperties: {}
@@ -52940,8 +52913,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -52986,8 +52957,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -53015,8 +52984,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         digits:
           $ref: '#/components/schemas/DigitsEnum'
     PatchedAuthenticatorValidateStageRequest:
@@ -53078,8 +53045,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
