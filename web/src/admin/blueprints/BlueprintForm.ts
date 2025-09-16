@@ -169,7 +169,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
                                   mode=${CodeMirrorMode.YAML}
-                                  .parseValue=${false}
+                                  raw
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
                           </ak-form-element-horizontal>`

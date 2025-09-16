@@ -6507,11 +6507,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Recommencer</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Veuillez entrer votre code</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>Vous avez authentifié votre appareil avec succès.</target>

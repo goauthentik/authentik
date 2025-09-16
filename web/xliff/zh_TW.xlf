@@ -6431,11 +6431,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>重試</target>
         
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>請輸入認證碼</target>
-        
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>您已成功透過裝置認證。</target>

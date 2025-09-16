@@ -4523,9 +4523,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s859b2e00391da380">
   <source>Select Yes to reduce the number of times you're asked to sign in.</source>
 </trans-unit>
-<trans-unit id="s67664f8ee9aea98d">
-  <source>Please enter your Code</source>
-</trans-unit>
 <trans-unit id="s455a8fc21077e7f9">
   <source>You've successfully authenticated your device.</source>
 </trans-unit>
