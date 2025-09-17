@@ -2,7 +2,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 /**
  * A variant of {@linkcode ifDefined} which allows for truthy values to apply
- * an atttribute value.
+ * an attribute value.
  */
 export function ifPresent<T = unknown>(predicateLike: unknown, attributeValue?: T) {
     return ifDefined(
