@@ -40,6 +40,10 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         });
     }
 
+    protected override rowLabel(item: FlowStageBinding): string {
+        return `#${item.order} ${item.stageObj?.name || ""}`;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Order"), "order"],
         [msg("Name"), "stage__name"],

@@ -72,6 +72,10 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         });
     }
 
+    protected override rowLabel(item: SCIMProviderGroup): string {
+        return item.groupObj.name;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],

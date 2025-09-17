@@ -25,6 +25,10 @@ export class SCIMSourceGroupList extends Table<SCIMSourceGroup> {
         });
     }
 
+    protected override rowLabel(item: SCIMSourceGroup): string {
+        return item.groupObj.name;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],

@@ -116,9 +116,16 @@ export abstract class Table<T extends object>
     protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     /**
      * The columns to display in the table.
+     *
+     * @abstract
      */
     protected abstract columns: TableColumn[];
 
+    /**
+     * Render a row for a given item.
+     *
+     * @abstract
+     */
     protected abstract row(item: T): SlottedTemplateResult[];
 
     #loading = false;
@@ -378,11 +385,7 @@ export abstract class Table<T extends object>
     protected rowLabel(item: T): string | null {
         const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
 
-        if (!name) {
-            return null;
-        }
-
-        return msg(str`${name}`);
+        return name || null;
     }
 
     private renderRows(): SlottedTemplateResult | SlottedTemplateResult[] {

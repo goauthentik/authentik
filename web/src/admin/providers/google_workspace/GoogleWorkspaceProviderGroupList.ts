@@ -75,6 +75,10 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         });
     }
 
+    protected override rowLabel(item: GoogleWorkspaceProviderGroup): string {
+        return item.groupObj.name;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],

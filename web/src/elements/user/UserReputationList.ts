@@ -35,6 +35,10 @@ export class UserReputationList extends Table<Reputation> {
     clearOnRefresh = true;
     order = "identifier";
 
+    protected override rowLabel(item: Reputation): string | null {
+        return item.identifier ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Identifier"), "identifier"],
         [msg("IP"), "ip"],

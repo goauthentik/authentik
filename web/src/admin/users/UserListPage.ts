@@ -150,6 +150,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return users;
     }
 
+    protected override rowLabel(item: User): string {
+        if (item.name) {
+            return msg(str`${item.username} (${item.name})`);
+        }
+
+        return item.username;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],

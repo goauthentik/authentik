@@ -69,7 +69,12 @@ export class StageListPage extends TablePage<Stage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAllList(await this.defaultEndpointConfig());
     }
 
-    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("Flows")], [msg("Actions")]];
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Flows")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

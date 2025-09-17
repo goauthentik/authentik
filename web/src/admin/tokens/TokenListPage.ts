@@ -41,6 +41,10 @@ export class TokenListPage extends TablePage<Token> {
         return "pf-icon pf-icon-security";
     }
 
+    protected override rowLabel(item: Token): string | null {
+        return item.identifier;
+    }
+
     checkbox = true;
     clearOnRefresh = true;
 

@@ -25,6 +25,10 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         });
     }
 
+    protected override rowLabel(item: SCIMSourceUser): string {
+        return item.userObj.name || item.userObj.username;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Username")],

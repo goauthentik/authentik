@@ -75,6 +75,10 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         });
     }
 
+    protected override rowLabel(item: MicrosoftEntraProviderUser): string {
+        return item.userObj.name || item.userObj.username;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Username")],

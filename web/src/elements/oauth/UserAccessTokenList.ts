@@ -34,6 +34,10 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     checkbox = true;
     order = "-expires";
 
+    protected override rowLabel(item: TokenModel): string | null {
+        return item.provider?.name ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Provider"), "provider"],
         [msg("Revoked?"), "revoked"],

@@ -28,6 +28,10 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     clearOnRefresh = true;
     order = "-expires";
 
+    protected override rowLabel(item: AuthenticatedSession): string | null {
+        return item.lastIp ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Last IP"), "last_ip"],
         [msg("Last used"), "last_used"],

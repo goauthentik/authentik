@@ -72,6 +72,10 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         });
     }
 
+    protected override rowLabel(item: MicrosoftEntraProviderGroup): string {
+        return item.groupObj.name;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Name")],

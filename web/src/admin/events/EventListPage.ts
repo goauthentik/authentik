@@ -67,7 +67,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    protected rowLabel(item: Event): string | null {
+    protected override rowLabel(item: Event): string | null {
         return actionToLabel(item.action);
     }
 

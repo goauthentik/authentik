@@ -68,6 +68,10 @@ export class ScheduleList extends Table<Schedule> {
         return this.fetch();
     };
 
+    protected override rowLabel(item: Schedule): string | null {
+        return item.description ?? item.actorName ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Schedule"), "actor_name"],
         [msg("Crontab"), "crontab"],

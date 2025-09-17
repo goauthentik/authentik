@@ -69,6 +69,10 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         });
     }
 
+    protected override rowLabel(item: PolicyBinding): string | null {
+        return item.order?.toString() ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Order"), "order"],
         [this.allowedTypesLabel],

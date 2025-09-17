@@ -28,6 +28,10 @@ export class UserConsentList extends Table<UserConsent> {
     clearOnRefresh = true;
     order = "-expires";
 
+    protected override rowLabel(item: UserConsent): string | null {
+        return item.application?.name ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Application"), "application"],
         [msg("Expires"), "expires"],

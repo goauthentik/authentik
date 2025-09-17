@@ -52,7 +52,7 @@ export class MFADevicesPage extends Table<Device> {
         [msg("Type")],
         [msg("Created at")],
         [msg("Last used at")],
-        [""],
+        [msg("Actions"), null, msg("Row Actions")],
     ];
 
     renderToolbar(): TemplateResult {
@@ -144,7 +144,11 @@ export class MFADevicesPage extends Table<Device> {
                     <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button
+                        aria-label=${msg("Edit device")}
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>

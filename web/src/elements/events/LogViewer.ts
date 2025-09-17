@@ -98,6 +98,10 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
+    protected override rowLabel(item: LogEvent): string {
+        return formatElapsedTime(item.timestamp);
+    }
+
     row(item: LogEvent): TemplateResult[] {
         return [
             html`${formatElapsedTime(item.timestamp)}`,

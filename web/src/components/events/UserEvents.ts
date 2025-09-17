@@ -36,6 +36,10 @@ export class UserEvents extends Table<Event> {
         });
     }
 
+    protected override rowLabel(item: Event): string {
+        return actionToLabel(item.action);
+    }
+
     protected columns: TableColumn[] = [
         [msg("Action"), "action"],
         [msg("User"), "enabled"],

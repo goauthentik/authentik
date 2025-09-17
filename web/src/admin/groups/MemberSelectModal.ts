@@ -60,6 +60,10 @@ export class MemberSelectTable extends TableModal<User> {
         });
     }
 
+    protected override rowLabel(item: User): string | null {
+        return item.username ?? item.name ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],

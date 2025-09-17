@@ -72,6 +72,10 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         });
     }
 
+    protected override rowLabel(item: SCIMProviderUser): string {
+        return item.userObj.name || item.userObj.username;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Username")],

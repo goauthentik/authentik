@@ -35,6 +35,10 @@ export class SSFProviderStreamList extends Table<SSFStream> {
         });
     }
 
+    protected override rowLabel(item: SSFStream): string | null {
+        return item.aud?.join(", ") ?? null;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Audience"), "aud"],

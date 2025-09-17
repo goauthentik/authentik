@@ -51,6 +51,11 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
             results: this.objects,
         });
     }
+    protected override rowLabel(item: T): string | null {
+        const name = "name" in item && typeof item.name === "string" ? item.name.trim() : null;
+
+        return name || null;
+    }
 
     protected get columns(): TableColumn[] {
         return this.metadata(this.objects[0]).map((element) => [element.key]);

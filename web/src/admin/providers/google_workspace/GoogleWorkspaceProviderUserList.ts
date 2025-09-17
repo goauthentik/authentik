@@ -75,6 +75,10 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
         });
     }
 
+    protected override rowLabel(item: GoogleWorkspaceProviderUser): string {
+        return item.userObj.name || item.userObj.username;
+    }
+
     protected columns: TableColumn[] = [
         // ---
         [msg("Username")],

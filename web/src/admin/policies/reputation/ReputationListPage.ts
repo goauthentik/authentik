@@ -50,6 +50,10 @@ export class ReputationListPage extends TablePage<Reputation> {
         });
     }
 
+    protected override rowLabel(item: Reputation): string | null {
+        return item.identifier ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Identifier"), "identifier"],
         [msg("IP"), "ip"],

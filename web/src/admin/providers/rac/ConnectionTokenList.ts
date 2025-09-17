@@ -71,6 +71,13 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
+    protected override rowLabel(item: ConnectionToken): string | null {
+        if (this.provider) {
+            return item.endpointObj.name ?? null;
+        }
+        return item.providerObj.name ?? null;
+    }
+
     protected get columns(): TableColumn[] {
         if (this.provider) {
             return [

@@ -138,6 +138,10 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return users;
     }
 
+    protected override rowLabel(item: User): string | null {
+        return item.username ?? item.name ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],

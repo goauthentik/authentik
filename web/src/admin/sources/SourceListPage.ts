@@ -49,7 +49,12 @@ export class SourceListPage extends TablePage<Source> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
-    protected columns: TableColumn[] = [[msg("Name"), "name"], [msg("Type")], [""]];
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Type")],
+        ["", null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled =

@@ -94,6 +94,10 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
+    protected override rowLabel(item: Task): string | null {
+        return item.description ?? item.actorName ?? null;
+    }
+
     protected columns: TableColumn[] = [
         [msg("Task"), "actor_name"],
         [msg("Queue"), "queue_name"],
