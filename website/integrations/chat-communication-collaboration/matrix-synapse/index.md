@@ -40,6 +40,9 @@ To support the integration of Matrix Synapse with authentik, you need to create 
 
 3. Click **Submit** to save the new application and provider.
 
+Note: RSA keys must be used for signing for Authentik, ECC keys do not work.
+Note: The provider must have a signing key set and must not use an encryption key.
+
 ## Matrix configuration
 
 Add the following block to your Matrix config
@@ -64,4 +67,9 @@ oidc_providers:
           config:
               localpart_template: "{{ user.preferred_username }}"
               display_name_template: "{{ user.name|capitalize }}"
+[...]
+jwt_config:
+    enabled: true
+    secret: "*client secret*" # (same as `client_secret` above)
+    algorithm: "RS256"
 ```
