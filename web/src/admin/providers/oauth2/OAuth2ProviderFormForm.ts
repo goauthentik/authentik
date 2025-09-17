@@ -21,6 +21,7 @@ import { oauth2SourcesProvider, oauth2SourcesSelector } from "./OAuth2Sources.js
 import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import {
     ClientTypeEnum,
@@ -224,7 +225,7 @@ export function renderForm(
                     <ak-crypto-certificate-search
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
-                        certificate=${ifDefined(provider?.signingKey ?? undefined)}
+                        certificate=${ifPresent(provider?.signingKey)}
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
@@ -234,7 +235,7 @@ export function renderForm(
                     <ak-crypto-certificate-search
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
-                        certificate=${ifDefined(provider?.encryptionKey ?? undefined)}
+                        certificate=${ifPresent(provider?.encryptionKey)}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to encrypt the tokens.")}</p>
                 </ak-form-element-horizontal>

@@ -10,12 +10,12 @@ import { groupBy } from "#common/utils";
 import { AkControlElement } from "#elements/AkControlElement";
 import { PreventFormSubmit } from "#elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { html, PropertyValues, TemplateResult } from "lit";
 import { property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -27,7 +27,7 @@ export interface ISearchSelectBase<T> {
     objects?: T[];
     selectedObject: T | null;
     name?: string;
-    placeholder?: string;
+    placeholder: string | null;
     emptyOption?: string;
 }
 
@@ -135,7 +135,7 @@ export abstract class SearchSelectBase<T>
      * @attr
      */
     @property({ type: String })
-    public placeholder?: string = msg("Select an object.");
+    public placeholder: string | null = msg("Select an object.");
 
     /**
      * A textual string representing "The user has affirmed they want to leave the selection blank."
@@ -321,12 +321,12 @@ export abstract class SearchSelectBase<T>
             managed
             .fieldID=${this.fieldID}
             .options=${options}
-            value=${ifDefined(value)}
+            value=${ifPresent(value)}
             ?blankable=${this.blankable}
-            label=${ifDefined(this.label)}
-            name=${ifDefined(this.name)}
-            placeholder=${ifDefined(this.placeholder)}
-            emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}
+            label=${ifPresent(this.label)}
+            name=${ifPresent(this.name)}
+            placeholder=${ifPresent(this.placeholder)}
+            emptyOption=${ifPresent(this.blankable ? this.emptyOption : undefined)}
             @input=${this.#searchListener}
             @change=${this.onSelect}
         ></ak-search-select-view> `;

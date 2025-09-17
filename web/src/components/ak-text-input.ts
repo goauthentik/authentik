@@ -1,5 +1,7 @@
 import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -11,10 +13,10 @@ export class AkTextInput extends HorizontalLightComponent<string> {
     public value = "";
 
     @property({ type: String })
-    public autocomplete?: AutoFill;
+    public autocomplete: AutoFill | null = null;
 
     @property({ type: String })
-    public placeholder?: string;
+    public placeholder: string | null = null;
 
     #inputListener(ev: InputEvent) {
         this.value = (ev.target as HTMLInputElement).value;
@@ -22,7 +24,6 @@ export class AkTextInput extends HorizontalLightComponent<string> {
 
     public override renderControl() {
         const code = this.inputHint === "code";
-
         return html` <input
             type="text"
             role="textbox"
@@ -33,10 +34,10 @@ export class AkTextInput extends HorizontalLightComponent<string> {
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,
             })}"
-            autocomplete=${ifDefined(code ? "off" : this.autocomplete)}
-            spellcheck=${ifDefined(code ? "false" : undefined)}
-            aria-label=${ifDefined(this.placeholder || this.label || undefined)}
-            placeholder=${ifDefined(this.placeholder)}
+            autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
+            spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
+            aria-label=${ifPresent(this.placeholder || this.label)}
+            placeholder=${ifPresent(this.placeholder)}
             ?required=${this.required}
         />`;
     }

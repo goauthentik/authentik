@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 import { SearchSelect } from "#elements/forms/SearchSelect/index";
+import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
 import {
@@ -14,7 +15,6 @@ import {
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
 
@@ -43,10 +43,10 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public name?: string | null;
 
     @property({ type: String })
-    public label?: string | undefined;
+    public label: string | null = null;
 
     @property({ type: String })
-    public placeholder?: string | undefined;
+    public placeholder: string | null = null;
 
     /**
      * Set to `true` to allow certificates without private key to show up. When set to `false`,
@@ -118,9 +118,9 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     render() {
         return html`
             <ak-search-select
-                name=${ifDefined(this.name ?? undefined)}
-                label=${ifDefined(this.label ?? undefined)}
-                placeholder=${ifDefined(this.placeholder)}
+                name=${ifPresent(this.name)}
+                label=${ifPresent(this.label)}
+                placeholder=${ifPresent(this.placeholder)}
                 .fetchObjects=${this.fetchObjects}
                 .renderElement=${renderElement}
                 .value=${renderValue}

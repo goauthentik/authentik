@@ -16,6 +16,7 @@ import { PFSize } from "#common/enums";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import {
     Application,
@@ -27,7 +28,6 @@ import {
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -118,12 +118,12 @@ export class ApplicationViewPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
-                description=${ifDefined(this.application?.metaPublisher)}
+                description=${ifPresent(this.application?.metaPublisher)}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}
-                    name=${ifDefined(this.application?.name || undefined)}
-                    icon=${ifDefined(this.application?.metaIcon || undefined)}
+                    name=${ifPresent(this.application?.name)}
+                    icon=${ifPresent(this.application?.metaIcon)}
                     slot="icon"
                 ></ak-app-icon>
             </ak-page-header>

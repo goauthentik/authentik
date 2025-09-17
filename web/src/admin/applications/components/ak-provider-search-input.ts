@@ -48,7 +48,7 @@ export class AkProviderInput extends AKElement {
     name!: string;
 
     @property({ type: String })
-    label?: string;
+    label: string | null = null;
 
     @property({ type: Number })
     value?: number;
@@ -60,7 +60,7 @@ export class AkProviderInput extends AKElement {
     blankable = false;
 
     @property({ type: String })
-    help?: string;
+    help: string | null = null;
 
     /**
      * A unique ID to associate with the input and label.
