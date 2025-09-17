@@ -84,6 +84,7 @@ We recommend using another installation method for PostgreSQL than the one provi
 
 - [CloudNativePG](https://github.com/cloudnative-pg/cloudnative-pg)
 - [Zalando Postgres Operator](https://github.com/zalando/postgres-operator)
+- [Stackgres](https://stackgres.io/doc/latest/quickstart/)
 
 ### Optional step: Configure global email credentials
 
