@@ -86,72 +86,74 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <ak-tabs>
-            <section
-                role="tabpanel"
-                tabindex="0"
-                slot="page-overview"
-                id="page-overview"
-                aria-label="${msg("Overview")}"
-            >
-                ${this.renderTabOverview()}
-            </section>
-            <section
-                role="tabpanel"
-                tabindex="0"
-                slot="page-changelog"
-                id="page-changelog"
-                aria-label="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html` <main>
+            <ak-tabs>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
-                </div>
-            </section>
-            <section
-                role="tabpanel"
-                tabindex="0"
-                slot="page-users"
-                id="page-users"
-                aria-label="${msg("Provisioned Users")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <ak-provider-google-workspace-users-list
-                        providerId=${this.provider.pk}
-                    ></ak-provider-google-workspace-users-list>
-                </div>
-            </section>
-            <section
-                role="tabpanel"
-                tabindex="0"
-                slot="page-groups"
-                id="page-groups"
-                aria-label="${msg("Provisioned Groups")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <ak-provider-google-workspace-groups-list
-                        providerId=${this.provider.pk}
-                    ></ak-provider-google-workspace-groups-list>
-                </div>
-            </section>
-            <ak-rbac-object-permission-page
-                role="tabpanel"
-                tabindex="0"
-                slot="page-permissions"
-                id="page-permissions"
-                aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Provisioned Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-google-workspace-users-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-google-workspace-users-list>
+                    </div>
+                </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Provisioned Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-google-workspace-groups-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-google-workspace-groups-list>
+                    </div>
+                </section>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
     renderTabOverview(): SlottedTemplateResult {

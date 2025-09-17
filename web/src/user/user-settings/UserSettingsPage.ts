@@ -95,7 +95,7 @@ export class UserSettingsPage extends AKElement {
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
         return html`<div class="pf-c-page">
-            <div class="pf-c-page__main" tabindex="-1">
+            <main class="pf-c-page__main" tabindex="-1">
                 <ak-tabs vertical>
                     <div
                         id="page-details"
@@ -202,7 +202,7 @@ export class UserSettingsPage extends AKElement {
                         </div>
                     </div>
                 </ak-tabs>
-            </div>
+            </main>
         </div>`;
     }
 }

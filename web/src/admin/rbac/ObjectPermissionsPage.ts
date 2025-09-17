@@ -34,12 +34,16 @@ export class ObjectPermissionPage extends AKElement {
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
-                ? this.renderCoreUser()
-                : nothing}
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
-                ? this.renderRbacRole()
-                : nothing}
+            ${
+                this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
+                    ? this.renderCoreUser()
+                    : nothing
+            }
+            ${
+                this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
+                    ? this.renderRbacRole()
+                    : nothing
+            }
             <div
                 role="tabpanel"
                 tabindex="0"
@@ -88,7 +92,8 @@ export class ObjectPermissionPage extends AKElement {
                     </div>
                 </div>
             </div>
-        </ak-tabs>`;
+        </ak-tabs>
+</main>`;
     }
 
     renderCoreUser() {

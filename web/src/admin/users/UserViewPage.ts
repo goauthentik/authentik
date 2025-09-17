@@ -383,6 +383,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                     </div>
                 </div>
             </ak-tabs>
+</main>
         `;
     }
 
@@ -398,120 +399,123 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         if (!this.user) {
             return nothing;
         }
-        return html`<ak-tabs>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-overview"
-                id="page-overview"
-                aria-label="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl pf-m-5-col-on-2xl"
-                    >
-                        ${this.renderUserCard()}
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-7-col-on-xl pf-m-7-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">
-                            ${msg("Actions over the last week (per 8 hours)")}
+        return html`<main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl pf-m-5-col-on-2xl"
+                        >
+                            ${this.renderUserCard()}
                         </div>
-                        <div class="pf-c-card__body">
-                            <ak-charts-user username=${this.user.username}> </ak-charts-user>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-7-col-on-xl pf-m-7-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">
+                                ${msg("Actions over the last week (per 8 hours)")}
+                            </div>
+                            <div class="pf-c-card__body">
+                                <ak-charts-user username=${this.user.username}> </ak-charts-user>
+                            </div>
                         </div>
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Notes")}</div>
-                        <div class="pf-c-card__body">
-                            ${Object.hasOwn(this.user?.attributes || {}, "notes")
-                                ? html`${this.user.attributes?.notes}`
-                                : html`
-                                      <p>
-                                          ${msg(
-                                              "Edit the notes attribute of this user to add notes here.",
-                                          )}
-                                      </p>
-                                  `}
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Notes")}</div>
+                            <div class="pf-c-card__body">
+                                ${Object.hasOwn(this.user?.attributes || {}, "notes")
+                                    ? html`${this.user.attributes?.notes}`
+                                    : html`
+                                          <p>
+                                              ${msg(
+                                                  "Edit the notes attribute of this user to add notes here.",
+                                              )}
+                                          </p>
+                                      `}
+                            </div>
                         </div>
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Changelog")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.user.pk}
-                                targetModelApp="authentik_core"
-                                targetModelName="user"
-                            >
-                            </ak-object-changelog>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Changelog")}</div>
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this.user.pk}
+                                    targetModelApp="authentik_core"
+                                    targetModelName="user"
+                                >
+                                </ak-object-changelog>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-groups"
-                id="page-groups"
-                aria-label="${msg("Groups")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-group-related-list .targetUser=${this.user}>
+                            </ak-group-related-list>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-events"
-                id="page-events"
-                aria-label="${msg("User events")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-events-user targetUser=${this.user.username}> </ak-events-user>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-events"
+                    id="page-events"
+                    aria-label="${msg("User events")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-events-user targetUser=${this.user.username}> </ak-events-user>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-credentials"
-                id="page-credentials"
-                aria-label="${msg("Credentials / Tokens")}"
-            >
-                ${this.renderTabCredentialsToken(this.user)}
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-applications"
-                id="page-applications"
-                aria-label="${msg("Applications")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                ${this.renderTabApplications(this.user)}
-            </div>
-            <ak-rbac-object-permission-page
-                role="tabpanel"
-                tabindex="0"
-                slot="page-permissions"
-                id="page-permissions"
-                aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
-                objectPk=${this.user.pk}
-            >
-            </ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-credentials"
+                    id="page-credentials"
+                    aria-label="${msg("Credentials / Tokens")}"
+                >
+                    ${this.renderTabCredentialsToken(this.user)}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-applications"
+                    id="page-applications"
+                    aria-label="${msg("Applications")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    ${this.renderTabApplications(this.user)}
+                </div>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
+                    objectPk=${this.user.pk}
+                >
+                </ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 }
 

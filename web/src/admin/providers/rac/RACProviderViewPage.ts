@@ -85,60 +85,62 @@ export class RACProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html`<ak-tabs>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-overview"
-                id="page-overview"
-                aria-label="${msg("Overview")}"
-            >
-                ${this.renderTabOverview()}
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-connections"
-                id="page-connections"
-                aria-label="${msg("Connections")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-rac-connection-token-list
-                            .provider=${this.provider}
-                        ></ak-rac-connection-token-list>
+        return html`<main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-connections"
+                    id="page-connections"
+                    aria-label="${msg("Connections")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-rac-connection-token-list
+                                .provider=${this.provider}
+                            ></ak-rac-connection-token-list>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div
-                role="tabpanel"
-                tabindex="0"
-                slot="page-changelog"
-                id="page-changelog"
-                aria-label="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <ak-rbac-object-permission-page
-                role="tabpanel"
-                tabindex="0"
-                slot="page-permissions"
-                id="page-permissions"
-                aria-label="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacRacprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacRacprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
     renderTabOverview(): SlottedTemplateResult {
