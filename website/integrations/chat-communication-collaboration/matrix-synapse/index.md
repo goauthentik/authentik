@@ -35,13 +35,11 @@ To support the integration of Matrix Synapse with authentik, you need to create 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://matrix.company/_synapse/client/oidc/callback`.
-    - Select any available signing key.
+    - Select any available RSA signing key. Matrix Synapse doesn't support ECC keys.
+    - Do no set an encryption key because this is not supported by Matrix Synapse.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
-
-Note: RSA keys must be used for signing for Authentik, ECC keys do not work.
-Note: The provider must have a signing key set and must not use an encryption key.
 
 ## Matrix configuration
 
@@ -57,8 +55,8 @@ oidc_providers:
       idp_name: authentik
       discover: true
       issuer: "https://authentik.company/application/o/<application_slug>/"
-      client_id: "*client id*"
-      client_secret: "*client secret*"
+      client_id: "*client_ID*"
+      client_secret: "*client_secret*"
       scopes:
           - "openid"
           - "profile"
@@ -70,6 +68,6 @@ oidc_providers:
 [...]
 jwt_config:
     enabled: true
-    secret: "*client secret*" # (same as `client_secret` above)
+    secret: "*client_secret*"
     algorithm: "RS256"
 ```
