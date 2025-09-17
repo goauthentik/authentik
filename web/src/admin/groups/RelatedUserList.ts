@@ -192,8 +192,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             Timestamp(item.lastLogin),
 
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -376,8 +376,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return html`
             ${this.targetGroup
                 ? html`<ak-forms-modal>
-                      <span slot="submit"> ${msg("Add")} </span>
-                      <span slot="header"> ${msg("Add User")} </span>
+                      <span slot="submit">${msg("Add")}</span>
+                      <span slot="header">${msg("Add User")}</span>
                       ${this.targetGroup.isSuperuser
                           ? html`
                                 <div class="pf-c-banner pf-m-warning" slot="above-form">
@@ -402,8 +402,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <ul class="pf-c-dropdown__menu" hidden>
                     <li>
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Create")} </span>
-                            <span slot="header"> ${msg("Create User")} </span>
+                            <span slot="submit">${msg("Create")}</span>
+                            <span slot="header">${msg("Create User")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">
@@ -424,8 +424,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             .closeAfterSuccessfulSubmit=${false}
                             .cancelText=${msg("Close")}
                         >
-                            <span slot="submit"> ${msg("Create")} </span>
-                            <span slot="header"> ${msg("Create Service account")} </span>
+                            <span slot="submit">${msg("Create")}</span>
+                            <span slot="header">${msg("Create Service account")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">

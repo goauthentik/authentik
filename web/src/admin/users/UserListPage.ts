@@ -62,8 +62,8 @@ export const requestRecoveryLink = (user: User) =>
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit"> ${msg("Send link")} </span>
-        <span slot="header"> ${msg("Send recovery link to user")} </span>
+        <span slot="submit">${msg("Send link")}</span>
+        <span slot="header">${msg("Send recovery link to user")}</span>
         <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
         <button slot="trigger" class="pf-c-button pf-m-secondary">
             ${msg("Email recovery link")}
@@ -249,8 +249,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -392,14 +392,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create User")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create User")}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Service account")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Service account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Service account")}

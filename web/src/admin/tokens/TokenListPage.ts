@@ -85,8 +85,8 @@ export class TokenListPage extends TablePage<Token> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Token")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Token")}</span>
                 <ak-token-form slot="form"> </ak-token-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
@@ -106,8 +106,8 @@ export class TokenListPage extends TablePage<Token> {
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>
-                          <span slot="submit"> ${msg("Update")} </span>
-                          <span slot="header"> ${msg("Update Token")} </span>
+                          <span slot="submit">${msg("Update")}</span>
+                          <span slot="header">${msg("Update Token")}</span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
                               <pf-tooltip position="top" content=${msg("Edit")}>

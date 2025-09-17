@@ -235,7 +235,7 @@ export class ApplicationViewPage extends AKElement {
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit"> ${msg("Update")} </span>
+                                                    <span slot="submit">${msg("Update")}</span>
                                                     <span slot="header">
                                                         ${msg("Update Application")}
                                                     </span>
@@ -265,7 +265,7 @@ export class ApplicationViewPage extends AKElement {
                                                 <ak-forms-modal
                                                     .closeAfterSuccessfulSubmit=${false}
                                                 >
-                                                    <span slot="submit"> ${msg("Check")} </span>
+                                                    <span slot="submit">${msg("Check")}</span>
                                                     <span slot="header">
                                                         ${msg("Check Application access")}
                                                     </span>

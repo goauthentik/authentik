@@ -143,8 +143,8 @@ export class RelatedGroupList extends Table<Group> {
             html`${item.parentName || msg("-")}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
@@ -159,8 +159,8 @@ export class RelatedGroupList extends Table<Group> {
         return html`
             ${this.targetUser
                 ? html`<ak-forms-modal>
-                      <span slot="submit"> ${msg("Add")} </span>
-                      <span slot="header"> ${msg("Add Group")} </span>
+                      <span slot="submit">${msg("Add")}</span>
+                      <span slot="header">${msg("Add Group")}</span>
                       <ak-group-related-add .user=${this.targetUser} slot="form">
                       </ak-group-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -169,8 +169,8 @@ export class RelatedGroupList extends Table<Group> {
                   </ak-forms-modal>`
                 : nothing}
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Group")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Group")}</span>
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Add new group")}

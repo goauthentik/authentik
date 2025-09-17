@@ -76,8 +76,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Entitlement")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Entitlement")}</span>
                     <ak-application-entitlement-form
                         slot="form"
                         .instancePk=${item.pbmUuid}
@@ -138,8 +138,8 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-forms-modal size=${PFSize.Medium}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Entitlement")} </span>
+            <span slot="submit">${msg("Create")}</span>
+            <span slot="header">${msg("Create Entitlement")}</span>
             <ak-application-entitlement-form slot="form" targetPk=${ifDefined(this.app)}>
             </ak-application-entitlement-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">

@@ -205,8 +205,8 @@ export class OAuthSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit"> ${msg("Update")} </span>
-                                    <span slot="header"> ${msg("Update OAuth Source")} </span>
+                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="header">${msg("Update OAuth Source")}</span>
                                     <ak-source-oauth-form
                                         slot="form"
                                         .instancePk=${this.source.slug}

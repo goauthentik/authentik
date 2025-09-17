@@ -79,8 +79,8 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Initial Permissions")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Initial Permissions")}</span>
                 <ak-initial-permissions-form slot="form" .instancePk=${item.pk}>
                 </ak-initial-permissions-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -95,8 +95,8 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Initial Permissions")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Initial Permissions")}</span>
                 <ak-initial-permissions-form slot="form"> </ak-initial-permissions-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

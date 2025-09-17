@@ -206,8 +206,8 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update Microsoft Entra Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update Microsoft Entra Provider")}</span>
                             <ak-provider-microsoft-entra-form
                                 slot="form"
                                 .instancePk=${this.provider.pk}

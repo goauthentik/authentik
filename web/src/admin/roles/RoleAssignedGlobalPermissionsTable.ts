@@ -49,8 +49,8 @@ export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Assign")} </span>
-                <span slot="header"> ${msg("Assign permission to role")} </span>
+                <span slot="submit">${msg("Assign")}</span>
+                <span slot="header">${msg("Assign permission to role")}</span>
                 <ak-role-permission-form roleUuid=${ifDefined(this.roleUuid)} slot="form">
                 </ak-role-permission-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">

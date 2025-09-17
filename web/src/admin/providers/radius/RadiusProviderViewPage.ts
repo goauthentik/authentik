@@ -139,7 +139,7 @@ export class RadiusProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-card__footer">
                                     <ak-forms-modal>
-                                        <span slot="submit"> ${msg("Update")} </span>
+                                        <span slot="submit">${msg("Update")}</span>
                                         <span slot="header">
                                             ${msg("Update Radius Provider")}
                                         </span>

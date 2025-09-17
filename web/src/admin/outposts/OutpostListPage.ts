@@ -125,8 +125,8 @@ export class OutpostListPage extends TablePage<Outpost> {
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Outpost")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
                         slot="form"
                         .instancePk=${item.pk}
@@ -235,8 +235,8 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Outpost")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Outpost")}</span>
                 <ak-outpost-form slot="form"> </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

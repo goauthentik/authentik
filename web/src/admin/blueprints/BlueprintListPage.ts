@@ -152,8 +152,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Blueprint")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -193,8 +193,8 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Blueprint Instance")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Blueprint Instance")}</span>
                 <ak-blueprint-form slot="form"> </ak-blueprint-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

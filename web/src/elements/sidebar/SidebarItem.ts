@@ -228,7 +228,7 @@ export class SidebarItem extends AKElement {
     }
 
     renderWithLabel() {
-        return html` <span class="pf-c-nav__link"> ${this.label} </span> `;
+        return html` <span class="pf-c-nav__link"> ${this.label}</span> `;
     }
 
     renderInner() {

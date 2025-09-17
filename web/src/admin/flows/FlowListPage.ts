@@ -88,8 +88,8 @@ export class FlowListPage extends TablePage<Flow> {
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Flow")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Flow")}</span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button
                         slot="trigger"
@@ -130,14 +130,14 @@ export class FlowListPage extends TablePage<Flow> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Flow")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Flow")}</span>
                 <ak-flow-form slot="form"> </ak-flow-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Import")} </span>
-                <span slot="header"> ${msg("Import Flow")} </span>
+                <span slot="submit">${msg("Import")}</span>
+                <span slot="header">${msg("Import Flow")}</span>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
@@ -155,7 +155,7 @@ export class FlowListPage extends TablePage<Flow> {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Flow cache")} </span>
+                <span slot="header">${msg("Clear Flow cache")}</span>
                 <p slot="body">
                     ${msg(
                         `Are you sure you want to clear the flow cache?
