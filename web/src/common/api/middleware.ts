@@ -71,7 +71,7 @@ export class EventMiddleware implements Middleware {
 export class LocaleMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         const userLocale = new URLSearchParams(window.location.search).get("locale");
-        if (userLocale === null) {
+        if (!userLocale) {
             return Promise.resolve(context);
         }
 
