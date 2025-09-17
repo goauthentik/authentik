@@ -11,7 +11,6 @@ from django.contrib.auth.models import Permission
 from django.core.cache import cache
 from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
@@ -47,51 +46,6 @@ LOGGER = get_logger()
 
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
-
-class OutpostProxySession(models.Model):
-    """Session storage for proxyv2 outposts using PostgreSQL"""
-
-    session_key = models.CharField(max_length=255, primary_key=True)
-    
-    # Session data columns
-    user_id = models.UUIDField(null=True, blank=True, db_index=True)
-    user_email = models.EmailField(max_length=254, blank=True)
-    user_username = models.CharField(max_length=150, blank=True)
-    
-    # OAuth/OIDC claims
-    access_token = models.TextField(blank=True)
-    refresh_token = models.TextField(blank=True)
-    id_token = models.TextField(blank=True)
-    
-    # Session metadata
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
-    last_accessed = models.DateTimeField(auto_now=True, db_index=True)
-    expires_at = models.DateTimeField(db_index=True)
-    
-    # Additional claims as JSON
-    extra_claims = models.JSONField(default=dict, blank=True)
-    
-    # Complete session data (includes OAuth state, redirect URLs, etc.)
-    session_data = models.JSONField(default=dict, blank=True)
-
-    class Meta:
-        verbose_name = _("Outpost Proxy Session")
-        verbose_name_plural = _("Outpost Proxy Sessions")
-        db_table = "authentik_outposts_proxy_session"
-        indexes = [
-            models.Index(fields=["expires_at"]),
-            models.Index(fields=["created_at"]),
-            models.Index(fields=["last_accessed"]),
-            models.Index(fields=["user_id"]),
-        ]
-
-    def __str__(self) -> str:
-        return f"Session {self.session_key[:8]}... ({self.user_username or self.user_email})"
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if session has expired"""
-        return timezone.now() > self.expires_at
 
 
 class ServiceConnectionInvalid(SentryIgnoredException):
