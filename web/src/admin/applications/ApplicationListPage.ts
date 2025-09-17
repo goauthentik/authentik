@@ -13,13 +13,14 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -43,20 +44,14 @@ export const applicationListStyle = css`
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Applications");
-    }
-    pageDescription(): string {
+    protected override searchEnabled = true;
+    public pageTitle = msg("Applications");
+    public get pageDescription() {
         return msg(
             str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
-    pageIcon(): string {
-        return "pf-icon pf-icon-applications";
-    }
+    public pageIcon = "pf-icon pf-icon-applications";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -73,25 +68,26 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
 
     static styles: CSSResult[] = [...TablePage.styles, PFCard, applicationListStyle];
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(""),
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Group"), "group"),
-            new TableColumn(msg("Provider")),
-            new TableColumn(msg("Provider Type")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        ["", undefined, msg("Application Icon")],
+        [msg("Name"), "name"],
+        [msg("Group"), "group"],
+        [msg("Provider")],
+        [msg("Provider Type")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     protected renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+        return html`<aside
+            aria-label=${msg("Applications Documentation")}
+            class="pf-c-sidebar__panel pf-m-width-25"
+        >
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
                     <ak-mdx .url=${MDApplication}></ak-mdx>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -116,17 +112,18 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Application): TemplateResult[] {
+    row(item: Application): SlottedTemplateResult[] {
         return [
             html`<ak-app-icon
+                aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
                 icon=${ifDefined(item.metaIcon || undefined)}
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
-                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
+                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
-            html`${item.group || msg("-")}`,
+            item.group ? html`${item.group}` : html`<span aria-label="None">${msg("-")}</span>`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}
@@ -138,19 +135,24 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     <span slot="header"> ${msg("Update Application")} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button slot="trigger" class="pf-c-button pf-m-plain" aria-label=${msg("Edit")}>
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
-                    ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
+                    ? html`<a
+                          href=${item.launchUrl}
+                          target="_blank"
+                          class="pf-c-button pf-m-plain"
+                          aria-label=${msg("Open")}
+                      >
                           <pf-tooltip position="top" content=${msg("Open")}>
-                              <i class="fas fa-share-square"></i>
+                              <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 

@@ -9,9 +9,9 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { formatElapsedTime } from "#common/temporal";
 
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     Task,
@@ -46,9 +46,7 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "-mtime";
@@ -95,15 +93,17 @@ export class TaskList extends Table<Task> {
         return this.fetch();
     };
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Task"), "actor_name"),
-            new TableColumn(msg("Queue"), "queue_name"),
-            new TableColumn(msg("Last updated"), "mtime"),
-            new TableColumn(msg("Status"), "aggregated_status"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: Task): string | null {
+        return item.description ?? item.actorName ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Task"), "actor_name"],
+        [msg("Queue"), "queue_name"],
+        [msg("Last updated"), "mtime"],
+        [msg("Status"), "aggregated_status"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarAfter(): TemplateResult {
         return html`&nbsp;
@@ -149,13 +149,12 @@ export class TaskList extends Table<Task> {
             </div>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    row(item: Task): SlottedTemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
             html`${item.queueName}`,
-            html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
-                <small>${item.mtime?.toLocaleString()}</small>`,
+            Timestamp(item.mtime ?? new Date()),
             html`<ak-task-status .status=${item.aggregatedStatus}></ak-task-status>`,
             item.state === TasksTasksListStateEnum.Rejected ||
             item.state === TasksTasksListStateEnum.Done
@@ -180,12 +179,12 @@ export class TaskList extends Table<Task> {
                           <i class="fas fa-redo" aria-hidden="true"></i>
                       </pf-tooltip>
                   </ak-action-button>`
-                : html``,
+                : nothing,
         ];
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td role="cell" colspan="5">
+        return html` <td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
                     <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>

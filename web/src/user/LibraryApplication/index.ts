@@ -8,6 +8,7 @@ import { rootInterface } from "#common/theme";
 import { truncateWords } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import type { UserInterface } from "#user/index.entrypoint";
 import type { RACLaunchEndpointModal } from "#user/LibraryApplication/RACLaunchEndpointModal";
@@ -87,16 +88,16 @@ export class LibraryApplication extends AKElement {
                           href="${globalAK().api
                               .base}if/admin/#/core/applications/${application?.slug}"
                       >
-                          <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
+                          <i class="fas fa-edit" aria-hidden="true"></i>&nbsp;${msg("Edit")}
                       </a>
                   `
-                : html``}
+                : nothing}
         </ak-expand>`;
     }
 
-    renderLaunch(): TemplateResult {
+    renderLaunch(): SlottedTemplateResult {
         if (!this.application) {
-            return html``;
+            return nothing;
         }
         if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
             return html`<div class="pf-c-card__header">

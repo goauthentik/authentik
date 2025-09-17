@@ -9,6 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     Endpoint,
@@ -29,9 +30,7 @@ export class EndpointListPage extends Table<Endpoint> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -49,13 +48,11 @@ export class EndpointListPage extends Table<Endpoint> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Host"), "host"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Host"), "host"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -85,7 +82,7 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.host}`,
@@ -96,7 +93,7 @@ export class EndpointListPage extends Table<Endpoint> {
                     </ak-rac-endpoint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -110,7 +107,7 @@ export class EndpointListPage extends Table<Endpoint> {
 
     renderExpanded(item: Endpoint): TemplateResult {
         return html` <td></td>
-            <td role="cell" colspan="4">
+            <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>

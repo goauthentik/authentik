@@ -13,6 +13,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -69,15 +70,17 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(this.allowedTypesLabel),
-            new TableColumn(msg("Enabled"), "enabled"),
-            new TableColumn(msg("Timeout"), "timeout"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: PolicyBinding): string | null {
+        return item.order?.toString() ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [this.allowedTypesLabel],
+        [msg("Enabled"), "enabled"],
+        [msg("Timeout"), "timeout"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     getPolicyUserGroupRowLabel(item: PolicyBinding): string {
         if (item.policy) {
@@ -101,7 +104,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${label}`;
     }
 
-    getObjectEditButton(item: PolicyBinding): TemplateResult {
+    getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policy) {
             return html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
@@ -137,7 +140,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 </button>
             </ak-forms-modal>`;
         }
-        return html``;
+        return nothing;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -171,7 +174,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PolicyBinding): TemplateResult[] {
+    row(item: PolicyBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
@@ -268,7 +271,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         </p>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
+    renderToolbarContainer(): SlottedTemplateResult {
         return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }

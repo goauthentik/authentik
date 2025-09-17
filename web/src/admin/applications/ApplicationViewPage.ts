@@ -25,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -147,7 +147,7 @@ export class ApplicationViewPage extends AKElement {
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Application is not used by any Outpost.")}
                   </div>`
-                : html``}
+                : nothing}
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
@@ -179,7 +179,7 @@ export class ApplicationViewPage extends AKElement {
                                               </div>
                                           </dd>
                                       </div>`
-                                    : html``}
+                                    : nothing}
                                 ${(this.application.backchannelProvidersObj || []).length > 0
                                     ? html`<div class="pf-c-description-list__group">
                                           <dt class="pf-c-description-list__term">
@@ -208,7 +208,7 @@ export class ApplicationViewPage extends AKElement {
                                               </div>
                                           </dd>
                                       </div>`
-                                    : html``}
+                                    : nothing}
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
@@ -297,7 +297,7 @@ export class ApplicationViewPage extends AKElement {
                                               </div>
                                           </dd>
                                       </div>`
-                                    : html``}
+                                    : nothing}
                             </dl>
                         </div>
                     </div>

@@ -12,6 +12,7 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { CodeMirrorMode } from "#elements/CodeMirror";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { sourceBindingTypeNotices } from "#admin/sources/utils";
 
@@ -23,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -72,9 +73,9 @@ export class SAMLSourceViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.source) {
-            return html``;
+            return nothing;
         }
         return html`<ak-tabs>
             <section

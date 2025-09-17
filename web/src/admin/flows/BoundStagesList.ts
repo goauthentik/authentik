@@ -10,6 +10,7 @@ import "#elements/forms/ProxyForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     FlowsApi,
@@ -40,14 +41,16 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Order"), "order"),
-            new TableColumn(msg("Name"), "stage__name"),
-            new TableColumn(msg("Type")),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: FlowStageBinding): string {
+        return `#${item.order} ${item.stageObj?.name || ""}`;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Order"), "order"],
+        [msg("Name"), "stage__name"],
+        [msg("Type")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -77,7 +80,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: FlowStageBinding): TemplateResult[] {
+    row(item: FlowStageBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${item.stageObj?.name}`,
@@ -116,7 +119,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderExpanded(item: FlowStageBinding): TemplateResult {
         return html` <td></td>
-            <td role="cell" colspan="4">
+            <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>

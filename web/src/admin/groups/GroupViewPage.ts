@@ -14,11 +14,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -80,9 +81,9 @@ export class GroupViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderBody(): TemplateResult {
+    renderBody(): SlottedTemplateResult {
         if (!this.group) {
-            return html``;
+            return nothing;
         }
         return html`<ak-tabs>
             <section

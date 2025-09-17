@@ -73,9 +73,7 @@ export class LibraryPage extends AKElement {
     @state()
     filteredApps: Application[] = [];
 
-    pageTitle(): string {
-        return msg("My Applications");
-    }
+    public pageTitle = msg("My Applications");
 
     connectedCallback() {
         super.connectedCallback();

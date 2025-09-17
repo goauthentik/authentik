@@ -25,6 +25,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
@@ -35,18 +36,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-list")
 export class PropertyMappingListPage extends TablePage<PropertyMapping> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Property Mappings");
-    }
-    pageDescription(): string {
-        return msg("Control how authentik exposes and interprets information.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-blueprint";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Property Mappings");
+    public pageDescription = msg("Control how authentik exposes and interprets information.");
+    public pageIcon = "pf-icon pf-icon-blueprint";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -64,13 +57,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type"), "type"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -94,7 +85,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PropertyMapping): TemplateResult[] {
+    row(item: PropertyMapping): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
@@ -111,7 +102,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>

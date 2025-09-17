@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { InitialPermissions, RbacApi } from "@goauthentik/api";
 
@@ -20,18 +21,10 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Initial Permissions");
-    }
-    pageDescription(): string {
-        return msg("Set initial permissions for newly created objects.");
-    }
-    pageIcon(): string {
-        return "fa fa-lock";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Initial Permissions");
+    public pageDescription = msg("Set initial permissions for newly created objects.");
+    public pageIcon = "fa fa-lock";
 
     @property()
     order = "name";
@@ -42,9 +35,11 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -70,9 +65,9 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
 
     render(): HTMLTemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
+                icon=${this.pageIcon}
+                header=${this.pageTitle}
+                description=${ifDefined(this.pageDescription)}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
@@ -80,7 +75,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             </section>`;
     }
 
-    row(item: InitialPermissions): TemplateResult[] {
+    row(item: InitialPermissions): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>
@@ -90,7 +85,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
                 </ak-initial-permissions-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,

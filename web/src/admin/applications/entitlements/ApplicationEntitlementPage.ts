@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
@@ -43,9 +44,11 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -69,7 +72,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    row(item: ApplicationEntitlement): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
@@ -83,7 +86,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </ak-application-entitlement-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -97,7 +100,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
         return html`<td></td>
-            <td role="cell" colspan="4">
+            <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>

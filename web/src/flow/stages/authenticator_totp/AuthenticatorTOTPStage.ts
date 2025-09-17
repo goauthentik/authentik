@@ -96,7 +96,9 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                     });
                             }}
                         >
-                            <span class="pf-c-button__progress"><i class="fas fa-copy"></i></span>
+                            <span class="pf-c-button__progress"
+                                ><i class="fas fa-copy" aria-hidden="true"></i
+                            ></span>
                             ${msg("Copy")}
                         </button>
                     </div>
