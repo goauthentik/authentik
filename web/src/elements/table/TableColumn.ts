@@ -1,9 +1,9 @@
 import { TableLike } from "#elements/table/shared";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 type SortDirection = "ascending" | "descending" | "none" | "other";
 
@@ -82,8 +82,8 @@ export function renderTableColumn({
 
     return html`<th
         id=${formatColumnID(columnIndex)}
-        aria-label=${ifDefined(resolvedLabel || undefined)}
-        data-column-id=${ifDefined(orderBy ?? undefined)}
+        aria-label=${ifPresent(resolvedLabel)}
+        data-column-id=${ifPresent(orderBy)}
         scope="col"
         aria-sort=${direction}
         class="${classMap(classes)}"

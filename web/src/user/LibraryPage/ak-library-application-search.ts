@@ -156,6 +156,7 @@ export class LibraryPageApplicationSearch extends AKElement {
             type="text"
             class="pf-u-display-none pf-u-display-block-on-md"
             autofocus
+            aria-label=${msg("Search for an application by name")}
             placeholder=${msg("Search...")}
             value=${ifDefined(this.query)}
         />`;

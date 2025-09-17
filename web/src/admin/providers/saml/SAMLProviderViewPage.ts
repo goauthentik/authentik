@@ -229,42 +229,59 @@ export class SAMLProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
-                ${this.renderTabOverview()}
-            </section>
-            ${this.renderTabMetadata()}
-            <section
-                slot="page-preview"
-                data-tab-title="${msg("Preview")}"
-                @activate=${() => {
-                    this.fetchPreview();
-                }}
-            >
-                ${this.renderTabPreview()}
-            </section>
-            <section
-                slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-object-changelog
-                            targetModelPk=${this.provider?.pk || ""}
-                            targetModelName=${this.provider?.metaModelName || ""}
-                        >
-                        </ak-object-changelog>
+        return html` <main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                ${this.renderTabMetadata()}
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-preview"
+                    id="page-preview"
+                    aria-label="${msg("Preview")}"
+                    @activate=${() => {
+                        this.fetchPreview();
+                    }}
+                >
+                    ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-object-changelog
+                                targetModelPk=${this.provider?.pk || ""}
+                                targetModelName=${this.provider?.metaModelName || ""}
+                            >
+                            </ak-object-changelog>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
-                objectPk=${this.provider.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 
     renderTabOverview(): SlottedTemplateResult {
@@ -456,9 +473,12 @@ export class SAMLProviderViewPage extends AKElement {
         }
         return html`
             ${this.provider.assignedApplicationName
-                ? html` <section
+                ? html` <div
+                      role="tabpanel"
+                      tabindex="0"
                       slot="page-metadata"
-                      data-tab-title="${msg("Metadata")}"
+                      id="page-metadata"
+                      aria-label="${msg("Metadata")}"
                       @activate=${() => {
                           new ProvidersApi(DEFAULT_CONFIG)
                               .providersSamlMetadataRetrieve({
@@ -509,7 +529,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                           </div>
                       </div>
-                  </section>`
+                  </div>`
                 : nothing}
         `;
     }

@@ -14,6 +14,7 @@ import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
@@ -22,7 +23,6 @@ import MDApplication from "~docs/add-secure-apps/applications/index.md";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -117,7 +117,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`<ak-app-icon
                 aria-label=${msg(str`Application icon for "${item.name}"`)}
                 name=${item.name}
-                icon=${ifDefined(item.metaIcon || undefined)}
+                icon=${ifPresent(item.metaIcon)}
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>

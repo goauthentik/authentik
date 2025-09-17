@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { applicationListStyle } from "#admin/applications/ApplicationListPage";
 
@@ -13,7 +14,6 @@ import { Application, CoreApi, User } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {
@@ -40,10 +40,7 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon
-                name=${item.name}
-                icon=${ifDefined(item.metaIcon || undefined)}
-            ></ak-app-icon>`,
+            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIcon)}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
