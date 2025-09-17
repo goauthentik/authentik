@@ -186,10 +186,10 @@ export class LibraryPage extends AKElement {
             tabindex="-1"
             id="main-content"
         >
-            <header class="pf-c-content header">
+            <div class="pf-c-content header">
                 <h1>${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
-            </header>
+            </div>
             <section class="pf-c-page__main-section">${this.renderState()}</section>
         </main>`;
     }

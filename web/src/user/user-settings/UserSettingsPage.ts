@@ -95,11 +95,14 @@ export class UserSettingsPage extends AKElement {
             this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
             [];
         return html`<div class="pf-c-page">
-            <main role="main" class="pf-c-page__main" tabindex="-1">
+            <div class="pf-c-page__main" tabindex="-1">
                 <ak-tabs vertical>
-                    <section
+                    <div
+                        id="page-details"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-details"
-                        data-tab-title="${msg("User details")}"
+                        aria-label=${msg("User details")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-l-stack pf-m-gutter">
@@ -114,10 +117,13 @@ export class UserSettingsPage extends AKElement {
                                     : nothing}
                             </div>
                         </div>
-                    </section>
-                    <section
+                    </div>
+                    <div
+                        id="page-sessions"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-sessions"
-                        data-tab-title="${msg("Sessions")}"
+                        aria-label=${msg("Sessions")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
@@ -129,10 +135,13 @@ export class UserSettingsPage extends AKElement {
                                 ></ak-user-session-list>
                             </div>
                         </div>
-                    </section>
-                    <section
+                    </div>
+                    <div
+                        id="page-consents"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-consents"
-                        data-tab-title="${msg("Consent")}"
+                        aria-label=${msg("Consent")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
@@ -142,10 +151,13 @@ export class UserSettingsPage extends AKElement {
                                 ></ak-user-consent-list>
                             </div>
                         </div>
-                    </section>
-                    <section
+                    </div>
+                    <div
+                        id="page-mfa"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-mfa"
-                        data-tab-title="${msg("MFA Devices")}"
+                        aria-label=${msg("MFA Devices")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
@@ -155,10 +167,13 @@ export class UserSettingsPage extends AKElement {
                                 ></ak-user-settings-mfa>
                             </div>
                         </div>
-                    </section>
-                    <section
+                    </div>
+                    <div
+                        id="page-sources"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-sources"
-                        data-tab-title="${msg("Connected services")}"
+                        aria-label=${msg("Connected services")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
@@ -171,10 +186,13 @@ export class UserSettingsPage extends AKElement {
                                 userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
                             ></ak-user-settings-source>
                         </div>
-                    </section>
-                    <section
+                    </div>
+                    <div
+                        id="page-tokens"
+                        role="tabpanel"
+                        tabindex="0"
                         slot="page-tokens"
-                        data-tab-title="${msg("Tokens and App passwords")}"
+                        aria-label=${msg("Tokens and App passwords")}
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-c-card">
@@ -182,9 +200,9 @@ export class UserSettingsPage extends AKElement {
                                 <ak-user-token-list></ak-user-token-list>
                             </div>
                         </div>
-                    </section>
+                    </div>
                 </ak-tabs>
-            </main>
+            </div>
         </div>`;
     }
 }
