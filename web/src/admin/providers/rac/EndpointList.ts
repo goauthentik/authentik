@@ -9,6 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     Endpoint,
@@ -81,7 +82,7 @@ export class EndpointListPage extends Table<Endpoint> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.host}`,

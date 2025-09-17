@@ -12,6 +12,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     FlowDesignationEnum,
@@ -21,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, HTMLTemplateResult, TemplateResult } from "lit";
+import { CSSResult, html, HTMLTemplateResult, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -105,7 +106,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): TemplateResult[] {
+    row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows
@@ -116,7 +117,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                               )}
                           </ak-label>
                       `
-                    : html``}`,
+                    : nothing}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
@@ -169,7 +170,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             >
             </ak-page-header>
             ${this.invitationStageExists
-                ? html``
+                ? nothing
                 : html`
                       <div class="pf-c-banner pf-m-warning">
                           ${msg(

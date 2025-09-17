@@ -12,6 +12,7 @@ import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -125,7 +126,7 @@ export class MFADevicesPage extends Table<Device> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>${deviceTypeName(item)}</div>

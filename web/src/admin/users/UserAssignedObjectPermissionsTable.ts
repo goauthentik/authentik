@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ExtraUserObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
@@ -70,7 +71,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ExtraUserObjectPermission): TemplateResult[] {
+    row(item: ExtraUserObjectPermission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

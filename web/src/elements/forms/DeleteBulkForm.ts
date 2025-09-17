@@ -7,11 +7,12 @@ import { MessageLevel } from "#common/messages";
 import { ModalButton } from "#elements/buttons/ModalButton";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -61,14 +62,14 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
         return this.metadata(this.objects[0]).map((element) => [element.key]);
     }
 
-    row(item: T): TemplateResult[] {
+    row(item: T): SlottedTemplateResult[] {
         return this.metadata(item).map((element) => {
             return html`${element.value}`;
         });
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
     firstUpdated(): void {
@@ -87,7 +88,7 @@ export class DeleteObjectsTable<T extends object> extends Table<T> {
             <div class="pf-c-table__expandable-row-content">
                 ${this.usedBy
                     ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
-                    : html``}
+                    : nothing}
             </div>
         </td>`;
     }

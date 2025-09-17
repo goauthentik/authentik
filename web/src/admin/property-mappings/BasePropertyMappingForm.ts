@@ -2,9 +2,10 @@ import { docLink } from "#common/global";
 
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 interface PropertyMapping {
@@ -26,8 +27,8 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
             : msg("Successfully created mapping.");
     }
 
-    renderExtraFields(): TemplateResult {
-        return html``;
+    renderExtraFields(): SlottedTemplateResult {
+        return nothing;
     }
 
     renderForm(): TemplateResult {

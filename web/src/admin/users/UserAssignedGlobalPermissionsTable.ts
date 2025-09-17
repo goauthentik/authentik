@@ -7,6 +7,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -82,7 +83,7 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,

@@ -11,6 +11,7 @@ import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { DesignationToLabel } from "#admin/flows/utils";
 
@@ -75,7 +76,7 @@ export class FlowListPage extends TablePage<Flow> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Flow): TemplateResult[] {
+    row(item: Flow): SlottedTemplateResult[] {
         return [
             html`<div>
                     <a href="#/flow/flows/${item.slug}">

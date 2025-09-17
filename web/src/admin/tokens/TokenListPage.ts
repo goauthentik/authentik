@@ -12,6 +12,7 @@ import { intentToLabel } from "#common/labels";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     CoreApi,
@@ -21,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-token-list")
@@ -92,12 +93,12 @@ export class TokenListPage extends TablePage<Token> {
         `;
     }
 
-    row(item: Token): TemplateResult[] {
+    row(item: Token): SlottedTemplateResult[] {
         return [
             html`<div>${item.identifier}</div>
                 ${item.managed
                     ? html`<small>${msg("Token is managed by authentik.")}</small>`
-                    : html``}`,
+                    : nothing}`,
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             Timestamp(item.expires && item.expiring ? item.expires : null),

@@ -6,6 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
@@ -82,7 +83,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: TokenModel): TemplateResult[] {
+    row(item: TokenModel): SlottedTemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-status-label

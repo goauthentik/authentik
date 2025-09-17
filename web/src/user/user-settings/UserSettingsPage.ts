@@ -18,7 +18,7 @@ import type { UserInterface } from "#user/index.entrypoint";
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -111,7 +111,7 @@ export class UserSettingsPage extends AKElement {
                                     ? html`<ak-user-settings-password
                                           configureUrl=${ifDefined(pwStage[0].configureUrl)}
                                       ></ak-user-settings-password>`
-                                    : html``}
+                                    : nothing}
                             </div>
                         </div>
                     </section>

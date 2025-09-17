@@ -11,6 +11,7 @@ import { PFSize } from "#common/enums";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Prompt, RbacPermissionsAssignedByUsersListModelEnum, StagesApi } from "@goauthentik/api";
 
@@ -68,7 +69,7 @@ export class PromptListPage extends TablePage<Prompt> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Prompt): TemplateResult[] {
+    row(item: Prompt): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<code>${item.fieldKey}</code>`,

@@ -782,7 +782,7 @@ export abstract class Table<T extends object>
 
         return html`
             <ak-table-pagination
-                label=${this.label}
+                label=${ifDefined(this.label || undefined)}
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
                 .onPageChange=${handler}

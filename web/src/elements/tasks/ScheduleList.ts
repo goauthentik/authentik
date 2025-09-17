@@ -11,11 +11,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -78,9 +79,9 @@ export class ScheduleList extends Table<Schedule> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    renderToolbarAfter(): TemplateResult {
+    renderToolbarAfter(): SlottedTemplateResult {
         if (this.relObjId !== undefined) {
-            return html``;
+            return nothing;
         }
         return html`&nbsp;
             <div class="pf-c-toolbar__group pf-m-filter-group">
@@ -107,7 +108,7 @@ export class ScheduleList extends Table<Schedule> {
             </div>`;
     }
 
-    row(item: Schedule): TemplateResult[] {
+    row(item: Schedule): SlottedTemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,

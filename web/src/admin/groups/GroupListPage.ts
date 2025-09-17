@@ -9,6 +9,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
@@ -67,7 +68,7 @@ export class GroupListPage extends TablePage<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,

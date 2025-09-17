@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
@@ -71,7 +72,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: ApplicationEntitlement): TemplateResult[] {
+    row(item: ApplicationEntitlement): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>

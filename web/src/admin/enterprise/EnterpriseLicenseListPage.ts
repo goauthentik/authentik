@@ -13,6 +13,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     EnterpriseApi,
@@ -24,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -101,7 +102,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 : html`<ak-empty-state icon=${this.pageIcon}
                       ><span>${msg("No licenses found.")}</span>
                       <div slot="body">
-                          ${this.searchEnabled ? this.renderEmptyClearSearch() : html``}
+                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
                       </div>
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
@@ -187,7 +188,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         `;
     }
 
-    row(item: License): TemplateResult[] {
+    row(item: License): SlottedTemplateResult[] {
         let color = PFColor.Green;
         if (item.expiry) {
             const now = new Date();

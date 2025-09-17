@@ -19,6 +19,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PoliciesApi, Policy } from "@goauthentik/api";
 
@@ -53,7 +54,7 @@ export class PolicyListPage extends TablePage<Policy> {
         [msg("Actions")],
     ];
 
-    row(item: Policy): TemplateResult[] {
+    row(item: Policy): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${(item.boundTo || 0) > 0

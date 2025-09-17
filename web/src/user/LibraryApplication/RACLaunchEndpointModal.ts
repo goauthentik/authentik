@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Application, Endpoint, RacApi } from "@goauthentik/api";
 
@@ -45,7 +46,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
         [msg("Name")],
     ];
 
-    row(item: Endpoint): TemplateResult[] {
+    row(item: Endpoint): SlottedTemplateResult[] {
         return [html`${item.name}`];
     }
 

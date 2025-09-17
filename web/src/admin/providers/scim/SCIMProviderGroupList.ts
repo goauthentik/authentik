@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ProvidersApi,
@@ -80,7 +81,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         [msg("ID")],
     ];
 
-    row(item: SCIMProviderGroup): TemplateResult[] {
+    row(item: SCIMProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>

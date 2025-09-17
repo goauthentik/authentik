@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     PoliciesApi,
@@ -18,7 +19,7 @@ import {
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
@@ -76,12 +77,12 @@ export class ReputationListPage extends TablePage<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country
                 ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : html``}
+                : nothing}
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

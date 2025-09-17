@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProviderGroup,
@@ -80,7 +81,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
         [msg("ID")],
     ];
 
-    row(item: MicrosoftEntraProviderGroup): TemplateResult[] {
+    row(item: MicrosoftEntraProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>

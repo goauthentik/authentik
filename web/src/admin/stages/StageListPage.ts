@@ -34,6 +34,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
@@ -109,7 +110,7 @@ export class StageListPage extends TablePage<Stage> {
             : nothing;
     }
 
-    row(item: Stage): TemplateResult[] {
+    row(item: Stage): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 <small>${item.verboseName}</small>`,

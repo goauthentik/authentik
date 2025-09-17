@@ -3,13 +3,14 @@ import "#elements/forms/DeleteBulkForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-session-list")
@@ -66,13 +67,13 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: AuthenticatedSession): TemplateResult[] {
+    row(item: AuthenticatedSession): SlottedTemplateResult[] {
         return [
             html`<div>
                     ${item.geoIp?.country
                         ? html`${getUnicodeFlagIcon(item.geoIp.country)}&nbsp;`
-                        : html``}
-                    ${item.current ? html`${msg("(Current session)")}&nbsp;` : html``}
+                        : nothing}
+                    ${item.current ? html`${msg("(Current session)")}&nbsp;` : nothing}
                     ${item.lastIp}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,

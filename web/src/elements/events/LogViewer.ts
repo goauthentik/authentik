@@ -4,11 +4,12 @@ import "#elements/EmptyState";
 import { formatElapsedTime } from "#common/temporal";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -73,8 +74,8 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
     protected columns: TableColumn[] = [
@@ -102,7 +103,7 @@ export class LogViewer extends Table<LogEvent> {
         return formatElapsedTime(item.timestamp);
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    row(item: LogEvent): SlottedTemplateResult[] {
         return [
             html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label

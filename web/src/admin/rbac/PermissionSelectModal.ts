@@ -5,6 +5,7 @@ import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -43,7 +44,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
         [msg("Model"), ""],
     ];
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

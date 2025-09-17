@@ -26,6 +26,7 @@ import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capab
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
@@ -33,7 +34,7 @@ import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -198,7 +199,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                           </h4>
                       </div>
                   </div>`
-                : html``}
+                : nothing}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
@@ -236,7 +237,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -276,7 +277,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 

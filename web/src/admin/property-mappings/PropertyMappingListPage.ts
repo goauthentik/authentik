@@ -25,6 +25,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
@@ -84,7 +85,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: PropertyMapping): TemplateResult[] {
+    row(item: PropertyMapping): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.verboseName}`,

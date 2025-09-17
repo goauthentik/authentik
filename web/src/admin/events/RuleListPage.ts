@@ -13,6 +13,7 @@ import { severityToLabel } from "#common/labels";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     EventsApi,
@@ -75,7 +76,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationRule): TemplateResult[] {
+    row(item: NotificationRule): SlottedTemplateResult[] {
         const enabled = !!item.destinationGroupObj || item.destinationEventUser;
         return [
             html`<ak-status-label type="warning" ?good=${enabled}></ak-status-label>`,

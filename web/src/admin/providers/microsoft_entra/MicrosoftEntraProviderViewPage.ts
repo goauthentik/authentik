@@ -15,6 +15,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProvider,
@@ -24,7 +25,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -81,9 +82,9 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html` <ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
@@ -135,9 +136,9 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         const [appLabel, modelName] =
             ModelEnum.AuthentikProvidersMicrosoftEntraMicrosoftentraprovider.split(".");
@@ -147,7 +148,7 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                           "Warning: Provider is not assigned to an application as backchannel provider.",
                       )}
                   </div>`
-                : html``}
+                : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"

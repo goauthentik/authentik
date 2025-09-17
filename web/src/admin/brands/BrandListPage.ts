@@ -10,6 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Brand, CoreApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
@@ -70,7 +71,7 @@ export class BrandListPage extends TablePage<Brand> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Brand): TemplateResult[] {
+    row(item: Brand): SlottedTemplateResult[] {
         return [
             html`${item.domain}`,
             html`${item.brandingTitle}`,

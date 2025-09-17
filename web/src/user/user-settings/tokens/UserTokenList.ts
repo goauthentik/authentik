@@ -13,6 +13,7 @@ import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 
@@ -152,7 +153,7 @@ export class UserTokenList extends Table<Token> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Token): TemplateResult[] {
+    row(item: Token): SlottedTemplateResult[] {
         return [
             html`<span class="pf-m-monospace">${item.identifier}</span>`,
             html`

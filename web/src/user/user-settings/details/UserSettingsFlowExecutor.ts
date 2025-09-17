@@ -10,6 +10,7 @@ import { refreshMe } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { StageHost } from "#flow/stages/base";
 
@@ -23,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -146,9 +147,9 @@ export class UserSettingsFlowExecutor
         });
     }
 
-    renderChallenge(): TemplateResult {
+    renderChallenge(): SlottedTemplateResult {
         if (!this.challenge) {
-            return html``;
+            return nothing;
         }
         switch (this.challenge.component) {
             case "ak-stage-prompt":

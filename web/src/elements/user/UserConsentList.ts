@@ -5,6 +5,7 @@ import "#elements/forms/DeleteBulkForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, UserConsent } from "@goauthentik/api";
 
@@ -60,7 +61,7 @@ export class UserConsentList extends Table<UserConsent> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserConsent): TemplateResult[] {
+    row(item: UserConsent): SlottedTemplateResult[] {
         return [
             html`${item.application.name}`,
             Timestamp(item.expires && item.expiring ? item.expires : null),

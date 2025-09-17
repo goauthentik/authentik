@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     Task,
@@ -148,7 +149,7 @@ export class TaskList extends Table<Task> {
             </div>`;
     }
 
-    row(item: Task): TemplateResult[] {
+    row(item: Task): SlottedTemplateResult[] {
         return [
             html`<div>${item.description}</div>
                 <small>${item.uid}</small>`,
@@ -178,7 +179,7 @@ export class TaskList extends Table<Task> {
                           <i class="fas fa-redo" aria-hidden="true"></i>
                       </pf-tooltip>
                   </ak-action-button>`
-                : html``,
+                : nothing,
         ];
     }
 

@@ -7,11 +7,12 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SsfApi, SSFStream } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
@@ -42,7 +43,7 @@ export class SSFProviderStreamList extends Table<SSFStream> {
         [msg("Audience"), "aud"],
     ];
 
-    row(item: SSFStream): TemplateResult[] {
+    row(item: SSFStream): SlottedTemplateResult[] {
         return [html`${item.aud}`];
     }
 }

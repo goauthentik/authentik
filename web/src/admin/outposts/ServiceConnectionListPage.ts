@@ -17,6 +17,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
@@ -71,7 +72,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     @property()
     order = "name";
 
-    row(item: ServiceConnection): TemplateResult[] {
+    row(item: ServiceConnection): SlottedTemplateResult[] {
         const itemState = this.state[item.pk];
         return [
             html`${item.name}`,

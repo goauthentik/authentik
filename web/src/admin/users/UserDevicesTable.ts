@@ -5,6 +5,7 @@ import { deviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
@@ -98,7 +99,7 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<div>

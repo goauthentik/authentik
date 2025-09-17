@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     PaginatedPermissionList,
@@ -113,7 +114,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: UserAssignedObjectPermission): TemplateResult[] {
+    row(item: UserAssignedObjectPermission): SlottedTemplateResult[] {
         const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
         this.modelPermissions?.results.forEach((perm) => {
             let cell = html`<i class="fas fa-times pf-m-danger" aria-hidden="true"></i>`;

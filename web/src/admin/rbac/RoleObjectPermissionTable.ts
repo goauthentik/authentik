@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     PaginatedPermissionList,
@@ -108,7 +109,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RoleAssignedObjectPermission): TemplateResult[] {
+    row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
         const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =

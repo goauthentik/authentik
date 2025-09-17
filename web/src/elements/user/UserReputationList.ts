@@ -3,13 +3,14 @@ import "#elements/forms/DeleteBulkForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PoliciesApi, Reputation } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-user-reputation-list")
@@ -68,12 +69,12 @@ export class UserReputationList extends Table<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country
                 ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : html``}
+                : nothing}
             ${item.ip}`,
             html`${item.score}`,
             Timestamp(item.updated),

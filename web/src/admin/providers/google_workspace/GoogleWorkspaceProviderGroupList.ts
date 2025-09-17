@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     GoogleWorkspaceProviderGroup,
@@ -83,7 +84,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
         [msg("ID")],
     ];
 
-    row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
+    row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>

@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
@@ -74,7 +75,7 @@ export class RoleListPage extends TablePage<Role> {
             </section>`;
     }
 
-    row(item: Role): TemplateResult[] {
+    row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<ak-forms-modal>

@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -39,7 +40,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
         [msg("Type")],
     ];
 
-    row(item: Provider): TemplateResult[] {
+    row(item: Provider): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>

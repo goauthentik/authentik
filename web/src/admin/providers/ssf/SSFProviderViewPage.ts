@@ -13,6 +13,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ModelEnum,
@@ -22,7 +23,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -75,9 +76,9 @@ export class SSFProviderViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html` <ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
@@ -107,9 +108,9 @@ export class SSFProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         const [appLabel, modelName] = ModelEnum.AuthentikProvidersSsfSsfprovider.split(".");
         return html`<div slot="header" class="pf-c-banner pf-m-info">

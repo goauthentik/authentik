@@ -15,7 +15,7 @@ import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -138,7 +138,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                               >
                               </ak-search-select>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                     ${this.source === blueprintSource.oci
                         ? html`<ak-form-element-horizontal label=${msg("URL")} name="path">
                               <input
@@ -164,7 +164,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   >
                               </p>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
@@ -173,7 +173,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
                           </ak-form-element-horizontal>`
-                        : html``}
+                        : nothing}
                 </div>
             </div>
 

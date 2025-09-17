@@ -5,11 +5,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -41,7 +42,7 @@ export class GroupSelectModal extends TableModal<Group> {
         [msg("Members"), ""],
     ];
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<div>
                 <div>${item.name}</div>
@@ -55,7 +56,7 @@ export class GroupSelectModal extends TableModal<Group> {
         return html`${item.name}`;
     }
 
-    renderModalInner(): TemplateResult {
+    renderModalInner(): SlottedTemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
@@ -70,7 +71,7 @@ export class GroupSelectModal extends TableModal<Group> {
                           )}
                       </div>
                   `
-                : html``}
+                : nothing}
             <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button

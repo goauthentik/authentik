@@ -20,6 +20,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
@@ -105,7 +106,7 @@ export class ProviderListPage extends TablePage<Provider> {
             ><span>${msg("Provider not assigned to any application.")}</span>`;
     }
 
-    override row(item: Provider): TemplateResult[] {
+    override row(item: Provider): SlottedTemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),

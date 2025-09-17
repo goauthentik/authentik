@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ConnectionToken, RacApi, RACProvider } from "@goauthentik/api";
 
@@ -90,7 +91,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         ];
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    row(item: ConnectionToken): SlottedTemplateResult[] {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }

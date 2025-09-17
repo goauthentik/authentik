@@ -4,13 +4,14 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { applicationListStyle } from "#admin/applications/ApplicationListPage";
 
 import { Application, CoreApi, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -37,7 +38,7 @@ export class UserApplicationTable extends Table<Application> {
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    row(item: Application): TemplateResult[] {
+    row(item: Application): SlottedTemplateResult[] {
         return [
             html`<ak-app-icon
                 name=${item.name}
@@ -45,7 +46,7 @@ export class UserApplicationTable extends Table<Application> {
             ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
-                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
+                ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             html`${item.group || msg("-")}`,
             item.provider
@@ -71,7 +72,7 @@ export class UserApplicationTable extends Table<Application> {
                               <i class="fas fa-share-square" aria-hidden="true"></i>
                           </pf-tooltip>
                       </a>`
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 }

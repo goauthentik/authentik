@@ -11,7 +11,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { until } from "lit/directives/until.js";
@@ -267,7 +267,7 @@ export class EventInfo extends AKElement {
                 clear?: boolean;
             };
         };
-        let diffBody = html``;
+        let diffBody: SlottedTemplateResult = nothing;
         if (diff) {
             diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
@@ -286,7 +286,7 @@ export class EventInfo extends AKElement {
                                     value.previous_value !== null
                                         ? JSON.stringify(value.previous_value, null, 4)
                                         : msg("-");
-                                let newCol = html``;
+                                let newCol: SlottedTemplateResult = nothing;
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">
                                         ${(value.add || value.remove)?.map((item) => {

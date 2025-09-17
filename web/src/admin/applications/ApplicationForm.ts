@@ -228,7 +228,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                                             @change=${this.handleClearIcon}
                                         ></ak-switch-input>
                                     `
-                                  : html``}`
+                                  : nothing}`
                         : html` <ak-text-input
                               label=${msg("Icon")}
                               name="metaIcon"

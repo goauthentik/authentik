@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { InitialPermissions, RbacApi } from "@goauthentik/api";
 
@@ -74,7 +75,7 @@ export class InitialPermissionsListPage extends TablePage<InitialPermissions> {
             </section>`;
     }
 
-    row(item: InitialPermissions): TemplateResult[] {
+    row(item: InitialPermissions): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`<ak-forms-modal>

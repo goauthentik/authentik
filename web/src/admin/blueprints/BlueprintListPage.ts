@@ -13,6 +13,7 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     BlueprintInstance,
@@ -23,7 +24,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -134,7 +135,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </td>`;
     }
 
-    row(item: BlueprintInstance): TemplateResult[] {
+    row(item: BlueprintInstance): SlottedTemplateResult[] {
         let description = undefined;
         const descKey = "blueprints.goauthentik.io/description";
         if (
@@ -146,7 +147,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         }
         return [
             html`<div>${item.name}</div>
-                ${description ? html`<small>${description}</small>` : html``}`,
+                ${description ? html`<small>${description}</small>` : nothing}`,
             html`${BlueprintStatus(item)}`,
             Timestamp(item.lastApplied),
             html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,

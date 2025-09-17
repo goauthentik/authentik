@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { SCIMSourceUser, SourcesApi } from "@goauthentik/api";
 
@@ -41,7 +42,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
         </td>`;
     }
 
-    row(item: SCIMSourceUser): TemplateResult[] {
+    row(item: SCIMSourceUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>

@@ -24,6 +24,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 import { UserOption } from "#elements/user/utils";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
@@ -179,7 +180,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -219,7 +220,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 
@@ -385,14 +386,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                     )}
                                 </div>
                             `
-                          : html``}
+                          : nothing}
                       <ak-user-related-add .group=${this.targetGroup} slot="form">
                       </ak-user-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
                           ${msg("Add existing user")}
                       </button>
                   </ak-forms-modal>`
-                : html``}
+                : nothing}
             <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
                     <span class="pf-c-dropdown__toggle-text">${msg("Create user")}</span>

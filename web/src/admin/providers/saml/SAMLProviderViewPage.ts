@@ -16,6 +16,7 @@ import { MessageLevel } from "#common/messages";
 import { AKElement } from "#elements/Base";
 import { CodeMirrorMode } from "#elements/CodeMirror";
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
 
@@ -32,7 +33,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -224,9 +225,9 @@ export class SAMLProviderViewPage extends AKElement {
         </div>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html` <ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
@@ -266,13 +267,13 @@ export class SAMLProviderViewPage extends AKElement {
         </ak-tabs>`;
     }
 
-    renderTabOverview(): TemplateResult {
+    renderTabOverview(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`${
             this.provider?.assignedApplicationName
-                ? html``
+                ? nothing
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
@@ -443,15 +444,15 @@ export class SAMLProviderViewPage extends AKElement {
                                   </form>
                               </div>
                           </div>`
-                        : html``
+                        : nothing
                 }
             </div>
         </div>`;
     }
 
-    renderTabMetadata(): TemplateResult {
+    renderTabMetadata(): SlottedTemplateResult {
         if (!this.provider) {
-            return html``;
+            return nothing;
         }
         return html`
             ${this.provider.assignedApplicationName
@@ -509,11 +510,11 @@ export class SAMLProviderViewPage extends AKElement {
                           </div>
                       </div>
                   </section>`
-                : html``}
+                : nothing}
         `;
     }
 
-    renderTabPreview(): TemplateResult {
+    renderTabPreview(): SlottedTemplateResult {
         if (!this.preview) {
             return html`<ak-empty-state loading></ak-empty-state>`;
         }

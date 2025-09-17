@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     MicrosoftEntraProviderUser,
@@ -83,7 +84,7 @@ export class MicrosoftEntraProviderUserList extends Table<MicrosoftEntraProvider
         [msg("ID")],
     ];
 
-    row(item: MicrosoftEntraProviderUser): TemplateResult[] {
+    row(item: MicrosoftEntraProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>

@@ -10,6 +10,7 @@ import "#elements/forms/ProxyForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     FlowsApi,
@@ -79,7 +80,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: FlowStageBinding): TemplateResult[] {
+    row(item: FlowStageBinding): SlottedTemplateResult[] {
         return [
             html`<pre>${item.order}</pre>`,
             html`${item.stageObj?.name}`,

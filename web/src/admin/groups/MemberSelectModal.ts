@@ -5,6 +5,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TableModal } from "#elements/table/TableModal";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
 
@@ -98,7 +99,7 @@ export class MemberSelectTable extends TableModal<User> {
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,

@@ -11,11 +11,12 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { Form } from "#elements/forms/Form";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { CoreApi, Group, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -136,7 +137,7 @@ export class RelatedGroupList extends Table<Group> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Group): TemplateResult[] {
+    row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || msg("-")}`,
@@ -166,7 +167,7 @@ export class RelatedGroupList extends Table<Group> {
                           ${msg("Add to existing group")}
                       </button>
                   </ak-forms-modal>`
-                : html``}
+                : nothing}
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Group")} </span>

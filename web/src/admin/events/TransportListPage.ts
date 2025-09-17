@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     EventsApi,
@@ -73,7 +74,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationTransport): TemplateResult[] {
+    row(item: NotificationTransport): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,

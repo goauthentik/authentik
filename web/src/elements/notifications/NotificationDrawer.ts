@@ -12,11 +12,12 @@ import { me } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { EventsApi, Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -176,9 +177,9 @@ export class NotificationDrawer extends AKElement {
         </ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.notifications) {
-            return html``;
+            return nothing;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">

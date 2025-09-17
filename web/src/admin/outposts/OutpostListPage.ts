@@ -16,6 +16,7 @@ import { PFSize } from "#common/enums";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ModelEnum,
@@ -27,7 +28,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -99,7 +100,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     @property()
     order = "name";
 
-    row(item: Outpost): TemplateResult[] {
+    row(item: Outpost): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
@@ -149,7 +150,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                               ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 

@@ -12,6 +12,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     CertificateKeyPair,
@@ -20,7 +21,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -84,7 +85,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: CertificateKeyPair): TemplateResult[] {
+    row(item: CertificateKeyPair): SlottedTemplateResult[] {
         let managedSubText = msg("Managed by authentik");
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");
@@ -103,7 +104,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         }
         return [
             html`<div>${item.name}</div>
-                ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
+                ${item.managed ? html`<small>${managedSubText}</small>` : nothing}`,
             html`<ak-status-label
                 type="info"
                 ?good=${item.privateKeyAvailable}
@@ -189,7 +190,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                                           >
                                               ${msg("Download Private key")}
                                           </a>`
-                                        : html``}
+                                        : nothing}
                                 </div>
                             </dd>
                         </div>

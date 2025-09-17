@@ -5,6 +5,7 @@ import "#elements/sync/SyncObjectForm";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ProvidersApi,
@@ -80,7 +81,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         [msg("ID")],
     ];
 
-    row(item: SCIMProviderUser): TemplateResult[] {
+    row(item: SCIMProviderUser): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/users/${item.userObj.pk}">
                 <div>${item.userObj.username}</div>
