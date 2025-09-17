@@ -23,7 +23,7 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -155,19 +155,25 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Blueprint")}</span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                        aria-label=${msg(str`Edit "${item.name}" blueprint`)}
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
+                    label=${item.name}
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
                 <ak-action-button
                     class="pf-m-plain"
+                    label=${msg(str`Apply "${item.name}" blueprint`)}
                     .apiRequest=${() => {
                         return new ManagedApi(DEFAULT_CONFIG)
                             .managedBlueprintsApplyCreate({
