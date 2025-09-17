@@ -45,7 +45,7 @@ export class LogViewer extends Table<LogEvent> {
     }
 
     renderExpanded(item: LogEvent): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        return html`<td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">

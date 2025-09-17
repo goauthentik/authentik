@@ -12,9 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-library-rac-endpoint-launch")
 export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     clickable = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     clickHandler = (item: Endpoint) => {
         if (!item.launchUrl) {

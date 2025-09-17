@@ -29,21 +29,15 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
-    override searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
-    override pageTitle(): string {
-        return msg("Providers");
-    }
+    override pageTitle = msg("Providers");
 
-    override pageDescription(): string {
-        return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
-    }
+    public pageDescription = msg(
+        "Provide support for protocols like SAML and OAuth to assigned applications.",
+    );
 
-    override pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
+    public pageIcon = "pf-icon pf-icon-integration";
 
     override checkbox = true;
     override clearOnRefresh = true;

@@ -27,20 +27,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
-    pageTitle(): string {
-        return msg("Outpost integrations");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-integration";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Outpost integrations");
+    public pageDescription = msg(
+        "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
+    );
+
+    public pageIcon = "pf-icon pf-icon-integration";
+    protected override searchEnabled = true;
 
     checkbox = true;
     expandable = true;
@@ -113,7 +106,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
 
     renderExpanded(item: ServiceConnection): TemplateResult {
         const [appLabel, modelName] = item.metaModelName.split(".");
-        return html` <td role="cell" colspan="5">
+        return html` <td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">

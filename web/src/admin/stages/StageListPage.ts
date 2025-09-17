@@ -44,20 +44,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
-    pageTitle(): string {
-        return msg("Stages");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-plugged";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Stages");
+    public pageDescription = msg(
+        "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+    );
+    public pageIcon = "pf-icon pf-icon-plugged";
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;

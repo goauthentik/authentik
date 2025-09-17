@@ -28,18 +28,11 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
     supportsQL = true;
 
-    pageTitle(): string {
-        return msg("Event Log");
-    }
-    pageDescription(): string | undefined {
-        return;
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-catalog";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Event Log");
+    public pageDescription = "";
+
+    public pageIcon = "pf-icon pf-icon-catalog";
+    protected override searchEnabled = true;
 
     @property()
     order = "-created";
@@ -123,7 +116,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="5">
+        return html` <td colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>

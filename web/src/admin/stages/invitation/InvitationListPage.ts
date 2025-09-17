@@ -31,20 +31,12 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 export class InvitationListPage extends TablePage<Invitation> {
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Invitations");
-    }
-    pageDescription(): string {
-        return msg(
-            "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-migration";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Invitations");
+    public pageDescription = msg(
+        "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
+    );
+    public pageIcon = "pf-icon pf-icon-migration";
 
     static styles: CSSResult[] = [...super.styles, PFBanner];
 
@@ -146,7 +138,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     renderExpanded(item: Invitation): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
                         .invitation=${item}
@@ -171,9 +163,9 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     render(): HTMLTemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
+                icon=${this.pageIcon}
+                header=${this.pageTitle}
+                description=${ifDefined(this.pageDescription)}
             >
             </ak-page-header>
             ${this.invitationStageExists

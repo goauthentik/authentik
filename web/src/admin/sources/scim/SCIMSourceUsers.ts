@@ -14,9 +14,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     sourceSlug?: string;
 
     expandable = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMSourceUser>> {
         return new SourcesApi(DEFAULT_CONFIG).sourcesScimUsersList({
@@ -36,7 +34,7 @@ export class SCIMSourceUserList extends Table<SCIMSourceUser> {
     ];
 
     renderExpanded(item: SCIMSourceUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        return html`<td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
             </div>

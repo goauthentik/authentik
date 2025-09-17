@@ -139,10 +139,10 @@ export abstract class Table<T extends object>
     //#region Properties
 
     @property({ type: String })
-    public toolbarLabel = msg("Table actions");
+    public toolbarLabel: string | null = null;
 
     @property({ type: String })
-    public label?: string;
+    public label: string | null = null;
 
     @property({ attribute: false })
     public data?: PaginatedResponse<T>;
@@ -245,7 +245,7 @@ export abstract class Table<T extends object>
         super.connectedCallback();
         this.addEventListener(EVENT_REFRESH, this.#refreshListener);
 
-        if (this.searchEnabled()) {
+        if (this.searchEnabled) {
             this.search = getURLParam(this.#searchParam, "");
         }
     }
@@ -279,7 +279,7 @@ export abstract class Table<T extends object>
             ordering: this.order,
             page: this.page,
             pageSize: (await uiConfig()).pagination.perPage,
-            search: this.searchEnabled() ? this.search || "" : undefined,
+            search: this.searchEnabled ? this.search || "" : undefined,
         };
     }
 
@@ -589,7 +589,7 @@ export abstract class Table<T extends object>
                         ? `${groupHeaderID} ${columnHeaderID}`
                         : columnHeaderID;
 
-                    return html`<td headers=${headers} role="cell">${column}</td>`;
+                    return html`<td headers=${headers}>${column}</td>`;
                 })}
             </tr>
             <tr
@@ -628,7 +628,9 @@ export abstract class Table<T extends object>
     }
 
     protected renderToolbarContainer(): SlottedTemplateResult {
-        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${this.toolbarLabel}">
+        const label = this.toolbarLabel ?? msg(str`${this.label ?? "Table"} actions`);
+
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${label}">
             <div role="presentation" class="pf-c-toolbar__content">
                 ${this.renderSearch()}
                 <div role="presentation" class="pf-c-toolbar__bulk-select">
@@ -655,12 +657,10 @@ export abstract class Table<T extends object>
         this.fetch();
     };
 
-    protected searchEnabled(): boolean {
-        return false;
-    }
+    protected searchEnabled = false;
 
     protected renderSearch(): SlottedTemplateResult {
-        if (!this.searchEnabled()) {
+        if (!this.searchEnabled) {
             return nothing;
         }
 
@@ -773,6 +773,7 @@ export abstract class Table<T extends object>
 
         return html`
             <ak-table-pagination
+                label=${this.label}
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
                 .onPageChange=${handler}
@@ -790,7 +791,7 @@ export abstract class Table<T extends object>
         return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
             <table
-                aria-label=${this.label ? msg(str`Table of ${this.label}`) : msg("Table content")}
+                aria-label=${this.label ? msg(str`${this.label} table`) : msg("Table content")}
                 aria-rowcount=${totalItemCount}
                 class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
             >

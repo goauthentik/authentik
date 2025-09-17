@@ -87,9 +87,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
 export class RelatedGroupList extends Table<Group> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";

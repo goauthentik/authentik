@@ -20,18 +20,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RoleListPage extends TablePage<Role> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Roles");
-    }
-    pageDescription(): string {
-        return msg("Manage roles which grant permissions to objects within authentik.");
-    }
-    pageIcon(): string {
-        return "fa fa-lock";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Roles");
+    public pageDescription = msg(
+        "Manage roles which grant permissions to objects within authentik.",
+    );
+    public pageIcon = "fa fa-lock";
 
     @property()
     order = "name";
@@ -70,9 +64,9 @@ export class RoleListPage extends TablePage<Role> {
 
     render(): HTMLTemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
+                icon=${this.pageIcon}
+                header=${this.pageTitle}
+                description=${ifDefined(this.pageDescription)}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">

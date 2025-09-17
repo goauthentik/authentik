@@ -20,9 +20,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";

@@ -45,18 +45,10 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
 
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Blueprints");
-    }
-    pageDescription(): string {
-        return msg("Automate and template configuration within authentik.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-blueprint";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Blueprints");
+    public pageDescription = msg("Automate and template configuration within authentik.");
+    public pageIcon = "pf-icon pf-icon-blueprint";
 
     expandable = true;
     checkbox = true;
@@ -108,7 +100,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     renderExpanded(item: BlueprintInstance): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikBlueprintsBlueprintinstance.split(".");
-        return html`<td role="cell" colspan="5">
+        return html`<td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">

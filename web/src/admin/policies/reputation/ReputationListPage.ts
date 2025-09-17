@@ -23,20 +23,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Reputation scores");
-    }
-    pageDescription(): string {
-        return msg(
-            "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
-        );
-    }
-    pageIcon(): string {
-        return "fa fa-ban";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Reputation scores");
+    public pageDescription = msg(
+        "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
+    );
+    public pageIcon = "fa fa-ban";
 
     @property()
     order = "identifier";

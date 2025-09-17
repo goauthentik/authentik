@@ -53,20 +53,13 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
-    pageTitle(): string {
-        return msg("Outposts");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-zone";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Outposts");
+    public pageDescription = msg(
+        "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+    );
+
+    public pageIcon = "pf-icon pf-icon-zone";
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
@@ -162,7 +155,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-        return html`<td role="cell" colspan="7">
+        return html`<td colspan="7">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${msg(

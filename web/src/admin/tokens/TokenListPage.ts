@@ -26,20 +26,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Tokens");
-    }
-    pageDescription(): string {
-        return msg(
-            "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-security";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Tokens");
+    public pageDescription = msg(
+        "Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.",
+    );
+    public pageIcon = "pf-icon pf-icon-security";
 
     protected override rowLabel(item: Token): string | null {
         return item.identifier;

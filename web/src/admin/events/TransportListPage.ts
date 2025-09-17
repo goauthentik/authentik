@@ -25,18 +25,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Notification Transports");
-    }
-    pageDescription(): string {
-        return msg("Define how notifications are sent to users, like Email or Webhook.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-export";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Notification Transports");
+    public pageDescription = msg(
+        "Define how notifications are sent to users, like Email or Webhook.",
+    );
+    public pageIcon = "pf-icon pf-icon-export";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -117,7 +111,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
-        return html`<td role="cell" colspan="5">
+        return html`<td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">

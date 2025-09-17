@@ -22,9 +22,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
     providerId?: number;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     expandable = true;
     checkbox = true;
@@ -91,7 +89,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         ];
     }
     renderExpanded(item: SCIMProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        return html`<td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
             </div>

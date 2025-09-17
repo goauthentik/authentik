@@ -25,9 +25,7 @@ export class ScheduleList extends Table<Schedule> {
     expandable = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "next_run";
@@ -152,7 +150,7 @@ export class ScheduleList extends Table<Schedule> {
 
     renderExpanded(item: Schedule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
-        return html` <td role="cell" colspan="5">
+        return html` <td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
                     <ak-task-list

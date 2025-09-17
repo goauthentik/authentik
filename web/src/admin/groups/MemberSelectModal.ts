@@ -33,9 +33,7 @@ export class MemberSelectTable extends TableModal<User> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: User[]) => Promise<unknown>;

@@ -16,9 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
     checkbox = true;
     clearOnRefresh = true;
 

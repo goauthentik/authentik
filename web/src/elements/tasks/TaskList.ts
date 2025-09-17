@@ -45,9 +45,7 @@ export class TaskList extends Table<Task> {
     @property({ type: Boolean })
     excludeSuccessful: boolean = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "-mtime";
@@ -185,7 +183,7 @@ export class TaskList extends Table<Task> {
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td role="cell" colspan="5">
+        return html` <td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
                     <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>

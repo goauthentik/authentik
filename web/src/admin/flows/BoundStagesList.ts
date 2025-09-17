@@ -118,7 +118,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderExpanded(item: FlowStageBinding): TemplateResult {
         return html` <td></td>
-            <td role="cell" colspan="4">
+            <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>

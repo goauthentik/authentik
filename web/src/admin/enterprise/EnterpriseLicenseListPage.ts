@@ -38,18 +38,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Licenses");
-    }
-    pageDescription(): string {
-        return msg("Manage enterprise licenses");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-key";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Licenses");
+    public pageDescription = msg("Manage enterprise licenses");
+    public pageIcon = "pf-icon pf-icon-key";
 
     @property()
     order = "name";
@@ -106,10 +98,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()}
+                : html`<ak-empty-state icon=${this.pageIcon}
                       ><span>${msg("No licenses found.")}</span>
                       <div slot="body">
-                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
+                          ${this.searchEnabled ? this.renderEmptyClearSearch() : html``}
                       </div>
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}

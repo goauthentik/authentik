@@ -31,20 +31,12 @@ export class RuleListPage extends TablePage<NotificationRule> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Notification Rules");
-    }
-    pageDescription(): string {
-        return msg(
-            "Send notifications whenever a specific Event is created and matched by policies.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-attention-bell";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Notification Rules");
+    public pageDescription = msg(
+        "Send notifications whenever a specific Event is created and matched by policies.",
+    );
+    public pageIcon = "pf-icon pf-icon-attention-bell";
 
     @property()
     order = "name";
@@ -126,7 +118,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
 
     renderExpanded(item: NotificationRule): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationrule.split(".");
-        return html` <td role="cell" colspan="4">
+        return html` <td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <p>
                     ${msg(

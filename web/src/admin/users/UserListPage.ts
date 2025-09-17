@@ -89,18 +89,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     clearOnRefresh = true;
     supportsQL = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Users");
-    }
-    pageDescription(): string {
-        return "";
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-user";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Users");
+    public pageDescription = "";
+    public pageIcon = "pf-icon pf-icon-user";
 
     @property()
     order = "last_login";
@@ -289,7 +281,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">

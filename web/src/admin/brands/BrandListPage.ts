@@ -19,18 +19,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-brand-list")
 export class BrandListPage extends TablePage<Brand> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Brands");
-    }
-    pageDescription(): string {
-        return msg("Configure visual settings and defaults for different domains.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-tenant";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Brands");
+    public pageDescription = msg("Configure visual settings and defaults for different domains.");
+    public pageIcon = "pf-icon pf-icon-tenant";
 
     checkbox = true;
     clearOnRefresh = true;

@@ -29,20 +29,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-list")
 export class PolicyListPage extends TablePage<Policy> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Policies");
-    }
-    pageDescription(): string {
-        return msg(
-            "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-infrastructure";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Policies");
+    public pageDescription = msg(
+        "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages.",
+    );
+    public pageIcon = "pf-icon pf-icon-infrastructure";
 
     checkbox = true;
     clearOnRefresh = true;

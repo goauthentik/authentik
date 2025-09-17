@@ -29,9 +29,7 @@ export class EndpointListPage extends Table<Endpoint> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -108,7 +106,7 @@ export class EndpointListPage extends Table<Endpoint> {
 
     renderExpanded(item: Endpoint): TemplateResult {
         return html` <td></td>
-            <td role="cell" colspan="4">
+            <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>

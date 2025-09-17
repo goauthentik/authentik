@@ -145,10 +145,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderRow(row: TableRow, _rownum: number) {
         return html` <tr part="row">
-            ${map(
-                row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
-            )}
+            ${map(row.content, (col, idx) => html`<td part="cell cell-${idx}">${col}</td>`)}
         </tr>`;
     }
 
@@ -177,7 +174,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderBody() {
         // prettier-ignore
-        return this.content.kind === 'flat' 
+        return this.content.kind === 'flat'
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }

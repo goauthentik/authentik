@@ -20,18 +20,12 @@ import { customElement, property } from "lit/decorators.js";
 export class GroupListPage extends TablePage<Group> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Groups");
-    }
-    pageDescription(): string {
-        return msg("Group users together and give them permissions based on the membership.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-users";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Groups");
+    public pageDescription = msg(
+        "Group users together and give them permissions based on the membership.",
+    );
+    public pageIcon = "pf-icon pf-icon-users";
 
     @property()
     order = "name";

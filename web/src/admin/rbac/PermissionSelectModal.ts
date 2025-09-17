@@ -19,9 +19,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: Permission[]) => Promise<unknown>;

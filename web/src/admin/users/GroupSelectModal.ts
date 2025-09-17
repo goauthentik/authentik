@@ -19,9 +19,7 @@ export class GroupSelectModal extends TableModal<Group> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     confirm!: (selectedItems: Group[]) => Promise<unknown>;

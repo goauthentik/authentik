@@ -17,9 +17,7 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     @property()
     roleUuid?: string;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;

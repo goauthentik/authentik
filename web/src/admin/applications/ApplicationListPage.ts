@@ -43,20 +43,12 @@ export const applicationListStyle = css`
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Applications");
-    }
-    pageDescription(): string {
-        return msg(
-            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-applications";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Applications");
+    public pageDescription = msg(
+        str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+    );
+    public pageIcon = "pf-icon pf-icon-applications";
 
     checkbox = true;
     clearOnRefresh = true;

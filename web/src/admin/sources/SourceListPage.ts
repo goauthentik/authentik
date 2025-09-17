@@ -24,20 +24,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
-    pageTitle(): string {
-        return msg("Federation and Social login");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-middleware";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Federation and Social login");
+    public pageDescription = msg(
+        "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
+    );
+    public pageIcon = "pf-icon pf-icon-middleware";
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;

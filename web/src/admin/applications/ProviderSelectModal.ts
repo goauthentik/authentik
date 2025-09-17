@@ -16,9 +16,7 @@ export class ProviderSelectModal extends TableModal<Provider> {
     checkbox = true;
     checkboxChip = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property({ type: Boolean })
     backchannel = false;

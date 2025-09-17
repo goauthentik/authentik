@@ -22,20 +22,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Flows");
-    }
-    pageDescription(): string {
-        return msg(
-            "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-process-automation";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Flows");
+    public pageDescription = msg(
+        "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
+    );
+    public pageIcon = "pf-icon pf-icon-process-automation";
 
     checkbox = true;
     clearOnRefresh = true;

@@ -47,7 +47,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
     ];
 
     renderExpanded(item: TokenModel): TemplateResult {
-        return html` <td role="cell" colspan="4">
+        return html` <td colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-l-flex">
                         <div class="pf-l-flex__item">

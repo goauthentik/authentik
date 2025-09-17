@@ -271,12 +271,12 @@ export class EventInfo extends AKElement {
         if (diff) {
             diffBody = html`<div class="pf-l-split__item pf-m-fill">
                     <div class="pf-c-card__title">${msg("Changes made:")}</div>
-                    <table class="pf-c-table pf-m-compact pf-m-grid-md" role="grid">
+                    <table class="pf-c-table pf-m-compact pf-m-grid-md">
                         <thead>
-                            <tr role="row">
-                                <th role="columnheader" scope="col">${msg("Key")}</th>
-                                <th role="columnheader" scope="col">${msg("Previous value")}</th>
-                                <th role="columnheader" scope="col">${msg("New value")}</th>
+                            <tr>
+                                <th scope="col">${msg("Key")}</th>
+                                <th scope="col">${msg("Previous value")}</th>
+                                <th scope="col">${msg("New value")}</th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup">
@@ -306,12 +306,12 @@ export class EventInfo extends AKElement {
 ${JSON.stringify(value.new_value, null, 4)}</pre
                                     >`;
                                 }
-                                return html` <tr role="row">
-                                    <td role="cell"><pre>${key}</pre></td>
-                                    <td role="cell">
+                                return html` <tr>
+                                    <td><pre>${key}</pre></td>
+                                    <td>
                                         <pre>${previousCol}</pre>
                                     </td>
-                                    <td role="cell">${newCol}</td>
+                                    <td>${newCol}</td>
                                 </tr>`;
                             })}
                         </tbody>
