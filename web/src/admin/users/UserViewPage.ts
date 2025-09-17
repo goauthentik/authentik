@@ -265,9 +265,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
     renderTabCredentialsToken(user: User): TemplateResult {
         return html`
             <ak-tabs pageIdentifier="userCredentialsTokens" vertical>
-                <section
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-sessions"
-                    data-tab-title="${msg("Sessions")}"
+                    id="page-sessions"
+                    aria-label="${msg("Sessions")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -276,10 +279,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             </ak-user-session-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-reputation"
-                    data-tab-title="${msg("Reputation scores")}"
+                    id="page-reputation"
+                    aria-label="${msg("Reputation scores")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -291,10 +297,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             </ak-user-reputation-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-consent"
-                    data-tab-title="${msg("Explicit Consent")}"
+                    id="page-consent"
+                    aria-label="${msg("Explicit Consent")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -302,10 +311,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             <ak-user-consent-list userId=${user.pk}> </ak-user-consent-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-oauth-access"
-                    data-tab-title="${msg("OAuth Access Tokens")}"
+                    id="page-oauth-access"
+                    aria-label="${msg("OAuth Access Tokens")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -314,10 +326,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             </ak-user-oauth-access-token-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-oauth-refresh"
-                    data-tab-title="${msg("OAuth Refresh Tokens")}"
+                    id="page-oauth-refresh"
+                    aria-label="${msg("OAuth Refresh Tokens")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -326,10 +341,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             </ak-user-oauth-refresh-token-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-mfa-authenticators"
-                    data-tab-title="${msg("MFA Authenticators")}"
+                    id="page-mfa-authenticators"
+                    aria-label="${msg("MFA Authenticators")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -337,27 +355,33 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             <ak-user-device-table userId=${user.pk}> </ak-user-device-table>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-source-connections"
-                    data-tab-title="${msg("Connected services")}"
+                    id="page-source-connections"
+                    aria-label="${msg("Connected services")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
                         <ak-user-settings-source userId=${user.pk} .canConnect=${false}>
                         </ak-user-settings-source>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-rac-connection-tokens"
-                    data-tab-title="${msg("RAC Connections")}"
+                    id="page-rac-connection-tokens"
+                    aria-label="${msg("RAC Connections")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
                         <ak-rac-connection-token-list userId=${user.pk}>
                         </ak-rac-connection-token-list>
                     </div>
-                </section>
+                </div>
             </ak-tabs>
         `;
     }
@@ -375,9 +399,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             return nothing;
         }
         return html`<ak-tabs>
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -426,10 +453,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-groups"
-                data-tab-title="${msg("Groups")}"
+                id="page-groups"
+                aria-label="${msg("Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -437,10 +467,13 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <ak-group-related-list .targetUser=${this.user}> </ak-group-related-list>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-events"
-                data-tab-title="${msg("User events")}"
+                id="page-events"
+                aria-label="${msg("User events")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -448,20 +481,32 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <ak-events-user targetUser=${this.user.username}> </ak-events-user>
                     </div>
                 </div>
-            </section>
-            <section slot="page-credentials" data-tab-title="${msg("Credentials / Tokens")}">
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-credentials"
+                id="page-credentials"
+                aria-label="${msg("Credentials / Tokens")}"
+            >
                 ${this.renderTabCredentialsToken(this.user)}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-applications"
-                data-tab-title="${msg("Applications")}"
+                id="page-applications"
+                aria-label="${msg("Applications")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 ${this.renderTabApplications(this.user)}
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
                 objectPk=${this.user.pk}
             >

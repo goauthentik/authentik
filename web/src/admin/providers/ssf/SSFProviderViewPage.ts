@@ -81,12 +81,21 @@ export class SSFProviderViewPage extends AKElement {
             return nothing;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
                 ${this.renderTabOverview()}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -98,10 +107,13 @@ export class SSFProviderViewPage extends AKElement {
                         </ak-object-changelog>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSsfSsfprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>

@@ -80,8 +80,11 @@ export class FlowViewPage extends AKElement {
             </ak-page-header>
             <ak-tabs>
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-overview"
-                    data-tab-title="${msg("Flow Overview")}"
+                    id="page-overview"
+                    aria-label="${msg("Flow Overview")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
@@ -261,8 +264,11 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-stage-bindings"
-                    data-tab-title="${msg("Stage Bindings")}"
+                    id="page-stage-bindings"
+                    aria-label="${msg("Stage Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -272,8 +278,11 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-policy-bindings"
-                    data-tab-title="${msg("Policy / Group / User Bindings")}"
+                    id="page-policy-bindings"
+                    aria-label="${msg("Policy / Group / User Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -290,8 +299,11 @@ export class FlowViewPage extends AKElement {
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-permissions"
-                    data-tab-title="${msg("Permissions")}"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
                     model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>

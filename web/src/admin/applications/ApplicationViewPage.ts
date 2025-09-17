@@ -149,8 +149,11 @@ export class ApplicationViewPage extends AKElement {
                   </div>`
                 : nothing}
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -329,8 +332,11 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-app-entitlements"
-                data-tab-title="${msg("Application entitlements")}"
+                id="page-app-entitlements"
+                aria-label="${msg("Application entitlements")}"
             >
                 <div slot="header" class="pf-c-banner pf-m-info">
                     ${msg("Application entitlements are in preview.")}
@@ -351,8 +357,11 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-policy-bindings"
-                data-tab-title="${msg("Policy / Group / User Bindings")}"
+                id="page-policy-bindings"
+                aria-label="${msg("Policy / Group / User Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -367,8 +376,11 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
                 objectPk=${this.application.pk}
             ></ak-rbac-object-permission-page>

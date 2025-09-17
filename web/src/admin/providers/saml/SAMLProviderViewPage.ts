@@ -230,22 +230,34 @@ export class SAMLProviderViewPage extends AKElement {
             return nothing;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
                 ${this.renderTabOverview()}
-            </section>
+            </div>
             ${this.renderTabMetadata()}
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-preview"
-                data-tab-title="${msg("Preview")}"
+                id="page-preview"
+                aria-label="${msg("Preview")}"
                 @activate=${() => {
                     this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -257,10 +269,13 @@ export class SAMLProviderViewPage extends AKElement {
                         </ak-object-changelog>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
@@ -456,9 +471,12 @@ export class SAMLProviderViewPage extends AKElement {
         }
         return html`
             ${this.provider.assignedApplicationName
-                ? html` <section
+                ? html` <div
+                      role="tabpanel"
+                      tabindex="0"
                       slot="page-metadata"
-                      data-tab-title="${msg("Metadata")}"
+                      id="page-metadata"
+                      aria-label="${msg("Metadata")}"
                       @activate=${() => {
                           new ProvidersApi(DEFAULT_CONFIG)
                               .providersSamlMetadataRetrieve({
@@ -509,7 +527,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                           </div>
                       </div>
-                  </section>`
+                  </div>`
                 : nothing}
         `;
     }

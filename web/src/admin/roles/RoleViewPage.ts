@@ -99,9 +99,12 @@ export class RoleViewPage extends AKElement {
         }
 
         return html` <ak-tabs>
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -130,10 +133,13 @@ export class RoleViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
                 objectPk=${this._role.pk}
             ></ak-rbac-object-permission-page>

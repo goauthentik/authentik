@@ -76,7 +76,13 @@ export class SCIMSourceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
                 <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
@@ -156,10 +162,13 @@ export class SCIMSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -174,10 +183,13 @@ export class SCIMSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-users"
-                data-tab-title="${msg("Provisioned Users")}"
+                id="page-users"
+                aria-label="${msg("Provisioned Users")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -185,10 +197,13 @@ export class SCIMSourceViewPage extends AKElement {
                         sourceSlug=${this.source.slug}
                     ></ak-source-scim-users-list>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-groups"
-                data-tab-title="${msg("Provisioned Groups")}"
+                id="page-groups"
+                aria-label="${msg("Provisioned Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -196,10 +211,13 @@ export class SCIMSourceViewPage extends AKElement {
                         sourceSlug=${this.source.slug}
                     ></ak-source-scim-groups-list>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>

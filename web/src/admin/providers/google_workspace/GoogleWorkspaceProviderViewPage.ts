@@ -87,12 +87,21 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
             return nothing;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
+            <section
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
                 ${this.renderTabOverview()}
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -106,8 +115,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 </div>
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-users"
-                data-tab-title="${msg("Provisioned Users")}"
+                id="page-users"
+                aria-label="${msg("Provisioned Users")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -117,8 +129,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 </div>
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-groups"
-                data-tab-title="${msg("Provisioned Groups")}"
+                id="page-groups"
+                aria-label="${msg("Provisioned Groups")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -128,8 +143,11 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                 </div>
             </section>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>

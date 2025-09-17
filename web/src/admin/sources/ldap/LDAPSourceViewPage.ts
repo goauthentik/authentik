@@ -77,9 +77,12 @@ export class LDAPSourceViewPage extends AKElement {
         }
         const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
         return html`<ak-tabs>
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -176,10 +179,13 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -194,10 +200,13 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>

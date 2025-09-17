@@ -87,8 +87,11 @@ export class GroupViewPage extends AKElement {
         }
         return html`<ak-tabs>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -191,8 +194,11 @@ export class GroupViewPage extends AKElement {
                 </div>
             </section>
             <section
+                role="tabpanel"
+                tabindex="0"
                 slot="page-users"
-                data-tab-title="${msg("Users")}"
+                id="page-users"
+                aria-label="${msg("Users")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -202,8 +208,11 @@ export class GroupViewPage extends AKElement {
                 </div>
             </section>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
                 objectPk=${this.group.pk}
             ></ak-rbac-object-permission-page>

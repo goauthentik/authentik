@@ -184,13 +184,16 @@ export class ProxyProviderViewPage extends AKElement {
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${servers.map((server) => {
-                return html`<section
+                return html`<div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-${formatSlug(server.label)}"
-                    data-tab-title="${server.label}"
+                    id="page-${formatSlug(server.label)}"
+                    aria-label="${server.label}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-mdx .url=${server.md} .replacers=${replacers}></ak-mdx>
-                </section>`;
+                </div>`;
             })}</ak-tabs
         >`;
     }
@@ -200,15 +203,30 @@ export class ProxyProviderViewPage extends AKElement {
             return nothing;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${msg("Overview")}">
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-overview"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
+            >
                 ${this.renderTabOverview()}
-            </section>
-            <section slot="page-authentication" data-tab-title="${msg("Authentication")}">
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
+                slot="page-authentication"
+                id="page-authentication"
+                aria-label="${msg("Authentication")}"
+            >
                 ${this.renderTabAuthentication()}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -220,10 +238,13 @@ export class ProxyProviderViewPage extends AKElement {
                         </ak-object-changelog>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>

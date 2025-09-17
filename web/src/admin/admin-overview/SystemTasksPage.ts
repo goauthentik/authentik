@@ -48,9 +48,12 @@ export class SystemTasksPage extends AKElement {
                 )}
             ></ak-page-header>
             <ak-tabs>
-                <section
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-schedules"
-                    data-tab-title="${msg("Schedules")}"
+                    id="page-schedules"
+                    aria-label="${msg("Schedules")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
@@ -60,10 +63,13 @@ export class SystemTasksPage extends AKElement {
                             <ak-schedule-list></ak-schedule-list>
                         </div>
                     </div>
-                </section>
-                <section
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
                     slot="page-tasks"
-                    data-tab-title="${msg("Tasks")}"
+                    id="page-tasks"
+                    aria-label="${msg("Tasks")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
@@ -73,7 +79,7 @@ export class SystemTasksPage extends AKElement {
                             <ak-task-list></ak-task-list>
                         </div>
                     </div>
-                </section>
+                </div>
             </ak-tabs>`;
     }
 }

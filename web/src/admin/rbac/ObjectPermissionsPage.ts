@@ -40,9 +40,12 @@ export class ObjectPermissionPage extends AKElement {
             ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
                 ? this.renderRbacRole()
                 : nothing}
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-object-user"
-                data-tab-title="${msg("User Object Permissions")}"
+                id="page-object-user"
+                aria-label="${msg("User Object Permissions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -60,10 +63,13 @@ export class ObjectPermissionPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-object-role"
-                data-tab-title="${msg("Role Object Permissions")}"
+                id="page-object-role"
+                aria-label="${msg("Role Object Permissions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -81,17 +87,20 @@ export class ObjectPermissionPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </ak-tabs>`;
     }
 
     renderCoreUser() {
         return html`
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-global-permissions"
-                data-tab-title="${msg("Assigned global permissions")}"
+                id="page-assigned-global-permissions"
+                aria-label="${msg("Assigned global permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
@@ -106,13 +115,16 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-user-assigned-global-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-object-permissions"
-                data-tab-title="${msg("Assigned object permissions")}"
+                id="page-assigned-object-permissions"
+                aria-label="${msg("Assigned object permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
                         <div class="pf-c-card__body">
@@ -127,7 +139,7 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-user-assigned-object-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         `;
     }
@@ -135,10 +147,13 @@ export class ObjectPermissionPage extends AKElement {
     renderRbacRole() {
         return html`
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-global-permissions"
-                data-tab-title="${msg("Assigned global permissions")}"
+                id="page-assigned-global-permissions"
+                aria-label="${msg("Assigned global permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
@@ -153,13 +168,16 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-role-assigned-global-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-object-permissions"
-                data-tab-title="${msg("Assigned object permissions")}"
+                id="page-assigned-object-permissions"
+                aria-label="${msg("Assigned object permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
                         <div class="pf-c-card__body">
@@ -174,7 +192,7 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-role-assigned-object-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         `;
     }

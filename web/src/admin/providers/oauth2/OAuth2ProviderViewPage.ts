@@ -122,9 +122,12 @@ export class OAuth2ProviderViewPage extends AKElement {
             return nothing;
         }
         return html` <ak-tabs>
-            <section
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-overview"
-                data-tab-title="${msg("Overview")}"
+                id="page-overview"
+                aria-label="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
                         .providersOauth2SetupUrlsRetrieve({
@@ -136,19 +139,25 @@ export class OAuth2ProviderViewPage extends AKElement {
                 }}
             >
                 ${this.renderTabOverview()}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-preview"
-                data-tab-title="${msg("Preview")}"
+                id="page-preview"
+                aria-label="${msg("Preview")}"
                 @activate=${() => {
                     this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-changelog"
-                data-tab-title="${msg("Changelog")}"
+                id="page-changelog"
+                aria-label="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -160,10 +169,13 @@ export class OAuth2ProviderViewPage extends AKElement {
                         </ak-object-changelog>
                     </div>
                 </div>
-            </section>
+            </div>
             <ak-rbac-object-permission-page
+                role="tabpanel"
+                tabindex="0"
                 slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
+                id="page-permissions"
+                aria-label="${msg("Permissions")}"
                 model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>

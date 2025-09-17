@@ -2,6 +2,7 @@ import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants
 
 import { AKElement } from "#elements/Base";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -86,7 +87,7 @@ export class Tabs extends AKElement {
                 role="tab"
                 id=${`${slot}-tab`}
                 aria-selected=${slot === this.currentPage ? "true" : "false"}
-                aria-controls=${slot}
+                aria-controls=${ifPresent(slot)}
                 class="pf-c-tabs__link"
                 @click=${() => this.onClick(slot)}
             >
