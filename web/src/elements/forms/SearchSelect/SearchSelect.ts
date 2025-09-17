@@ -47,14 +47,12 @@ export abstract class SearchSelectBase<T>
     public abstract fetchObjects: (query?: string) => Promise<T[]>;
 
     /**
-     * A function passed to this object that extracts a string representation of items of the
-     * collection under search.
+     * Render a string representation of items of the collection under search.
      */
     public abstract renderElement: (element: T) => string;
 
     /**
-     * A function passed to this object that extracts an HTML representation of additional
-     * information for items of the collection under search.
+     * Render a string description representation of items of the collection under search.
      */
     public abstract renderDescription?: (element: T) => string | TemplateResult;
 
