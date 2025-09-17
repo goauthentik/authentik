@@ -107,13 +107,13 @@ export class ProviderListPage extends TablePage<Provider> {
                 >`;
         }
 
-        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-            ${msg("Warning: Provider not assigned to any application.")}`;
+        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i
+            ><span>${msg("Provider not assigned to any application.")}</span>`;
     }
 
     override row(item: Provider): TemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
+            html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
             this.#rowApp(item),
             html`${item.verboseName}`,
             html`<ak-forms-modal>

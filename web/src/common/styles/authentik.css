@@ -106,6 +106,10 @@ html > form > input {
     text-rendering: auto;
     line-height: 1;
     vertical-align: middle;
+
+    &:has(+ span) {
+        margin-inline-end: 0.5em;
+    }
 }
 
 .pf-c-form-control {
