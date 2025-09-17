@@ -122,7 +122,7 @@ export class ProviderListPage extends TablePage<Provider> {
                 >
                 </ak-proxy-form>
                 <button
-                    aria-label=${msg("Edit provider")}
+                    aria-label=${msg(str`Edit "${item.name}" provider`)}
                     slot="trigger"
                     class="pf-c-button pf-m-plain"
                 >

@@ -45,9 +45,11 @@ export const applicationListStyle = css`
 export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
     protected override searchEnabled = true;
     public pageTitle = msg("Applications");
-    public pageDescription = msg(
-        str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
-    );
+    public get pageDescription() {
+        return msg(
+            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+        );
+    }
     public pageIcon = "pf-icon pf-icon-applications";
 
     checkbox = true;

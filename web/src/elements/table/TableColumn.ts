@@ -49,6 +49,7 @@ export function renderTableColumn({
     columnIndex,
 }: TableColumnProps): TemplateResult {
     const classes = {
+        "presentational": !label,
         "pf-c-table__sort": !!orderBy,
         "pf-m-selected": table.order === orderBy || table.order === `-${orderBy}`,
     };
@@ -62,9 +63,11 @@ export function renderTableColumn({
 
     const direction = formatSortDirection(table, orderBy);
 
+    const resolvedLabel = ariaLabel && ariaLabel !== label ? ariaLabel : label;
+
     const content = orderBy
         ? html` <button
-              aria-label=${msg(str`Sort by ${label}`)}
+              aria-label=${msg(str`Sort by "${label}"`)}
               class="pf-c-table__button"
               @click=${sortButtonListener}
           >
@@ -79,9 +82,8 @@ export function renderTableColumn({
 
     return html`<th
         id=${formatColumnID(columnIndex)}
-        aria-label=${ifDefined(ariaLabel ?? label)}
+        aria-label=${ifDefined(resolvedLabel || undefined)}
         data-column-id=${ifDefined(orderBy ?? undefined)}
-        role="columnheader"
         scope="col"
         aria-sort=${direction}
         class="${classMap(classes)}"

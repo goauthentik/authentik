@@ -16,7 +16,7 @@ import { DesignationToLabel } from "#admin/flows/utils";
 
 import { Flow, FlowsApi } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -90,13 +90,18 @@ export class FlowListPage extends TablePage<Flow> {
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Flow")} </span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                    <button
+                        slot="trigger"
+                        class="pf-c-button pf-m-plain"
+                        aria-label=${msg(str`Edit "${item.name}"`)}
+                    >
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <button
+                    aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
                         const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
@@ -109,7 +114,11 @@ export class FlowListPage extends TablePage<Flow> {
                         <i class="fas fa-play" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
-                <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
+                <a
+                    class="pf-c-button pf-m-plain"
+                    href=${item.exportUrl}
+                    aria-label=${msg(str`Export "${item.name}"`)}
+                >
                     <pf-tooltip position="top" content=${msg("Export")}>
                         <i class="fas fa-download" aria-hidden="true"></i>
                     </pf-tooltip>

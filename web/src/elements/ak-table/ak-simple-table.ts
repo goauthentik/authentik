@@ -159,9 +159,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     public renderRowGroup({ group, content }: TableGroup) {
         return html`<thead part="group-header">
                 <tr part="group-row">
-                    <td role="columnheader" scope="row" colspan="200" part="group-head">
-                        ${group}
-                    </td>
+                    <td colspan="200" part="group-head">${group}</td>
                 </tr>
             </thead>
             ${this.renderRows(content)}`;

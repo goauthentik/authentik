@@ -68,6 +68,10 @@ export abstract class Table<T extends object>
         css`
             .pf-c-table {
                 --pf-c-table--cell--MinWidth: 9em;
+
+                .presentational {
+                    --pf-c-table--cell--MinWidth: 0;
+                }
             }
 
             td,
@@ -421,14 +425,9 @@ export abstract class Table<T extends object>
         return groups.map(([group, items], groupIndex) => {
             const groupHeaderID = `table-group-${groupIndex}`;
 
-            return html`<thead role="presentation">
+            return html`<thead>
                     <tr>
-                        <th
-                            id=${groupHeaderID}
-                            role="columnheader"
-                            scope="colgroup"
-                            colspan=${columnCount}
-                        >
+                        <th id=${groupHeaderID} scope="colgroup" colspan=${columnCount}>
                             ${group}
                         </th>
                     </tr>
@@ -572,7 +571,6 @@ export abstract class Table<T extends object>
 
         return html`
             <tr
-                aria-label=${rowLabel}
                 aria-selected=${selected ? "true" : "false"}
                 class="${classMap({
                     "pf-m-hoverable": this.checkbox || this.clickable,
@@ -583,23 +581,34 @@ export abstract class Table<T extends object>
             >
                 ${this.checkbox ? renderCheckbox() : nothing}
                 ${this.expandable ? renderExpansion() : nothing}
-                ${this.row(item).map((column, columnIndex) => {
+                ${this.row(item).map((cell, columnIndex) => {
+                    const [columnLabel] = this.columns[columnIndex];
+
                     const columnHeaderID = `table-header-${columnIndex}`;
                     const headers = groupHeaderID
                         ? `${groupHeaderID} ${columnHeaderID}`
                         : columnHeaderID;
 
-                    return html`<td headers=${headers}>${column}</td>`;
+                    return html`<td
+                        class=${classMap({
+                            presentational: !columnLabel,
+                        })}
+                        headers=${headers}
+                    >
+                        ${cell}
+                    </td>`;
                 })}
             </tr>
-            <tr
-                class="pf-c-table__expandable-row ${classMap({
-                    "pf-m-expanded": expanded,
-                })}"
-            >
-                <td aria-hidden="true"></td>
-                ${expanded ? this.renderExpanded(item) : nothing}
-            </tr>
+            ${this.expandable
+                ? html` <tr
+                      class="pf-c-table__expandable-row ${classMap({
+                          "pf-m-expanded": expanded,
+                      })}"
+                  >
+                      <td aria-hidden="true"></td>
+                      ${expanded ? this.renderExpanded(item) : nothing}
+                  </tr>`
+                : nothing}
         `;
     }
 
@@ -796,7 +805,7 @@ export abstract class Table<T extends object>
                 class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
             >
                 <thead aria-label=${msg("Column actions")}>
-                    <tr role="presentation" class="pf-c-table__header-row">
+                    <tr class="pf-c-table__header-row">
                         ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
                         ${this.expandable ? html`<td aria-hidden="true"></td>` : nothing}
                         ${this.columns.map(([label, orderBy, ariaLabel], idx) =>
