@@ -143,6 +143,7 @@ skip = [
   "**/dist",                    # Distributed build output
   "**/storybook-static",
   "**/web/xliff",
+  "**/playwright-report",       # Playwright test output
   "**/out",                     # TypeScript type-checking output
   "./web/custom-elements.json", # TypeScript custom element definitions
   "./website/build",            # TODO: Remove this after moving website to docs
