@@ -6,10 +6,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -49,40 +51,66 @@ func (ProxySession) TableName() string {
 	return "authentik_outposts_proxy_session"
 }
 
-// NewPostgresStore returns a new PostgresStore with default configuration
-func NewPostgresStore() (*PostgresStore, error) {
-	cfg := config.Get().PostgreSQL
-
-	// Build connection string
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s",
-		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.Name)
+// buildDSN constructs a PostgreSQL connection string using pgx natively
+func buildDSN(cfg config.PostgreSQLConfig) (string, error) {
+	// Build DSN string with all parameters and let pgx parse it properly
+	dsnParts := []string{
+		"host=" + cfg.Host,
+		fmt.Sprintf("port=%d", cfg.Port),
+		"user=" + cfg.User,
+		"password=" + cfg.Password,
+		"dbname=" + cfg.Name,
+	}
 
 	// Add SSL mode
 	if cfg.SSLMode != "" {
-		dsn += fmt.Sprintf(" sslmode=%s", cfg.SSLMode)
+		dsnParts = append(dsnParts, "sslmode="+cfg.SSLMode)
 	} else {
-		dsn += " sslmode=prefer"
+		dsnParts = append(dsnParts, "sslmode=prefer")
 	}
 
 	// Add SSL certificates if provided
 	if cfg.SSLRootCert != "" {
-		dsn += fmt.Sprintf(" sslrootcert=%s", cfg.SSLRootCert)
+		dsnParts = append(dsnParts, "sslrootcert="+cfg.SSLRootCert)
 	}
 	if cfg.SSLCert != "" {
-		dsn += fmt.Sprintf(" sslcert=%s", cfg.SSLCert)
+		dsnParts = append(dsnParts, "sslcert="+cfg.SSLCert)
 	}
 	if cfg.SSLKey != "" {
-		dsn += fmt.Sprintf(" sslkey=%s", cfg.SSLKey)
+		dsnParts = append(dsnParts, "sslkey="+cfg.SSLKey)
 	}
 
 	// Add schema if specified
 	if cfg.DefaultSchema != "" {
-		dsn += fmt.Sprintf(" search_path=%s", cfg.DefaultSchema)
+		dsnParts = append(dsnParts, "search_path="+cfg.DefaultSchema)
 	}
 
 	// Add connection options if specified
 	if cfg.ConnOptions != "" {
-		dsn += fmt.Sprintf(" %s", cfg.ConnOptions)
+		dsnParts = append(dsnParts, cfg.ConnOptions)
+	}
+
+	// Join parts with spaces
+	dsnString := strings.Join(dsnParts, " ")
+
+	// Let pgx parse and validate the entire DSN
+	pgxConfig, err := pgx.ParseConfig(dsnString)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse DSN: %w", err)
+	}
+
+	// Return the DSN
+	return pgxConfig.ConnString(), nil
+}
+
+// NewPostgresStore returns a new PostgresStore
+func NewPostgresStore() (*PostgresStore, error) {
+	cfg := config.Get().PostgreSQL
+
+	// Build connection string
+	dsn, err := buildDSN(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to build DSN: %w", err)
 	}
 
 	// Configure GORM
