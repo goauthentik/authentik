@@ -24,12 +24,8 @@
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
-        "test": "wireit",
-        "test:e2e": "wireit",
-        "test:e2e:next": "playwright test",
-        "test:e2e:watch": "wireit",
-        "test:next": "vitest",
-        "test:watch": "wireit",
+        "test": "vitest",
+        "test:e2e": "playwright test",
         "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
@@ -200,10 +196,6 @@
         "@rollup/rollup-darwin-arm64": "^4.50.2",
         "@rollup/rollup-linux-arm64-gnu": "^4.50.2",
         "@rollup/rollup-linux-x64-gnu": "^4.50.2",
-        "@wdio/browser-runner": "^9.19.2",
-        "@wdio/cli": "^9.19.2",
-        "@wdio/spec-reporter": "^9.19.2",
-        "@web/test-runner": "^0.20.2",
         "chromedriver": "^140.0.2",
         "p-iteration": "^1.1.8"
     },
@@ -277,17 +269,13 @@
         "lint:components": {
             "command": "lit-analyzer src"
         },
-        "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
-        },
         "lint:types": {
             "command": "tsc -p .",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
             },
             "dependencies": [
-                "build-locales",
-                "lint:types:tests"
+                "build-locales"
             ]
         },
         "lint:lockfile": {
@@ -311,41 +299,6 @@
             "command": "storybook build",
             "env": {
                 "NODE_OPTIONS": "--max_old_space_size=8192"
-            }
-        },
-        "test": {
-            "command": "wdio ./wdio.conf.mjs --logLevel=warn",
-            "env": {
-                "CI": "true",
-                "TS_NODE_PROJECT": "tsconfig.test.json"
-            }
-        },
-        "test:e2e": {
-            "command": "wdio run ./tests/wdio.conf.mjs",
-            "dependencies": [
-                "build"
-            ],
-            "env": {
-                "CI": "true",
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
-            }
-        },
-        "test:e2e:watch": {
-            "command": "wdio run ./tests/wdio.conf.mjs",
-            "dependencies": [
-                "build"
-            ],
-            "env": {
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
-            }
-        },
-        "test:watch": {
-            "command": "wdio run ./wdio.conf.mjs",
-            "dependencies": [
-                "build"
-            ],
-            "env": {
-                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "tsc": {
