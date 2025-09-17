@@ -132,13 +132,6 @@ export class ListSelect extends AKElement implements IListSelect {
         this.highlightFocusedItem();
     }
 
-    public override disconnectedCallback() {
-        super.disconnectedCallback();
-
-        this.removeEventListener("focus", this.#focusListener);
-        this.removeEventListener("blur", this.#blurListener);
-    }
-
     public override performUpdate() {
         this.removeAttribute("data-ouia-component-safe");
         super.performUpdate();
