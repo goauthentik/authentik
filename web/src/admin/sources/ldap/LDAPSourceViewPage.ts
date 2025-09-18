@@ -134,8 +134,8 @@ export class LDAPSourceViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit"> ${msg("Update")} </span>
-                                    <span slot="header"> ${msg("Update LDAP Source")} </span>
+                                    <span slot="submit">${msg("Update")}</span>
+                                    <span slot="header">${msg("Update LDAP Source")}</span>
                                     <ak-source-ldap-form
                                         slot="form"
                                         .instancePk=${this.source.slug}

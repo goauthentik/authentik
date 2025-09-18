@@ -87,8 +87,8 @@ export class EndpointListPage extends Table<Endpoint> {
             html`${item.name}`,
             html`${item.host}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Endpoint")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Endpoint")}</span>
                     <ak-rac-endpoint-form slot="form" .instancePk=${item.pk}>
                     </ak-rac-endpoint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -124,8 +124,8 @@ export class EndpointListPage extends Table<Endpoint> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Endpoint")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Endpoint")}</span>
                 <ak-rac-endpoint-form slot="form" .providerID=${this.provider?.pk}>
                 </ak-rac-endpoint-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>

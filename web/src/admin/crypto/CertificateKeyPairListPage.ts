@@ -113,8 +113,8 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
             </ak-status-label>`,
             html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Certificate-Key Pair")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Certificate-Key Pair")}</span>
                     <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
                     </ak-crypto-certificate-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -204,14 +204,14 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Import")} </span>
-                <span slot="header"> ${msg("Import Existing Certificate-Key Pair")} </span>
+                <span slot="submit">${msg("Import")}</span>
+                <span slot="header">${msg("Import Existing Certificate-Key Pair")}</span>
                 <ak-crypto-certificate-form slot="form"> </ak-crypto-certificate-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Generate")} </span>
-                <span slot="header"> ${msg("Generate New Certificate-Key Pair")} </span>
+                <span slot="submit">${msg("Generate")}</span>
+                <span slot="header">${msg("Generate New Certificate-Key Pair")}</span>
                 <ak-crypto-certificate-generate-form slot="form">
                 </ak-crypto-certificate-generate-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">

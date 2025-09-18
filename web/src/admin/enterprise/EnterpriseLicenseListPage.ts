@@ -9,6 +9,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
 
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -207,8 +208,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update License")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update License")}</span>
                     <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
                     </ak-enterprise-license-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -251,7 +252,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 >
             </div>
             <div class="pf-c-card__body">
-                <a target="_blank" href="https://docs.goauthentik.io/docs/enterprise/get-started"
+                <a target="_blank" href=${docLink("/enterprise/get-started")}
                     >${msg("Learn more")}</a
                 >
             </div>
@@ -265,8 +266,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Install")} </span>
-                <span slot="header"> ${msg("Install License")} </span>
+                <span slot="submit">${msg("Install")}</span>
+                <span slot="header">${msg("Install License")}</span>
                 <ak-enterprise-license-form slot="form"> </ak-enterprise-license-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Install")}</button>
             </ak-forms-modal>

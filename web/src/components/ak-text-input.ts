@@ -37,6 +37,7 @@ export class AkTextInput extends HorizontalLightComponent<string> {
             autocomplete=${ifPresent(code ? "off" : this.autocomplete)}
             spellcheck=${ifPresent(code ? "false" : this.spellcheck)}
             aria-label=${ifPresent(this.placeholder || this.label)}
+            aria-describedby=${this.helpID}
             placeholder=${ifPresent(this.placeholder)}
             ?required=${this.required}
         />`;

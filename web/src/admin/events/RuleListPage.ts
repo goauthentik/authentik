@@ -88,8 +88,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
                   >`
                 : msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Notification Rule")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Notification Rule")}</span>
                     <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
@@ -109,8 +109,8 @@ export class RuleListPage extends TablePage<NotificationRule> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Notification Rule")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Notification Rule")}</span>
                 <ak-event-rule-form slot="form"> </ak-event-rule-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

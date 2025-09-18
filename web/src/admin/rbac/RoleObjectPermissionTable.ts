@@ -66,8 +66,8 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal>
-            <span slot="submit"> ${msg("Assign")} </span>
-            <span slot="header"> ${msg("Assign permission to role")} </span>
+            <span slot="submit">${msg("Assign")}</span>
+            <span slot="header">${msg("Assign permission to role")}</span>
             <ak-rbac-role-object-permission-form
                 model=${ifDefined(this.model)}
                 objectPk=${ifDefined(this.objectPk)}

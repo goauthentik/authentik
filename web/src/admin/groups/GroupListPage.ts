@@ -75,8 +75,8 @@ export class GroupListPage extends TablePage<Group> {
             html`${Array.from(item.users || []).length}`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Group")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Group")}</span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
@@ -90,8 +90,8 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Group")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Group")}</span>
                 <ak-group-form slot="form"> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

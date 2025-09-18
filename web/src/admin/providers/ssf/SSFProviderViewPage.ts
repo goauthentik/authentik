@@ -169,8 +169,8 @@ export class SSFProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update SSF Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update SSF Provider")}</span>
                             <ak-provider-ssf-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-ssf-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">

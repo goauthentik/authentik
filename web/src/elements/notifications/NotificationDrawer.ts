@@ -188,7 +188,7 @@ export class NotificationDrawer extends AKElement {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("Notifications")}
                         </h1>
-                        <span> ${msg(str`${this.unread} unread`)} </span>
+                        <span> ${msg(str`${this.unread} unread`)}</span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div>

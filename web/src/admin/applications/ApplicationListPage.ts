@@ -131,8 +131,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 : html`-`,
             html`${item.providerObj?.verboseName || msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Application")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Application")}</span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain" aria-label=${msg("Edit")}>
@@ -167,8 +167,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 </button>
             </ak-application-wizard>
             <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Application")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Application")}</span>
                 <ak-application-form slot="form"> </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>`;
@@ -184,7 +184,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Application cache")} </span>
+                <span slot="header">${msg("Clear Application cache")}</span>
                 <p slot="body">
                     ${msg(
                         "Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.",

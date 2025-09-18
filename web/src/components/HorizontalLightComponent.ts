@@ -153,6 +153,10 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
+    protected get helpID() {
+        return this.fieldID ? `field-help-${this.fieldID}` : "field-help";
+    }
+
     //#endregion
 
     //#region Rendering
@@ -186,7 +190,8 @@ export abstract class HorizontalLightComponent<T>
                 ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label || "")}
             </div>
 
-            ${this.renderControl()} ${this.renderHelp()}
+            ${this.renderControl()}
+            <div id=${this.helpID}>${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 

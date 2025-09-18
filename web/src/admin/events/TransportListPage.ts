@@ -79,8 +79,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
             html`${item.name}`,
             html`${item.modeVerbose}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Notification Transport")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -137,8 +137,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Notification Transport")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Notification Transport")}</span>
                 <ak-event-transport-form slot="form"> </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

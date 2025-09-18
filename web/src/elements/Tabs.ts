@@ -91,7 +91,7 @@ export class Tabs extends AKElement {
                 class="pf-c-tabs__link"
                 @click=${() => this.onClick(slot)}
             >
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("aria-label")} </span>
+                <span class="pf-c-tabs__item-text"> ${page.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }

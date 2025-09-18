@@ -66,11 +66,16 @@ export abstract class Table<T extends object>
         PFDropdown,
         PFPagination,
         css`
-            .pf-c-table {
-                --pf-c-table--cell--MinWidth: 9em;
+            :host {
+                container-type: inline-size;
+            }
 
+            .pf-c-table {
                 .presentational {
                     --pf-c-table--cell--MinWidth: 0;
+                }
+                @container (width > 600px) {
+                    --pf-c-table--cell--MinWidth: 9em;
                 }
             }
 
@@ -78,6 +83,42 @@ export abstract class Table<T extends object>
             th {
                 &:last-child {
                     white-space: nowrap;
+                }
+            }
+
+            /**
+             * TODO: Row actions need a better approach to alignment,
+             * but this will at least get the buttons in a grid-like layout.
+             */
+            td:has(ak-action-button),
+            td:has(ak-forms-modal),
+            td:has(ak-rbac-object-permission-modal) {
+                .pf-c-button,
+                button[slot="trigger"]:has(i),
+                *::part(spinner-button),
+                ak-rbac-object-permission-modal::part(button) {
+                    --pf-global--spacer--form-element: 0;
+
+                    padding-inline: 0.5em !important;
+                }
+
+                button[slot="trigger"]:has(i) {
+                    padding-inline-start: 0 !important;
+                    padding-inline-end: 0.25em !important;
+                }
+
+                *::part(spinner-button) {
+                    padding-inline-start: 0.5em !important;
+                }
+
+                button.pf-m-tertiary {
+                    margin-inline-start: 0.25em;
+                }
+
+                & > * {
+                    display: inline-flex;
+                    place-items: center;
+                    justify-content: center;
                 }
             }
 

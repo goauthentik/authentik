@@ -206,8 +206,8 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update Google Workspace Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update Google Workspace Provider")}</span>
                             <ak-provider-google-workspace-form
                                 slot="form"
                                 .instancePk=${this.provider.pk}

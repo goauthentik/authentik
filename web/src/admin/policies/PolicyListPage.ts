@@ -66,8 +66,8 @@ export class PolicyListPage extends TablePage<Policy> {
                       </ak-label>`}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -86,8 +86,8 @@ export class PolicyListPage extends TablePage<Policy> {
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit"> ${msg("Test")} </span>
-                    <span slot="header"> ${msg("Test Policy")} </span>
+                    <span slot="submit">${msg("Test")}</span>
+                    <span slot="header">${msg("Test Policy")}</span>
                     <ak-policy-test-form slot="form" .policy=${item}> </ak-policy-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Test")}>
@@ -134,7 +134,7 @@ export class PolicyListPage extends TablePage<Policy> {
                     return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${msg("Clear Policy cache")} </span>
+                <span slot="header">${msg("Clear Policy cache")}</span>
                 <p slot="body">
                     ${msg(
                         "Are you sure you want to clear the policy cache? This will cause all policies to be re-evaluated on their next usage.",

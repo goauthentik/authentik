@@ -90,8 +90,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             html`${item.name}`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -109,8 +109,8 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                 <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
                 </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
-                    <span slot="submit"> ${msg("Test")} </span>
-                    <span slot="header"> ${msg("Test Property Mapping")} </span>
+                    <span slot="submit">${msg("Test")}</span>
+                    <span slot="header">${msg("Test Property Mapping")}</span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

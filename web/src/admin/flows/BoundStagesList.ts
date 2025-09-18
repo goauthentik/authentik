@@ -86,8 +86,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg(str`Update ${item.stageObj?.verboseName}`)} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg(str`Update ${item.stageObj?.verboseName}`)}</span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -101,8 +101,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Stage binding")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Stage binding")}</span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
@@ -149,8 +149,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-stage-wizard>
                     <ak-forms-modal>
-                        <span slot="submit"> ${msg("Create")} </span>
-                        <span slot="header"> ${msg("Create Stage binding")} </span>
+                        <span slot="submit">${msg("Create")}</span>
+                        <span slot="header">${msg("Create Stage binding")}</span>
                         <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                         </ak-stage-binding-form>
                         <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -170,8 +170,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Stage binding")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Stage binding")}</span>
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">

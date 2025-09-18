@@ -189,8 +189,8 @@ export class RACProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update RAC Provider")} </span>
+                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="header">${msg("Update RAC Provider")}</span>
                             <ak-provider-rac-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-rac-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
