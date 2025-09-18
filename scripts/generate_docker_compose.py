@@ -88,5 +88,5 @@ base = {
     "volumes": {"database": {"driver": "local"}, "redis": {"driver": "local"}},
 }
 
-with open("docker-compose.yml", "w") as _compose:
+with open("lifecycle/container/docker-compose.yml", "w") as _compose:
     safe_dump(base, _compose)
