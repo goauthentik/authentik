@@ -4,6 +4,9 @@ sidebar_label: Jellyfin
 support_level: community
 ---
 
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
 ## What is Jellyfin
 
 > Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
@@ -11,11 +14,20 @@ support_level: community
 > -- https://jellyfin.org
 
 :::note
-Jellyfin does not have any native external authentication support as of the writing of this page. Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
+Jellyfin does not natively support external authentication. However, two plugins are available to provide this functionality: an [OIDC plugin](https://github.com/9p4/jellyfin-plugin-sso) and an [LDAP plugin](https://github.com/jellyfin/jellyfin-plugin-ldapauth).
 :::
 
-:::caution
-An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
+<Tabs
+    defaultValue="ldap"
+    values={[
+        { label: "LDAP", value: "ldap" },
+        { label: "OIDC", value: "oidc" },
+    ]}
+>
+    <TabItem value="ldap">
+
+    :::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## Preparation
@@ -27,10 +39,6 @@ The following placeholders are used in this guide:
 - `ldap.company` the FQDN of the LDAP outpost.
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User
-
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
 
 ## LDAP Configuration
 
@@ -90,31 +98,76 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 - `LDAP Password Attribute`: `userPassword`
 - `Library Access`: Set this according to desired library access
 
-1. Click "Save"
-2. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work.
+8. Click "Save"
+9. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work.
 
-## OIDC Configuration
+</TabItem>
+<TabItem value="oidc">
 
-### authentik Configuration
+## Preparation
 
-**Provider Settings**
+The following placeholders are used in this guide:
 
-In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
-
-- Name: `jellyfin`
-- Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
-
-Everything else is up to you, just make sure to grab the client ID and the client secret!
+- `jellyfin.company` is the FQDN of the Jellyfin installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-The last part of the URI is the name you use when making the provider in Jellyfin so make sure they are the same.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-**Application Settings**
+## authentik configuration
 
-Create an application that uses `jellyfin` provider. Optionally apply access restrictions to the application.
+To support the integration of Jellyfin with authentik, you need to create an application/provider pair in authentik.
 
-Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, and the policy engine mode.
+    - Under **UI Settings**, set the **Launch URL** to `https://jellyfin.company/sso/OID/start/authentik`.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://jellyfin.company/sso/OID/redirect/authentik`.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Jellyfin configuration
+
+To support the integration of Jellyfin with authentik, you must install the [SSO-Auth plugin](https://github.com/9p4/jellyfin-plugin-sso), then configure it to log users in using authentik.
+
+1. Log in to Jellyfin with an administrator account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
+2. In the left sidebar, under **Plugins**, click **Catalog**.
+3. Click the **cog** near the page's title, set a meaningful **Repository Name**, and enter the following URL as the **Repository URL**: `https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json`.
+4. Click **Save**, then **Ok** to confirm the risks of installing third-party plugins.
+5. Click the **Back** arrow in the top left to return to the plugin catalog and click on **SSO Authentication** under **Authentication Provider**.
+6. Click **Install** to install the plugin, and **Install** again to confirm the risks. Then, restart the Jellyfin server to complete the installation.
+7. Once the server has restarted, navigate back to the **Plugins** section of the admin dashboard, and under **Plugins**, click **SSO-Auth**.
+8. Fill out the following required fields:
+    - **Name of OID Provider**: `authentik`
+    - **OID Endpoint**: `https://authentik.company/application/o/<application_slug>.well-known/openid-configuration`
+    - **OpenID Client ID**: Enter the client ID from authentik.
+    - **OID Secret**: Enter the client secret from authentik.
+    - **Enabled**: Toggle on.
+    - **Enable Authorization by Plugin**: Toggle on.
+    - **Enable All Folders**: Optionally toggle on to grant all users access to all libraries. Otherwise, configure library access as needed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Jellyfin Configuration
 
@@ -174,3 +227,6 @@ a.raised.emby-button {
 :::note
 If you have problems check your logs which are under the **Administration** > **Dashboard** then "logs" and will be near the bottom (most likely) with `Jellyfin.Plugin.SSO_Auth.` as the start of the lines you are looking for.
 :::
+
+</TabItem>
+</Tabs>
