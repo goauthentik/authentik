@@ -116,6 +116,7 @@ def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
                 "description": "Which field to use when ordering the results.",
                 "schema": {"type": "string"},
             },
+            ResolvedComponent.PARAMETER
         ),
         "page": create_component(
             generator,
@@ -127,6 +128,7 @@ def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
                 "description": "A page number within the paginated result set.",
                 "schema": {"type": "integer"},
             },
+            ResolvedComponent.PARAMETER
         ),
         "page_size": create_component(
             generator,
@@ -138,6 +140,7 @@ def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
                 "description": "Number of results to return per page.",
                 "schema": {"type": "integer"},
             },
+            ResolvedComponent.PARAMETER
         ),
         "search": create_component(
             generator,
@@ -149,6 +152,7 @@ def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
                 "description": "A search term.",
                 "schema": {"type": "string"},
             },
+            ResolvedComponent.PARAMETER
         ),
     }
     for path in result["paths"].values():
