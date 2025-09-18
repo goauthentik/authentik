@@ -117,7 +117,7 @@ export class Message extends AKElement {
                 })}"
             >
                 <div class="pf-c-alert__icon">
-                    <i class="${LevelIconMap[level]}"></i>
+                    <i class="${LevelIconMap[level]}" aria-hidden="true"></i>
                 </div>
                 <p class="pf-c-alert__title" id="message-title">
                     <slot></slot>

@@ -255,6 +255,7 @@ MIDDLEWARE = [
     "authentik.root.middleware.LoggingMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",

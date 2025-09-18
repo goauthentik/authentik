@@ -11,6 +11,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     EventsApi,
@@ -25,18 +26,12 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Notification Transports");
-    }
-    pageDescription(): string {
-        return msg("Define how notifications are sent to users, like Email or Webhook.");
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-export";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Notification Transports");
+    public pageDescription = msg(
+        "Define how notifications are sent to users, like Email or Webhook.",
+    );
+    public pageIcon = "pf-icon pf-icon-export";
 
     checkbox = true;
     clearOnRefresh = true;
@@ -51,13 +46,11 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         );
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Mode"), "mode"),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Mode"), "mode"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -81,18 +74,18 @@ export class TransportListPage extends TablePage<NotificationTransport> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: NotificationTransport): TemplateResult[] {
+    row(item: NotificationTransport): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
             html`${item.modeVerbose}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Notification Transport")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Notification Transport")}</span>
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -119,7 +112,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
 
     renderExpanded(item: NotificationTransport): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikEventsNotificationtransport.split(".");
-        return html`<td role="cell" colspan="5">
+        return html`<td colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
@@ -144,8 +137,8 @@ export class TransportListPage extends TablePage<NotificationTransport> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Notification Transport")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Notification Transport")}</span>
                 <ak-event-transport-form slot="form"> </ak-event-transport-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

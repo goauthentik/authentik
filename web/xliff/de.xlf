@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>Die URL &quot;
-<x id="0" equiv-text="${this.url}"/>&quot; wurde nicht gefunden.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>Die URL "
+<x id="0" equiv-text="${this.url}"/>" wurde nicht gefunden.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1661,11 +1661,6 @@
         <target>Zugewiesen an Anwendung (Rückkanal)</target>
         
       </trans-unit>
-      <trans-unit id="s97f5e0c138eae172">
-        <source>Warning: Provider not assigned to any application.</source>
-        <target>Warnung: Provider ist keiner Anwendung zugewiesen</target>
-        
-      </trans-unit>
       <trans-unit id="s8b0432eecbd8b034">
         <source>Update</source>
         <target>Aktualisieren</target>
@@ -1688,8 +1683,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon &quot;fa-test&quot; zu verwenden</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon "fa-test" zu verwenden</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3720,10 +3715,10 @@ Hier können nur Policies verwendet werden, da der Zugriff geprüft wird, bevor 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Bist du sicher, dass du
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
-        <x id="1" equiv-text="${this.obj?.name}"/>&quot;aktualisieren möchtest?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>"
+        <x id="1" equiv-text="${this.obj?.name}"/>"aktualisieren möchtest?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4777,8 +4772,8 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>Ein &quot;Roaming&quot;-Authentifikator, wie ein YubiKey</target>
+        <source>A "roaming" authenticator, like a YubiKey</source>
+        <target>Ein "Roaming"-Authentifikator, wie ein YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5136,7 +5131,7 @@ Beim Erstellen eines festen Auswahlfelds aktiviere „Als Ausdruck interpretiere
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
         <target>Wenn auf eine Dauer größer als 0 gesetzt, hat der Benutzer die Option „Angemeldet bleiben“, wodurch seine Sitzung um die hier angegebene Zeit verlängert wird.</target>
         
       </trans-unit>
@@ -6605,7 +6600,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
         
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
-        <source><x id="0" equiv-text="${name}"/></source>
+        <source><x id="0" equiv-text="${prompt.label}"/></source>
         <target>
           <x id="0" equiv-text="${prompt.label}"/>
         </target>
@@ -7378,7 +7373,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Benutzer erfolgreich erstellt und zu Gruppe <x id="0" equiv-text="${this.group.name}"/> hinzugefügt.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Dieser Benutzer wird der Gruppe &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot; hinzugefügt.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8631,7 +8626,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Gruppe synchronisieren</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, vom typ <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -8879,8 +8874,8 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Gültige Redirect-URIs nach einem erfolgreichen Autorisierungsflow. Gib hier auch alle Origins für Implicit-Flows an.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>Um jede Redirect-URI zu erlauben, setze den Modus auf Regex und den Wert auf &quot;.*&quot;. Beachte die möglichen Sicherheitsimplikationen.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Um jede Redirect-URI zu erlauben, setze den Modus auf Regex und den Wert auf ".*". Beachte die möglichen Sicherheitsimplikationen.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9625,7 +9620,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>Wie die Authentifizierung während eines Authorization-Code-Token-Anforderungsflows durchgeführt wird</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
+  <source>Enable "Remember me on this device"</source>
   <target>„Angemeldet bleiben auf diesem Gerät“ aktivieren</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
@@ -9833,10 +9828,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Status messages</source>
   <target>Statusmeldungen</target>
 </trans-unit>
-<trans-unit id="s05a4a4df6783d0cf">
-  <source>Provider name</source>
-  <target>Provider Name</target>
-</trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
   <target>Einen Invalidation-Flow auswählen …</target>
@@ -9868,10 +9859,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="sfe1fb536cab6c0f5">
   <source><x id="0" equiv-text="${this.label}"/> navigation</source>
   <target><x id="0" equiv-text="${this.label}"/> Navigation</target>
-</trans-unit>
-<trans-unit id="scbc2fd9f2bd26fdd">
-  <source>Main content</source>
-  <target>Hauptinhalt</target>
 </trans-unit>
 <trans-unit id="sd2b106933823b754">
   <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
@@ -10005,25 +9992,9 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <source>Expand navigation</source>
   <target>Navigation ausklappen</target>
 </trans-unit>
-<trans-unit id="s148b5e365440a7c1">
-  <source>Table pagination</source>
-  <target>Tabellenpaginierung</target>
-</trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
   <target>Suche</target>
-</trans-unit>
-<trans-unit id="sd2c2366d13599d8c">
-  <source>Table actions</source>
-  <target>Tabellenaktionen</target>
-</trans-unit>
-<trans-unit id="s3d195621e562d805">
-  <source>Select row</source>
-  <target>Zeile auswählen</target>
-</trans-unit>
-<trans-unit id="s572d21b6a41e24fa">
-  <source>Table of <x id="0" equiv-text="${this.label}"/></source>
-  <target>Tabelle von <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
@@ -10036,10 +10007,6 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s9db1679f3b234d4e">
   <source>Search for providers…</source>
   <target>Nach Providern suchen …</target>
-</trans-unit>
-<trans-unit id="s76790480b7b28ad2">
-  <source>Edit provider</source>
-  <target>Provider bearbeiten</target>
 </trans-unit>
 <trans-unit id="s9839619155ed2cf6">
   <source>Default NameID Policy</source>
@@ -10074,7 +10041,7 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
   <target>z.B. Collaboration, Communication, Intern usw.</target>
 </trans-unit>
 <trans-unit id="sb6fcdabf769208a1">
-  <source>Failed to fetch application &quot;<x id="0" equiv-text="${this.applicationSlug}"/>&quot;.</source>
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
   <target>Fehler beim Abrufen der Applikation &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s32fc592c4a264edd">
@@ -10200,6 +10167,99 @@ Bindings zu Gruppen/Benutzern werden mit dem Benutzer des Ereignisses abgegliche
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
   <target>Hostname/IP, zu dem eine Verbindung hergestellt werden soll. Optional kann der Port angegeben werden.</target>
+</trans-unit>
+<trans-unit id="s3633ffed92acaecb">
+  <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+</trans-unit>
+<trans-unit id="sd9b15395dd103f80">
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="s7dd64bb0c1fa8e87">
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+</trans-unit>
+<trans-unit id="sd26f670ca5d5b0c6">
+  <source>Collapse row</source>
+</trans-unit>
+<trans-unit id="s73f51a3532f29159">
+  <source>Expand row</source>
+</trans-unit>
+<trans-unit id="sda170fd79bca1616">
+  <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
+</trans-unit>
+<trans-unit id="sd09354b0220a13ce">
+  <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+</trans-unit>
+<trans-unit id="s59c9e8f57e3a0075">
+  <source><x id="0" equiv-text="${this.label}"/> table</source>
+</trans-unit>
+<trans-unit id="s15a7e4227737b7c4">
+  <source>Column actions</source>
+</trans-unit>
+<trans-unit id="s7753c012594cc69e">
+  <source>Assigned to role</source>
+</trans-unit>
+<trans-unit id="s4dcbef0770f0b649">
+  <source>Assigned to user</source>
+</trans-unit>
+<trans-unit id="sa3242c7021e01280">
+  <source>Row Actions</source>
+</trans-unit>
+<trans-unit id="sd939185840181160">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="s4127b943d6826b8b">
+  <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
+</trans-unit>
+<trans-unit id="sa637fa23edcbd60b">
+  <source>Provider name...</source>
+</trans-unit>
+<trans-unit id="sdb16a3d366135cef">
+  <source>Provider Name</source>
+</trans-unit>
+<trans-unit id="s9bcd7cad5f5e2b15">
+  <source>Select a certificate...</source>
+</trans-unit>
+<trans-unit id="s69d33a50b908b96f">
+  <source>Select an authorization flow...</source>
+</trans-unit>
+<trans-unit id="s9139b576e9944704">
+  <source>Select a signing key...</source>
+</trans-unit>
+<trans-unit id="sb52c56e87be6cd0c">
+  <source>Select an encryption key...</source>
+</trans-unit>
+<trans-unit id="s91675ea72a0ebe3e">
+  <source>Select an authentication flow...</source>
+</trans-unit>
+<trans-unit id="s0c9d1c885a69abe8">
+  <source>Provider Search</source>
+</trans-unit>
+<trans-unit id="s0fb31bb136cc353a">
+  <source>Provider not assigned to any application.</source>
+</trans-unit>
+<trans-unit id="sfbb87c9ced1fde54">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
+</trans-unit>
+<trans-unit id="s0a3fdba3a68a2730">
+  <source>Applications Documentation</source>
+</trans-unit>
+<trans-unit id="sf07bfbe5316e7cc7">
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s037f22187581bf8f">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s5d90aeadfcb34286">
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="saa25eac2952d918d">
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s021258b2c04e722f">
+  <source>Search for an application by name</source>
+</trans-unit>
+<trans-unit id="s64de9eceb8172269">
+  <source>Edit device</source>
 </trans-unit>
     </body>
   </file>

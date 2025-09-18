@@ -19,7 +19,7 @@ import { DistDirectory, EntryPoint, PackageRoot } from "#paths/node";
 
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
-import { readBuildIdentifier } from "@goauthentik/core/version/node";
+import { BuildIdentifier } from "@goauthentik/core/version/node";
 
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
@@ -42,7 +42,7 @@ const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
  * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
-    entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
+    entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     outdir: DistDirectory,
@@ -148,6 +148,8 @@ function doHelp() {
 }
 
 async function doWatch() {
+    const { promise, resolve, reject } = Promise.withResolvers();
+
     logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
     const entryPoints = Object.values(EntryPoint);
@@ -182,23 +184,31 @@ async function doWatch() {
     logger.info(`🔓 ${httpURL.href}`);
     logger.info(`🔒 ${httpsURL.href}`);
 
-    return /** @type {Promise<void>} */ (
-        new Promise((resolve) => {
-            process.on("SIGINT", () => {
-                resolve();
-            });
-        })
-    );
+    let disposing = false;
+
+    const delegateShutdown = () => {
+        logger.flush();
+        console.log("");
+
+        // We prevent multiple attempts to dispose the context
+        // because ESBuild will repeatedly restart its internal clean-up logic.
+        // However, sending a second SIGINT will still exit the process immediately.
+        if (disposing) return;
+
+        disposing = true;
+
+        return buildContext.dispose().then(resolve).catch(reject);
+    };
+
+    process.on("SIGINT", delegateShutdown);
+
+    return promise;
 }
 
 async function doBuild() {
-    logger.info(`🚀 Building entry points:`);
+    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
 
-    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
-        logger.info(entrypointID);
-
-        return target;
-    });
+    const entryPoints = Object.values(EntryPoint);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
