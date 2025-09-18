@@ -142,7 +142,7 @@
         "country-flag-icons": "^1.5.20",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
-        "dompurify": "^3.2.6",
+        "dompurify": "^3.2.7",
         "esbuild": "^0.25.9",
         "esbuild-plugin-copy": "^2.1.1",
         "eslint": "^9.35.0",
