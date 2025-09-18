@@ -15,7 +15,7 @@ export type TablePageChangeListener = (page: number) => void;
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
     @property({ type: String })
-    public label?: string;
+    public label: string | null = null;
 
     @property({ attribute: false })
     public pages?: Pagination;
@@ -52,7 +52,7 @@ export class TablePagination extends AKElement {
         }
 
         return html` <nav
-            aria-label=${this.label || msg("Table pagination")}
+            aria-label=${msg(str`${this.label || ""} table pagination`)}
             class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md"
         >
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">

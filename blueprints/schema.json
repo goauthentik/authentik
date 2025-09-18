@@ -6118,11 +6118,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "credentials": {
@@ -12170,11 +12166,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "client_id": {
@@ -12365,11 +12357,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "use_global_settings": {
@@ -12598,11 +12586,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "provider": {
@@ -12815,11 +12799,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "token_count": {
@@ -12999,11 +12979,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "digits": {
@@ -13358,11 +13334,7 @@
                     "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
                 },
                 "friendly_name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "minLength": 1,
+                    "type": "string",
                     "title": "Friendly name"
                 },
                 "user_verification": {

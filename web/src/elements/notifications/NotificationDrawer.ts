@@ -12,11 +12,12 @@ import { me } from "#common/users";
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { EventsApi, Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -109,7 +110,7 @@ export class NotificationDrawer extends AKElement {
                         href="${globalAK().api.base}if/admin/#/events/log/${item.event?.pk}"
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
-                            <i class="fas fa-share-square"></i>
+                            <i class="fas fa-share-square" aria-hidden="true"></i>
                         </pf-tooltip>
                     </a>
                 `}
@@ -135,7 +136,7 @@ export class NotificationDrawer extends AKElement {
                             });
                     }}
                 >
-                    <i class="fas fa-times"></i>
+                    <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
             </div>
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
@@ -176,9 +177,9 @@ export class NotificationDrawer extends AKElement {
         </ak-empty-state>`;
     }
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.notifications) {
-            return html``;
+            return nothing;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
@@ -187,7 +188,7 @@ export class NotificationDrawer extends AKElement {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("Notifications")}
                         </h1>
-                        <span> ${msg(str`${this.unread} unread`)} </span>
+                        <span> ${msg(str`${this.unread} unread`)}</span>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div>

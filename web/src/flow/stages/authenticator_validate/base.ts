@@ -1,4 +1,3 @@
-import { AuthenticatorValidateStage } from "#flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "#flow/stages/base";
 
 import { DeviceChallenge } from "@goauthentik/api";
@@ -48,16 +47,19 @@ export class BaseDeviceStage<
         return this.host?.submit(payload) || Promise.resolve();
     }
 
+    public reset = () => {
+        this.host?.reset?.();
+    };
+
     renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }
+
         return html`<button
             class="pf-c-button pf-m-secondary pf-m-block"
-            @click=${() => {
-                if (!this.host) return;
-                (this.host as AuthenticatorValidateStage).selectedDeviceChallenge = undefined;
-            }}
+            type="button"
+            @click=${this.reset}
         >
             ${msg("Select another authentication method")}
         </button>`;

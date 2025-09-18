@@ -295,7 +295,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=UserAccountSerializer,
         responses={
-            204: OpenApiResponse(description="User added"),
+            204: OpenApiResponse(description="User removed"),
             404: OpenApiResponse(description="User not found"),
         },
     )
@@ -307,7 +307,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         permission_classes=[],
     )
     def remove_user(self, request: Request, pk: str) -> Response:
-        """Add user to group"""
+        """Remove user from group"""
         group: Group = self.get_object()
         user: User = (
             get_objects_for_user(request.user, "authentik_core.view_user")

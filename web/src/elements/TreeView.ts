@@ -4,7 +4,7 @@ import { AKElement } from "#elements/Base";
 import { setURLParams } from "#elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
@@ -112,7 +112,7 @@ export class TreeViewNode extends AKElement {
                                           <i class="fas fa-angle-right" aria-hidden="true"></i>
                                       </span>
                                   </button>`
-                                : html``}
+                                : nothing}
                             <span class="pf-c-tree-view__node-icon">
                                 <i
                                     class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"

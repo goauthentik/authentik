@@ -286,12 +286,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .pf-m-tertiary,
 .pf-c-button.pf-m-tertiary {
     --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
-    color: var(--ak-dark-foreground-darker);
-}
+    --pf-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --pf-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--sm);
 
-.pf-m-tertiary:hover,
-.pf-c-button.pf-m-tertiary:hover {
-    --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter);
+    color: var(--ak-dark-foreground-darker);
+
+    &:hover {
+        --pf-c-button--after--BorderColor: var(--ak-dark-foreground);
+    }
 }
 
 .pf-c-form__label-text {

@@ -6,6 +6,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { ConnectionToken, RacApi, RACProvider } from "@goauthentik/api";
 
@@ -20,9 +21,7 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property()
     order = "name";
@@ -71,20 +70,28 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         </ak-forms-delete-bulk>`;
     }
 
-    columns(): TableColumn[] {
+    protected override rowLabel(item: ConnectionToken): string | null {
+        if (this.provider) {
+            return item.endpointObj.name ?? null;
+        }
+        return item.providerObj.name ?? null;
+    }
+
+    protected get columns(): TableColumn[] {
         if (this.provider) {
             return [
-                new TableColumn(msg("Endpoint"), "endpoint__name"),
-                new TableColumn(msg("User"), "session__user"),
+                [msg("Endpoint"), "endpoint__name"],
+                [msg("User"), "session__user"],
             ];
         }
+
         return [
-            new TableColumn(msg("Provider"), "provider__name"),
-            new TableColumn(msg("Endpoint"), "endpoint__name"),
+            [msg("Provider"), "provider__name"],
+            [msg("Endpoint"), "endpoint__name"],
         ];
     }
 
-    row(item: ConnectionToken): TemplateResult[] {
+    row(item: ConnectionToken): SlottedTemplateResult[] {
         if (this.provider) {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }

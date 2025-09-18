@@ -2,6 +2,10 @@
 set -e -o pipefail
 MODE_FILE="${TMPDIR}/authentik-mode"
 
+if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
+    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
+fi
+
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" >/dev/stderr
 }
@@ -31,7 +35,7 @@ function check_if_root {
         GROUP="authentik:${GROUP_NAME}"
     fi
     # Fix permissions of certs and media
-    chown -R authentik:authentik /media /certs
+    chown -R authentik:authentik /media /certs "${PROMETHEUS_MULTIPROC_DIR}"
     chmod ug+rwx /media
     chmod ug+rx /certs
     exec chpst -u authentik:$GROUP env HOME=/authentik $1
@@ -68,9 +72,6 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
-if [[ -z "${PROMETHEUS_MULTIPROC_DIR}" ]]; then
-    export PROMETHEUS_MULTIPROC_DIR="${TMPDIR:-/tmp}/authentik_prometheus_tmp"
-fi
 mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
 
 if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
