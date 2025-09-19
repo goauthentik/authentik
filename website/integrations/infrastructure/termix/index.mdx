@@ -39,21 +39,21 @@ To support the integration of Termix with authentik, you need to create an appli
 
 ## Termix configuration
 
-1. Login to Termix as an administrator.
-2. Click on your admin username at the bottom left and open the **Admin Settings** interface.
+1. Log in to Termix as an administrator.
+2. Click your admin username in the bottom-left corner and open the **Admin Settings** interface.
 3. Navigate to the **OIDC** tab.
 4. Set the following required settings:
     - **Client ID**: Client ID from authentik
-    - **Client Secret**: Client Secrert from authentik
-    - **Authorization URL**: `http://authentik.company/application/o/authorize/`
-    - **Issuer URL**: `http://authentik.company/application/o/<application_slug>/`
-    - **Token URL**: `http://authentik.company/application/o/token/`
+    - **Client Secret**: Client secret from authentik
+    - **Authorization URL**: `https://authentik.company/application/o/authorize/`
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Token URL**: `https://authentik.company/application/o/token/`
 5. Click **Save Configuration**.
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with Termix, first log out of your account. Then, click **External** followed by **Login with External Provider**. You should be redirected to your authentik instance and after successfully authenticating, you should be redirected to Termix and logged in.
+To verify that authentik is correctly integrated with Termix, first log out of your Termix account. From the login screen, select **External** and then choose **Login with External Provider**. You should be redirected to your authentik instance, and after successfully authenticating, the system will return you to Termix where you will be logged in automatically.
 
 ## Resources
 
-- [Termix Docs - OIDC (OpenID Connect) Setup Guide ](https://docs.termix.site/oidc)
+- [Termix Docs - OIDC (OpenID Connect) Setup Guide](https://docs.termix.site/oidc)
