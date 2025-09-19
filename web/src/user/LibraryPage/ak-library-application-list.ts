@@ -21,7 +21,7 @@ type Pair = [string, string];
 const LAYOUTS = new Map<string, [string, string]>([
     [
         "row",
-        ["pf-m-12-col", "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-5-col-on-lg pf-m-all-2-col-on-xl"]],
+        ["pf-m-12-col", "pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-4-col-on-lg pf-m-all-2-col-on-xl"]],
     [
         "2-column",
         ["pf-m-6-col", "pf-m-all-12-col-on-sm pf-m-all-12-col-on-md pf-m-all-4-col-on-lg pf-m-all-4-col-on-xl"],
