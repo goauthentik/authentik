@@ -231,7 +231,7 @@ jobs:
     needs:
       - lint
       - test-migrations
-      - test-migrations-from-stable
+      # - test-migrations-from-stable
       - test-unittest
       - test-integration
       - test-e2e

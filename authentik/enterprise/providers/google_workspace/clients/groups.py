@@ -25,7 +25,7 @@ class GoogleWorkspaceGroupClient(
     """Google client for groups"""
 
     connection_type = GoogleWorkspaceProviderGroup
-    connection_attr = "googleworkspaceprovidergroup_set"
+    connection_type_query = "group"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
