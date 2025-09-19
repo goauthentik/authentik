@@ -27,10 +27,10 @@ To support the integration of osTicket with authentik, you need to create an app
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Note the **Client ID**, **Client Secret** and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://osticket.company/osticket/api/auth/oauth2`.
         - Select any available signing key.
         - Under **Advanced Protocol Settings**:
