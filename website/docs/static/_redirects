@@ -53,6 +53,9 @@
 /outposts/*                                                 /add-secure-apps/outposts/:splat 301!
 #endregion
 
+#region Providers
+/providers/*                                                /add-secure-apps/providers/:splat 301!
+
 #region Sources
 /sources/*                                                  /users-sources/sources/:splat 301!
 /user-group-role/*                                          /users-sources/:splat 301!
