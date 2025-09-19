@@ -104,6 +104,68 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
     return result
 
 
+def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
+    to_replace = {
+        "ordering": create_component(
+            generator,
+            "QueryPaginationOrdering",
+            {
+                "name": "ordering",
+                "required": False,
+                "in": "query",
+                "description": "Which field to use when ordering the results.",
+                "schema": {"type": "string"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "page": create_component(
+            generator,
+            "QueryPaginationPage",
+            {
+                "name": "page",
+                "required": False,
+                "in": "query",
+                "description": "A page number within the paginated result set.",
+                "schema": {"type": "integer"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "page_size": create_component(
+            generator,
+            "QueryPaginationPageSize",
+            {
+                "name": "page_size",
+                "required": False,
+                "in": "query",
+                "description": "Number of results to return per page.",
+                "schema": {"type": "integer"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "search": create_component(
+            generator,
+            "QuerySearch",
+            {
+                "name": "search",
+                "required": False,
+                "in": "query",
+                "description": "A search term.",
+                "schema": {"type": "string"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+    }
+    for path in result["paths"].values():
+        for method in path.values():
+            # print(method["parameters"])
+            for idx, param in enumerate(method.get("parameters", [])):
+                for replace_name, replace_ref in to_replace.items():
+                    if param["name"] == replace_name:
+                        method["parameters"][idx] = replace_ref.ref
+            # print(method["parameters"])
+    return result
+
+
 def preprocess_schema_exclude_non_api(endpoints, **kwargs):
     """Filter out all API Views which are not mounted under /api"""
     return [
