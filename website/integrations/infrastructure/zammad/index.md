@@ -45,7 +45,7 @@ To support the integration of Zammad with authentik, you need to create an appli
 
 ### Download certificate file
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for zammad`).
 3. Under **Related objects** > **Download signing certificate **, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 

@@ -22,7 +22,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **SAML Provider** as the provider type.
@@ -40,7 +40,7 @@ To support the integration of OVHcloud with authentik, you need to create an app
 
 ### Download metadata file
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your **SAML Metadata** file and it will be required in the next section.
 

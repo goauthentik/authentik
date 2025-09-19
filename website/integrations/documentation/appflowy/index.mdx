@@ -30,7 +30,7 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create a certificate-key pair
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Generate**.
 3. Set the following required fields:
     - **Common name**: set an appropriate name (For example: `AppFlowyCertSAML`).
@@ -40,7 +40,7 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
@@ -61,7 +61,7 @@ To support the integration of AppFlowy with authentik, you need to create a cert
 
 ### Copy metadata download link
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 3. Under **Related objects** > **Metadata**, click on **Copy download URL**. This URL is your **SAML Metadata URL** and it will be required in the next section.
 
