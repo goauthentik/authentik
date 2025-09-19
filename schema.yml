@@ -23008,7 +23008,6 @@ paths:
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
-          - authentik_stages_consent.userconsent
           - authentik_stages_deny.denystage
           - authentik_stages_dummy.dummystage
           - authentik_stages_email.emailstage
@@ -23238,7 +23237,6 @@ paths:
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
-          - authentik_stages_consent.userconsent
           - authentik_stages_deny.denystage
           - authentik_stages_dummy.dummystage
           - authentik_stages_email.emailstage
@@ -46104,7 +46102,6 @@ components:
       - authentik_stages_authenticator_webauthn.webauthndevice
       - authentik_stages_captcha.captchastage
       - authentik_stages_consent.consentstage
-      - authentik_stages_consent.userconsent
       - authentik_stages_deny.denystage
       - authentik_stages_dummy.dummystage
       - authentik_stages_email.emailstage
