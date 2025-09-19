@@ -4,19 +4,21 @@ title: Working with policies
 
 For an overview of policies, refer to our documentation on [Policies](./index.md).
 
-authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs.
+authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs. We also document several useful [expression policies](./expression.mdx#sample-expression-policies).
 
-We also document how to use a policy to [whitelist email domains](./expression/whitelist_email.md) and to [ensure unique email addresses](./expression/unique_email.md).
+::info
+You can add expressions to our standard policies to further customize them.
+:::
 
 To learn more see also [bindings](../../add-secure-apps/flows-stages/bindings/index.md) and how to [bind policy bindings to a new application when the application is created](../../add-secure-apps/applications/manage_apps.mdx#instructions) (for example, to configure application-specific access).
 
 ## Create a policy
 
-To create a new policy, follow these steps:
+To create a new policy, _either a pre-configured one or an expression policy_, follow these steps:
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Customization > Policies**.
-3. Click **Create**, and select the type of policy.
+3. Click **Create**, and select the type of policy. Here you select whether you want to create a custom expression policy, or a standard, out-of-the box one.
 4. Define the policy and click **Finish**.
 
 ## Bind a policy to a flow or stage
