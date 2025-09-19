@@ -53818,6 +53818,17 @@ components:
           minLength: 1
           default: ak-stage-prompt
       additionalProperties: {}
+    PromptChoice:
+      type: object
+      description: Serializer for a single Choice field
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+      required:
+      - label
+      - value
     PromptRequest:
       type: object
       description: Prompt Serializer
@@ -57518,7 +57529,7 @@ components:
         choices:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/PromptChoice'
           nullable: true
       required:
       - choices
