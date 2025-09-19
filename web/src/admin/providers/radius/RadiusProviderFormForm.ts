@@ -1,3 +1,4 @@
+import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-hidden-text-input";
@@ -5,6 +6,7 @@ import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#admin/common/ak-license-notice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
 
@@ -96,6 +98,19 @@ export function renderForm(
                     help=${clientNetworksHelp}
                     input-hint="code"
                 ></ak-text-input>
+                <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
+                    <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
+                    <ak-crypto-certificate-search
+                        certificate=${ifDefined(provider?.certificate ?? undefined)}
+                        singleton
+                    ></ak-crypto-certificate-search>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.",
+                        )}
+                    </p>
+                    <ak-license-notice></ak-license-notice>
+                </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
                     name="propertyMappings"
