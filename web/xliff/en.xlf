@@ -4864,14 +4864,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Internal</source>
         <target>Internal</target>
       </trans-unit>
-      <trans-unit id="scbb7d3154da629f3">
-        <source>OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.</source>
-        <target>OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.</target>
-      </trans-unit>
-      <trans-unit id="s0195c0df7294228a">
-        <source>See more about OCI support here:</source>
-        <target>See more about OCI support here:</target>
-      </trans-unit>
       <trans-unit id="sfae395b94a5a0040">
         <source>Blueprint</source>
         <target>Blueprint</target>
@@ -5729,9 +5721,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s96d2bb4be3f5e8aa">
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
-</trans-unit>
-<trans-unit id="sb37880a2a7288ef0">
-  <source>Update Permissions</source>
 </trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
@@ -8056,6 +8045,31 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s64de9eceb8172269">
   <source>Edit device</source>
+</trans-unit>
+<trans-unit id="sc08c153234510246">
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
+</trans-unit>
+<trans-unit id="s6d25eef21a9e76ba">
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
+</trans-unit>
+<trans-unit id="sa556d7b744364dcf">
+  <source>OCI URL</source>
+</trans-unit>
+<trans-unit id="h3b1f38bb34f8b1b6">
+  <source> A valid OCI manifest URL, prefixed with the protocol
+                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="sc19e397bee1e67f7">
+  <source>Read more about</source>
+</trans-unit>
+<trans-unit id="sa777a614e18a35cd">
+  <source>OCI Support</source>
+</trans-unit>
+<trans-unit id="s08d24327ec788e78">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s6f8d15b5494ac41a">
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
     </body>
   </file>
