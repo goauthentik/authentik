@@ -188,8 +188,8 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
-                        const value = choice.value ?? choice;
-                        const label = choice.label ?? choice;
+                        const value = choice.value;
+                        const label = choice.label;
 
                         return html`<option
                             value="${value}"
@@ -201,8 +201,8 @@ ${prompt.initialValue}</textarea
                 </select>`;
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
-                    const value = choice.value || choice;
-                    const label = choice.label || choice;
+                    const value = choice.value;
+                    const label = choice.label;
 
                     const id = `${prompt.fieldKey}-${value}`;
                     return html`<div class="pf-c-check">
