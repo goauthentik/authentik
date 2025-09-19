@@ -67,7 +67,7 @@ will be evaluated as a Python expression. This happens in the same environment a
 
 In the case of `Radio Button Group` and `Dropdown` prompts, this field defines all possible values (choices). When interpreted as-is, only one value will be allowed (the placeholder string). When interpreted as expression, a list of values can be returned to define multiple choices. For example, `return ["first option", 42, {"label": "another option", "value": "some value"}]` defines 3 possible values.
 
-A choice can be represented as a string or other primitive (which will be turned into a string), or as an object with parameters `value` and/or `label`.Sow `return ["Option 1"]` is equivalent to `return [{"label": "Option 1", "value": "Option 1"}]`.
+A choice can be represented as a string or other primitive (which will be turned into a string), or as an object with parameters `value` and/or `label`. So `return ["Option 1"]` is equivalent to `return [{"label": "Option 1", "value": "Option 1"}]`.
 
 You can access both the HTTP request and the user as with a mapping. Additionally, you can access `prompt_context`, which is a dictionary of the current state of the prompt stage's data.
 
