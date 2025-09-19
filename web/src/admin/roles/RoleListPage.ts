@@ -10,12 +10,13 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, HTMLTemplateResult, TemplateResult } from "lit";
+import { html, HTMLTemplateResult, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
@@ -64,15 +65,9 @@ export class RoleListPage extends TablePage<Role> {
     }
 
     render(): HTMLTemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <div class="pf-c-card">${this.renderTable()}</div>
-            </section>`;
+        return html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            <div class="pf-c-card">${this.renderTable()}</div>
+        </section>`;
     }
 
     row(item: Role): SlottedTemplateResult[] {
@@ -100,6 +95,15 @@ export class RoleListPage extends TablePage<Role> {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }
 

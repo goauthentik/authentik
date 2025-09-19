@@ -8,7 +8,6 @@ import "#admin/providers/radius/RadiusProviderViewPage";
 import "#admin/providers/saml/SAMLProviderViewPage";
 import "#admin/providers/scim/SCIMProviderViewPage";
 import "#admin/providers/ssf/SSFProviderViewPage";
-import "#components/ak-page-header";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
@@ -16,9 +15,11 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { AKElement } from "#elements/Base";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { Provider, ProvidersApi } from "@goauthentik/api";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -40,7 +41,7 @@ export class ProviderViewPage extends AKElement {
 
     static styles: CSSResult[] = [PFPage];
 
-    renderProvider(): TemplateResult {
+    render(): TemplateResult {
         if (!this.provider) {
             return html`<ak-empty-state loading full-height></ak-empty-state>`;
         }
@@ -90,14 +91,13 @@ export class ProviderViewPage extends AKElement {
         }
     }
 
-    render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-integration"
-                header=${ifDefined(this.provider?.name)}
-                description=${ifDefined(this.provider?.verboseName)}
-            >
-            </ak-page-header>
-            ${this.renderProvider()}`;
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-integration",
+            header: this.provider?.name,
+            description: this.provider?.verboseName,
+        });
     }
 }
 

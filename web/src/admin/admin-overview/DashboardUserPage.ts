@@ -1,13 +1,14 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
-import "#components/ak-page-header";
 import "#elements/cards/AggregatePromiseCard";
 
 import { AKElement } from "#elements/Base";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { EventActions, EventsEventsVolumeListRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -35,8 +36,7 @@ export class DashboardUserPage extends AKElement {
     ];
 
     render(): TemplateResult {
-        return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User Statistics")}>
-            </ak-page-header>
+        return html`
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
                     <div
@@ -80,7 +80,16 @@ export class DashboardUserPage extends AKElement {
                         </ak-aggregate-card>
                     </div>
                 </div>
-            </section> `;
+            </section>
+        `;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-user",
+            header: msg("User Statistics"),
+        });
     }
 }
 
