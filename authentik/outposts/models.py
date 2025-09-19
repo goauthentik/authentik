@@ -47,6 +47,7 @@ LOGGER = get_logger()
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
+
 class ServiceConnectionInvalid(SentryIgnoredException):
     """Exception raised when a Service Connection has invalid parameters"""
 

@@ -1,6 +1,7 @@
 package application
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -59,11 +60,35 @@ func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
 		// no claims saved, reject
 		return nil
 	}
-	c, ok := claims.(Claims)
-	if !ok {
-		return nil
+	// todo(dominic): figure out which it is and get rid of this
+
+	// Try direct cast first (when claims are stored as Claims struct)
+	if c, ok := claims.(Claims); ok {
+		return &c
 	}
-	return &c
+
+	// Try pointer cast (when claims are stored as *Claims)
+	if c, ok := claims.(*Claims); ok {
+		return c
+	}
+
+	// Handle case where claims were JSON deserialized as map[string]interface{}
+	if claimsMap, ok := claims.(map[string]interface{}); ok {
+		// Convert map back to Claims struct using JSON marshaling
+		jsonData, err := json.Marshal(claimsMap)
+		if err != nil {
+			return nil
+		}
+
+		var c Claims
+		if err := json.Unmarshal(jsonData, &c); err != nil {
+			return nil
+		}
+
+		return &c
+	}
+
+	return nil
 }
 
 func (a *Application) getClaimsFromCache(r *http.Request) *Claims {

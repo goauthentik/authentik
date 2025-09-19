@@ -29,7 +29,7 @@ func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request
 		a.log.WithError(err).Trace("failed to get session")
 	}
 	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
-	s.Values[constants.SessionClaims] = &claims
+	s.Values[constants.SessionClaims] = claims
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
