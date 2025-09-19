@@ -12,6 +12,7 @@ import "#admin/property-mappings/PropertyMappingSourceOAuthForm";
 import "#admin/property-mappings/PropertyMappingSourcePlexForm";
 import "#admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "#admin/property-mappings/PropertyMappingSourceSCIMForm";
+import "#admin/property-mappings/PropertyMappingSourceTelegramForm";
 import "#admin/property-mappings/PropertyMappingTestForm";
 import "#elements/forms/ProxyForm";
 import "#elements/wizard/FormWizardPage";
