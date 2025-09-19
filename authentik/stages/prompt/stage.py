@@ -14,7 +14,6 @@ from rest_framework.fields import (
     BooleanField,
     CharField,
     ChoiceField,
-    DictField,
     IntegerField,
     ListField,
     empty,
@@ -34,6 +33,13 @@ from authentik.stages.prompt.signals import password_validate
 PLAN_CONTEXT_PROMPT = "prompt_data"
 
 
+class PromptChoiceSerializer(PassiveSerializer):
+    """Serializer for a single Choice field"""
+
+    value = CharField(allow_blank=True, required=True)
+    label = CharField(allow_blank=True, required=True)
+
+
 class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
@@ -45,9 +51,7 @@ class StagePromptSerializer(PassiveSerializer):
     initial_value = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
-
-    # TODO: Make custom ChoiceField with optional label, value, etc.
-    choices = ListField(child=DictField(), allow_empty=True, allow_null=True)
+    choices = ListField(child=PromptChoiceSerializer(), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -239,7 +243,7 @@ class PromptStageView(ChallengeStageView):
                     {"value": str(choice.get("value", "")), "label": str(choice.get("label", ""))}
                 )
             else:
-                clean.append(str(choice))  # Should we force it to be a dict with value + label?
+                clean.append({"value": str(choice), "label": str(choice)})
 
         return clean
 
