@@ -8,7 +8,7 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
@@ -21,7 +21,7 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
 from authentik.policies.utils import delete_none_values
-from authentik.providers.saml.models import SAMLBindings, SAMLProvider
+from authentik.providers.saml.models import SAMLBindings, SAMLProvider, SAMLSession
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
@@ -56,7 +56,29 @@ class SAMLFlowFinalView(ChallengeStageView):
 
         auth_n_request: AuthNRequest = self.executor.plan.context[PLAN_CONTEXT_SAML_AUTH_N_REQUEST]
         try:
-            response = AssertionProcessor(provider, request, auth_n_request).build_response()
+            processor = AssertionProcessor(provider, request, auth_n_request)
+            response = processor.build_response()
+
+            # Create SAMLSession to track this login
+            auth_session = AuthenticatedSession.from_request(request, request.user)
+            if auth_session:
+                # Delete any existing SAML session for this session_index and provider
+                SAMLSession.objects.filter(
+                    session_index=processor.session_index, provider=provider
+                ).delete()
+
+                SAMLSession.objects.update_or_create(
+                    session_index=processor.session_index,
+                    provider=provider,
+                    defaults={
+                        "user": request.user,
+                        "session": auth_session,
+                        "name_id": processor.name_id,
+                        "name_id_format": processor.name_id_format,
+                        "session_not_on_or_after": processor.session_not_on_or_after_datetime,
+                        "expires": processor.session_not_on_or_after_datetime,
+                    },
+                )
         except SAMLException as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,

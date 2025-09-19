@@ -58,6 +58,11 @@ class AssertionProcessor:
     _session_not_on_or_after: str
     _valid_not_on_or_after: str
 
+    session_index: str
+    name_id: str
+    name_id_format: str
+    session_not_on_or_after_datetime: datetime
+
     def __init__(self, provider: SAMLProvider, request: HttpRequest, auth_n_request: AuthNRequest):
         self.provider = provider
         self.http_request = request
@@ -75,9 +80,10 @@ class AssertionProcessor:
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
-        self._session_not_on_or_after = get_time_string(
-            timedelta_from_string(self.provider.session_valid_not_on_or_after)
+        self.session_not_on_or_after_datetime = datetime.now() + timedelta_from_string(
+            self.provider.session_valid_not_on_or_after
         )
+        self._session_not_on_or_after = get_time_string(self.session_not_on_or_after_datetime)
         self._valid_not_on_or_after = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_on_or_after)
         )
@@ -139,9 +145,10 @@ class AssertionProcessor:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
         auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
-        auth_n_statement.attrib["SessionIndex"] = sha256(
+        self.session_index = sha256(
             self.http_request.session.session_key.encode("ascii")
         ).hexdigest()
+        auth_n_statement.attrib["SessionIndex"] = self.session_index
         auth_n_statement.attrib["SessionNotOnOrAfter"] = self._session_not_on_or_after
 
         auth_n_context = SubElement(auth_n_statement, f"{{{NS_SAML_ASSERTION}}}AuthnContext")
@@ -213,9 +220,11 @@ class AssertionProcessor:
         ):
             self.auth_n_request.name_id_policy = self.provider.default_name_id_policy
         name_id.attrib["Format"] = self.auth_n_request.name_id_policy
+        self.name_id_format = self.auth_n_request.name_id_policy
         # persistent is used as a fallback, so always generate it
         persistent = self.http_request.user.uid
         name_id.text = persistent
+        self.name_id = persistent
         # If name_id_mapping is set, we override the value, regardless of what the SP asks for
         if self.provider.name_id_mapping:
             try:
@@ -226,6 +235,7 @@ class AssertionProcessor:
                 )
                 if value is not None:
                     name_id.text = str(value)
+                    self.name_id = str(value)
                 return name_id
             except PropertyMappingExpressionException as exc:
                 Event.new(
@@ -241,27 +251,32 @@ class AssertionProcessor:
                 return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email
+            self.name_id = self.http_request.user.email
             return name_id
         if name_id.attrib["Format"] in [
             SAML_NAME_ID_FORMAT_PERSISTENT,
             SAML_NAME_ID_FORMAT_UNSPECIFIED,
         ]:
             name_id.text = persistent
+            self.name_id = persistent
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get(
                 LDAP_DISTINGUISHED_NAME, persistent
             )
+            self.name_id = name_id.text
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_WINDOWS:
             # This attribute is statically set by the LDAP source
             name_id.text = self.http_request.user.attributes.get("upn", persistent)
+            self.name_id = name_id.text
             return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
             # Use the hash of the user's session, which changes every session
             session_key: str = self.http_request.session.session_key
             name_id.text = sha256(session_key.encode()).hexdigest()
+            self.name_id = name_id.text
             return name_id
         raise UnsupportedNameIDFormat(
             f"Assertion contains NameID with unsupported format {name_id.attrib['Format']}."

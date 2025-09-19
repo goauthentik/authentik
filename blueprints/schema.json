@@ -1984,6 +1984,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_providers_saml.samlsession"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_providers_saml.samlsession_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_providers_saml.samlsession"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_providers_saml.samlsession"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_providers_scim.scimmapping"
                         },
                         "id": {
@@ -5127,12 +5167,16 @@
                             "authentik_providers_radius.view_radiusproviderpropertymapping",
                             "authentik_providers_saml.add_samlpropertymapping",
                             "authentik_providers_saml.add_samlprovider",
+                            "authentik_providers_saml.add_samlsession",
                             "authentik_providers_saml.change_samlpropertymapping",
                             "authentik_providers_saml.change_samlprovider",
+                            "authentik_providers_saml.change_samlsession",
                             "authentik_providers_saml.delete_samlpropertymapping",
                             "authentik_providers_saml.delete_samlprovider",
+                            "authentik_providers_saml.delete_samlsession",
                             "authentik_providers_saml.view_samlpropertymapping",
                             "authentik_providers_saml.view_samlprovider",
+                            "authentik_providers_saml.view_samlsession",
                             "authentik_providers_scim.add_scimmapping",
                             "authentik_providers_scim.add_scimprovider",
                             "authentik_providers_scim.add_scimprovidergroup",
@@ -7418,6 +7462,7 @@
                         "authentik_providers_radius.radiusproviderpropertymapping",
                         "authentik_providers_saml.samlprovider",
                         "authentik_providers_saml.samlpropertymapping",
+                        "authentik_providers_saml.samlsession",
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
@@ -9160,6 +9205,11 @@
                     "minLength": 1,
                     "title": "ACS URL"
                 },
+                "sls_url": {
+                    "type": "string",
+                    "title": "SLS URL",
+                    "description": "Single Logout Service URL where the logout response should be sent."
+                },
                 "audience": {
                     "type": "string",
                     "title": "Audience",
@@ -9250,6 +9300,10 @@
                     "type": "boolean",
                     "title": "Sign response"
                 },
+                "sign_logout_request": {
+                    "type": "boolean",
+                    "title": "Sign logout request"
+                },
                 "sp_binding": {
                     "type": "string",
                     "enum": [
@@ -9258,6 +9312,21 @@
                     ],
                     "title": "Service Provider Binding",
                     "description": "This determines how authentik sends the response back to the Service Provider."
+                },
+                "sls_binding": {
+                    "type": "string",
+                    "enum": [
+                        "",
+                        "redirect",
+                        "post"
+                    ],
+                    "title": "SLS Binding",
+                    "description": "This determines how authentik sends the logout response back to the Service Provider."
+                },
+                "backchannel_post_logout": {
+                    "type": "boolean",
+                    "title": "Backchannel post logout",
+                    "description": "When enabled, logout requests will be sent directly from the server to the Service Provider without user interaction. Only available when SLS Binding is set to POST."
                 },
                 "default_relay_state": {
                     "type": "string",
@@ -9294,6 +9363,37 @@
                             "change_samlprovider",
                             "delete_samlprovider",
                             "view_samlprovider"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_providers_saml.samlsession": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        },
+        "model_authentik_providers_saml.samlsession_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_samlsession",
+                            "change_samlsession",
+                            "delete_samlsession",
+                            "view_samlsession"
                         ]
                     },
                     "user": {
@@ -9800,12 +9900,16 @@
                             "authentik_providers_radius.view_radiusproviderpropertymapping",
                             "authentik_providers_saml.add_samlpropertymapping",
                             "authentik_providers_saml.add_samlprovider",
+                            "authentik_providers_saml.add_samlsession",
                             "authentik_providers_saml.change_samlpropertymapping",
                             "authentik_providers_saml.change_samlprovider",
+                            "authentik_providers_saml.change_samlsession",
                             "authentik_providers_saml.delete_samlpropertymapping",
                             "authentik_providers_saml.delete_samlprovider",
+                            "authentik_providers_saml.delete_samlsession",
                             "authentik_providers_saml.view_samlpropertymapping",
                             "authentik_providers_saml.view_samlprovider",
+                            "authentik_providers_saml.view_samlsession",
                             "authentik_providers_scim.add_scimmapping",
                             "authentik_providers_scim.add_scimprovider",
                             "authentik_providers_scim.add_scimprovidergroup",
@@ -15520,6 +15624,10 @@
                         ]
                     },
                     "title": "Flow set"
+                },
+                "saml_redirect_logout": {
+                    "type": "boolean",
+                    "title": "Saml redirect logout"
                 }
             },
             "required": []

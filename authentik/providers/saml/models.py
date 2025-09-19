@@ -8,9 +8,15 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.core.api.object_types import CreatableType
-from authentik.core.models import PropertyMapping, Provider
+from authentik.core.models import (
+    AuthenticatedSession,
+    ExpiringModel,
+    PropertyMapping,
+    Provider,
+    User,
+)
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
@@ -53,6 +59,13 @@ class SAMLProvider(Provider):
             "no audience restriction will be added."
         ),
     )
+    sls_url = models.TextField(
+        default="",
+        blank=True,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("SLS URL"),
+        help_text=_("Single Logout Service URL where the logout response should be sent."),
+    )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
     sp_binding = models.TextField(
         choices=SAMLBindings.choices,
@@ -60,6 +73,15 @@ class SAMLProvider(Provider):
         verbose_name=_("Service Provider Binding"),
         help_text=_(
             "This determines how authentik sends the response back to the Service Provider."
+        ),
+    )
+    sls_binding = models.TextField(
+        choices=SAMLBindings.choices,
+        default=SAMLBindings.REDIRECT,
+        blank=True,
+        verbose_name=_("SLS Binding"),
+        help_text=_(
+            "This determines how authentik sends the logout response back to the Service Provider."
         ),
     )
 
@@ -186,6 +208,16 @@ class SAMLProvider(Provider):
 
     sign_assertion = models.BooleanField(default=True)
     sign_response = models.BooleanField(default=False)
+    sign_logout_request = models.BooleanField(default=False)
+
+    backchannel_post_logout = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, logout requests will be sent directly from the server "
+            "to the Service Provider without user interaction. Only available when "
+            "SLS Binding is set to POST."
+        ),
+    )
 
     @property
     def launch_url(self) -> str | None:
@@ -260,3 +292,41 @@ class SAMLProviderImportModel(CreatableType, Provider):
         abstract = True
         verbose_name = _("SAML Provider from Metadata")
         verbose_name_plural = _("SAML Providers from Metadata")
+
+
+class SAMLSession(SerializerModel, ExpiringModel):
+    """Track active SAML sessions for Single Logout support"""
+
+    provider = models.ForeignKey(SAMLProvider, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    session = models.ForeignKey(
+        AuthenticatedSession,
+        on_delete=models.CASCADE,
+        help_text=_("Link to the user's authenticated session"),
+    )
+    session_index = models.TextField(help_text=_("SAML SessionIndex for this session"))
+    name_id = models.TextField(help_text=_("SAML NameID value for this session"))
+    name_id_format = models.TextField(default="", blank=True, help_text=_("SAML NameID format"))
+    created = models.DateTimeField(auto_now_add=True)
+    session_not_on_or_after = models.DateTimeField(
+        help_text=_("Session expiration time sent to the SP")
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.saml.api.sessions import SAMLSessionSerializer
+
+        return SAMLSessionSerializer
+
+    def __str__(self):
+        return f"SAML Session for provider {self.provider_id} and user {self.user_id}"
+
+    class Meta:
+        verbose_name = _("SAML Session")
+        verbose_name_plural = _("SAML Sessions")
+        unique_together = [("session_index", "provider")]
+        indexes = [
+            models.Index(fields=["session_index"]),
+            models.Index(fields=["provider", "user"]),
+            models.Index(fields=["session"]),
+        ]
