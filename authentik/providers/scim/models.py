@@ -8,12 +8,14 @@ from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
+from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.providers.scim.clients.auth import SCIMTokenAuth
 
 
 class SCIMProviderUser(SerializerModel):
@@ -95,6 +97,9 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name=_("SCIM Compatibility Mode"),
         help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
     )
+
+    def scim_auth(self) -> AuthBase:
+        return SCIMTokenAuth(self)
 
     @property
     def icon_url(self) -> str | None:
