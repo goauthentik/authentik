@@ -1,7 +1,7 @@
 """OAuth Client models"""
 
 from typing import TYPE_CHECKING
-
+from django.utils.timezone import now
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
@@ -311,6 +311,11 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
+    expires = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def is_valid(self):
+        return self.expires > now()
 
     @property
     def serializer(self) -> type[Serializer]:
