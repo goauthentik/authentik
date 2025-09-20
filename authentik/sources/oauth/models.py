@@ -1,10 +1,11 @@
 """OAuth Client models"""
 
 from typing import TYPE_CHECKING
-from django.utils.timezone import now
+
 from django.db import models
 from django.http.request import HttpRequest
 from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 

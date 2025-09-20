@@ -12,5 +12,5 @@ class SCIMTokenAuth:
         self.provider = provider
 
     def __call__(self, request: Request) -> Request:
-        request.headers["Authorization"] = f"Bearer {self.provider.toke}"
+        request.headers["Authorization"] = f"Bearer {self.provider.token}"
         return request

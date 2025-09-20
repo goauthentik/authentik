@@ -10,12 +10,15 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 from requests.auth import AuthBase
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
+
+LOGGER = get_logger()
 
 
 class SCIMProviderUser(SerializerModel):
@@ -81,6 +84,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
+    auth_oauth = models.ForeignKey(
+        "authentik_sources_oauth.OAuthSource", on_delete=models.SET_DEFAULT, default=None, null=True
+    )
+    auth_oauth_grant_type = models.TextField(blank=True, default="")
+    auth_oauth_user = models.ForeignKey(
+        "authentik_core.User", on_delete=models.CASCADE, default=None, null=True
+    )
+
     verify_certificates = models.BooleanField(default=True)
 
     property_mappings_group = models.ManyToManyField(
@@ -99,6 +110,13 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def scim_auth(self) -> AuthBase:
+        if self.auth_oauth:
+            try:
+                from authentik.enterprise.providers.scim.auth_oauth2 import SCIMOAuthAuth
+
+                return SCIMOAuthAuth(self)
+            except ImportError:
+                LOGGER.warning("Failed to import SCIM OAuth Client")
         return SCIMTokenAuth(self)
 
     @property
