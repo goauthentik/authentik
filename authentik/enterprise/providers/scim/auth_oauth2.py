@@ -17,9 +17,9 @@ class SCIMOAuthAuth:
 
     def __init__(self, provider: "SCIMProvider"):
         self.provider = provider
+        self.user = provider.auth_oauth_user
         self.connection = self.get_connection()
         self.logger = get_logger().bind()
-        self.user = provider.auth_oauth_user
 
     def retrieve_token(self):
         if not self.provider.auth_oauth:
@@ -30,6 +30,7 @@ class SCIMOAuthAuth:
         if source.source_type.urls_customizable and source.access_token_url:
             access_token_url = source.access_token_url
         data = client.get_access_token_args(None, None)
+        data["grant_type"] = "password"
         data.update(self.provider.auth_oauth_params)
         try:
             response = client.do_request(
@@ -46,7 +47,7 @@ class SCIMOAuthAuth:
 
     def get_connection(self):
         token = UserOAuthSourceConnection.objects.filter(
-            source=self.provider.oauth, user=self.user, expires__lt=now()
+            source=self.provider.auth_oauth, user=self.user, expires__lt=now()
         ).first()
         if token and token.access_token:
             return token
@@ -55,12 +56,13 @@ class SCIMOAuthAuth:
             self.logger.info("Failed to get new OAuth token", error=token["error"])
             raise SCIMRequestException(token["error"])
         access_token = token["access_token"]
+        expires_in = int(token.get("expires_in", 0))
         token, _ = UserOAuthSourceConnection.objects.update_or_create(
-            source=self.provider.oauth,
+            source=self.provider.auth_oauth,
             user=self.user,
             defaults={
                 "access_token": access_token,
-                "expires": now() + timedelta(seconds=token["expires_in"]),
+                "expires": now() + timedelta(seconds=expires_in),
             },
         )
         return token

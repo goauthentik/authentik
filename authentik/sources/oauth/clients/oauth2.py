@@ -67,7 +67,7 @@ class OAuth2Client(BaseOAuthClient):
             args["redirect_uri"] = callback
         if code:
             args["code"] = code
-        if SESSION_KEY_OAUTH_PKCE in self.request.session:
+        if self.request and SESSION_KEY_OAUTH_PKCE in self.request.session:
             args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         if (
             self.source.source_type.authorization_code_auth_method

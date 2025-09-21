@@ -312,7 +312,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
     access_token = models.TextField(blank=True, null=True, default=None)
-    expires = models.DateTimeField(auto_now_add=True)
+    expires = models.DateTimeField(default=now)
 
     @property
     def is_valid(self):

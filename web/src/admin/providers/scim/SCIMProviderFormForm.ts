@@ -6,6 +6,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/CodeMirror";
+import "#admin/common/ak-license-notice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 
@@ -147,11 +148,16 @@ export function renderForm(
                                 label: msg("Token"),
                                 value: SCIMAuthenticationModeEnum.Token,
                                 default: true,
+                                description: html`${msg(
+                                    "Authenticate SCIM requests using a static token.",
+                                )}`,
                             },
                             {
                                 label: msg("OAuth"),
                                 value: SCIMAuthenticationModeEnum.Oauth,
                                 default: true,
+                                description: html`${msg("Authenticate SCIM requests using OAuth.")}
+                                    <ak-license-notice></ak-license-notice>`,
                             },
                         ]}
                     ></ak-radio>
