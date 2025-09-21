@@ -1,6 +1,7 @@
 /**
  * @file Docusaurus Integrations config.
  *
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
@@ -66,6 +67,14 @@ export default createDocusaurusConfig(
         //#region Plugins
 
         plugins: [
+            [
+                "@goauthentik/docusaurus-theme/releases/plugin",
+                /** @type {AKReleasesPluginOptions} */ ({
+                    docsDirectory: __dirname,
+                    environment: releaseEnvironment,
+                }),
+            ],
+
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.
 
