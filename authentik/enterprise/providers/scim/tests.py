@@ -43,7 +43,7 @@ class SCIMOAuthTests(TestCase):
         self.source = OAuthSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            access_token_url="http://localhost/token",
+            access_token_url="http://localhost/token",  # nosec
             consumer_key=generate_id(),
             consumer_secret=generate_id(),
             provider_type="openidconnect",
