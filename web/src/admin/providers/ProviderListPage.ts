@@ -115,7 +115,6 @@ export class ProviderListPage extends TablePage<Provider> {
                 <span slot="submit">${msg("Update")}</span>
                 <span slot="header">${msg(str`Update ${item.verboseName}`)}</span>
                 <ak-proxy-form
-                    slot="form"
                     .args=${{
                         instancePk: item.pk,
                     }}

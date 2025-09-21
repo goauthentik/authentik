@@ -4,12 +4,12 @@ import "#elements/buttons/SpinnerButton/index";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { ModalButton } from "#elements/buttons/ModalButton";
-import { ModalHideEvent } from "#elements/controllers/ModalOrchestrationController";
 import { Form } from "#elements/forms/Form";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 @customElement("ak-forms-modal")
 export class ModalForm extends ModalButton {
@@ -30,15 +30,10 @@ export class ModalForm extends ModalButton {
     //#endregion
 
     #confirm = async (): Promise<void> => {
-        const form = this.querySelector<Form>("[slot=form]");
+        const form = this.defaultSlotElements().find((element) => element instanceof Form);
 
         if (!form) {
-            throw new Error(msg("No form found"));
-        }
-
-        if (!(form instanceof Form)) {
-            console.warn("authentik/forms: form inside the form slot is not a Form", form);
-            throw new Error(msg("Element inside the form slot is not a Form"));
+            throw new Error(msg("No form found within the default slot"));
         }
 
         if (!form.reportValidity()) {
@@ -85,11 +80,7 @@ export class ModalForm extends ModalButton {
     };
 
     #cancel = (): void => {
-        const defaultInvoked = this.dispatchEvent(new ModalHideEvent(this));
-
-        if (defaultInvoked) {
-            this.resetForms();
-        }
+        this.close();
     };
 
     #scrollListener = () => {
@@ -99,6 +90,14 @@ export class ModalForm extends ModalButton {
             }),
         );
     };
+
+    #defaultSlotRef = createRef<HTMLSlotElement>();
+
+    public defaultSlotElements(): Element[] {
+        const defaultSlot = this.#defaultSlotRef.value;
+
+        return defaultSlot?.assignedElements({}) ?? [];
+    }
 
     protected renderModalInner(): TemplateResult {
         return html`${this.loading
@@ -113,7 +112,7 @@ export class ModalForm extends ModalButton {
             </section>
             <slot name="above-form"></slot>
             <section class="pf-c-modal-box__body" @scroll=${this.#scrollListener}>
-                <slot name="form"></slot>
+                <slot ${ref(this.#defaultSlotRef)}></slot>
             </section>
             <footer class="pf-c-modal-box__footer">
                 ${this.showSubmitButton
@@ -121,9 +120,9 @@ export class ModalForm extends ModalButton {
                               <slot name="submit"></slot> </ak-spinner-button
                           >&nbsp;`
                     : nothing}
-                <ak-spinner-button .callAction=${this.#cancel} class="pf-m-secondary">
+                <button @click=${this.#cancel} type="button" class="pf-c-button pf-m-secondary">
                     ${this.cancelText}
-                </ak-spinner-button>
+                </button>
             </footer>`;
     }
 }

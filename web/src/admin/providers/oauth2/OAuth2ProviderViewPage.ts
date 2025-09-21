@@ -283,10 +283,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                         <ak-forms-modal>
                             <span slot="submit">${msg("Update")}</span>
                             <span slot="header">${msg("Update OAuth2 Provider")}</span>
-                            <ak-provider-oauth2-form
-                                slot="form"
-                                .instancePk=${this.provider.pk || 0}
-                            >
+                            <ak-provider-oauth2-form .instancePk=${this.provider.pk}>
                             </ak-provider-oauth2-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
                                 ${msg("Edit")}

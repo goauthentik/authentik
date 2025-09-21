@@ -23,6 +23,9 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ...ModalButton.styles,
         PFAbout,
         css`
+            .pf-c-about-modal-box {
+                width: 100%;
+            }
             .pf-c-about-modal-box__hero {
                 background-image: url("/static/dist/assets/images/flow_background.jpg");
             }
@@ -59,66 +62,59 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
 
     #contentRef = createRef<HTMLDivElement>();
 
-    #backdropListener = (event: PointerEvent) => {
-        // We only want to close the modal when the backdrop is clicked, not when it's children are clicked.
+    // #backdropListener = (event: PointerEvent) => {
+    //     // We only want to close the modal when the backdrop is clicked, not when it's children are clicked.
 
-        if (this.#contentRef.value?.contains(event.target as Node)) {
-            return;
-        }
-        this.close();
-    };
+    //     if (this.#contentRef.value?.contains(event.target as Node)) {
+    //         return;
+    //     }
+    //     this.close();
+    // };
 
-    protected override renderModal() {
+    protected override renderModalInner() {
         let product = this.brandingTitle;
 
         if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
-        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
-            <div class="pf-l-bullseye">
-                <div
-                    ${ref(this.#contentRef)}
-                    class="pf-c-about-modal-box"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
-                >
-                    <div class="pf-c-about-modal-box__brand">
-                        <img
-                            class="pf-c-about-modal-box__brand-image"
-                            src=${this.brandingFavicon}
-                            alt="${msg("authentik Logo")}"
-                        />
-                    </div>
-                    <div class="pf-c-about-modal-box__close">
-                        <button class="pf-c-button pf-m-plain" type="button" @click=${this.close}>
-                            <i class="fas fa-times" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="pf-c-about-modal-box__header">
-                        <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
-                    </div>
-                    <div class="pf-c-about-modal-box__hero"></div>
-                    <div class="pf-c-about-modal-box__content">
-                        <div class="pf-c-about-modal-box__body">
-                            <div class="pf-c-content">
-                                ${until(
-                                    this.getAboutEntries().then((entries) => {
-                                        return html`<dl>
-                                            ${entries.map(([label, value]) => {
-                                                return html`<dt>${label}</dt>
-                                                    <dd>${value}</dd>`;
-                                            })}
-                                        </dl>`;
-                                    }),
-                                    html`<ak-empty-state loading></ak-empty-state>`,
-                                )}
-                            </div>
+        return html`
+            <div ${ref(this.#contentRef)} class="pf-c-about-modal-box">
+                <div class="pf-c-about-modal-box__brand">
+                    <img
+                        class="pf-c-about-modal-box__brand-image"
+                        src=${this.brandingFavicon}
+                        alt="${msg("authentik Logo")}"
+                    />
+                </div>
+                <div class="pf-c-about-modal-box__close">
+                    <button class="pf-c-button pf-m-plain" type="button" @click=${this.close}>
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="pf-c-about-modal-box__header">
+                    <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
+                    <span class="sr-only" id="modal-description">${msg("About this product")}</span>
+                </div>
+                <div class="pf-c-about-modal-box__hero"></div>
+                <div class="pf-c-about-modal-box__content">
+                    <div class="pf-c-about-modal-box__body">
+                        <div class="pf-c-content">
+                            ${until(
+                                this.getAboutEntries().then((entries) => {
+                                    return html`<dl>
+                                        ${entries.map(([label, value]) => {
+                                            return html`<dt>${label}</dt>
+                                                <dd>${value}</dd>`;
+                                        })}
+                                    </dl>`;
+                                }),
+                                html`<ak-empty-state loading></ak-empty-state>`,
+                            )}
                         </div>
-                        <p class="pf-c-about-modal-box__strapline"></p>
                     </div>
+                    <p class="pf-c-about-modal-box__strapline"></p>
                 </div>
             </div>
-        </div>`;
+        `;
     }
 }

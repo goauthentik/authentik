@@ -2,10 +2,7 @@ import { SlottedTemplateResult } from "../types.js";
 
 import { PFSize } from "#common/enums";
 
-import { AKElement } from "#elements/Base";
 import { MODAL_BUTTON_STYLES } from "#elements/buttons/ModalButton";
-import { ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
-import type { Form } from "#elements/forms/Form";
 import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -19,6 +16,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
+// TODO: Deprecate
 export abstract class TableModal<T extends object> extends Table<T> {
     @property()
     public size: PFSize = PFSize.Large;
@@ -58,25 +56,18 @@ export abstract class TableModal<T extends object> extends Table<T> {
     }
 
     public close = () => {
-        this.resetForms();
+        // this.resetForms();
         this.open = false;
     };
 
-    resetForms(): void {
-        for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
-            form.reset?.();
-        }
-    }
+    // resetForms(): void {
+    //     for (const form of this.querySelectorAll<Form | HTMLFormElement>("[slot=form]")) {
+    //         form.reset?.();
+    //     }
+    // }
 
     public show = () => {
         this.open = true;
-        this.dispatchEvent(new ModalShowEvent(this));
-
-        this.querySelectorAll("*").forEach((child) => {
-            if ("requestUpdate" in child) {
-                (child as AKElement).requestUpdate();
-            }
-        });
     };
 
     #closeListener = () => {
@@ -91,13 +82,6 @@ export abstract class TableModal<T extends object> extends Table<T> {
      * @abstract
      */
     protected renderModalInner(): SlottedTemplateResult {
-        return this.renderTable();
-    }
-
-    /**
-     * @abstract
-     */
-    protected renderModal(): SlottedTemplateResult {
         return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
                 <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
@@ -109,7 +93,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    ${this.renderModalInner()}
+                    ${this.renderTable()}
                 </div>
             </div>
         </div>`;
@@ -117,6 +101,6 @@ export abstract class TableModal<T extends object> extends Table<T> {
 
     render(): TemplateResult {
         return html` <slot name="trigger" @click=${this.show}></slot>
-            ${this.open ? this.renderModal() : nothing}`;
+            ${this.open ? this.renderModalInner() : nothing}`;
     }
 }

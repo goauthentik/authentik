@@ -4,7 +4,6 @@ import { applyDocumentTheme } from "#common/theme";
 import { AKElement } from "#elements/Base";
 import { BrandingContextController } from "#elements/controllers/BrandContextController";
 import { ConfigContextController } from "#elements/controllers/ConfigContextController";
-import { ModalOrchestrationController } from "#elements/controllers/ModalOrchestrationController";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -23,7 +22,6 @@ export abstract class Interface extends AKElement {
 
         this.addController(new ConfigContextController(this, config));
         this.addController(new BrandingContextController(this, brand));
-        this.addController(new ModalOrchestrationController());
     }
 
     public connectedCallback(): void {

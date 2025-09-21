@@ -143,7 +143,6 @@ export class PolicyListPage extends TablePage<Policy> {
                 <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
                     ${msg("Clear cache")}
                 </button>
-                <div slot="modal"></div>
             </ak-forms-confirm>`;
     }
 }

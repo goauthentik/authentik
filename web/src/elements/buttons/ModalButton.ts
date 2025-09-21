@@ -3,12 +3,10 @@ import { SlottedTemplateResult } from "../types.js";
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
-import { ModalHideEvent, ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
-import { Form } from "#elements/forms/Form";
 
-import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -42,14 +40,7 @@ export const MODAL_BUTTON_STYLES = css`
 
 @customElement("ak-modal-button")
 export abstract class ModalButton extends AKElement {
-    @property()
-    public size: PFSize = PFSize.Large;
-
-    @property({ type: Boolean })
-    public open = false;
-
-    @property({ type: Boolean })
-    public locked = false;
+    //#region Styles
 
     static styles: CSSResult[] = [
         PFBase,
@@ -65,27 +56,75 @@ export abstract class ModalButton extends AKElement {
         PFContent,
         MODAL_BUTTON_STYLES,
         css`
+            .pf-c-modal-box {
+                place-self: center;
+                border: none;
+                box-shadow: var(--pf-global--BoxShadow--xl);
+                width: var(--pf-c-modal-box--m-lg--lg--MaxWidth);
+
+                max-width: var(--pf-c-modal-box--MaxWidth);
+                max-height: var(--pf-c-modal-box--MaxHeight);
+
+                &::backdrop {
+                    background-color: var(--pf-global--BackgroundColor--dark-transparent-100);
+                }
+                &:not(:open) {
+                    display: none;
+                }
+
+                &.pf-m-xl {
+                    --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
+                }
+            }
             .locked {
                 overflow-y: hidden !important;
-            }
-            .pf-c-modal-box.pf-m-xl {
-                --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
             }
         `,
     ];
 
-    public resetForms(): void {
-        this.querySelectorAll<Form>("[slot=form]").forEach((form) => {
-            form.reset?.();
-        });
+    //#endregion
+
+    //#region Properties
+
+    protected closedBy: "any" | "none" | "closerequest" = "any";
+
+    @property()
+    public size: PFSize = PFSize.Large;
+
+    @property({ type: Boolean })
+    public get open(): boolean {
+        return this.#dialogRef.value?.open ?? false;
     }
+
+    public set open(value: boolean) {
+        const dialog = this.#dialogRef.value;
+        if (!dialog) return;
+
+        if (value) {
+            dialog.showModal();
+        } else {
+            dialog.close();
+        }
+    }
+
+    @property({ type: Boolean })
+    public locked = false;
+
+    // public resetForms(): void {
+    //     // this.querySelectorAll<Form>("[slot=form]").forEach((form) => {
+    //     //     form.reset?.();
+    //     // });
+    // }
+
+    //#endregion
+
+    //#region Public methods
 
     /**
      * Close the modal.
      */
-    public close = () => {
-        this.resetForms();
-        this.open = false;
+    public close = (returnValue?: string) => {
+        this.#dialogRef?.value?.close(returnValue);
     };
 
     /**
@@ -94,58 +133,80 @@ export abstract class ModalButton extends AKElement {
     public show = (): void => {
         this.open = true;
 
-        this.dispatchEvent(new ModalShowEvent(this));
+        // this.dispatchEvent(new ModalShowEvent(this));
 
-        this.querySelectorAll<AKElement>("*").forEach((child) => {
-            child.requestUpdate?.();
-        });
+        // this.querySelectorAll<AKElement>("*").forEach((child) => {
+        //     child.requestUpdate?.();
+        // });
     };
 
-    #closeListener = () => {
-        this.dispatchEvent(new ModalHideEvent(this));
+    //#endregion
+
+    //#region Listeners
+
+    #backdropListener = (event: MouseEvent) => {
+        if (!this.open || event.target !== event.currentTarget) return;
+
+        this.open = false;
     };
 
-    #backdropListener = (event: PointerEvent) => {
-        event.stopPropagation();
-    };
+    //#endregion
+
+    //#region Lifecycle
+
+    #dialogRef = createRef<HTMLDialogElement>();
+
+    //#region Render
 
     /**
      * @abstract
      */
     protected renderModalInner(): SlottedTemplateResult {
-        return html`<slot name="modal"></slot>`;
+        return html`<slot></slot>`;
     }
 
-    /**
-     * @abstract
-     */
-    protected renderModal(): SlottedTemplateResult {
-        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
-            <div class="pf-l-bullseye" role="presentation">
-                <div
-                    class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="modal-title"
-                    aria-describedby="modal-description"
-                >
-                    <button
-                        @click=${this.#closeListener}
-                        class="pf-c-button pf-m-plain"
-                        type="button"
-                        aria-label=${msg("Close dialog")}
-                    >
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                    </button>
-                    ${this.renderModalInner()}
-                </div>
-            </div>
-        </div>`;
-    }
+    // /**
+    //  * @abstract
+    //  */
+    // protected renderModal(): SlottedTemplateResult {
+    // return html`<div class="pf-c-backdrop" @click=${this.#backdropListener} role="presentation">
+    //     <div class="pf-l-bullseye" role="presentation">
+    //         <div
+    //             class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
+    //             role="dialog"
+    //             aria-modal="true"
+    //             aria-labelledby="modal-title"
+    //             aria-describedby="modal-description"
+    //         >
+    //             <button
+    //                 @click=${this.#closeListener}
+    //                 class="pf-c-button pf-m-plain"
+    //                 type="button"
+    //                 aria-label=${msg("Close dialog")}
+    //             >
+    //                 <i class="fas fa-times" aria-hidden="true"></i>
+    //             </button>
+    //             ${this.renderModalInner()}
+    //         </div>
+    //     </div>
+    // </div>`;
+
+    //     return this.();
+    // }
 
     render(): TemplateResult {
-        return html` <slot name="trigger" @click=${this.show}></slot>
-            ${this.open ? this.renderModal() : nothing}`;
+        return html`
+            <slot name="trigger" @click=${this.show}></slot>
+            <dialog
+                @mousedown=${this.#backdropListener}
+                class="pf-c-modal-box"
+                ${ref(this.#dialogRef)}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                ${this.open ? this.renderModalInner() : nothing}
+            </dialog>
+        `;
     }
 
     //#endregion

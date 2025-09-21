@@ -28,6 +28,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-flow-form")
 export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
+        console.log(">>> LOADING", pk);
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });

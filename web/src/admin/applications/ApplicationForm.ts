@@ -17,8 +17,10 @@ import "./components/ak-backchannel-input.js";
 import "./components/ak-provider-search-input.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
+import { MessageLevel } from "#common/messages";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { APIMessage } from "#elements/messages/Message";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
 import { ifPresent } from "#elements/utils/attributes";
@@ -35,6 +37,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
+    //#region Properties
+
+    @property({ attribute: false })
+    public provider?: number;
+
+    @state()
+    protected backchannelProviders: Provider[] = [];
+
+    @property({ type: Boolean })
+    public clearIcon = false;
+
+    //#endregion
+
+    //#region Lifecycle
+
     #api = new CoreApi(DEFAULT_CONFIG);
 
     protected override async loadInstance(pk: string): Promise<Application> {
@@ -48,19 +65,13 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         return app;
     }
 
-    @property({ attribute: false })
-    public provider?: number;
-
-    @state()
-    protected backchannelProviders: Provider[] = [];
-
-    @property({ type: Boolean })
-    public clearIcon = false;
-
-    protected override getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated application.")
-            : msg("Successfully created application.");
+    protected override formatAPISuccessMessage(): APIMessage | null {
+        return {
+            level: MessageLevel.success,
+            message: this.instance
+                ? msg("Successfully updated application.")
+                : msg("Successfully created application."),
+        };
     }
 
     public override async send(applicationRequest: Application): Promise<Application | void> {
@@ -105,6 +116,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         return app;
     }
 
+    //#endregion
+
+    //#region Listeners
+
     #handleConfirmBackchannelProviders = (items: Provider[]) => {
         this.backchannelProviders = items;
         this.requestUpdate();
@@ -127,6 +142,10 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         }
         this.clearIcon = !!(ev.target as HTMLInputElement).checked;
     }
+
+    //#endregion
+
+    //#region Render
 
     public override renderForm(): TemplateResult {
         const alertMsg = msg(
@@ -251,6 +270,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             </ak-form-group>
         `;
     }
+
+    //#endregion
 }
 
 declare global {

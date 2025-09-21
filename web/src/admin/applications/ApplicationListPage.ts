@@ -10,7 +10,6 @@ import "./ApplicationWizardHint.js";
 import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -90,26 +89,27 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         </aside>`;
     }
 
-    renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
-        return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Application(s)")}
-            .objects=${this.selectedElements}
-            .usedBy=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
-                    slug: item.slug,
-                });
-            }}
-            .delete=${(item: Application) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
-                    slug: item.slug,
-                });
-            }}
-        >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
-            </button>
-        </ak-forms-delete-bulk>`;
+    renderToolbarSelected(): SlottedTemplateResult {
+        return nothing;
+        // const disabled = this.selectedElements.length < 1;
+        //  return html`<ak-forms-delete-bulk
+        //     objectLabel=${msg("Application(s)")}
+        //     .objects=${this.selectedElements}
+        //     .usedBy=${(item: Application) => {
+        //         return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
+        //             slug: item.slug,
+        //         });
+        //     }}
+        //     .delete=${(item: Application) => {
+        //         return new CoreApi(DEFAULT_CONFIG).coreApplicationsDestroy({
+        //             slug: item.slug,
+        //         });
+        //     }}
+        // >
+        //     <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+        //         ${msg("Delete")}
+        //     </button>
+        // </ak-forms-delete-bulk>`;
     }
 
     row(item: Application): SlottedTemplateResult[] {
@@ -133,8 +133,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             html`<ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
                     <span slot="header">${msg("Update Application")}</span>
-                    <ak-application-form slot="form" .instancePk=${item.slug}>
-                    </ak-application-form>
+                    <ak-application-form .instancePk=${item.slug}> </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain" aria-label=${msg("Edit")}>
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit" aria-hidden="true"></i>
@@ -156,22 +155,38 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
-                <button
-                    slot="trigger"
-                    class="pf-c-button pf-m-primary"
-                    data-ouia-component-id="start-application-wizard"
-                >
-                    ${msg("Create with Provider")}
-                </button>
-            </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
-                <span slot="submit">${msg("Create")}</span>
-                <span slot="header">${msg("Create Application")}</span>
-                <ak-application-form slot="form"> </ak-application-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-            </ak-forms-modal>`;
+    renderObjectCreate(): SlottedTemplateResult {
+        return nothing;
+        // return html`
+        //     <ak-forms-modal ?open=${getURLParam("createForm", false)}>
+        //         <span slot="submit">${msg("Create")}</span>
+        //         <span slot="header">${msg("Create Application")}</span>
+        //         <ak-application-form> </ak-application-form>
+        //         <button slot="trigger" class="pf-c-button pf-m-primary">
+        //             ${msg("New Application")}
+        //         </button>
+        //     </ak-forms-modal>
+        // `;
+
+        // return html`
+        //     <ak-forms-modal ?open=${getURLParam("createForm", false)}>
+        //         <span slot="submit">${msg("Create")}</span>
+        //         <span slot="header">${msg("Create Application")}</span>
+        //         <ak-application-form> </ak-application-form>
+        //         <button slot="trigger" class="pf-c-button pf-m-primary">
+        //             ${msg("New Application")}
+        //         </button>
+        //     </ak-forms-modal>
+        //     <ak-application-wizard ?open=${getURLParam("createWizard", false)}>
+        //         <button
+        //             slot="trigger"
+        //             class="pf-c-button pf-m-primary"
+        //             data-ouia-component-id="start-application-wizard"
+        //         >
+        //             ${msg("Connect with Provider")}
+        //         </button>
+        //     </ak-application-wizard>
+        // `;
     }
 
     renderToolbar(): TemplateResult {
@@ -193,7 +208,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
                     ${msg("Clear cache")}
                 </button>
-                <div slot="modal"></div>
+                <div></div>
             </ak-forms-confirm>`;
     }
 }

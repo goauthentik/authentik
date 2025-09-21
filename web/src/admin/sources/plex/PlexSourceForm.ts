@@ -53,7 +53,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     @property({ attribute: false })
     plexResources?: PlexResource[];
 
-    get defaultInstance(): PlexSource | undefined {
+    protected get defaultInstance(): PlexSource {
         return {
             clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;

@@ -37,10 +37,12 @@ export class RelatedApplicationButton extends AKElement {
             </a>`;
         }
         return html`<ak-forms-modal>
-            <span slot="submit">${msg("Create")}</span>
-            <span slot="header">${msg("Create Application")}</span>
-            <ak-application-form slot="form" .provider=${this.provider?.pk}> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            <span slot="submit">${msg("Create Application")}</span>
+            <span slot="header">${msg("New Application")}</span>
+            <ak-application-form .provider=${this.provider?.pk}> </ak-application-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${msg("New Application")}
+            </button>
         </ak-forms-modal>`;
     }
 }

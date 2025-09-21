@@ -217,8 +217,6 @@ function reportInvalidFields(
 export abstract class Form<T = Record<string, unknown>> extends AKElement {
     abstract send(data: T): Promise<unknown>;
 
-    viewportCheck = true;
-
     //#region Properties
 
     @property({ type: String })
@@ -463,16 +461,8 @@ export abstract class Form<T = Record<string, unknown>> extends AKElement {
         </div>`;
     }
 
-    public renderVisible(): TemplateResult {
-        return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
-    }
-
     public render(): SlottedTemplateResult {
-        if (this.viewportCheck && !this.isInViewport) {
-            return nothing;
-        }
-
-        return this.renderVisible();
+        return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
     }
 
     //#endregion
