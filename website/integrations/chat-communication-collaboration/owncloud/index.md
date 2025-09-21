@@ -116,7 +116,7 @@ To enable OIDC functionality in ownCloud, follow these steps:
     Add the necessary configuration settings to this file. Ensure it includes at least the minimal requirements for your setup:
 
     :::warning
-    You can configure ownCloud to use either the `sub` or `preferred_username` as the UID field under `search-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+    You can configure ownCloud to use either the `sub` or `preferred_username` as the UID field under `search-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
     :::
 
 ```php

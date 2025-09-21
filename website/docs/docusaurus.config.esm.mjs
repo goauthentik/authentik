@@ -59,7 +59,7 @@ export default createDocusaurusConfig(
             experimental_faster: true,
         },
 
-        url: "https://docs.goauthentik.io",
+        url: releaseEnvironment.currentReleaseOrigin,
         //#region Preset
 
         presets: [
@@ -85,8 +85,8 @@ export default createDocusaurusConfig(
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", "https://integrations.goauthentik.io"],
+                            ["/api", releaseEnvironment.apiReferenceOrigin],
+                            ["/integrations", releaseEnvironment.integrationsOrigin],
                         ]),
                     ],
                 },

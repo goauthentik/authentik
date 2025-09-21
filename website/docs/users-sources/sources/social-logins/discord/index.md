@@ -314,10 +314,8 @@ Now bind this policy to the chosen authentication flows for the Discord OAuth so
 
 :::info
 Ensure that the Discord OAuth source in **Federation & Social login** has the additional `guilds.members.read` scopes added under **Protocol settings**.
-:::
 
-:::info
-In order to use the created attribute in authentik you will have to set authentik configuration arguments found at: https://docs.goauthentik.io/docs/core/settings#avatars
+In order to use the created attribute in authentik you will also have to configure authentik's [avatar settings](../../../../sys-mgmt/settings.md#avatars).
 :::
 
 Create a new **Expression Policy** with the content below, adjusting the variables where required:

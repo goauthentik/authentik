@@ -1,6 +1,7 @@
 /**
  * @file Docusaurus Integrations config.
  *
+ * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/plugin"
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
@@ -17,7 +18,10 @@ import {
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
 import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
+
+const releaseEnvironment = prepareReleaseEnvironment();
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -35,7 +39,7 @@ export default createDocusaurusConfig(
             experimental_faster: true,
         },
 
-        url: "https://integrations.goauthentik.io",
+        url: releaseEnvironment.integrationsOrigin,
 
         //#region Preset
 
@@ -50,9 +54,8 @@ export default createDocusaurusConfig(
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            // ---
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/docs", "https://docs.goauthentik.io"],
+                            ["/api", releaseEnvironment.apiReferenceOrigin],
+                            ["/docs", releaseEnvironment.currentReleaseOrigin],
                         ]),
                     ],
                 },
@@ -64,6 +67,14 @@ export default createDocusaurusConfig(
         //#region Plugins
 
         plugins: [
+            [
+                "@goauthentik/docusaurus-theme/releases/plugin",
+                /** @type {AKReleasesPluginOptions} */ ({
+                    docsDirectory: __dirname,
+                    environment: releaseEnvironment,
+                }),
+            ],
+
             // Inject redirects for later use during runtime,
             // such as navigating to non-existent page with the client-side router.
 

@@ -56,5 +56,5 @@ Deployment is handled by a combination of [Netlify](https://www.netlify.com/) an
 ## Additional Resources
 
 - [Documentation Setup](https://docs.goauthentik.io/developer-docs/setup/website-dev-environment?utm_source=github)
-- [Writing Documentation](https://docs.goauthentik.io/developer-docs/docs/writing-documentation?utm_source=github)
-- [Style Guide](https://docs.goauthentik.io/developer-docs/docs/style-guide?utm_source=github)
+- [Writing Documentation](https://docs.goauthentik.io/developer-docs/writing-documentation?utm_source=github)
+- [Style Guide](https://docs.goauthentik.io/developer-docs/style-guide?utm_source=github)

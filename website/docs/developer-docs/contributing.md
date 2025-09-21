@@ -125,7 +125,7 @@ This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
 Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
-Please be sure to refer to our [Style Guide](../developer-docs/docs/style-guide.mdx) for the docs, and use a [template](./docs/templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
+Please be sure to refer to our [Style Guide](../developer-docs/style-guide.mdx) for the docs, and use a [template](./templates/index.md) to make it easier for you. The style guidelines are also used for any Integrations documentation, and we have a template for Integrations as well, in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
 ### Pull requests
 
@@ -175,7 +175,7 @@ authentik runs on Python 3.13 at the time of writing this.
 
 ### Documentation Style Guide
 
-Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
+Refer to the full [Style Guide](../developer-docs/style-guide.mdx) for details, but here are some important highlights:
 
 - Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
 
