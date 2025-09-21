@@ -17,7 +17,10 @@ import {
 } from "@goauthentik/docusaurus-theme/config";
 import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
 import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
+
+const releaseEnvironment = prepareReleaseEnvironment();
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -35,7 +38,7 @@ export default createDocusaurusConfig(
             experimental_faster: true,
         },
 
-        url: "https://integrations.goauthentik.io",
+        url: releaseEnvironment.integrationsOrigin,
 
         //#region Preset
 
@@ -50,9 +53,8 @@ export default createDocusaurusConfig(
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            // ---
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/docs", "https://docs.goauthentik.io"],
+                            ["/api", releaseEnvironment.apiReferenceOrigin],
+                            ["/docs", releaseEnvironment.currentReleaseOrigin],
                         ]),
                     ],
                 },
