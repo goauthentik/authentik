@@ -53087,6 +53087,9 @@ components:
           type: string
           writeOnly: true
           nullable: true
+        expires:
+          type: string
+          format: date-time
     PatchedUserPlexSourceConnectionRequest:
       type: object
       description: User source connection
@@ -58880,10 +58883,8 @@ components:
         expires:
           type: string
           format: date-time
-          readOnly: true
       required:
       - created
-      - expires
       - identifier
       - last_updated
       - pk
@@ -58906,6 +58907,9 @@ components:
           type: string
           writeOnly: true
           nullable: true
+        expires:
+          type: string
+          format: date-time
       required:
       - identifier
       - source

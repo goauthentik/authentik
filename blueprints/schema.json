@@ -11209,6 +11209,11 @@
                     ],
                     "title": "Access token"
                 },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
