@@ -1,20 +1,28 @@
 ---
-title: "Procedural topic"
+title: "Combination topic"
 ---
 
 :::info
-**How to use this template**: start with the markdown version of the template, either by copying the [`procedural.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+**How to use this template**: start with the markdown version of the template, either by copying the [`combo.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/docs/developer-docs/templates) file from our GitHub repo or downloading the template file using the following command:
 
 ```shell
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/docs/templates/procedural.tmpl.md
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/docs/developer-docs/templates/combo.tmpl.md
 ```
 
 Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [Style Guide](../style-guide.mdx) for writing tips and authentik-specific rules.
 :::
 
-For a procedural topic, use a title that focuses on the task you are writing about. For example, "Add a new Group" or "Edit user profiles". For procedural docs, there should be a verb in the title, and usually the noun (the component or object you are working on). For the title (and all headings) use the infinitive form of the verb (i.e. "add") not the gerund form (i.e. "adding").
+For a combo topic, the title is typically the name of the feature ("Branding" or "Remote Access Control").
 
-In this first section, right after the title, write one or two sentences about the task. Keep it brief; if it goes on too long, then create a separate conceptual topic, in a separate `.md` file. We don't want readers to have to scroll through paragraphs of conceptual info before they get to Step 1.
+In this first section, right after the title but with no header, write one or two sentences about the task. Keep it brief, just an overview.
+
+## About feature XYZ
+
+In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
+
+### More info about the feature, a sub-category of info
+
+Use this section if there are several big topics or categories of info that the reader needs to know about the feature or task. Add as many of these sections as needed.
 
 ## Prerequisites (optional section)
 
@@ -32,7 +40,7 @@ In this section, help the reader get oriented... where do they need to be (i.e. 
 
 Have a separate paragraph for each step.
 
-Start instructions with the desired goal, followed by the instructions. For example, in this sentence we first read the goal (to define a new port) and then we see the instructions: "To define a new port number, navigate to the Admin interface, and then to the **Settings** tab."
+_Start instructions with the desired goal_, followed by the instructions. For example, in this sentence: "To define a new port number, navigate to the Admin interface, and then to the **Settings** tab." we first read the goal (to define a new port) and then we see the instructions.
 
 ## Next step of grouped steps (if a second group is needed)
 

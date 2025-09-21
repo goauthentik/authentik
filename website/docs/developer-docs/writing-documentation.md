@@ -142,7 +142,7 @@ Every documentation page you see on our website starts as a simple Markdown file
 Let's take a look at the file path of the [Style Guide page](./style-guide.mdx):
 
 ```text
-/website/docs/developer-docs/docs/style-guide.mdx
+/website/docs/developer-docs/style-guide.mdx
 ```
 
 Compared to the URL path of this page, there are a few differences:
@@ -154,7 +154,7 @@ Compared to the URL path of this page, there are a few differences:
 This results in the following URL path:
 
 ```text
-https://docs.goauthentik.io/developer-docs/docs/style-guide/
+https://docs.goauthentik.io/developer-docs/style-guide/
 ```
 
 The final published URL is made possible with a combination of [Docusaurus's routing system](https://docusaurus.io/docs/advanced/routing) and [Netlify's redirects](https://docs.netlify.com/routing/redirects/).

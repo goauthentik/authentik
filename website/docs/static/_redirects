@@ -76,5 +76,7 @@
 #endregion
 
 #region Docs prefix
+/developer-docs/docs/*                                      /developer-docs/:splat 301!
+/docs/developer-docs/docs/*                                 /developer-docs/:splat 301!
 /docs/*                                                     /:splat 301!
 #endregion
