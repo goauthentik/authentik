@@ -7,7 +7,7 @@ import Tabs from "@theme/Tabs";
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
-The technical documentation (https://docs.goauthentik.io/) and our integration guides (/integrations/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+Our technical documentation and integration guides are built, formatted, and tested using [NPM](https://www.npmjs.com/). The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
 
 ## Guidelines
 
@@ -76,14 +76,14 @@ Installs or updates the build dependencies such as Docusaurus, Prettier, and ESL
 
 ## Writing or modifying technical docs
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/):
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation:
 
 - For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
   Otherwise, the new page will not appear in the table of contents to the left.
 
 - Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
 
-For our technical documentation (https://docs.goauthentik.io/), the following commands are used:
+For our technical documentation, the following commands are used:
 
 ### Build locally
 
