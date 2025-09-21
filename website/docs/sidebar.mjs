@@ -644,16 +644,24 @@ const items = [
             {
                 type: "link",
                 href: releaseEnvironment.apiReferenceOrigin,
-                label: "API Reference",
-                className: "api-reference",
+                label: "API Overview",
+                className: "api-overview",
+            },
+            {
+                type: "doc",
+                id: "developer-docs/contributing",
+                label: "Contributing",
             },
 
             {
+                //#endregion
+
+                //#region Development environment
                 type: "category",
-                label: "Development setup",
+                label: "Development environment",
                 link: {
                     type: "doc",
-                    id: "developer-docs/setup/full-dev-environment",
+                    id: "developer-docs/setup/index",
                 },
                 items: [
                     "developer-docs/setup/full-dev-environment",
@@ -661,52 +669,34 @@ const items = [
                     "developer-docs/setup/debugging",
                 ],
             },
-
             {
+                //#endregion
+
+                //#region Writing documentation
                 type: "category",
-                label: "Contributing",
+                label: "Writing documentation",
                 link: {
                     type: "doc",
-                    id: "developer-docs/contributing",
+                    id: "developer-docs/docs/writing-documentation",
                 },
                 items: [
-                    {
-                        type: "doc",
-                        id: "developer-docs/contributing",
-                        label: "Overview",
-                    },
-                    {
-                        type: "doc",
-                        id: "developer-docs/writing-documentation",
-                    },
-                    {
-                        type: "doc",
-                        label: "Style guide",
-                        id: "developer-docs/style-guide",
-                    },
-
+                    "developer-docs/docs/style-guide",
                     {
                         type: "category",
                         label: "Templates",
                         link: {
                             type: "doc",
-                            id: "developer-docs/templates/index",
+                            id: "developer-docs/docs/templates/index",
                         },
                         items: [
-                            {
-                                type: "doc",
-                                id: "developer-docs/templates/index",
-                                label: "Overview",
-                            },
-                            "developer-docs/templates/procedural",
-                            "developer-docs/templates/conceptual",
-                            "developer-docs/templates/reference",
-                            "developer-docs/templates/combo",
+                            "developer-docs/docs/templates/procedural",
+                            "developer-docs/docs/templates/conceptual",
+                            "developer-docs/docs/templates/reference",
+                            "developer-docs/docs/templates/combo",
                         ],
                     },
                 ],
             },
-
             {
                 type: "doc",
                 id: "developer-docs/releases/index",

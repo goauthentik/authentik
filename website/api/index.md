@@ -3,7 +3,7 @@ title: API Overview
 sidebar_label: Overview
 ---
 
-Our API reference documentation is generated from the <a href="/schema.yml" download="schema.yml">OpenAPI v3 schema</a>.
+Our API reference documentation is generated from the [OpenAPI v3 schema](https://docs.goauthentik.io/schema.yml).
 
 You can also access your installation's own, instance-specific API Browser. Starting with 2021.3.5, every authentik instance has a built-in API browser, which can be accessed at <code>https://<em>authentik.company</em>/api/v3/</code>.
 

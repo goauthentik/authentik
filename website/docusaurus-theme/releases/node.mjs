@@ -77,7 +77,6 @@ export function createReleaseSidebarEntries(releaseFiles) {
  * @property {string} currentReleaseOrigin The URL to the current release documentation.
  * @property {string} preReleaseOrigin The URL to the pre-release documentation.
  * @property {string} apiReferenceOrigin The URL to the API reference documentation.
- * @property {string} integrationsOrigin The URL to the integrations documentation.
  */
 
 /**
@@ -91,7 +90,5 @@ export function prepareReleaseEnvironment() {
         currentReleaseOrigin: process.env.CURRENT_RELEASE_ORIGIN || "https://docs.goauthentik.io",
         preReleaseOrigin: process.env.PRE_RELEASE_ORIGIN || "https://next.goauthentik.io",
         apiReferenceOrigin: process.env.API_REFERENCE_ORIGIN || "https://api.goauthentik.io",
-        integrationsOrigin:
-            process.env.INTEGRATIONS_ORIGIN || "https://integrations.goauthentik.io",
     };
 }
