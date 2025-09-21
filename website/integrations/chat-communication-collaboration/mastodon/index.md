@@ -45,7 +45,7 @@ To support the integration of Mastodon with authentik, you need to create an app
 Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
 
 :::warning
-When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues.
+When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues.
 :::
 
 :::info

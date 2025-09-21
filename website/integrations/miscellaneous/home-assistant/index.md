@@ -113,7 +113,7 @@ To support the integration of Home Assistant using `hass-auth-headers` with auth
 
 3. Click **Submit** to save the new application and provider.
 
-4. Create an outpost deployment for the provider you've created above, as described [here](/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
+4. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
 
 ## Home Assistant configuration
 

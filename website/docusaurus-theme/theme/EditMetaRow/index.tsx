@@ -1,7 +1,5 @@
 import styles from "./styles.module.css";
 
-import { useCachedVersionPluginData } from "@goauthentik/docusaurus-theme/components/VersionPicker/utils.ts";
-
 import Translate from "@docusaurus/Translate";
 import Admonition from "@theme/Admonition";
 import type { Props } from "@theme/EditMetaRow";
@@ -16,12 +14,6 @@ const EditMetaRow: React.FC<Props> = ({
     lastUpdatedAt,
     lastUpdatedBy,
 }: Props) => {
-    const versionPluginData = useCachedVersionPluginData();
-    const currentReleaseOrigin =
-        versionPluginData?.env.currentReleaseOrigin ?? "https://docs.goauthentik.io";
-
-    const contributorURL = new URL("/developer-docs/contributing/", currentReleaseOrigin);
-
     return (
         <>
             <hr className={styles.divider} />
@@ -64,7 +56,7 @@ const EditMetaRow: React.FC<Props> = ({
 
                             <li>
                                 <a
-                                    href={contributorURL.toString()}
+                                    href="https://docs.goauthentik.io/docs/developer-docs/"
                                     target="_blank"
                                     rel="noreferrer noopener"
                                 >

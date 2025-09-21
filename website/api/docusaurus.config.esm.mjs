@@ -57,7 +57,7 @@ await Promise.all(
  * Documentation site configuration for Docusaurus.
  */
 export default createDocusaurusConfig({
-    url: releaseEnvironment.apiReferenceOrigin,
+    url: "https://api.goauthentik.io",
 
     staticDirectories: [
         // ---
@@ -102,8 +102,8 @@ export default createDocusaurusConfig({
 
                     beforeDefaultRemarkPlugins: [
                         remarkLinkRewrite([
-                            ["/integrations", releaseEnvironment.integrationsOrigin],
-                            ["/docs", releaseEnvironment.currentReleaseOrigin],
+                            ["/integrations/", "https://integrations.goauthentik.io/"],
+                            ["/docs/", "https://docs.goauthentik.io/docs/"],
                         ]),
                     ],
                 },

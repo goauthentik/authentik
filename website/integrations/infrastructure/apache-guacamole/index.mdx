@@ -49,7 +49,7 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 It is recommended to create an admin account in Guacamole before configuring Single Sign-On to simplify the process. Create a user in Guacamole using the same username as in authentik and grant them admin permissions. This step is important to avoid losing access to the Guacamole admin settings, as you may need to revert your changes without it.
 
 :::warning
-You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
 :::
 
 <Tabs

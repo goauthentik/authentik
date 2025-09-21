@@ -7,7 +7,7 @@ import Tabs from "@theme/Tabs";
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
-Our technical documentation and integration guides are built, formatted, and tested using [NPM](https://www.npmjs.com/). The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (https://integrations.goauthentik.io/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
 
 ## Guidelines
 
@@ -21,7 +21,7 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 
 - Remember to use our templates when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and they keep the documentation structure and headings consistent.
     - [docs templates](./templates/index.md)
-    - [integration guide template](/integrations/applications#add-a-new-application)
+    - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
 
 :::tip
 If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
@@ -76,14 +76,14 @@ Installs or updates the build dependencies such as Docusaurus, Prettier, and ESL
 
 ## Writing or modifying technical docs
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation:
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our technical documentation (https://docs.goauthentik.io/docs/):
 
 - For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
   Otherwise, the new page will not appear in the table of contents to the left.
 
 - Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
 
-For our technical documentation, the following commands are used:
+For our technical documentation (https://docs.goauthentik.io/docs/), the following commands are used:
 
 ### Build locally
 
@@ -103,7 +103,7 @@ Starts a local development server for the documentation site and opens a preview
 
 ## Writing or modifying integration guides
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (/integrations/).
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
 
 - For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
@@ -139,10 +139,10 @@ Every documentation page you see on our website starts as a simple Markdown file
 
 ### Converting file paths to URLs
 
-Let's take a look at the file path of the [Style Guide page](./style-guide.mdx):
+Let's take a look at the file path of the [Style Guide page](https://docs.goauthentik.io/developer-docs/docs/style-guide/):
 
 ```text
-/website/docs/developer-docs/style-guide.mdx
+/website/docs/developer-docs/docs/style-guide.mdx
 ```
 
 Compared to the URL path of this page, there are a few differences:
@@ -154,7 +154,7 @@ Compared to the URL path of this page, there are a few differences:
 This results in the following URL path:
 
 ```text
-https://docs.goauthentik.io/developer-docs/style-guide/
+https://docs.goauthentik.io/developer-docs/docs/style-guide/
 ```
 
 The final published URL is made possible with a combination of [Docusaurus's routing system](https://docusaurus.io/docs/advanced/routing) and [Netlify's redirects](https://docs.netlify.com/routing/redirects/).
