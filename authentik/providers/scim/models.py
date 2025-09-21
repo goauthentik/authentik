@@ -85,9 +85,15 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
     auth_oauth = models.ForeignKey(
-        "authentik_sources_oauth.OAuthSource", on_delete=models.SET_DEFAULT, default=None, null=True
+        "authentik_sources_oauth.OAuthSource",
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_("OAuth Source used for authentication"),
     )
-    auth_oauth_grant_type = models.TextField(blank=True, default="")
+    auth_oauth_params = models.JSONField(
+        blank=True, default=dict, help_text=_("Additional OAuth parameters, such as grant_type")
+    )
     auth_oauth_user = models.ForeignKey(
         "authentik_core.User", on_delete=models.CASCADE, default=None, null=True
     )

@@ -30,7 +30,7 @@ class SCIMOAuthAuth:
         if source.source_type.urls_customizable and source.access_token_url:
             access_token_url = source.access_token_url
         data = client.get_access_token_args(None, None)
-        data["grant_type"] = self.provider.auth_oauth_grant_type
+        data.update(self.provider.auth_oauth_params)
         try:
             response = client.do_request(
                 "POST",

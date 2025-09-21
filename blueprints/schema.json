@@ -9399,6 +9399,17 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "auth_oauth": {
+                    "type": "integer",
+                    "title": "Auth oauth",
+                    "description": "OAuth Source used for authentication"
+                },
+                "auth_oauth_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Auth oauth params",
+                    "description": "Additional OAuth parameters, such as grant_type"
+                },
                 "compatibility_mode": {
                     "type": "string",
                     "enum": [

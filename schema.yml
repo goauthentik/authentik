@@ -52645,6 +52645,15 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -56178,6 +56187,15 @@ components:
         token:
           type: string
           description: Authentication token
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -56278,6 +56296,15 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
