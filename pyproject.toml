@@ -177,11 +177,11 @@ exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-  "E", # pycodestyle
-  "F", # Pyflakes
-  "I", # isort
+  "E",  # pycodestyle
+  "F",  # Pyflakes
+  "I",  # isort
   "UP", # pyupgrade
-  "B", # flake8-bugbear
+  "B",  # flake8-bugbear
   "DJ", # django
   "PL", # pylint
 ]
@@ -195,48 +195,77 @@ max-branches = 18
 max-returns = 10
 
 [tool.mypy]
-disable_error_code = [
-  "annotation-unchecked",
-  "arg-type",
-  "assignment",
-  "attr-defined",
-  "call-arg",
-  "call-overload",
-  "comparison-overlap",
-  "dict-item",
-  "func-returns-value",
-  "has-type",
-  "import",
-  "index",
-  "list-item",
-  "misc",
-  "name-defined",
-  "no-any-return",
-  "no-redef",
-  "no-untyped-call",
-  "no-untyped-def",
-  "operator",
-  "override",
-  "redundant-cast",
-  "redundant-expr",
-  "return",
-  "return-value",
-  "syntax",
-  "type-arg",
-  "type-var",
-  "union-attr",
-  "unreachable",
-  "unused-ignore",
-  "valid-type",
-  "var-annotated"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+exclude = ['^gen-py-api/']
+
+[[tool.mypy.overrides]]
+module = [
+  "authentik.admin.*",
+  "authentik.api.*",
+  "authentik.blueprints.*",
+  "authentik.brands.*",
+  "authentik.core.*",
+  "authentik.crypto.*",
+  "authentik.enterprise.*",
+  "authentik.events.*",
+  "authentik.flows.*",
+  "authentik.lib.*",
+  "authentik.outposts.*",
+  "authentik.policies.*",
+  "authentik.policies.dummy.*",
+  "authentik.policies.event_matcher.*",
+  "authentik.policies.expiry.*",
+  "authentik.policies.expression.*",
+  "authentik.policies.geoip.*",
+  "authentik.policies.password.*",
+  "authentik.policies.reputation.*",
+  "authentik.providers.ldap.*",
+  "authentik.providers.oauth2.*",
+  "authentik.providers.proxy.*",
+  "authentik.providers.rac.*",
+  "authentik.providers.radius.*",
+  "authentik.providers.saml.*",
+  "authentik.providers.scim.*",
+  "authentik.rbac.*",
+  "authentik.recovery.*",
+  "authentik.root.*",
+  "authentik.sources.kerberos.*",
+  "authentik.sources.ldap.*",
+  "authentik.sources.oauth.*",
+  "authentik.sources.plex.*",
+  "authentik.sources.saml.*",
+  "authentik.sources.scim.*",
+  "authentik.stages.authenticator_duo.*",
+  "authentik.stages.authenticator_email.*",
+  "authentik.stages.authenticator_sms.*",
+  "authentik.stages.authenticator_static.*",
+  "authentik.stages.authenticator_totp.*",
+  "authentik.stages.authenticator_validate.*",
+  "authentik.stages.authenticator_webauthn.*",
+  "authentik.stages.authenticator.*",
+  "authentik.stages.captcha.*",
+  "authentik.stages.consent.*",
+  "authentik.stages.deny.*",
+  "authentik.stages.dummy.*",
+  "authentik.stages.email.*",
+  "authentik.stages.identification.*",
+  "authentik.stages.invitation.*",
+  "authentik.stages.password.*",
+  "authentik.stages.prompt.*",
+  "authentik.stages.redirect.*",
+  "authentik.stages.user_delete.*",
+  "authentik.stages.user_login.*",
+  "authentik.stages.user_logout.*",
+  "authentik.stages.user_write.*",
+  "authentik.tasks.*",
+  "authentik.tasks.schedules.*",
+  "authentik.tenants.*",
+  "django_dramatiq_postgres.*",
+  "lifecycle.*",
+  "tests.e2e.*",
+  "tests.integration.*",
 ]
-plugins = [
-  "mypy_django_plugin.main",
-  "mypy_drf_plugin.main",
-]
-exclude = [
-  '^gen-py-api/',
-]
+ignore_errors = true
 
 [tool.django-stubs]
 django_settings_module = "authentik.root.settings"
