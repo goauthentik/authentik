@@ -28,6 +28,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "url",
             "verify_certificates",
             "token",
+            "auth_mode",
             "auth_oauth",
             "auth_oauth_params",
             "compatibility_mode",

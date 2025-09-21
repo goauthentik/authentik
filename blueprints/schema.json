@@ -9399,6 +9399,14 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "token",
+                        "oauth"
+                    ],
+                    "title": "Auth mode"
+                },
                 "auth_oauth": {
                     "type": "integer",
                     "title": "Auth oauth",

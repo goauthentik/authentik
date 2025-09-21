@@ -65,6 +65,13 @@ class SCIMProviderGroup(SerializerModel):
         return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
 
 
+class SCIMAuthenticationMode(models.TextChoices):
+    """SCIM authentication modes"""
+
+    TOKEN = "token", _("Token")
+    OAUTH = "oauth", _("OAuth")
+
+
 class SCIMCompatibilityMode(models.TextChoices):
     """SCIM compatibility mode"""
 
@@ -83,6 +90,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
+
+    auth_mode = models.TextField(
+        choices=SCIMAuthenticationMode.choices, default=SCIMAuthenticationMode.TOKEN
+    )
+
     token = models.TextField(help_text=_("Authentication token"))
     auth_oauth = models.ForeignKey(
         "authentik_sources_oauth.OAuthSource",
@@ -116,7 +128,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     )
 
     def scim_auth(self) -> AuthBase:
-        if self.auth_oauth:
+        if self.auth_mode == SCIMAuthenticationMode.OAUTH:
             try:
                 from authentik.enterprise.providers.scim.auth_oauth2 import SCIMOAuthAuth
 

@@ -38758,11 +38758,6 @@ components:
       required:
       - name
       - slug
-    AuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
     AuthTypeEnum:
       enum:
       - basic
@@ -42001,7 +41996,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         launch_url:
           type: string
           nullable: true
@@ -42022,6 +42017,11 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointAuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
     EndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -42074,7 +42074,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         maximum_connections:
           type: integer
           maximum: 2147483647
@@ -50498,7 +50498,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         maximum_connections:
           type: integer
           maximum: 2147483647
@@ -52645,6 +52645,8 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_oauth:
           type: string
           format: uuid
@@ -56067,6 +56069,11 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+    SCIMAuthenticationModeEnum:
+      enum:
+      - token
+      - oauth
+      type: string
     SCIMMapping:
       type: object
       description: SCIMMapping Serializer
@@ -56187,6 +56194,8 @@ components:
         token:
           type: string
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_oauth:
           type: string
           format: uuid
@@ -56296,6 +56305,8 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
         auth_oauth:
           type: string
           format: uuid
