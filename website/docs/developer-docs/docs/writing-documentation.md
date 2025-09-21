@@ -7,7 +7,7 @@ import Tabs from "@theme/Tabs";
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation; everything from fixing a typo to adding additional content to writing a completely new topic.
 
-The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (https://integrations.goauthentik.io/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+The technical documentation (https://docs.goauthentik.io/docs/) and our integration guides (/integrations/) are built, formatted, and tested using npm. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
 
 ## Guidelines
 
@@ -21,7 +21,7 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 
 - Remember to use our templates when possible; they are already set up to follow our style guidelines, they make it a lot easier for you (no blank page frights!), and they keep the documentation structure and headings consistent.
     - [docs templates](./templates/index.md)
-    - [integration guide template](https://integrations.goauthentik.io/applications#add-a-new-application)
+    - [integration guide template](/integrations/applications#add-a-new-application)
 
 :::tip
 If you encounter build check fails, or issues you with your local build, you might need to run `make docs-install` in order to get the latest build tools and dependencies; we do occasionally update our build tools.
@@ -103,7 +103,7 @@ Starts a local development server for the documentation site and opens a preview
 
 ## Writing or modifying integration guides
 
-In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (https://integrations.goauthentik.io/).
+In addition to following the [Style Guide](./style-guide.mdx) please review the following guidelines about our integration guides (/integrations/).
 
 - For new integration documentation, please use the Integrations template in our [Github repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
