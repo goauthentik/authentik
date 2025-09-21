@@ -3,7 +3,7 @@
 from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
 from dataclasses import InitVar, dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
@@ -684,32 +684,8 @@ class TokenView(View):
         )
         access_token.save()
 
-        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        refresh_token = RefreshToken(
-            user=self.params.refresh_token.user,
-            scope=self.params.refresh_token.scope,
-            expires=refresh_token_expiry,
-            provider=self.provider,
-            auth_time=self.params.refresh_token.auth_time,
-            session=self.params.refresh_token.session,
-        )
-        id_token = IDToken.new(
-            self.provider,
-            refresh_token,
-            self.request,
-        )
-        id_token.nonce = self.params.refresh_token.id_token.nonce
-        id_token.at_hash = access_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
-
-        # Mark old token as revoked
-        self.params.refresh_token.revoked = True
-        self.params.refresh_token.save()
-
-        return {
+        res = {
             "access_token": access_token.token,
-            "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
@@ -717,6 +693,33 @@ class TokenView(View):
             ),
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
+
+        if (now() - self.params.refresh_token.expires) < timedelta(hours=1):
+            refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+            refresh_token = RefreshToken(
+                user=self.params.refresh_token.user,
+                scope=self.params.refresh_token.scope,
+                expires=refresh_token_expiry,
+                provider=self.provider,
+                auth_time=self.params.refresh_token.auth_time,
+                session=self.params.refresh_token.session,
+            )
+            id_token = IDToken.new(
+                self.provider,
+                refresh_token,
+                self.request,
+            )
+            id_token.nonce = self.params.refresh_token.id_token.nonce
+            id_token.at_hash = access_token.at_hash
+            refresh_token.id_token = id_token
+            refresh_token.save()
+
+            # Mark old token as revoked
+            self.params.refresh_token.revoked = True
+            self.params.refresh_token.save()
+            res["refresh_token"] = refresh_token.token
+
+        return res
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
