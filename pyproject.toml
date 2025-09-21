@@ -85,19 +85,24 @@ dev = [
   "constructs==10.4.2",
   "coverage[toml]==7.8.0",
   "debugpy==1.8.14",
+  "django-stubs[compatible-mypy]==5.2.5",
+  "djangorestframework-stubs[compatible-mypy]==3.16.3",
   "drf-jsonschema-serializer==3.0.0",
   "freezegun==1.5.1",
   "importlib-metadata==8.6.1",
   "k5test==0.10.4",
+  "lxml-stubs==0.5.1",
+  "mypy==1.18.2",
   "pdoc==15.0.3",
-  "pytest==8.3.5",
   "pytest-django==4.11.1",
   "pytest-github-actions-annotate-failures==0.3.0",
   "pytest-randomly==3.16.0",
   "pytest-timeout==2.4.0",
+  "pytest==8.3.5",
   "requests-mock==1.12.1",
   "ruff==0.11.9",
   "selenium==4.32.0",
+  "types-ldap3==2.9.13.20250622",
 ]
 
 [tool.uv]
@@ -172,20 +177,13 @@ exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-  # pycodestyle
-  "E",
-  # Pyflakes
-  "F",
-  # isort
-  "I",
-  # pyupgrade
-  "UP",
-  # flake8-bugbear
-  "B",
-  # django
-  "DJ",
-  # pylint
-  "PL",
+  "E", # pycodestyle
+  "F", # Pyflakes
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # flake8-bugbear
+  "DJ", # django
+  "PL", # pylint
 ]
 ignore = [
   "DJ001", # Avoid using `null=True` on string-based fields,
@@ -195,6 +193,19 @@ ignore = [
 max-args = 7
 max-branches = 18
 max-returns = 10
+
+[tool.mypy]
+ignore_errors = true
+plugins = [
+  "mypy_django_plugin.main",
+  "mypy_drf_plugin.main",
+]
+exclude = [
+  '^gen-py-api/',
+]
+
+[tool.django-stubs]
+django_settings_module = "authentik.root.settings"
 
 [tool.coverage.run]
 source = ["authentik"]
