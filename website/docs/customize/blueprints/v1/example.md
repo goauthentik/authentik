@@ -4,6 +4,7 @@ title: Example
 
 This is one of the default packaged blueprints to create the default authentication flow.
 
+<!-- prettier-ignore-start -->
 ```yaml
 version: 1
 metadata:
@@ -64,3 +65,4 @@ entries:
           target: !KeyOf flow
       model: authentik_flows.flowstagebinding
 ```
+<!-- prettier-ignore-end -->

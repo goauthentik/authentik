@@ -1,0 +1,36 @@
+### General settings (both Admin and User interfaces)
+
+#### `settings.navbar.userDisplay`
+
+Configure what is shown in the top right corner. Defaults to `username`. Available options: `username`, `name`, `email`
+
+#### `settings.theme.base`
+
+Configure the base color scheme or toggle between dark and light modes. The default setting is `automatic`, which adapts based on the user’s browser preference. Available options: `automatic`, `dark`, `light`.
+
+**Example**:
+
+```
+settings:
+  theme:
+    base: dark
+```
+
+#### `settings.theme.background`
+
+Optional CSS that is applied to the background of the User interface, for example to set a custom background color, gradient, or image.
+
+```yaml
+settings:
+    theme:
+        background: >
+            background: url('https://picsum.photos/1920/1080');
+            filter: blur(8px);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+```
+
+#### `settings.locale`
+
+The locale which can be configured in the user settings by default. This can be used to preset locales for groups of users, but still let them choose their own preferred locale.

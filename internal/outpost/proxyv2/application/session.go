@@ -20,6 +20,7 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
+	"goauthentik.io/internal/outpost/proxyv2/filesystemstore"
 	"goauthentik.io/internal/outpost/proxyv2/redisstore"
 	"goauthentik.io/internal/utils"
 )
@@ -45,15 +46,15 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 				break
 			}
 			ca := config.Get().Redis.TLSCaCert
-			if ca != nil {
+			if ca != "" {
 				// Get the SystemCertPool, continue with an empty pool on error
 				rootCAs, _ := x509.SystemCertPool()
 				if rootCAs == nil {
 					rootCAs = x509.NewCertPool()
 				}
-				certs, err := os.ReadFile(*ca)
+				certs, err := os.ReadFile(ca)
 				if err != nil {
-					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", *ca)
+					a.log.WithError(err).Fatalf("Failed to append %s to RootCAs", ca)
 				}
 				// Append our cert to the system pool
 				if ok := rootCAs.AppendCertsFromPEM(certs); !ok {
@@ -90,7 +91,10 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		return rs, nil
 	}
 	dir := os.TempDir()
-	cs := sessions.NewFilesystemStore(dir)
+	cs, err := filesystemstore.GetPersistentStore(dir)
+	if err != nil {
+		return nil, err
+	}
 	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
 	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
 	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
@@ -123,7 +127,7 @@ func (a *Application) getAllCodecs() []securecookie.Codec {
 }
 
 func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) error {
-	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
+	if _, ok := a.sessions.(*filesystemstore.Store); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {
 			return err

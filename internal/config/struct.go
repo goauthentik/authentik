@@ -26,14 +26,14 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host      string  `yaml:"host" env:"HOST, overwrite"`
-	Port      int     `yaml:"port" env:"PORT, overwrite"`
-	DB        int     `yaml:"db" env:"DB, overwrite"`
-	Username  string  `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string  `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool    `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string  `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+	Host      string `yaml:"host" env:"HOST, overwrite"`
+	Port      int    `yaml:"port" env:"PORT, overwrite"`
+	DB        int    `yaml:"db" env:"DB, overwrite"`
+	Username  string `yaml:"username" env:"USERNAME, overwrite"`
+	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
+	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
+	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
 }
 
 type ListenConfig struct {

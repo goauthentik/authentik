@@ -1,7 +1,9 @@
-import { AKElement } from "@goauthentik/elements/Base";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -16,13 +18,11 @@ export class KerberosSourceConnectivity extends AKElement {
         };
     };
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFList];
-    }
+    static styles: CSSResult[] = [PFBase, PFList];
 
-    render(): TemplateResult {
+    render(): SlottedTemplateResult {
         if (!this.connectivity) {
-            return html``;
+            return nothing;
         }
         return html`<ul class="pf-c-list">
             ${Object.keys(this.connectivity).map((serverKey) => {

@@ -1,4 +1,4 @@
-```
+```nginx
 # Increase buffer size for large headers
 # This is needed only if you get 'upstream sent too big header while reading response
 # header from upstream' error when trying to access an application protected by goauthentik
@@ -14,6 +14,10 @@ location / {
     # Set any other headers your application might need
     # proxy_set_header Host $host;
     # proxy_set_header ...
+    # Support for websocket
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    proxy_http_version 1.1;
 
     ##############################
     # authentik-specific config
@@ -66,7 +70,7 @@ location /outpost.goauthentik.io {
 location @goauthentik_proxy_signin {
     internal;
     add_header Set-Cookie $auth_cookie;
-    return 302 /outpost.goauthentik.io/start?rd=$request_uri;
+    return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
     # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
     # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
 }

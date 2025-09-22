@@ -1,12 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ProvidersApi,
@@ -15,15 +14,18 @@ import {
     SyncObjectModelEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
     @property({ type: Number })
     providerId?: number;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
+    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -33,7 +35,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
                         return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
                     }}
@@ -69,17 +71,30 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: SCIMProviderGroup): string {
+        return item.groupObj.name;
     }
 
-    row(item: SCIMProviderGroup): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
+
+    row(item: SCIMProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`${item.id}`,
         ];
+    }
+    renderExpanded(item: SCIMProviderGroup): TemplateResult {
+        return html`<td colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
+            </div>
+        </td>`;
     }
 }
 

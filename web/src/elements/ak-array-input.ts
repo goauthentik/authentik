@@ -1,11 +1,12 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import { type Spread } from "@goauthentik/elements/types";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { AkControlElement } from "#elements/AkControlElement";
+import { bound } from "#elements/decorators/bound";
+import { type Spread } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
+import { css, html, nothing, TemplateResult } from "lit";
 import { customElement, property, queryAll } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -14,7 +15,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-type InputCell<T> = (el: T) => TemplateResult | typeof nothing;
+export type InputCell<T> = (el: T, idx: number) => TemplateResult | typeof nothing;
 
 export interface IArrayInput<T> {
     row: InputCell<T>;
@@ -28,32 +29,30 @@ type Keyed<T> = { key: string; item: T };
 
 @customElement("ak-array-input")
 export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<T> {
-    static get styles() {
-        return [
-            PFBase,
-            PFButton,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                select.pf-c-form-control {
-                    width: 100px;
-                }
-                .pf-c-input-group {
-                    padding-bottom: 0;
-                }
-                .ak-plus-button {
-                    display: flex;
-                    justify-content: flex-end;
-                    flex-direction: row;
-                }
-                .ak-input-group {
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFButton,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            select.pf-c-form-control {
+                width: 100px;
+            }
+            .pf-c-input-group {
+                padding-bottom: 0;
+            }
+            .ak-plus-button {
+                display: flex;
+                justify-content: flex-end;
+                flex-direction: row;
+            }
+            .ak-input-group {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+            }
+        `,
+    ];
 
     @property({ type: Boolean })
     validate = false;
@@ -152,7 +151,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
                 (item: Keyed<T>) => item.key,
                 (item: Keyed<T>, idx) =>
                     html` <div class="ak-input-group" @change=${() => this.onChange()}>
-                        ${this.row(item.item)}${this.renderDeleteButton(idx)}
+                        ${this.row(item.item, idx)}${this.renderDeleteButton(idx)}
                     </div>`,
             )}
             <button class="pf-c-button pf-m-link" type="button" @click=${this.addNewGroup}>

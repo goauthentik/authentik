@@ -1,28 +1,23 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-slug-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
+import { ascii_letters, digits, randomString } from "#common/utils";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -32,7 +27,10 @@ import {
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSource>) {
@@ -75,7 +73,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             });
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.files().get("icon");
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -130,14 +128,14 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     this.doAuth();
                 }}
             >
-                ${msg("Re-authenticate with plex")}
+                ${msg("Re-authenticate with Plex")}
             </button>
             <ak-form-element-horizontal name="allowFriends">
                 <label class="pf-c-switch">
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.allowFriends, true)}
+                        ?checked=${this.instance?.allowFriends ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -153,14 +151,14 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Allowed servers")}
-                ?required=${true}
+                required
                 name="allowedServers"
             >
                 <select class="pf-c-form-control" multiple>
                     ${this.plexResources?.map((r) => {
                         const selected = Array.from(this.instance?.allowedServers || []).some(
                             (server) => {
-                                return server == r.clientIdentifier;
+                                return server === r.clientIdentifier;
                             },
                         );
                         return html`<option value=${r.clientIdentifier} ?selected=${selected}>
@@ -177,7 +175,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -185,20 +183,21 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+
             <ak-form-element-horizontal name="enabled">
                 <label class="pf-c-switch">
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -210,7 +209,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -253,7 +252,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                ?required=${true}
+                required
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -283,10 +282,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
-                    value="${first(
-                        this.instance?.userPathTemplate,
-                        "goauthentik.io/sources/%(slug)s",
-                    )}"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
@@ -300,7 +296,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                                         ${msg("Currently set to:")} ${this.instance?.icon}
                                     </p>
                                 `
-                              : html``}
+                              : nothing}
                       </ak-form-element-horizontal>
                       ${this.instance?.icon
                           ? html`
@@ -328,26 +324,21 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                                     </p>
                                 </ak-form-element-horizontal>
                             `
-                          : html``}`
+                          : nothing}`
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Client ID")}
-                        ?required=${true}
-                        name="clientId"
-                    >
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, "")}"
+                            value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control"
                             required
                         />
@@ -355,9 +346,8 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     ${this.renderSettings()}
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Flow settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="authenticationFlow"
@@ -388,9 +378,8 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${msg("Plex Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Plex Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -422,6 +411,21 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings for group creation.")}
                         </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        required
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

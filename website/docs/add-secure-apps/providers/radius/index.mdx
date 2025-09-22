@@ -2,7 +2,7 @@
 title: RADIUS Provider
 ---
 
-import { Check, X, AlertTriangle } from "react-feather";
+import { HashSupport } from "./HashSupport";
 
 You can configure a Radius provider for applications that don't support any other protocols or that require Radius.
 
@@ -18,9 +18,9 @@ Authentication requests against the Radius Server use a flow in the background. 
 
 The following stages are supported:
 
-- [Identification](../../flows-stages/stages/identification/index.md)
+- [Identification](../../flows-stages/stages/identification/index.mdx)
 - [Password](../../flows-stages/stages/password/index.md)
-- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.md)
+- [Authenticator validation](../../flows-stages/stages/authenticator_validate/index.mdx)
 
     Note: Authenticator validation currently only supports DUO, TOTP, and static authenticators.
 
@@ -56,15 +56,4 @@ After creation, make sure to select the RADIUS property mapping in the RADIUS pr
 
 The RADIUS provider only supports the [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol:
 
-|              | Clear-text      | NT hash         | MD5 hash        | Salted MD5 hash | SHA1 hash       | Salted SHA1 hash | Unix Crypt      |
-| ------------ | --------------- | --------------- | --------------- | --------------- | --------------- | ---------------- | --------------- |
-| PAP          | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check>  | <Check></Check> |
-| CHAP         | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| Digest       | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| MS-CHAP      | <Check></Check> | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| PEAP         | <Check></Check> | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| EAP-MSCHAPv2 | <Check></Check> | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| Cisco LEAP   | <Check></Check> | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| EAP-GTC      | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check> | <Check></Check>  | <Check></Check> |
-| EAP-MD5      | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>         | <X></X>          | <X></X>         |
-| EAP-PWD      | <Check></Check> | <X></X>         | <X></X>         | <X></X>         | <X></X>         | <Check></Check>  | <Check></Check> |
+<HashSupport />

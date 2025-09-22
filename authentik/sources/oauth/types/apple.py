@@ -11,7 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -104,6 +104,8 @@ class AppleType(SourceType):
     authorization_url = "https://appleid.apple.com/auth/authorize"
     access_token_url = "https://appleid.apple.com/auth/token"  # nosec
     profile_url = ""
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Pre-general all the things required for the JS SDK"""

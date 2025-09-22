@@ -44,6 +44,7 @@ class TestRBACRoleAPI(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,

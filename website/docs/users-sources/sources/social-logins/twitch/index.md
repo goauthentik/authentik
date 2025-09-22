@@ -1,16 +1,15 @@
 ---
 title: Twitch
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Twitch credentials
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 ## Twitch
 
@@ -42,7 +41,7 @@ The following placeholders will be used:
 
 ## authentik
 
-10. Under _Directory -> Federation & Social login_ Click **Create Twitch OAuth Source**
+10. Under _Directory > Federation & Social login_ Click **Create Twitch OAuth Source**
 
 11. **Name:** Choose a name (For the example I used Twitch)
 12. **Slug:** twitch (You can choose a different slug, if you do you will need to update the Twitch redirect URL and point it to the correct slug.)
@@ -56,5 +55,5 @@ Here is an example of a complete authentik Twitch OAuth Source
 Save, and you now have Twitch as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

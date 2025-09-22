@@ -1,26 +1,49 @@
-export type NavigationUpdate = {
+/**
+ * Initialization options for a wizard navigation event.
+ */
+export interface NavigationEventInit {
     disabled?: string[];
     enable?: string | string[];
     hidden?: string[];
-};
+}
 
-export class WizardNavigationEvent extends Event {
+/**
+ * Event dispatched when the wizard navigation is updated.
+ */
+export class WizardNavigationEvent<D extends string = string> extends Event {
     static readonly eventName = "ak-wizard-navigation";
 
-    destination?: string;
-    details?: NavigationUpdate;
+    public readonly destination?: D;
+    public readonly details?: NavigationEventInit;
 
-    constructor(destination?: string, details?: NavigationUpdate) {
+    constructor(destination?: D, init?: NavigationEventInit) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
-        this.details = details;
+        this.details = init;
+    }
+
+    /**
+     * Given an event target, bind the destination and details for dispatching.
+     */
+    static toListener<D extends string = string>(
+        target: EventTarget,
+        destination: D,
+        init?: NavigationEventInit,
+    ) {
+        const wizardNavigationListener = (event?: Event) => {
+            event?.preventDefault?.();
+
+            return target.dispatchEvent(new this(destination, init));
+        };
+
+        return wizardNavigationListener;
     }
 }
 
 export class WizardUpdateEvent<T> extends Event {
     static readonly eventName = "ak-wizard-update";
 
-    content: T;
+    public readonly content: T;
 
     constructor(content: T) {
         super(WizardUpdateEvent.eventName, { bubbles: true, composed: true });
@@ -39,8 +62,7 @@ export class WizardCloseEvent extends Event {
 declare global {
     interface GlobalEventHandlersEventMap {
         [WizardNavigationEvent.eventName]: WizardNavigationEvent;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [WizardUpdateEvent.eventName]: WizardUpdateEvent<any>;
+        [WizardUpdateEvent.eventName]: WizardUpdateEvent<never>;
         [WizardCloseEvent.eventName]: WizardCloseEvent;
     }
 }

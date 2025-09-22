@@ -1,23 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
+import "#elements/Spinner";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+
+import { EventsApi, EventTopPerUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
-import { EventTopPerUser, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {
     @property({ attribute: false })
     topN?: EventTopPerUser[];
 
-    static get styles(): CSSResult[] {
-        return [PFTable];
-    }
+    static styles: CSSResult[] = [PFTable];
 
     firstUpdated(): void {
         new EventsApi(DEFAULT_CONFIG)
@@ -31,10 +31,10 @@ export class TopApplicationsTable extends AKElement {
     }
 
     renderRow(event: EventTopPerUser): TemplateResult {
-        return html`<tr role="row">
-            <td role="cell">${event.application.name}</td>
-            <td role="cell">${event.countedEvents}</td>
-            <td role="cell">
+        return html`<tr>
+            <td>${event.application.name}</td>
+            <td>${event.countedEvents}</td>
+            <td>
                 <progress
                     value="${event.countedEvents}"
                     max="${this.topN ? this.topN[0].countedEvents : 0}"
@@ -44,12 +44,12 @@ export class TopApplicationsTable extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<table class="pf-c-table pf-m-compact" role="grid">
+        return html`<table class="pf-c-table pf-m-compact">
             <thead>
-                <tr role="row">
-                    <th role="columnheader" scope="col">${msg("Application")}</th>
-                    <th role="columnheader" scope="col">${msg("Logins")}</th>
-                    <th role="columnheader" scope="col"></th>
+                <tr>
+                    <th scope="col">${msg("Application")}</th>
+                    <th scope="col">${msg("Logins")}</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody role="rowgroup">

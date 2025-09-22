@@ -1,21 +1,20 @@
 ---
 title: Mailcow
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Mailcow credentials
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
-- `mailcow.company` is the FQDN of the mailcow install.
+- `authentik.company` is the FQDN of the authentik installation.
+- `mailcow.company` is the FQDN of the mailcow installation.
 
 ## Mailcow
 
-1. Log into mailcow as an admin and navigate to the OAuth2 Apps settings
+1. Log in to mailcow as an admin and navigate to the OAuth2 Apps settings
 
 ![OAuth2 Apps menu](./mailcow1.png)
 
@@ -23,7 +22,7 @@ The following placeholders will be used:
 
 3. Insert the redirect URL: `https://authentik.company/source/oauth/callback/mailcow/`
 
-![Add OAuth2 CLient](./mailcow2.png)
+![Add OAuth2 Client](./mailcow2.png)
 
 4. Copy the **Client ID** and **Client secret** and _save it for later_
 
@@ -31,7 +30,7 @@ The following placeholders will be used:
 
 ## authentik
 
-5. Under _Directory -> Federation & Social login_ Click **Create > Mailcow OAuth Source**
+5. Under **Directory > Federation & Social login** click **Create > Mailcow OAuth Source**
 
 ![Mailcow OAuth Source](./mailcow4.png)
 
@@ -50,5 +49,5 @@ Here is an example of a complete authentik Mailcow OAuth Source
 Save, and you now have Mailcow as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

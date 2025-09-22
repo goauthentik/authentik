@@ -10,7 +10,9 @@ from structlog.stdlib import get_logger
 from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.sources.saml.models import SAMLNameIDPolicy
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
@@ -40,7 +42,9 @@ class SAMLBindings(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    acs_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -69,6 +73,20 @@ class SAMLProvider(Provider):
         help_text=_(
             "Configure how the NameID value will be created. When left empty, "
             "the NameIDPolicy of the incoming request will be considered"
+        ),
+    )
+    authn_context_class_ref_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("AuthnContextClassRef Property Mapping"),
+        related_name="+",
+        help_text=_(
+            "Configure how the AuthnContextClassRef value will be created. When left empty, "
+            "the AuthnContextClassRef will be set based on which authentication methods the user "
+            "used to authenticate."
         ),
     )
 
@@ -162,6 +180,9 @@ class SAMLProvider(Provider):
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
+    default_name_id_policy = models.TextField(
+        choices=SAMLNameIDPolicy.choices, default=SAMLNameIDPolicy.UNSPECIFIED
+    )
 
     sign_assertion = models.BooleanField(default=True)
     sign_response = models.BooleanField(default=False)
@@ -170,7 +191,6 @@ class SAMLProvider(Provider):
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},

@@ -11,13 +11,15 @@ from django.core.management.base import BaseCommand
 from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.models import User
 from authentik.events.middleware import should_log_model
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
 
-BANNER_TEXT = f"""### authentik shell ({get_full_version()})
+
+def get_banner_text(shell_type="shell") -> str:
+    return f"""### authentik {shell_type} ({authentik_full_version()})
 ### Node {platform.node()} | Arch {platform.machine()} | Python {platform.python_version()} """
 
 
@@ -114,4 +116,4 @@ class Command(BaseCommand):
             readline.parse_and_bind("tab: complete")
 
         # Run interactive shell
-        code.interact(banner=BANNER_TEXT, local=namespace)
+        code.interact(banner=get_banner_text(), local=namespace)

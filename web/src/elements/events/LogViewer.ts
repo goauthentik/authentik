@@ -1,15 +1,18 @@
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/EmptyState";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#components/ak-status-label";
+import "#elements/EmptyState";
+
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 @customElement("ak-log-viewer")
 export class LogViewer extends Table<LogEvent> {
@@ -19,9 +22,7 @@ export class LogViewer extends Table<LogEvent> {
     expandable = true;
     paginated = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
-    }
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
     async apiEndpoint(): Promise<PaginatedResponse<LogEvent>> {
         return {
@@ -40,12 +41,12 @@ export class LogViewer extends Table<LogEvent> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No log messages.")}> </ak-empty-state>`,
+            html`<ak-empty-state><span>${msg("No log messages.")}</span> </ak-empty-state>`,
         );
     }
 
     renderExpanded(item: LogEvent): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        return html`<td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
@@ -73,18 +74,16 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Time")),
-            new TableColumn(msg("Level")),
-            new TableColumn(msg("Event")),
-            new TableColumn(msg("Logger")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Time")],
+        [msg("Level")],
+        [msg("Event")],
+        [msg("Logger")],
+    ];
 
     statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
@@ -100,9 +99,13 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    protected override rowLabel(item: LogEvent): string {
+        return formatElapsedTime(item.timestamp);
+    }
+
+    row(item: LogEvent): SlottedTemplateResult[] {
         return [
-            html`${getRelativeTime(item.timestamp)}`,
+            html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}

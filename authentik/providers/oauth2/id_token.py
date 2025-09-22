@@ -4,10 +4,8 @@ from dataclasses import asdict, dataclass, field
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any
 
-from django.db import models
 from django.http import HttpRequest
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import default_token_duration
 from authentik.events.signals import get_login_event
@@ -16,7 +14,9 @@ from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
     AMR_PASSWORD,
+    AMR_SMART_CARD,
     AMR_WEBAUTHN,
+    SubModes,
 )
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
@@ -27,26 +27,6 @@ if TYPE_CHECKING:
 def hash_session_key(session_key: str) -> str:
     """Hash the session key for inclusion in JWTs as `sid`"""
     return sha256(session_key.encode("ascii")).hexdigest()
-
-
-class SubModes(models.TextChoices):
-    """Mode after which 'sub' attribute is generated, for compatibility reasons"""
-
-    HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
-    USER_ID = "user_id", _("Based on user ID")
-    USER_UUID = "user_uuid", _("Based on user UUID")
-    USER_USERNAME = "user_username", _("Based on the username")
-    USER_EMAIL = (
-        "user_email",
-        _("Based on the User's Email. This is recommended over the UPN method."),
-    )
-    USER_UPN = (
-        "user_upn",
-        _(
-            "Based on the User's UPN, only works if user has a 'upn' attribute set. "
-            "Use this method only if you have different UPN and Mail domains."
-        ),
-    )
 
 
 @dataclass(slots=True)
@@ -126,7 +106,7 @@ class IDToken:
         id_token.iat = int(now.timestamp())
         id_token.auth_time = int(token.auth_time.timestamp())
         if token.session:
-            id_token.sid = hash_session_key(token.session.session_key)
+            id_token.sid = hash_session_key(token.session.session.session_key)
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = get_login_event(token.session)
@@ -139,9 +119,10 @@ class IDToken:
                 amr.append(AMR_PASSWORD)
             if method == "auth_webauthn_pwl":
                 amr.append(AMR_WEBAUTHN)
+            if "certificate" in method_args:
+                amr.append(AMR_SMART_CARD)
             if "mfa_devices" in method_args:
-                if len(amr) > 0:
-                    amr.append(AMR_MFA)
+                amr.append(AMR_MFA)
             if amr:
                 id_token.amr = amr
 
@@ -166,11 +147,12 @@ class IDToken:
         id_dict.update(self.claims)
         return id_dict
 
-    def to_access_token(self, provider: "OAuth2Provider") -> str:
+    def to_access_token(self, provider: "OAuth2Provider", token: "BaseGrantModel") -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
         final["azp"] = provider.client_id
         final["uid"] = generate_id()
+        final["scope"] = " ".join(token.scope)
         return provider.encode(final)
 
     def to_jwt(self, provider: "OAuth2Provider") -> str:

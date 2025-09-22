@@ -13,13 +13,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik import get_build_hash
+from authentik import authentik_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.providers.rac.models import RACProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
@@ -31,6 +30,7 @@ from authentik.outposts.models import (
 )
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
 
 
@@ -194,7 +194,7 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "openssl_version": state.openssl_version,
                     "fips_enabled": state.fips_enabled,
                     "hostname": state.hostname,
-                    "build_hash_should": get_build_hash(),
+                    "build_hash_should": authentik_build_hash(),
                 }
             )
         return Response(OutpostHealthSerializer(states, many=True).data)

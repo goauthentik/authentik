@@ -1,28 +1,40 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "#elements/LoadingOverlay";
+import "#elements/ak-locale-context/ak-locale-context";
+import "#flow/components/ak-brand-footer";
+import "#flow/components/ak-flow-card";
+import "#flow/sources/apple/AppleLoginInit";
+import "#flow/sources/plex/PlexLoginInit";
+import "#flow/stages/FlowErrorStage";
+import "#flow/stages/FlowFrameStage";
+import "#flow/stages/RedirectStage";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import { pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { configureSentry } from "#common/sentry/index";
+import { WebsocketClient } from "#common/ws";
+
+import { Interface } from "#elements/Interface";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { themeImage } from "#elements/utils/images";
+
+import { StageHost, SubmitOptions } from "#flow/stages/base";
+
 import {
-    EVENT_FLOW_ADVANCE,
-    EVENT_FLOW_INSPECTOR_TOGGLE,
-    TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { purify } from "@goauthentik/common/purify";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
-import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/LoadingOverlay";
-import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
-import { themeImage } from "@goauthentik/elements/utils/images";
-import "@goauthentik/flow/sources/apple/AppleLoginInit";
-import "@goauthentik/flow/sources/plex/PlexLoginInit";
-import "@goauthentik/flow/stages/FlowErrorStage";
-import "@goauthentik/flow/stages/FlowFrameStage";
-import "@goauthentik/flow/stages/RedirectStage";
-import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
+    CapabilitiesEnum,
+    ChallengeTypes,
+    ContextualFlowInfo,
+    FlowChallengeResponseRequest,
+    FlowErrorChallenge,
+    FlowLayoutEnum,
+    FlowsApi,
+    ShellChallenge,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
@@ -35,55 +47,22 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    CapabilitiesEnum,
-    ChallengeTypes,
-    ContextualFlowInfo,
-    FetchError,
-    FlowChallengeResponseRequest,
-    FlowErrorChallenge,
-    FlowLayoutEnum,
-    FlowsApi,
-    ResponseError,
-    ShellChallenge,
-    UiThemeEnum,
-} from "@goauthentik/api";
-
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
-    @property()
-    flowSlug: string = window.location.pathname.split("/")[3];
+export class FlowExecutor
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    implements StageHost
+{
+    //#region Styles
 
-    private _challenge?: ChallengeTypes;
-
-    @property({ attribute: false })
-    set challenge(value: ChallengeTypes | undefined) {
-        this._challenge = value;
-        if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
-        } else {
-            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        }
-        this.requestUpdate();
-    }
-
-    get challenge(): ChallengeTypes | undefined {
-        return this._challenge;
-    }
-
-    @property({ type: Boolean })
-    loading = false;
-
-    @state()
-    inspectorOpen = false;
-
-    @state()
-    flowInfo?: ContextualFlowInfo;
-
-    ws: WebsocketClient;
-
-    static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+    static styles: CSSResult[] = [
+        PFBase,
+        PFLogin,
+        PFDrawer,
+        PFButton,
+        PFTitle,
+        PFList,
+        PFBackgroundImage,
+        css`
             :host {
                 --pf-c-login__main-body--PaddingBottom: var(--pf-global--spacer--2xl);
             }
@@ -160,24 +139,86 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding: 0 2rem;
                 max-height: inherit;
             }
-        `);
+            .inspector-toggle {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                z-index: 100;
+            }
+        `,
+    ];
+
+    //#endregion
+
+    //#region Properties
+
+    @property()
+    public flowSlug: string = window.location.pathname.split("/")[3];
+
+    #challenge?: ChallengeTypes;
+
+    @property({ attribute: false })
+    public set challenge(value: ChallengeTypes | undefined) {
+        this.#challenge = value;
+        if (value?.flowInfo?.title) {
+            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
+        } else {
+            document.title = this.brandingTitle;
+        }
+        this.requestUpdate();
     }
 
+    public get challenge(): ChallengeTypes | undefined {
+        return this.#challenge;
+    }
+
+    @property({ type: Boolean })
+    public loading = false;
+
+    //#endregion
+
+    //#region State
+
+    @state()
+    protected inspectorOpen?: boolean;
+
+    @state()
+    protected inspectorAvailable?: boolean;
+
+    @state()
+    public flowInfo?: ContextualFlowInfo;
+
+    //#endregion
+
+    //#region Lifecycle
+
     constructor() {
+        configureSentry();
+
         super();
-        this.ws = new WebsocketClient();
-        if (window.location.search.includes("inspector")) {
+
+        WebsocketClient.connect();
+
+        const inspector = new URL(window.location.toString()).searchParams.get("inspector");
+
+        if (inspector === "" || inspector === "open") {
             this.inspectorOpen = true;
+            this.inspectorAvailable = true;
+        } else if (inspector === "available") {
+            this.inspectorAvailable = true;
         }
+
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
         });
+
         window.addEventListener("message", (event) => {
             const msg: {
                 source?: string;
                 context?: string;
                 message: string;
             } = event.data;
+
             if (msg.source !== "goauthentik.io" || msg.context !== "flow-executor") {
                 return;
             }
@@ -187,100 +228,120 @@ export class FlowExecutor extends Interface implements StageHost {
         });
     }
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        WebsocketClient.close();
     }
 
-    async submit(
+    public async firstUpdated(): Promise<void> {
+        if (this.can(CapabilitiesEnum.CanDebug)) {
+            this.inspectorAvailable = true;
+        }
+
+        this.loading = true;
+
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorGet({
+                flowSlug: this.flowSlug,
+                query: window.location.search.substring(1),
+            })
+            .then((challenge: ChallengeTypes) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
+
+                this.challenge = challenge;
+
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
+                }
+            })
+            .catch((error) => {
+                const challenge: FlowErrorChallenge = {
+                    component: "ak-stage-flow-error",
+                    error: pluckErrorDetail(error),
+                    requestId: "",
+                };
+
+                this.challenge = challenge as ChallengeTypes;
+            })
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+
+    // DOM post-processing has to happen after the render.
+    public updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowInfo") && this.flowInfo) {
+            this.#setShadowStyles(this.flowInfo);
+        }
+    }
+
+    //#endregion
+
+    //#region Public Methods
+
+    public submit = async (
         payload?: FlowChallengeResponseRequest,
         options?: SubmitOptions,
-    ): Promise<boolean> {
-        if (!payload) return Promise.reject();
-        if (!this.challenge) return Promise.reject();
-        // @ts-expect-error
-        payload.component = this.challenge.component;
+    ): Promise<boolean> => {
+        if (!payload) throw new Error("No payload provided");
+        if (!this.challenge) throw new Error("No challenge provided");
+
+        payload.component = this.challenge.component as FlowChallengeResponseRequest["component"];
+
         if (!options?.invisible) {
             this.loading = true;
         }
-        try {
-            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
+
+        return new FlowsApi(DEFAULT_CONFIG)
+            .flowsExecutorSolve({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
                 flowChallengeResponseRequest: payload,
+            })
+            .then((challenge) => {
+                if (this.inspectorOpen) {
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_FLOW_ADVANCE, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
+
+                this.challenge = challenge;
+
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
+                }
+
+                return !this.challenge.responseErrors;
+            })
+            .catch((error: unknown) => {
+                const challenge: FlowErrorChallenge = {
+                    component: "ak-stage-flow-error",
+                    error: pluckErrorDetail(error),
+                    requestId: "",
+                };
+
+                this.challenge = challenge as ChallengeTypes;
+                return false;
+            })
+            .finally(() => {
+                this.loading = false;
             });
-            if (this.inspectorOpen) {
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_FLOW_ADVANCE, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-            }
-            this.challenge = challenge;
-            if (this.challenge.flowInfo) {
-                this.flowInfo = this.challenge.flowInfo;
-            }
-            return !this.challenge.responseErrors;
-        } catch (exc: unknown) {
-            this.errorMessage(exc as Error | ResponseError | FetchError);
-            return false;
-        } finally {
-            this.loading = false;
-        }
-    }
+    };
 
-    async firstUpdated(): Promise<void> {
-        configureSentry();
-        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
-            this.inspectorOpen = true;
-        }
-        this.loading = true;
-        try {
-            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
-                flowSlug: this.flowSlug,
-                query: window.location.search.substring(1),
-            });
-            if (this.inspectorOpen) {
-                window.dispatchEvent(
-                    new CustomEvent(EVENT_FLOW_ADVANCE, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-            }
-            this.challenge = challenge;
-            if (this.challenge.flowInfo) {
-                this.flowInfo = this.challenge.flowInfo;
-            }
-        } catch (exc: unknown) {
-            // Catch JSON or Update errors
-            this.errorMessage(exc as Error | ResponseError | FetchError);
-        } finally {
-            this.loading = false;
-        }
-    }
+    #setShadowStyles(value: ContextualFlowInfo) {
+        if (!value) return;
 
-    async errorMessage(error: Error | ResponseError | FetchError): Promise<void> {
-        let body = "";
-        if (error instanceof FetchError) {
-            body = msg("Request failed. Please try again later.");
-        } else if (error instanceof ResponseError) {
-            body = await error.response.text();
-        } else if (error instanceof Error) {
-            body = error.message;
-        }
-        const challenge: FlowErrorChallenge = {
-            component: "ak-stage-flow-error",
-            error: body,
-            requestId: "",
-        };
-        this.challenge = challenge as ChallengeTypes;
-    }
-
-    setShadowStyles(value: ContextualFlowInfo) {
-        if (!value) {
-            return;
-        }
         this.shadowRoot
             ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
             .forEach((bg) => {
@@ -288,88 +349,103 @@ export class FlowExecutor extends Interface implements StageHost {
             });
     }
 
-    // DOM post-processing has to happen after the render.
-    updated(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("flowInfo") && this.flowInfo !== undefined) {
-            this.setShadowStyles(this.flowInfo);
+    //#region Render
+
+    getLayout(): string {
+        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+        if (this.challenge) {
+            return this.challenge?.flowInfo?.layout || prefilledFlow;
+        }
+        return prefilledFlow;
+    }
+
+    getLayoutClass(): string {
+        const layout = this.getLayout();
+
+        switch (layout) {
+            case FlowLayoutEnum.ContentLeft:
+                return "pf-c-login__container";
+            case FlowLayoutEnum.ContentRight:
+                return "pf-c-login__container content-right";
+            case FlowLayoutEnum.Stacked:
+            default:
+                return "ak-login-container";
         }
     }
 
     async renderChallenge(): Promise<TemplateResult> {
         if (!this.challenge) {
-            return html`<ak-empty-state loading> </ak-empty-state>`;
+            return html`<ak-flow-card loading></ak-flow-card>`;
         }
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
-                await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage");
+                await import("#flow/stages/access_denied/AccessDeniedStage");
                 return html`<ak-stage-access-denied
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-access-denied>`;
             case "ak-stage-identification":
-                await import("@goauthentik/flow/stages/identification/IdentificationStage");
+                await import("#flow/stages/identification/IdentificationStage");
                 return html`<ak-stage-identification
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-identification>`;
             case "ak-stage-password":
-                await import("@goauthentik/flow/stages/password/PasswordStage");
+                await import("#flow/stages/password/PasswordStage");
                 return html`<ak-stage-password
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-password>`;
             case "ak-stage-captcha":
-                await import("@goauthentik/flow/stages/captcha/CaptchaStage");
+                await import("#flow/stages/captcha/CaptchaStage");
                 return html`<ak-stage-captcha
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-captcha>`;
             case "ak-stage-consent":
-                await import("@goauthentik/flow/stages/consent/ConsentStage");
+                await import("#flow/stages/consent/ConsentStage");
                 return html`<ak-stage-consent
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-consent>`;
             case "ak-stage-dummy":
-                await import("@goauthentik/flow/stages/dummy/DummyStage");
+                await import("#flow/stages/dummy/DummyStage");
                 return html`<ak-stage-dummy
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-dummy>`;
             case "ak-stage-email":
-                await import("@goauthentik/flow/stages/email/EmailStage");
+                await import("#flow/stages/email/EmailStage");
                 return html`<ak-stage-email
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-email>`;
             case "ak-stage-autosubmit":
-                await import("@goauthentik/flow/stages/autosubmit/AutosubmitStage");
+                await import("#flow/stages/autosubmit/AutosubmitStage");
                 return html`<ak-stage-autosubmit
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-autosubmit>`;
             case "ak-stage-prompt":
-                await import("@goauthentik/flow/stages/prompt/PromptStage");
+                await import("#flow/stages/prompt/PromptStage");
                 return html`<ak-stage-prompt
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-prompt>`;
             case "ak-stage-authenticator-totp":
-                await import("@goauthentik/flow/stages/authenticator_totp/AuthenticatorTOTPStage");
+                await import("#flow/stages/authenticator_totp/AuthenticatorTOTPStage");
                 return html`<ak-stage-authenticator-totp
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-totp>`;
             case "ak-stage-authenticator-duo":
-                await import("@goauthentik/flow/stages/authenticator_duo/AuthenticatorDuoStage");
+                await import("#flow/stages/authenticator_duo/AuthenticatorDuoStage");
                 return html`<ak-stage-authenticator-duo
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-duo>`;
             case "ak-stage-authenticator-static":
-                await import(
-                    "@goauthentik/flow/stages/authenticator_static/AuthenticatorStaticStage"
-                );
+                await import("#flow/stages/authenticator_static/AuthenticatorStaticStage");
                 return html`<ak-stage-authenticator-static
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -379,22 +455,26 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
+            case "ak-stage-authenticator-email":
+                await import("#flow/stages/authenticator_email/AuthenticatorEmailStage");
+                return html`<ak-stage-authenticator-email
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
-                await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
+                await import("#flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
-                await import(
-                    "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage"
-                );
+                await import("#flow/stages/authenticator_validate/AuthenticatorValidateStage");
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
             case "ak-stage-user-login":
-                await import("@goauthentik/flow/stages/user_login/UserLoginStage");
+                await import("#flow/stages/user_login/UserLoginStage");
                 return html`<ak-stage-user-login
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -412,19 +492,19 @@ export class FlowExecutor extends Interface implements StageHost {
                 ></ak-flow-source-oauth-apple>`;
             // Providers
             case "ak-provider-oauth2-device-code":
-                await import("@goauthentik/flow/providers/oauth2/DeviceCode");
+                await import("#flow/providers/oauth2/DeviceCode");
                 return html`<ak-flow-provider-oauth2-code
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code>`;
             case "ak-provider-oauth2-device-code-finish":
-                await import("@goauthentik/flow/providers/oauth2/DeviceCodeFinish");
+                await import("#flow/providers/oauth2/DeviceCodeFinish");
                 return html`<ak-flow-provider-oauth2-code-finish
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-provider-oauth2-code-finish>`;
             case "ak-stage-session-end":
-                await import("@goauthentik/flow/providers/SessionEnd");
+                await import("#flow/providers/SessionEnd");
                 return html`<ak-stage-session-end
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -458,32 +538,14 @@ export class FlowExecutor extends Interface implements StageHost {
         if (!this.inspectorOpen) {
             return nothing;
         }
-        await import("@goauthentik/flow/FlowInspector");
-        return html`<ak-flow-inspector
-            class="pf-c-drawer__panel pf-m-width-33"
-            .flowSlug=${this.flowSlug}
-        ></ak-flow-inspector>`;
-    }
 
-    getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
-        if (this.challenge) {
-            return this.challenge?.flowInfo?.layout || prefilledFlow;
-        }
-        return prefilledFlow;
-    }
-
-    getLayoutClass(): string {
-        const layout = this.getLayout();
-        switch (layout) {
-            case FlowLayoutEnum.ContentLeft:
-                return "pf-c-login__container";
-            case FlowLayoutEnum.ContentRight:
-                return "pf-c-login__container content-right";
-            case FlowLayoutEnum.Stacked:
-            default:
-                return "ak-login-container";
-        }
+        return import("#flow/FlowInspector").then(
+            () =>
+                html`<ak-flow-inspector
+                    class="pf-c-drawer__panel pf-m-width-33"
+                    .flowSlug=${this.flowSlug}
+                ></ak-flow-inspector>`,
+        );
     }
 
     render(): TemplateResult {
@@ -504,43 +566,30 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 class="pf-c-login__main-header pf-c-brand ak-brand"
                                             >
                                                 <img
-                                                    src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
-                                                            DefaultBrand.brandingLogo,
-                                                        ),
-                                                    )}"
-                                                    alt="authentik Logo"
+                                                    src="${themeImage(this.brandingLogo)}"
+                                                    alt="${msg("authentik Logo")}"
                                                 />
                                             </div>
                                             ${until(this.renderChallenge())}
                                         </div>
-                                        <footer class="pf-c-login__footer">
-                                            <ul class="pf-c-list pf-m-inline">
-                                                ${this.brand?.uiFooterLinks?.map((link) => {
-                                                    if (link.href) {
-                                                        return html`${purify(
-                                                            html`<li>
-                                                                <a href="${link.href}"
-                                                                    >${link.name}</a
-                                                                >
-                                                            </li>`,
-                                                        )}`;
-                                                    }
-                                                    return html`<li>
-                                                        <span>${link.name}</span>
-                                                    </li>`;
-                                                })}
-                                                <li>
-                                                    <span>${msg("Powered by authentik")}</span>
-                                                </li>
-                                            </ul>
-                                        </footer>
+                                        <ak-brand-links
+                                            class="pf-c-login__footer"
+                                            .links=${this.brandingFooterLinks}
+                                        ></ak-brand-links>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        ${this.inspectorAvailable && !this.inspectorOpen
+                            ? html`<button
+                                  class="inspector-toggle pf-c-button pf-m-primary"
+                                  @click=${() => {
+                                      this.inspectorOpen = true;
+                                  }}
+                              >
+                                  <i class="fa fa-search-plus" aria-hidden="true"></i>
+                              </button>`
+                            : nothing}
                         ${until(this.renderInspector())}
                     </div>
                 </div>

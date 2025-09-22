@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -8,17 +8,15 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-wizard-title")
 export class AkWizardTitle extends AKElement {
-    static get styles() {
-        return [
-            PFContent,
-            PFTitle,
-            css`
-                .ak-bottom-spacing {
-                    padding-bottom: var(--pf-global--spacer--lg);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFContent,
+        PFTitle,
+        css`
+            .ak-bottom-spacing {
+                padding-bottom: var(--pf-global--spacer--lg);
+            }
+        `,
+    ];
 
     render() {
         return html`<div class="ak-bottom-spacing pf-c-content">

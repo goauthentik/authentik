@@ -20,6 +20,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
 from authentik.lib.expression.evaluator import BaseEvaluator
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -38,6 +39,7 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SHA1,
@@ -72,6 +74,7 @@ class SAMLNameIDPolicy(models.TextChoices):
     X509 = SAML_NAME_ID_FORMAT_X509
     WINDOWS = SAML_NAME_ID_FORMAT_WINDOWS
     TRANSIENT = SAML_NAME_ID_FORMAT_TRANSIENT
+    UNSPECIFIED = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
 
 class SAMLSource(Source):
@@ -91,11 +94,13 @@ class SAMLSource(Source):
         help_text=_("Also known as Entity ID. Defaults the Metadata URL."),
     )
 
-    sso_url = models.URLField(
+    sso_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
         verbose_name=_("SSO URL"),
         help_text=_("URL that the initial Login request is sent to."),
     )
-    slo_url = models.URLField(
+    slo_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
         default=None,
         blank=True,
         null=True,
@@ -314,8 +319,6 @@ class SAMLSourcePropertyMapping(PropertyMapping):
 
 class UserSAMLSourceConnection(UserSourceConnection):
     """Connection to configured SAML Sources."""
-
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> Serializer:

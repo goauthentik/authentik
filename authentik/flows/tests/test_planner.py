@@ -29,6 +29,7 @@ from authentik.flows.planner import (
     cache_key,
 )
 from authentik.flows.stage import StageView
+from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
@@ -153,7 +154,7 @@ class TestFlowPlanner(TestCase):
         """Test planner cache"""
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         request = self.request_factory.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
@@ -172,7 +173,7 @@ class TestFlowPlanner(TestCase):
         """Test planner with default_context"""
         flow = create_test_flow()
         FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy"), order=0
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
 
         user = User.objects.create(username="test-user")
@@ -191,7 +192,7 @@ class TestFlowPlanner(TestCase):
 
         FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy1"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=0,
             re_evaluate_policies=True,
         )
@@ -204,7 +205,7 @@ class TestFlowPlanner(TestCase):
         planner = FlowPlanner(flow)
         plan = planner.plan(request)
 
-        self.assertIsInstance(plan.markers[0], ReevaluateMarker)
+        self.assertEqual(plan.markers[0].__class__, ReevaluateMarker)
 
     def test_planner_reevaluate_actual(self):
         """Test planner with re-evaluate"""
@@ -212,11 +213,14 @@ class TestFlowPlanner(TestCase):
         false_policy = DummyPolicy.objects.create(result=False, wait_min=1, wait_max=2)
 
         binding = FlowStageBinding.objects.create(
-            target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
+            target=flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+            re_evaluate_policies=False,
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
-            stage=DummyStage.objects.create(name="dummy2"),
+            stage=DummyStage.objects.create(name=generate_id()),
             order=1,
             re_evaluate_policies=True,
         )
@@ -240,6 +244,8 @@ class TestFlowPlanner(TestCase):
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)
 
+            self.assertEqual(plan.markers[0].__class__, StageMarker)
+            self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
             self.assertIsInstance(plan.markers[0], StageMarker)
             self.assertIsInstance(plan.markers[1], ReevaluateMarker)
 

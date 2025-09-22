@@ -1,6 +1,4 @@
-import { fromByteArray } from "base64-js";
 import "formdata-polyfill";
-import $ from "jquery";
 import "weakmap-polyfill";
 
 import {
@@ -15,6 +13,9 @@ import {
     type PasswordChallenge,
     type RedirectChallenge,
 } from "@goauthentik/api";
+
+import { fromByteArray } from "base64-js";
+import $ from "jquery";
 
 interface GlobalAuthentik {
     brand: {
@@ -47,7 +48,16 @@ class SimpleFlowExecutor {
         return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
     }
 
+    loading() {
+        this.container.innerHTML = `<div class="d-flex justify-content-center">
+            <div class="spinner-border spinner-border-md" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>`;
+    }
+
     start() {
+        this.loading();
         $.ajax({
             type: "GET",
             url: this.apiURL,
@@ -168,7 +178,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
                 ${
                     this.challenge.applicationPre
                         ? `<p>
-                              Login to continue to ${this.challenge.applicationPre}.
+                              Log in to continue to ${this.challenge.applicationPre}.
                           </p>`
                         : ""
                 }
@@ -201,6 +211,9 @@ class PasswordStage extends Stage<PasswordChallenge> {
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <div class="form-label-group my-3">
+                    <input type="text" readonly class="form-control-plaintext" value="Welcome, ${this.challenge?.pendingUser}.">
+                </div>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}
@@ -391,6 +404,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     render() {
+        if (this.challenge.deviceChallenges.length === 1) {
+            this.deviceChallenge = this.challenge.deviceChallenges[0];
+        }
         if (!this.deviceChallenge) {
             return this.renderChallengePicker();
         }
@@ -419,9 +435,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 ${
                     challenges.length > 0
                         ? "<p>Select an authentication method.</p>"
-                        : `
-                    <p>No compatible authentication method available</p>
-                    `
+                        : `<p>No compatible authentication method available</p>`
                 }
                 ${challenges
                     .map((challenge) => {

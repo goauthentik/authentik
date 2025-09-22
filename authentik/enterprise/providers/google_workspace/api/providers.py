@@ -37,6 +37,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "user_delete_action",
             "group_delete_action",
             "default_group_email_domain",
+            "dry_run",
         ]
         extra_kwargs = {}
 
@@ -54,5 +55,5 @@ class GoogleWorkspaceProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixi
     ]
     search_fields = ["name"]
     ordering = ["name"]
-    sync_single_task = google_workspace_sync
+    sync_task = google_workspace_sync
     sync_objects_task = google_workspace_sync_objects

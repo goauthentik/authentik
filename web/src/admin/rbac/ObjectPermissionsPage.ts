@@ -1,11 +1,14 @@
-import "@goauthentik/admin/rbac/RoleObjectPermissionTable";
-import "@goauthentik/admin/rbac/UserObjectPermissionTable";
-import "@goauthentik/admin/roles/RoleAssignedGlobalPermissionsTable";
-import "@goauthentik/admin/roles/RoleAssignedObjectPermissionTable";
-import "@goauthentik/admin/users/UserAssignedGlobalPermissionsTable";
-import "@goauthentik/admin/users/UserAssignedObjectPermissionsTable";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Tabs";
+import "#admin/rbac/RoleObjectPermissionTable";
+import "#admin/rbac/UserObjectPermissionTable";
+import "#admin/roles/RoleAssignedGlobalPermissionsTable";
+import "#admin/roles/RoleAssignedObjectPermissionTable";
+import "#admin/users/UserAssignedGlobalPermissionsTable";
+import "#admin/users/UserAssignedObjectPermissionsTable";
+import "#elements/Tabs";
+
+import { AKElement } from "#elements/Base";
+
+import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -15,8 +18,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
@@ -29,21 +30,26 @@ export class ObjectPermissionPage extends AKElement {
     @property({ type: Boolean })
     embedded = false;
 
-    static get styles() {
-        return [PFBase, PFGrid, PFPage, PFCard];
-    }
+    static styles = [PFBase, PFGrid, PFPage, PFCard];
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
-                ? this.renderCoreUser()
-                : nothing}
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.RbacRole
-                ? this.renderRbacRole()
-                : nothing}
-            <section
+            ${
+                this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
+                    ? this.renderCoreUser()
+                    : nothing
+            }
+            ${
+                this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
+                    ? this.renderRbacRole()
+                    : nothing
+            }
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-object-user"
-                data-tab-title="${msg("User Object Permissions")}"
+                id="page-object-user"
+                aria-label="${msg("User Object Permissions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -61,10 +67,13 @@ export class ObjectPermissionPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-            <section
+            </div>
+            <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-object-role"
-                data-tab-title="${msg("Role Object Permissions")}"
+                id="page-object-role"
+                aria-label="${msg("Role Object Permissions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
@@ -82,17 +91,21 @@ export class ObjectPermissionPage extends AKElement {
                         </div>
                     </div>
                 </div>
-            </section>
-        </ak-tabs>`;
+            </div>
+        </ak-tabs>
+</main>`;
     }
 
     renderCoreUser() {
         return html`
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-global-permissions"
-                data-tab-title="${msg("Assigned global permissions")}"
+                id="page-assigned-global-permissions"
+                aria-label="${msg("Assigned global permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
@@ -107,13 +120,16 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-user-assigned-global-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-object-permissions"
-                data-tab-title="${msg("Assigned object permissions")}"
+                id="page-assigned-object-permissions"
+                aria-label="${msg("Assigned object permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
                         <div class="pf-c-card__body">
@@ -128,7 +144,7 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-user-assigned-object-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         `;
     }
@@ -136,10 +152,13 @@ export class ObjectPermissionPage extends AKElement {
     renderRbacRole() {
         return html`
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-global-permissions"
-                data-tab-title="${msg("Assigned global permissions")}"
+                id="page-assigned-global-permissions"
+                aria-label="${msg("Assigned global permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
@@ -154,13 +173,16 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-role-assigned-global-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
             <div
+                role="tabpanel"
+                tabindex="0"
                 slot="page-assigned-object-permissions"
-                data-tab-title="${msg("Assigned object permissions")}"
+                id="page-assigned-object-permissions"
+                aria-label="${msg("Assigned object permissions")}"
             >
-                <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
                         <div class="pf-c-card__body">
@@ -175,7 +197,7 @@ export class ObjectPermissionPage extends AKElement {
                             </ak-role-assigned-object-permissions-table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         `;
     }

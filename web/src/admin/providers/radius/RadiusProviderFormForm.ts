@@ -1,13 +1,14 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-hidden-text-input";
+import "#components/ak-text-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
+
+import { ascii_letters, digits, randomString } from "#common/utils";
 
 import {
     CurrentBrand,
@@ -16,7 +17,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 const mfaSupportHelp = msg(
     "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
@@ -41,9 +44,10 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Provider name...")}
             value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
         >
         </ak-text-input>
@@ -52,9 +56,11 @@ export function renderForm(
             label=${msg("Authentication flow")}
             required
             name="authorizationFlow"
-            .errorMessages=${errors?.authorizationFlow ?? []}
+            .errorMessages=${errors?.authorizationFlow}
         >
             <ak-branded-flow-search
+                label=${msg("Authentication flow")}
+                placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
                 .currentFlow=${provider?.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
@@ -71,26 +77,24 @@ export function renderForm(
         >
         </ak-switch-input>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
-                <ak-text-input
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
+                <ak-hidden-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors?.sharedSecret ?? []}
-                    value=${first(
-                        provider?.sharedSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}
+                    .errorMessages=${errors?.sharedSecret}
+                    value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
-                ></ak-text-input>
+                    input-hint="code"
+                ></ak-hidden-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
-                    value=${first(provider?.clientNetworks, "0.0.0.0/0, ::/0")}
-                    .errorMessages=${errors?.clientNetworks ?? []}
+                    value=${provider?.clientNetworks ?? "0.0.0.0/0, ::/0"}
+                    .errorMessages=${errors?.clientNetworks}
                     required
                     help=${clientNetworksHelp}
+                    input-hint="code"
                 ></ak-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}
@@ -105,18 +109,19 @@ export function renderForm(
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Invalidation flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
+                        label=${msg("Invalidation flow")}
+                        placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
-                        .errorMessages=${errors?.invalidationFlow ?? []}
+                        .errorMessages=${errors?.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-flow-search>

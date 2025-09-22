@@ -1,0 +1,20 @@
+.theme-doc-sidebar-menu .dropdown {
+    display: block;
+    padding: 0;
+}
+
+.theme-doc-sidebar-menu .navbar__link {
+    color: var(--ifm-menu-color);
+}
+
+.theme-doc-sidebar-menu .dropdown__menu {
+    left: 0;
+}
+.theme-doc-sidebar-menu hr {
+    margin-top: calc(var(--ifm-hr-margin-vertical) / 2);
+    margin-right: -0.5rem;
+}
+
+.clean-list {
+    font-weight: 500;
+}

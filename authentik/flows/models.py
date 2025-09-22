@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
@@ -102,8 +103,12 @@ class Stage(SerializerModel):
         user settings are available, or a challenge."""
         return None
 
+    @property
+    def is_in_memory(self):
+        return hasattr(self, "__in_memory_type")
+
     def __str__(self):
-        if hasattr(self, "__in_memory_type"):
+        if self.is_in_memory:
             return f"In-memory Stage {getattr(self, '__in_memory_type')}"
         return f"Stage {self.name}"
 
@@ -174,11 +179,12 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
-    @property
-    def background_url(self) -> str:
+    def background_url(self, request: HttpRequest | None = None) -> str:
         """Get the URL to the background image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.background:
+            if request:
+                return request.brand.branding_default_flow_background_url()
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )
@@ -227,7 +233,7 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     )
     re_evaluate_policies = models.BooleanField(
         default=True,
-        help_text=_("Evaluate policies when the Stage is present to the user."),
+        help_text=_("Evaluate policies when the Stage is presented to the user."),
     )
 
     invalid_response_action = models.TextField(
@@ -285,7 +291,7 @@ class ConfigurableStage(models.Model):
 class FriendlyNamedStage(models.Model):
     """Abstract base class for a Stage that can have a user friendly name configured."""
 
-    friendly_name = models.TextField(null=True)
+    friendly_name = models.TextField(blank=True)
 
     class Meta:
         abstract = True
@@ -297,9 +303,10 @@ class FlowToken(Token):
 
     flow = models.ForeignKey(Flow, on_delete=models.CASCADE)
     _plan = models.TextField()
+    revoke_on_execution = models.BooleanField(default=True)
 
     @staticmethod
-    def pickle(plan) -> str:
+    def pickle(plan: "FlowPlan") -> str:
         """Pickle into string"""
         data = dumps(plan)
         return b64encode(data).decode()

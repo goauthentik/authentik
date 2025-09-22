@@ -1,19 +1,21 @@
-import "@goauthentik/admin/users/GroupSelectModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
+import "#admin/users/GroupSelectModal";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
@@ -27,16 +29,17 @@ export class UserForm extends ModelForm<User, number> {
         return {};
     }
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(css`
+    static styles: CSSResult[] = [
+        ...super.styles,
+        css`
             .pf-c-button.pf-m-control {
                 height: 100%;
             }
             .pf-c-form-control {
                 height: auto !important;
             }
-        `);
-    }
+        `,
+    ];
 
     loadInstance(pk: number): Promise<User> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersRetrieve({
@@ -47,12 +50,11 @@ export class UserForm extends ModelForm<User, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
-        } else {
-            if (this.group) {
-                return msg(str`Successfully created user and added to group ${this.group.name}`);
-            }
-            return msg("Successfully created user.");
         }
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
+        return msg("Successfully created user.");
     }
 
     async send(data: User): Promise<User> {
@@ -83,15 +85,13 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                ?required=${true}
-                name="username"
-            >
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -106,7 +106,7 @@ export class UserForm extends ModelForm<User, number> {
                 />
                 <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("User type")} required name="type">
                 <ak-radio
                     .options=${[
                         {
@@ -157,7 +157,7 @@ export class UserForm extends ModelForm<User, number> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.isActive, true)}
+                        ?checked=${this.instance?.isActive ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -172,23 +172,19 @@ export class UserForm extends ModelForm<User, number> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
+            <ak-form-element-horizontal label=${msg("Path")} required name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, this.defaultPath)}"
+                    value="${this.instance?.path ?? this.defaultPath}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
-            >
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
+                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"
                 >
                 </ak-codemirror>

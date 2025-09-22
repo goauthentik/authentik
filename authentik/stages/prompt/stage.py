@@ -1,10 +1,11 @@
 """Prompt Stage Logic"""
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from email.policy import Policy
 from types import MethodType
 from typing import Any
 
+from django.contrib.messages import INFO, add_message
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -147,6 +148,9 @@ class PromptChallengeResponse(ChallengeResponse):
         result = engine.result
         if not result.passing:
             raise ValidationError(list(result.messages))
+        else:
+            for msg in result.messages:
+                add_message(self.request, INFO, msg)
         return attrs
 
 
@@ -167,7 +171,8 @@ def username_field_validator_factory() -> Callable[[PromptChallengeResponse, str
 
 
 def password_single_validator_factory() -> Callable[[PromptChallengeResponse, str], Any]:
-    """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
+    """Return a `clean_` method for `field`. Clean method checks if the password meets configured
+    PasswordPolicy."""
 
     def password_single_clean(self: PromptChallengeResponse, value: str) -> Any:
         """Send password validation signals for e.g. LDAP Source"""
@@ -185,10 +190,11 @@ class ListPolicyEngine(PolicyEngine):
         self.__list = policies
         self.use_cache = False
 
-    def iterate_bindings(self) -> Iterator[PolicyBinding]:
-        for policy in self.__list:
+    def bindings(self):
+        for idx, policy in enumerate(self.__list):
             yield PolicyBinding(
                 policy=policy,
+                order=idx,
             )
 
 

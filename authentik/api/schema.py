@@ -54,7 +54,7 @@ def create_component(generator: SchemaGenerator, name, schema, type_=ResolvedCom
     return component
 
 
-def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):  # noqa: W0613
+def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
     """Workaround to set a default response for endpoints.
     Workaround suggested at
     <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>
@@ -101,6 +101,68 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs): 
         if component == "PromptChallengeResponseRequest":
             comp = result["components"]["schemas"][component]
             comp["additionalProperties"] = {}
+    return result
+
+
+def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
+    to_replace = {
+        "ordering": create_component(
+            generator,
+            "QueryPaginationOrdering",
+            {
+                "name": "ordering",
+                "required": False,
+                "in": "query",
+                "description": "Which field to use when ordering the results.",
+                "schema": {"type": "string"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "page": create_component(
+            generator,
+            "QueryPaginationPage",
+            {
+                "name": "page",
+                "required": False,
+                "in": "query",
+                "description": "A page number within the paginated result set.",
+                "schema": {"type": "integer"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "page_size": create_component(
+            generator,
+            "QueryPaginationPageSize",
+            {
+                "name": "page_size",
+                "required": False,
+                "in": "query",
+                "description": "Number of results to return per page.",
+                "schema": {"type": "integer"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+        "search": create_component(
+            generator,
+            "QuerySearch",
+            {
+                "name": "search",
+                "required": False,
+                "in": "query",
+                "description": "A search term.",
+                "schema": {"type": "string"},
+            },
+            ResolvedComponent.PARAMETER,
+        ),
+    }
+    for path in result["paths"].values():
+        for method in path.values():
+            # print(method["parameters"])
+            for idx, param in enumerate(method.get("parameters", [])):
+                for replace_name, replace_ref in to_replace.items():
+                    if param["name"] == replace_name:
+                        method["parameters"][idx] = replace_ref.ref
+            # print(method["parameters"])
     return result
 
 

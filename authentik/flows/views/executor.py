@@ -55,8 +55,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -103,7 +102,7 @@ class FlowExecutorView(APIView):
 
     permission_classes = [AllowAny]
 
-    flow: Flow
+    flow: Flow = None
 
     plan: FlowPlan | None = None
     current_binding: FlowStageBinding | None = None
@@ -114,7 +113,8 @@ class FlowExecutorView(APIView):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if not self.flow:
+            self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
         set_tag("authentik.flow", self.flow.slug)
 
@@ -145,7 +145,8 @@ class FlowExecutorView(APIView):
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
             LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
         finally:
-            token.delete()
+            if token.revoke_on_execution:
+                token.delete()
         if not isinstance(plan, FlowPlan):
             return None
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
@@ -232,12 +233,13 @@ class FlowExecutorView(APIView):
         """Handle exception in stage execution"""
         if settings.DEBUG or settings.TEST:
             raise exc
-        capture_exception(exc)
         self._logger.warning(exc)
-        Event.new(
-            action=EventAction.SYSTEM_EXCEPTION,
-            message=exception_to_string(exc),
-        ).from_http(self.request)
+        if not should_ignore_exception(exc):
+            capture_exception(exc)
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message="System exception during flow execution.",
+            ).with_exception(exc).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))

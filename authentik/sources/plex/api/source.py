@@ -52,6 +52,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PlexSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",

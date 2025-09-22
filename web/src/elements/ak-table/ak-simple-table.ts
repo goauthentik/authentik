@@ -1,18 +1,18 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { TableColumn } from "./TableColumn.js";
+import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types.js";
+import { convertContent } from "./utils.js";
 
-import { TemplateResult, css, html } from "lit";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import { randomId } from "#elements/utils/randomId";
+
+import { css, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { repeat } from "lit/directives/repeat.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { TableColumn } from "./TableColumn.js";
-import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types";
-import { convertContent } from "./utils";
 
 export type RawContent = string | number | TemplateResult;
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
@@ -74,26 +74,24 @@ export interface ISimpleTable {
 
 @customElement("ak-simple-table")
 export class SimpleTable extends AKElement implements ISimpleTable {
-    static get styles() {
-        return [
-            PFBase,
-            PFTable,
-            css`
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFTable,
+        css`
+            .pf-c-table thead .pf-c-table__check {
+                min-width: 3rem;
+            }
+            .pf-c-table tbody .pf-c-table__check input {
+                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+            }
+            .pf-c-toolbar__content {
+                row-gap: var(--pf-global--spacer--sm);
+            }
+            .pf-c-toolbar__item .pf-c-input-group {
+                padding: 0 var(--pf-global--spacer--sm);
+            }
+        `,
+    ];
 
     @property({ type: String, attribute: true, reflect: true })
     order?: string;
@@ -147,10 +145,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderRow(row: TableRow, _rownum: number) {
         return html` <tr part="row">
-            ${map(
-                row.content,
-                (col, idx) => html`<td part="cell cell-${idx}" role="cell">${col}</td>`,
-            )}
+            ${map(row.content, (col, idx) => html`<td part="cell cell-${idx}">${col}</td>`)}
         </tr>`;
     }
 
@@ -164,9 +159,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
     public renderRowGroup({ group, content }: TableGroup) {
         return html`<thead part="group-header">
                 <tr part="group-row">
-                    <td role="columnheader" scope="row" colspan="200" part="group-head">
-                        ${group}
-                    </td>
+                    <td colspan="200" part="group-head">${group}</td>
                 </tr>
             </thead>
             ${this.renderRows(content)}`;
@@ -179,7 +172,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderBody() {
         // prettier-ignore
-        return this.content.kind === 'flat' 
+        return this.content.kind === 'flat'
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }

@@ -85,6 +85,7 @@ class IdentificationChallenge(Challenge):
     primary_action = CharField()
     sources = LoginSourceSerializer(many=True, required=False)
     show_source_labels = BooleanField()
+    enable_remember_me = BooleanField(required=False, default=True)
 
     component = CharField(default="ak-stage-identification")
 
@@ -139,7 +140,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
             # when `pretend` is enabled, continue regardless
             if current_stage.pretend_user_exists and not current_stage.password_stage:
                 return attrs
-            raise ValidationError("Failed to authenticate.")
+            raise ValidationError(_("Failed to authenticate."))
         self.pre_user = pre_user
 
         # Captcha check
@@ -170,7 +171,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                     password=password,
                 )
             if not user:
-                raise ValidationError("Failed to authenticate.")
+                raise ValidationError(_("Failed to authenticate."))
             self.pre_user = user
         except PermissionDenied as exc:
             raise ValidationError(str(exc)) from exc
@@ -235,6 +236,7 @@ class IdentificationStageView(ChallengeStageView):
                 and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
+                "enable_remember_me": current_stage.enable_remember_me,
             }
         )
         # If the user has been redirected to us whilst trying to access an

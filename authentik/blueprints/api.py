@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ListSerializer, ModelSerializer
+from rest_framework.serializers import ListSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.models import BlueprintInstance
@@ -15,7 +15,7 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.rbac.decorators import permission_required
 
 
@@ -39,7 +39,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         """Ensure the path (if set) specified is retrievable"""
         if path == "" or path.startswith(OCI_PREFIX):
             return path
-        files: list[dict] = blueprints_find_dict.delay().get()
+        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
         if path not in [file["path"] for file in files]:
             raise ValidationError(_("Blueprint file does not exist"))
         return path
@@ -115,7 +115,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def available(self, request: Request) -> Response:
         """Get blueprints"""
-        files: list[dict] = blueprints_find_dict.delay().get()
+        files: list[dict] = blueprints_find_dict.send().get_result(block=True)
         return Response(files)
 
     @permission_required("authentik_blueprints.view_blueprintinstance")
@@ -129,5 +129,5 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def apply(self, request: Request, *args, **kwargs) -> Response:
         """Apply a blueprint"""
         blueprint = self.get_object()
-        apply_blueprint.delay(str(blueprint.pk)).get()
+        apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)

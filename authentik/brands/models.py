@@ -33,6 +33,10 @@ class Brand(SerializerModel):
 
     branding_logo = models.TextField(default="/static/dist/assets/icons/icon_left_brand.svg")
     branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
+    branding_custom_css = models.TextField(default="", blank=True)
+    branding_default_flow_background = models.TextField(
+        default="/static/dist/assets/images/flow_background.jpg"
+    )
 
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"
@@ -69,6 +73,13 @@ class Brand(SerializerModel):
         default=None,
         on_delete=models.SET_DEFAULT,
         help_text=_("Web Certificate used by the authentik Core webserver."),
+        related_name="+",
+    )
+    client_certificates = models.ManyToManyField(
+        CertificateKeyPair,
+        default=None,
+        blank=True,
+        help_text=_("Certificates used for client authentication."),
     )
     attributes = models.JSONField(default=dict, blank=True)
 
@@ -83,6 +94,12 @@ class Brand(SerializerModel):
         if self.branding_favicon.startswith("/static"):
             return CONFIG.get("web.path", "/")[:-1] + self.branding_favicon
         return self.branding_favicon
+
+    def branding_default_flow_background_url(self) -> str:
+        """Get branding_default_flow_background with the correct prefix"""
+        if self.branding_default_flow_background.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.branding_default_flow_background
+        return self.branding_default_flow_background
 
     @property
     def serializer(self) -> Serializer:

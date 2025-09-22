@@ -1,12 +1,10 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#admin/common/ak-flow-search/ak-flow-search-no-default";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
 
 import {
     CoreApi,
@@ -19,6 +17,10 @@ import {
     SyncObjectResult,
     User,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-sync-object-form")
 export class SyncObjectForm extends Form<SyncObjectRequest> {
@@ -118,9 +120,29 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
     }
 
     renderForm() {
-        return html` ${this.model === SyncObjectModelEnum.User ? this.renderSelectUser() : nothing}
-        ${this.model === SyncObjectModelEnum.Group ? this.renderSelectGroup() : nothing}
-        ${this.result ? this.renderResult() : html``}`;
+        return html` ${this.model === SyncObjectModelEnum.AuthentikCoreModelsUser
+                ? this.renderSelectUser()
+                : nothing}
+            ${this.model === SyncObjectModelEnum.AuthentikCoreModelsGroup
+                ? this.renderSelectGroup()
+                : nothing}
+            <ak-form-element-horizontal name="overrideDryRun">
+                <label class="pf-c-switch">
+                    <input class="pf-c-switch__input" type="checkbox" />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Override dry-run mode")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
+            ${this.result ? this.renderResult() : nothing}`;
     }
 }
 

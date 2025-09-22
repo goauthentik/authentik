@@ -16,7 +16,6 @@ Default: `gravatar,initials`
 - Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
-
     - `%(username)s`: The user's username
     - `%(mail_hash)s`: The email address, md5 hashed
     - `%(upn)s`: The user's UPN, if set (otherwise an empty string)
@@ -40,6 +39,14 @@ Enable the ability for users to change their usernames, defaults to `false`.
 ### Event retention
 
 Configure how long [Events](./events/index.md) are retained for within authentik. Default value is `days=365`. When forwarding events to an external application, this value can be decreased. When changing this value, only new events are affected.
+
+### Reputation: lower limit
+
+Configure a lower limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `-5`.
+
+### Reputation: upper limit
+
+Configure an upper limit for [Reputation](../../customize/policies/#reputation-policy). Defaults to `5`.
 
 ### Footer links
 

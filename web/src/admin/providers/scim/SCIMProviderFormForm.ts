@@ -1,16 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#components/ak-hidden-text-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
+    CompatibilityModeEnum,
     CoreApi,
     CoreGroupsListRequest,
     Group,
@@ -18,7 +18,9 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
     return html`
@@ -26,20 +28,20 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             name="name"
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
             help=${msg("Method's display Name.")}
         ></ak-text-input>
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
-                    value="${first(provider?.url, "")}"
-                    .errorMessages=${errors?.url ?? []}
+                    value="${provider?.url ?? ""}"
+                    .errorMessages=${errors?.url}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-switch-input
@@ -49,25 +51,74 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 >
                 </ak-switch-input>
 
-                <ak-text-input
+                <ak-hidden-text-input
                     name="token"
                     label=${msg("Token")}
                     value="${provider?.token ?? ""}"
-                    .errorMessages=${errors?.token ?? []}
+                    .errorMessages=${errors?.token}
                     required
                     help=${msg(
                         "Token to authenticate with. Currently only bearer authentication is supported.",
                     )}
-                ></ak-text-input>
+                    input-hint="code"
+                ></ak-hidden-text-input>
+                <ak-radio-input
+                    name="compatibilityMode"
+                    label=${msg("Compatibility Mode")}
+                    .value=${provider?.compatibilityMode}
+                    required
+                    .options=${[
+                        {
+                            label: msg("Default"),
+                            value: CompatibilityModeEnum.Default,
+                            default: true,
+                            description: html`${msg("Default behavior.")}`,
+                        },
+                        {
+                            label: msg("AWS"),
+                            value: CompatibilityModeEnum.Aws,
+                            description: html`${msg(
+                                "Altered behavior for usage with Amazon Web Services.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Slack"),
+                            value: CompatibilityModeEnum.Slack,
+                            description: html`${msg("Altered behavior for usage with Slack.")}`,
+                        },
+                    ]}
+                    help=${msg(
+                        "Alter authentik's behavior for vendor-specific SCIM implementations.",
+                    )}
+                ></ak-radio-input>
+                <ak-form-element-horizontal name="dryRun">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${provider?.dryRun ?? false}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
+                    </label>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "When enabled, mutating requests will be dropped and logged instead.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group expanded>
-            <span slot="header">${msg("User filtering")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("User filtering")}">
+            <div class="pf-c-form">
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
-                    ?checked=${first(provider?.excludeUsersServiceAccount, true)}
+                    ?checked=${provider?.excludeUsersServiceAccount ?? true}
                 >
                 </ak-switch-input>
 
@@ -103,9 +154,8 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
             </div>
         </ak-form-group>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Attribute mapping")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Attribute mapping")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("User Property Mappings")}
                     name="propertyMappings"

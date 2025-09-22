@@ -42,7 +42,7 @@ ak_message("Access denied")
 return False
 ```
 
-import Functions from "../../expressions/_functions.md";
+import Functions from "../../expressions/_functions.mdx";
 
 <Functions />
 
@@ -53,7 +53,6 @@ import Objects from "../../expressions/_objects.md";
 <Objects />
 
 - `request`: A PolicyRequest object, which has the following properties:
-
     - `request.user`: The current user, against which the policy is applied. See [User](../../users-sources/user/index.mdx)
 
         :::caution
@@ -71,7 +70,6 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic country matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-
     - `continent`: a two character continent code like `NA` (North America) or `OC` (Oceania).
     - `country`: the two character [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) alpha code for the country.
     - `lat`: the approximate latitude of the location associated with the IP address.
@@ -87,7 +85,6 @@ import Objects from "../../expressions/_objects.md";
     :::info
     For basic ASN matching, consider using a [GeoIP policy](./index.md#geoip-policy).
     :::
-
     - `asn`: the autonomous system number associated with the IP address.
     - `as_org`: the organization associated with the registered autonomous system number for the IP address.
     - `network`: the network associated with the record. In particular, this is the largest network where all of the fields except `ip_address` have the same value.
@@ -112,21 +109,19 @@ Additionally, when the policy is executed from a flow, every variable from the f
 This includes the following:
 
 - `context['flow_plan']`: The actual flow plan itself, can be used to inject stages.
-
     - `context['flow_plan'].context`: The context of the currently active flow, which differs from the policy context. Some fields of flow plan context are passed to the root context, and updated from it, like 'prompt_data', but not every variable
     - `context['flow_plan'].context['redirect']`: The URL the user should be redirected to after the flow execution succeeds. (Optional)
 
 - `context['prompt_data']`: Data which has been saved from a prompt stage or an external source. (Optional)
 - `context['application']`: The application the user is in the process of authorizing. (Optional)
 - `context['source']`: The source the user is authenticating/enrolling with. (Optional)
-- `context['pending_user']`: The currently pending user, see [User](../../users-sources/user/user_ref.md)
+- `context['pending_user']`: The currently pending user, see [User](../../users-sources/user/user_ref.mdx)
 - `context['is_restored']`: Contains the flow token when the flow plan was restored from a link, for example the user clicked a link to a flow which was sent by an email stage. (Optional)
 - `context['auth_method']`: Authentication method (this value is set by password stages) (Optional)
 
     Depending on method, `context['auth_method_args']` is also set.
 
     Can be any of:
-
     - `password`: Standard password login
     - `auth_mfa`: MFA login (this method is only set if no password was used)
 
@@ -145,7 +140,7 @@ This includes the following:
         }
         ```
 
-    - `auth_webauthn_pwl`: Password-less WebAuthn login
+    - `auth_webauthn_pwl`: Password-less WebAuthn with Passkeys login
     - `jwt`: OAuth Machine-to-machine login via external JWT
     - `app_password`: App password (token)
 

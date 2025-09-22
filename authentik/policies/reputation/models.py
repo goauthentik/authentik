@@ -81,7 +81,7 @@ class Reputation(ExpiringModel, SerializerModel):
 
     expires = models.DateTimeField(default=reputation_expiry)
 
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -96,7 +96,7 @@ class Reputation(ExpiringModel, SerializerModel):
         verbose_name = _("Reputation Score")
         verbose_name_plural = _("Reputation Scores")
         unique_together = ("identifier", "ip")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["identifier"]),
             models.Index(fields=["ip"]),
             models.Index(fields=["ip", "identifier"]),

@@ -12,8 +12,9 @@ from authentik.lib.sync.outgoing import (
     HTTP_SERVICE_UNAVAILABLE,
     HTTP_TOO_MANY_REQUESTS,
 )
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
+    DryRunRejected,
     NotFoundSyncException,
     ObjectExistsSyncException,
     TransientSyncException,
@@ -21,7 +22,7 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
-from authentik.providers.scim.models import SCIMProvider
+from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMProvider
 
 if TYPE_CHECKING:
     from django.db.models import Model
@@ -54,6 +55,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
+        if self.provider.dry_run and method.upper() not in SAFE_METHODS:
+            raise DryRunRejected(f"{self.base_url}{path}", method, body=kwargs.get("json"))
         try:
             response = self._session.request(
                 method,
@@ -87,9 +90,14 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
         try:
-            return ServiceProviderConfiguration.model_validate(
+            config = ServiceProviderConfiguration.model_validate(
                 self._request("GET", "/ServiceProviderConfig")
             )
+            if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
+                config.patch.supported = False
+            if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
+                config.filter.supported = True
+            return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
             self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
             return default_config

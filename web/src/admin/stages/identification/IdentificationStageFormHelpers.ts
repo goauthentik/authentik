@@ -1,5 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { Source, SourcesApi } from "@goauthentik/api";
 
@@ -27,13 +28,13 @@ export function sourcesSelector(instanceSources: string[] | undefined) {
     return async () => {
         const sourcesApi = new SourcesApi(DEFAULT_CONFIG);
         const sources = await Promise.allSettled(
-            instanceSources.map((instanceId) =>
-                sourcesApi.sourcesAllRetrieve({ slug: instanceId }),
-            ),
+            instanceSources.map((instanceId) => sourcesApi.sourcesAllList({ pbmUuid: instanceId })),
         );
         return sources
             .filter((s) => s.status === "fulfilled")
             .map((s) => s.value)
+            .filter((s) => s.pagination.count > 0)
+            .map((s) => s.results[0])
             .map(sourceToSelect);
     };
 }

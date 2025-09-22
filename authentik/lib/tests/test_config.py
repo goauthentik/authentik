@@ -23,8 +23,7 @@ class TestConfig(TestCase):
     """Test config loader"""
 
     check_deprecations_env_vars = {
-        ENV_PREFIX + "_REDIS__BROKER_URL": "redis://myredis:8327/43",
-        ENV_PREFIX + "_REDIS__BROKER_TRANSPORT_OPTIONS": "bWFzdGVybmFtZT1teW1hc3Rlcg==",
+        ENV_PREFIX + "_WORKER__CONCURRENCY": "2",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT": "124s",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS": "32m",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
@@ -158,20 +157,30 @@ class TestConfig(TestCase):
             test_obj = Test()
             dumps(test_obj, indent=4, cls=AttrEncoder)
 
+    def test_get_optional_int(self):
+        config = ConfigLoader()
+        self.assertEqual(config.get_optional_int("foo", 21), 21)
+        self.assertEqual(config.get_optional_int("foo"), None)
+        config.set("foo", "21")
+        self.assertEqual(config.get_optional_int("foo"), 21)
+        self.assertEqual(config.get_optional_int("foo", 0), 21)
+        self.assertEqual(config.get_optional_int("foo", "null"), 21)
+        config.set("foo", "null")
+        self.assertEqual(config.get_optional_int("foo"), None)
+        self.assertEqual(config.get_optional_int("foo", 21), None)
+
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
         """Test config key re-write for deprecated env vars"""
         config = ConfigLoader()
         config.update_from_env()
         config.check_deprecations()
-        self.assertEqual(config.get("redis.broker_url", UNSET), UNSET)
-        self.assertEqual(config.get("redis.broker_transport_options", UNSET), UNSET)
+        self.assertEqual(config.get("worker.concurrency", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
         self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
-        self.assertEqual(config.get("broker.url"), "redis://myredis:8327/43")
-        self.assertEqual(config.get("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
+        self.assertEqual(config.get("worker.threads"), 2)
         self.assertEqual(config.get("cache.timeout"), "124s")
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
@@ -205,6 +214,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -219,6 +229,16 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": False,
                 }
             },
+        )
+
+    def test_db_conn_max_age(self):
+        """Test DB conn_max_age Config"""
+        config = ConfigLoader()
+        config.set("postgresql.conn_max_age", "null")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf["default"]["CONN_MAX_AGE"],
+            None,
         )
 
     def test_db_read_replicas(self):
@@ -245,6 +265,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -263,6 +284,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -311,6 +333,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -329,6 +352,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -372,6 +396,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -390,6 +415,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -429,6 +455,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -447,6 +474,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -462,3 +490,148 @@ class TestConfig(TestCase):
                 },
             },
         )
+
+    def test_db_conn_options(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+
+        conf = django_db_config(config)
+
+        self.assertEqual(
+            conf["default"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertNotIn("connect_timeout", conf["replica_0"]["OPTIONS"])
+
+    def test_db_conn_options_read_replicas(self):
+        config = ConfigLoader()
+        config.set(
+            "postgresql.replica_conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "10",
+                    }
+                ).encode()
+            ).decode(),
+        )
+        config.set("postgresql.read_replicas.0.host", "bar")
+        config.set("postgresql.read_replicas.1.host", "bar")
+        config.set(
+            "postgresql.read_replicas.1.conn_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "connect_timeout": "20",
+                    }
+                ).encode()
+            ).decode(),
+        )
+
+        conf = django_db_config(config)
+
+        self.assertNotIn("connect_timeout", conf["default"]["OPTIONS"])
+        self.assertEqual(
+            conf["replica_0"]["OPTIONS"]["connect_timeout"],
+            "10",
+        )
+        self.assertEqual(
+            conf["replica_1"]["OPTIONS"]["connect_timeout"],
+            "20",
+        )
+
+    # FIXME: Temporarily force pool to be deactivated.
+    # See https://github.com/goauthentik/authentik/issues/14320
+    # def test_db_pool(self):
+    #     """Test DB Config with pool"""
+    #     config = ConfigLoader()
+    #     config.set("postgresql.host", "foo")
+    #     config.set("postgresql.name", "foo")
+    #     config.set("postgresql.user", "foo")
+    #     config.set("postgresql.password", "foo")
+    #     config.set("postgresql.port", "foo")
+    #     config.set("postgresql.test.name", "foo")
+    #     config.set("postgresql.use_pool", True)
+    #     conf = django_db_config(config)
+    #     self.assertEqual(
+    #         conf,
+    #         {
+    #             "default": {
+    #                 "ENGINE": "authentik.root.db",
+    #                 "HOST": "foo",
+    #                 "NAME": "foo",
+    #                 "OPTIONS": {
+    #                     "pool": True,
+    #                     "sslcert": None,
+    #                     "sslkey": None,
+    #                     "sslmode": None,
+    #                     "sslrootcert": None,
+    #                 },
+    #                 "PASSWORD": "foo",
+    #                 "PORT": "foo",
+    #                 "TEST": {"NAME": "foo"},
+    #                 "USER": "foo",
+    #                 "CONN_MAX_AGE": 0,
+    #                 "CONN_HEALTH_CHECKS": False,
+    #                 "DISABLE_SERVER_SIDE_CURSORS": False,
+    #             }
+    #         },
+    #     )
+
+    # def test_db_pool_options(self):
+    #     """Test DB Config with pool"""
+    #     config = ConfigLoader()
+    #     config.set("postgresql.host", "foo")
+    #     config.set("postgresql.name", "foo")
+    #     config.set("postgresql.user", "foo")
+    #     config.set("postgresql.password", "foo")
+    #     config.set("postgresql.port", "foo")
+    #     config.set("postgresql.test.name", "foo")
+    #     config.set("postgresql.use_pool", True)
+    #     config.set(
+    #         "postgresql.pool_options",
+    #         base64.b64encode(
+    #             dumps(
+    #                 {
+    #                     "max_size": 15,
+    #                 }
+    #             ).encode()
+    #         ).decode(),
+    #     )
+    #     conf = django_db_config(config)
+    #     self.assertEqual(
+    #         conf,
+    #         {
+    #             "default": {
+    #                 "ENGINE": "authentik.root.db",
+    #                 "HOST": "foo",
+    #                 "NAME": "foo",
+    #                 "OPTIONS": {
+    #                     "pool": {
+    #                         "max_size": 15,
+    #                     },
+    #                     "sslcert": None,
+    #                     "sslkey": None,
+    #                     "sslmode": None,
+    #                     "sslrootcert": None,
+    #                 },
+    #                 "PASSWORD": "foo",
+    #                 "PORT": "foo",
+    #                 "TEST": {"NAME": "foo"},
+    #                 "USER": "foo",
+    #                 "CONN_MAX_AGE": 0,
+    #                 "CONN_HEALTH_CHECKS": False,
+    #                 "DISABLE_SERVER_SIDE_CURSORS": False,
+    #             }
+    #         },
+    #     )

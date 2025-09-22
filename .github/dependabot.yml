@@ -23,7 +23,13 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/web/sfe"
+      - "/web/packages/sfe"
+      - "/web/packages/core"
+      - "/packages/esbuild-plugin-live-reload"
+      - "/packages/prettier-config"
+      - "/packages/tsconfig"
+      - "/packages/docusaurus-config"
+      - "/packages/eslint-config"
     schedule:
       interval: daily
       time: "04:00"
@@ -68,6 +74,15 @@ updates:
       wdio:
         patterns:
           - "@wdio/*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
@@ -82,7 +97,33 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
-  - package-ecosystem: pip
+      build:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
+          - "lightningcss*"
+          - "@rspack/binding*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
+      eslint:
+        patterns:
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+          - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
+  - package-ecosystem: npm
+    directory: "/lifecycle/aws"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "lifecycle/aws:"
+    labels:
+      - dependencies
+  - package-ecosystem: uv
     directory: "/"
     schedule:
       interval: daily
@@ -94,6 +135,18 @@ updates:
       - dependencies
   - package-ecosystem: docker
     directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "core:"
+    labels:
+      - dependencies
+  - package-ecosystem: docker-compose
+    directories:
+      # - /scripts # Maybe
+      - /tests/e2e
     schedule:
       interval: daily
       time: "04:00"

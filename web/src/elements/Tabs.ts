@@ -1,9 +1,11 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -21,29 +23,27 @@ export class Tabs extends AKElement {
     @property({ type: Boolean })
     vertical = false;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFGlobal,
-            PFTabs,
-            css`
-                ::slotted(*) {
-                    flex-grow: 2;
-                }
-                :host([vertical]) {
-                    display: flex;
-                }
-                :host([vertical]) .pf-c-tabs {
-                    width: auto !important;
-                }
-                :host([vertical]) .pf-c-tabs__list {
-                    height: 100%;
-                }
-                :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
-                    border-color: transparent;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFGlobal,
+        PFTabs,
+        css`
+            ::slotted(*) {
+                flex-grow: 2;
+            }
+            :host([vertical]) {
+                display: flex;
+            }
+            :host([vertical]) .pf-c-tabs {
+                width: auto !important;
+            }
+            :host([vertical]) .pf-c-tabs__list {
+                height: 100%;
+            }
+            :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
+                border-color: transparent;
+            }
+        `,
+    ];
 
     observer: MutationObserver;
 
@@ -82,8 +82,16 @@ export class Tabs extends AKElement {
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
+            <button
+                type="button"
+                role="tab"
+                id=${`${slot}-tab`}
+                aria-selected=${slot === this.currentPage ? "true" : "false"}
+                aria-controls=${ifPresent(slot)}
+                class="pf-c-tabs__link"
+                @click=${() => this.onClick(slot)}
+            >
+                <span class="pf-c-tabs__item-text"> ${page.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
@@ -109,7 +117,7 @@ export class Tabs extends AKElement {
             this.onClick(wantedPage);
         }
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list">
+                <ul class="pf-c-tabs__list" role="tablist">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>

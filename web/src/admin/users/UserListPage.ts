@@ -1,45 +1,46 @@
-import { AdminInterface } from "@goauthentik/admin/AdminInterface";
-import "@goauthentik/admin/users/ServiceAccountForm";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserImpersonateForm";
-import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/TreeView";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
+import "#admin/users/ServiceAccountForm";
+import "#admin/users/UserActiveForm";
+import "#admin/users/UserForm";
+import "#admin/users/UserImpersonateForm";
+import "#admin/users/UserPasswordForm";
+import "#admin/users/UserResetEmailForm";
+import "#components/ak-status-label";
+import "#elements/TreeView";
+import "#elements/buttons/ActionButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
+import { userTypeToLabel } from "#common/labels";
+import { MessageLevel } from "#common/messages";
+import { rootInterface } from "#common/theme";
+import { DefaultUIConfig, uiConfig } from "#common/ui/config";
+import { me } from "#common/users";
+
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+import { writeToClipboard } from "#elements/utils/writeToClipboard";
+
+import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
+
+import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
+
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthentik/api";
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
@@ -57,21 +58,12 @@ export const requestRecoveryLink = (user: User) =>
                 }),
             ),
         )
-        .catch((ex: ResponseError) =>
-            ex.response.json().then(() =>
-                showMessage({
-                    level: MessageLevel.error,
-                    message: msg(
-                        "The current brand must have a recovery flow configured to use a recovery link",
-                    ),
-                }),
-            ),
-        );
+        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit"> ${msg("Send link")} </span>
-        <span slot="header"> ${msg("Send recovery link to user")} </span>
+        <span slot="submit">${msg("Send link")}</span>
+        <span slot="header">${msg("Send recovery link to user")}</span>
         <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
         <button slot="trigger" class="pf-c-button pf-m-secondary">
             ${msg("Email recovery link")}
@@ -96,19 +88,12 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     expandable = true;
     checkbox = true;
     clearOnRefresh = true;
+    supportsQL = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Users");
-    }
-    pageDescription(): string {
-        return "";
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-user";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Users");
+    public pageDescription = "";
+    public pageIcon = "pf-icon pf-icon-user";
 
     @property()
     order = "last_login";
@@ -125,15 +110,20 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
-    }
+    static styles: CSSResult[] = [
+        ...TablePage.styles,
+        PFDescriptionList,
+        PFCard,
+        PFAlert,
+        recoveryButtonStyles,
+    ];
 
     constructor() {
         super();
-        this.activePath = getURLParam<string>("path", "/");
+        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        this.activePath = getURLParam<string>("path", defaultPath);
         uiConfig().then((c) => {
-            if (c.defaults.userPath !== new DefaultUIConfig().defaults.userPath) {
+            if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
             }
         });
@@ -142,7 +132,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            pathStartswith: getURLParam("path", ""),
+            pathStartswith: this.activePath,
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });
@@ -153,21 +143,27 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return users;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: User): string {
+        if (item.name) {
+            return msg(str`${item.username} (${item.name})`);
+        }
+
+        return item.username;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+        [msg("Type"), "type"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
-            return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
+            return el.pk === currentUser?.user.pk || el.pk === currentUser?.original?.pk;
         });
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
@@ -194,7 +190,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 ? html`<div slot="notice" class="pf-c-form__alert">
                       <div class="pf-c-alert pf-m-inline pf-m-warning">
                           <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle"></i>
+                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
@@ -203,7 +199,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                           </h4>
                       </div>
                   </div>`
-                : html``}
+                : nothing}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
@@ -241,27 +237,24 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
-                <small>${item.name === "" ? msg("<No name set>") : item.name}</small>
+                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -284,12 +277,12 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
@@ -350,8 +343,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                         id="update-password-request"
                                     >
                                         <span slot="submit">${msg("Update password")}</span>
-                                        <span slot="header">${msg("Update password")}</span>
+                                        <span slot="header">
+                                            ${msg(
+                                                str`Update ${item.name || item.username}'s password`,
+                                            )}
+                                        </span>
                                         <ak-user-password-form
+                                            username=${item.username}
+                                            email=${ifDefined(item.email)}
                                             slot="form"
                                             .instancePk=${item.pk}
                                         ></ak-user-password-form>
@@ -393,14 +392,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create User")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create User")}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Service account")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Service account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Service account")}
@@ -409,10 +408,20 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         `;
     }
 
-    renderSidebarBefore(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+    protected renderSidebarBefore(): TemplateResult {
+        return html`<aside
+            aria-labelledby="sidebar-left-panel-header"
+            class="pf-c-sidebar__panel pf-m-width-25"
+        >
             <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("User folders")}</div>
+                <div
+                    role="heading"
+                    aria-level="2"
+                    id="sidebar-left-panel-header"
+                    class="pf-c-card__title"
+                >
+                    ${msg("User folders")}
+                </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
@@ -423,7 +432,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     ></ak-treeview>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

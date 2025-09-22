@@ -1,6 +1,7 @@
 """OAuth2/OpenID Utils"""
 
 import re
+import uuid
 from base64 import b64decode
 from binascii import Error
 from typing import Any
@@ -9,11 +10,14 @@ from urllib.parse import urlparse
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.utils.cache import patch_vary_headers
+from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import BearerTokenError
+from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 LOGGER = get_logger()
@@ -178,12 +182,18 @@ def protected_resource_view(scopes: list[str]):
     return wrapper
 
 
-def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
-    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
+    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
-        return None
+        return None, "", ""
     provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
+    return provider, client_id, client_secret
+
+
+def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
+    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+    provider, client_id, client_secret = provider_from_request(request)
     if not provider:
         return None
     if client_id != provider.client_id or client_secret != provider.client_secret:
@@ -205,3 +215,38 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
     ) -> None:
         self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
         super().__init__(redirect_to, *args, **kwargs)
+
+
+def create_logout_token(
+    provider: OAuth2Provider,
+    iss: str,
+    sub: str | None = None,
+    session_key: str | None = None,
+) -> str:
+    """Create a logout token for Back-Channel Logout
+
+    As per https://openid.net/specs/openid-connect-backchannel-1_0.html
+    """
+
+    LOGGER.debug("Creating logout token", provider=provider, sub=sub)
+
+    _now = now()
+    # Create the logout token payload
+    payload = {
+        "iss": str(iss),
+        "aud": provider.client_id,
+        "iat": int(_now.timestamp()),
+        "exp": int((_now + timedelta_from_string(provider.access_token_validity)).timestamp()),
+        "jti": str(uuid.uuid4()),
+        "events": {
+            "http://schemas.openid.net/event/backchannel-logout": {},
+        },
+    }
+
+    # Add either sub or sid (or both)
+    if sub:
+        payload["sub"] = sub
+    if session_key:
+        payload["sid"] = hash_session_key(session_key)
+    # Encode the token
+    return provider.encode(payload)

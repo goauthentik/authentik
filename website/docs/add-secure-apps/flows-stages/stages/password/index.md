@@ -6,7 +6,7 @@ This is a generic password prompt which authenticates the current `pending_user`
 
 ## Passwordless login
 
-There are two different ways to configure passwordless authentication; you can follow the instructions [here](../authenticator_validate/index.md#passwordless-authentication-authentik-2021124) to allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), or dynamically skip the password stage depending on the users device, which is documented here.
+There are two different ways to configure passwordless authentication; you can follow the instructions [here](../authenticator_validate/index.mdx#passwordless-authentication) to allow users to directly authenticate with their authenticator (only supported for WebAuthn devices), or dynamically skip the password stage depending on the users device, which is documented here.
 
 Depending on what kind of device you want to require the user to have:
 

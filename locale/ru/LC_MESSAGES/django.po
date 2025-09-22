@@ -10,21 +10,36 @@
 # Ренат Шарафутдинов, 2023
 # Stepan Karavaev, 2024
 # Anton Babenko, 2024
+# fenix vd, 2025
+# Marc Schmitt, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-18 00:08+0000\n"
+"POT-Creation-Date: 2025-08-11 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Anton Babenko, 2024\n"
+"Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "История версий"
+
+#: authentik/admin/tasks.py
+msgid "Update latest version info."
+msgstr ""
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "Новая версия доступна {version}"
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -39,9 +54,8 @@ msgid "Blueprint file does not exist"
 msgstr "Файл чертежа не существует"
 
 #: authentik/blueprints/api.py
-#, python-brace-format
-msgid "Failed to validate blueprint: {logs}"
-msgstr "Ошибка валидации чертежа:  {logs}"
+msgid "Failed to validate blueprint"
+msgstr ""
 
 #: authentik/blueprints/api.py
 msgid "Either path or content must be set."
@@ -76,10 +90,21 @@ msgstr "Экземпляры чертежа"
 msgid "authentik Export - {date}"
 msgstr "authentik Экспорт - {date}"
 
-#: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "Удачно импортировано %(count)d файлов."
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
+msgstr ""
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints and check if they need to be created in the database."
+msgstr ""
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Apply single blueprint."
+msgstr ""
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Remove blueprints which couldn't be fetched."
+msgstr ""
 
 #: authentik/brands/models.py
 msgid ""
@@ -102,12 +127,29 @@ msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Web Certificate используемый для authentik Core webserver."
 
 #: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr ""
+
+#: authentik/brands/models.py
 msgid "Brand"
 msgstr "Бренд"
 
 #: authentik/brands/models.py
 msgid "Brands"
 msgstr "Бренды"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr ""
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr ""
+
+#: authentik/core/api/groups.py
+msgid "Cannot set group as parent of itself."
+msgstr "Не удается установить группу в качестве родительской для самой себя."
 
 #: authentik/core/api/providers.py
 msgid ""
@@ -118,6 +160,11 @@ msgstr ""
 "Если значение не установлено, возвращаются все провайдеры. Если установлено "
 "значение true, возвращаются только провайдеры обратного канала. При значении"
 " false провайдеры обратного канала исключаются."
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr ""
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -152,10 +199,19 @@ msgid "Remove user from group"
 msgstr "Удалить пользователя из группы"
 
 #: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr "Включить статус суперпользователя"
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr "Выключить статус суперпользователя "
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr "Отображаемое имя пользователя."
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "Пользователь"
 
@@ -201,6 +257,10 @@ msgid "Flow used when authorizing this provider."
 msgstr "Поток, используемый при авторизации данного провайдера."
 
 #: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr ""
+
+#: authentik/core/models.py
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
@@ -227,6 +287,14 @@ msgstr "Приложение"
 #: authentik/core/models.py
 msgid "Applications"
 msgstr "Приложения"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Use the source-specific identifier"
@@ -325,12 +393,28 @@ msgid "View token's key"
 msgstr "Просмотр ключа токена "
 
 #: authentik/core/models.py
+msgid "Set a token's key"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Property Mapping"
 msgstr "Сопоставление свойств"
 
 #: authentik/core/models.py
 msgid "Property Mappings"
 msgstr "Сопоставление свойств"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -368,55 +452,13 @@ msgstr "Успешно связано с {source}!"
 msgid "Source is not configured for enrollment."
 msgstr "Источник не настроен для зачисления."
 
-#: authentik/core/templates/if/end_session.html
-msgid "End session"
-msgstr "Завершение сессии"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
+#: authentik/core/tasks.py
+msgid "Remove expired objects."
 msgstr ""
-"\n"
-"Вы вышли из %(application)s.\n"
 
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your %(branding_title)s account.\n"
-"        "
+#: authentik/core/tasks.py
+msgid "Remove temporary users created by SAML Sources."
 msgstr ""
-"\n"
-"            Вы вышли из %(application)s. Вы можете вернуться к обзору, чтобы запустить другое приложение, или выйти из учетной записи %(branding_title)s.\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-msgid "Go back to overview"
-msgstr "Вернуться к обзору"
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log out of %(branding_title)s\n"
-"        "
-msgstr ""
-"\n"
-"            Выйти из %(branding_title)s\n"
-"        "
-
-#: authentik/core/templates/if/end_session.html
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            Опять войти в %(application)s\n"
-"        "
 
 #: authentik/core/templates/if/error.html
 msgid "Go home"
@@ -425,7 +467,7 @@ msgstr "Домой"
 #: authentik/core/templates/login/base_full.html
 #: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
-msgstr "Основано на authentik"
+msgstr "При поддержке authentik"
 
 #: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/oauth2/views/device_init.py
@@ -470,6 +512,10 @@ msgstr "Пара сертификат-ключ"
 msgid "Certificate-Key Pairs"
 msgstr "Пары сертификат-ключ"
 
+#: authentik/crypto/tasks.py
+msgid "Discover, import and update certificates from the filesystem."
+msgstr ""
+
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr "Для создания/обновления этого объекта требуется Enterprise."
@@ -489,6 +535,47 @@ msgstr "Использование лицензии"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "Записи использования лицензии"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"Ключ поля для проверки, доступны ключи поля, определенные в этапах запроса."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "Пароль не задан в контексте"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid ""
+"Check if any UniquePasswordPolicy exists, and if not, purge the password "
+"history table."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid "Remove user password history that are too old."
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -536,6 +623,34 @@ msgstr "Сопоставление провайдера Google Workspace"
 msgid "Google Workspace Provider Mappings"
 msgstr "Сопоставления провайдера Google Workspace"
 
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync Google Workspace provider objects."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Full sync for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a direct object (user, group) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a related object (memberships) for Google Workspace provider."
+msgstr ""
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Google Workspace "
+"providers."
+msgstr ""
+
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider User"
 msgstr "Пользователь провайдера Microsoft Entra"
@@ -564,60 +679,128 @@ msgstr "Сопоставление провайдера Microsoft Entra"
 msgid "Microsoft Entra Provider Mappings"
 msgstr "Сопоставления провайдера Microsoft Entra"
 
-#: authentik/enterprise/providers/rac/models.py
-#: authentik/stages/user_login/models.py
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync Microsoft Entra provider objects."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Full sync for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a direct object (user, group) for Microsoft Entra provider."
+msgstr ""
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
 msgid ""
-"Determines how long a session lasts. Default of 0 means that the sessions "
-"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+"Dispatch syncs for a direct object (user, group) for Microsoft Entra "
+"providers."
 msgstr ""
-"Определяет время жизни сессии. Значение по умолчанию 0 означает, что сессии "
-"будут истекать при закрытии браузера. (Формат: часы=-1;минуты=-2;секунды=-3)"
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "When set to true, connection tokens will be deleted upon disconnect."
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a related object (memberships) for Microsoft Entra provider."
 msgstr ""
-"Если установлено значение true, токены соединения будут удалены при "
-"отключении"
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider"
-msgstr "RAC Провайдер"
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Microsoft Entra "
+"providers."
+msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Providers"
-msgstr "RAC Провайдеры"
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "Подписывающий ключ"
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Endpoint"
-msgstr "Точка подключения RAC"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Endpoints"
-msgstr "Точки подключения RAC"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider Property Mapping"
-msgstr "Сопоставление свойства RAC провайдера"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider Property Mappings"
-msgstr "Сопоставление свойств RAC провайдера"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr "Добавить поток к поставщику SSF"
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Connection token"
-msgstr "Токен соединения RAC"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr "SSF поток"
 
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Connection tokens"
-msgstr "Токены соединения RAC"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr "Потоки SSF"
 
-#: authentik/enterprise/providers/rac/views.py
-msgid "Maximum connection limit reached."
-msgstr "Достигнут максимальный лимит соединений."
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
 
-#: authentik/enterprise/providers/rac/views.py
-msgid "(You are already connected in another tab/window)"
-msgstr "(Вы уже подключены в другой вкладке/окне)"
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Dispatch SSF events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr ""
+"Этап проверки подлинности конечного устройства Google Device Trust Connector"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr ""
+"Этапы проверки подлинности конечного устройства Google Device Trust "
+"Connector"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "Конечное устройство"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "Конечные устройства"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "Проверка вашего браузера..."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -635,10 +818,9 @@ msgstr "Этап источника"
 msgid "Source Stages"
 msgstr "Этапы источника"
 
-#: authentik/events/api/tasks.py
-#, python-brace-format
-msgid "Successfully started task {name}."
-msgstr "Задача {name} успешно запущена."
+#: authentik/enterprise/tasks.py
+msgid "Update enterprise license status."
+msgstr ""
 
 #: authentik/events/models.py
 msgid "Event"
@@ -661,8 +843,21 @@ msgid "Slack Webhook (Slack/Discord)"
 msgstr "Slack Вебхук (Slack/Discord)"
 
 #: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
 msgid "Email"
 msgstr "Email"
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
 
 #: authentik/events/models.py
 msgid ""
@@ -734,6 +929,12 @@ msgstr ""
 " уведомление. Если оставить пустым, уведомление не будет отправлено."
 
 #: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+
+#: authentik/events/models.py
 msgid "Notification Rule"
 msgstr "Правило Уведомления"
 
@@ -750,10 +951,6 @@ msgid "Webhook Mappings"
 msgstr "Сопоставления вебхуков"
 
 #: authentik/events/models.py
-msgid "Run task"
-msgstr "Запустить задачу"
-
-#: authentik/events/models.py
 msgid "System Task"
 msgstr "Системная задача"
 
@@ -761,9 +958,27 @@ msgstr "Системная задача"
 msgid "System Tasks"
 msgstr "Системные задачи"
 
-#: authentik/events/system_tasks.py
-msgid "Task has not been run yet."
-msgstr "Задача еще не была запущена."
+#: authentik/events/tasks.py
+msgid "Dispatch new event notifications."
+msgstr ""
+
+#: authentik/events/tasks.py
+msgid ""
+"Check if policies attached to NotificationRule match event and dispatch "
+"notification tasks."
+msgstr ""
+
+#: authentik/events/tasks.py
+msgid "Send notification."
+msgstr ""
+
+#: authentik/events/tasks.py
+msgid "Cleanup events for GDPR compliance."
+msgstr ""
+
+#: authentik/events/tasks.py
+msgid "Cleanup seen notifications and notifications whose event expired."
+msgstr ""
 
 #: authentik/flows/api/flows.py
 #, python-brace-format
@@ -890,8 +1105,8 @@ msgid "Evaluate policies during the Flow planning process."
 msgstr "Оценка политик во время процесса планирования потока."
 
 #: authentik/flows/models.py
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Оценивайте политики, когда этап предоставлен пользователю."
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
 
 #: authentik/flows/models.py
 msgid ""
@@ -933,24 +1148,13 @@ msgstr "Токены потока"
 msgid "Invalid next URL"
 msgstr "Недопустимый следующий URL-адрес"
 
-#: authentik/lib/sync/outgoing/tasks.py
-msgid "Starting full provider sync"
-msgstr "Запуск полной синхронизации провайдера"
-
-#: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of users"
-msgstr "Синхронизация %(page)d страницы пользователей"
-
-#: authentik/lib/sync/outgoing/tasks.py
-#, python-format
-msgid "Syncing page %(page)d of groups"
-msgstr "Синхронизация %(page)d страницы групп"
-
-#: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Stopping sync due to error: {error}"
-msgstr "Остановка синхронизации из-за ошибки: {error}"
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+"Если этот параметр включен, поставщик не будет изменять или создавать "
+"объекты в удаленной системе."
 
 #: authentik/lib/utils/time.py
 #, python-format
@@ -1058,6 +1262,30 @@ msgstr "Внешний компонент"
 msgid "Outposts"
 msgstr "Внешние компоненты"
 
+#: authentik/outposts/tasks.py
+msgid "Update cached state of service connection."
+msgstr ""
+
+#: authentik/outposts/tasks.py
+msgid "Create/update/monitor/delete the deployment of an Outpost."
+msgstr ""
+
+#: authentik/outposts/tasks.py
+msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
+msgstr ""
+
+#: authentik/outposts/tasks.py
+msgid "Send update to outpost"
+msgstr ""
+
+#: authentik/outposts/tasks.py
+msgid "Checks the local environment and create Service connections."
+msgstr ""
+
+#: authentik/outposts/tasks.py
+msgid "Terminate session on all outposts."
+msgstr ""
+
 #: authentik/policies/denied.py
 msgid "Access denied"
 msgstr "Доступ запрещен"
@@ -1118,9 +1346,11 @@ msgid "Event Matcher Policies"
 msgstr "Политики сопоставления событий"
 
 #: authentik/policies/expiry/models.py
-#, python-format
-msgid "Password expired %(days)d days ago. Please update your password."
-msgstr "Пароль истёк %(days)d дней назад. Пожалуйста, обновите его."
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr ""
+"Срок действия пароля истек {days} дней назад. Пожалуйста, обновите свой "
+"пароль."
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
@@ -1157,6 +1387,14 @@ msgstr "GeoIP: IP-адрес клиента не найден в базе дан
 #: authentik/policies/geoip/models.py
 msgid "Client IP is not in an allowed country."
 msgstr "IP-адрес клиента находится не в разрешенной стране."
+
+#: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr ""
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policy"
@@ -1227,11 +1465,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "Очистка показателей кэша политики"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-"Ключ поля для проверки, доступны ключи поля, определенные в этапах запроса."
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr "Как часто хэш пароля может быть представлен на haveibeenpwned"
 
@@ -1243,13 +1476,13 @@ msgstr ""
 "провалена."
 
 #: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "Пароль не задан в контексте"
+msgid "Invalid password."
+msgstr "Неправильный пароль"
 
 #: authentik/policies/password/models.py
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Пароль существует в %(count)d онлайн-списках."
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "Пароль существует в {count} онлайн-списках."
 
 #: authentik/policies/password/models.py
 msgid "Password is too weak."
@@ -1282,6 +1515,20 @@ msgstr "Оценка репутации"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Оценка репутации"
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -1375,29 +1622,34 @@ msgstr "LDAP Провайдеры"
 msgid "Search full LDAP directory"
 msgstr "Поиск по всему каталогу LDAP"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "Неверный шаблон Regex: {url}"
+
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the Hashed User ID"
 msgstr "На основе хэшированного идентификатора пользователя"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user ID"
 msgstr "На основе идентификатора пользователя"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on user UUID"
 msgstr "На основе UUID пользователя"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the username"
 msgstr "На основе имени пользователя"
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr ""
 "На основе электронной почты пользователя. Этот метод рекомендуется "
 "использовать вместо метода UPN."
 
-#: authentik/providers/oauth2/id_token.py
+#: authentik/providers/oauth2/constants.py
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
@@ -1423,6 +1675,14 @@ msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "У каждого провайдера есть свой эмитент, основанный на идентификаторе "
 "приложения."
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
@@ -1459,6 +1719,14 @@ msgstr "RS256 (асимметричное шифрование)"
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256 (асимметричное шифрование)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
@@ -1505,8 +1773,8 @@ msgid "Redirect URIs"
 msgstr "Ссылка перенаправления"
 
 #: authentik/providers/oauth2/models.py
-msgid "Enter each URI on a new line."
-msgstr "Введите каждый URI с новой строки."
+msgid "Back-Channel Logout URI"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
@@ -1550,16 +1818,18 @@ msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Настройте, как должно быть заполнено поле эмитента ID-токена."
 
 #: authentik/providers/oauth2/models.py
-msgid "Signing Key"
-msgstr "Подписывающий ключ"
+msgid "Key used to sign the tokens."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "Ключ шифрования"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
 msgstr ""
-"Ключ, используемый для подписи токенов. Требуется только в том случае, если "
-"для алгоритма JWT установлено значение RS256."
 
 #: authentik/providers/oauth2/models.py
 msgid ""
@@ -1632,6 +1902,14 @@ msgstr "Токен устройства"
 #: authentik/providers/oauth2/models.py
 msgid "Device Tokens"
 msgstr "Токены устройства"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr ""
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr ""
 
 #: authentik/providers/oauth2/views/authorize.py
 #: authentik/providers/saml/views/flows.py
@@ -1741,6 +2019,64 @@ msgstr "Прокси провайдер"
 msgid "Proxy Providers"
 msgstr "Прокси провайдеры"
 
+#: authentik/providers/proxy/tasks.py
+msgid "Terminate session on Proxy outpost."
+msgstr ""
+
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Определяет время жизни сессии. Значение по умолчанию 0 означает, что сессии "
+"будут истекать при закрытии браузера. (Формат: часы=-1;минуты=-2;секунды=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr ""
+"Если установлено значение true, токены соединения будут удалены при "
+"отключении"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "RAC Провайдер"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "RAC Провайдеры"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "Точка подключения RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "Точки подключения RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "Сопоставление свойства RAC провайдера"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "Сопоставление свойств RAC провайдера"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "Токен соединения RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "Токены соединения RAC"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "Достигнут максимальный лимит соединений."
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(Вы уже подключены в другой вкладке/окне)"
+
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
 msgstr "Общий секрет между клиентами и сервером для хэширования пакетов."
@@ -1826,6 +2162,17 @@ msgid ""
 msgstr ""
 "Настройте, как будет создаваться значение NameID. Если оставить пустым, "
 "будет рассматриваться NameIDPolicy входящего запроса"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -1970,12 +2317,32 @@ msgid "SAML Providers from Metadata"
 msgstr "Провайдеры SAML из метаданных"
 
 #: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "По умолчанию"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Базовый URL для запросов SCIM, обычно заканчивается на /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Токен аутентификации"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -1993,6 +2360,30 @@ msgstr "Сопоставление свойства SCIM"
 msgid "SCIM Provider Mappings"
 msgstr "Сопоставления свойств SCIM"
 
+#: authentik/providers/scim/tasks.py
+msgid "Sync SCIM provider objects."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Full sync for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a direct object (user, group) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a related object (memberships) for SCIM provider."
+msgstr ""
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
+msgstr ""
+
 #: authentik/rbac/models.py
 msgid "Role"
 msgstr "Роль"
@@ -2000,6 +2391,10 @@ msgstr "Роль"
 #: authentik/rbac/models.py
 msgid "Roles"
 msgstr "Роли"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr ""
 
 #: authentik/rbac/models.py
 msgid "System permission"
@@ -2039,6 +2434,130 @@ msgstr ""
 #: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
 msgstr "Для аутентификации использована ссылка для восстановления "
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr ""
+"Пользовательский krb5.conf для использования. По умолчанию используется "
+"системный."
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Синхронизация пользователей из Kerberos в authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+"Когда пользователь меняет свой пароль, синхронизируйте его с Kerberos."
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "Участник должен пройти аутентификацию в kadmin для синхронизации."
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "Пароль для авторизации в kadmin для синхронизации"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"Кэш учетных данных для аутентификации в kadmin для синхронизации. Должен "
+"быть в форме TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"Если этот параметр включен, сохраненный в authentik пароль будет обновлен "
+"при входе в систему с помощью серверной части Kerberos "
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr ""
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Check connectivity for Kerberos sources."
+msgstr ""
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Sync Kerberos source."
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr ""
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Server URI"
@@ -2094,6 +2613,10 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "Объекты, соответствующие этому фильтру, считаются пользователями."
 
 #: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr "Поле, в котором содержатся члены группы."
 
@@ -2120,6 +2643,19 @@ msgstr ""
 "Это можно включить только для одного источника LDAP."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Источник LDAP"
 
@@ -2135,13 +2671,54 @@ msgstr "Сопоставление свойства LDAP источника"
 msgid "LDAP Source Property Mappings"
 msgstr "Сопоставление свойств LDAP источника"
 
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr ""
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Пароль не соответствует сложности Active Directory."
 
+#: authentik/sources/ldap/tasks.py
+msgid "Check connectivity for LDAP source."
+msgstr ""
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync LDAP source."
+msgstr ""
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync page for LDAP source."
+msgstr ""
+
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "Токен не был получен."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2184,6 +2761,12 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Дополнительные области"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -2274,6 +2857,14 @@ msgid "Azure AD OAuth Sources"
 msgstr "Источники Azure AD OAuth"
 
 #: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
 msgstr "Источник OpenID OAuth"
 
@@ -2328,6 +2919,12 @@ msgstr "Групповое подключение к источнику OAuth"
 #: authentik/sources/oauth/models.py
 msgid "Group OAuth Source Connections"
 msgstr "Групповые подключения к источнику OAuth"
+
+#: authentik/sources/oauth/tasks.py
+msgid ""
+"Update OAuth sources' config from well_known, and JWKS info from the "
+"configured URL."
+msgstr ""
 
 #: authentik/sources/oauth/views/callback.py
 #, python-brace-format
@@ -2386,6 +2983,10 @@ msgstr "Групповое подключение к источнику Plex"
 #: authentik/sources/plex/models.py
 msgid "Group Plex Source Connections"
 msgstr "Групповые подключения к источнику Plex"
+
+#: authentik/sources/plex/tasks.py
+msgid "Check the validity of a Plex source."
+msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Redirect Binding"
@@ -2501,6 +3102,11 @@ msgstr "Групповое подключение к источнику SAML"
 msgid "Group SAML Source Connections"
 msgstr "Групповые подключения к источнику SAML"
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr ""
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "Источник SCIM"
@@ -2532,6 +3138,103 @@ msgstr "Устройство Duo"
 #: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
 msgstr "Устройства Duo"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email OTP"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"Если эта функция включена, будут использоваться глобальные настройки "
+"подключения к электронной почте, а настройки подключения, указанные ниже, "
+"будут игнорироваться."
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "Возникло исключение при рендеринге шаблона электронной почты"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
+msgid "Code does not match"
+msgstr "Код не соответствует"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"      Привет %(username)s,\n"
+"      "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Привет %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
 
 #: authentik/stages/authenticator_sms/models.py
 msgid ""
@@ -2568,11 +3271,6 @@ msgstr "СМС устройство"
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Devices"
 msgstr "СМС устройства"
-
-#: authentik/stages/authenticator_sms/stage.py
-#: authentik/stages/authenticator_totp/stage.py
-msgid "Code does not match"
-msgstr "Код не соответствует"
 
 #: authentik/stages/authenticator_sms/stage.py
 msgid "Invalid phone number"
@@ -2723,6 +3421,11 @@ msgstr "Тип устройства WebAuthn"
 msgid "WebAuthn Device types"
 msgstr "Типы устройств WebAuthn"
 
+#: authentik/stages/authenticator_webauthn/tasks.py
+msgid ""
+"Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+
 #: authentik/stages/captcha/models.py
 msgid "Public key, acquired your captcha Provider."
 msgstr "Открытый ключ, полученный от вашего провайдера капчи."
@@ -2752,13 +3455,8 @@ msgid "Captcha Stages"
 msgstr "Этапы с каптчей"
 
 #: authentik/stages/captcha/stage.py
-msgid "Unknown error"
-msgstr "Неизвестная ошибка"
-
-#: authentik/stages/captcha/stage.py
-#, python-brace-format
-msgid "Failed to validate token: {error}"
-msgstr "Ошибка валидации токена: {error}"
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr ""
 
 #: authentik/stages/captcha/stage.py
 msgid "Invalid captcha response"
@@ -2791,6 +3489,10 @@ msgstr "Согласие пользователя"
 msgid "User Consents"
 msgstr "Согласия пользователя"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr ""
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Этап отказа"
@@ -2807,6 +3509,14 @@ msgstr "Фиктивный этап"
 msgid "Dummy Stages"
 msgstr "Фиктивные этапы"
 
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr ""
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr ""
+
 #: authentik/stages/email/models.py
 msgid "Password Reset"
 msgstr "Сброс пароля"
@@ -2817,20 +3527,14 @@ msgstr "Подтверждение аккаунта"
 
 #: authentik/stages/email/models.py
 msgid ""
-"When enabled, global Email connection settings will be used and connection "
-"settings below will be ignored."
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Если эта функция включена, будут использоваться глобальные настройки "
-"подключения к электронной почте, а настройки подключения, указанные ниже, "
-"будут игнорироваться."
 
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "Активировать пользователей по завершении этапа."
-
-#: authentik/stages/email/models.py
-msgid "Time in minutes the token sent is valid."
-msgstr "Время валидности отправленного токена в минутах."
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
@@ -2839,10 +3543,6 @@ msgstr "Этап электронной почты"
 #: authentik/stages/email/models.py
 msgid "Email Stages"
 msgstr "Этапы электронной почты"
-
-#: authentik/stages/email/stage.py
-msgid "Exception occurred while rendering E-mail template"
-msgstr "Возникло исключение при рендеринге шаблона электронной почты"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
@@ -2857,8 +3557,19 @@ msgid "Email sent."
 msgstr "Письмо отправлено."
 
 #: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
+msgstr ""
+
+#: authentik/stages/email/stage.py
 msgid "Email Successfully sent."
 msgstr "Письмо успешно отправлено."
+
+#: authentik/stages/email/tasks.py
+msgid "Send email."
+msgstr ""
 
 #: authentik/stages/email/templates/email/account_confirmation.html
 #: authentik/stages/email/templates/email/account_confirmation.txt
@@ -2929,17 +3640,6 @@ msgstr ""
 "Это письмо было отправлено с помощью поставщика уведомления %(name)s.\n"
 
 #: authentik/stages/email/templates/email/password_reset.html
-#, python-format
-msgid ""
-"\n"
-"      Hi %(username)s,\n"
-"      "
-msgstr ""
-"\n"
-"      Привет %(username)s,\n"
-"      "
-
-#: authentik/stages/email/templates/email/password_reset.html
 msgid ""
 "\n"
 "          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
@@ -2953,17 +3653,9 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 "    "
 msgstr ""
-"\n"
-"    Если вы не запрашивали смену пароля, проигнорируйте это письмо. Приведенная выше ссылка действительна до %(expires)s.\n"
-"    "
-
-#: authentik/stages/email/templates/email/password_reset.txt
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Привет %(username)s,"
 
 #: authentik/stages/email/templates/email/password_reset.txt
 msgid ""
@@ -2977,10 +3669,8 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
 msgstr ""
-"\n"
-"Если вы не запрашивали смену пароля, проигнорируйте это письмо. Приведенная выше ссылка действительна до %(expires)s.\n"
 
 #: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
@@ -3040,6 +3730,12 @@ msgid ""
 msgstr ""
 "При включении этап будет завершаться успешно и продолжаться даже в случае "
 "ввода неправильной информации о пользователе."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
@@ -3137,6 +3833,10 @@ msgstr "База данных пользователей + пароли прил
 #: authentik/stages/password/models.py
 msgid "User database + LDAP password"
 msgstr "База данных пользователей + пароль LDAP"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr ""
 
 #: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
@@ -3287,6 +3987,22 @@ msgstr "Этапы запроса"
 msgid "Passwords don't match."
 msgstr "Пароли не соответствуют."
 
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "Этап переадресации"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "Этапы переадресации"
+
 #: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
 msgstr "Этап удаления пользователя"
@@ -3324,6 +4040,13 @@ msgstr ""
 " меня\" не будет отображаться. (Формат: hours=-1;minutes=-2;seconds=-3)"
 
 #: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/stages/user_login/models.py
 msgid "User Login Stage"
 msgstr "Этап входа пользователя"
 
@@ -3334,10 +4057,6 @@ msgstr "Этапы входа пользователя"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Нет входящих пользователей для входа."
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
-msgstr "Успешный вход в аккаунт!"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
@@ -3377,6 +4096,43 @@ msgstr "Пользователь не найден и невозможно со�
 msgid "Failed to update user. Please try again later."
 msgstr "Не удалось обновить пользователя. Попробуйте позже."
 
+#: authentik/tasks/models.py
+msgid "Tenant this task belongs to"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Retry failed task"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Worker status"
+msgstr ""
+
+#: authentik/tasks/models.py
+msgid "Worker statuses"
+msgstr ""
+
+#: authentik/tasks/schedules/models.py
+msgid "Unique schedule identifier"
+msgstr ""
+
+#: authentik/tasks/schedules/models.py
+msgid "User schedule identifier"
+msgstr ""
+
+#: authentik/tasks/schedules/models.py
+msgid "Manually trigger a schedule"
+msgstr ""
+
+#: authentik/tasks/tasks.py
+msgid "Remove old worker statuses."
+msgstr ""
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr ""
+
 #: authentik/tenants/models.py
 msgid ""
 "Schema name must start with t_, only contain lowercase letters and numbers "
@@ -3413,6 +4169,14 @@ msgstr ""
 "часы=3, секунды=2)."
 
 #: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+
+#: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."
 msgstr ""
 "Опция настраивает ссылки нижнего колонтитула на страницах исполнителя "
@@ -3429,6 +4193,10 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Globally enable/disable impersonation."
 msgstr "Глобально включить/отключить имитацию пользователей."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Default token duration"
@@ -3453,3 +4221,76 @@ msgstr "Домен"
 #: authentik/tenants/models.py
 msgid "Domains"
 msgstr "Домены"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Queue name"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor name"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Message body"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task status"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task last modified time"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task result"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Result expiry time"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+#, python-format
+msgid "%(value)s is not a valid crontab"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor to call"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Args to send to the actor"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Kwargs to send to the actor"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Options to send to the actor"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "When to schedule tasks"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Pause this schedule"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedule"
+msgstr ""
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedules"
+msgstr ""

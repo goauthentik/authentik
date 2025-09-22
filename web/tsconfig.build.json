@@ -1,0 +1,12 @@
+// @file TSConfig used by the web package during build.
+
+{
+    "extends": "./tsconfig.json",
+    "exclude": [
+        // ---
+        "src/**/*.test.ts",
+        "src/**/*.comp.ts",
+        "./**/*.stories.ts",
+        "./tests"
+    ]
+}

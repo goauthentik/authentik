@@ -1,26 +1,21 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import type {
-    GroupedOptions,
-    SelectGroup,
-    SelectOption,
-    SelectOptions,
-} from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
+
+import { AKElement } from "#elements/Base";
+import type { GroupedOptions, SelectGroup, SelectOption, SelectOptions } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
+
 import { match } from "ts-pattern";
 
-import { PropertyValueMap, css, html, nothing } from "lit";
+import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { groupOptions, isVisibleInScrollRegion } from "./utils.js";
-
 export interface IListSelect {
     options: SelectOptions;
-    value?: string;
+    value?: string | null;
     emptyOption?: string;
 }
 
@@ -50,29 +45,29 @@ export interface IListSelect {
  */
 @customElement("ak-list-select")
 export class ListSelect extends AKElement implements IListSelect {
-    static get styles() {
-        return [
-            PFBase,
-            PFDropdown,
-            PFSelect,
-            css`
-                :host {
-                    overflow: visible;
-                    z-index: 9999;
-                }
+    static styles = [
+        PFBase,
+        PFDropdown,
+        PFSelect,
+        css`
+            :host {
+                overflow: visible;
+                z-index: 9999;
+            }
 
-                :host([hidden]) {
-                    display: none;
-                }
+            :host([hidden]) {
+                display: none;
+            }
 
-                .pf-c-dropdown__menu {
-                    max-height: 50vh;
-                    overflow-y: auto;
-                    width: 100%;
-                }
-            `,
-        ];
-    }
+            .pf-c-dropdown__menu {
+                max-height: 50vh;
+                overflow-y: auto;
+                width: 100%;
+            }
+        `,
+    ];
+
+    //#region Properties
 
     /**
      * See the search options type, described in the `./types` file, for the relevant types.
@@ -80,15 +75,15 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property({ type: Array, attribute: false })
-    set options(options: SelectOptions) {
-        this._options = groupOptions(options);
+    public set options(options: SelectOptions) {
+        this.#options = groupOptions(options);
     }
 
-    get options() {
-        return this._options;
+    public get options() {
+        return this.#options;
     }
 
-    _options!: GroupedOptions;
+    #options!: GroupedOptions;
 
     /**
      * The current value of the menu.
@@ -96,7 +91,7 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property({ type: String, reflect: true })
-    value?: string;
+    public value?: string | null = null;
 
     /**
      * The string representation that means an empty option. If not present, no empty option is
@@ -105,35 +100,49 @@ export class ListSelect extends AKElement implements IListSelect {
      * @prop
      */
     @property()
-    emptyOption?: string;
+    public emptyOption?: string;
 
     // We have two different states that we're tracking in this component: the `value`, which is the
     // element that is currently selected according to the client, and the `index`, which is the
     // element that is being tracked for keyboard interaction. On a click, the index points to the
-    // value element; on Keydown.Enter, the value becomes whatever the index points to.
+    // value element; on Keyup.Enter, the value becomes whatever the index points to.
     @state()
-    indexOfFocusedItem = 0;
+    protected indexOfFocusedItem = 0;
 
     @query("#ak-list-select-list")
-    ul!: HTMLUListElement;
+    protected ul!: HTMLUListElement;
+
+    //#endregion
 
     get json(): string {
         return this.value ?? "";
     }
 
-    public constructor() {
-        super();
-        this.addEventListener("focus", this.onFocus);
-        this.addEventListener("blur", this.onBlur);
-    }
+    //#region Lifecycle
 
     public override connectedCallback() {
         super.connectedCallback();
+
+        this.addEventListener("focus", this.#focusListener);
+        this.addEventListener("blur", this.#blurListener);
+
         this.setAttribute("data-ouia-component-type", "ak-menu-select");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         this.setIndexOfFocusedItemFromValue();
         this.highlightFocusedItem();
     }
+
+    public override performUpdate() {
+        this.removeAttribute("data-ouia-component-safe");
+        super.performUpdate();
+    }
+
+    public override updated(changed: PropertyValueMap<this>) {
+        super.updated(changed);
+        this.setAttribute("data-ouia-component-safe", "true");
+    }
+
+    //#endregion
 
     public get hasFocus() {
         return this.renderRoot.contains(document.activeElement) || document.activeElement === this;
@@ -160,11 +169,17 @@ export class ListSelect extends AKElement implements IListSelect {
         return elementCount === 0 ? -1 : checkIndex();
     }
 
+    /**
+     * Highlight the currently focused item.
+     *
+     * @todo
+     * This doesn't quite work as intended, but this component will likely
+     * be refined after the PatternFly upgrade.
+     */
     private highlightFocusedItem() {
         this.displayedElements.forEach((item) => {
             item.classList.remove("ak-highlight-item");
             item.removeAttribute("aria-selected");
-            item.tabIndex = -1;
         });
         const currentElement = this.currentElement;
         if (!currentElement) {
@@ -174,33 +189,31 @@ export class ListSelect extends AKElement implements IListSelect {
         // This is currently a radio emulation; "selected" is true here.
         // If this were a checkbox emulation (i.e. multi), "checked" would be appropriate.
         currentElement.setAttribute("aria-selected", "true");
-        currentElement.scrollIntoView({ block: "center", behavior: "smooth" });
     }
 
-    @bound
-    onFocus() {
+    //#region Event Listeners
+
+    #focusListener = () => {
         // Allow the event to propagate.
         this.currentElement?.focus();
-        this.addEventListener("keydown", this.onKeydown);
-    }
+        this.addEventListener("keyup", this.#delegateKey);
+    };
 
-    @bound
-    onBlur() {
+    #blurListener = () => {
         // Allow the event to propagate.
-        this.removeEventListener("keydown", this.onKeydown);
+        this.removeEventListener("keyup", this.#delegateKey);
         this.indexOfFocusedItem = 0;
-    }
+    };
 
-    @bound
-    onClick(value: string | undefined) {
+    #clickListener = (value: string | null) => {
         // let the click through, but include the change event.
         this.value = value;
-        this.setIndexOfFocusedItemFromValue();
-        this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
-    }
 
-    @bound
-    onKeydown(event: KeyboardEvent) {
+        this.setIndexOfFocusedItemFromValue();
+        this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+    };
+
+    #delegateKey = (event: KeyboardEvent) => {
         const key = event.key;
         const lastItem = this.displayedElements.length - 1;
         const current = this.indexOfFocusedItem;
@@ -214,8 +227,9 @@ export class ListSelect extends AKElement implements IListSelect {
 
         const setValueAndDispatch = () => {
             event.preventDefault();
-            this.value = this.currentElement?.getAttribute("value") ?? undefined;
-            this.dispatchEvent(new Event("change", { bubbles: true, composed: true })); // prettier-ignore
+            this.value = this.currentElement?.getAttribute("value");
+
+            this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
         };
 
         const pageBy = (direction: number) => {
@@ -235,17 +249,9 @@ export class ListSelect extends AKElement implements IListSelect {
             .with({ key: "End" }, () => updateIndex(lastItem))
             .with({ key: " " }, () => setValueAndDispatch())
             .with({ key: "Enter" }, () => setValueAndDispatch());
-    }
+    };
 
-    public override performUpdate() {
-        this.removeAttribute("data-ouia-component-safe");
-        super.performUpdate();
-    }
-
-    public override updated(changed: PropertyValueMap<this>) {
-        super.updated(changed);
-        this.setAttribute("data-ouia-component-safe", "true");
-    }
+    //#region Render
 
     private renderEmptyMenuItem() {
         return html`<li role="option" class="ak-select-item" part="ak-list-select-option">
@@ -253,7 +259,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 class="pf-c-dropdown__menu-item"
                 role="option"
                 tabindex="0"
-                @click=${() => this.onClick(undefined)}
+                @click=${() => this.#clickListener(null)}
                 part="ak-list-select-button"
             >
                 ${this.emptyOption}
@@ -274,7 +280,7 @@ export class ListSelect extends AKElement implements IListSelect {
                         class="pf-c-dropdown__menu-item pf-m-description"
                         value="${value}"
                         tabindex="0"
-                        @click=${() => this.onClick(value)}
+                        @click=${() => this.#clickListener(value)}
                         part="ak-list-select-button"
                     >
                         <div class="pf-c-dropdown__menu-item-main" part="ak-list-select-label">
@@ -322,13 +328,15 @@ export class ListSelect extends AKElement implements IListSelect {
                 tabindex="0"
                 part="ak-list-select"
             >
-                ${this.emptyOption === undefined ? nothing : this.renderEmptyMenuItem()}
-                ${this._options.grouped
-                    ? this.renderMenuGroups(this._options.options)
-                    : this.renderMenuItems(this._options.options)}
+                ${this.emptyOption ? this.renderEmptyMenuItem() : nothing}
+                ${this.#options.grouped
+                    ? this.renderMenuGroups(this.#options.options)
+                    : this.renderMenuItems(this.#options.options)}
             </ul>
         </div> `;
     }
+
+    //#endregion
 }
 
 declare global {

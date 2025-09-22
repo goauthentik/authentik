@@ -49,7 +49,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         return False
 
     @staticmethod
-    def decode_session_key(key: str) -> str:
+    def decode_session_key(key: str | None) -> str | None:
         """Decode raw session cookie, and parse JWT"""
         # We need to support the standard django format of just a session key
         # for testing setups, where the session is directly set
@@ -64,7 +64,11 @@ class SessionMiddleware(UpstreamSessionMiddleware):
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.session = self.SessionStore(session_key)
+        request.session = self.SessionStore(
+            session_key,
+            last_ip=ClientIPMiddleware.get_client_ip(request),
+            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
+        )
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """

@@ -1,27 +1,23 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIError } from "@goauthentik/common/errors";
-import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
-import { P, match } from "ts-pattern";
+import "#admin/applications/wizard/ak-wizard-title";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
+import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
+import { isApplicationTransactionValidationError, OneOfProvider } from "../types.js";
+import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
-// import { map } from "lit/directives/map.js";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError } from "#common/errors/network";
+
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
+
+import { WizardNavigationEvent } from "#components/ak-wizard/events";
+import { type WizardButton } from "#components/ak-wizard/types";
 
 import {
     type ApplicationRequest,
     CoreApi,
+    instanceOfValidationError,
     type ModelRequest,
     type PolicyBinding,
     ProviderModelEnum,
@@ -32,9 +28,19 @@ import {
     type TransactionPolicyBindingRequest,
 } from "@goauthentik/api";
 
-import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { ExtendedValidationError, OneOfProvider } from "../types.js";
-import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
+import { match, P } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { css, html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+
+// import { map } from "lit/directives/map.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
 type SubmitStates = (typeof _submitStates)[number];
@@ -74,22 +80,20 @@ const cleanBinding = (binding: PolicyBinding): TransactionPolicyBindingRequest =
 
 @customElement("ak-application-wizard-submit-step")
 export class ApplicationWizardSubmitStep extends CustomEmitterElement(ApplicationWizardStep) {
-    static get styles() {
-        return [
-            ...ApplicationWizardStep.styles,
-            PFBullseye,
-            PFEmptyState,
-            PFTitle,
-            PFProgressStepper,
-            PFDescriptionList,
-            css`
-                .ak-wizard-main-content .pf-c-title {
-                    padding-bottom: var(--pf-global--spacer--md);
-                    padding-top: var(--pf-global--spacer--md);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        ...ApplicationWizardStep.styles,
+        PFBullseye,
+        PFEmptyState,
+        PFTitle,
+        PFProgressStepper,
+        PFDescriptionList,
+        css`
+            .ak-wizard-main-content .pf-c-title {
+                padding-bottom: var(--pf-global--spacer--md);
+                padding-top: var(--pf-global--spacer--md);
+            }
+        `,
+    ];
 
     label = msg("Review and Submit Application");
 
@@ -131,39 +135,46 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         this.state = "running";
 
-        return (
-            new CoreApi(DEFAULT_CONFIG)
-                .coreTransactionalApplicationsUpdate({
-                    transactionApplicationRequest: request,
-                })
-                .then((_response: TransactionApplicationResponse) => {
-                    this.dispatchCustomEvent(EVENT_REFRESH);
-                    this.state = "submitted";
-                })
+        return new CoreApi(DEFAULT_CONFIG)
+            .coreTransactionalApplicationsUpdate({
+                transactionApplicationRequest: request,
+            })
+            .then((_response: TransactionApplicationResponse) => {
+                this.dispatchCustomEvent(EVENT_REFRESH);
+                this.state = "submitted";
+            })
 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .catch(async (resolution: any) => {
-                    const errors = (await parseAPIError(
-                        await resolution,
-                    )) as ExtendedValidationError;
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
 
-                    // THIS is a really gross special case; if the user is duplicating the name of
-                    // an existing provider, the error appears on the `app` (!) error object. We
-                    // have to move that to the `provider.name` error field so it shows up in the
-                    // right place.
-                    if (Array.isArray(errors?.app?.provider)) {
-                        const providerError = errors.app.provider;
-                        errors.provider = errors.provider ?? {};
-                        errors.provider.name = providerError;
-                        delete errors.app.provider;
-                        if (Object.keys(errors.app).length === 0) {
-                            delete errors.app;
+                if (!instanceOfValidationError(parsedError)) {
+                    showAPIErrorMessage(parsedError);
+
+                    return;
+                }
+
+                if (isApplicationTransactionValidationError(parsedError)) {
+                    // THIS is a really gross special case; if the user is duplicating the name of an existing provider, the error appears on the `app` (!) error object.
+                    // We have to move that to the `provider.name` error field so it shows up in the right place.
+                    if (Array.isArray(parsedError.app?.provider)) {
+                        const providerError = parsedError.app.provider;
+
+                        parsedError.provider = {
+                            ...parsedError.provider,
+                            name: providerError,
+                        };
+
+                        delete parsedError.app.provider;
+
+                        if (Object.keys(parsedError.app).length === 0) {
+                            delete parsedError.app;
                         }
                     }
-                    this.handleUpdate({ errors });
-                    this.state = "reviewing";
-                })
-        );
+                }
+
+                this.handleUpdate({ errors: parsedError });
+                this.state = "reviewing";
+            });
     }
 
     override handleButton(button: WizardButton) {
@@ -225,22 +236,20 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderError() {
-        if (Object.keys(this.wizard.errors).length === 0) {
-            return nothing;
-        }
+        const { errors } = this.wizard;
 
-        const navTo = (step: string) => () => this.dispatchEvent(new WizardNavigationEvent(step));
-        const errors = this.wizard.errors;
+        if (Object.keys(errors).length === 0) return nothing;
+
         return html` <hr class="pf-c-divider" />
-            ${match(errors as ExtendedValidationError)
+            ${match(errors)
                 .with(
                     { app: P.nonNullable },
                     () =>
                         html`<p>${msg("There was an error in the application.")}</p>
                             <p>
-                                <a @click=${navTo("application")}
-                                    >${msg("Review the application.")}</a
-                                >
+                                <a @click=${WizardNavigationEvent.toListener(this, "application")}>
+                                    ${msg("Review the application.")}
+                                </a>
                             </p>`,
                 )
                 .with(
@@ -248,13 +257,20 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                     () =>
                         html`<p>${msg("There was an error in the provider.")}</p>
                             <p>
-                                <a @click=${navTo("provider")}>${msg("Review the provider.")}</a>
+                                <a @click=${WizardNavigationEvent.toListener(this, "provider")}
+                                    >${msg("Review the provider.")}</a
+                                >
                             </p>`,
                 )
                 .with(
                     { detail: P.nonNullable },
                     () =>
-                        `<p>${msg("There was an error. Please go back and review the application.")}: ${errors.detail}</p>`,
+                        html`<p>
+                            ${msg(
+                                "There was an error. Please go back and review the application.",
+                            )}:
+                            ${errors.detail}
+                        </p>`,
                 )
                 .with(
                     {
@@ -264,7 +280,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                         html`<p>${msg("There was an error:")}:</p>
                             <ul>
                                 ${(errors.nonFieldErrors ?? []).map(
-                                    (e: string) => html`<li>${e}</li>`,
+                                    (reason) => html`<li>${reason}</li>`,
                                 )}
                             </ul>
                             <p>${msg("Please go back and review the application.")}</p>`,
@@ -281,11 +297,15 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {
         const renderer = providerRenderers.get(this.wizard.providerModel);
+
         if (!renderer) {
             throw new Error(
                 `Provider ${this.wizard.providerModel ?? "-- undefined --"} has no summary renderer.`,
             );
         }
+
+        const metaLaunchUrl = app.metaLaunchUrl?.trim();
+
         return html`
             <div class="ak-wizard-main-content">
                 <ak-wizard-title>${msg("Review the Application and Provider")}</ak-wizard-title>
@@ -305,12 +325,10 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                             ${app.policyEngineMode?.toUpperCase()}
                         </dt>
                     </div>
-                    ${(app.metaLaunchUrl ?? "").trim() !== ""
+                    ${metaLaunchUrl
                         ? html` <div class="pf-c-description-list__group">
                               <dt class="pf-c-description-list__term">${msg("Launch URL")}</dt>
-                              <dt class="pf-c-description-list__description">
-                                  ${app.metaLaunchUrl}
-                              </dt>
+                              <dt class="pf-c-description-list__description">${metaLaunchUrl}</dt>
                           </div>`
                         : nothing}
                 </dl>
@@ -328,7 +346,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-        // An empty object is truthy, an empty array is falsey. *WAT Javascript*.
+        // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
         const keys = Object.keys(this.wizard.errors);
         return match([this.state, keys])
             .with(["submitted", P._], () =>

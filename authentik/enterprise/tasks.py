@@ -1,14 +1,11 @@
 """Enterprise tasks"""
 
+from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import actor
+
 from authentik.enterprise.license import LicenseKey
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
-from authentik.root.celery import CELERY_APP
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def enterprise_update_usage(self: SystemTask):
-    """Update enterprise license status"""
+@actor(description=_("Update enterprise license status."))
+def enterprise_update_usage():
     LicenseKey.get_total().record_usage()
-    self.set_status(TaskStatus.SUCCESSFUL)

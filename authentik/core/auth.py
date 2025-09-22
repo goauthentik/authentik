@@ -24,6 +24,15 @@ class InbuiltBackend(ModelBackend):
         self.set_method("password", request)
         return user
 
+    async def aauthenticate(
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
+        user = await super().aauthenticate(request, username=username, password=password, **kwargs)
+        if not user:
+            return None
+        self.set_method("password", request)
+        return user
+
     def set_method(self, method: str, request: HttpRequest | None, **kwargs):
         """Set method data on current flow, if possbiel"""
         if not request:
@@ -44,13 +53,12 @@ class TokenBackend(InbuiltBackend):
         self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
     ) -> User | None:
         try:
-
             user = User._default_manager.get_by_natural_key(username)
 
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).
-            User().set_password(password)
+            User().set_password(password, request=request)
             return None
 
         tokens = Token.filter_not_expired(

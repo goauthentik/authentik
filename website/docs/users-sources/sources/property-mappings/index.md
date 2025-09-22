@@ -8,7 +8,7 @@ This page is an overview of how property mappings work. For information about sp
 
 - [Kerberos](../protocols/kerberos/#kerberos-source-property-mappings)
 - [LDAP](../protocols/ldap/index.md#ldap-source-property-mappings)
-- [OAuth](../protocols/oauth/index.md#oauth-source-property-mappings)
+- [OAuth](../protocols/oauth/index.mdx#oauth-source-property-mappings)
 - [SAML](../protocols/saml/index.md#saml-source-property-mappings)
 - [SCIM](../protocols/scim/index.md#scim-source-property-mappings)
 
@@ -18,7 +18,7 @@ If the default source mappings are not enough, or if you need to get additional 
 
 Here are the steps:
 
-1. In authentik, open the Admin interface, and then navigate to **Customization -> Property Mappings**.
+1. In authentik, open the Admin interface, and then navigate to **Customization > Property Mappings**.
 2. Click **Create**, select the property mapping type for your source, and then click **Next**.
 3. Type a unique and meaningful **Name**, such as `ldap-displayName-mapping:name`.
 4. In the **Expression** field enter Python expressions to retrieve the value from the source. See [Expression Semantics](#expression-semantics) below for details.
@@ -36,7 +36,7 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.md#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `ak_groups` and `group_attributes` cannot be set.
 
 See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 

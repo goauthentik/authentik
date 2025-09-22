@@ -1102,17 +1102,6 @@
                 "uniqueness": "none"
             },
             {
-                "name": "password",
-                "type": "string",
-                "multiValued": false,
-                "description": "The User's cleartext password.  This attribute is intended to be used as a means to specify an initial\npassword when creating a new User or to reset an existing User's password.",
-                "required": false,
-                "caseExact": false,
-                "mutability": "writeOnly",
-                "returned": "never",
-                "uniqueness": "none"
-            },
-            {
                 "name": "emails",
                 "type": "complex",
                 "multiValued": true,

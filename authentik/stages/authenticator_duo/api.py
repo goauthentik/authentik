@@ -1,27 +1,27 @@
 """AuthenticatorDuoStage API Views"""
 
+from typing import Any
+
 from django.http import Http404
-from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField, IntegerField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import OwnerFilter, OwnerPermissions
+from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.core.models import User
 from authentik.flows.api.stages import StageSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
-from authentik.stages.authenticator_duo.tasks import duo_import_devices
 
 LOGGER = get_logger()
 
@@ -161,16 +161,57 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 },
                 status=400,
             )
-        result = duo_import_devices.delay(str(stage.pk)).get()
+        result = self._duo_import_devices(stage)
         return Response(data=result, status=200 if result["error"] == "" else 400)
+
+    def _duo_import_devices(self, stage: AuthenticatorDuoStage) -> dict[str, Any]:
+        """
+        Import duo devices. This used to be a blocking task.
+        """
+        created = 0
+        if stage.admin_integration_key == "":
+            LOGGER.info("Stage does not have admin integration configured", stage=stage)
+            return {"error": "Stage does not have admin integration configured", "count": created}
+        client = stage.admin_client()
+        try:
+            for duo_user in client.get_users_iterator():
+                user_id = duo_user.get("user_id")
+                username = duo_user.get("username")
+
+                user = User.objects.filter(username=username).first()
+                if not user:
+                    LOGGER.debug("User not found", username=username)
+                    continue
+                device = DuoDevice.objects.filter(
+                    duo_user_id=user_id, user=user, stage=stage
+                ).first()
+                if device:
+                    LOGGER.debug("User already has a device with ID", id=user_id)
+                    continue
+                DuoDevice.objects.create(
+                    duo_user_id=user_id,
+                    user=user,
+                    stage=stage,
+                    name="Imported Duo Authenticator",
+                )
+                created += 1
+            return {"error": "", "count": created}
+        except RuntimeError as exc:
+            LOGGER.warning("failed to get users from duo", exc=exc)
+            return {
+                "error": "An internal error occurred while importing devices.",
+                "count": created,
+            }
 
 
 class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
 
+    user = GroupMemberSerializer(read_only=True)
+
     class Meta:
         model = DuoDevice
-        fields = ["pk", "name"]
+        fields = ["pk", "name", "user"]
         depth = 2
 
 
@@ -189,8 +230,7 @@ class DuoDeviceViewSet(
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    permission_classes = [OwnerPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
 
 
 class DuoAdminDeviceViewSet(ModelViewSet):

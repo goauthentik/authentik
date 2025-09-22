@@ -1,9 +1,10 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { setURLParams } from "#elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
@@ -59,7 +60,7 @@ export class TreeViewNode extends AKElement {
         const level = this.item?.level || 0;
         // Ignore the last item as that shouldn't be expanded
         pathSegments.pop();
-        if (pathSegments[level] == this.item?.id) {
+        if (pathSegments[level] === this.item?.id) {
             this.open = true;
         }
         if (this.activePath === this.fullPath && this.host !== undefined) {
@@ -111,7 +112,7 @@ export class TreeViewNode extends AKElement {
                                           <i class="fas fa-angle-right" aria-hidden="true"></i>
                                       </span>
                                   </button>`
-                                : html``}
+                                : nothing}
                             <span class="pf-c-tree-view__node-icon">
                                 <i
                                     class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"
@@ -139,9 +140,7 @@ export class TreeViewNode extends AKElement {
 
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFTreeView];
-    }
+    static styles: CSSResult[] = [PFBase, PFTreeView];
 
     @property({ type: Array })
     items: string[] = [];
@@ -157,7 +156,7 @@ export class TreeView extends AKElement {
     createNode(path: string[], parentItem: TreeViewItem, level: number): TreeViewItem {
         const id = path.shift();
         const idx = parentItem.childItems.findIndex((e: TreeViewItem) => {
-            return e.id == id;
+            return e.id === id;
         });
         if (idx < 0) {
             const item: TreeViewItem = {
@@ -173,9 +172,8 @@ export class TreeView extends AKElement {
                 child.parent = item;
             }
             return item;
-        } else {
-            return this.createNode(path, parentItem.childItems[idx], level + 1);
         }
+        return this.createNode(path, parentItem.childItems[idx], level + 1);
     }
 
     parse(data: string[]): TreeViewItem {
@@ -200,7 +198,7 @@ export class TreeView extends AKElement {
                 <ak-treeview-node
                     .item=${rootItem}
                     activePath=${this.activePath}
-                    ?open=${true}
+                    open
                     separator=${this.separator}
                     .host=${this}
                 ></ak-treeview-node>

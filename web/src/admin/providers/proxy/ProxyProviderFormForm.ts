@@ -1,24 +1,22 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-toggle-group";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+} from "#admin/providers/oauth2/OAuth2ProviderForm";
 import {
     oauth2SourcesProvider,
     oauth2SourcesSelector,
-} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-import { match } from "ts-pattern";
-
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/oauth2/OAuth2Sources";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -27,7 +25,11 @@ import {
     ValidationError,
 } from "@goauthentik/api";
 
-import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 export type ProxyModeValue = { value: ProxyMode };
 export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
@@ -48,6 +50,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             help=${msg(
                 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
             )}
+            input-hint="code"
         >
         </ak-text-input>
 
@@ -56,6 +59,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             label=${msg("HTTP-Basic Password Key")}
             value="${ifDefined(provider?.basicAuthPasswordAttribute)}"
             help=${msg("User/Group Attribute used for the password part of the HTTP-Basic Header.")}
+            input-hint="code"
         >
         </ak-text-input>`;
 }
@@ -84,18 +88,20 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             label=${msg("External host")}
             value="${ifDefined(provider?.externalHost)}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
+            input-hint="code"
         ></ak-text-input>
         <ak-text-input
             name="internalHost"
             label=${msg("Internal host")}
             value="${ifDefined(provider?.internalHost)}"
             required
-            .errorMessages=${errors?.internalHost ?? []}
+            .errorMessages=${errors?.internalHost}
             help=${msg("Upstream host that the requests are forwarded to.")}
+            input-hint="code"
         ></ak-text-input>
 
         <ak-switch-input
@@ -118,10 +124,11 @@ function renderForwardSingleSettings(provider: Partial<ProxyProvider>, errors?: 
             label=${msg("External host")}
             value="${ifDefined(provider?.externalHost)}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
+            input-hint="code"
         ></ak-text-input>`;
 }
 
@@ -147,7 +154,7 @@ function renderForwardDomainSettings(provider: Partial<ProxyProvider>, errors?: 
             label=${msg("Authentication URL")}
             value="${provider?.externalHost ?? window.location.origin}"
             required
-            .errorMessages=${errors?.externalHost ?? []}
+            .errorMessages=${errors?.externalHost}
             help=${msg(
                 "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
             )}
@@ -158,7 +165,7 @@ function renderForwardDomainSettings(provider: Partial<ProxyProvider>, errors?: 
             name="cookieDomain"
             value="${ifDefined(provider?.cookieDomain)}"
             required
-            .errorMessages=${errors?.cookieDomain ?? []}
+            .errorMessages=${errors?.cookieDomain}
             help=${msg(
                 "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
             )}
@@ -189,7 +196,7 @@ export function renderForm(
             name="name"
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
         ></ak-text-input>
 
@@ -217,14 +224,14 @@ export function renderForm(
             label=${msg("Token validity")}
             name="accessTokenValidity"
             value="${provider?.accessTokenValidity ?? "hours=24"}"
-            .errorMessages=${errors?.accessTokenValidity ?? []}
+            .errorMessages=${errors?.accessTokenValidity}
             required
             .help=${msg("Configure how long tokens are valid for.")}
+            input-hint="code"
         ></ak-text-input>
 
-        <ak-form-group>
-            <span slot="header">${msg("Advanced protocol settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         .certificate=${provider?.certificate}
@@ -251,7 +258,9 @@ export function renderForm(
                         : msg("Unauthenticated Paths")}"
                     name="skipPathRegex"
                 >
-                    <textarea class="pf-c-form-control">${provider?.skipPathRegex}</textarea>
+                    <textarea class="pf-c-form-control pf-m-monospace">
+${provider?.skipPathRegex}</textarea
+                    >
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
@@ -265,9 +274,8 @@ export function renderForm(
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header">${msg("Authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Authentication settings")}">
+            <div class="pf-c-form">
                 <ak-switch-input
                     name="interceptHeaderAuth"
                     label=${msg("Intercept header authentication")}
@@ -291,7 +299,7 @@ export function renderForm(
 
                 ${showHttpBasic ? renderHttpBasic(provider) : nothing}
                 <ak-form-element-horizontal
-                    label=${msg("Trusted OIDC Sources")}
+                    label=${msg("Federated OIDC Sources")}
                     name="jwtFederationSources"
                 >
                     <ak-dual-select-dynamic-selected
@@ -325,9 +333,8 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     name="authenticationFlow"

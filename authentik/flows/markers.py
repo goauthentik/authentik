@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from django.contrib.messages import INFO, add_message
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
@@ -61,6 +62,8 @@ class ReevaluateMarker(StageMarker):
         engine.request.context.update(plan.context)
         engine.build()
         result = engine.result
+        for message in result.messages:
+            add_message(http_request, INFO, message)
         if result.passing:
             return binding
         LOGGER.warning(

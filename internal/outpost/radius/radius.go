@@ -34,7 +34,7 @@ type RadiusServer struct {
 	providers []*ProviderInstance
 }
 
-func NewServer(ac *ak.APIController) *RadiusServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
 		log:       log.WithField("logger", "authentik.outpost.radius"),
 		ac:        ac,

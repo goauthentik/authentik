@@ -6,10 +6,15 @@ import json
 from dataclasses import asdict, dataclass
 from functools import cached_property
 from hashlib import sha256
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import urlparse, urlunparse
 
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    SECP256R1,
+    SECP384R1,
+    SECP521R1,
+    EllipticCurvePrivateKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
@@ -37,10 +42,13 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.id_token import IDToken, SubModes
+from authentik.providers.oauth2.constants import SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+if TYPE_CHECKING:
+    from authentik.providers.oauth2.id_token import IDToken
 
 LOGGER = get_logger()
 
@@ -114,6 +122,22 @@ class JWTAlgorithms(models.TextChoices):
     HS256 = "HS256", _("HS256 (Symmetric Encryption)")
     RS256 = "RS256", _("RS256 (Asymmetric Encryption)")
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
+    ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
+    ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+
+    @classmethod
+    def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
+        if isinstance(private_key, RSAPrivateKey):
+            return cls.RS256
+        if isinstance(private_key, EllipticCurvePrivateKey):
+            curve = private_key.curve
+            if isinstance(curve, SECP256R1):
+                return cls.ES256
+            if isinstance(curve, SECP384R1):
+                return cls.ES384
+            if isinstance(curve, SECP521R1):
+                return cls.ES512
+        raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
 class ScopeMapping(PropertyMapping):
@@ -172,8 +196,13 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=generate_client_secret,
     )
     _redirect_uris = models.JSONField(
-        default=dict,
+        default=list,
         verbose_name=_("Redirect URIs"),
+    )
+    backchannel_logout_uri = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))],
+        verbose_name=_("Back-Channel Logout URI"),
+        blank=True,
     )
 
     include_claims_in_id_token = models.BooleanField(
@@ -263,11 +292,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return self.client_secret, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
-        if isinstance(private_key, RSAPrivateKey):
-            return private_key, JWTAlgorithms.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            return private_key, JWTAlgorithms.ES256
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        return private_key, JWTAlgorithms.from_private_key(private_key)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
@@ -281,7 +306,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 },
             )
             return request.build_absolute_uri(url)
-
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
@@ -425,6 +449,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     class Meta:
         verbose_name = _("Authorization Code")
         verbose_name_plural = _("Authorization Codes")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Authorization code for {self.provider_id} for user {self.user_id}"
@@ -453,7 +478,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     _id_token = models.TextField()
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Access Token")
@@ -463,14 +488,16 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Access Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
-        self.token = value.to_access_token(self.provider)
+    def id_token(self, value: "IDToken"):
+        self.token = value.to_access_token(self.provider, self)
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -504,7 +531,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     )
 
     class Meta:
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             HashIndex(fields=["token"]),
         ]
         verbose_name = _("OAuth2 Refresh Token")
@@ -514,13 +541,15 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Refresh Token for {self.provider_id} for user {self.user_id}"
 
     @property
-    def id_token(self) -> IDToken:
+    def id_token(self) -> "IDToken":
         """Load ID Token from json"""
+        from authentik.providers.oauth2.id_token import IDToken
+
         raw_token = json.loads(self._id_token)
         return from_dict(IDToken, raw_token)
 
     @id_token.setter
-    def id_token(self, value: IDToken):
+    def id_token(self, value: "IDToken"):
         self._id_token = json.dumps(asdict(value))
 
     @property
@@ -556,6 +585,7 @@ class DeviceToken(ExpiringModel):
     class Meta:
         verbose_name = _("Device Token")
         verbose_name_plural = _("Device Tokens")
+        indexes = ExpiringModel.Meta.indexes
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"

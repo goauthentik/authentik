@@ -19,9 +19,9 @@ from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.logout_request_parser import LogoutRequestParser
 from authentik.providers.saml.views.flows import (
+    PLAN_CONTEXT_SAML_LOGOUT_REQUEST,
     REQUEST_KEY_RELAY_STATE,
     REQUEST_KEY_SAML_REQUEST,
-    SESSION_KEY_LOGOUT_REQUEST,
 )
 
 LOGGER = get_logger()
@@ -32,6 +32,10 @@ class SAMLSLOView(PolicyAccessView):
     Calls get/post handler."""
 
     flow: Flow
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.plan_context = {}
 
     def resolve_provider_application(self):
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
@@ -59,9 +63,10 @@ class SAMLSLOView(PolicyAccessView):
             request,
             {
                 PLAN_CONTEXT_APPLICATION: self.application,
+                **self.plan_context,
             },
         )
-        plan.insert_stage(in_memory_stage(SessionEndStage))
+        plan.append_stage(in_memory_stage(SessionEndStage))
         return plan.to_redirect(self.request, self.flow)
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
@@ -83,7 +88,7 @@ class SAMLSLOBindingRedirectView(SAMLSLOView):
                 self.request.GET[REQUEST_KEY_SAML_REQUEST],
                 relay_state=self.request.GET.get(REQUEST_KEY_RELAY_STATE, None),
             )
-            self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
+            self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             Event.new(
                 EventAction.CONFIGURATION_ERROR,
@@ -111,7 +116,7 @@ class SAMLSLOBindingPOSTView(SAMLSLOView):
                 payload[REQUEST_KEY_SAML_REQUEST],
                 relay_state=payload.get(REQUEST_KEY_RELAY_STATE, None),
             )
-            self.request.session[SESSION_KEY_LOGOUT_REQUEST] = logout_request
+            self.plan_context[PLAN_CONTEXT_SAML_LOGOUT_REQUEST] = logout_request
         except CannotHandleAssertion as exc:
             LOGGER.info(str(exc))
             return bad_request_message(self.request, str(exc))

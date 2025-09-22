@@ -1,7 +1,6 @@
-import { Form } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form } from "#elements/forms/Form";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
-import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 /**
@@ -19,24 +18,37 @@ export class FormWizardPage extends WizardPage {
         this.activePageCallback(this);
     };
 
-    nextCallback = async () => {
-        const form = this.querySelector<Form<unknown>>("*");
+    nextCallback = async (): Promise<boolean> => {
+        if (!this.children.length) {
+            throw new TypeError(`No child elements found in ${this.slot}.`);
+        }
+
+        const form = Array.from(this.children).find((childElement) => {
+            return childElement instanceof Form;
+        });
+
         if (!form) {
-            return Promise.reject(msg("No form found"));
+            throw new TypeError(`${this.slot} does not contain a Form element.`);
         }
-        const formPromise = form.submit(new Event("submit"));
+
+        if (!form.reportValidity()) {
+            return false;
+        }
+
+        const formPromise = form.submit(new SubmitEvent("submit"));
+
         if (!formPromise) {
-            return Promise.reject(msg("Form didn't return a promise for submitting"));
+            throw new TypeError("Expected a Promise from the Form.submit() method.");
         }
+
         return formPromise
             .then((data) => {
                 this.host.state[this.slot] = data;
                 this.host.canBack = false;
+
                 return true;
             })
-            .catch(() => {
-                return false;
-            });
+            .catch(() => false);
     };
 }
 

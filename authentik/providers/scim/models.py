@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
@@ -22,6 +23,7 @@ class SCIMProviderUser(SerializerModel):
     scim_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -43,6 +45,7 @@ class SCIMProviderGroup(SerializerModel):
     scim_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -55,6 +58,14 @@ class SCIMProviderGroup(SerializerModel):
 
     def __str__(self) -> str:
         return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
+
+
+class SCIMCompatibilityMode(models.TextChoices):
+    """SCIM compatibility mode"""
+
+    DEFAULT = "default", _("Default")
+    AWS = "aws", _("AWS")
+    SLACK = "slack", _("Slack")
 
 
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
@@ -77,9 +88,23 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         help_text=_("Property mappings used for group creation/updating."),
     )
 
+    compatibility_mode = models.CharField(
+        max_length=30,
+        choices=SCIMCompatibilityMode.choices,
+        default=SCIMCompatibilityMode.DEFAULT,
+        verbose_name=_("SCIM Compatibility Mode"),
+        help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
+    )
+
     @property
     def icon_url(self) -> str | None:
         return static("authentik/sources/scim.png")
+
+    @property
+    def sync_actor(self) -> Actor:
+        from authentik.providers.scim.tasks import scim_sync
+
+        return scim_sync
 
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]
@@ -98,7 +123,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         if type == User:
             # Get queryset of all users with consistent ordering
             # according to the provider's settings
-            base = User.objects.all().exclude_anonymous()
+            base = User.objects.prefetch_related("scimprovideruser_set").all().exclude_anonymous()
             if self.exclude_users_service_account:
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
@@ -108,7 +133,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
             return base.order_by("pk")
         if type == Group:
             # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            return Group.objects.prefetch_related("scimprovidergroup_set").all().order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
     @property

@@ -12,6 +12,7 @@ from django.db.models.fields import b64decode
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from kadmin import KAdmin, KAdminApiVersion
 from kadmin.exceptions import PyKAdminException
@@ -27,6 +28,9 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.common import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 LOGGER = get_logger()
 
@@ -42,7 +46,7 @@ class KAdminType(models.TextChoices):
     OTHER = "other"
 
 
-class KerberosSource(Source):
+class KerberosSource(ScheduledModel, Source):
     """Federate Kerberos realm with authentik"""
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
@@ -134,6 +138,27 @@ class KerberosSource(Source):
             return static("authentik/sources/kerberos.png")
         return icon
 
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.kerberos.tasks import kerberos_connectivity_check, kerberos_sync
+
+        return [
+            ScheduleSpec(
+                actor=kerberos_sync,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_sync/' + str(self.pk))} */2 * * *",
+                send_on_save=True,
+            ),
+            ScheduleSpec(
+                actor=kerberos_connectivity_check,
+                uid=self.slug,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_connectivity_check/' + str(self.pk))} * * * *",
+                send_on_save=True,
+            ),
+        ]
+
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
             challenge=RedirectChallenge(
@@ -173,11 +198,17 @@ class KerberosSource(Source):
     def get_base_user_properties(self, principal: str, **kwargs):
         localpart, _ = principal.rsplit("@", 1)
 
-        return {
+        properties = {
             "username": localpart,
             "type": UserTypes.INTERNAL,
             "path": self.get_user_path(),
         }
+
+        if "principal_obj" in kwargs:
+            princ_expiry = kwargs["principal_obj"].expire_time
+            properties["is_active"] = princ_expiry is None or princ_expiry > now()
+
+        return properties
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
@@ -310,7 +341,7 @@ class KerberosSource(Source):
                 usage="accept", name=name, store=self.get_gssapi_store()
             )
         except gssapi.exceptions.GSSError as exc:
-            LOGGER.warn("GSSAPI credentials failure", exc=exc)
+            LOGGER.warning("GSSAPI credentials failure", exc=exc)
             return None
 
 
@@ -364,8 +395,6 @@ class KerberosSourcePropertyMapping(PropertyMapping):
 
 class UserKerberosSourceConnection(UserSourceConnection):
     """Connection to configured Kerberos Sources."""
-
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> type[Serializer]:

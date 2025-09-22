@@ -1,28 +1,17 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import {
-    CurrentBrand,
-    FlowsInstancesListDesignationEnum,
-    LDAPProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+import "#components/ak-number-input";
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+import "#elements/utils/TimeDeltaHelp";
 
 import {
     bindModeOptions,
@@ -33,6 +22,17 @@ import {
     tlsServerNameHelp,
     uidStartNumberHelp,
 } from "./LDAPOptionsAndHelp.js";
+
+import {
+    CurrentBrand,
+    FlowsInstancesListDesignationEnum,
+    LDAPProvider,
+    ValidationError,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 // All Provider objects have an Authorization flow, but not all providers have an Authentication
 // flow. LDAP needs only one field, but it is not an Authorization field, it is an Authentication
@@ -48,9 +48,10 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
+            placeholder=${msg("Provider name...")}
             value=${ifDefined(provider?.name)}
-            label=${msg("Name")}
-            .errorMessages=${errors?.name ?? []}
+            label=${msg("Provider Name")}
+            .errorMessages=${errors?.name}
             required
             help=${msg("Method's display Name.")}
         ></ak-text-input>
@@ -80,17 +81,16 @@ export function renderForm(
         >
         </ak-switch-input>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Flow settings")} </span>
-
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Bind flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
-                    .errorMessages=${errors?.authorizationFlow ?? []}
+                    .errorMessages=${errors?.authorizationFlow}
                 >
                     <ak-branded-flow-search
+                        label=${msg("Bind flow")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
@@ -111,7 +111,7 @@ export function renderForm(
                         .currentFlow=${provider?.invalidationFlow}
                         .brandFlow=${brand?.flowInvalidation}
                         defaultFlowSlug="default-invalidation-flow"
-                        .errorMessages=${errors?.invalidationFlow ?? []}
+                        .errorMessages=${errors?.invalidationFlow}
                         required
                     ></ak-branded-flow-search>
                     <p class="pf-c-form__helper-text">${msg("Flow used for unbinding users.")}</p>
@@ -119,15 +119,15 @@ export function renderForm(
             </div>
         </ak-form-group>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
                 <ak-text-input
                     name="baseDn"
                     label=${msg("Base DN")}
                     required
                     value="${provider?.baseDn ?? "DC=ldap,DC=goauthentik,DC=io"}"
-                    .errorMessages=${errors?.baseDn ?? []}
+                    input-hint="code"
+                    .errorMessages=${errors?.baseDn}
                     help=${msg(
                         "LDAP DN under which bind requests and search requests can be made.",
                     )}
@@ -137,9 +137,11 @@ export function renderForm(
                 <ak-form-element-horizontal
                     label=${msg("Certificate")}
                     name="certificate"
-                    .errorMessages=${errors?.certificate ?? []}
+                    .errorMessages=${errors?.certificate}
                 >
                     <ak-crypto-certificate-search
+                        label=${msg("Certificate")}
+                        placeholder=${msg("Select a certificate...")}
                         certificate=${ifDefined(provider?.certificate ?? nothing)}
                         name="certificate"
                     >
@@ -151,8 +153,9 @@ export function renderForm(
                     label=${msg("TLS Server name")}
                     name="tlsServerName"
                     value="${provider?.tlsServerName ?? ""}"
-                    .errorMessages=${errors?.tlsServerName ?? []}
+                    .errorMessages=${errors?.tlsServerName}
                     help=${tlsServerNameHelp}
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-number-input
@@ -160,7 +163,7 @@ export function renderForm(
                     required
                     name="uidStartNumber"
                     value="${provider?.uidStartNumber ?? 2000}"
-                    .errorMessages=${errors?.uidStartNumber ?? []}
+                    .errorMessages=${errors?.uidStartNumber}
                     help=${uidStartNumberHelp}
                 ></ak-number-input>
 
@@ -169,7 +172,7 @@ export function renderForm(
                     required
                     name="gidStartNumber"
                     value="${provider?.gidStartNumber ?? 4000}"
-                    .errorMessages=${errors?.gidStartNumber ?? []}
+                    .errorMessages=${errors?.gidStartNumber}
                     help=${gidStartNumberHelp}
                 ></ak-number-input>
             </div>

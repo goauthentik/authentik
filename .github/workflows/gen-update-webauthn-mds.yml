@@ -1,8 +1,10 @@
-name: authentik-gen-update-webauthn-mds
+---
+name: Gen - Webauthn MDS
+
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 1 1,15 * *'
+    - cron: "30 1 1,15 * *"
 
 env:
   POSTGRES_DB: authentik
@@ -19,12 +21,12 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - run: poetry run ak update_webauthn_mds
+      - run: uv run ak update_webauthn_mds
       - uses: peter-evans/create-pull-request@v7
         id: cpr
         with:
@@ -37,6 +39,7 @@ jobs:
           signoff: true
           # ID from https://api.github.com/users/authentik-automation[bot]
           author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
+          labels: dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}

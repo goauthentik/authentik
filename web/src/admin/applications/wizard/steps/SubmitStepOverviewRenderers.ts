@@ -1,11 +1,6 @@
-import {
-    type DescriptionPair,
-    renderDescriptionList,
-} from "@goauthentik/components/DescriptionList.js";
-import { match } from "ts-pattern";
+import { OneOfProvider } from "../types.js";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import {
     ClientTypeEnum,
@@ -22,7 +17,10 @@ import {
     SCIMProvider,
 } from "@goauthentik/api";
 
-import { OneOfProvider } from "../types.js";
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
 
 const renderSummary = (type: string, name: string, fields: DescriptionPair[]) =>
     renderDescriptionList([[msg("Type"), type], [msg("Name"), name], ...fields], {
@@ -52,8 +50,16 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
 }
 
 function renderRACOverview(rawProvider: OneOfProvider) {
-    // @ts-expect-error TS6133
-    const _provider = rawProvider as RACProvider;
+    const provider = rawProvider as RACProvider;
+    return renderSummary("RAC", provider.name, [
+        [msg("Connection expiry"), provider.connectionExpiry ?? "-"],
+        [
+            msg("Property mappings"),
+            Array.isArray(provider.propertyMappings) && provider.propertyMappings.length
+                ? provider.propertyMappings.join(", ")
+                : msg("None"),
+        ],
+    ]);
 }
 
 function formatRedirectUris(uris: RedirectURI[] = []) {
@@ -142,11 +148,11 @@ function renderLDAPOverview(rawProvider: OneOfProvider) {
 const providerName = (p: ProviderModelEnum): string => p.toString().split(".")[1];
 
 export const providerRenderers = new Map([
-    [providerName(ProviderModelEnum.SamlSamlprovider), renderSAMLOverview],
-    [providerName(ProviderModelEnum.ScimScimprovider), renderSCIMOverview],
-    [providerName(ProviderModelEnum.RadiusRadiusprovider), renderRadiusOverview],
-    [providerName(ProviderModelEnum.RacRacprovider), renderRACOverview],
-    [providerName(ProviderModelEnum.ProxyProxyprovider), renderProxyOverview],
-    [providerName(ProviderModelEnum.Oauth2Oauth2provider), renderOAuth2Overview],
-    [providerName(ProviderModelEnum.LdapLdapprovider), renderLDAPOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersSamlSamlprovider), renderSAMLOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersScimScimprovider), renderSCIMOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersRadiusRadiusprovider), renderRadiusOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersRacRacprovider), renderRACOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersProxyProxyprovider), renderProxyOverview],
+    [providerName(ProviderModelEnum.AuthentikProvidersOauth2Oauth2provider), renderOAuth2Overview],
+    [providerName(ProviderModelEnum.AuthentikProvidersLdapLdapprovider), renderLDAPOverview],
 ]);
