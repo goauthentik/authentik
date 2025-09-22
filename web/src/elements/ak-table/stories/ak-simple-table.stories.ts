@@ -8,7 +8,7 @@ import { convertContent } from "../utils.js";
 import { nutritionDbUSDA } from "./sample_nutrition_db.js";
 
 import { Meta, StoryObj } from "@storybook/web-components";
-import { slug } from "github-slugger";
+import { kebabCase } from "change-case";
 
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -125,7 +125,7 @@ export const TableWithSorting: Story = {
 };
 
 const rowContent: TableRow[] = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) => ({
-    key: slug(name),
+    key: kebabCase(name),
     content: [name, calories, protein, fiber, sugar].map((a) => html`${a}`),
 }));
 
