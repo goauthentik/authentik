@@ -116,7 +116,7 @@
         "@patternfly/patternfly": "^4.224.2",
         "@playwright/test": "^1.55.0",
         "@sentry/browser": "^10.12.0",
-        "@spotlightjs/spotlight": "^3.0.2",
+        "@spotlightjs/spotlight": "^4.0.0",
         "@storybook/addon-docs": "^9.1.7",
         "@storybook/addon-links": "^9.1.7",
         "@storybook/web-components": "^9.1.7",
