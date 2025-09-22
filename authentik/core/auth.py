@@ -16,7 +16,11 @@ class InbuiltBackend(ModelBackend):
     """Inbuilt backend"""
 
     def authenticate(
-        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+        self,
+        request: HttpRequest,
+        username: str | None = None,
+        password: str | None = None,
+        **kwargs: Any,
     ) -> User | None:
         user = super().authenticate(request, username=username, password=password, **kwargs)
         if not user:

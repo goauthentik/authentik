@@ -1,5 +1,6 @@
 """authentik Kerberos Authentication Backend"""
 
+from typing import Any
 import gssapi
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
@@ -19,11 +20,16 @@ LOGGER = get_logger()
 class KerberosBackend(InbuiltBackend):
     """Authenticate users against Kerberos realm"""
 
-    def authenticate(self, request: HttpRequest, **kwargs):
+    def authenticate(
+        self,
+        request: HttpRequest,
+        username: str | None = None,
+        password: str | None = None,
+        **kwargs: Any,
+    ):
         """Try to authenticate a user via kerberos"""
-        if "password" not in kwargs or "username" not in kwargs:
+        if password is None or username is None:
             return None
-        username = kwargs.pop("username")
         realm = None
         if "@" in username:
             username, realm = username.rsplit("@", 1)
@@ -67,9 +73,7 @@ class KerberosBackend(InbuiltBackend):
             # This means we check with a kinit to see if the Kerberos password has changed
             if self.auth_user_by_kinit(user_source_connection, password):
                 # Password was successful in kinit to Kerberos, so we save it in database
-                if (
-                    user_source_connection.source.kerberossource.password_login_update_internal_password
-                ):
+                if user_source_connection.source.kerberossource.password_login_update_internal_password:
                     LOGGER.debug(
                         "Updating user's password in DB",
                         source=user_source_connection.source,
