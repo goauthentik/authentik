@@ -96,7 +96,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
         this.icon = icon;
         this.iconImage = iconImage || false;
         this.hasIcon = !!icon;
-        this.#setTitle();
     };
 
     //#endregion
