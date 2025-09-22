@@ -1,4 +1,4 @@
-import { renderForm } from "./OAuth2ProviderFormForm.js";
+import { renderOAuth2ProviderForm } from "./OAuth2ProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -95,7 +95,11 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };
-        return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
+        return renderOAuth2ProviderForm({
+            provider: this.instance,
+            showClientSecret: this.showClientSecret,
+            showClientSecretCallback,
+        });
     }
 }
 

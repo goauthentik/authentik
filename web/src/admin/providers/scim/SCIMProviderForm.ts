@@ -1,4 +1,4 @@
-import { renderForm } from "./SCIMProviderFormForm.js";
+import { renderSCIMProviderForm } from "./SCIMProviderFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
 
@@ -29,7 +29,7 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
     }
 
     renderForm() {
-        return renderForm(this.instance ?? {}, []);
+        return renderSCIMProviderForm({ provider: this.instance });
     }
 }
 

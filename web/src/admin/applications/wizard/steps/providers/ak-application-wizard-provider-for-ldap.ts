@@ -5,7 +5,7 @@ import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.j
 import { WithBrandConfig } from "#elements/mixins/branding";
 
 import { ValidationRecord } from "#admin/applications/wizard/types";
-import { renderForm } from "#admin/providers/ldap/LDAPProviderFormForm";
+import { renderLDAPProviderForm } from "#admin/providers/ldap/LDAPProviderFormForm";
 
 import type { LDAPProvider } from "@goauthentik/api";
 
@@ -23,7 +23,7 @@ export class ApplicationWizardLdapProviderForm extends WithBrandConfig(
         return html`
             <ak-wizard-title>${this.label}</ak-wizard-title>
             <form id="providerform" class="pf-c-form pf-m-horizontal" slot="form">
-                ${renderForm(provider ?? {}, errors, this.brand)}
+                ${renderLDAPProviderForm({ provider, errors, brand: this.brand })}
             </form>
         `;
     }
