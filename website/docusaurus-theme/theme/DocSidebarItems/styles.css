@@ -39,7 +39,7 @@
     }
 
     .menu__list .menu__list-item {
-        padding-inline-start: calc(0.5rem + 2px);
+        padding-inline-start: calc(0.2rem);
         margin: 0;
     }
 
@@ -47,7 +47,7 @@
         & > .menu__list .menu__list-item::before {
             content: "";
             position: absolute;
-            inset-inline-start: calc(0.25rem + 2px);
+            inset-inline-start: calc(0.2rem);
             inset-block: 0;
             width: 0.5px;
             background-color: var(--ifm-color-primary-contrast-foreground);
