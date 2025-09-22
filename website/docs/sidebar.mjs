@@ -343,8 +343,6 @@ const items = [
                             "add-secure-apps/outposts/upgrading",
                         ],
                     },
-                    "add-secure-apps/outposts/manual-deploy-docker-compose",
-                    "add-secure-apps/outposts/manual-deploy-kubernetes",
                 ],
             },
         ],
