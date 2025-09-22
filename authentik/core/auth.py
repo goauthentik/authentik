@@ -17,7 +17,7 @@ class InbuiltBackend(ModelBackend):
 
     def authenticate(
         self,
-        request: HttpRequest,
+        request: HttpRequest | None,
         username: str | None = None,
         password: str | None = None,
         **kwargs: Any,
@@ -29,7 +29,11 @@ class InbuiltBackend(ModelBackend):
         return user
 
     async def aauthenticate(
-        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+        self,
+        request: HttpRequest | None,
+        username: str | None,
+        password: str | None,
+        **kwargs: Any,
     ) -> User | None:
         user = await super().aauthenticate(request, username=username, password=password, **kwargs)
         if not user:
