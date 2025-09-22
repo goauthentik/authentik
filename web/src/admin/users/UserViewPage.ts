@@ -8,7 +8,6 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#components/DescriptionList";
-import "#components/ak-page-header";
 import "#components/ak-status-label";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
@@ -35,6 +34,7 @@ import { AKElement } from "#elements/Base";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { Timestamp } from "#elements/table/shared";
 
+import { setPageDetails } from "#components/ak-page-navbar";
 import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
 
 import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
@@ -48,7 +48,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing, TemplateResult } from "lit";
+import { css, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -125,16 +125,6 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             if (!this.user?.pk) return;
             this.userId = this.user?.pk;
         });
-    }
-
-    render() {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-user"
-                header=${msg(str`User ${this.user?.username || ""}`)}
-                description=${this.user?.name || ""}
-            >
-            </ak-page-header>
-            ${this.renderBody()}`;
     }
 
     renderUserCard() {
@@ -395,7 +385,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
         </div>`;
     }
 
-    renderBody() {
+    render() {
         if (!this.user) {
             return nothing;
         }
@@ -516,6 +506,15 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 </ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-user",
+            header: this.user?.username ? msg(str`User ${this.user.username}`) : msg("User"),
+            description: this.user?.name || "",
+        });
     }
 }
 
