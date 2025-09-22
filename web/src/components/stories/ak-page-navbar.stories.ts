@@ -1,4 +1,4 @@
-import "#components/ak-page-header";
+import "#components/ak-page-navbar";
 
 import { DefaultBrand } from "#common/ui/config";
 

@@ -39,16 +39,16 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     //#region Properties
 
     @state()
-    icon?: string;
+    icon?: string | null;
 
     @state()
     iconImage = false;
 
     @state()
-    header?: string;
+    header: string | null = "";
 
     @state()
-    description?: string;
+    description?: string | null;
 
     @state()
     hasIcon = true;
@@ -62,11 +62,13 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     @state()
     protected uiConfig!: UIConfig;
 
+    #controller = new AbortController();
+
     //#endregion
 
     //#region Private Methods
 
-    #setTitle(header?: string) {
+    #setTitle(header?: string | null) {
         const title = this.brandingTitle;
         document.title = match([isAdminRoute(), Boolean(header)])
             .with([true, P.any], () => `${msg("Admin")} - ${title}`)
@@ -87,13 +89,14 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
         this.firstUpdated();
     };
 
-    #onPageDetails = (ev: PageDetailsUpdate) => {
+    #onPageDetails = async (ev: PageDetailsUpdate) => {
         const { header, description, icon, iconImage } = ev.header;
         this.header = header;
         this.description = description;
         this.icon = icon;
         this.iconImage = iconImage || false;
         this.hasIcon = !!icon;
+        this.#setTitle();
     };
 
     //#endregion
@@ -102,13 +105,14 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
 
     public connectedCallback(): void {
         super.connectedCallback();
-        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
-        window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
+        const { signal } = this.#controller;
+        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket, { signal });
+        window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails, { signal });
     }
 
     public disconnectedCallback(): void {
-        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
-        window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
+        this.#controller.abort();
+        this.#controller = new AbortController();
         super.disconnectedCallback();
     }
 

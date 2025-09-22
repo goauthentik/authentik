@@ -47,8 +47,8 @@ const navButtonTemplate = (open: boolean, onClick: () => void) =>
 const contentHeaderTemplate = (
     title: string,
     iconIsImage: boolean,
-    description?: string,
-    icon?: string,
+    description?: string | null,
+    icon?: string | null,
 ) =>
     html` <div class="items primary pf-c-content ${description ? "block-sibling" : ""}">
             <h1 aria-labelledby="page-navbar-heading" class="page-title">

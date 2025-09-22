@@ -143,7 +143,7 @@ export class RoleViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "fa fa-lock",
-            header: msg(str`Role ${this._role?.name || ""}`),
+            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
         });
     }
 }

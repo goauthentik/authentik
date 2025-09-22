@@ -70,11 +70,13 @@ export class SourceViewPage extends AKElement {
 
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
-        setPageDetails({
-            icon: "pf-icon pf-icon-middleware",
-            header: this.source?.name,
-            description: this.source?.verboseName,
-        });
+        if (this.source?.name) {
+            setPageDetails({
+                icon: "pf-icon pf-icon-middleware",
+                header: this.source.name,
+                description: this.source?.verboseName,
+            });
+        }
     }
 }
 
