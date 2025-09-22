@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Generate config for development"""
 
+from typing import Any
+
 from yaml import safe_dump
 
 from authentik.lib.generators import generate_id
 
 
-def generate_local_config():
+def generate_local_config() -> dict[str, Any]:
     """Generate a local development configuration"""
     # TODO: This should be generated and validated against a schema, such as Pydantic.
 

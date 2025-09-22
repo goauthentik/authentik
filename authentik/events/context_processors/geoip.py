@@ -19,10 +19,10 @@ if TYPE_CHECKING:
 class GeoIPDict(TypedDict):
     """GeoIP Details"""
 
-    continent: str
-    country: str
-    lat: float
-    long: float
+    continent: str | None
+    country: str | None
+    lat: float | None
+    long: float | None
     city: str
 
 
@@ -61,7 +61,7 @@ class GeoIPContextProcessor(MMDBContextProcessor):
             except (GeoIP2Error, ValueError):
                 return None
 
-    def city_to_dict(self, city: City | None) -> GeoIPDict:
+    def city_to_dict(self, city: City | None) -> GeoIPDict | dict:
         """Convert City to dict"""
         if not city:
             return {}
