@@ -1,6 +1,7 @@
 """authentik Kerberos Authentication Backend"""
 
 from typing import Any
+
 import gssapi
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
@@ -78,7 +79,9 @@ class KerberosBackend(InbuiltBackend):
             # This means we check with a kinit to see if the Kerberos password has changed
             if self.auth_user_by_kinit(user_source_connection, password):
                 # Password was successful in kinit to Kerberos, so we save it in database
-                if user_source_connection.source.kerberossource.password_login_update_internal_password:
+                if (
+                    user_source_connection.source.kerberossource.password_login_update_internal_password
+                ):
                     LOGGER.debug(
                         "Updating user's password in DB",
                         source=user_source_connection.source,
