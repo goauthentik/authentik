@@ -81,7 +81,7 @@ class TestRecovery(TestCase):
         before_creation = now()
         call_command(
             "create_recovery_key",
-            self.user.username,  # Just the user, duration will use default
+            self.user.username,
             schema=get_public_schema_name(),
             stdout=out,
         )
