@@ -14,7 +14,7 @@ For instructions about creating and binding policies to flows and stages, refer 
 
 ## Standard policies
 
-Following are our standard, out-of-the box policies that you can [create and customize](./working_with_policies.md) as needed.
+The following are our standard, out-of-the box policies that you can [create and customize](./working_with_policies.md) as needed.
 
 ### Event-matcher policy
 
