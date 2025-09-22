@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class ASNDict(TypedDict):
     """ASN Details"""
 
-    asn: int
+    asn: int | None
     as_org: str | None
     network: str | None
 
@@ -60,7 +60,7 @@ class ASNContextProcessor(MMDBContextProcessor):
             except (GeoIP2Error, ValueError):
                 return None
 
-    def asn_to_dict(self, asn: ASN | None) -> ASNDict:
+    def asn_to_dict(self, asn: ASN | None) -> ASNDict | dict:
         """Convert ASN to dict"""
         if not asn:
             return {}
