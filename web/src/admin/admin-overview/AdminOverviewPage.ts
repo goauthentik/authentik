@@ -171,7 +171,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
         super.updated(changed);
         const username = this.user?.user.name || this.user?.user.username;
         setPageDetails({
-            header: this.user ? msg(str`Welcome, ${username || ""}.`) : msg("Welcome."),
+            header: username ? msg(str`Welcome, ${username}`) : msg("Welcome"),
             description: msg("General system status"),
         });
     }

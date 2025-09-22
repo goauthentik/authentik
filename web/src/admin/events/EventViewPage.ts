@@ -141,7 +141,7 @@ export class EventViewPage extends AKElement {
         super.updated(changed);
         setPageDetails({
             icon: "pf-icon pf-icon-catalog",
-            header: this.event ? msg(str`Event ${this.event.pk}`) : msg("Loading"),
+            header: this.event ? msg(str`Event ${this.event.pk}`) : msg("Loading..."),
         });
     }
 }

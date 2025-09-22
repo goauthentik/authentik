@@ -381,9 +381,9 @@ export class ApplicationViewPage extends AKElement {
     updated(changed: PropertyValues<this>) {
         super.updated(changed);
         setPageDetails({
-            header: this.application?.name ?? msg("Loading"),
+            header: this.application?.name ?? msg("Loading application..."),
             description: this.application?.metaPublisher,
-            icon: this.application?.metaIcon ?? undefined,
+            icon: this.application?.metaIcon,
         });
     }
 }

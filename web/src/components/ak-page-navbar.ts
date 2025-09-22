@@ -27,9 +27,9 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface PageHeaderInit {
-    header?: string;
-    description?: string;
-    icon?: string;
+    header?: string | null;
+    description?: string | null;
+    icon?: string | null;
     iconImage?: boolean;
 }
 
@@ -241,16 +241,16 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
     //#region Properties
 
     @state()
-    icon?: string;
+    icon?: string | null = null;
 
     @state()
     iconImage = false;
 
     @state()
-    header?: string;
+    header?: string | null = null;
 
     @state()
-    description?: string;
+    description?: string | null = null;
 
     @state()
     hasIcon = true;
@@ -268,7 +268,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHead
 
     //#region Private Methods
 
-    #setTitle(header?: string) {
+    #setTitle(header?: string | null) {
         let title = this.brandingTitle;
 
         if (isAdminRoute()) {
