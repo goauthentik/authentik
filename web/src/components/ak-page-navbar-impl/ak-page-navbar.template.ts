@@ -89,7 +89,7 @@ const toolbarTemplate = (base: string, uiConfig?: UIConfig, session?: SessionUse
 function navbarTemplate(props: NavbarRenderProps) {
     const { open, logo, onClick, title, base, uiConfig, session, description, icon, iconIsImage } =
         props;
-    return html` <slot><!-- TODO: What is this for? --></slot>
+    return html` <slot><!-- Shows version & license banners if necessary --></slot>
         <div role="banner" aria-label="Main" class="main-content">
             ${brandTemplate(open, logo)}
             <!-- -->
