@@ -145,7 +145,7 @@
         "dompurify": "^3.2.7",
         "esbuild": "^0.25.10",
         "esbuild-plugin-copy": "^2.1.1",
-        "eslint": "^9.35.0",
+        "eslint": "^9.36.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "fuse.js": "^7.1.0",
