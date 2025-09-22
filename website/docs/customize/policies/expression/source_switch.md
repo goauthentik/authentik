@@ -4,7 +4,7 @@ title: Switch which source is used based on email address
 
 You can use an expression policy to determine which [source](../../../../users-sources/sources/) (a set of user credentials and data, stored in authentik, Google, GitHub, etc) is used for a particular user, based on the domain of the email address the user enters when they log in and authenticate.
 
-To switch which source is used for a specific user based on their email domain, you need to 1.  and then 2. bind that policy to the appropriate stage.
+To switch which source is used for a specific user based on their email domain, you need to 1. and then 2. bind that policy to the appropriate stage.
 
 ## 1. Create an expression policy
 
