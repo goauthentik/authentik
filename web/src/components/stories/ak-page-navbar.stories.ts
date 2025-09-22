@@ -1,8 +1,7 @@
-import "#components/ak-page-header";
-
 import { DefaultBrand } from "#common/ui/config";
 
 import { AKPageNavbar } from "#components/ak-page-navbar";
+import "#components/ak-page-navbar";
 
 import { CurrentBrand } from "@goauthentik/api";
 
