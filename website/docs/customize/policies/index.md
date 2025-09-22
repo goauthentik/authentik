@@ -10,7 +10,7 @@ For example, you can create a policy that, for certain users, skips over a stage
 
 ## Create and manage policies
 
-For instructions about creating and binding policies to flows and stages, refer to ["Working with policies](./working_with_policies.md)".
+For instructions about creating and binding policies to flows and stages, refer to [Working with policies](./working_with_policies.md).
 
 ## Standard policies
 
