@@ -1,3 +1,18 @@
+:root {
+    /* Ensures that the scrollbar color retains its visibility. */
+    --ifm-scrollbar-color: hsl(0deg 0% 0% / 20%);
+
+    &[data-theme="dark"] {
+        --ifm-scrollbar-color: hsla(0, 0%, 100%, 0.2);
+    }
+
+    --ifm-menu-link-padding-horizontal: 0.5rem;
+}
+
+.thin-scrollbar {
+    scrollbar-color: var(--ifm-scrollbar-color) transparent;
+}
+
 .theme-doc-sidebar-item-link.theme-doc-sidebar-item-link-level-1.menu__list-item,
 .theme-doc-sidebar-item-category-level-1 {
     font-weight: 600;
@@ -5,30 +20,41 @@
     border-radius: 0;
 }
 
-.theme-doc-sidebar-menu .menu__link {
-    border-radius: 0;
-}
+.theme-doc-sidebar-menu {
+    .menu__link,
+    .menu__caret,
+    .menu__list-item-collapsible {
+        border-radius: 0 !important;
+    }
 
-.theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item {
-    position: relative;
-    padding-left: 0;
-    margin: 0;
-}
+    .menu__list-item {
+        position: relative;
 
-.theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0.5px;
-    background-color: var(--ifm-color-primary-contrast-foreground);
-}
+        &:not(:first-child) {
+            margin-block-start: 0;
+        }
+    }
+    .menu__list .menu__list {
+        margin-block-start: 0;
+    }
 
-[data-theme="light"] .theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item::before {
-    background-color: var(--ifm-color-primary-contrast-foreground);
-}
+    .menu__list .menu__list-item {
+        padding-inline-start: calc(0.5rem + 2px);
+        margin: 0;
+    }
 
-[data-theme="dark"] .theme-doc-sidebar-menu .menu__list .menu__list .menu__list-item::before {
-    background-color: var(--ifm-color-primary);
+    .theme-doc-sidebar-item-category {
+        & > .menu__list .menu__list-item::before {
+            content: "";
+            position: absolute;
+            inset-inline-start: calc(0.25rem + 2px);
+            inset-block: 0;
+            width: 0.5px;
+            background-color: var(--ifm-color-primary-contrast-foreground);
+        }
+
+        &:has(.menu__link--active) {
+            --ifm-color-primary-contrast-foreground: var(--ifm-color-primary);
+        }
+    }
 }
