@@ -57,7 +57,7 @@ func (ms *MemorySearcher) fetch() {
 		Logger:   ms.log,
 	})
 	ms.users = users
-	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true), ak.PaginatorOptions{
+	groups, _ := ak.Paginator(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()).IncludeUsers(true).IncludeChildren(true), ak.PaginatorOptions{
 		PageSize: 100,
 		Logger:   ms.log,
 	})
