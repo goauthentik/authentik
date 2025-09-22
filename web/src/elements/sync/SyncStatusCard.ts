@@ -104,7 +104,7 @@ export class SyncStatusCard extends AKElement {
                             });
                         }}
                     >
-                        <i class="fa fa-sync"></i>
+                        <i class="fa fa-sync" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="pf-c-card__title">${msg("Sync status")}</div>

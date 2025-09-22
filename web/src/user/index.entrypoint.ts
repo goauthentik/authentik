@@ -197,7 +197,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                 <div class="background-wrapper" style="${this.uiConfig.theme.background}">
                     ${(this.uiConfig.theme.background || "") === ""
                         ? html`<div class="background-default-slant"></div>`
-                        : html``}
+                        : nothing}
                 </div>
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">

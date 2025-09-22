@@ -16,6 +16,7 @@ import { PFSize } from "#common/enums";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     ModelEnum,
@@ -27,7 +28,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -53,20 +54,13 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
 export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
-    pageTitle(): string {
-        return msg("Outposts");
-    }
-    pageDescription(): string | undefined {
-        return msg(
-            "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-zone";
-    }
-    searchEnabled(): boolean {
-        return true;
-    }
+    public pageTitle = msg("Outposts");
+    public pageDescription = msg(
+        "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+    );
+
+    public pageIcon = "pf-icon pf-icon-zone";
+    protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
         const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList(
@@ -89,16 +83,14 @@ export class OutpostListPage extends TablePage<Outpost> {
     @state()
     health: { [key: string]: OutpostHealth[] } = {};
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Providers")),
-            new TableColumn(msg("Integration"), "service_connection__name"),
-            new TableColumn(msg("Health and Version")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type"), "type"],
+        [msg("Providers")],
+        [msg("Integration"), "service_connection__name"],
+        [msg("Health and Version")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     static styles: CSSResult[] = [...super.styles, PFDescriptionList];
 
@@ -108,7 +100,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     @property()
     order = "name";
 
-    row(item: Outpost): TemplateResult[] {
+    row(item: Outpost): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
@@ -133,8 +125,8 @@ export class OutpostListPage extends TablePage<Outpost> {
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Outpost")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Outpost")}</span>
                     <ak-outpost-form
                         slot="form"
                         .instancePk=${item.pk}
@@ -143,7 +135,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </ak-outpost-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -158,13 +150,13 @@ export class OutpostListPage extends TablePage<Outpost> {
                               ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 
     renderExpanded(item: Outpost): TemplateResult {
         const [appLabel, modelName] = ModelEnum.AuthentikOutpostsOutpost.split(".");
-        return html`<td role="cell" colspan="7">
+        return html`<td colspan="7">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
                     ${msg(
@@ -243,8 +235,8 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Outpost")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Outpost")}</span>
                 <ak-outpost-form slot="form"> </ak-outpost-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

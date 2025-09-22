@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-04 00:09+0000\n"
+"POT-Creation-Date: 2025-09-17 17:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2961,6 +2961,10 @@ msgstr ""
 msgid "Invalid email"
 msgstr ""
 
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr ""
+
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
 #: authentik/stages/email/templates/email/password_reset.html
 #, python-format
@@ -3495,6 +3499,10 @@ msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
+msgstr ""
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
 msgstr ""
 
 #: authentik/stages/identification/stage.py

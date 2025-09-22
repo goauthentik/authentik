@@ -4,11 +4,12 @@ import "#elements/EmptyState";
 import { formatElapsedTime } from "#common/temporal";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { LogEvent, LogLevelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -45,7 +46,7 @@ export class LogViewer extends Table<LogEvent> {
     }
 
     renderExpanded(item: LogEvent): TemplateResult {
-        return html`<td role="cell" colspan="4">
+        return html`<td colspan="4">
             <div class="pf-c-table__expandable-row-content">
                 <dl class="pf-c-description-list pf-m-horizontal">
                     <div class="pf-c-description-list__group">
@@ -73,18 +74,16 @@ export class LogViewer extends Table<LogEvent> {
         </td>`;
     }
 
-    renderToolbarContainer(): TemplateResult {
-        return html``;
+    renderToolbarContainer(): SlottedTemplateResult {
+        return nothing;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Time")),
-            new TableColumn(msg("Level")),
-            new TableColumn(msg("Event")),
-            new TableColumn(msg("Logger")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Time")],
+        [msg("Level")],
+        [msg("Event")],
+        [msg("Logger")],
+    ];
 
     statusForItem(item: LogEvent): string {
         switch (item.logLevel) {
@@ -100,7 +99,11 @@ export class LogViewer extends Table<LogEvent> {
         }
     }
 
-    row(item: LogEvent): TemplateResult[] {
+    protected override rowLabel(item: LogEvent): string {
+        return formatElapsedTime(item.timestamp);
+    }
+
+    row(item: LogEvent): SlottedTemplateResult[] {
         return [
             html`${formatElapsedTime(item.timestamp)}`,
             html`<ak-status-label

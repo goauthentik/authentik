@@ -360,7 +360,7 @@ export class AKPageNavbar
 
             const icon = this.icon.replaceAll("fa://", "fa ");
 
-            return html`<i class="accent-icon ${icon}"></i>`;
+            return html`<i class="accent-icon ${icon}" aria-hidden="true"></i>`;
         }
         return nothing;
     }

@@ -90,7 +90,7 @@ export abstract class TableModal<T extends object> extends Table<T> {
     /**
      * @abstract
      */
-    protected renderModalInner(): TemplateResult {
+    protected renderModalInner(): SlottedTemplateResult {
         return this.renderTable();
     }
 

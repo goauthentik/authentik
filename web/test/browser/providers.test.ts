@@ -1,5 +1,5 @@
 import { expect, test } from "#e2e";
-import { createRandomName } from "#e2e/utils/generators";
+import { randomName } from "#e2e/utils/generators";
 import { ConsoleLogger } from "#logger/node";
 
 import { IDGenerator } from "@goauthentik/core/id";
@@ -12,7 +12,7 @@ test.describe("Provider Wizard", () => {
 
     test.beforeEach("Configure Providers", async ({ page, session }, { testId }) => {
         const seed = IDGenerator.randomID(6);
-        const providerName = `${createRandomName({ seed })} (${seed})`;
+        const providerName = `${randomName(seed)} (${seed})`;
 
         providerNames.set(testId, providerName);
 
@@ -51,7 +51,7 @@ test.describe("Provider Wizard", () => {
         const providerName = providerNames.get(testId)!;
 
         const $provider = await test.step("Find provider via search", async () => {
-            const searchInput = page.getByRole("search").getByPlaceholder("Search for providers");
+            const searchInput = page.getByLabel("Provider Search");
 
             await searchInput.fill(providerName);
 

@@ -95,7 +95,7 @@ export const GroupedAndEz = () => {
     const config: ISearchSelectApi<Sample> = {
         fetchObjects: getSamples,
         renderElement: (sample: Sample) => sample.name,
-        value: (sample: Sample | undefined) => sample?.pk ?? "",
+        value: (sample: Sample | null) => sample?.pk ?? "",
         groupBy: (samples: Sample[]) =>
             groupBy(samples, (sample: Sample) => sample.season[0] ?? ""),
     };
