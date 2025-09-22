@@ -5,6 +5,7 @@ from typing import Any
 
 from django.db.models import Q
 from ldap3 import SUBTREE
+from ldap3.utils.conv import escape_filter_chars
 
 from authentik.core.models import Group, User
 from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
@@ -52,7 +53,8 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         for group in page_data:
             if self._source.lookup_groups_from_user:
                 group_dn = group.get("dn", {})
-                group_filter = f"({self._source.group_membership_field}={group_dn})"
+                escaped_dn = escape_filter_chars(group_dn)
+                group_filter = f"({self._source.group_membership_field}={escaped_dn})"
                 group_members = self._source.connection().extend.standard.paged_search(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,

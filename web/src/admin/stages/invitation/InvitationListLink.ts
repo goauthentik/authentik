@@ -5,7 +5,7 @@ import { AKElement } from "#elements/Base";
 import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -63,7 +63,7 @@ export class InvitationListLink extends AKElement {
                                     return stages.results.map((stage) => {
                                         return stage.flowSet?.map((flow) => {
                                             if (seenFlowSlugs.includes(flow.slug)) {
-                                                return html``;
+                                                return nothing;
                                             }
                                             seenFlowSlugs.push(flow.slug);
                                             return html`<option
@@ -85,7 +85,7 @@ export class InvitationListLink extends AKElement {
 
     render(): TemplateResult {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
-            ${this.invitation?.flow === undefined ? this.renderFlowSelector() : html``}
+            ${this.invitation?.flow === undefined ? this.renderFlowSelector() : nothing}
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
                     <span class="pf-c-description-list__text"

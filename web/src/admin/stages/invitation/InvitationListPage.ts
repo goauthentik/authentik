@@ -12,6 +12,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     FlowDesignationEnum,
@@ -21,7 +22,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, HTMLTemplateResult, TemplateResult } from "lit";
+import { CSSResult, html, HTMLTemplateResult, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -31,20 +32,12 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 export class InvitationListPage extends TablePage<Invitation> {
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Invitations");
-    }
-    pageDescription(): string {
-        return msg(
-            "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
-        );
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-migration";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Invitations");
+    public pageDescription = msg(
+        "Create Invitation Links to enroll Users, and optionally force specific attributes of their account.",
+    );
+    public pageIcon = "pf-icon pf-icon-migration";
 
     static styles: CSSResult[] = [...super.styles, PFBanner];
 
@@ -84,14 +77,12 @@ export class InvitationListPage extends TablePage<Invitation> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Created by"), "created_by"),
-            new TableColumn(msg("Expiry")),
-            new TableColumn(msg("Actions")),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Created by"), "created_by"],
+        [msg("Expiry")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -115,7 +106,7 @@ export class InvitationListPage extends TablePage<Invitation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Invitation): TemplateResult[] {
+    row(item: Invitation): SlottedTemplateResult[] {
         return [
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows
@@ -126,16 +117,16 @@ export class InvitationListPage extends TablePage<Invitation> {
                               )}
                           </ak-label>
                       `
-                    : html``}`,
+                    : nothing}`,
             html`${item.createdBy?.username}`,
             html`${item.expires?.toLocaleString() || msg("-")}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update Invitation")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Invitation")}</span>
                     <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -148,7 +139,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     renderExpanded(item: Invitation): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-stage-invitation-list-link
                         .invitation=${item}
@@ -163,8 +154,8 @@ export class InvitationListPage extends TablePage<Invitation> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Invitation")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Invitation")}</span>
                 <ak-invitation-form slot="form"> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
@@ -173,13 +164,13 @@ export class InvitationListPage extends TablePage<Invitation> {
 
     render(): HTMLTemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
+                icon=${this.pageIcon}
+                header=${this.pageTitle}
+                description=${ifDefined(this.pageDescription)}
             >
             </ak-page-header>
             ${this.invitationStageExists
-                ? html``
+                ? nothing
                 : html`
                       <div class="pf-c-banner pf-m-warning">
                           ${msg(

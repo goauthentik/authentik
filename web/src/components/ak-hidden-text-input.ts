@@ -6,18 +6,19 @@ import {
     HorizontalLightComponentProps,
 } from "./HorizontalLightComponent.js";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &
     Pick<VisibilityToggleProps, "showMessage" | "hideMessage">;
 
 export interface AkHiddenTextInputProps extends BaseProps {
     revealed: boolean;
-    placeholder?: string;
+    placeholder: string | null;
 }
 
 export type InputLike = HTMLTextAreaElement | HTMLInputElement;
@@ -70,16 +71,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      * @attribute
      */
     @property({ type: String })
-    public placeholder?: string;
-
-    /**
-     * Text for when the input has no set value
-     *
-     * @property
-     * @attribute
-     */
-    @property({ type: String })
-    public label?: string;
+    public placeholder: string | null = null;
 
     /**
      * Specify kind of help the browser should try to provide
@@ -114,12 +106,12 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     protected renderInputField(setValue: InputListener, code: boolean) {
         return html` <input
             part="input"
-            autocomplete=${ifDefined(this.autocomplete)}
+            autocomplete=${ifPresent(this.autocomplete)}
             type=${this.revealed ? "text" : "password"}
-            aria-label=${ifDefined(this.label)}
+            aria-label=${ifPresent(this.label)}
             @input=${setValue}
-            value=${ifDefined(this.value)}
-            placeholder=${ifDefined(this.placeholder)}
+            value=${ifPresent(this.value)}
+            placeholder=${ifPresent(this.placeholder)}
             class="${classMap({
                 "pf-c-form-control": true,
                 "pf-m-monospace": code,

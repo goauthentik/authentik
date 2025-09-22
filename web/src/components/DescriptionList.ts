@@ -1,10 +1,14 @@
+import { SlottedTemplateResult } from "#elements/types";
+
 import { html, nothing, TemplateResult } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
-export type DescriptionDesc = string | TemplateResult | undefined | typeof nothing;
-export type DescriptionPair = [string, DescriptionDesc];
-export type DescriptionRecord = { term: string; desc: DescriptionDesc };
+export type DescriptionPair = [
+    term: SlottedTemplateResult,
+    desc: SlottedTemplateResult | undefined,
+];
+export type DescriptionRecord = { term: string; desc: SlottedTemplateResult | undefined };
 
 interface DescriptionConfig {
     horizontal?: boolean;

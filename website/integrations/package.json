@@ -19,14 +19,14 @@
         "@docusaurus/theme-mermaid": "^3.8.1",
         "@docusaurus/tsconfig": "^3.8.1",
         "@docusaurus/types": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.1.1",
+        "@goauthentik/docusaurus-config": "^2.1.2",
         "@goauthentik/docusaurus-theme": "*",
-        "@mdx-js/react": "^3.0.0",
-        "@types/react": "^19.1.8",
-        "@types/react-dom": "^19.1.6",
+        "@mdx-js/react": "^3.1.1",
+        "@types/react": "^19.1.13",
+        "@types/react-dom": "^19.1.9",
         "prism-react-renderer": "^2.3.0",
-        "react": "^19.1.0",
-        "react-dom": "^19.1.0"
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1"
     },
     "engines": {
         "node": ">=24"

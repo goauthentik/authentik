@@ -1,6 +1,11 @@
 ---
 title: Entra ID
 support_level: community
+tags:
+    - source
+    - entra
+    - azure
+    - active-directory
 ---
 
 ## Preparation
@@ -70,6 +75,10 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 When group membership information is synced from Entra ID, authentik creates all groups that a user is a member of.
 :::
 
+:::note
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+:::
+
 ### Machine-to-machine authentication :ak-version[2024.12]
 
 If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
@@ -88,7 +97,3 @@ client_secret=<application_client_secret>
 ```
 
 The JWT returned from the request above can be used in authentik and exchanged for an authentik JWT.
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
-:::

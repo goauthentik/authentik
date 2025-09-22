@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { RbacApi, Role } from "@goauthentik/api";
 
@@ -20,18 +21,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RoleListPage extends TablePage<Role> {
     checkbox = true;
     clearOnRefresh = true;
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Roles");
-    }
-    pageDescription(): string {
-        return msg("Manage roles which grant permissions to objects within authentik.");
-    }
-    pageIcon(): string {
-        return "fa fa-lock";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Roles");
+    public pageDescription = msg(
+        "Manage roles which grant permissions to objects within authentik.",
+    );
+    public pageIcon = "fa fa-lock";
 
     @property()
     order = "name";
@@ -40,9 +35,11 @@ export class RoleListPage extends TablePage<Role> {
         return new RbacApi(DEFAULT_CONFIG).rbacRolesList(await this.defaultEndpointConfig());
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name"), "name"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -68,9 +65,9 @@ export class RoleListPage extends TablePage<Role> {
 
     render(): HTMLTemplateResult {
         return html`<ak-page-header
-                icon=${this.pageIcon()}
-                header=${this.pageTitle()}
-                description=${ifDefined(this.pageDescription())}
+                icon=${this.pageIcon}
+                header=${this.pageTitle}
+                description=${ifDefined(this.pageDescription)}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
@@ -78,16 +75,16 @@ export class RoleListPage extends TablePage<Role> {
             </section>`;
     }
 
-    row(item: Role): TemplateResult[] {
+    row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Role")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Role")}</span>
                 <ak-role-form slot="form" .instancePk=${item.pk}> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
@@ -97,8 +94,8 @@ export class RoleListPage extends TablePage<Role> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Role")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Role")}</span>
                 <ak-role-form slot="form"> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>

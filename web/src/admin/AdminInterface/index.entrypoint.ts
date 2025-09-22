@@ -31,7 +31,6 @@ import { ROUTES } from "#admin/Routes";
 
 import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -218,8 +217,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                                 <div class="pf-c-drawer__body">
                                     <div class="pf-c-page__main">
                                         <ak-router-outlet
-                                            role="main"
-                                            aria-label="${msg("Main content")}"
+                                            role="presentation"
                                             class="pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"

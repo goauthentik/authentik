@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-11 00:12+0000\n"
+"POT-Creation-Date: 2025-09-17 17:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +152,10 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
 #: authentik/core/models.py
 msgid "name"
 msgstr ""
@@ -206,11 +210,11 @@ msgstr ""
 msgid "Can impersonate other users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can assign permissions to users"
 msgstr ""
 
-#: authentik/core/models.py authentik/rbac/models.py
+#: authentik/core/models.py
 msgid "Can unassign permissions from users"
 msgstr ""
 
@@ -792,6 +796,12 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
 "Customize the body of the request. Mapping should return data that is JSON-"
 "serializable."
 msgstr ""
@@ -800,12 +810,6 @@ msgstr ""
 msgid ""
 "Configure additional headers to be sent. Mapping should return a dictionary "
 "of key-value pairs"
-msgstr ""
-
-#: authentik/events/models.py
-msgid ""
-"Only send notification once, for example when sending a webhook into a chat "
-"channel."
 msgstr ""
 
 #: authentik/events/models.py
@@ -2200,6 +2204,14 @@ msgid "Roles"
 msgstr ""
 
 #: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
+msgstr ""
+
+#: authentik/rbac/models.py
 msgid "Initial Permissions"
 msgstr ""
 
@@ -2906,10 +2918,6 @@ msgid "Duo Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
-msgid "Email OTP"
-msgstr ""
-
-#: authentik/stages/authenticator_email/models.py
 #: authentik/stages/email/models.py
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
@@ -2951,6 +2959,10 @@ msgstr ""
 
 #: authentik/stages/authenticator_email/stage.py
 msgid "Invalid email"
+msgstr ""
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
 msgstr ""
 
 #: authentik/stages/authenticator_email/templates/email/email_otp.html
@@ -3270,6 +3282,14 @@ msgid "Account Confirmation"
 msgstr ""
 
 #: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr ""
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr ""
+
+#: authentik/stages/email/models.py
 msgid ""
 "The time window used to count recent account recovery attempts. If the "
 "number of attempts exceed recovery_max_attempts within this period, further "
@@ -3479,6 +3499,10 @@ msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Identification Stages"
+msgstr ""
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
 msgstr ""
 
 #: authentik/stages/identification/stage.py

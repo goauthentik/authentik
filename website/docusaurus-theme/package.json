@@ -11,8 +11,11 @@
         "./config": "./config.js",
         "./remark": "./remark/index.mjs",
         "./components/*": "./components/*",
+        "./redirects/plugin": "./redirects/plugin.mjs",
+        "./redirects/node": "./redirects/node.mjs",
+        "./redirects": "./redirects/index.mjs",
         "./releases/plugin": "./releases/plugin.mjs",
-        "./releases/utils": "./releases/utils.mjs"
+        "./releases/node": "./releases/node.mjs"
     },
     "imports": {
         "#remark": "./remark/index.mjs",
@@ -23,8 +26,8 @@
     },
     "dependencies": {
         "@docusaurus/preset-classic": "^3.8.1",
-        "@goauthentik/docusaurus-config": "^2.1.1",
-        "@types/semver": "^7.7.0",
+        "@goauthentik/docusaurus-config": "^2.1.2",
+        "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",
         "remark-directive": "^4.0.0",

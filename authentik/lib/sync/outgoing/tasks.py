@@ -20,6 +20,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     TransientSyncException,
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.tasks.models import Task
 
@@ -164,16 +165,17 @@ class SyncTasks:
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 task.warning(
-                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to error: {str(exc)}",
+                    f"Failed to sync {str(obj)} due to error: {str(exc)}",
                     arguments=exc.args[1:],
                     obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
-                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to "
-                    "transient error: {str(exc)}",
+                    f"Failed to sync {str(obj)} due to " f"transient error: {str(exc)}",
                     obj=sanitize_item(obj),
+                    exception=exception_to_dict(exc),
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)

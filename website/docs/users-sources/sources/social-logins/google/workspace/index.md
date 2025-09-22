@@ -135,7 +135,7 @@ Start by logging into your authentik instance as an administrator and navigating
 
 ### Create a Federation Source
 
-In the Admin interface, navigate to **Directory -> Federation & Social login** and press **Create**.
+In the Admin interface, navigate to **Directory > Federation & Social login** and press **Create**.
 
 In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
 
@@ -147,6 +147,10 @@ In the **New source** box, choose **SAML Source** and continue by filling in the
 :::info{title="Choosing a slug"}
 Your choice of `slug` should match the ACS URL you provided to Google Workspace.
 You can choose a different slug, but you will need to update the ACS URL in Google Workspace to match.
+:::
+
+:::note
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
 :::
 
 #### Protocol settings
@@ -186,7 +190,7 @@ Confirm that the entity ID (AKA "Issuer") matches the value you've provided both
 
 ### `403 app_not_enabled_for_user`
 
-In the Google Workspace Admin Console, go to **Menu -> Apps -> Web and mobile apps**.
+In the Google Workspace Admin Console, go to **Menu > Apps > Web and mobile apps**.
 
 1. In the application list, locate the SAML app generating the error.
 2. Click the application to open its Settings page.
@@ -202,7 +206,3 @@ This may take a few minutes to propagate, so try logging in again after a short 
 - [Setting up SAML with Google Workspace](https://support.google.com/a/answer/6087519)
 - [SAML app error messages](https://support.google.com/a/answer/6301076)
 - [SAML authentication flow](https://infosec.mozilla.org/guidelines/iam/saml.html)
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
-:::

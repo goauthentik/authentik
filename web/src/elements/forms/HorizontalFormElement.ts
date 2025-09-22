@@ -70,7 +70,20 @@ export class HorizontalFormElement extends AKElement {
 
     //#endregion
 
-    public controlledElement: NamedElement | AkControlElement | null = null;
+    #controlledElement: AkControlElement | NamedElement | null = null;
+
+    /**
+     * The element that should be focused when the form is submitted.
+     */
+    public get focusTarget(): AkControlElement | NamedElement<HTMLElement> | null {
+        if (!(this.#controlledElement instanceof HTMLElement)) {
+            return null;
+        }
+
+        if (!this.#controlledElement.checkVisibility()) return null;
+
+        return this.#controlledElement;
+    }
 
     //#region Lifecycle
 
@@ -79,8 +92,8 @@ export class HorizontalFormElement extends AKElement {
     }
 
     public override updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("errorMessages") && this.controlledElement) {
-            this.controlledElement.setAttribute(
+        if (changedProperties.has("errorMessages") && this.#controlledElement) {
+            this.#controlledElement.setAttribute(
                 "aria-invalid",
                 this.errorMessages?.length ? "true" : "false",
             );
@@ -99,12 +112,13 @@ export class HorizontalFormElement extends AKElement {
         for (const element of this.querySelectorAll("*")) {
             // Is this element capable of being named?
             if (!isControlElement(element) && !isNameableElement(element)) continue;
-            // And does the element already match the name?
-            if (element.getAttribute("name") === this.name) continue;
 
-            element.setAttribute("name", this.name);
+            this.#controlledElement = element;
 
-            this.controlledElement = element;
+            if (element.getAttribute("name") !== this.name) {
+                element.setAttribute("name", this.name);
+            }
+
             break;
         }
     }
@@ -116,7 +130,7 @@ export class HorizontalFormElement extends AKElement {
     render(): TemplateResult {
         this.#synchronizeAttributes();
 
-        return html`<div class="pf-c-form__group" role="group">
+        return html`<div class="pf-c-form__group">
             <div class="pf-c-form__group-label">
                 ${this.label
                     ? html`

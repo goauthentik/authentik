@@ -175,7 +175,7 @@ export class AkDualSelectAvailablePane extends CustomEmitterElement<DualSelectEv
                                             ><span>${label}</span>${this.selected.has(key)
                                                 ? html`<span
                                                       class="pf-c-dual-list-selector__item-text-selected-indicator"
-                                                      ><i class="fa fa-check"></i
+                                                      ><i class="fa fa-check" aria-hidden="true"></i
                                                   ></span>`
                                                 : nothing}</span
                                         ></span

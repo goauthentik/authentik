@@ -3,21 +3,15 @@ title: Release 2025.8
 slug: "/releases/2025.8"
 ---
 
-:::::note
-2025.8 has not been released yet! We're publishing these release notes as a preview of what's to come, and for our awesome beta testers trying out release candidates.
-
-To try out the release candidate, replace your Docker image tag with the latest release candidate number, such as 2025.8.0-rc1. You can find the latest one in [the latest releases on GitHub](https://github.com/goauthentik/authentik/releases). If you don't find any, it means we haven't released one yet.
-:::::
-
 ## Highlights
 
-- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated.
+- **OAuth2/OpenID Connect back-channel logout**: :ak-preview A server-to-server notification mechanism that allows authentik to notify OAuth2/OpenID providers whenever a user's session is terminated. Learn [more](../../add-secure-apps/providers/oauth2/backchannel-logout.mdx).
 
 - **Event map**: :ak-enterprise View geolocation of user events on a map.
 
 ![Screenshot of the admin interface showing events plotted on a histogram chart and on a map](../../sys-mgmt/events/event-map-chart.png)
 
-- **Advanced search**: :ak-enterprise Search for users and events with custom query language to filter on their properties and attributes.
+- **Advanced search**: :ak-enterprise Search for [users](../../users-sources/user/user_basic_operations.md#tell-me-more) and [event logs](../../sys-mgmt/events/logging-events.md#tell-me-more) with custom query language to filter on their properties and attributes.
 
 - **Email stage rate limiting**: The email stage can now be configured to set a maximum number of emails that can be sent within a specified time period.
 
@@ -34,7 +28,7 @@ For instances with a high level of traffic, such as many users logging in, many 
 To prevent losing tasks during the upgrade, instances with a high level of traffic should follow these instructions:
 
 1. Start by upgrading the authentik server.
-2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-ugpraded worker container:
+2. Inspect the old version task queue to check that all tasks are done. Execute the following commands in the not-yet-upgraded worker container:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
@@ -118,6 +112,26 @@ Instead, the following metrics are now available:
 - `authentik_tasks_delayed_in_progress`
 - `authentik_tasks_duration_milliseconds`
 
+### Prometheus metrics
+
+The tasks metrics are no longer exposed by the server, but by the worker. For Helm chart users, add the following values to enable a `ServiceMonitor` to scrape those metrics:
+
+```yaml
+worker:
+    metrics:
+        enabled: true
+        serviceMonitor:
+            enabled: true
+```
+
+### Helm chart changes
+
+Due to [Bitnami upcoming changes](https://github.com/bitnami/containers/issues/83267) to availability of their container images, the Helm chart default values have been updated to instead use [docker.io/library/postgres](https://hub.docker.com/_/postgres) and [docker.io/library/redis](https://hub.docker.com/_/redis). If you are setting custom values for either PostgreSQL or Redis, please review the [associated Helm chart changes](https://github.com/goauthentik/helm/pull/385) to update your values.
+
+Redis has also been updated from 8.0 to 8.2.
+
+From this point on, we recommend using the bundled PostgreSQL dependency for demonstration and test purposes only. See our [installation documentation](../../install-config/install/kubernetes.md) for alternatives to run PostgreSQL in a production environment.
+
 ## New features and improvements
 
 - **LDAP Provider improvements**:
@@ -132,13 +146,14 @@ Instead, the following metrics are now available:
 
 ## New integration guides
 
-An integration is a how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added.
 
 - [1Password](https://integrations.goauthentik.io/security/1password/)
 - [Bitwarden](https://integrations.goauthentik.io/security/bitwarden/)
 - [Papra](https://integrations.goauthentik.io/documentation/papra/)
 - [Planka](https://integrations.goauthentik.io/chat-communication-collaboration/planka/)
 - [Seafile](https://integrations.goauthentik.io/media/seafile/)
+- [Vaultwarden](https://integrations.goauthentik.io/security/vaultwarden/)
 - [Zoho](https://integrations.goauthentik.io/platforms/zoho/)
 
 ## Upgrading
@@ -146,7 +161,7 @@ An integration is a how authentik connects to third-party applications, director
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
 
 :::warning
-When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
 :::
 
 ### Docker Compose
@@ -180,8 +195,10 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - blueprints: add JSON tag to parse JSON from string (#15235)
 - blueprints: add section support for organisation (#15045)
 - blueprints: sort schema items (#15022)
+- brands: revert sort matched brand by match length (revert #15413) (cherry-pick #16233) (#16235)
 - brands: sort matched brand by match length (#15413)
 - core, providers/ldap: add parent/child groups to api and ldap results (#14974)
+- core: Add email template selector (cherry-pick #16170) (#16225)
 - core: Prevent application creation with reserved slugs (#15930)
 - core: add updated_at field to user (#15571)
 - core: better API validation for JSON fields (#15236)
@@ -215,6 +232,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - packages/django-dramatiq-postgres: broker: remember previously fetched notifies (#16128)
 - packages/django-dramatiq-postgres: fix typo (#15932)
 - packages/django-dramatiq-postgres: run worker in the same base process, use structlog (#16061)
+- policies/password: Fix amount_uppercase in password policy check (cherry-pick #16197) (#16228)
 - policies/reputation: fix updated for reputation not updating (#15782)
 - policies: Optimize policy checking for static bindings (#14957)
 - policies: buffered policy access view for concurrent authorization attempts when unauthenticated (#15034)
@@ -234,6 +252,9 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - root: add system check for database encoding (#15186)
 - root: enhance custom middleware experience (#15919)
 - root: extract custom setup code (#15150)
+- root: fix custom packages installation in docker (cherry-pick #16150) (#16151)
+- root: fix custom packages installation in docker (cherry-pick #16157) (#16158)
+- root: fix missing uv run in makefile (#16146)
 - root: fix some cases of invalid data triggering exceptions (#14799)
 - root: monitoring: force db connection reload before healthcheck (#9970)
 - root: remove /if/help (#14929)
@@ -253,6 +274,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - stages/prompt: fix list policy for prompt validation failing with multiple policies (#15522)
 - stages/user_login: unknown device (#14459)
 - tasks/schedules: fix IntegrityError on schedule update (#15871)
+- tasks: add sentry dramatiq integration (cherry-pick #16167) (#16183)
 - tasks: fix rel_obj being removed when task is retried (#15862)
 - tests/e2e: WebAuthn E2E tests (#14461)
 - web/a11y -- ak-form-group (#15688)
@@ -262,10 +284,12 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web/a11y: Form Inputs (#15878)
 - web/a11y: License notice ARIA attributes. (#15872)
 - web/a11y: Navigation Banner (#15880)
+- web/a11y: QL Search Input (cherry-pick #16198) (#16229)
 - web/a11y: Tables & Modals (#15877)
 - web/admin: Text and Textarea Fields that "hide" their contents until prompted (#15024)
 - web/admin: adopt ak-hidden-text (#15042)
 - web/admin: fix language in certificate import (#14953)
+- web/admin: fix settings saving (cherry-pick #16184) (#16187)
 - web/admin: fix variable name (#15934)
 - web/admin: hide webhook URL by default (#15136)
 - web/admin: improve admin UI for tasks slightly (#15829)
@@ -298,6 +322,7 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: Clean up file methods. (#15479)
 - web: Consistent use of static styles (#15510)
 - web: Disable autocomplete. (#15551)
+- web: Fix ak-flow-card footer alignment. (cherry-pick #16236) (#16238)
 - web: Fix cursor using pointer in modals. (#16009)
 - web: Fix dangling div. (#15478)
 - web: Fix form captcha submission (#15482)
@@ -327,6 +352,50 @@ helm upgrade authentik authentik/authentik -f values.yaml --version ^2025.8
 - web: providers/rac: Fix wizard confirmation (#16013)
 - web: remove mdx and fix references to `@goauthentik/elements` (#15694)
 - web: rework storybook for flow components and to make the design consistent (#15415)
+
+## Fixed in 2025.8.1
+
+- \*: Fix dead doc link (cherry-pick #16288) (#16297)
+- core: use email backend for test_email management command (cherry-pick #16311) (#16337)
+- lifecycle: set PROMETHEUS_MULTIPROC_DIR as early as possible (cherry-pick #16298) (#16302)
+- outposts: allow ingress path type configuration (cherry-pick #16339) (#16341)
+- outposts: fix service connection update task arguments (cherry-pick #16312) (#16313)
+- packages/django-dramatiq-postgres: broker: fix various timing issues (cherry-pick #16340) (#16342)
+- packages/django-dramatiq-postgres: middleware: fix listening on hosts where ipv6 is not supported (cherry-pick #16308) (#16305)
+- providers/oauth2: fix logout token missing sid, fix wrong sub mode used (cherry-pick #16295) (#16299)
+- web: Fix form group slots (cherry-pick #16276) (#16277)
+- web: Fix hidden textarea required attribute. (cherry-pick #16168) (#16275)
+- web: Fix issue where clicking a list item scrolls container (cherry-pick #16174) (#16278)
+- web: Improvements to ReCaptcha resizing (cherry-pick #16171) (#16281)
+- web: Username truncation, field alignment. (cherry-pick #16283) (#16284)
+- web: fix "Explore integrations" link in Quick actions (cherry-pick #16274) (#16285)
+
+## Fixed in 2025.8.2
+
+- core: bump django from 5.1.11 to v5.1.12 (cherry-pick #16584) (#16591)
+- core: bump h2 from 4.2.0 to 4.3.0 (cherry-pick #16446) (#16449)
+- core: fix client-side only validation allowing admin to set blank user password (cherry-pick #16467) (#16469)
+- lib/logging: only show locals when in debug mode (cherry-pick #16772) #16774
+- lib/sync/outgoing: fix single object sync timeout (cherry-pick #16447) (#16453)
+- lib/sync: fix missing f for string (cherry-pick #16423) (#16427)
+- lifecycle: fix PROMETHEUS_MULTIPROC_DIR missing suffix (cherry-pick #16401) (#16407)
+- policies: remove object pk from authentik_policies_execution_time to reduce cardinality (cherry-pick #16500) (#16501)
+- providers/oauth2: add missing exp claim for logout token (cherry-pick #16593) (#16598)
+- providers/oauth2: avoid deadlock during session migration (cherry-pick #16361) (#16364)
+- providers/rac: fix AuthenticatedSession migration (cherry-pick #16400) (#16419)
+- providers/scim: improve error message when object fails to sync (cherry-pick #16625) (#16643)
+- sources/ldap: fix malformed filter error with special characters in group DN (cherry-pick #16243) (#16585)
+- sources/oauth/entra_id: do not assume group_id comes from entra (cherry-pick #16456) (#16777)
+- tasks/schedules: fix api search fields (cherry-pick #16405) (#16410)
+- tasks: fix status and healthcheck breaking with connection issues (cherry-pick #16504) (#16673)
+- web/flows: only disable login button when interactive captcha is configured and not loaded (cherry-pick #16586) (#16590)
+
+## Fixed in 2025.8.3
+
+- lifecycle: fix permission error when running worker as root (cherry-pick #16735) (#16784)
+- stages/email_authenticator: Fix email mfa loop (cherry-pick #16579) (#16807)
+- website/docs: fix docker tabs not rendering properly (cherry-pick #16799) (#16802)
+- website/docs: update create oauth provider page (cherry-pick #16617) (#16806)
 
 ## API Changes
 
@@ -546,6 +615,10 @@ Changed response : **200 OK**
 
 - Changed content type : `application/json`
     - Changed property `attributes` (object -> object)
+
+##### `POST` /core/users/&#123;id&#125;/recovery/
+
+##### `POST` /core/users/&#123;id&#125;/recovery_email/
 
 ##### `GET` /events/events/volume/
 
@@ -1914,6 +1987,55 @@ Changed response : **200 OK**
             > Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
 
         * Deleted property `group_obj` (object)
+
+##### `GET` /events/transports/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `PUT` /events/transports/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
+##### `PATCH` /events/transports/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
 
 ##### `POST` /managed/blueprints/
 
@@ -3676,6 +3798,25 @@ Changed response : **200 OK**
 
         - Changed property `brand` (object -> object)
 
+##### `POST` /events/transports/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `email_subject_prefix` (string)
+
+- Added property `email_template` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `email_subject_prefix` (string)
+
+    - Added property `email_template` (string)
+
 ##### `GET` /events/transports/
 
 ###### Return Type:
@@ -3687,6 +3828,13 @@ Changed response : **200 OK**
     New required properties:
     - `autocomplete`
     * Added property `autocomplete` (object)
+
+    * Changed property `results` (array)
+
+        Changed items (object): > NotificationTransport Serializer
+        - Added property `email_subject_prefix` (string)
+
+        - Added property `email_template` (string)
 
 ##### `GET` /flows/instances/
 
