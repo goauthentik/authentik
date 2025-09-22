@@ -243,7 +243,19 @@ export abstract class SearchSelectBase<T>
 
             return;
         }
-        const selected = this.objects?.find((obj) => this.value(obj) === value) || null;
+        const selected =
+            this.objects?.find((obj) => {
+                // TODO: Despite the return of `value()` being a string,
+                // a lack of type on the property can lead to non-string returns,
+                // a common occurrence in the user primary keys.
+                //
+                // We fix this by forcing a string cast here.
+                // Remove this after migrating to Lit JSX.
+
+                const serialized = `${this.value(obj)}`;
+
+                return serialized && serialized === value;
+            }) || null;
 
         if (!selected) {
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
