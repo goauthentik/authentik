@@ -218,7 +218,7 @@ export class GroupViewPage extends AKElement {
         setPageDetails({
             icon: "pf-icon pf-icon-users",
             header: this.group?.name ? msg(str`Group ${this.group.name}`) : msg("Group"),
-            description: this.group?.name || "",
+            description: this.group?.name,
         });
     }
 }
