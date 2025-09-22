@@ -2,21 +2,28 @@
 
 import gc
 
+from django.db import reset_queries
 from django.db.models import QuerySet
 
 
-def qs_batch_iter(qs: QuerySet, batch_size: int = 10_000, gc_collect: bool = True):
-    pk_iter = qs.values_list("pk", flat=True).order_by("pk").distinct().iterator()
-    eof = False
-    while not eof:
-        pk_buffer = []
-        i = 0
-        try:
-            while i < batch_size:
-                pk_buffer.append(pk_iter.next())
-                i += 1
-        except StopIteration:
-            eof = True
-        yield from qs.filter(pk__in=pk_buffer).order_by("pk").iterator()
-        if gc_collect:
-            gc.collect()
+def chunked_queryset(queryset: QuerySet, chunk_size: int = 1_000):
+    if not queryset.exists():
+        return []
+
+    def get_chunks(qs: QuerySet):
+        qs = qs.order_by("pk")
+        pks = qs.values_list("pk", flat=True)
+        start_pk = pks[0]
+        while True:
+            try:
+                end_pk = pks.filter(pk__gte=start_pk)[chunk_size]
+            except IndexError:
+                break
+            yield qs.filter(pk__gte=start_pk, pk__lt=end_pk)
+            start_pk = end_pk
+        yield qs.filter(pk__gte=start_pk)
+
+    for chunk in get_chunks(queryset):
+        reset_queries()
+        gc.collect()
+        yield from chunk.iterator()
