@@ -6,20 +6,22 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
 import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowStageBinding,
     InvalidResponseActionEnum,
-    PolicyEngineMode,
     Stage,
     StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
@@ -74,9 +76,9 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         return Math.max(...orders) + 1;
     }
 
-    renderTarget(): TemplateResult {
+    renderTarget(): SlottedTemplateResult {
         if (this.instance?.target || this.targetPk) {
-            return html``;
+            return nothing;
         }
         return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
@@ -202,22 +204,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 required
                 name="policyEngineMode"
             >
-                <ak-radio
-                    .options=${[
-                        {
-                            label: "any",
-                            value: PolicyEngineMode.Any,
-                            default: true,
-                            description: html`${msg("Any policy must match to grant access")}`,
-                        },
-                        {
-                            label: "all",
-                            value: PolicyEngineMode.All,
-                            description: html`${msg("All policies must match to grant access")}`,
-                        },
-                    ]}
-                    .value=${this.instance?.policyEngineMode}
-                >
+                <ak-radio .options=${policyEngineModes} .value=${this.instance?.policyEngineMode}>
                 </ak-radio>
             </ak-form-element-horizontal>`;
     }

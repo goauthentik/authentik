@@ -15,6 +15,9 @@ export const DefaultBrand = {
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
     defaultLocale: "",
+    flags: {
+        policiesBufferedAccessView: false,
+    },
 } as const satisfies CurrentBrand;
 
 export enum UserDisplay {

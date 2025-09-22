@@ -85,8 +85,8 @@ export class RoleViewPage extends AKElement {
     renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update Role")} </span>
+                <span slot="submit">${msg("Update")}</span>
+                <span slot="header">${msg("Update Role")}</span>
                 <ak-role-form slot="form" .instancePk=${role.pk}> </ak-role-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Edit")}</button>
             </ak-forms-modal>
@@ -98,46 +98,54 @@ export class RoleViewPage extends AKElement {
             return nothing;
         }
 
-        return html` <ak-tabs>
-            <section
-                slot="page-overview"
-                data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Role Info")}</div>
-                        <div class="pf-c-card__body">
-                            ${renderDescriptionList([
-                                [msg("Name"), this._role.name],
-                                [msg("Edit"), this.renderUpdateControl(this._role)],
-                            ])}
+        return html` <main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Role Info")}</div>
+                            <div class="pf-c-card__body">
+                                ${renderDescriptionList([
+                                    [msg("Name"), this._role.name],
+                                    [msg("Edit"), this.renderUpdateControl(this._role)],
+                                ])}
+                            </div>
                         </div>
-                    </div>
-                    <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
-                    >
-                        <div class="pf-c-card__title">${msg("Changelog")}</div>
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this._role.pk}
-                                targetModelApp="authentik_rbac"
-                                targetModelName="role"
-                            >
-                            </ak-object-changelog>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Changelog")}</div>
+                            <div class="pf-c-card__body">
+                                <ak-object-changelog
+                                    targetModelPk=${this._role.pk}
+                                    targetModelApp="authentik_rbac"
+                                    targetModelName="role"
+                                >
+                                </ak-object-changelog>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-            <ak-rbac-object-permission-page
-                slot="page-permissions"
-                data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
-                objectPk=${this._role.pk}
-            ></ak-rbac-object-permission-page>
-        </ak-tabs>`;
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole}
+                    objectPk=${this._role.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
     }
 }
 

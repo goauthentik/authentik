@@ -21,7 +21,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
-from authentik.flows.models import FlowDesignation
+from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
 
@@ -102,9 +102,22 @@ class TestUsersAPI(APITestCase):
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
 
+    def test_set_password_blank(self):
+        """Test Direct password set"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-set-password", kwargs={"pk": self.admin.pk}),
+            data={"password": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
+
     def test_recovery(self):
-        """Test user recovery link (no recovery flow set)"""
-        flow = create_test_flow(FlowDesignation.RECOVERY)
+        """Test user recovery link"""
+        flow = create_test_flow(
+            FlowDesignation.RECOVERY,
+            authentication=FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED,
+        )
         brand: Brand = create_test_brand()
         brand.flow_recovery = flow
         brand.save()
@@ -387,3 +400,72 @@ class TestUsersAPI(APITestCase):
         self.assertFalse(
             AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
         )
+
+    def test_sort_by_last_updated(self):
+        """Test API sorting by last_updated"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user = create_test_user()
+        admin.first_name = "Sample change"
+        admin.last_name = "To trigger an update"
+        admin.save()
+
+        # Ascending
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "last_updated",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], user.pk)
+
+        # Descending
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "-last_updated",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], admin.pk)
+
+    def test_sort_by_date_joined(self):
+        """Test API sorting by date_joined"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+
+        user = create_test_user()
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "date_joined",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], admin.pk)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "ordering": "-date_joined",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 2)
+        self.assertEqual(body["results"][0]["pk"], user.pk)

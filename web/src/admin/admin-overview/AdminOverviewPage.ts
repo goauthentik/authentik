@@ -20,7 +20,6 @@ import { WithLicenseSummary } from "#elements/mixins/license";
 import { paramURL } from "#elements/router/RouterOutlet";
 
 import { SessionUser } from "@goauthentik/api";
-import { createReleaseNotesURL } from "@goauthentik/core/version";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, TemplateResult } from "lit";
@@ -66,13 +65,9 @@ export class AdminOverviewPage extends AdminOverviewBase {
     quickActions: QuickAction[] = [
         [msg("Create a new application"), paramURL("/core/applications", { createWizard: true })],
         [msg("Check the logs"), paramURL("/events/log")],
-        [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
+        [msg("Explore integrations"), "https://integrations.goauthentik.io/", true],
         [msg("Manage users"), paramURL("/identity/users")],
-        [
-            msg("Check the release notes"),
-            createReleaseNotesURL(import.meta.env.AK_VERSION).href,
-            true,
-        ],
+        [msg("Check the release notes"), import.meta.env.AK_DOCS_RELEASE_NOTES_URL, true],
     ];
 
     @state()

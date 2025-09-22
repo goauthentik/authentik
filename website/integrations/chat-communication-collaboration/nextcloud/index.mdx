@@ -142,7 +142,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     - **Client ID**: Client ID from authentik
     - **Client secret**: Client secret from authentik
     - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-    - **Scope**: `email nextcloud openid`
+    - **Scope**: `email profile nextcloud openid`
     - Under **Attribute mappings**:
         - **User ID mapping**: `sub` (or `user_id` for existing users)
         - **Display name mapping**: `name`
@@ -284,30 +284,31 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
                 yield "admin"
             ```
 
-### Configure group attribute in Nextcloud _(optional)_
-
-1. Log in to Nextcloud as an administrator.
-2. Navigate to **Settings** > **SSO & SAML Authentication**.
-3. Set the groups mapping to `http://schemas.xmlsoap.org/claims/Group`.
-
 ## Nextcloud configuration
 
-1. In Nextcloud, ensure that the **SSO & SAML Authentication** app is installed.
-2. Log in to Nextcloud as an administrator, navigate to **Settings** > **SSO & SAML Authentication**, and configure the following settings:
+1. Log in to Nextcloud as an administrator and navigate to **Apps** by clicking your profile picture in the top right corner.
+2. Under **App bundles**, install the **SSO & SAML authentication** bundle.
+3. Click your profile picture in the top right corner and select **Administrative settings**. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
+4. In the **General** section, set:
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
+    - **Optional display name**: `authentik`
 
     :::danger
-    Using the UID attribute as username is **not recommended** because of its mutable nature. If you map to the username instead, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) and set the UID attribute to `http://schemas.goauthentik.io/2021/02/saml/username`.
+    Using the UID attribute as username is **not recommended** because of its mutable nature. If you map to the username instead, [disable username changing](/docs/sys-mgmt/settings#allow-users-to-change-username) and set the UID attribute to `http://schemas.goauthentik.io/2021/02/saml/username`.
     :::
-    - **Optional display name**: `authentik`
+
+5. In the **Identity Provider Data** section, set:
     - **Identifier of the IdP entity**: `https://authentik.company`
-    - **URL target for authentication requests**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
-    - **URL for SLO requests**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
-    - **Public X.509 certificate of the IdP**: Paste the contents of your certificate file.
-    - **Set attribute mappings**:
-        - **Display name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
-        - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-        - **User groups**: `http://schemas.xmlsoap.org/claims/Group`
+    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+
+    Under _Show optional Identity Provider settings_:
+    - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
+    - **X.509 certificate of the IdP**: paste the contents of your certificate file
+
+6. In the **Attribute mapping** section, set:
+    - **Attribute to map the display name to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - **Attribute to map the user's groups to**: `http://schemas.xmlsoap.org/claims/Group` _(optional)_
 
 :::note
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.

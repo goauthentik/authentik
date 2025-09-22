@@ -10,6 +10,7 @@ from django.db import DatabaseError, InternalError, OperationalError, Programmin
 from django.http.response import Http404
 from django_redis.exceptions import ConnectionInterrupted
 from docker.errors import DockerException
+from dramatiq.errors import Retry
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from psycopg.errors import Error
@@ -21,6 +22,7 @@ from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.dramatiq import DramatiqIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
@@ -29,7 +31,7 @@ from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
@@ -68,6 +70,8 @@ ignored_classes = (
     LocalProtocolError,
     # rest_framework error
     APIException,
+    # dramatiq errors
+    Retry,
     # custom baseclass
     SentryIgnoredException,
     # ldap errors
@@ -106,19 +110,20 @@ def sentry_init(**sentry_init_kwargs):
         dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
-            StdlibIntegration(),
             DjangoIntegration(transaction_style="function_name", cache_spans=True),
+            DramatiqIntegration(),
             RedisIntegration(),
-            ThreadingIntegration(propagate_hub=True),
             SocketIntegration(),
+            StdlibIntegration(),
+            ThreadingIntegration(propagate_hub=True),
         ],
         before_send=before_send,
         traces_sampler=traces_sampler,
-        release=f"authentik@{__version__}",
+        release=f"authentik@{authentik_version()}",
         transport=SentryTransport,
         **kwargs,
     )
-    set_tag("authentik.build_hash", get_build_hash("tagged"))
+    set_tag("authentik.build_hash", authentik_build_hash("tagged"))
     set_tag("authentik.env", get_env())
     set_tag("authentik.component", "backend")
 

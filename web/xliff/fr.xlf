@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${fieldName}"/>: <x id="1" equiv-text="${detail}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -707,11 +707,6 @@
         <target>Description</target>
         
       </trans-unit>
-      <trans-unit id="sa9b2a245441557dc">
-        <source>Last run</source>
-        <target>Dernière exécution</target>
-        
-      </trans-unit>
       <trans-unit id="sad3e3c8146fc920f">
         <source>Status</source>
         <target>Statut</target>
@@ -735,17 +730,6 @@
       <trans-unit id="sc592307ea80f16b9">
         <source>Unknown</source>
         <target>Inconnu</target>
-        
-      </trans-unit>
-      <trans-unit id="s92921878e886e36d">
-        <source>Duration</source>
-        <target>Durée</target>
-        
-      </trans-unit>
-      <trans-unit id="se7e1ababbc4868b8">
-        <source><x id="0" equiv-text="${item.duration.toFixed(2)}"/> seconds</source>
-        <target>
-        <x id="0" equiv-text="${item.duration.toFixed(2)}"/>secondes</target>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -1483,11 +1467,6 @@
         <target>Aucun formulaire trouvé</target>
         
       </trans-unit>
-      <trans-unit id="s45935843b1b5b496">
-        <source>Form didn't return a promise for submitting</source>
-        <target>Le formulaire n'a pas retourné de promesse de soumission</target>
-        
-      </trans-unit>
       <trans-unit id="s74475586afc1fb0f">
         <source>Select type</source>
         <target>Sélectionnez le type</target>
@@ -1682,11 +1661,6 @@
         <target>Assigné à l'application (backchannel).</target>
         
       </trans-unit>
-      <trans-unit id="s97f5e0c138eae172">
-        <source>Warning: Provider not assigned to any application.</source>
-        <target>Avertissement : le fournisseur n'est assigné à aucune application.</target>
-        
-      </trans-unit>
       <trans-unit id="s8b0432eecbd8b034">
         <source>Update</source>
         <target>Mettre à jour</target>
@@ -1726,11 +1700,6 @@
       <trans-unit id="s9222ca30ae7786e4">
         <source>Successfully created application.</source>
         <target>Application créée avec succès</target>
-        
-      </trans-unit>
-      <trans-unit id="s03907d7a66c6164e">
-        <source>Application's display Name.</source>
-        <target>Nom d'affichage de l'application</target>
         
       </trans-unit>
       <trans-unit id="s91f70424f5d5d23e">
@@ -2121,11 +2090,6 @@
       <trans-unit id="sc6c575c5ff64cdb1">
         <source>Update SCIM Provider</source>
         <target>Mettre à jour le fournisseur SCIM</target>
-        
-      </trans-unit>
-      <trans-unit id="sbecf8dc03c978d15">
-        <source>Run sync again</source>
-        <target>Relancer la synchro</target>
         
       </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
@@ -3179,11 +3143,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s52b500138a2d2b8a">
         <source>Update LDAP Source</source>
         <target>Mettre à jour la source LDAP</target>
-        
-      </trans-unit>
-      <trans-unit id="s31a2d43bc1cf1790">
-        <source>Not synced yet.</source>
-        <target>Pas encore synchronisé.</target>
         
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
@@ -6121,16 +6080,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         <target>Interne</target>
         
       </trans-unit>
-      <trans-unit id="scbb7d3154da629f3">
-        <source>OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.</source>
-        <target>URL OCI, au format oci://registry.domain.tld/path/to/manifest.</target>
-        
-      </trans-unit>
-      <trans-unit id="s0195c0df7294228a">
-        <source>See more about OCI support here:</source>
-        <target>Voir plus à propos du support OCI ici :</target>
-        
-      </trans-unit>
       <trans-unit id="sfae395b94a5a0040">
         <source>Blueprint</source>
         <target>Plan</target>
@@ -6541,11 +6490,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       <trans-unit id="s2c8189544e3ea679">
         <source>Retry</source>
         <target>Recommencer</target>
-        
-      </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Veuillez entrer votre code</target>
         
       </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
@@ -6972,10 +6916,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Open Notification drawer</source>
   <target>Ouvrir le menu de notifications</target>
 </trans-unit>
-<trans-unit id="s14bf17e2a1a2c381">
-  <source>Restart task</source>
-  <target>Redémarrer la tâche</target>
-</trans-unit>
 <trans-unit id="s19409e8712ddd369">
   <source>Add provider</source>
   <target>Ajouter un fournisseur</target>
@@ -7237,10 +7177,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
   <target>Sélectionner les roles depuis lesquels assigner les permissions des utilisateurs de ce groupe depuis les rôles sélectionnés.</target>
 </trans-unit>
-<trans-unit id="sb37880a2a7288ef0">
-  <source>Update Permissions</source>
-  <target>Mettre à jour les permissions</target>
-</trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
   <target>L'édition est désactivée pour les jetons gérés</target>
@@ -7397,14 +7333,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Vendor</source>
   <target>Fournisseur</target>
 </trans-unit>
-<trans-unit id="sadadfe9dfa06d7dd">
-  <source>No sync status.</source>
-  <target>Pas d'état de synchronisation.</target>
-</trans-unit>
-<trans-unit id="s2b1c81130a65a55b">
-  <source>Sync currently running.</source>
-  <target>Synchronisation en cours.</target>
-</trans-unit>
 <trans-unit id="sf36170f71cea38c2">
   <source>Connectivity</source>
   <target>Connectivité</target>
@@ -7516,10 +7444,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s6b05f9d8801fc14f">
   <source>Host</source>
   <target>Hôte</target>
-</trans-unit>
-<trans-unit id="sb474f652a2c2fc76">
-  <source>Hostname/IP to connect to.</source>
-  <target>Nom d'hôte/IP à laquelle se connecter.</target>
 </trans-unit>
 <trans-unit id="s8276649077e8715c">
   <source>Endpoint(s)</source>
@@ -8275,18 +8199,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Update Microsoft Entra Provider</source>
   <target>Mettre à jour le fournisseur Microsoft Entra</target>
 </trans-unit>
-<trans-unit id="saf4b498d81141878">
-  <source>Finished successfully</source>
-  <target>Fini avec succès</target>
-</trans-unit>
-<trans-unit id="s46f1d86ffec6223c">
-  <source>Finished with errors</source>
-  <target>Fini avec erreurs</target>
-</trans-unit>
-<trans-unit id="sc3c334d642866997">
-  <source>Sync currently running</source>
-  <target>Synchronisation en cours</target>
-</trans-unit>
 <trans-unit id="sd520a4089006ca93">
   <source>Update Google Workspace Provider</source>
   <target>Mettre à jour le fournisseur Google Workspace</target>
@@ -8698,10 +8610,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sa82f8948649d0989">
   <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
   <target>Correspondance de l'adresse IP du client de l'évènement (correspondante stricte, pour un correspondance sur le réseau utiliser une politique d'expression).</target>
-</trans-unit>
-<trans-unit id="s6506b7c69456b0d6">
-  <source>Invalid update request.</source>
-  <target>Requête de mise à jour invalide.</target>
 </trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
@@ -9601,10 +9509,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Task</source>
   <target>Tâche</target>
 </trans-unit>
-<trans-unit id="sbb99d4ec27fbb263">
-  <source>Finished</source>
-  <target>Finie</target>
-</trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
   <target>Mappage de corps de Webhook</target>
@@ -9725,10 +9629,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Number of previous passwords to check</source>
   <target>Nombre d'anciens mots de passe à vérifier</target>
 </trans-unit>
-<trans-unit id="sdd66c5a2e706fb81">
-  <source>Toggle sidebar</source>
-  <target>Afficher/masquer la barre latérale</target>
-</trans-unit>
 <trans-unit id="s7d4ec232535a36f0">
   <source>Choose a Provider</source>
   <target>Choisir un fournisseur</target>
@@ -9803,126 +9703,550 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s0a2cb398b54a6207">
   <source>Welcome.</source>
+  <target>Bienvenue.</target>
 </trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>Champ qui contient les membres d'un groupe. La valeur de ce champ est comparée à l'attribut d'appartenance de l'utilisateur.</target>
 </trans-unit>
 <trans-unit id="s6478025f3e0174fa">
   <source>User membership attribute</source>
+  <target>Attribut d'appartenance de l'utilisateur</target>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+  <target>Attribut qui correspond à la valeur du champ Appartenance au groupe.</target>
 </trans-unit>
 <trans-unit id="sfa6b7b105640e457">
   <source>Additional User DN</source>
+  <target>DN utilisateur supplémentaire</target>
 </trans-unit>
 <trans-unit id="s04bb32ec9f359507">
   <source>Additional Group DN</source>
+  <target>DN groupe supplémentaire</target>
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+  <target>Le mode du moteur de politique actuellement sélectionné est <x id="0" equiv-text="${policyEngineMode.label}"/> :</target>
 </trans-unit>
 <trans-unit id="se1d2545eda4b1600">
   <source>Import Existing Certificate-Key Pair</source>
+  <target>Importer une paire clé/certificat existante</target>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+  <target>Générer une nouvelle paire clé/certificat</target>
 </trans-unit>
 <trans-unit id="sf9686d31d28fcf7d">
   <source>Show field content</source>
+  <target>Afficher le contenu du champ</target>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+  <target>Cacher le contenu du champ</target>
 </trans-unit>
 <trans-unit id="s4f820625804ed29b">
   <source>Re-authenticate with Plex</source>
+  <target>Se ré-authentifier avec Plex</target>
 </trans-unit>
 <trans-unit id="s0433d667ea6eec1a">
   <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
+  <target>Le nom d'une invitation doit être un slug : seuls les lettres minuscules, les chiffres et le tiret sont autorisés ici.</target>
 </trans-unit>
 <trans-unit id="s2e9d5ea88f02ae68">
   <source>Select the group of users which the alerts are sent to. </source>
+  <target>Sélectionner le groupe d'utilisateurs à qui les alertes seront envoyées.</target>
 </trans-unit>
 <trans-unit id="se630f2ccd39bf9e6">
   <source>If no group is selected and 'Send notification to event user' is disabled the rule is disabled. </source>
+  <target>Si aucun groupe n'est sélectionné et "Envoyer la notification à l'utilisateur associé à l'évènement" est désactivé, cette règle est désactivée.</target>
 </trans-unit>
 <trans-unit id="s47966b2a708694e2">
   <source>Send notification to event user</source>
+  <target>Envoyer la notification à l'utilisateur associé à l'événement</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Lorsque cette option est activée, une notification sera envoyée à l'utilisateur qui a déclenché l'événement en plus des utilisateurs du groupe ci-dessus. L'utilisateur associé à l'événement sera toujours le premier utilisateur. Pour envoyer une notification uniquement à l'utilisateur de l'événement, activez l'option "Envoyer une seule fois" dans le transport de notification.</target>
 </trans-unit>
 <trans-unit id="sbd65aeeb8a3b9bbc">
   <source>Maximum registration attempts</source>
+  <target>Nombre maximal de tentatives d'inscription</target>
 </trans-unit>
 <trans-unit id="s8495753cb15e8d8e">
   <source>Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.</source>
+  <target>Nombre maximal de tentatives d'enregistrement autorisées. Si la valeur est 0, les tentatives ne sont pas limitées.</target>
 </trans-unit>
 <trans-unit id="sab4db6a3bd6abc1e">
   <source>This application does currently not have any application entitlements defined.</source>
+  <target>Cette application n'a actuellement pas de droit applicatif défini.</target>
 </trans-unit>
 <trans-unit id="s7225aacf0eee94d2">
   <source>Authenticated as <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></source>
+  <target>Authentifié en tant que <x id="0" equiv-text="${renderUsername(event.user.authenticated_as)}"/></target>
 </trans-unit>
 <trans-unit id="sa3ff409b84679db8">
   <source>Remember device</source>
+  <target>Se souvenir de cet appareil</target>
 </trans-unit>
 <trans-unit id="s3b123cba0bf03f29">
   <source>If set to a duration above 0, a cookie will be stored for the duration specified which will allow authentik to know if the user is signing in from a new device.</source>
+  <target>Si la durée est supérieure à 0, un cookie sera stocké pendant la durée spécifiée, ce qui permettra à authentik de savoir si l'utilisateur se connecte depuis un nouvel appareil.</target>
 </trans-unit>
 <trans-unit id="s059358bf402de018">
   <source>Element inside the form slot is not a Form</source>
+  <target>L'élément à l'intérieur de l'emplacement du formulaire n'est pas un formulaire</target>
 </trans-unit>
 <trans-unit id="s8563c5a14e9a42f2">
   <source>New Password</source>
+  <target>Nouveau mot de passe</target>
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${item.name || item.username}"/>'s password</source>
+  <target>Mettre à jour le mot de passe de <x id="0" equiv-text="${item.name || item.username}"/></target>
 </trans-unit>
 <trans-unit id="s3c619d54c995d4ab">
   <source>Modify the payload sent to the provider.</source>
+  <target>Modifier le contenu envoyé au fournisseur.</target>
 </trans-unit>
 <trans-unit id="s12d6dde9b30c3093">
   <source>Dismiss</source>
+  <target>Fermer</target>
 </trans-unit>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
-</trans-unit>
-<trans-unit id="s05a4a4df6783d0cf">
-  <source>Provider name</source>
+  <target>Messages d'état</target>
 </trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
+  <target>Sélectionnez un flux d'invalidation...</target>
 </trans-unit>
 <trans-unit id="sf1a3d030efd11f28">
   <source>Open about dialog</source>
+  <target>Ouvrir la boîte de dialogue "À propos"</target>
 </trans-unit>
 <trans-unit id="s95b96d7ead27527f">
   <source>Product name</source>
+  <target>Nom du produit</target>
 </trans-unit>
 <trans-unit id="s68b6d404c3349b18">
   <source>Product version</source>
+  <target>Version du produit</target>
 </trans-unit>
 <trans-unit id="se0d7715f3211d220">
   <source>Global navigation</source>
+  <target>Navigation globale</target>
 </trans-unit>
 <trans-unit id="sd51d6a39208696cc">
   <source>Collapse <x id="0" equiv-text="${this.label}"/></source>
+  <target>Réduire <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="scce64bcfb0a73ad7">
   <source>Expand <x id="0" equiv-text="${this.label}"/></source>
+  <target>Développer <x id="0" equiv-text="${this.label}"/></target>
 </trans-unit>
 <trans-unit id="sfe1fb536cab6c0f5">
   <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-</trans-unit>
-<trans-unit id="scbc2fd9f2bd26fdd">
-  <source>Main content</source>
+  <target><x id="0" equiv-text="${this.label}"/> navigation</target>
 </trans-unit>
 <trans-unit id="sd2b106933823b754">
   <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+  <target>Lors de l'utilisation d'un abonnement Duo MFA, Access ou Beyond, une application pour l'Admin API peut être créée. Cela permettra à authentik d'importer les appareils automatiquement.</target>
 </trans-unit>
 <trans-unit id="sd5e9b70ffb7a8b46">
   <source>Skip to content</source>
+  <target>Aller au contenu</target>
+</trans-unit>
+<trans-unit id="s334b3924d2bd5d55">
+  <source>Kerberos Source</source>
+  <target>Source Kerberos</target>
+</trans-unit>
+<trans-unit id="sbcdf61483337948a">
+  <source>Successfully updated schedule.</source>
+  <target>Planification mise à jour avec succès.</target>
+</trans-unit>
+<trans-unit id="sd372fe5b712f6b30">
+  <source>Crontab</source>
+  <target>Crontab</target>
+</trans-unit>
+<trans-unit id="s95bc8722b2708f8b">
+  <source>Paused</source>
+  <target>Mis en pause</target>
+</trans-unit>
+<trans-unit id="se41af830054194bc">
+  <source>Pause this schedule</source>
+  <target>Mettre cette planification en pause</target>
+</trans-unit>
+<trans-unit id="sd091e43d5e99dea4">
+  <source>Waiting to run</source>
+  <target>En attente de lancement</target>
+</trans-unit>
+<trans-unit id="s85994a70cd39166c">
+  <source>Running</source>
+  <target>En cours d'exécution</target>
+</trans-unit>
+<trans-unit id="sc7637275f670c938">
+  <source>Queue</source>
+  <target>File</target>
+</trans-unit>
+<trans-unit id="sb91d1be10eb2c7da">
+  <source>Last updated</source>
+  <target>Mis à jour pour la dernière fois</target>
+</trans-unit>
+<trans-unit id="s911c2c952e64b223">
+  <source>Show only standalone tasks</source>
+  <target>Afficher uniquement les tâches non liées</target>
+</trans-unit>
+<trans-unit id="s14053a4609676b8b">
+  <source>Exclude successful tasks</source>
+  <target>Exclure les tâches réussies</target>
+</trans-unit>
+<trans-unit id="s8ff646d0515aab2a">
+  <source>Retry task</source>
+  <target>Réessayer la tâche</target>
+</trans-unit>
+<trans-unit id="s9b8dccb514a0e34c">
+  <source>Schedule</source>
+  <target>Planification</target>
+</trans-unit>
+<trans-unit id="sf92789320708efed">
+  <source>Next run</source>
+  <target>Prochaine exécution</target>
+</trans-unit>
+<trans-unit id="s1aecc6c0d6cbf4ed">
+  <source>Last status</source>
+  <target>Dernier état</target>
+</trans-unit>
+<trans-unit id="s6089c283e28012fb">
+  <source>Show only standalone schedules</source>
+  <target>Afficher uniquement les tâches non liées</target>
+</trans-unit>
+<trans-unit id="s48006fb6e0b1860a">
+  <source>Run scheduled task now</source>
+  <target>Exécuter la tâche planifiée maintenant</target>
+</trans-unit>
+<trans-unit id="s6492593d534108e1">
+  <source>Update Schedule</source>
+  <target>Mettre à jour la planification</target>
+</trans-unit>
+<trans-unit id="sf2d616b20d62240d">
+  <source>Schedules</source>
+  <target>Planifications</target>
+</trans-unit>
+<trans-unit id="sc797fd9076cc136d">
+  <source>Tasks</source>
+  <target>Tâches</target>
+</trans-unit>
+<trans-unit id="s3f63421908094590">
+  <source>Current status</source>
+  <target>État actuel</target>
+</trans-unit>
+<trans-unit id="s4412853e1655ebb3">
+  <source>Sync is currently running.</source>
+  <target>La synchronisation est en cours d'exécution.</target>
+</trans-unit>
+<trans-unit id="s08661004803c26b0">
+  <source>Sync is not currently running.</source>
+  <target>La synchronisation n'est pas en cours d'exécution.</target>
+</trans-unit>
+<trans-unit id="s81d16aa9ec62262c">
+  <source>Last successful sync</source>
+  <target>Dernière synchronisation réussie</target>
+</trans-unit>
+<trans-unit id="sd1eb8f8acdbcd1d3">
+  <source>No successful sync found.</source>
+  <target>Pas de synchronisation réussie trouvée.</target>
+</trans-unit>
+<trans-unit id="s6b0eeb3de1789c6e">
+  <source>Last sync status</source>
+  <target>Dernier état de synchronisation</target>
+</trans-unit>
+<trans-unit id="sac44b0f4dc14c227">
+  <source>Current execution logs</source>
+  <target>Journaux d'exécution courant</target>
+</trans-unit>
+<trans-unit id="s5e13dff03b580216">
+  <source>Previous executions logs</source>
+  <target>Journaux d'exécution précédents</target>
+</trans-unit>
+<trans-unit id="s6abb1cd87fe0114e">
+  <source>Home</source>
+  <target>Accueil</target>
+</trans-unit>
+<trans-unit id="se58e6ed983bf34b0">
+  <source>Collapse navigation</source>
+  <target>Réduire la navigation</target>
+</trans-unit>
+<trans-unit id="sc6ef25894ed00175">
+  <source>Expand navigation</source>
+  <target>Développer la navigation</target>
+</trans-unit>
+<trans-unit id="s5d929ff1619ac0c9">
+  <source>Search</source>
+  <target>Rechercher</target>
+</trans-unit>
+<trans-unit id="sa25b60b4fac481aa">
+  <source>Table content</source>
+  <target>Contenu du tableau</target>
+</trans-unit>
+<trans-unit id="s5eba8fa19126f70a">
+  <source>Learn more about the enterprise license.</source>
+  <target>En apprendre plus sur les licences entreprise.</target>
+</trans-unit>
+<trans-unit id="s9db1679f3b234d4e">
+  <source>Search for providers…</source>
+  <target>Rechercher des fournisseurs…</target>
+</trans-unit>
+<trans-unit id="s9839619155ed2cf6">
+  <source>Default NameID Policy</source>
+  <target>Politique NameID par défaut</target>
+</trans-unit>
+<trans-unit id="s0c48c5f754275796">
+  <source>Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).</source>
+  <target>Configure la politique NameID par défaut utilisée pour les connexions initiées par l'IDP et lorsqu'une assertion entrante ne spécifie pas de politique NameID (s'applique également lors de l'utilisation d'un mappage NameID personnalisé).</target>
+</trans-unit>
+<trans-unit id="s6c973fe9014080fc">
+  <source>Application name</source>
+  <target>Nom de l'application</target>
+</trans-unit>
+<trans-unit id="s704091f8e3dbd721">
+  <source>The name displayed in the application library.</source>
+  <target>Le nom affiché dans la bibliothèque d'applications.</target>
+</trans-unit>
+<trans-unit id="s418c59028ef6bc2a">
+  <source>URIs to send back-channel logout notifications to when users log out. Required for OpenID Connect Back-Channel Logout functionality.</source>
+  <target>URI vers lesquelles envoyer les notifications de déconnexion Back-Channel lorsque les utilisateurs se déconnectent. Requis pour la fonctionnalité de déconnexion Back-Channel d'OpenID Connect.</target>
+</trans-unit>
+<trans-unit id="sa091b3064afa00f5">
+  <source>These URIs are called server-to-server when a user logs out to notify OAuth2/OpenID clients about the logout event.</source>
+  <target>Ces URI sont appelées de serveur à serveur lorsqu'un utilisateur se déconnecte pour informer les clients OAuth2/OpenID de l'événement de déconnexion.</target>
+</trans-unit>
+<trans-unit id="s6d364031a996b540">
+  <source>Back-Channel Logout URI</source>
+  <target>URI de déconnexion Back-Channel</target>
+</trans-unit>
+<trans-unit id="sc22c7703fd074f5f">
+  <source>e.g. Collaboration, Communication, Internal, etc.</source>
+  <target>par ex. Collaboration, Communication, Interne, etc.</target>
+</trans-unit>
+<trans-unit id="sb6fcdabf769208a1">
+  <source>Failed to fetch application "<x id="0" equiv-text="${this.applicationSlug}"/>".</source>
+  <target>Erreur lors de la récupération de l'application &amp;quot;<x id="0" equiv-text="${this.applicationSlug}"/>&amp;quot;.</target>
+</trans-unit>
+<trans-unit id="s32fc592c4a264edd">
+  <source>Account Recovery Max Attempts</source>
+  <target>Nombre maximal de tentatives de récupération de compte</target>
+</trans-unit>
+<trans-unit id="s8341dba451980abe">
+  <source>Account Recovery Cache Timeout</source>
+  <target>Délai d'expiration du cache de récupération de compte</target>
+</trans-unit>
+<trans-unit id="sede4ad68849ce0c5">
+  <source>The time window used to count recent account recovery attempts.</source>
+  <target>La fenêtre de temps utilisée pour compter les tentatives récentes de récupération de compte.</target>
+</trans-unit>
+<trans-unit id="s669b18c6d2d9c95b">
+  <source>None</source>
+  <target>None</target>
+</trans-unit>
+<trans-unit id="s2de7890b100c4f4c">
+  <source>Flags</source>
+</trans-unit>
+<trans-unit id="sf0b34d32a602aee8">
+  <source>Modify flags to opt into new authentik behaviours early.</source>
+</trans-unit>
+<trans-unit id="s503217f10ebdc63e">
+  <source>Loading templates...</source>
+</trans-unit>
+<trans-unit id="s6891d230751dd7bf">
+  <source>Template used for the verification email.</source>
+</trans-unit>
+<trans-unit id="sf1fc82d7ae3f4d81">
+  <source>Email Subject Prefix</source>
+</trans-unit>
+<trans-unit id="s66401e0b2526acab">
+  <source>Email Template</source>
+</trans-unit>
+<trans-unit id="sdaecc3c29a27c5c5">
+  <source>An unknown error occurred</source>
+</trans-unit>
+<trans-unit id="se84ba7f105934495">
+  <source>Please check the browser console for more details.</source>
+</trans-unit>
+<trans-unit id="s44872da71d5307c8">
+  <source>There was an error submitting the form.</source>
+</trans-unit>
+<trans-unit id="sc57b150b53a3b9e6">
+  <source>This field is required.</source>
+</trans-unit>
+<trans-unit id="sbe3756d568bb048e">
+  <source>Query suggestions</source>
+</trans-unit>
+<trans-unit id="s5638954badbd5b21">
+  <source>Table Search</source>
+</trans-unit>
+<trans-unit id="sfc238215103c6162">
+  <source>An error occurred while updating the provider.</source>
+</trans-unit>
+<trans-unit id="sc055fffc26e97237">
+  <source>An error occurred while creating the provider.</source>
+</trans-unit>
+<trans-unit id="s1fd02f07e4fa3312">
+  <source>Impersonating user...</source>
+</trans-unit>
+<trans-unit id="s12928f97c99f88db">
+  <source>This may take a few seconds.</source>
+</trans-unit>
+<trans-unit id="sbc4f2320a13d4dfd">
+  <source>A brief explanation of why you are impersonating the user. This will be included in audit logs.</source>
+</trans-unit>
+<trans-unit id="s23da7320dee28a60">
+  <source>Device Code</source>
+</trans-unit>
+<trans-unit id="s56e7ff6cc2abeb0d">
+  <source>Wizard steps</source>
+</trans-unit>
+<trans-unit id="s04e09c193d15e4b4">
+  <source>Wizard navigation</source>
+</trans-unit>
+<trans-unit id="s48a2e97afd62c35e">
+  <source>Close wizard</source>
+</trans-unit>
+<trans-unit id="s74b47e964bb82e5f">
+  <source>Wizard content</source>
+</trans-unit>
+<trans-unit id="sa782d5a1919bcbb1">
+  <source>Select a provider type</source>
+</trans-unit>
+<trans-unit id="sa9a4ce20b507b232">
+  <source>New Provider</source>
+</trans-unit>
+<trans-unit id="sf397c39bda7abfc6">
+  <source>Open the wizard to create a new provider.</source>
+</trans-unit>
+<trans-unit id="s700456b0667029f9">
+  <source>Applications library</source>
+</trans-unit>
+<trans-unit id="s48a0d160d9e0a7be">
+  <source>Hostname/IP to connect to. Optionally specify the port.</source>
+</trans-unit>
+<trans-unit id="s3633ffed92acaecb">
+  <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+</trans-unit>
+<trans-unit id="sd9b15395dd103f80">
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="s7dd64bb0c1fa8e87">
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+</trans-unit>
+<trans-unit id="sd26f670ca5d5b0c6">
+  <source>Collapse row</source>
+</trans-unit>
+<trans-unit id="s73f51a3532f29159">
+  <source>Expand row</source>
+</trans-unit>
+<trans-unit id="sda170fd79bca1616">
+  <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
+</trans-unit>
+<trans-unit id="sd09354b0220a13ce">
+  <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+</trans-unit>
+<trans-unit id="s59c9e8f57e3a0075">
+  <source><x id="0" equiv-text="${this.label}"/> table</source>
+</trans-unit>
+<trans-unit id="s15a7e4227737b7c4">
+  <source>Column actions</source>
+</trans-unit>
+<trans-unit id="s7753c012594cc69e">
+  <source>Assigned to role</source>
+</trans-unit>
+<trans-unit id="s4dcbef0770f0b649">
+  <source>Assigned to user</source>
+</trans-unit>
+<trans-unit id="sa3242c7021e01280">
+  <source>Row Actions</source>
+</trans-unit>
+<trans-unit id="sd939185840181160">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="s4127b943d6826b8b">
+  <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
+</trans-unit>
+<trans-unit id="sa637fa23edcbd60b">
+  <source>Provider name...</source>
+</trans-unit>
+<trans-unit id="sdb16a3d366135cef">
+  <source>Provider Name</source>
+</trans-unit>
+<trans-unit id="s9bcd7cad5f5e2b15">
+  <source>Select a certificate...</source>
+</trans-unit>
+<trans-unit id="s69d33a50b908b96f">
+  <source>Select an authorization flow...</source>
+</trans-unit>
+<trans-unit id="s9139b576e9944704">
+  <source>Select a signing key...</source>
+</trans-unit>
+<trans-unit id="sb52c56e87be6cd0c">
+  <source>Select an encryption key...</source>
+</trans-unit>
+<trans-unit id="s91675ea72a0ebe3e">
+  <source>Select an authentication flow...</source>
+</trans-unit>
+<trans-unit id="s0c9d1c885a69abe8">
+  <source>Provider Search</source>
+</trans-unit>
+<trans-unit id="s0fb31bb136cc353a">
+  <source>Provider not assigned to any application.</source>
+</trans-unit>
+<trans-unit id="sfbb87c9ced1fde54">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
+</trans-unit>
+<trans-unit id="s0a3fdba3a68a2730">
+  <source>Applications Documentation</source>
+</trans-unit>
+<trans-unit id="sf07bfbe5316e7cc7">
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s037f22187581bf8f">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s5d90aeadfcb34286">
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="saa25eac2952d918d">
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s021258b2c04e722f">
+  <source>Search for an application by name</source>
+</trans-unit>
+<trans-unit id="s64de9eceb8172269">
+  <source>Edit device</source>
+</trans-unit>
+<trans-unit id="sc08c153234510246">
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
+</trans-unit>
+<trans-unit id="s6d25eef21a9e76ba">
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
+</trans-unit>
+<trans-unit id="sa556d7b744364dcf">
+  <source>OCI URL</source>
+</trans-unit>
+<trans-unit id="h3b1f38bb34f8b1b6">
+  <source> A valid OCI manifest URL, prefixed with the protocol
+                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="sc19e397bee1e67f7">
+  <source>Read more about</source>
+</trans-unit>
+<trans-unit id="sa777a614e18a35cd">
+  <source>OCI Support</source>
+</trans-unit>
+<trans-unit id="s08d24327ec788e78">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s6f8d15b5494ac41a">
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
 </trans-unit>
     </body>
   </file>

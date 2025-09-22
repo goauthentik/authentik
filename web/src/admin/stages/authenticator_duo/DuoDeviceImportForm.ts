@@ -20,7 +20,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
@@ -46,7 +46,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     renderForm(): TemplateResult {
         return html` ${this.instance?.adminIntegrationKey !== ""
             ? this.renderFormAutomatic()
-            : html``}
+            : nothing}
         ${this.renderFormManual()}`;
     }
 

@@ -1,5 +1,8 @@
 """OAuth/OpenID Constants"""
 
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 GRANT_TYPE_AUTHORIZATION_CODE = "authorization_code"
 GRANT_TYPE_IMPLICIT = "implicit"
 GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
@@ -51,3 +54,23 @@ AMR_MFA = "mfa"
 AMR_OTP = "otp"
 AMR_WEBAUTHN = "user"
 AMR_SMART_CARD = "sc"
+
+
+class SubModes(models.TextChoices):
+    """Mode after which 'sub' attribute is generated, for compatibility reasons"""
+
+    HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
+    USER_ID = "user_id", _("Based on user ID")
+    USER_UUID = "user_uuid", _("Based on user UUID")
+    USER_USERNAME = "user_username", _("Based on the username")
+    USER_EMAIL = (
+        "user_email",
+        _("Based on the User's Email. This is recommended over the UPN method."),
+    )
+    USER_UPN = (
+        "user_upn",
+        _(
+            "Based on the User's UPN, only works if user has a 'upn' attribute set. "
+            "Use this method only if you have different UPN and Mail domains."
+        ),
+    )

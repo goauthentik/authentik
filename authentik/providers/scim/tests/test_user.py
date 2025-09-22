@@ -436,7 +436,7 @@ class SCIMUserTests(TestCase):
         task = list(
             Task.objects.filter(
                 actor_name=scim_sync_objects.actor_name,
-                _uid=slugify(self.provider.name),
+                _uid__startswith=slugify(self.provider.name),
             ).order_by("-mtime")
         )[1]
         self.assertIsNotNone(task)

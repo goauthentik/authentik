@@ -4,9 +4,9 @@ import "#components/ak-page-header";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
-import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
+import { Timestamp } from "#elements/table/shared";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
@@ -105,8 +105,7 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <div>${formatElapsedTime(this.event.created)}</div>
-                                            <small>${this.event.created.toLocaleString()}</small>
+                                            ${Timestamp(this.event.created)}
                                         </div>
                                     </dd>
                                 </div>

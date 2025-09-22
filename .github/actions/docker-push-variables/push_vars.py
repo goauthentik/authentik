@@ -1,12 +1,10 @@
 """Helper script to get the actual branch name, docker safe"""
 
-import configparser
 import os
 from json import dumps
 from time import time
 
-parser = configparser.ConfigParser()
-parser.read(".bumpversion.cfg")
+from authentik import authentik_version
 
 # Decide if we should push the image or not
 should_push = True
@@ -31,7 +29,7 @@ is_release = "dev" not in image_names[0]
 sha = os.environ["GITHUB_SHA"] if not is_pull_request else os.getenv("PR_HEAD_SHA")
 
 # 2042.1.0 or 2042.1.0-rc1
-version = parser.get("bumpversion", "current_version")
+version = authentik_version()
 # 2042.1
 version_family = ".".join(version.split("-", 1)[0].split(".")[:-1])
 prerelease = "-" in version

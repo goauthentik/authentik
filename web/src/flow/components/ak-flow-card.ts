@@ -33,13 +33,10 @@ export class FlowCard extends AKElement {
         PFLogin,
         PFTitle,
         css`
-            slot[name="footer"],
-            slot[name="footer-band"] {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                flex-basis: 100%;
+            .pf-c-login__main-footer {
+                display: block;
             }
+
             slot[name="footer-band"] {
                 text-align: center;
                 background-color: var(--pf-c-login__main-footer-band--BackgroundColor);

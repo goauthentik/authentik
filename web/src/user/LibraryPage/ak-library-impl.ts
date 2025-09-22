@@ -73,9 +73,7 @@ export class LibraryPage extends AKElement {
     @state()
     filteredApps: Application[] = [];
 
-    pageTitle(): string {
-        return msg("My Applications");
-    }
+    public pageTitle = msg("My Applications");
 
     connectedCallback() {
         super.connectedCallback();
@@ -182,11 +180,14 @@ export class LibraryPage extends AKElement {
     }
 
     render() {
-        return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
+        return html`<main
+            aria-label=${msg("Applications library")}
+            class="pf-c-page__main"
+            tabindex="-1"
+            id="main-content"
+        >
             <div class="pf-c-content header">
-                <h1 role="heading" aria-level="1" id="library-page-title">
-                    ${msg("My applications")}
-                </h1>
+                <h1>${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <section class="pf-c-page__main-section">${this.renderState()}</section>

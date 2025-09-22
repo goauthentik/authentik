@@ -44,9 +44,10 @@ export function renderForm(
     return html`
         <ak-text-input
             name="name"
-            label=${msg("Name")}
+            label=${msg("Provider Name")}
+            placeholder=${msg("Provider name...")}
             value=${ifDefined(provider?.name)}
-            .errorMessages=${errors?.name ?? []}
+            .errorMessages=${errors?.name}
             required
         >
         </ak-text-input>
@@ -55,9 +56,11 @@ export function renderForm(
             label=${msg("Authentication flow")}
             required
             name="authorizationFlow"
-            .errorMessages=${errors?.authorizationFlow ?? []}
+            .errorMessages=${errors?.authorizationFlow}
         >
             <ak-branded-flow-search
+                label=${msg("Authentication flow")}
+                placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
                 .currentFlow=${provider?.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
@@ -79,7 +82,7 @@ export function renderForm(
                 <ak-hidden-text-input
                     name="sharedSecret"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors?.sharedSecret ?? []}
+                    .errorMessages=${errors?.sharedSecret}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
                     input-hint="code"
@@ -88,7 +91,7 @@ export function renderForm(
                     name="clientNetworks"
                     label=${msg("Client Networks")}
                     value=${provider?.clientNetworks ?? "0.0.0.0/0, ::/0"}
-                    .errorMessages=${errors?.clientNetworks ?? []}
+                    .errorMessages=${errors?.clientNetworks}
                     required
                     help=${clientNetworksHelp}
                     input-hint="code"
@@ -118,7 +121,7 @@ export function renderForm(
                         placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
-                        .errorMessages=${errors?.invalidationFlow ?? []}
+                        .errorMessages=${errors?.invalidationFlow}
                         defaultFlowSlug="default-invalidation-flow"
                         required
                     ></ak-flow-search>

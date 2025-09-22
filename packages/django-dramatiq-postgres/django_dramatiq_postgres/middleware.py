@@ -13,9 +13,9 @@ from django.db import (
 from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from dramatiq.common import current_millis
-from dramatiq.logging import get_logger
 from dramatiq.message import Message
 from dramatiq.middleware.middleware import Middleware
+from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import TaskBase
@@ -26,7 +26,7 @@ class HTTPServer(BaseHTTPServer):
         self.socket.close()
 
         host, port = self.server_address[:2]
-        if host == "0.0.0.0":  # nosec
+        if host == "0.0.0.0" and socket.has_dualstack_ipv6():  # nosec
             host = "::"  # nosec
 
         # Strip IPv6 brackets
@@ -36,7 +36,9 @@ class HTTPServer(BaseHTTPServer):
         self.server_address = (host, port)
 
         self.address_family = (
-            socket.AF_INET6 if isinstance(ip_address(host), IPv6Address) else socket.AF_INET
+            socket.AF_INET6
+            if socket.has_dualstack_ipv6() and isinstance(ip_address(host), IPv6Address)
+            else socket.AF_INET
         )
 
         self.socket = socket.create_server(
@@ -141,7 +143,6 @@ class MetricsMiddleware(Middleware):
     def __init__(
         self,
         prefix: str,
-        multiproc_dir: str,
         labels: list[str] | None = None,
     ):
         super().__init__()
@@ -150,9 +151,6 @@ class MetricsMiddleware(Middleware):
 
         self.delayed_messages = set()
         self.message_start_times = {}
-
-        os.makedirs(multiproc_dir, exist_ok=True)
-        os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", multiproc_dir)
 
     @property
     def forks(self):
@@ -186,19 +184,19 @@ class MetricsMiddleware(Middleware):
             "The total number of dead-lettered tasks.",
             self.labels,
         )
-        self.inprogress_messages = Gauge(
-            f"{self.prefix}_tasks_inprogress",
+        self.in_progress_messages = Gauge(
+            f"{self.prefix}_tasks_in_progress",
             "The number of tasks in progress.",
             self.labels,
             multiprocess_mode="livesum",
         )
-        self.inprogress_delayed_messages = Gauge(
-            f"{self.prefix}_tasks_delayed_inprogress",
+        self.in_progress_delayed_messages = Gauge(
+            f"{self.prefix}_tasks_delayed_in_progress",
             "The number of delayed tasks in memory.",
             self.labels,
         )
         self.messages_durations = Histogram(
-            f"{self.prefix}_tasks_duration_miliseconds",
+            f"{self.prefix}_tasks_duration_milliseconds",
             "The time spent processing tasks.",
             self.labels,
             buckets=(
@@ -244,15 +242,15 @@ class MetricsMiddleware(Middleware):
 
     def before_delay_message(self, broker: Broker, message: Message):
         self.delayed_messages.add(message.message_id)
-        self.inprogress_delayed_messages.labels(*self._make_labels(message)).inc()
+        self.in_progress_delayed_messages.labels(*self._make_labels(message)).inc()
 
     def before_process_message(self, broker: Broker, message: Message):
         labels = self._make_labels(message)
         if message.message_id in self.delayed_messages:
             self.delayed_messages.remove(message.message_id)
-            self.inprogress_delayed_messages.labels(*labels).dec()
+            self.in_progress_delayed_messages.labels(*labels).dec()
 
-        self.inprogress_messages.labels(*labels).inc()
+        self.in_progress_messages.labels(*labels).inc()
         self.message_start_times[message.message_id] = current_millis()
 
     def after_process_message(
@@ -269,7 +267,7 @@ class MetricsMiddleware(Middleware):
         message_duration = current_millis() - message_start_time
         self.messages_durations.labels(*labels).observe(message_duration)
 
-        self.inprogress_messages.labels(*labels).dec()
+        self.in_progress_messages.labels(*labels).dec()
         self.total_messages.labels(*labels).inc()
         if exception is not None:
             self.total_errored_messages.labels(*labels).inc()

@@ -11,7 +11,7 @@ support_level: community
 > -- https://www.pfsense.org/
 
 :::note
-This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64
+This is based on authentik 2022.3.3 and pfSense 2.6.0-amd64
 :::
 
 ## Preparation

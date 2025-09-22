@@ -36,8 +36,8 @@ To support the integration of NetBird with authentik, you need to create an appl
     - Under **Protocol Settings**:
         - Note the **Client ID**, and **slug** values because they will be required later.
         - Set **Client type** to `Public`.
-        - Add two `Strict` redirect URIs: `http://localhost:53000` and `https://<netbird.company>`.
-        - Add a `Regex` redirect: `https://<netbird.company>.*`.
+        - Add a `Strict` redirect: `http://localhost:53000`.
+        - Add a `Regex` redirect: `https://<netbird.company>/.*`.
         - Select any available signing key.
     - Under **Advanced Protocol Settings**:
         - Set **Access Code Validity** to `minutes=10`.
@@ -99,6 +99,8 @@ NETBIRD_MGMT_IDP="authentik"
 NETBIRD_IDP_MGMT_CLIENT_ID="<Your Client ID>"
 NETBIRD_IDP_MGMT_EXTRA_USERNAME="Netbird"
 NETBIRD_IDP_MGMT_EXTRA_PASSWORD="<Your Service Account password>"
+NETBIRD_AUTH_REDIRECT_URI="/auth"
+NETBIRD_AUTH_SILENT_REDIRECT_URI="/silent-auth"
 
 # needs disabling due to issue with IdP. Learn more at https://github.com/netbirdio/netbird/issues/3654
 NETBIRD_AUTH_PKCE_DISABLE_PROMPT_LOGIN=true

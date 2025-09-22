@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.6.4
+  version: 2025.10.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -104,6 +104,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SettingsRequest'
+        required: true
       security:
       - authentik: []
       responses:
@@ -245,18 +246,8 @@ paths:
         name: build
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: version
         schema:
@@ -363,30 +354,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -591,30 +562,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -819,30 +770,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -1051,30 +982,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -1279,30 +1190,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -1507,30 +1398,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -1735,30 +1606,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -1992,30 +1843,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -2224,30 +2055,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -2456,30 +2267,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -2584,30 +2375,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -2816,30 +2587,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -3048,30 +2799,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -3280,30 +3011,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - authenticators
       security:
@@ -3517,35 +3228,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - core
       security:
@@ -3815,30 +3506,10 @@ paths:
         name: only_with_launch_url
         schema:
           type: boolean
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -4184,30 +3855,10 @@ paths:
       operationId: core_authenticated_sessions_list
       description: AuthenticatedSession Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session__last_ip
         schema:
@@ -4415,30 +4066,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: web_certificate
         schema:
@@ -4719,6 +4350,11 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
+      - in: query
         name: include_users
         schema:
           type: boolean
@@ -4749,30 +4385,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - core
       security:
@@ -4840,6 +4456,11 @@ paths:
           format: uuid
         description: A UUID string identifying this Group.
         required: true
+      - in: query
+        name: include_children
+        schema:
+          type: boolean
+          default: false
       - in: query
         name: include_users
         schema:
@@ -5019,7 +4640,7 @@ paths:
   /core/groups/{group_uuid}/remove_user/:
     post:
       operationId: core_groups_remove_user_create
-      description: Add user to group
+      description: Remove user from group
       parameters:
       - in: path
         name: group_uuid
@@ -5040,7 +4661,7 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: User added
+          description: User removed
         '404':
           description: User not found
         '400':
@@ -5127,30 +4748,10 @@ paths:
         name: managed
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user__username
         schema:
@@ -5494,30 +5095,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user
         schema:
@@ -5655,6 +5236,21 @@ paths:
           type: string
         description: Attributes
       - in: query
+        name: date_joined
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: date_joined__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: email
         schema:
           type: string
@@ -5689,27 +5285,27 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__gt
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated__lt
+        schema:
+          type: string
+          format: date-time
+      - in: query
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: path
         schema:
@@ -5718,12 +5314,7 @@ paths:
         name: path_startswith
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: type
         schema:
@@ -5965,8 +5556,6 @@ paths:
       responses:
         '204':
           description: Successfully started impersonation
-        '401':
-          description: Access denied
         '400':
           content:
             application/json:
@@ -5982,7 +5571,7 @@ paths:
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Create a temporary link that a user can use to recover their account
       parameters:
       - in: path
         name: id
@@ -6016,7 +5605,8 @@ paths:
   /core/users/{id}/recovery_email/:
     post:
       operationId: core_users_recovery_email_create
-      description: Create a temporary link that a user can use to recover their accounts
+      description: Send an email with a temporary link that a user can use to recover
+        their account
       parameters:
       - in: query
         name: email_stage
@@ -6126,7 +5716,7 @@ paths:
       - authentik: []
       responses:
         '204':
-          description: Successfully started impersonation
+          description: Successfully ended impersonation
         '400':
           content:
             application/json:
@@ -6171,10 +5761,7 @@ paths:
       operationId: core_users_paths_retrieve
       description: Get all user paths
       parameters:
-      - in: query
-        name: search
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - core
       security:
@@ -6254,30 +5841,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - crypto
       security:
@@ -6630,30 +6197,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - enterprise
       security:
@@ -7051,30 +6598,10 @@ paths:
         schema:
           type: string
         description: Context Model Primary Key
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: username
         schema:
@@ -7425,18 +6952,8 @@ paths:
         schema:
           type: number
           default: 7
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: username
         schema:
@@ -7486,30 +7003,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: seen
         schema:
@@ -7765,30 +7262,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: severity
         schema:
@@ -8054,30 +7531,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: send_once
         schema:
@@ -8390,24 +7847,9 @@ paths:
         name: order
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
@@ -8433,12 +7875,7 @@ paths:
         name: re_evaluate_policies
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage
         schema:
@@ -8839,30 +8276,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -9348,34 +8765,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: path
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - managed
       security:
@@ -9681,34 +9078,14 @@ paths:
       operationId: oauth2_access_tokens_list
       description: AccessToken Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user
         schema:
@@ -9840,34 +9217,14 @@ paths:
       operationId: oauth2_authorization_codes_list
       description: AuthorizationCode Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user
         schema:
@@ -9999,34 +9356,14 @@ paths:
       operationId: oauth2_refresh_tokens_list
       description: RefreshToken Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user
         schema:
@@ -10174,24 +9511,9 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: providers__isnull
         schema:
@@ -10204,12 +9526,7 @@ paths:
             type: integer
         explode: true
         style: form
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: service_connection__name__icontains
         schema:
@@ -10438,12 +9755,7 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
       - in: query
         name: providers__isnull
         schema:
@@ -10456,12 +9768,7 @@ paths:
             type: integer
         explode: true
         style: form
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: service_connection__name__icontains
         schema:
@@ -10575,30 +9882,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - outposts
       security:
@@ -10669,30 +9956,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - outposts
       security:
@@ -10725,30 +9992,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - outposts
       security:
@@ -10819,30 +10066,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - outposts
       security:
@@ -11045,30 +10272,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: tls_authentication
         schema:
@@ -11332,30 +10539,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - outposts
       security:
@@ -11601,34 +10788,14 @@ paths:
         name: bindings__isnull
         schema:
           type: boolean
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: promptstage__isnull
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -11879,24 +11046,9 @@ paths:
         name: order
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy
         schema:
@@ -11906,12 +11058,7 @@ paths:
         name: policy__isnull
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: target
         schema:
@@ -12189,24 +11336,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy_uuid
         schema:
@@ -12216,12 +11348,7 @@ paths:
         name: result
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: wait_max
         schema:
@@ -12537,35 +11664,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -12829,35 +11936,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -13103,30 +12190,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -13456,24 +12523,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password_field
         schema:
@@ -13483,12 +12535,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: symbol_charset
         schema:
@@ -13764,35 +12811,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -14060,35 +13087,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: policy_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: threshold
         schema:
@@ -14351,34 +13358,14 @@ paths:
         name: ip
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: score
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -14531,24 +13518,9 @@ paths:
         name: num_historical_passwords
         schema:
           type: integer
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password_field
         schema:
@@ -14558,12 +13530,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - policies
       security:
@@ -14821,30 +13788,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -15048,30 +13995,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -15329,35 +14256,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pm_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -15615,35 +14522,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pm_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -15897,30 +14784,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -16178,30 +15045,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -16463,34 +15310,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: saml_name
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -16748,30 +15575,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -17029,34 +15836,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: scope_name
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -17314,30 +16101,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -17595,30 +16362,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -17876,30 +16623,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -18157,30 +16884,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -18438,30 +17145,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -18719,30 +17406,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - propertymappings
       security:
@@ -18995,30 +17662,10 @@ paths:
         description: When not set all providers are returned. When set to true, only
           backchannel providers are returned. When set to false, backchannel providers
           are excluded
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -19192,30 +17839,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -19535,34 +18162,14 @@ paths:
         name: group__name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -19725,34 +18332,14 @@ paths:
       operationId: providers_google_workspace_users_list
       description: GoogleWorkspaceProviderUser Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user__id
         schema:
@@ -19952,30 +18539,10 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: tls_server_name__iexact
         schema:
@@ -20233,30 +18800,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -20576,34 +19123,14 @@ paths:
         name: group__name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -20766,34 +19293,14 @@ paths:
       operationId: providers_microsoft_entra_users_list
       description: MicrosoftEntraProviderUser Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user__id
         schema:
@@ -21014,24 +19521,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: property_mappings
         schema:
@@ -21045,12 +19537,7 @@ paths:
         name: refresh_token_validity
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: signing_key
         schema:
@@ -21429,24 +19916,9 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: property_mappings__iexact
         schema:
@@ -21456,12 +19928,7 @@ paths:
             format: uuid
         explode: true
         style: form
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: skip_path_regex__iexact
         schema:
@@ -21710,30 +20177,10 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -21986,30 +20433,10 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -22283,6 +20710,17 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: default_name_id_policy
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - in: query
         name: default_relay_state
         schema:
           type: string
@@ -22322,24 +20760,9 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: property_mappings
         schema:
@@ -22349,12 +20772,7 @@ paths:
             format: uuid
         explode: true
         style: form
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
         schema:
@@ -22762,30 +21180,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: url
         schema:
@@ -23109,34 +21507,14 @@ paths:
         name: group__name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -23299,34 +21677,14 @@ paths:
       operationId: providers_scim_users_list
       description: SCIMProviderUser Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider__id
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user__id
         schema:
@@ -23505,30 +21863,10 @@ paths:
         name: name__iexact
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - providers
       security:
@@ -23775,34 +22113,14 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session__user
         schema:
@@ -24020,32 +22338,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - in: query
-        name: search
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: superuser_full_list
         schema:
@@ -24291,30 +22591,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - rbac
       security:
@@ -24563,34 +22843,14 @@ paths:
         name: content_type__model
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: role
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user
         schema:
@@ -24748,7 +23008,6 @@ paths:
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
-          - authentik_stages_consent.userconsent
           - authentik_stages_deny.denystage
           - authentik_stages_dummy.dummystage
           - authentik_stages_email.emailstage
@@ -24772,30 +23031,10 @@ paths:
         name: object_pk
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - rbac
       security:
@@ -24998,7 +23237,6 @@ paths:
           - authentik_stages_authenticator_webauthn.webauthndevice
           - authentik_stages_captcha.captchastage
           - authentik_stages_consent.consentstage
-          - authentik_stages_consent.userconsent
           - authentik_stages_deny.denystage
           - authentik_stages_dummy.dummystage
           - authentik_stages_email.emailstage
@@ -25022,30 +23260,10 @@ paths:
         name: object_pk
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - rbac
       security:
@@ -25153,30 +23371,10 @@ paths:
       operationId: rbac_permissions_roles_list
       description: Get a role's assigned object permissions
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: uuid
         schema:
@@ -25350,30 +23548,10 @@ paths:
       operationId: rbac_permissions_users_list
       description: Get a users's assigned object permissions
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: user_id
         schema:
@@ -25550,30 +23728,10 @@ paths:
         name: group__name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - rbac
       security:
@@ -26008,35 +24166,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -26294,30 +24432,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -26531,30 +24649,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -26805,30 +24903,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -27074,30 +25152,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -27343,30 +25401,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -27612,30 +25650,10 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -27895,24 +25913,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password_login_update_internal_password
         schema:
@@ -27926,12 +25929,7 @@ paths:
         name: realm
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -28280,24 +26278,9 @@ paths:
         name: object_uniqueness_field
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password_login_update_internal_password
         schema:
@@ -28312,12 +26295,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: server_uri
         schema:
@@ -28722,24 +26700,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
@@ -28764,12 +26727,7 @@ paths:
         name: request_token_url
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -29096,24 +27054,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
@@ -29126,12 +27069,7 @@ paths:
           enum:
           - all
           - any
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -29498,30 +27436,16 @@ paths:
           enum:
           - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
           - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
         description: |+
           NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
 
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
@@ -29539,12 +27463,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: signature_algorithm
         schema:
@@ -29872,35 +27791,15 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: pbm_uuid
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: slug
         schema:
@@ -30150,30 +28049,10 @@ paths:
         name: group__name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -30414,30 +28293,10 @@ paths:
       operationId: sources_scim_users_list
       description: SCIMSourceUser Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -30686,30 +28545,10 @@ paths:
       operationId: sources_user_connections_all_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -30922,30 +28761,10 @@ paths:
       operationId: sources_user_connections_kerberos_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -31195,30 +29014,10 @@ paths:
       operationId: sources_user_connections_ldap_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -31463,30 +29262,10 @@ paths:
       operationId: sources_user_connections_oauth_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -31731,30 +29510,10 @@ paths:
       operationId: sources_user_connections_plex_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -31999,30 +29758,10 @@ paths:
       operationId: sources_user_connections_saml_list
       description: User-source connection Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source__slug
         schema:
@@ -32278,34 +30017,14 @@ paths:
         name: endpoint_url
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - ssf
       security:
@@ -32373,30 +30092,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -32602,30 +30301,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -32987,24 +30666,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password
         schema:
@@ -33013,12 +30677,7 @@ paths:
         name: port
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -33306,30 +30965,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -33617,24 +31256,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: provider
         schema:
@@ -33642,12 +31266,7 @@ paths:
           enum:
           - generic
           - twilio
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -33911,30 +31530,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -34209,30 +31808,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -34500,30 +32079,10 @@ paths:
           - configure
           - deny
           - skip
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -34799,24 +32358,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: resident_key_requirement
         schema:
@@ -34825,12 +32369,7 @@ paths:
           - discouraged
           - preferred
           - required
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -35098,30 +32637,10 @@ paths:
         name: icon
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -35189,34 +32708,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: public_key
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -35474,30 +32973,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -35752,30 +33231,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -36026,30 +33485,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -36316,34 +33755,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: port
         schema:
           type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: subject
         schema:
@@ -36664,24 +34083,9 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: password_stage
         schema:
@@ -36697,12 +34101,7 @@ paths:
         schema:
           type: string
           format: uuid
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: show_matched_user
         schema:
@@ -36969,30 +34368,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -37246,30 +34625,10 @@ paths:
         name: no_flows
         schema:
           type: boolean
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -37544,30 +34903,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -37838,30 +35177,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -38115,34 +35434,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: placeholder
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: type
         schema:
@@ -38453,30 +35752,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -38736,30 +36015,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - stages
       security:
@@ -39005,34 +36264,14 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: resume_timeout
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: source
         schema:
@@ -39288,30 +36527,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -39586,24 +36805,9 @@ paths:
         description: |+
           Bind sessions created by this stage to the configured network
 
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: remember_device
         schema:
@@ -39612,12 +36816,7 @@ paths:
         name: remember_me_offset
         schema:
           type: string
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_duration
         schema:
@@ -39876,30 +37075,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -40159,30 +37338,10 @@ paths:
         name: name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: stage_uuid
         schema:
@@ -40453,24 +37612,9 @@ paths:
         name: actor_name
         schema:
           type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: paused
         schema:
@@ -40491,12 +37635,7 @@ paths:
         name: rel_obj_id__isnull
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - tasks
       security:
@@ -40690,24 +37829,9 @@ paths:
             - warning
         explode: true
         style: form
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
         name: queue_name
         schema:
@@ -40728,12 +37852,7 @@ paths:
         name: rel_obj_id__isnull
         schema:
           type: boolean
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: state
         schema:
@@ -40866,30 +37985,10 @@ paths:
       operationId: tenants_domains_list
       description: Domain ViewSet
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - tenants
       responses:
@@ -41078,30 +38177,10 @@ paths:
       operationId: tenants_tenants_list
       description: Tenant Viewset
       parameters:
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
       tags:
       - tenants
       responses:
@@ -41360,6 +38439,35 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
 components:
+  parameters:
+    QueryPaginationOrdering:
+      name: ordering
+      required: false
+      in: query
+      description: Which field to use when ordering the results.
+      schema:
+        type: string
+    QueryPaginationPage:
+      name: page
+      required: false
+      in: query
+      description: A page number within the paginated result set.
+      schema:
+        type: integer
+    QueryPaginationPageSize:
+      name: page_size
+      required: false
+      in: query
+      description: Number of results to return per page.
+      schema:
+        type: integer
+    QuerySearch:
+      name: search
+      required: false
+      in: query
+      description: A search term.
+      schema:
+        type: string
   schemas:
     AccessDeniedChallenge:
       type: object
@@ -41407,7 +38515,9 @@ components:
       - authentik.tasks
       - authentik.admin
       - authentik.api
+      - authentik.core
       - authentik.crypto
+      - authentik.enterprise
       - authentik.events
       - authentik.flows
       - authentik.outposts
@@ -41459,8 +38569,6 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
-      - authentik.core
-      - authentik.enterprise
       - authentik.enterprise.audit
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
@@ -41893,7 +39001,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         client_id:
           type: string
         api_hostname:
@@ -41952,8 +39059,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -42054,7 +39159,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -42114,8 +39218,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -42195,7 +39297,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         credentials:
           type: object
           additionalProperties: {}
@@ -42226,8 +39327,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         credentials:
           type: object
           additionalProperties: {}
@@ -42311,7 +39410,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -42364,8 +39462,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -42471,7 +39567,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         token_count:
           type: integer
           maximum: 2147483647
@@ -42506,8 +39601,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -42594,7 +39687,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         digits:
           $ref: '#/components/schemas/DigitsEnum'
       required:
@@ -42624,8 +39716,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         digits:
           $ref: '#/components/schemas/DigitsEnum'
       required:
@@ -42876,7 +39966,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -42926,8 +40015,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -44113,12 +41200,21 @@ components:
         default_locale:
           type: string
           readOnly: true
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+          readOnly: true
       required:
       - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
       - default_locale
+      - flags
       - matched_domain
       - ui_footer_links
       - ui_theme
@@ -44793,6 +41889,15 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - component
       - meta_model_name
@@ -44853,6 +41958,16 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
       required:
       - name
     Endpoint:
@@ -46466,13 +43581,50 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        children:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupChild'
+          readOnly: true
+          nullable: true
       required:
+      - children_obj
       - name
       - num_pk
       - parent_name
       - pk
       - roles_obj
       - users_obj
+    GroupChild:
+      type: object
+      description: Stripped down group serializer to show relevant children for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -46790,6 +43942,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -48868,7 +46025,13 @@ components:
     ModelEnum:
       enum:
       - authentik_tenants.domain
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.applicationentitlement
+      - authentik_core.token
       - authentik_crypto.certificatekeypair
+      - authentik_enterprise.license
       - authentik_events.event
       - authentik_events.notificationtransport
       - authentik_events.notification
@@ -48939,7 +46102,6 @@ components:
       - authentik_stages_authenticator_webauthn.webauthndevice
       - authentik_stages_captcha.captchastage
       - authentik_stages_consent.consentstage
-      - authentik_stages_consent.userconsent
       - authentik_stages_deny.denystage
       - authentik_stages_dummy.dummystage
       - authentik_stages_email.emailstage
@@ -48957,12 +46119,6 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
-      - authentik_core.group
-      - authentik_core.user
-      - authentik_core.application
-      - authentik_core.applicationentitlement
-      - authentik_core.token
-      - authentik_enterprise.license
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -49063,14 +46219,6 @@ components:
       - mode
       - name
       - user_attribute
-    NameIdPolicyEnum:
-      enum:
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-      type: string
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -49229,6 +46377,10 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49268,6 +46420,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -49417,6 +46574,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURI'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -49524,6 +46685,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -52690,8 +49855,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -52726,8 +49889,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         use_global_settings:
           type: boolean
           description: When enabled, global Email connection settings will be used
@@ -52785,8 +49946,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         credentials:
           type: object
           additionalProperties: {}
@@ -52809,8 +49968,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -52855,8 +50012,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -52884,8 +50039,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         digits:
           $ref: '#/components/schemas/DigitsEnum'
     PatchedAuthenticatorValidateStageRequest:
@@ -52947,8 +50100,6 @@ components:
             If empty, user will not be able to configure this stage.
         friendly_name:
           type: string
-          nullable: true
-          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -53300,6 +50451,16 @@ components:
         activate_user_on_success:
           type: boolean
           description: Activate users upon completion of stage.
+        recovery_max_attempts:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        recovery_cache_timeout:
+          type: string
+          minLength: 1
+          description: 'The time window used to count recent account recovery attempts.
+            If the number of attempts exceed recovery_max_attempts within this period,
+            further attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3).'
     PatchedEndpointDeviceRequest:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -53681,6 +50842,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -54342,6 +51508,11 @@ components:
           nullable: true
           description: Configure additional headers to be sent. Mapping should return
             a dictionary of key-value pairs
+        email_subject_prefix:
+          type: string
+        email_template:
+          type: string
+          minLength: 1
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -54428,6 +51599,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectURIRequest'
+        backchannel_logout_uri:
+          type: string
+          title: Back-Channel Logout URI
+          format: uri
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
@@ -55289,6 +52464,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -55382,7 +52559,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -55688,6 +52865,13 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -58130,6 +55314,15 @@ components:
       required:
       - download_url
       - metadata
+    SAMLNameIDPolicyEnum:
+      enum:
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+      type: string
     SAMLPropertyMapping:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -58347,6 +55540,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -58519,6 +55714,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
       - acs_url
       - authorization_flow
@@ -58627,7 +55824,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -58817,7 +56014,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -59896,6 +57093,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SettingsRequest:
       type: object
       description: Settings Serializer
@@ -59949,6 +57155,15 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Default token length
+        flags:
+          type: object
+          properties:
+            policies_buffered_access_view:
+              type: boolean
+          required:
+          - policies_buffered_access_view
+      required:
+      - flags
     SeverityEnum:
       enum:
       - notice
@@ -61075,11 +58290,16 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - avatar
       - date_joined
       - groups_obj
       - is_superuser
+      - last_updated
       - name
       - password_change_date
       - pk
@@ -61677,6 +58897,7 @@ components:
       - object_pk
     UserPasswordSetRequest:
       type: object
+      description: Payload to set a users' password directly
       properties:
         password:
           type: string
@@ -62294,4 +59515,4 @@ components:
       type: http
       scheme: bearer
 servers:
-- url: /api/v3/
+- url: /api/v3

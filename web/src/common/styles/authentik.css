@@ -36,8 +36,27 @@
 }
 
 .pf-c-form__group {
-    --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: minmax(max-content, 9.375rem);
     column-gap: var(--pf-global--spacer--md);
+}
+
+.pf-c-form__group-label {
+    display: flex;
+    user-select: none;
+    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+
+    /* Increase the pressable area of the label. */
+    .pf-c-form__label {
+        display: block;
+        flex: 1 1 auto;
+    }
+}
+
+.pf-c-form__label[aria-required] .pf-c-form__label-text::after {
+    content: "*" / "Required";
+    user-select: none;
+    margin-left: var(--pf-c-form__label-required--MarginLeft);
+    font-size: var(--pf-c-form__label-required--FontSize);
+    color: var(--pf-c-form__label-required--Color);
 }
 
 @supports selector(::-webkit-scrollbar) {
@@ -78,6 +97,19 @@ html > form > input {
 
 /* #endregion */
 
+/* #region Screen readers */
+
+.sr-only {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* #endregion */
+
 /* #region Icons */
 
 .pf-icon {
@@ -87,6 +119,10 @@ html > form > input {
     text-rendering: auto;
     line-height: 1;
     vertical-align: middle;
+
+    &:has(+ span) {
+        margin-inline-end: 0.5em;
+    }
 }
 
 .pf-c-form-control {

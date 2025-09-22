@@ -3,9 +3,10 @@ import { ROUTE_SEPARATOR } from "#common/constants";
 import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -114,6 +115,31 @@ export class SidebarItem extends AKElement {
         window.addEventListener("hashchange", () => this.onHashChange());
     }
 
+    public updated(changedProperties: PropertyValues): void {
+        const previousExpanded = changedProperties.get("expanded");
+
+        if (typeof previousExpanded !== "boolean") return;
+
+        if (this.expanded && this.expanded !== previousExpanded) {
+            cancelAnimationFrame(this.#scrollAnimationFrame);
+
+            this.#scrollAnimationFrame = requestAnimationFrame(this.#scrollIntoView);
+        }
+    }
+
+    #listRef = createRef<HTMLLIElement>();
+    #scrollBehavior?: ScrollBehavior;
+    #scrollAnimationFrame = -1;
+
+    #scrollIntoView = (): void => {
+        this.#listRef.value?.scrollIntoView({
+            behavior: this.#scrollBehavior ?? "instant",
+            block: "nearest",
+        });
+
+        this.#scrollBehavior ??= "smooth";
+    };
+
     onHashChange(): void {
         const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {
@@ -149,6 +175,7 @@ export class SidebarItem extends AKElement {
         return html`<li
             aria-label=${ifDefined(this.label)}
             role="heading"
+            ${ref(this.#listRef)}
             class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
         >
             <button
@@ -158,6 +185,7 @@ export class SidebarItem extends AKElement {
                     : msg(str`Expand ${this.label}`)}
                 aria-expanded=${this.expanded ? "true" : "false"}
                 aria-controls="subnav-${this.path}"
+                type="button"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
@@ -195,7 +223,8 @@ export class SidebarItem extends AKElement {
                     ? msg(str`Collapse ${this.label}`)
                     : msg(str`Expand ${this.label}`)}
                 class="pf-c-nav__link"
-                aria-expanded="true"
+                aria-expanded=${this.expanded ? "true" : "false"}
+                type="button"
                 @click=${() => {
                     this.expanded = !this.expanded;
                 }}
@@ -228,7 +257,7 @@ export class SidebarItem extends AKElement {
     }
 
     renderWithLabel() {
-        return html` <span class="pf-c-nav__link"> ${this.label} </span> `;
+        return html` <span class="pf-c-nav__link"> ${this.label}</span> `;
     }
 
     renderInner() {
