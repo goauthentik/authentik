@@ -83,10 +83,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @apply_blueprint("default/default-brand.yaml")
     def test_blueprint(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
-        apply_blueprint("default/default-brand.yaml")
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
             {
@@ -105,10 +104,9 @@ class TestBrands(APITestCase):
             },
         )
 
+    @apply_blueprint("default/default-brand.yaml")
     def test_blueprint_with_other_brand(self):
         """Test Current brand API"""
-        Brand.objects.all().delete()
-        apply_blueprint("default/default-brand.yaml")
         Brand.objects.create(domain="bar.baz", branding_title="custom")
         self.assertJSONEqual(
             self.client.get(reverse("authentik_api:brand-current")).content.decode(),
