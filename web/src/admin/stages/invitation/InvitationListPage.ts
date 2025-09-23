@@ -14,6 +14,8 @@ import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import {
     FlowDesignationEnum,
     Invitation,
@@ -22,9 +24,8 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, HTMLTemplateResult, nothing, TemplateResult } from "lit";
+import { CSSResult, html, HTMLTemplateResult, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
@@ -163,13 +164,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     }
 
     render(): HTMLTemplateResult {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            ${this.invitationStageExists
+        return html`${this.invitationStageExists
                 ? nothing
                 : html`
                       <div class="pf-c-banner pf-m-warning">
@@ -181,6 +176,15 @@ export class InvitationListPage extends TablePage<Invitation> {
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-card">${this.renderTable()}</div>
             </section>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }
 

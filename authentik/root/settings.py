@@ -183,6 +183,7 @@ SPECTACULAR_SETTINGS = {
     ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
+        "authentik.api.schema.postprocess_schema_pagination",
         "drf_spectacular.hooks.postprocess_schema_enums",
     ],
 }

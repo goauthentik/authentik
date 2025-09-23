@@ -1,12 +1,11 @@
-import "#components/ak-page-header";
-
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -134,13 +133,7 @@ export abstract class TablePage<T extends object> extends Table<T> {
     }
 
     render() {
-        return html`<ak-page-header
-                icon=${this.pageIcon}
-                header=${this.pageTitle}
-                description=${ifDefined(this.pageDescription)}
-            >
-            </ak-page-header>
-            ${this.renderSectionBefore?.()}
+        return html` ${this.renderSectionBefore?.()}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
@@ -153,5 +146,14 @@ export abstract class TablePage<T extends object> extends Table<T> {
                 </div>
             </div>
             ${this.renderSectionAfter?.()}`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: this.pageIcon,
+            header: this.pageTitle,
+            description: this.pageDescription,
+        });
     }
 }

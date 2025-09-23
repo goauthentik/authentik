@@ -1,4 +1,3 @@
-import "#components/ak-page-header";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
@@ -9,8 +8,10 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
 
+import { setPageDetails } from "#components/ak-page-navbar";
+
 import { msg } from "@lit/localize";
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -40,49 +41,51 @@ export class SystemTasksPage extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-page-header
-                icon="pf-icon pf-icon-automation"
-                header=${msg("System Tasks")}
-                description=${msg(
-                    "Long-running operations which authentik executes in the background.",
-                )}
-            ></ak-page-header>
-            <main>
-                <ak-tabs>
-                    <div
-                        role="tabpanel"
-                        tabindex="0"
-                        slot="page-schedules"
-                        id="page-schedules"
-                        aria-label="${msg("Schedules")}"
-                        class="pf-c-page__main-section pf-m-no-padding-mobile"
-                    >
-                        <div class="pf-l-grid pf-m-gutter">
-                            <div
-                                class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                            >
-                                <ak-schedule-list></ak-schedule-list>
-                            </div>
+        return html` <main>
+            <ak-tabs>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-schedules"
+                    id="page-schedules"
+                    aria-label="${msg("Schedules")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <ak-schedule-list></ak-schedule-list>
                         </div>
                     </div>
-                    <div
-                        role="tabpanel"
-                        tabindex="0"
-                        slot="page-tasks"
-                        id="page-tasks"
-                        aria-label="${msg("Tasks")}"
-                        class="pf-c-page__main-section pf-m-no-padding-mobile"
-                    >
-                        <div class="pf-l-grid pf-m-gutter">
-                            <div
-                                class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
-                            >
-                                <ak-task-list></ak-task-list>
-                            </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-tasks"
+                    id="page-tasks"
+                    aria-label="${msg("Tasks")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <ak-task-list></ak-task-list>
                         </div>
                     </div>
-                </ak-tabs>
-            </main>`;
+                </div>
+            </ak-tabs>
+        </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "pf-icon pf-icon-automation",
+            header: msg("System Tasks"),
+            description: msg("Long-running operations which authentik executes in the background."),
+        });
     }
 }
 
