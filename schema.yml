@@ -38847,14 +38847,18 @@ components:
           properties:
             continent:
               type: string
+              nullable: true
             country:
               type: string
+              nullable: true
             lat:
               type: number
               format: double
+              nullable: true
             long:
               type: number
               format: double
+              nullable: true
             city:
               type: string
           required:
@@ -38871,6 +38875,7 @@ components:
           properties:
             asn:
               type: integer
+              nullable: true
             as_org:
               type: string
               nullable: true
