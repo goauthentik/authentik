@@ -2,7 +2,7 @@
 title: Manual Outpost deployment in Docker Compose
 ---
 
-To deploy an outpost with Docker Compose, use the appropriate snippet from below in your Compose file.
+To deploy an outpost with Docker Compose, use the appropriate snippet from the options below and add it to your Compose file.
 
 You can also run the outpost in a separate Compose project, you just have to ensure that the outpost container can reach your application container.
 
