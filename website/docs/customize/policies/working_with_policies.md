@@ -6,7 +6,7 @@ For an overview of policies, refer to our documentation on [Policies](./index.md
 
 authentik provides several [standard policy types](./index.md#standard-policies), which can be configured for your specific needs. We also document several useful [expression policies](./expression.mdx#sample-expression-policies).
 
-::info
+:::info
 You can add expressions to our standard policies to further customize them.
 :::
 
