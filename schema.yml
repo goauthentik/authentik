@@ -38573,6 +38573,7 @@ components:
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
+      - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.search
@@ -38843,14 +38844,18 @@ components:
           properties:
             continent:
               type: string
+              nullable: true
             country:
               type: string
+              nullable: true
             lat:
               type: number
               format: double
+              nullable: true
             long:
               type: number
               format: double
+              nullable: true
             city:
               type: string
           required:
@@ -38867,6 +38872,7 @@ components:
           properties:
             asn:
               type: integer
+              nullable: true
             as_org:
               type: string
               nullable: true

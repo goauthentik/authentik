@@ -173,6 +173,7 @@ class SCIMOAuthTests(APITestCase):
         self.assertEqual(res.status_code, 201)
 
     def test_api_create_no_license(self):
+        License.objects.all().delete()
         self.client.force_login(create_test_admin_user())
         res = self.client.post(
             reverse("authentik_api:scimprovider-list"),
