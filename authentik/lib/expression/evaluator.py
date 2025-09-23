@@ -243,8 +243,7 @@ class BaseEvaluator:
             bool: True if email was queued successfully, False otherwise
         """
         # Deferred imports to avoid circular import issues
-        from authentik.stages.email.models import EmailStage
-        from authentik.stages.email.tasks import send_mails
+        from authentik.stages.email.tasks import send_mail, send_mails
         from authentik.stages.email.utils import TemplateEmailMessage
 
         if body and template:
@@ -252,9 +251,6 @@ class BaseEvaluator:
 
         if not body and not template:
             raise ValueError("Either body or template parameter must be provided")
-
-        # Use the provided EmailStage or create one
-        email_stage = stage or EmailStage(use_global_settings=True)
 
         try:
 
@@ -268,8 +264,7 @@ class BaseEvaluator:
                 # Use template rendering
                 message = TemplateEmailMessage(
                     subject=subject,
-                    to=[("", address)],  # Empty name, just email address
-                    language="",  # Use default language
+                    to=[("", address)],
                     template_name=template,
                     template_context=template_context,
                 )
@@ -281,8 +276,12 @@ class BaseEvaluator:
                     body=body,
                 )
 
-            # Send the email using the email stage's task system
-            send_mails(email_stage, message)
+            # Send the email using appropriate method
+            if stage:
+                send_mails(stage, message)
+            else:
+                # For global settings, call send_mail directly without stage
+                send_mail.send(message.__dict__, None, None)
             return True
 
         except Exception as exc:

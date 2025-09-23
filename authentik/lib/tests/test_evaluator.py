@@ -80,11 +80,9 @@ class TestEvaluator(TestCase):
         )
         self.assertEqual(decoded["preferred_username"], user.username)
 
-    @patch("authentik.stages.email.tasks.send_mails")
-    def test_expr_send_email_with_body(self, mock_send_mails):
+    @patch("authentik.stages.email.tasks.send_mail")
+    def test_expr_send_email_with_body(self, mock_send_mail):
         """Test ak_send_email with body parameter"""
-        from authentik.stages.email.models import EmailStage
-
         user = create_test_user()
         evaluator = BaseEvaluator(generate_id())
         evaluator._context = {"user": user}
@@ -95,23 +93,23 @@ class TestEvaluator(TestCase):
         )
 
         self.assertTrue(result)
-        mock_send_mails.assert_called_once()
+        mock_send_mail.send.assert_called_once()
 
-        # Verify the call arguments
-        args, kwargs = mock_send_mails.call_args
-        stage, message = args
+        # Verify the call arguments - send_mail.send is called with (message_dict, None, None)
+        args, kwargs = mock_send_mail.send.call_args
+        message_dict, stage_class_path, email_stage_pk = args
 
-        # Check that global settings stage was created
-        self.assertIsInstance(stage, EmailStage)
-        self.assertTrue(stage.use_global_settings)
+        # Check that global settings are used (None parameters)
+        self.assertIsNone(stage_class_path)
+        self.assertIsNone(email_stage_pk)
 
         # Check message properties
-        self.assertEqual(message.subject, "Test Subject")
-        self.assertEqual(message.to, ["test@example.com"])
-        self.assertEqual(message.body, "Test Body")
+        self.assertEqual(message_dict["subject"], "Test Subject")
+        self.assertEqual(message_dict["to"], ["test@example.com"])
+        self.assertEqual(message_dict["body"], "Test Body")
 
-    @patch("authentik.stages.email.tasks.send_mails")
-    def test_expr_send_email_with_template(self, mock_send_mails):
+    @patch("authentik.stages.email.tasks.send_mail")
+    def test_expr_send_email_with_template(self, mock_send_mail):
         """Test ak_send_email with template parameter"""
         user = create_test_user()
         evaluator = BaseEvaluator(generate_id())
@@ -124,7 +122,7 @@ class TestEvaluator(TestCase):
         )
 
         self.assertTrue(result)
-        mock_send_mails.assert_called_once()
+        mock_send_mail.send.assert_called_once()
 
     def test_expr_send_email_validation_errors(self):
         """Test ak_send_email validation errors"""
@@ -172,14 +170,14 @@ class TestEvaluator(TestCase):
         self.assertEqual(stage, custom_stage)
         self.assertFalse(stage.use_global_settings)
 
-    @patch("authentik.stages.email.tasks.send_mails")
-    def test_expr_send_email_with_context(self, mock_send_mails):
+    @patch("authentik.stages.email.tasks.send_mail")
+    def test_expr_send_email_with_context(self, mock_send_mail):
         """Test ak_send_email with custom context parameter"""
         user = create_test_user()
         evaluator = BaseEvaluator(generate_id())
         evaluator._context = {"user": user, "request_id": "123"}
 
-        # Test sending email with custom context
+        # Test sending email with template and custom context
         result = evaluator.evaluate(
             "return ak_send_email('test@example.com', 'Test Subject', "
             "template='email/password_reset.html', "
@@ -187,14 +185,14 @@ class TestEvaluator(TestCase):
         )
 
         self.assertTrue(result)
-        mock_send_mails.assert_called_once()
+        mock_send_mail.send.assert_called_once()
 
-        # Verify the call arguments and context
-        args, kwargs = mock_send_mails.call_args
-        stage, message = args
+        # Verify the call arguments - send_mail.send is called with (message_dict, None, None)
+        args, kwargs = mock_send_mail.send.call_args
+        message_dict, stage_class_path, email_stage_pk = args
 
-        # The template context should include user, evaluator context, and custom context
-        self.assertEqual(message.subject, "Test Subject")
-        self.assertEqual(message.to, ["test@example.com"])
-        self.assertIn("2026-01-01", message.body)
-        self.assertIn("http://localhost", message.body)
+
+        self.assertEqual(message_dict["subject"], "Test Subject")
+        self.assertEqual(message_dict["to"], ["test@example.com"])
+        self.assertIn("2026-01-01", message_dict["body"])
+        self.assertIn("http://localhost", message_dict["body"])
