@@ -1,7 +1,6 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RoleForm";
-import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
 import "#elements/Tabs";
@@ -12,12 +11,13 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 
+import { setPageDetails } from "#components/ak-page-navbar";
 import { renderDescriptionList } from "#components/DescriptionList";
 
 import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, html, nothing } from "lit";
+import { css, html, nothing, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -73,15 +73,6 @@ export class RoleViewPage extends AKElement {
         });
     }
 
-    render() {
-        return html`<ak-page-header
-                icon="fa fa-lock"
-                header=${msg(str`Role ${this._role?.name || ""}`)}
-            >
-            </ak-page-header>
-            ${this.renderBody()}`;
-    }
-
     renderUpdateControl(role: Role) {
         return html` <div class="pf-c-description-list__text">
             <ak-forms-modal>
@@ -93,7 +84,7 @@ export class RoleViewPage extends AKElement {
         </div>`;
     }
 
-    renderBody() {
+    render() {
         if (!this._role) {
             return nothing;
         }
@@ -146,6 +137,14 @@ export class RoleViewPage extends AKElement {
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
         </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+        setPageDetails({
+            icon: "fa fa-lock",
+            header: this._role?.name ? msg(str`Role ${this._role.name}`) : msg("Role"),
+        });
     }
 }
 

@@ -25,12 +25,12 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of osTicket with authentik, you need to create an application/provider pair in authentik.
 
-1. Log in to authentik as an administrator, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **slug** values because they will be required later.
+        - Note the **Client ID**, **Client Secret** and **slug** values because they will be required later.
         - Set a `Strict` redirect URI to `https://osticket.company/osticket/api/auth/oauth2`.
         - Select any available signing key.
         - Under **Advanced Protocol Settings**:
@@ -42,7 +42,7 @@ To support the integration of osTicket with authentik, you need to create an app
 ## osTicket configuration
 
 1. Download the OAuth2 plugin from [the osTicket website](https://osticket.com/download) and place it into the `include/plugins` folder of your osTicket installation.
-2. Log in to osTicket as an administrator, and navigate to the **Admin Panel**.
+2. Log in to osTicket as an administrator and navigate to the **Admin Panel**.
 3. Navigate to **Manage** > **Plugins**.
 4. Click **Add New Plugins** and follow the on-screen instructions to install the OAuth2 plugin.
 5. Once installed, click on the newly installed OAuth2 plugin, set **Status** to `Active`, then click **Save Changes**.

@@ -11,8 +11,6 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { isAdminRoute } from "#elements/router/utils";
 import { themeImage } from "#elements/utils/images";
 
-import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
-
 import { SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
@@ -28,6 +26,13 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface PageHeaderInit {
+    header?: string | null;
+    description?: string | null;
+    icon?: string | null;
+    iconImage?: boolean;
+}
+
 /**
  * A global navbar component at the top of the page.
  *
@@ -35,31 +40,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * dispatched by the `ak-page-header` component.
  */
 @customElement("ak-page-navbar")
-export class AKPageNavbar
-    extends WithBrandConfig(AKElement)
-    implements PageHeaderInit, SidebarToggleEventDetail
-{
+export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageHeaderInit {
     //#region Static Properties
-
-    private static elementRef: AKPageNavbar | null = null;
-
-    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
-        const { elementRef } = AKPageNavbar;
-        if (!elementRef) {
-            console.debug(
-                `ak-page-header: Could not find ak-page-navbar, skipping event dispatch.`,
-            );
-            return;
-        }
-
-        const { header, description, icon, iconImage } = detail;
-
-        elementRef.header = header;
-        elementRef.description = description;
-        elementRef.icon = icon;
-        elementRef.iconImage = iconImage || false;
-        elementRef.hasIcon = !!icon;
-    };
 
     static styles: CSSResult[] = [
         PFBase,
@@ -259,23 +241,21 @@ export class AKPageNavbar
     //#region Properties
 
     @state()
-    icon?: string;
+    icon?: string | null = null;
 
     @state()
     iconImage = false;
 
     @state()
-    header?: string;
+    header?: string | null = null;
 
     @state()
-    description?: string;
+    description?: string | null = null;
 
     @state()
     hasIcon = true;
 
-    @property({
-        type: Boolean,
-    })
+    @property({ type: Boolean, reflect: true })
     public open?: boolean;
 
     @state()
@@ -288,7 +268,7 @@ export class AKPageNavbar
 
     //#region Private Methods
 
-    #setTitle(header?: string) {
+    #setTitle(header?: string | null) {
         let title = this.brandingTitle;
 
         if (isAdminRoute()) {
@@ -303,15 +283,25 @@ export class AKPageNavbar
 
     #toggleSidebar() {
         this.open = !this.open;
-
-        this.dispatchEvent(
-            new CustomEvent<SidebarToggleEventDetail>("sidebar-toggle", {
-                bubbles: true,
-                composed: true,
-                detail: { open: this.open },
-            }),
-        );
+        this.dispatchEvent(new PageNavMenuToggle(!!this.open));
     }
+
+    //#endregion
+
+    //#region Event Handlers
+
+    #onWebSocket = () => {
+        this.firstUpdated();
+    };
+
+    #onPageDetails = (ev: PageDetailsUpdate) => {
+        const { header, description, icon, iconImage } = ev.header;
+        this.header = header;
+        this.description = description;
+        this.icon = icon;
+        this.iconImage = iconImage || false;
+        this.hasIcon = !!icon;
+    };
 
     //#endregion
 
@@ -319,16 +309,14 @@ export class AKPageNavbar
 
     public connectedCallback(): void {
         super.connectedCallback();
-        AKPageNavbar.elementRef = this;
-
-        window.addEventListener(EVENT_WS_MESSAGE, () => {
-            this.firstUpdated();
-        });
+        window.addEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
+        window.addEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
     }
 
     public disconnectedCallback(): void {
+        window.removeEventListener(EVENT_WS_MESSAGE, this.#onWebSocket);
+        window.removeEventListener(PageDetailsUpdate.eventName, this.#onPageDetails);
         super.disconnectedCallback();
-        AKPageNavbar.elementRef = null;
     }
 
     public async firstUpdated() {
@@ -427,8 +415,37 @@ export class AKPageNavbar
     //#endregion
 }
 
+export class PageDetailsUpdate extends Event {
+    static readonly eventName = "ak-page-details-update";
+    header: PageHeaderInit;
+
+    constructor(header: PageHeaderInit) {
+        super(PageDetailsUpdate.eventName, { bubbles: true, composed: true });
+        this.header = header;
+    }
+}
+
+export class PageNavMenuToggle extends Event {
+    static readonly eventName = "ak-page-nav-menu-toggle";
+    open: boolean;
+
+    constructor(open?: boolean) {
+        super(PageNavMenuToggle.eventName, { bubbles: true, composed: true });
+        this.open = !!open;
+    }
+}
+
+export function setPageDetails(header: PageHeaderInit) {
+    window.dispatchEvent(new PageDetailsUpdate(header));
+}
+
 declare global {
     interface HTMLElementTagNameMap {
         "ak-page-navbar": AKPageNavbar;
+    }
+
+    interface GlobalEventHandlersEventMap {
+        [PageDetailsUpdate.eventName]: PageDetailsUpdate;
+        [PageNavMenuToggle.eventName]: PageNavMenuToggle;
     }
 }

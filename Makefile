@@ -321,6 +321,9 @@ ci--meta-debug:
 	python -V
 	node --version
 
+ci-mypy: ci--meta-debug
+	uv run mypy --strict $(PY_SOURCES)
+
 ci-black: ci--meta-debug
 	uv run black --check $(PY_SOURCES)
 
