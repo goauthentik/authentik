@@ -1,9 +1,11 @@
 """SCIM OAuth tests"""
 
 from base64 import b64encode
+from datetime import timedelta
 from unittest.mock import MagicMock, patch
 
 from django.urls import reverse
+from django.utils.timezone import now
 from requests_mock import Mocker
 from rest_framework.test import APITestCase
 
@@ -83,6 +85,18 @@ class SCIMOAuthTests(APITestCase):
             f"Basic {auth}",
         )
         self.assertEqual(mocker.request_history[0].body, "grant_type=password&foo=bar")
+
+    def test_existing_token(self):
+        """Test existing token"""
+        UserOAuthSourceConnection.objects.create(
+            source=self.source,
+            user=self.provider.auth_oauth_user,
+            access_token=generate_id(),
+            expires=now() + timedelta(hours=3),
+        )
+        with Mocker() as mocker:
+            self.provider.scim_auth()
+            self.assertEqual(len(mocker.request_history), 0)
 
     @Mocker()
     def test_user_create(self, mock: Mocker):

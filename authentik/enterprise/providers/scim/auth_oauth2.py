@@ -55,7 +55,7 @@ class SCIMOAuthAuth:
 
     def get_connection(self):
         token = UserOAuthSourceConnection.objects.filter(
-            source=self.provider.auth_oauth, user=self.user, expires__lt=now()
+            source=self.provider.auth_oauth, user=self.user, expires__gt=now()
         ).first()
         if token and token.access_token:
             return token
