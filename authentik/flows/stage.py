@@ -160,7 +160,7 @@ class ChallengeStageView(StageView):
                 "user": self.get_pending_user(for_display=True),
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
 
