@@ -13,6 +13,10 @@ if TYPE_CHECKING:
     from authentik.providers.scim.models import SCIMProvider
 
 
+class SCIMOAuthException(SCIMRequestException):
+    """Exceptions related to OAuth operations for SCIM requests"""
+
+
 class SCIMOAuthAuth:
 
     def __init__(self, provider: "SCIMProvider"):
@@ -41,9 +45,13 @@ class SCIMOAuthAuth:
                 headers=client._default_headers,
             )
             response.raise_for_status()
-            return response.json()
+            body = response.json()
+            if "error" in body:
+                self.logger.info("Failed to get new OAuth token", error=body["error"])
+                raise SCIMOAuthException(response, body["error"])
+            return body
         except RequestException as exc:
-            raise SCIMRequestException(message="Failed to get OAuth token") from exc
+            raise SCIMOAuthException(exc.response, message="Failed to get OAuth token") from exc
 
     def get_connection(self):
         token = UserOAuthSourceConnection.objects.filter(
@@ -52,9 +60,6 @@ class SCIMOAuthAuth:
         if token and token.access_token:
             return token
         token = self.retrieve_token()
-        if "error" in token:
-            self.logger.info("Failed to get new OAuth token", error=token["error"])
-            raise SCIMRequestException(token["error"])
         access_token = token["access_token"]
         expires_in = int(token.get("expires_in", 0))
         token, _ = UserOAuthSourceConnection.objects.update_or_create(

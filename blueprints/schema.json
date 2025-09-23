@@ -9395,7 +9395,6 @@
                 },
                 "token": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Token",
                     "description": "Authentication token"
                 },

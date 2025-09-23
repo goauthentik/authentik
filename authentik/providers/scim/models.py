@@ -95,7 +95,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         choices=SCIMAuthenticationMode.choices, default=SCIMAuthenticationMode.TOKEN
     )
 
-    token = models.TextField(help_text=_("Authentication token"))
+    token = models.TextField(help_text=_("Authentication token"), blank=True)
     auth_oauth = models.ForeignKey(
         "authentik_sources_oauth.OAuthSource",
         on_delete=models.SET_DEFAULT,

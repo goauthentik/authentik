@@ -1,23 +1,12 @@
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.translation import gettext as _
-from rest_framework.exceptions import ValidationError
 
 from authentik.core.models import USER_PATH_SYSTEM_PREFIX, User, UserTypes
-from authentik.enterprise.license import LicenseKey
 from authentik.events.middleware import audit_ignore
 from authentik.providers.scim.models import SCIMAuthenticationMode, SCIMProvider
 
 USER_PATH_PROVIDERS_SCIM = USER_PATH_SYSTEM_PREFIX + "/providers/scim"
-
-
-@receiver(pre_save, sender=SCIMProvider)
-def scim_provider_pre_save_oauth(sender: type[Model], instance: SCIMProvider, **__):
-    if instance.auth_mode == SCIMAuthenticationMode.TOKEN:
-        return
-    if not LicenseKey.cached_summary().status.is_valid:
-        raise ValidationError(_("Enterprise is required to create/update this object."))
 
 
 @receiver(post_save, sender=SCIMProvider)

@@ -52643,7 +52643,6 @@ components:
           type: boolean
         token:
           type: string
-          minLength: 1
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -56230,7 +56229,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - token
       - url
       - verbose_name
       - verbose_name_plural
@@ -56306,7 +56304,6 @@ components:
           type: boolean
         token:
           type: string
-          minLength: 1
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -56336,7 +56333,6 @@ components:
             the remote system.
       required:
       - name
-      - token
       - url
     SCIMProviderUser:
       type: object

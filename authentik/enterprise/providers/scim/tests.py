@@ -3,11 +3,13 @@
 from base64 import b64encode
 from unittest.mock import MagicMock, patch
 
-from django.test import TestCase
+from django.urls import reverse
 from requests_mock import Mocker
+from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import License
 from authentik.enterprise.tests.test_license import expiry_valid
@@ -17,24 +19,11 @@ from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnectio
 from authentik.tenants.models import Tenant
 
 
-class SCIMOAuthTests(TestCase):
+class SCIMOAuthTests(APITestCase):
     """SCIM User tests"""
 
-    @patch(
-        "authentik.enterprise.license.LicenseKey.validate",
-        MagicMock(
-            return_value=LicenseKey(
-                aud="",
-                exp=expiry_valid,
-                name=generate_id(),
-                internal_users=100,
-                external_users=100,
-            )
-        ),
-    )
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self) -> None:
-        License.objects.create(key=generate_id())
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         Tenant.objects.update(avatars="none")
@@ -141,4 +130,46 @@ class SCIMOAuthTests(TestCase):
                 "displayName": f"{uid} {uid}",
                 "userName": uid,
             },
+        )
+
+    @patch(
+        "authentik.enterprise.license.LicenseKey.validate",
+        MagicMock(
+            return_value=LicenseKey(
+                aud="",
+                exp=expiry_valid,
+                name=generate_id(),
+                internal_users=100,
+                external_users=100,
+            )
+        ),
+    )
+    def test_api_create(self):
+        License.objects.create(key=generate_id())
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:scimprovider-list"),
+            {
+                "name": generate_id(),
+                "url": "http://localhost",
+                "auth_mode": "oauth",
+                "auth_oauth": str(self.source.pk),
+            },
+        )
+        self.assertEqual(res.status_code, 201)
+
+    def test_api_create_no_license(self):
+        self.client.force_login(create_test_admin_user())
+        res = self.client.post(
+            reverse("authentik_api:scimprovider-list"),
+            {
+                "name": generate_id(),
+                "url": "http://localhost",
+                "auth_mode": "oauth",
+                "auth_oauth": str(self.source.pk),
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content, {"auth_mode": ["Enterprise is required to use the OAuth mode."]}
         )
