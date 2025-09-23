@@ -406,7 +406,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         try:
             return self.attributes.get("settings", {}).get("locale", "")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
             return request.brand.locale
@@ -587,7 +587,7 @@ class Application(SerializerModel, PolicyBindingModel):
             try:
                 return url % user.__dict__
 
-            except Exception as exc:
+            except Exception as exc:  # noqa
                 LOGGER.warning("Failed to format launch url", exc=exc)
                 return url
         return url
@@ -783,7 +783,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
                 "slug": self.slug,
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Failed to template user path", exc=exc, source=self)
             return User.default_path()
 
