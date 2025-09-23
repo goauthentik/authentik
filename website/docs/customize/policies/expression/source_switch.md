@@ -1,5 +1,5 @@
 ---
-title: Email-based dynamic federated source selection
+title: Switch which source is used based on email address
 ---
 
 You can use an expression policy to determine which [source](../../../../users-sources/sources/) (a set of user credentials and data, stored in authentik, Google, GitHub, etc) is used for a particular user, based on the domain of the email address the user enters when they log in and authenticate.
