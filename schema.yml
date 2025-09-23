@@ -38573,6 +38573,7 @@ components:
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
+      - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
@@ -38757,11 +38758,6 @@ components:
       required:
       - name
       - slug
-    AuthModeEnum:
-      enum:
-      - static
-      - prompt
-      type: string
     AuthTypeEnum:
       enum:
       - basic
@@ -42000,7 +41996,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         launch_url:
           type: string
           nullable: true
@@ -42021,6 +42017,11 @@ components:
       - protocol
       - provider
       - provider_obj
+    EndpointAuthModeEnum:
+      enum:
+      - static
+      - prompt
+      type: string
     EndpointDevice:
       type: object
       description: Serializer for Endpoint authenticator devices
@@ -42073,7 +42074,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         maximum_connections:
           type: integer
           maximum: 2147483647
@@ -50497,7 +50498,7 @@ components:
             type: string
             format: uuid
         auth_mode:
-          $ref: '#/components/schemas/AuthModeEnum'
+          $ref: '#/components/schemas/EndpointAuthModeEnum'
         maximum_connections:
           type: integer
           maximum: 2147483647
@@ -52642,8 +52643,18 @@ components:
           type: boolean
         token:
           type: string
-          minLength: 1
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -53075,6 +53086,9 @@ components:
           type: string
           writeOnly: true
           nullable: true
+        expires:
+          type: string
+          format: date-time
     PatchedUserPlexSourceConnectionRequest:
       type: object
       description: User source connection
@@ -56057,6 +56071,11 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+    SCIMAuthenticationModeEnum:
+      enum:
+      - token
+      - oauth
+      type: string
     SCIMMapping:
       type: object
       description: SCIMMapping Serializer
@@ -56177,6 +56196,17 @@ components:
         token:
           type: string
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -56199,7 +56229,6 @@ components:
       - meta_model_name
       - name
       - pk
-      - token
       - url
       - verbose_name
       - verbose_name_plural
@@ -56275,8 +56304,18 @@ components:
           type: boolean
         token:
           type: string
-          minLength: 1
           description: Authentication token
+        auth_mode:
+          $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
+        auth_oauth:
+          type: string
+          format: uuid
+          nullable: true
+          description: OAuth Source used for authentication
+        auth_oauth_params:
+          type: object
+          additionalProperties: {}
+          description: Additional OAuth parameters, such as grant_type
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
@@ -56294,7 +56333,6 @@ components:
             the remote system.
       required:
       - name
-      - token
       - url
     SCIMProviderUser:
       type: object
@@ -58838,6 +58876,9 @@ components:
           type: string
           format: date-time
           readOnly: true
+        expires:
+          type: string
+          format: date-time
       required:
       - created
       - identifier
@@ -58862,6 +58903,9 @@ components:
           type: string
           writeOnly: true
           nullable: true
+        expires:
+          type: string
+          format: date-time
       required:
       - identifier
       - source

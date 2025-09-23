@@ -7365,6 +7365,7 @@
                         "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
+                        "authentik.enterprise.providers.scim",
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.search",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
@@ -9394,9 +9395,27 @@
                 },
                 "token": {
                     "type": "string",
-                    "minLength": 1,
                     "title": "Token",
                     "description": "Authentication token"
+                },
+                "auth_mode": {
+                    "type": "string",
+                    "enum": [
+                        "token",
+                        "oauth"
+                    ],
+                    "title": "Auth mode"
+                },
+                "auth_oauth": {
+                    "type": "integer",
+                    "title": "Auth oauth",
+                    "description": "OAuth Source used for authentication"
+                },
+                "auth_oauth_params": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Auth oauth params",
+                    "description": "Additional OAuth parameters, such as grant_type"
                 },
                 "compatibility_mode": {
                     "type": "string",
@@ -11188,6 +11207,11 @@
                         "null"
                     ],
                     "title": "Access token"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
                 },
                 "icon": {
                     "type": "string",
