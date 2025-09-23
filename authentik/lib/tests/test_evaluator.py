@@ -191,7 +191,6 @@ class TestEvaluator(TestCase):
         args, kwargs = mock_send_mail.send.call_args
         message_dict, stage_class_path, email_stage_pk = args
 
-
         self.assertEqual(message_dict["subject"], "Test Subject")
         self.assertEqual(message_dict["to"], ["test@example.com"])
         self.assertIn("2026-01-01", message_dict["body"])
