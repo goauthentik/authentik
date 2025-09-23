@@ -73,17 +73,17 @@ Docker containers are typically configured using environment variables. To ensur
 
 You must also add one of the following variables, depending on your desired behaviour:
 
-To automatically redirect all unauthenticated users, add the following:
+    - To automatically redirect all unauthenticated users, add the following:
 
-```yaml
-EXTENSION_PRIORITY=openid
-```
+        ```yaml
+        EXTENSION_PRIORITY=openid
+        ```
 
-Alternatively, to present unauthenticated users with a login screen, add the following:
+    - Alternatively, to present unauthenticated users with a login screen, add the following:
 
-```yaml
-EXTENSION_PRIORITY=*,openid
-```
+        ```yaml
+        EXTENSION_PRIORITY=*,openid
+        ```
 
 :::tip Older versions of Apache Guacamole (pre v1.6)
 In older versions of Apache Guacamole, the `OPENID_ENABLED=true`, `EXTENSION_PRIORITY=openid` or `EXTENSION_PRIORITY=*,openid` are not required.
@@ -109,19 +109,19 @@ Additionally, ensure your `guacamole.properties` file (typically located in `/et
     openid-enabled=true
     ```
 
-    You must also add one of the following settings depending on your desired behaviour:
+You must also add one of the following settings depending on your desired behaviour:
 
-To automatically redirect all unauthenticated users, add the following:
+    - To automatically redirect all unauthenticated users, add the following:
 
-```yaml
-extension-priority=openid
-```
+        ```yaml
+        extension-priority=openid
+        ```
 
-Alternatively, to present unauthenticated users with a login screen, add the following:
+    - Alternatively, to present unauthenticated users with a login screen, add the following:
 
-```yaml
-extension-priority=*,openid
-```
+        ```yaml
+        extension-priority=*,openid
+        ```
 
 :::tip Older versions of Apache Guacamole (pre v1.6)
 In older versions of Apache Guacamole, the `openid-enabled=true`, `extension-priority=openid` or `extension-priority=*,openid` are not required.
