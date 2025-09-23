@@ -2,9 +2,9 @@
 title: Expression Policies
 ---
 
-Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. With Expression polices, you can provide Python code to enforce custom checks and validation.
+Expression policies are perhaps the most flexible way to define specific implementations of flows and stages. When you [create](./working_with_policies.md#create-a-policy) an expression policy, you provide your own custom Python code to enforce custom checks and validation.
 
-The passing of the policy is determined by the return value of the code.
+The passing of the policy is determined by the return value of the code: `True` or `False`.
 
 To pass a policy, use:
 
@@ -27,9 +27,18 @@ if request.context["pending_user"].username == "marie":
 return False
 ```
 
-If the return is `True` that means Yes, use this stage (i.e. the user will get the MFA prompt). A return of `False` means remove this stage from the plan.
+When the policy returns `True`, the MFA validation stage is enforced. When it returns `False`, the MFA validation stage is skipped.
 
-## Available Functions
+## Sample expression policies
+
+Expressions policies with sample Python that we have documented:
+
+- [Source-switching based on email address](./expression/source_switch.md)
+- [Managing flow context keys](./expression/managing_flow_context_keys.md)
+- [Unique email addresses](./expression/unique_email.md)
+- [Create an email address allow list](./expression/whitelist_email.md)
+
+## Available functions
 
 ### `ak_message(message: str)`
 
