@@ -125,6 +125,45 @@ Example:
 jwt = ak_create_jwt(request.user, "my-oauth2-provider-name", ["openid", "profile", "email"])
 ```
 
+### `ak_send_email(address: str, subject: str, body: str = None, stage: EmailStage = None, template: str = None, context: dict = None) -> bool`:ak-version[2025.10]
+
+Send an email using authentik's email system.
+
+The `address` parameter specifies the recipient email address. The `subject` parameter sets the email subject line.
+
+You must provide either `body` (for plain text/HTML content) or `template` (for template rendering), but not both.
+
+The `stage` parameter can be an `EmailStage` instance for custom email settings. If `None`, global email settings are used.
+
+The `template` parameter specifies a template name to render. When using templates, you can pass additional context variables via the `context` parameter.
+
+The function returns `True` if the email was queued successfully, `False` otherwise.
+
+Examples:
+
+```python
+# Send email with plain body
+ak_send_email("user@example.com", "Welcome!", body="Welcome to our platform!")
+
+# Send email using a template
+ak_send_email("user@example.com", "Password Reset", template="email/password_reset.html")
+
+# Send email with custom context for template
+ak_send_email(
+    "user@example.com",
+    "Account Update",
+    template="email/event_notification.html",
+    context={
+        "title": "Profile Updated",
+        "body": "Your account profile has been successfully updated.",
+        "key_value": {"Updated Field": "Email Address", "Date": "2025-01-01"}
+    }
+)
+
+# Send email with custom email stage
+ak_send_email("admin@example.com", "Report", body="Daily report", stage=my_custom_stage)
+```
+
 ## Comparing IP Addresses
 
 To compare IP Addresses or check if an IP Address is within a given subnet, you can use the functions `ip_address('192.0.2.1')` and `ip_network('192.0.2.0/24')`. With these objects you can do [arithmetic operations](https://docs.python.org/3/library/ipaddress.html#operators).
