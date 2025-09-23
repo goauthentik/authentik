@@ -75,7 +75,7 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 To support the integration of authentik with OpenProject, you need to configure authentication in the OpenProject administration interface.
 
-1. Login to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
+1. Log in to OpenProject as an administrator, click on your profile icon at the top right and then **Administration**.
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:
