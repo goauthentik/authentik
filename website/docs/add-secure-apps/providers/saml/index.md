@@ -120,7 +120,7 @@ In authentik, it's possible to configure which property mapping will be used to 
 
 ### Default NameID policy
 
-In authentik, it's also possible to configure the default NameID Policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
+In authentik, it's also possible to configure the default SAML NameID policy used for IDP-initiated logins or when an incoming SP assertion doesn't specify a NameID policy (also applies when using a custom NameID Mapping). The following table outlines how NameID policies are handled:
 
 | Default NameID policy                                                            | How authentik will handle the NameID                                                                                                                                                               |
 | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
