@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.urls import reverse
 from django.utils.timezone import now
@@ -172,6 +172,10 @@ class SCIMOAuthTests(APITestCase):
         )
         self.assertEqual(res.status_code, 201)
 
+    @patch(
+        "authentik.enterprise.models.LicenseUsageStatus.is_valid",
+        PropertyMock(return_value=False),
+    )
     def test_api_create_no_license(self):
         self.client.force_login(create_test_admin_user())
         res = self.client.post(
