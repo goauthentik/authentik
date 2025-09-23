@@ -5,7 +5,10 @@ import socket
 from ipaddress import ip_address, ip_network
 from textwrap import indent
 from types import CodeType
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from authentik.stages.email.models import EmailStage
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
@@ -57,11 +60,12 @@ class BaseEvaluator:
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
+            "ak_create_jwt": self.expr_create_jwt,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_logger": get_logger(self._filename).bind(),
+            "ak_send_email": self.expr_send_email,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
-            "ak_create_jwt": self.expr_create_jwt,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
@@ -215,6 +219,75 @@ class BaseEvaluator:
         access_token.id_token = IDToken.new(provider, access_token, request)
         access_token.save()
         return access_token.token
+
+    def expr_send_email(
+        self,
+        address: str,
+        subject: str,
+        body: str | None = None,
+        stage: "EmailStage | None" = None,
+        template: str | None = None,
+        context: dict | None = None,
+    ) -> bool:
+        """Send an email using authentik's email system
+
+        Args:
+            address: Email address to send to
+            subject: Email subject
+            body: Email body (plain text/HTML). Mutually exclusive with template.
+            stage: EmailStage instance to use for settings. If None, uses global settings.
+            template: Template name to render. Mutually exclusive with body.
+            context: Additional context variables for template rendering.
+
+        Returns:
+            bool: True if email was queued successfully, False otherwise
+        """
+        # Deferred imports to avoid circular import issues
+        from authentik.stages.email.models import EmailStage
+        from authentik.stages.email.tasks import send_mails
+        from authentik.stages.email.utils import TemplateEmailMessage
+
+        if body and template:
+            raise ValueError("body and template parameters are mutually exclusive")
+
+        if not body and not template:
+            raise ValueError("Either body or template parameter must be provided")
+
+        # Use the provided EmailStage or create one
+        email_stage = stage or EmailStage(use_global_settings=True)
+
+        try:
+
+            if template is not None:
+                # Use all available context from the evaluator for template rendering
+                template_context = self._context.copy()
+                # Add any custom context passed to the function
+                if context:
+                    template_context.update(context)
+
+                # Use template rendering
+                message = TemplateEmailMessage(
+                    subject=subject,
+                    to=[("", address)],  # Empty name, just email address
+                    language="",  # Use default language
+                    template_name=template,
+                    template_context=template_context,
+                )
+            else:
+                # Use plain body
+                message = TemplateEmailMessage(
+                    subject=subject,
+                    to=[("", address)],
+                    body=body,
+                )
+
+            # Send the email using the email stage's task system
+            send_mails(email_stage, message)
+            return True
+
+        except Exception as exc:
+            LOGGER.warning("Failed to send email", exc=exc, address=address, subject=subject)
+            return False
 
     def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
