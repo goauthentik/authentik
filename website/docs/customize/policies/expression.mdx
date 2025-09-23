@@ -27,7 +27,7 @@ if request.context["pending_user"].username == "marie":
 return False
 ```
 
-If the return is `True` that means Yes, use this stage (i.e. the user will get the MFA prompt). A return of `False` means remove this stage from the plan.
+When the policy returns `True`, the MFA validation stage is enforced. When it returns `False`, the MFA validation stage is skipped.
 
 ## Sample expression policies
 
