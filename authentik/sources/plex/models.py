@@ -42,6 +42,7 @@ class PlexAuthenticationChallengeResponse(ChallengeResponse):
 class PlexSource(ScheduledModel, Source):
     """Authenticate against plex.tv"""
 
+    provider_type = "plex"
     client_id = models.TextField(
         default=generate_id,
         help_text=_("Client identifier used to talk to Plex."),
