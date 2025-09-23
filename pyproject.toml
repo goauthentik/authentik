@@ -177,13 +177,14 @@ exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
 select = [
-  "E",  # pycodestyle
-  "F",  # Pyflakes
-  "I",  # isort
-  "UP", # pyupgrade
-  "B",  # flake8-bugbear
-  "DJ", # django
-  "PL", # pylint
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "B",   # flake8-bugbear
+  "DJ",  # django
+  "PL",  # pylint
+  "BLE", # flake8-blind-except
 ]
 ignore = [
   "DJ001", # Avoid using `null=True` on string-based fields,
