@@ -1,5 +1,7 @@
 import "#flow/components/ak-flow-card";
 
+import { FocusTarget } from "#elements/utils/focus";
+
 import { AKFormErrors } from "#components/ak-field-errors";
 import { AKLabel } from "#components/ak-label";
 
@@ -13,7 +15,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, LitElement, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-code")
@@ -21,6 +23,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
+    static shadowRootOptions = { ...LitElement.shadowRootOptions, delegatesFocus: true };
+
     static styles: CSSResult[] = [
         ...super.styles,
         css`
@@ -35,6 +39,12 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
             }
         `,
     ];
+
+    #focusTarget = new FocusTarget<HTMLInputElement>();
+
+    protected override firstUpdated(): void {
+        this.#focusTarget.focus();
+    }
 
     deviceMessage(): string {
         switch (this.deviceChallenge?.deviceClass) {
@@ -85,6 +95,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         : msg("Authentication code"),
                 )}
                 <input
+                    ${this.#focusTarget.toRef()}
                     id="validation-code-input"
                     type="text"
                     name="code"
@@ -95,7 +106,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
                         ? "[0-9a-zA-Z]*"
                         : "[0-9]*"}"
                     placeholder="${msg("Please enter your code")}"
-                    autofocus=""
+                    autofocus
                     autocomplete="one-time-code"
                     class="pf-c-form-control"
                     value="${PasswordManagerPrefill.totp || ""}"

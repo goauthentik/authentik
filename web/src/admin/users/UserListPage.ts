@@ -16,7 +16,6 @@ import { PFSize } from "#common/enums";
 import { parseAPIResponseError } from "#common/errors/network";
 import { userTypeToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
-import { formatElapsedTime } from "#common/temporal";
 import { rootInterface } from "#common/theme";
 import { DefaultUIConfig, uiConfig } from "#common/ui/config";
 import { me } from "#common/users";
@@ -25,8 +24,9 @@ import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageCont
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
 import { writeToClipboard } from "#elements/utils/writeToClipboard";
 
 import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
@@ -34,7 +34,7 @@ import type { AdminInterface } from "#admin/AdminInterface/index.entrypoint";
 import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -62,8 +62,8 @@ export const requestRecoveryLink = (user: User) =>
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
-        <span slot="submit"> ${msg("Send link")} </span>
-        <span slot="header"> ${msg("Send recovery link to user")} </span>
+        <span slot="submit">${msg("Send link")}</span>
+        <span slot="header">${msg("Send recovery link to user")}</span>
         <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
         <button slot="trigger" class="pf-c-button pf-m-secondary">
             ${msg("Email recovery link")}
@@ -90,18 +90,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     clearOnRefresh = true;
     supportsQL = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
-    pageTitle(): string {
-        return msg("Users");
-    }
-    pageDescription(): string {
-        return "";
-    }
-    pageIcon(): string {
-        return "pf-icon pf-icon-user";
-    }
+    protected override searchEnabled = true;
+    public pageTitle = msg("Users");
+    public pageDescription = "";
+    public pageIcon = "pf-icon pf-icon-user";
 
     @property()
     order = "last_login";
@@ -151,15 +143,21 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return users;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-            new TableColumn(msg("Type"), "type"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: User): string {
+        if (item.name) {
+            return msg(str`${item.username} (${item.name})`);
+        }
+
+        return item.username;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+        [msg("Type"), "type"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -192,7 +190,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 ? html`<div slot="notice" class="pf-c-form__alert">
                       <div class="pf-c-alert pf-m-inline pf-m-warning">
                           <div class="pf-c-alert__icon">
-                              <i class="fas fa-exclamation-circle"></i>
+                              <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
@@ -201,7 +199,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                           </h4>
                       </div>
                   </div>`
-                : html``}
+                : nothing}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
@@ -239,7 +237,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </div>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -248,18 +246,15 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -282,12 +277,12 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
@@ -397,14 +392,14 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create User")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create User")}</span>
                 <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create Service account")} </span>
+                <span slot="submit">${msg("Create")}</span>
+                <span slot="header">${msg("Create Service account")}</span>
                 <ak-user-service-account-form slot="form"> </ak-user-service-account-form>
                 <button slot="trigger" class="pf-c-button pf-m-secondary">
                     ${msg("Create Service account")}
@@ -414,9 +409,19 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     }
 
     protected renderSidebarBefore(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+        return html`<aside
+            aria-labelledby="sidebar-left-panel-header"
+            class="pf-c-sidebar__panel pf-m-width-25"
+        >
             <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("User folders")}</div>
+                <div
+                    role="heading"
+                    aria-level="2"
+                    id="sidebar-left-panel-header"
+                    class="pf-c-card__title"
+                >
+                    ${msg("User folders")}
+                </div>
                 <div class="pf-c-card__body">
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
@@ -427,7 +432,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     ></ak-treeview>
                 </div>
             </div>
-        </div>`;
+        </aside>`;
     }
 }
 

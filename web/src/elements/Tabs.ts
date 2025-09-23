@@ -2,6 +2,7 @@ import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "#common/constants
 
 import { AKElement } from "#elements/Base";
 import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, TemplateResult } from "lit";
@@ -81,8 +82,16 @@ export class Tabs extends AKElement {
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
+            <button
+                type="button"
+                role="tab"
+                id=${`${slot}-tab`}
+                aria-selected=${slot === this.currentPage ? "true" : "false"}
+                aria-controls=${ifPresent(slot)}
+                class="pf-c-tabs__link"
+                @click=${() => this.onClick(slot)}
+            >
+                <span class="pf-c-tabs__item-text"> ${page.getAttribute("aria-label")}</span>
             </button>
         </li>`;
     }
@@ -108,7 +117,7 @@ export class Tabs extends AKElement {
             this.onClick(wantedPage);
         }
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list">
+                <ul class="pf-c-tabs__list" role="tablist">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>

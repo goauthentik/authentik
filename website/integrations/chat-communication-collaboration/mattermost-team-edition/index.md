@@ -66,7 +66,7 @@ The following `id` property mapping is optional. If omitted, Mattermost will gen
 - **Application**: provide a descriptive name, an optional group for the type of application, and the policy engine mode.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to `https://mattermost.company/signup/gitlab/complete`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scopes you just created to the list of selected scopes.

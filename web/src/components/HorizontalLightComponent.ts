@@ -14,9 +14,9 @@ import { property } from "lit/decorators.js";
 
 export interface HorizontalLightComponentProps<T> extends AKElementProps {
     name: string;
-    label?: string;
+    label: string | null;
     required?: boolean;
-    help?: string;
+    help: string | null;
     bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
     hidden?: boolean;
     invalid?: boolean;
@@ -55,23 +55,48 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    label?: string;
+    @property({ type: String })
+    public get label() {
+        return this.ariaLabel;
+    }
+
+    public set label(value: string | null) {
+        this.ariaLabel = value;
+    }
+
+    /**
+     * The ARIA role for the input control
+     * @property
+     * @attribute
+     */
+    public get role() {
+        return super.role || "group";
+    }
+
+    public set role(value: string | null) {
+        super.role = value;
+    }
 
     /**
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    public required?: boolean;
+    @property({ type: Boolean, reflect: false })
+    public get required() {
+        return this.ariaRequired === "true";
+    }
+
+    public set required(value: boolean) {
+        this.ariaRequired = value ? "true" : "false";
+    }
 
     /**
      * Help text to display below the form element. Optional
      * @property
      * @attribute
      */
-    @property({ type: String, reflect: true })
-    help = "";
+    @property({ reflect: false })
+    help: string | null = null;
 
     /**
      * Extended help content. Optional. Expects to be a TemplateResult
@@ -84,8 +109,14 @@ export abstract class HorizontalLightComponent<T>
      * @property
      * @attribute
      */
-    @property({ type: Boolean, reflect: true })
-    hidden = false;
+    @property({ type: Boolean })
+    public get hidden() {
+        return this.ariaHidden === "true";
+    }
+
+    public set hidden(value: boolean) {
+        this.ariaHidden = value ? "true" : "false";
+    }
 
     /**
      * @property
@@ -122,6 +153,10 @@ export abstract class HorizontalLightComponent<T>
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
+    protected get helpID() {
+        return this.fieldID ? `field-help-${this.fieldID}` : "field-help";
+    }
+
     //#endregion
 
     //#region Rendering
@@ -148,13 +183,15 @@ export abstract class HorizontalLightComponent<T>
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
+            role="presentation"
             .errorMessages=${this.errorMessages}
         >
             <div slot="label" class="pf-c-form__group-label">
-                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label)}
+                ${AKLabel({ htmlFor: this.fieldID, required: this.required }, this.label || "")}
             </div>
 
-            ${this.renderControl()} ${this.renderHelp()}
+            ${this.renderControl()}
+            <div id=${this.helpID}>${this.renderHelp()}</div>
         </ak-form-element-horizontal> `;
     }
 

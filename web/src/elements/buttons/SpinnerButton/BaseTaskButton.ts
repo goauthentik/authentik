@@ -2,6 +2,7 @@ import { ERROR_CLASS, PROGRESS_CLASS, SUCCESS_CLASS } from "#common/constants";
 import { PFSize } from "#common/enums";
 
 import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { Task, TaskStatus } from "@lit/task";
@@ -58,7 +59,10 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     actionTask: Task;
 
     @property({ type: Boolean })
-    disabled = false;
+    public disabled = false;
+
+    @property({ type: String })
+    public label: string | null = null;
 
     constructor() {
         super();
@@ -130,6 +134,8 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
             part="spinner-button"
             class="pf-c-button pf-m-progress ${this.buttonClasses}"
             @click=${this.onClick}
+            type="button"
+            aria-label=${ifPresent(this.label)}
             ?disabled=${this.disabled}
         >
             ${this.actionTask.render({ pending: () => this.spinner })}

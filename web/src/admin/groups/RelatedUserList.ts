@@ -16,7 +16,6 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { PFSize } from "#common/enums";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
-import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
 
 import { Form } from "#elements/forms/Form";
@@ -24,7 +23,8 @@ import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
-import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 import { UserOption } from "#elements/user/utils";
 
 import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
@@ -108,9 +108,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     checkbox = true;
     clearOnRefresh = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     @property({ attribute: false })
     targetGroup?: Group;
@@ -139,14 +137,16 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return users;
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "is_active"),
-            new TableColumn(msg("Last login"), "last_login"),
-            new TableColumn(msg("Actions")),
-        ];
+    protected override rowLabel(item: User): string | null {
+        return item.username ?? item.name ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "username"],
+        [msg("Active"), "is_active"],
+        [msg("Last login"), "last_login"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -180,7 +180,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: User): TemplateResult[] {
+    row(item: User): SlottedTemplateResult[] {
         const canImpersonate =
             this.can(CapabilitiesEnum.CanImpersonate) && item.pk !== this.me?.user.pk;
         return [
@@ -189,17 +189,15 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <small>${item.name}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
-            html`${item.lastLogin
-                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
-                      <small>${item.lastLogin.toLocaleString()}</small>`
-                : msg("-")}`,
+            Timestamp(item.lastLogin),
+
             html`<ak-forms-modal>
-                    <span slot="submit"> ${msg("Update")} </span>
-                    <span slot="header"> ${msg("Update User")} </span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update User")}</span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <pf-tooltip position="top" content=${msg("Edit")}>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
@@ -222,12 +220,12 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                               </button>
                           </ak-forms-modal>
                       `
-                    : html``}`,
+                    : nothing}`,
         ];
     }
 
     renderExpanded(item: User): TemplateResult {
-        return html`<td role="cell" colspan="3">
+        return html`<td colspan="3">
                 <div class="pf-c-table__expandable-row-content">
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
@@ -378,8 +376,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         return html`
             ${this.targetGroup
                 ? html`<ak-forms-modal>
-                      <span slot="submit"> ${msg("Add")} </span>
-                      <span slot="header"> ${msg("Add User")} </span>
+                      <span slot="submit">${msg("Add")}</span>
+                      <span slot="header">${msg("Add User")}</span>
                       ${this.targetGroup.isSuperuser
                           ? html`
                                 <div class="pf-c-banner pf-m-warning" slot="above-form">
@@ -388,14 +386,14 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                     )}
                                 </div>
                             `
-                          : html``}
+                          : nothing}
                       <ak-user-related-add .group=${this.targetGroup} slot="form">
                       </ak-user-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">
                           ${msg("Add existing user")}
                       </button>
                   </ak-forms-modal>`
-                : html``}
+                : nothing}
             <ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-secondary pf-c-dropdown__toggle" type="button">
                     <span class="pf-c-dropdown__toggle-text">${msg("Create user")}</span>
@@ -404,8 +402,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 <ul class="pf-c-dropdown__menu" hidden>
                     <li>
                         <ak-forms-modal>
-                            <span slot="submit"> ${msg("Create")} </span>
-                            <span slot="header"> ${msg("Create User")} </span>
+                            <span slot="submit">${msg("Create")}</span>
+                            <span slot="header">${msg("Create User")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">
@@ -426,8 +424,8 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                             .closeAfterSuccessfulSubmit=${false}
                             .cancelText=${msg("Close")}
                         >
-                            <span slot="submit"> ${msg("Create")} </span>
-                            <span slot="header"> ${msg("Create Service account")} </span>
+                            <span slot="submit">${msg("Create")}</span>
+                            <span slot="header">${msg("Create Service account")}</span>
                             ${this.targetGroup
                                 ? html`
                                       <div class="pf-c-banner pf-m-info" slot="above-form">

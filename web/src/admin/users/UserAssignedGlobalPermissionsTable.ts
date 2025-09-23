@@ -7,6 +7,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 import { groupBy } from "#common/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { Permission, RbacApi } from "@goauthentik/api";
 
@@ -36,19 +37,18 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         });
     }
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Model"), "model"),
-            new TableColumn(msg("Permission"), ""),
-            new TableColumn(""),
-        ];
-    }
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Model"), "model"],
+        [msg("Permission"), ""],
+        ["", null, msg("Assigned to user")],
+    ];
 
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Assign")} </span>
-                <span slot="header"> ${msg("Assign permission to user")} </span>
+                <span slot="submit">${msg("Assign")}</span>
+                <span slot="header">${msg("Assign permission to user")}</span>
                 <ak-user-permission-form userId=${ifDefined(this.userId)} slot="form">
                 </ak-user-permission-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
@@ -83,11 +83,11 @@ export class UserAssignedGlobalPermissionsTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
+    row(item: Permission): SlottedTemplateResult[] {
         return [
             html`${item.modelVerbose}`,
             html`${item.name}`,
-            html`<i class="fas fa-check pf-m-success"></i>`,
+            html`<i class="fas fa-check pf-m-success" aria-hidden="true"></i>`,
         ];
     }
 }

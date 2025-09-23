@@ -492,11 +492,6 @@
         <source>General system status</source>
         <target>General system status</target>
       </trans-unit>
-      <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
-        <target>Welcome,
-        <x id="0" equiv-text="${name}"/>.</target>
-      </trans-unit>
       <trans-unit id="sc381422c585b867f">
         <source>Quick actions</source>
         <target>Quick actions</target>
@@ -1332,10 +1327,6 @@
       <trans-unit id="sa6c0ba4910c7ad7f">
         <source>Assigned to application (backchannel) </source>
         <target>Assigned to application (backchannel)</target>
-      </trans-unit>
-      <trans-unit id="s97f5e0c138eae172">
-        <source>Warning: Provider not assigned to any application.</source>
-        <target>Warning: Provider not assigned to any application.</target>
       </trans-unit>
       <trans-unit id="s8b0432eecbd8b034">
         <source>Update</source>
@@ -4868,14 +4859,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Internal</source>
         <target>Internal</target>
       </trans-unit>
-      <trans-unit id="scbb7d3154da629f3">
-        <source>OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.</source>
-        <target>OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.</target>
-      </trans-unit>
-      <trans-unit id="s0195c0df7294228a">
-        <source>See more about OCI support here:</source>
-        <target>See more about OCI support here:</target>
-      </trans-unit>
       <trans-unit id="sfae395b94a5a0040">
         <source>Blueprint</source>
         <target>Blueprint</target>
@@ -5206,10 +5189,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Retry</source>
         <target>Retry</target>
       </trans-unit>
-      <trans-unit id="s67664f8ee9aea98d">
-        <source>Please enter your Code</source>
-        <target>Please enter your Code</target>
-      </trans-unit>
       <trans-unit id="s455a8fc21077e7f9">
         <source>You've successfully authenticated your device.</source>
         <target>You've successfully authenticated your device.</target>
@@ -5291,7 +5270,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Change password</target>
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
-        <source><x id="0" equiv-text="${name}"/></source>
+        <source><x id="0" equiv-text="${prompt.label}"/></source>
         <target>
           <x id="0" equiv-text="${prompt.label}"/>
         </target>
@@ -5738,9 +5717,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s96d2bb4be3f5e8aa">
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
 </trans-unit>
-<trans-unit id="sb37880a2a7288ef0">
-  <source>Update Permissions</source>
-</trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
 </trans-unit>
@@ -5790,7 +5766,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Role doesn't have view permission so description cannot be retrieved.</source>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
-  <source>Role <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></source>
+  <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
@@ -7630,9 +7606,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
 </trans-unit>
-<trans-unit id="s0a2cb398b54a6207">
-  <source>Welcome.</source>
-</trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
 </trans-unit>
@@ -7717,9 +7690,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdea479482318489d">
   <source>Status messages</source>
 </trans-unit>
-<trans-unit id="s05a4a4df6783d0cf">
-  <source>Provider name</source>
-</trans-unit>
 <trans-unit id="s19714b5520312d9a">
   <source>Select an invalidation flow...</source>
 </trans-unit>
@@ -7743,9 +7713,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sfe1fb536cab6c0f5">
   <source><x id="0" equiv-text="${this.label}"/> navigation</source>
-</trans-unit>
-<trans-unit id="scbc2fd9f2bd26fdd">
-  <source>Main content</source>
 </trans-unit>
 <trans-unit id="sd2b106933823b754">
   <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
@@ -7846,20 +7813,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc6ef25894ed00175">
   <source>Expand navigation</source>
 </trans-unit>
-<trans-unit id="s148b5e365440a7c1">
-  <source>Table pagination</source>
-</trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
-</trans-unit>
-<trans-unit id="sd2c2366d13599d8c">
-  <source>Table actions</source>
-</trans-unit>
-<trans-unit id="s3d195621e562d805">
-  <source>Select row</source>
-</trans-unit>
-<trans-unit id="s572d21b6a41e24fa">
-  <source>Table of <x id="0" equiv-text="${this.label}"/></source>
 </trans-unit>
 <trans-unit id="sa25b60b4fac481aa">
   <source>Table content</source>
@@ -7869,9 +7824,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9db1679f3b234d4e">
   <source>Search for providers…</source>
-</trans-unit>
-<trans-unit id="s76790480b7b28ad2">
-  <source>Edit provider</source>
 </trans-unit>
 <trans-unit id="s9839619155ed2cf6">
   <source>Default NameID Policy</source>
@@ -7992,6 +7944,133 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s48a0d160d9e0a7be">
   <source>Hostname/IP to connect to. Optionally specify the port.</source>
+</trans-unit>
+<trans-unit id="s3633ffed92acaecb">
+  <source><x id="0" equiv-text="${this.label || &quot;&quot;}"/> table pagination</source>
+</trans-unit>
+<trans-unit id="sd9b15395dd103f80">
+  <source>Sort by "<x id="0" equiv-text="${label}"/>"</source>
+</trans-unit>
+<trans-unit id="s7dd64bb0c1fa8e87">
+  <source>Select "<x id="0" equiv-text="${rowLabel}"/>" row</source>
+</trans-unit>
+<trans-unit id="sd26f670ca5d5b0c6">
+  <source>Collapse row</source>
+</trans-unit>
+<trans-unit id="s73f51a3532f29159">
+  <source>Expand row</source>
+</trans-unit>
+<trans-unit id="sda170fd79bca1616">
+  <source><x id="0" equiv-text="${this.label ?? &quot;Table&quot;}"/> actions</source>
+</trans-unit>
+<trans-unit id="sd09354b0220a13ce">
+  <source>Select all rows on page (<x id="0" equiv-text="${selectedCount}"/> of <x id="1" equiv-text="${pageItemCount}"/> selected)</source>
+</trans-unit>
+<trans-unit id="s59c9e8f57e3a0075">
+  <source><x id="0" equiv-text="${this.label}"/> table</source>
+</trans-unit>
+<trans-unit id="s15a7e4227737b7c4">
+  <source>Column actions</source>
+</trans-unit>
+<trans-unit id="s7753c012594cc69e">
+  <source>Assigned to role</source>
+</trans-unit>
+<trans-unit id="s4dcbef0770f0b649">
+  <source>Assigned to user</source>
+</trans-unit>
+<trans-unit id="sa3242c7021e01280">
+  <source>Row Actions</source>
+</trans-unit>
+<trans-unit id="sd939185840181160">
+  <source>Select a flow...</source>
+</trans-unit>
+<trans-unit id="s4127b943d6826b8b">
+  <source>Search <x id="0" equiv-text="${this.availableLabel}"/>...</source>
+</trans-unit>
+<trans-unit id="sa637fa23edcbd60b">
+  <source>Provider name...</source>
+</trans-unit>
+<trans-unit id="sdb16a3d366135cef">
+  <source>Provider Name</source>
+</trans-unit>
+<trans-unit id="s9bcd7cad5f5e2b15">
+  <source>Select a certificate...</source>
+</trans-unit>
+<trans-unit id="s69d33a50b908b96f">
+  <source>Select an authorization flow...</source>
+</trans-unit>
+<trans-unit id="s9139b576e9944704">
+  <source>Select a signing key...</source>
+</trans-unit>
+<trans-unit id="sb52c56e87be6cd0c">
+  <source>Select an encryption key...</source>
+</trans-unit>
+<trans-unit id="s91675ea72a0ebe3e">
+  <source>Select an authentication flow...</source>
+</trans-unit>
+<trans-unit id="s0c9d1c885a69abe8">
+  <source>Provider Search</source>
+</trans-unit>
+<trans-unit id="s0fb31bb136cc353a">
+  <source>Provider not assigned to any application.</source>
+</trans-unit>
+<trans-unit id="sfbb87c9ced1fde54">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" provider</source>
+</trans-unit>
+<trans-unit id="s0a3fdba3a68a2730">
+  <source>Applications Documentation</source>
+</trans-unit>
+<trans-unit id="sf07bfbe5316e7cc7">
+  <source>Application icon for "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s037f22187581bf8f">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s5d90aeadfcb34286">
+  <source>Execute "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="saa25eac2952d918d">
+  <source>Export "<x id="0" equiv-text="${item.name}"/>"</source>
+</trans-unit>
+<trans-unit id="s021258b2c04e722f">
+  <source>Search for an application by name</source>
+</trans-unit>
+<trans-unit id="s64de9eceb8172269">
+  <source>Edit device</source>
+</trans-unit>
+<trans-unit id="sc08c153234510246">
+  <source>Update "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" Permissions</source>
+</trans-unit>
+<trans-unit id="s6d25eef21a9e76ba">
+  <source>Open "<x id="0" equiv-text="${this.label || &quot;object&quot;}"/>" permissions modal</source>
+</trans-unit>
+<trans-unit id="sa556d7b744364dcf">
+  <source>OCI URL</source>
+</trans-unit>
+<trans-unit id="h3b1f38bb34f8b1b6">
+  <source> A valid OCI manifest URL, prefixed with the protocol
+                                              e.g. <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path/to/manifest<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="sc19e397bee1e67f7">
+  <source>Read more about</source>
+</trans-unit>
+<trans-unit id="sa777a614e18a35cd">
+  <source>OCI Support</source>
+</trans-unit>
+<trans-unit id="s08d24327ec788e78">
+  <source>Edit "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s6f8d15b5494ac41a">
+  <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s85a488cacb57688b">
+  <source>Welcome, <x id="0" equiv-text="${username}"/></source>
+</trans-unit>
+<trans-unit id="scdb1bac161852c73">
+  <source>Welcome</source>
+</trans-unit>
+<trans-unit id="s64330d6dc06337c9">
+  <source>Loading application...</source>
 </trans-unit>
     </body>
   </file>

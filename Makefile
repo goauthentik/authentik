@@ -238,34 +238,30 @@ node-install:  ## Install the necessary libraries to build Node.js packages
 #########################
 
 web-build: node-install  ## Build the Authentik UI
-	cd web && npm run build
+	npm run --prefix web build
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run --prefix web test
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
-
+	npm run --prefix web watch
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run --prefix web storybook
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run --prefix web prettier
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
+	npm run --prefix web lint
+	npm run --prefix web lit-analyse
 
 web-check-compile:
-	cd web && npm run tsc
+	npm run --prefix web tsc
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run --prefix web extract-locales
 
 #########################
 ## Docs
@@ -277,31 +273,31 @@ docs-install:
 	npm ci --prefix website
 
 docs-lint-fix: lint-codespell
-	npm run prettier --prefix website
+	npm run --prefix website prettier
 
 docs-build:
-	npm run build --prefix website
+	npm run --prefix website build
 
 docs-watch:  ## Build and watch the topics documentation
-	npm run start --prefix website
+	npm run --prefix website start
 
 integrations: docs-lint-fix integrations-build ## Fix formatting issues in the integrations source code, lint the code, and compile it
 
 integrations-build:
-	npm run build --prefix website -w integrations
+	npm run --prefix website -w integrations build
 
 integrations-watch:  ## Build and watch the Integrations documentation
-	npm run start --prefix website -w integrations
+	npm run --prefix website -w integrations start
 
 docs-api-build:
-	npm run build --prefix website -w api
+	npm run --prefix website -w api build
 
 docs-api-watch:  ## Build and watch the API documentation
-	npm run build:api --prefix website -w api
-	npm run start --prefix website -w api
+	npm run --prefix website -w api build:api
+	npm run --prefix website -w api start
 
 docs-api-clean: ## Clean generated API documentation
-	npm run build:api:clean --prefix website -w api
+	npm run --prefix website -w api build:api:clean
 
 #########################
 ## Docker
@@ -323,6 +319,9 @@ test-docker:
 ci--meta-debug:
 	python -V
 	node --version
+
+ci-mypy: ci--meta-debug
+	uv run mypy --strict $(PY_SOURCES)
 
 ci-black: ci--meta-debug
 	uv run black --check $(PY_SOURCES)

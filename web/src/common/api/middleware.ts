@@ -10,6 +10,7 @@ import {
 } from "@goauthentik/api";
 
 export const CSRFHeaderName = "X-authentik-CSRF";
+export const AcceptLanguage = "Accept-Language";
 
 export interface RequestInfo {
     time: number;
@@ -64,5 +65,20 @@ export class EventMiddleware implements Middleware {
             }),
         );
         return Promise.resolve(context.response);
+    }
+}
+
+export class LocaleMiddleware implements Middleware {
+    pre?(context: RequestContext): Promise<FetchParams | void> {
+        const userLocale = new URLSearchParams(window.location.search).get("locale");
+        if (!userLocale) {
+            return Promise.resolve(context);
+        }
+
+        context.init.headers = {
+            ...context.init.headers,
+            [AcceptLanguage]: userLocale,
+        };
+        return Promise.resolve(context);
     }
 }

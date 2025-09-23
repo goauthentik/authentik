@@ -4,7 +4,7 @@ sidebar_label: Node.js
 description: A TypeScript client for the authentik API.
 ---
 
-The [Node.js API client](https://www.npmjs.com/package/@goauthentik/api) is generated using the [OpenAPI Generator](https://openapi-generator.tech/) and the [OpenAPI v3 schema](https://docs.goauthentik.io/schema.yml).
+The [Node.js API client](https://www.npmjs.com/package/@goauthentik/api) is generated using the [OpenAPI Generator](https://openapi-generator.tech/) and the [OpenAPI v3 schema](https://api.goauthentik.io/schema.yml).
 
 ```shell
 npm install @goauthentik/api

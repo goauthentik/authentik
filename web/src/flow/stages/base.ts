@@ -17,6 +17,7 @@ export interface StageHost {
     challenge?: unknown;
     flowSlug?: string;
     loading: boolean;
+    reset?: () => void;
     submit(payload: unknown, options?: SubmitOptions): Promise<boolean>;
 
     readonly brand?: CurrentBrand;
