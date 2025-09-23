@@ -383,8 +383,9 @@ const items = [
                         },
                         items: [
                             "customize/policies/expression/unique_email",
-                            "customize/policies/expression/whitelist_email",
                             "customize/policies/expression/managing_flow_context_keys",
+                            "customize/policies/expression/source_switch",
+                            "customize/policies/expression/whitelist_email",
                         ],
                     },
                     "customize/policies/unique_password",
