@@ -601,11 +601,6 @@
         <target>Genel sistem durumu</target>
         
       </trans-unit>
-      <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
-        <target>Hoş geldiniz, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</target>
-        
-      </trans-unit>
       <trans-unit id="sc381422c585b867f">
         <source>Quick actions</source>
         <target>Hızlı eylemler</target>
@@ -7202,7 +7197,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <target>Rolün görüntüleme izni yok, bu nedenle açıklama alınamıyor.</target>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
-  <source>Role <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></source>
+  <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
   <target>Rol <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
@@ -9435,9 +9430,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
 </trans-unit>
-<trans-unit id="s0a2cb398b54a6207">
-  <source>Welcome.</source>
-</trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
 </trans-unit>
@@ -9894,6 +9886,15 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
   <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s85a488cacb57688b">
+  <source>Welcome, <x id="0" equiv-text="${username}"/></source>
+</trans-unit>
+<trans-unit id="scdb1bac161852c73">
+  <source>Welcome</source>
+</trans-unit>
+<trans-unit id="s64330d6dc06337c9">
+  <source>Loading application...</source>
 </trans-unit>
     </body>
   </file>
