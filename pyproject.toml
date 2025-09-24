@@ -218,7 +218,6 @@ module = [
   "authentik.enterprise.*",
   "authentik.events.*",
   "authentik.flows.*",
-  "authentik.lib.*",
   "authentik.outposts.*",
   "authentik.policies.*",
   "authentik.policies.dummy.*",

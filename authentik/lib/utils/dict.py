@@ -1,18 +1,25 @@
-from typing import Any
+from typing import Any, cast
+
+type rdict[R] = dict[str, "rdict[R] | R"]
 
 
-def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
+def get_path_from_dict[R: Any](
+    root: rdict[R],
+    path: str,
+    sep: str = ".",
+    default: R | None = None,
+) -> R | None:
     """Recursively walk through `root`, checking each part of `path` separated by `sep`.
     If at any point a dict does not exist, return default"""
     for comp in path.split(sep):
-        if root and comp in root:
-            root = root.get(comp)
+        if isinstance(root, dict) and comp in root:
+            root = cast(rdict[R], root.get(comp))
         else:
             return default
-    return root
+    return cast(R, root)
 
 
-def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
+def set_path_in_dict[R: Any](root: rdict[R], path: str, value: R, sep: str = ".") -> None:
     """Recursively walk through `root`, checking each part of `path` separated by `sep`
     and setting the last value to `value`"""
     # Walk each component of the path
