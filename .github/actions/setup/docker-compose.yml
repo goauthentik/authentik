@@ -1,8 +1,20 @@
 services:
+  redis:
+    profiles:
+      - redis
+    image: docker.io/library/redis:7
+    ports:
+      - 6379:6379
+    restart: always
+
   postgresql:
+    profiles:
+      - postgres
     image: docker.io/library/postgres:${PSQL_TAG:-16}
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./initdb.d/00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
+    command: postgres -c 'wal_level=replica' -c 'max_wal_senders=10' -c 'max_replication_slots=10' -c 'listen_addresses=*'
     environment:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
@@ -10,12 +22,42 @@ services:
     ports:
       - 5432:5432
     restart: always
-  redis:
-    image: docker.io/library/redis:7
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres_replica:
+    profiles:
+      - postgres_replica
+    image: docker.io/library/postgres:${PSQL_TAG:-16}
+    environment:
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      POSTGRES_DB: authentik
     ports:
-      - 6379:6379
-    restart: always
+      - "5433:5432"
+    volumes:
+      - db-data-replica:/var/lib/postgresql/data
+    command: >
+      bash -c "
+        echo 'Waiting for primary to be ready...';
+        while ! pg_isready -h postgres_primary -p 5432 -U ${POSTGRES_USER}; do sleep 1; done;
+        echo 'Primary is ready, starting replica...';
+        rm -rf /var/lib/postgresql/data/* 2>/dev/null || true;
+        PGPASSWORD=${POSTGRES_PASSWORD} pg_basebackup -h postgres_primary -U replica -D /var/lib/postgresql/data -Fp -Xs -R -P;
+        echo 'Replication setup complete, starting PostgreSQL...';
+        docker-entrypoint.sh postgres
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:
+    driver: local
+  db-data-replica:
     driver: local

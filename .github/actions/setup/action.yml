@@ -8,6 +8,9 @@ inputs:
   postgresql_version:
     description: "Optional postgresql image tag"
     default: "16"
+  profiles:
+    description: "Profile of supporting services to start"
+    default: redis,postgres
 
 runs:
   using: "composite"
@@ -55,6 +58,7 @@ runs:
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
+        export COMPOSE_PROFILES=${{ inputs.profiles }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
         cd web && npm ci
     - name: Generate config
