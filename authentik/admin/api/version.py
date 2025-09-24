@@ -1,6 +1,7 @@
 """authentik administration overview"""
 
 from typing import Any
+
 from django.core.cache import cache
 from django_tenants.utils import get_public_schema_name
 from drf_spectacular.utils import extend_schema

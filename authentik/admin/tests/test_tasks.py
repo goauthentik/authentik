@@ -1,6 +1,7 @@
 """test admin tasks"""
 
-from typing import TYPE_CHECKING, cast
+from typing import cast
+
 from django.apps import apps
 from django.core.cache import cache
 from django.test import TestCase

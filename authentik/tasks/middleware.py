@@ -11,7 +11,6 @@ from django_dramatiq_postgres.middleware import (
 )
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
-    CurrentTask as BaseCurrentTask,
     MetricsMiddleware as BaseMetricsMiddleware,
 )
 from django_redis import get_redis_connection
