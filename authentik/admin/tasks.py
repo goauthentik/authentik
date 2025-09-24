@@ -2,7 +2,6 @@
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq import actor
 from packaging.version import parse
 from requests import RequestException
@@ -13,6 +12,7 @@ from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 LOGGER = get_logger()
@@ -22,7 +22,7 @@ VERSION_CACHE_TIMEOUT = 8 * 60 * 60  # 8 hours
 LOCAL_VERSION = parse(authentik_version())
 
 
-def _set_prom_info():
+def _set_prom_info() -> None:
     """Set prometheus info for version"""
     PROM_INFO.info(
         {
@@ -34,8 +34,8 @@ def _set_prom_info():
 
 
 @actor(description=_("Update latest version info."))
-def update_latest_version():
-    self: Task = CurrentTask.get_task()
+def update_latest_version() -> None:
+    self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.info("Version check disabled.")

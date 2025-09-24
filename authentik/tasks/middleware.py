@@ -1,13 +1,14 @@
 import socket
 from http.server import BaseHTTPRequestHandler
 from time import sleep
-from typing import Any
+from typing import Any, cast
 
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
     MetricsMiddleware as BaseMetricsMiddleware,
 )
 from django_redis import get_redis_connection
@@ -28,6 +29,12 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
 DB_ERRORS = (OperationalError, Error, RedisError)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
 
 
 class TenantMiddleware(Middleware):

@@ -419,7 +419,7 @@ DRAMATIQ = {
             {"max_retries": CONFIG.get_int("worker.task_max_retries") if not TEST else 0},
         ),
         ("dramatiq.results.middleware.Results", {"store_results": True}),
-        ("django_dramatiq_postgres.middleware.CurrentTask", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
         ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.RelObjMiddleware", {}),
         ("authentik.tasks.middleware.MessagesMiddleware", {}),
