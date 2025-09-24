@@ -7,7 +7,7 @@ services:
       - 6379:6379
     restart: always
 
-  postgresql:
+  postgres:
     profiles:
       - postgres
     image: docker.io/library/postgres:${PSQL_TAG:-16}
@@ -43,10 +43,10 @@ services:
     command: >
       bash -c "
         echo 'Waiting for primary to be ready...';
-        while ! pg_isready -h postgres_primary -p 5432 -U ${POSTGRES_USER}; do sleep 1; done;
+        while ! pg_isready -h postgres -p 5432 -U ${POSTGRES_USER}; do sleep 1; done;
         echo 'Primary is ready, starting replica...';
         rm -rf /var/lib/postgresql/data/* 2>/dev/null || true;
-        PGPASSWORD=${POSTGRES_PASSWORD} pg_basebackup -h postgres_primary -U replica -D /var/lib/postgresql/data -Fp -Xs -R -P;
+        PGPASSWORD=${POSTGRES_PASSWORD} pg_basebackup -h postgres -U replica -D /var/lib/postgresql/data -Fp -Xs -R -P;
         echo 'Replication setup complete, starting PostgreSQL...';
         docker-entrypoint.sh postgres
       "
