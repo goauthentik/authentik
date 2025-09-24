@@ -8,6 +8,7 @@ from unittest.mock import patch
 import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.test import TestCase as DjangoTestCase
 from django.test.runner import DiscoverRunner
 from structlog.stdlib import get_logger
 
@@ -20,6 +21,8 @@ from authentik.tasks.test import use_test_broker
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
+# allow testing with read-replicas
+DjangoTestCase.databases = "__all__"
 
 
 def get_docker_tag() -> str:
@@ -62,6 +65,15 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         """Configure test environment settings"""
         settings.TEST = True
         settings.DRAMATIQ["test"] = True
+
+        # Set any other test databases's name to their test name early
+        # django does this itself, however only _after_ migrating the default alias
+        # which triggers some reads that might go to the read replica, which
+        # would be routed to the wrong database
+        for alias, db in settings.DATABASES.items():
+            if alias == "default":
+                continue
+            db["NAME"] = db["TEST"]["NAME"]
 
         # Test-specific configuration
         test_config = {
