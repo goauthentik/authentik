@@ -2,7 +2,6 @@ from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
 from django.utils.text import slugify
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import Actor
 from dramatiq.composition import group
 from dramatiq.errors import Retry
@@ -22,6 +21,7 @@ from authentik.lib.sync.outgoing.exceptions import (
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.reflection import class_to_path, path_to_class
+from authentik.tasks.middleware import CurrentTask
 from authentik.tasks.models import Task
 
 
@@ -61,7 +61,7 @@ class SyncTasks:
         provider_pk: int,
         sync_objects: Actor[[str, int, int, bool], None],
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
@@ -118,7 +118,7 @@ class SyncTasks:
         override_dry_run=False,
         **filter,
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         _object_type: type[Model] = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -173,7 +173,7 @@ class SyncTasks:
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
-                    f"Failed to sync {str(obj)} due to " f"transient error: {str(exc)}",
+                    f"Failed to sync {str(obj)} due to transient error: {str(exc)}",
                     obj=sanitize_item(obj),
                     exception=exception_to_dict(exc),
                 )
@@ -207,7 +207,7 @@ class SyncTasks:
         provider_pk: int,
         raw_op: str,
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -281,7 +281,7 @@ class SyncTasks:
         action: str,
         pk_set: list[int],
     ):
-        task: Task = CurrentTask.get_task()
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )

@@ -13,7 +13,6 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"

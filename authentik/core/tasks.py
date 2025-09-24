@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
@@ -15,14 +14,14 @@ from authentik.core.models import (
     User,
 )
 from authentik.lib.utils.db import chunked_queryset
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
 
 @actor(description=_("Remove expired objects."))
 def clean_expired_models():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
@@ -37,7 +36,7 @@ def clean_expired_models():
 
 @actor(description=_("Remove temporary users created by SAML Sources."))
 def clean_temporary_users():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     _now = datetime.now()
     deleted_users = 0
     for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):

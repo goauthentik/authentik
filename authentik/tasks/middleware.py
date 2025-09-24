@@ -6,6 +6,9 @@ from typing import Any, cast
 import pglock
 from django.db import OperationalError, connections
 from django.utils.timezone import now
+from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
+)
 from django_dramatiq_postgres.middleware import HTTPServer
 from django_dramatiq_postgres.middleware import (
     CurrentTask as BaseCurrentTask,
