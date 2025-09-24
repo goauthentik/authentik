@@ -113,7 +113,7 @@ jobs:
         run: |
           uv run make ci-test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} (${{ matrix.profiles }}) - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: test-make-seed

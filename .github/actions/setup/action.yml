@@ -67,4 +67,4 @@ runs:
       env:
         PROFILES: ${{ inputs.profiles }}
       run: |
-        uv run python3 ${{ github.action_path }}/generate_config.py
+        uv run python3 ${{ github.action_path }}/ci_config.py

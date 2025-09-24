@@ -1,10 +1,11 @@
 from os import getenv
+from typing import Any
 
 from yaml import safe_dump
 
 from authentik.lib.generators import generate_id
 
-config = {
+config: dict[str, Any] = {
     "log_level": "debug",
     "secret_key": generate_id(),
 }
