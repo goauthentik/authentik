@@ -104,8 +104,7 @@ class BlueprintEntry:
         all_attrs = get_attrs(model)
 
         for extra_identifier_name in extra_identifier_names:
-            identifiers[extra_identifier_name] = all_attrs.pop(
-                extra_identifier_name, None)
+            identifiers[extra_identifier_name] = all_attrs.pop(extra_identifier_name, None)
         return BlueprintEntry(
             identifiers=identifiers,
             model=f"{model._meta.app_label}.{model._meta.model_name}",
@@ -122,16 +121,14 @@ class BlueprintEntry:
             raise ValueError("depth must be a positive number or zero")
 
         if context_tag_type:
-            contexts = [x for x in self.__tag_contexts if isinstance(
-                x, context_tag_type)]
+            contexts = [x for x in self.__tag_contexts if isinstance(x, context_tag_type)]
         else:
             contexts = self.__tag_contexts
 
         try:
             return contexts[-(depth + 1)]
         except IndexError as exc:
-            raise ValueError(
-                f"invalid depth: {depth}. Max depth: {len(contexts) - 1}") from exc
+            raise ValueError(f"invalid depth: {depth}. Max depth: {len(contexts) - 1}") from exc
 
     def tag_resolver(self, value: Any, blueprint: "Blueprint") -> Any:
         """Check if we have any special tags that need handling"""
@@ -198,8 +195,7 @@ class Blueprint:
     """Dataclass used for a full export"""
 
     version: int = field(default=1)
-    entries: list[BlueprintEntry] | dict[str,
-                                         list[BlueprintEntry]] = field(default_factory=list)
+    entries: list[BlueprintEntry] | dict[str, list[BlueprintEntry]] = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
     metadata: BlueprintMetadata | None = field(default=None)
@@ -538,8 +534,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         "SEQ": (list, lambda a, b: [*a, b]),
         "MAP": (
             dict,
-            lambda a, b: always_merger.merge(
-                a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
+            lambda a, b: always_merger.merge(a, {b[0]: b[1]} if isinstance(b, tuple | list) else b),
         ),
     }
 
@@ -579,8 +574,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
             iterable = tuple(enumerate(iterable))
 
         try:
-            output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper(
-            )]
+            output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
         except KeyError as exc:
             raise EntryInvalidError.from_entry(exc, entry) from exc
 
@@ -644,8 +638,7 @@ class Index(EnumeratedItem):
         try:
             return context[0]
         except IndexError as exc:  # pragma: no cover
-            raise EntryInvalidError.from_entry(
-                f"Empty/invalid context: {context}", entry) from exc
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class Value(EnumeratedItem):
@@ -657,8 +650,7 @@ class Value(EnumeratedItem):
         try:
             return context[1]
         except IndexError as exc:  # pragma: no cover
-            raise EntryInvalidError.from_entry(
-                f"Empty/invalid context: {context}", entry) from exc
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry) from exc
 
 
 class AtIndex(YAMLTag):
@@ -704,8 +696,7 @@ class AtIndex(YAMLTag):
             return obj[attribute]
         else:
             if self.default is UNSET:
-                raise EntryInvalidError.from_entry(
-                    f"Key does not exist: {attribute}", entry)
+                raise EntryInvalidError.from_entry(f"Key does not exist: {attribute}", entry)
             return self.default
 
 
@@ -716,18 +707,13 @@ class BlueprintDumper(SafeDumper):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.add_representer(UUID, lambda self, data: self.represent_str(str(data)))
+        self.add_representer(OrderedDict, lambda self, data: self.represent_dict(dict(data)))
+        self.add_representer(Enum, lambda self, data: self.represent_str(data.value))
         self.add_representer(
-            UUID, lambda self, data: self.represent_str(str(data)))
-        self.add_representer(OrderedDict, lambda self,
-                             data: self.represent_dict(dict(data)))
-        self.add_representer(
-            Enum, lambda self, data: self.represent_str(data.value))
-        self.add_representer(
-            BlueprintEntryDesiredState, lambda self, data: self.represent_str(
-                data.value)
+            BlueprintEntryDesiredState, lambda self, data: self.represent_str(data.value)
         )
-        self.add_representer(
-            None, lambda self, data: self.represent_str(str(data)))
+        self.add_representer(None, lambda self, data: self.represent_str(str(data)))
 
     def ignore_aliases(self, data):
         """Don't use any YAML anchors"""
