@@ -1,7 +1,7 @@
 -- Create replication role if it doesn't exist
 DO $$ BEGIN
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'replica') THEN
-        CREATE ROLE replica WITH REPLICATION LOGIN PASSWORD '${POSTGRES_PASSWORD}';
+        CREATE ROLE replica WITH REPLICATION LOGIN PASSWORD 'EK-5jnKfjrGRm<77';
     END IF;
 END $$;
 

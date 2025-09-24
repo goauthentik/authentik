@@ -124,8 +124,8 @@ jobs:
           - 16-alpine
           - 17-alpine
         profiles:
-          - redis,postgres
-          - redis,postgres,postgres_replica
+          - ""
+          - postgres_replica
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v5

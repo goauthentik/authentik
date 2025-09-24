@@ -9,8 +9,8 @@ inputs:
     description: "Optional postgresql image tag"
     default: "16"
   profiles:
-    description: "Profile of supporting services to start"
-    default: redis,postgres
+    description: "Extra profiles of supporting services to start"
+    default: ""
 
 runs:
   using: "composite"
