@@ -18,7 +18,7 @@ class VersionHistorySerializer(ModelSerializer):
         ]
 
 
-class VersionHistoryViewSet(ReadOnlyModelViewSet):
+class VersionHistoryViewSet(ReadOnlyModelViewSet[VersionHistory]):
     """VersionHistory Viewset"""
 
     queryset = VersionHistory.objects.all()
