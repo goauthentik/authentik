@@ -444,6 +444,9 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
             f"postgresql.read_replicas.{replica}.conn_options", default={}
         )
         _database["OPTIONS"].update(replica_conn_options)
+        _database["TEST"] = {
+            "MIRROR": "default"
+        }
 
         db[f"replica_{replica}"] = _database
     return db
