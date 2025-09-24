@@ -30,7 +30,7 @@ Also set up your proxy server to use forward auth with paperless.company: https:
 
 ## Paperless
 
-Start by adding the following environment variables to your Paperless-ng setup. If you are using docker-compose, then add the following to your docker-compose.env file:
+Start by adding the following environment variables to your Paperless-ng setup. If you are using Docker Compose, then add the following to your Compose file:
 
 ```
 PAPERLESS_ENABLE_HTTP_REMOTE_USER=TRUE
