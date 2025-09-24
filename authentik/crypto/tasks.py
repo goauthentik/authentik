@@ -7,13 +7,12 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509.base import load_pem_x509_certificate
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -38,7 +37,7 @@ def ensure_certificate_valid(body: str):
 
 @actor(description=_("Discover, import and update certificates from the filesystem."))
 def certificate_discovery():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     certs = {}
     private_keys = {}
     discovered = 0
