@@ -9428,7 +9428,8 @@
                     "enum": [
                         "default",
                         "aws",
-                        "slack"
+                        "slack",
+                        "sfdc"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."

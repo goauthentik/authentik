@@ -40684,6 +40684,7 @@ components:
       - default
       - aws
       - slack
+      - sfdc
       type: string
     Config:
       type: object
