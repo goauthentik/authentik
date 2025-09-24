@@ -48,7 +48,7 @@ def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
 
 def raise_connection_error(func: Callable[P, R]) -> Callable[P, R]:
     @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> R:
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         try:
             return func(*args, **kwargs)
         except OperationalError as exc:
