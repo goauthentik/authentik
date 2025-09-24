@@ -191,7 +191,7 @@ export function renderForm(
                         },
                         {
                             label: msg("Salesforce"),
-                            value: CompatibilityModeEnum.Salesforce,
+                            value: CompatibilityModeEnum.Sfdc,
                             description: html`${msg("Altered behavior for usage with Salesforce.")}`,
                         },
                     ]}

@@ -92,9 +92,7 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if self.provider.compatibility_mode == SCIMCompatibilityMode.SALESFORCE:
             path = "/ServiceProviderConfigs"
         try:
-            config = ServiceProviderConfiguration.model_validate(
-                self._request("GET", path)
-            )
+            config = ServiceProviderConfiguration.model_validate(self._request("GET", path))
             if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
                 config.patch.supported = False
             if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
