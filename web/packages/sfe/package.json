@@ -10,7 +10,7 @@
         "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
     },
     "dependencies": {
-        "@goauthentik/api": "^2025.10.0-rc1-1758042786",
+        "@goauthentik/api": "^2025.10.0-rc1-1758664464",
         "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^28.0.6",
         "@rollup/plugin-node-resolve": "^16.0.1",
@@ -23,7 +23,7 @@
         "formdata-polyfill": "^4.0.10",
         "jquery": "^3.7.1",
         "prettier": "^3.5.3",
-        "rollup": "^4.50.2",
+        "rollup": "^4.52.2",
         "rollup-plugin-copy": "^3.5.0",
         "weakmap-polyfill": "^2.0.4"
     },

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-17 17:04+0000\n"
+"POT-Creation-Date: 2025-09-24 00:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -340,7 +340,7 @@ msgid ""
 "created."
 msgstr ""
 
-#: authentik/core/models.py
+#: authentik/core/models.py authentik/providers/scim/models.py
 msgid "Token"
 msgstr ""
 
@@ -661,6 +661,14 @@ msgid ""
 "providers."
 msgstr ""
 
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr ""
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr ""
+
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
@@ -888,14 +896,6 @@ msgstr ""
 
 #: authentik/events/models.py
 msgid "Webhook Mappings"
-msgstr ""
-
-#: authentik/events/models.py
-msgid "System Task"
-msgstr ""
-
-#: authentik/events/models.py
-msgid "System Tasks"
 msgstr ""
 
 #: authentik/events/tasks.py
@@ -2128,6 +2128,10 @@ msgid "SAML Providers from Metadata"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "OAuth"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Default"
 msgstr ""
 
@@ -2145,6 +2149,14 @@ msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
 msgstr ""
 
 #: authentik/providers/scim/models.py

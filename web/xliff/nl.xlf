@@ -604,12 +604,6 @@
         <target>Algemene systeemstatus</target>
         
       </trans-unit>
-      <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
-        <target>Welkom,
-        <x id="0" equiv-text="${name}"/>.</target>
-        
-      </trans-unit>
       <trans-unit id="sc381422c585b867f">
         <source>Quick actions</source>
         <target>Snelle acties</target>
@@ -1507,11 +1501,6 @@
       <trans-unit id="se68398e3c2c760b2">
         <source>Token</source>
         <target>Token</target>
-        
-      </trans-unit>
-      <trans-unit id="s33ed903c210a6209">
-        <source>Token to authenticate with. Currently only bearer authentication is supported.</source>
-        <target>Token om mee te authenticeren. Momenteel wordt alleen drager-authenticatie ondersteund.</target>
         
       </trans-unit>
       <trans-unit id="sfc8bb104e2c05af8">
@@ -7116,7 +7105,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Role doesn't have view permission so description cannot be retrieved.</source>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
-  <source>Role <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></source>
+  <source>Role <x id="0" equiv-text="${this._role.name}"/></source>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
@@ -8959,9 +8948,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
 </trans-unit>
-<trans-unit id="s0a2cb398b54a6207">
-  <source>Welcome.</source>
-</trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
 </trans-unit>
@@ -9418,6 +9404,45 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s6f8d15b5494ac41a">
   <source>Apply "<x id="0" equiv-text="${item.name}"/>" blueprint</source>
+</trans-unit>
+<trans-unit id="s85a488cacb57688b">
+  <source>Welcome, <x id="0" equiv-text="${username}"/></source>
+</trans-unit>
+<trans-unit id="scdb1bac161852c73">
+  <source>Welcome</source>
+</trans-unit>
+<trans-unit id="s64330d6dc06337c9">
+  <source>Loading application...</source>
+</trans-unit>
+<trans-unit id="sd5746b2550ac4852">
+  <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+</trans-unit>
+<trans-unit id="seb250c3885733522">
+  <source>Token to authenticate with.</source>
+</trans-unit>
+<trans-unit id="scdafec223d3840e9">
+  <source>OAuth Source</source>
+</trans-unit>
+<trans-unit id="s2111b3384e12349c">
+  <source>Specify OAuth source used for authentication.</source>
+</trans-unit>
+<trans-unit id="s1876401267e31dd0">
+  <source>OAuth Parameters</source>
+</trans-unit>
+<trans-unit id="sc5ca1b55a5391535">
+  <source>Additional OAuth parameters, such as grant_type.</source>
+</trans-unit>
+<trans-unit id="s6e4af789dec357dc">
+  <source>Authentication Mode</source>
+</trans-unit>
+<trans-unit id="s24d7ac2fc280ca5e">
+  <source>Authenticate SCIM requests using a static token.</source>
+</trans-unit>
+<trans-unit id="s0e1641692e0dac94">
+  <source>OAuth</source>
+</trans-unit>
+<trans-unit id="s1c34cb0a4cccc041">
+  <source>Authenticate SCIM requests using OAuth.</source>
 </trans-unit>
     </body>
   </file>

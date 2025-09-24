@@ -10,7 +10,7 @@ import { DEFAULT_CONFIG } from "#common/api/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
-import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
+import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
 
 import YAML from "yaml";
 
@@ -37,7 +37,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     }
 
     async send(data: Endpoint): Promise<Endpoint> {
-        data.authMode = AuthModeEnum.Prompt;
+        data.authMode = EndpointAuthModeEnum.Prompt;
         if (!this.instance) {
             data.provider = this.providerID || 0;
         } else {
