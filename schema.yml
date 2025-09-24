@@ -59209,6 +59209,7 @@ components:
       - pk
     UserServiceAccountRequest:
       type: object
+      description: Payload to create a service account
       properties:
         name:
           type: string
