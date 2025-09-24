@@ -1,0 +1,38 @@
+---
+title: Forward Auth
+description: Resolve forward-auth failures by adjusting logging and validating outpost connectivity.
+tags:
+    - troubleshooting
+    - integrations
+    - forward-auth
+keywords:
+    - authentik troubleshooting
+    - forward auth
+    - reverse proxy headers
+---
+
+Forward-auth errors typically occur when the reverse proxy drops required headers or blocks authentik helper endpoints. The result is a login loop, unexpected status codes, or other unexpected behavior.
+
+## Capture header details with trace logging
+
+Temporarily raise the log level to `trace` so the outpost records every header it receives. Follow the platform-specific steps in the [Logs troubleshooting guide](../getting-started/logs.mdx#enabling-trace-mode) to enable trace mode.
+
+After turning on trace logging, reproduce the failing request and inspect the outpost logs (for example, `docker compose logs --tail=200 outpost`). Verify that headers such as `X-Forwarded-Host`, `X-Forwarded-Proto`, and `X-Forwarded-For` appear with the expected values.
+
+:::caution
+Trace logging is verbose. Use the same guide to revert the log level to `info` once you finish troubleshooting.
+:::
+
+## Verify outpost endpoints are reachable
+
+The reverse proxy must expose the outpost helper paths. Confirm that `/outpost.goauthentik.io/` responds with a `204` status:
+
+```shell
+curl -v https://app.company/outpost.goauthentik.io/ping
+```
+
+A working setup returns output similar to:
+
+```
+< HTTP/2 204
+```

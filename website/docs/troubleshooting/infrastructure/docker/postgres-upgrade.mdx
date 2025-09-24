@@ -1,5 +1,15 @@
 ---
 title: Upgrade PostgreSQL on Docker Compose
+description: Upgrade the authentik PostgreSQL container safely by backing up data and recreating the service.
+tags:
+    - troubleshooting
+    - infrastructure
+    - docker
+    - postgres
+keywords:
+    - authentik postgres upgrade
+    - docker compose database upgrade
+    - postgres 16 migration
 ---
 
 ### Dump your database
@@ -28,7 +38,7 @@ If you use Docker volumes: `docker volume rm -f authentik_database`.
 
 If your data is a file path: `rm -rf /path/to/v12-data`
 
-### Modify your docker-compose.yml file
+### Modify your Docker Compose file
 
 Update the PostgreSQL service image from `docker.io/library/postgres:12-alpine` to `docker.io/library/postgres:16-alpine`.
 

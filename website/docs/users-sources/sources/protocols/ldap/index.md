@@ -122,4 +122,4 @@ Be aware of the following security considerations when turning on this functiona
 
 ## Troubleshooting
 
-To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../../troubleshooting/ldap_source.md).
+To troubleshoot LDAP sources and their synchronization, see [LDAP Troubleshooting](../../../../troubleshooting/integrations/ldap.mdx).

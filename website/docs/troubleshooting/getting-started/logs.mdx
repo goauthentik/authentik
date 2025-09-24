@@ -1,8 +1,17 @@
 ---
-title: Capturing logs in authentik
+title: Collecting and Viewing Logs
+description: Adjust authentik log levels and retrieve recent output to troubleshoot deployments.
+tags:
+    - troubleshooting
+    - logging
+    - diagnostics
+keywords:
+    - authentik logs
+    - log level configuration
+    - debugging
 ---
 
-When troubleshooting issues in authentik, reviewing the [event logs](../sys-mgmt/events/index.md) can be invaluable. These logs provide continuous output, helping to diagnose problems effectively.
+When troubleshooting issues in authentik, reviewing the [event logs](../../sys-mgmt/events/index.md) can be invaluable. These logs provide continuous output, helping to diagnose problems effectively.
 
 ## Adjusting log levels
 
@@ -19,6 +28,7 @@ import Tabs from "@theme/Tabs";
   values={[
     {label: 'Docker Compose', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
+    {label: 'Outpost', value: 'outpost'}, 
   ]}>
   <TabItem value="docker">
 
@@ -43,6 +53,14 @@ import Tabs from "@theme/Tabs";
 2. Recreate your containers to apply the changes.
 
   </TabItem>
+  <TabItem value="outpost">
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon next to your outpost.
+3. Under **Advanced settings**, set the `log_level` field to the desired log level.
+4. Click **Update**.
+
+  </TabItem>
 </Tabs>
 
 ## Enabling `trace` mode
@@ -59,6 +77,7 @@ To enable `trace` logging, follow the platform-specific steps below:
   values={[
     {label: 'Docker Compose', value: 'docker'},
     {label: 'Kubernetes', value: 'kubernetes'},
+    {label: 'Outpost', value: 'outpost'},
   ]}>
   <TabItem value="docker">
 
@@ -81,6 +100,14 @@ To enable `trace` logging, follow the platform-specific steps below:
     ```
 
 2. Recreate your containers to apply the changes.
+
+  </TabItem>
+  <TabItem value="outpost">
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click the **Edit** icon next to your outpost.
+3. Under **Advanced settings**, set the `log_level` field to `trace`.
+4. Click **Update**.
 
   </TabItem>
 </Tabs>

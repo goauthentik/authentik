@@ -1,0 +1,59 @@
+---
+title: Troubleshooting Email sending
+description: Diagnose why authentik email delivery fails.
+tags:
+    - troubleshooting
+    - integrations
+    - email
+keywords:
+    - authentik email
+    - smtp troubleshooting
+    - email stage errors
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+:::info
+Some hosting providers block outgoing SMTP ports, in which case you'll have to host an SMTP relay on a different port with a different provider.
+:::
+
+To test if an email stage, or the global email settings are configured correctly, you can run the following command:
+
+```shell
+ak test_email <to_address> [-S <stage_name>]
+```
+
+If you omit the `-S` parameter, the email will be sent using the global settings. Otherwise, the settings of the specified stage will be used.
+
+<Tabs
+    defaultValue="docker"
+    values={[
+        { label: "Docker Compose", value: "docker" },
+        { label: "Kubernetes", value: "kubernetes" },
+        { label: "CLI", value: "cli" },
+    ]}
+>
+    <TabItem value="docker">
+
+```shell
+docker compose exec worker ak test_email <to_address> [-S <stage_name>]
+```
+
+    </TabItem>
+    <TabItem value="kubernetes">
+
+```shell
+kubectl exec -it deployment/authentik-worker -c worker -- ak test_email <to_address> [-S <stage_name>]
+```
+
+    </TabItem>
+    <TabItem value="cli">
+
+```shell
+uv run ak test_email <to_address> [-S <stage_name>]
+```
+
+    </TabItem>
+
+</Tabs>
