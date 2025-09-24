@@ -1503,11 +1503,6 @@
         <target>Token</target>
         
       </trans-unit>
-      <trans-unit id="s33ed903c210a6209">
-        <source>Token to authenticate with. Currently only bearer authentication is supported.</source>
-        <target>Token om mee te authenticeren. Momenteel wordt alleen drager-authenticatie ondersteund.</target>
-        
-      </trans-unit>
       <trans-unit id="sfc8bb104e2c05af8">
         <source>User filtering</source>
         <target>Gebruikersfiltering</target>
@@ -9418,6 +9413,36 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s64330d6dc06337c9">
   <source>Loading application...</source>
+</trans-unit>
+<trans-unit id="sd5746b2550ac4852">
+  <source>Certificate used for EAP-TLS. Requires Mutual TLS Stage in authentication flow.</source>
+</trans-unit>
+<trans-unit id="seb250c3885733522">
+  <source>Token to authenticate with.</source>
+</trans-unit>
+<trans-unit id="scdafec223d3840e9">
+  <source>OAuth Source</source>
+</trans-unit>
+<trans-unit id="s2111b3384e12349c">
+  <source>Specify OAuth source used for authentication.</source>
+</trans-unit>
+<trans-unit id="s1876401267e31dd0">
+  <source>OAuth Parameters</source>
+</trans-unit>
+<trans-unit id="sc5ca1b55a5391535">
+  <source>Additional OAuth parameters, such as grant_type.</source>
+</trans-unit>
+<trans-unit id="s6e4af789dec357dc">
+  <source>Authentication Mode</source>
+</trans-unit>
+<trans-unit id="s24d7ac2fc280ca5e">
+  <source>Authenticate SCIM requests using a static token.</source>
+</trans-unit>
+<trans-unit id="s0e1641692e0dac94">
+  <source>OAuth</source>
+</trans-unit>
+<trans-unit id="s1c34cb0a4cccc041">
+  <source>Authenticate SCIM requests using OAuth.</source>
 </trans-unit>
     </body>
   </file>
