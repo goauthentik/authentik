@@ -16,6 +16,7 @@ from authentik.events.models import (
     NotificationRule,
     NotificationTransport,
 )
+from authentik.lib.utils.db import chunked_queryset
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.tasks.models import Task
@@ -123,7 +124,8 @@ def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
-    events.delete()
+    for event in chunked_queryset(events):
+        event.delete()
 
 
 @actor(description=_("Cleanup seen notifications and notifications whose event expired."))
