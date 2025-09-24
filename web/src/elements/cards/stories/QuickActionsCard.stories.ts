@@ -11,7 +11,7 @@ const ACTIONS: QuickAction[] = [
     ["Check the logs", "/events/log"],
     ["Explore integrations", "https://integrations.goauthentik.io/", true],
     ["Manage users", "/identity/users"],
-    ["Check the release notes", "https://goauthentik.io/docs/releases/", true],
+    ["Check the release notes", "https://docs.goauthentik.io/releases/", true],
 ];
 
 const metadata: Meta<QuickActionsCard> = {
@@ -41,7 +41,7 @@ const ACTIONS: QuickAction[] = [
     ["Check the logs", "/events/log"],
     ["Explore integrations", "https://goauthentik.io/integrations/", true],
     ["Manage users", "/identity/users"],
-    ["Check the release notes", "https://goauthentik.io/docs/releases/", true],
+    ["Check the release notes", "https://docs.goauthentik.io/releases/", true],
 ];
 \`\`\`
 

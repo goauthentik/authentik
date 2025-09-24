@@ -38,7 +38,7 @@ func (a *Application) setAuthorizationHeader(headers http.Header, c *Claims) {
 }
 
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
-	// https://goauthentik.io/docs/providers/proxy/proxy
+	// https://docs.goauthentik.io/add-secure-apps/providers/proxy
 	headers.Set("X-authentik-username", c.PreferredUsername)
 	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
 	headers.Set("X-authentik-entitlements", strings.Join(c.Entitlements, "|"))
