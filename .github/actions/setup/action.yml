@@ -63,17 +63,8 @@ runs:
         cd web && npm ci
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
-      shell: uv run python {0}
+      shell: bash
+      env:
+        PROFILES: ${{ inputs.profiles }}
       run: |
-        from authentik.lib.generators import generate_id
-        from yaml import safe_dump
-
-        with open("local.env.yml", "w") as _config:
-            safe_dump(
-                {
-                    "log_level": "debug",
-                    "secret_key": generate_id(),
-                },
-                _config,
-                default_flow_style=False,
-            )
+        uv run python3 ${{ github.action_path }}/generate_config.py
