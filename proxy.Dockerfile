@@ -3,6 +3,10 @@
 # Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
+RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
+    apt-get update && \
+    apt-get dist-upgrade -y
+
 ENV NODE_ENV=production
 WORKDIR /static
 
@@ -31,6 +35,7 @@ WORKDIR /go/src/goauthentik.io
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     dpkg --add-architecture arm64 && \
     apt-get update && \
+    apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
 
 RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
