@@ -64,13 +64,6 @@ class TelegramSourceFlowManager(SourceFlowManager):
     group_connection_type = GroupTelegramSourceConnection
 
 
-class TelegramSourceFlowManager(SourceFlowManager):
-    """Flow manager for Telegram source"""
-
-    user_connection_type = UserTelegramSourceConnection
-    group_connection_type = GroupTelegramSourceConnection
-
-
 class TelegramLoginView(ChallengeStageView):
 
     response_class = TelegramChallengeResponse

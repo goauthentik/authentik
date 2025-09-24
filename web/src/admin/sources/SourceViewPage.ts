@@ -4,6 +4,7 @@ import "#admin/sources/oauth/OAuthSourceViewPage";
 import "#admin/sources/plex/PlexSourceViewPage";
 import "#admin/sources/saml/SAMLSourceViewPage";
 import "#admin/sources/scim/SCIMSourceViewPage";
+import "#admin/sources/telegram/TelegramSourceViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
