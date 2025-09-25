@@ -105,7 +105,7 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
 
 
 def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
-    """Optimise pagination parameters, instead of re-declaring parameters for each endpoint
+    """Optimise pagination parameters, instead of redeclaring parameters for each endpoint
     declare them globally and refer to them"""
     to_replace = {
         "ordering": create_component(
