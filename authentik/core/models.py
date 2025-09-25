@@ -200,7 +200,10 @@ class Group(SerializerModel, AttributesMixin):
                 "parent",
             ),
         )
-        indexes = [models.Index(fields=["name"])]
+        indexes = (
+            models.Index(fields=["name"]),
+            models.Index(fields=["is_superuser"]),
+        )
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
         permissions = [
