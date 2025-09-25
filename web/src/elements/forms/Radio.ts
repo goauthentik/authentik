@@ -53,7 +53,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
                 .pf-c-radio__label {
                     cursor: not-allowed;
-                    color: GrayText;
+                    color: var(--pf-global--disabled-color--100);
                 }
             }
 
