@@ -150,11 +150,16 @@ class TestBlueprintsV1(TransactionTestCase):
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
         self.assertTrue(policy)
+        policy2 = ExpressionPolicy.objects.filter(name="policy2").first()
+        self.assertTrue(policy2)
         group = Group.objects.filter(name="test").first()
         self.assertIsNotNone(group)
         self.assertEqual(
             group.attributes,
             {
+                "find_many": [str(policy.pk), str(policy2.pk)],
+                "find_many_filtered": [str(policy2.pk)],
+                "find_many_no_match": [],
                 "policy_pk1": str(policy.pk) + "-suffix",
                 "policy_pk2": str(policy.pk) + "-suffix",
                 "boolAnd": True,

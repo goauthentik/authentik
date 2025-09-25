@@ -407,17 +407,13 @@ class FindMany(YAMLTag):
             query &= Q(**{query_key: query_value})
         return query
 
-    def _get_instance(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         model_class = self._get_model_class(entry, blueprint)
         query = self._get_query(entry, blueprint)
 
-        return [pk for pk in model_class.objects.filter(query)]
-
-    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        instance = self._get_instance(entry, blueprint)
-        if instance:
-            return instance.pk
-        return None
+        return [
+            instance.pk for instance in model_class.objects.filter(query) if instance is not None
+        ]
 
 
 class Find(FindMany):
@@ -431,6 +427,12 @@ class Find(FindMany):
         query = self._get_query(entry, blueprint)
 
         return model_class.objects.filter(query).first()
+
+    def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        instance = self._get_instance(entry, blueprint)
+        if instance:
+            return instance.pk
+        return None
 
 
 class FindObject(Find):

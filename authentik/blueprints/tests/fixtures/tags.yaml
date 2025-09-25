@@ -35,7 +35,26 @@ entries:
       id: policy
       model: authentik_policies_expression.expressionpolicy
     - attrs:
+          expression: return True
+      identifiers:
+          name: policy2
+      id: policy
+      model: authentik_policies_expression.expressionpolicy
+    - attrs:
           attributes:
+              find_many:
+                !Enumerate [
+                  !FindMany [authentik_policies_expression.expressionpolicy],
+                  SEQ,
+                  !Format ["%%s", !Value 0]
+                ]
+              find_many_filtered:
+                !Enumerate [
+                  !FindMany [authentik_policies_expression.expressionpolicy, [name, policy2]],
+                  SEQ,
+                  !Format ["%%s", !Value 0]
+                ]
+              find_many_no_match: !FindMany [authentik_policies_expression.expressionpolicy, [name, non-existent]]
               env_null: !Env [bar-baz, null]
               file_content: !File '%(file_name)s'
               file_default: !File ['%(file_default_name)s', 'default']
