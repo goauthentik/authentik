@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"beryju.io/ldap"
 
@@ -54,6 +55,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"gidNumber":     {pi.GetUserGidNumber(u)},
 		"homeDirectory": {fmt.Sprintf("/home/%s", u.Username)},
 		"sn":            {u.Name},
+		"pwdChangeTime": {fmt.Sprintf("%s", u.PasswordChangeDate.In(time.UTC).Format("20060102150405Z"))},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
