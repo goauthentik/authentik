@@ -19,3 +19,11 @@ import Objects from "../../../expressions/\_objects.md";
 import Functions from "../../../expressions/\_functions.mdx";
 
 <Functions />
+
+Example?
+
+```python
+return {
+  "type": "external".
+}
+```

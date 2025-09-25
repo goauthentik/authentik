@@ -79,3 +79,11 @@ To support the integration of authentik with Active Directory, you will need to 
 6. To finalise the Active Directory setup, you need to enable the backend "authentik LDAP" in the Password Stage.
 
     ![](./11_ak_stage.png)
+
+## Property mapping
+
+```python
+return {
+  "type": "external".
+}
+```
