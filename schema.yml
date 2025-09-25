@@ -53694,11 +53694,11 @@ components:
           readOnly: true
         group_obj:
           allOf:
-          - $ref: '#/components/schemas/Group'
+          - $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         user_obj:
           allOf:
-          - $ref: '#/components/schemas/User'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         target:
           type: string
