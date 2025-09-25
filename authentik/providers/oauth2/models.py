@@ -238,6 +238,16 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
+    refresh_token_threshold = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "When refreshing a token, if the refresh token is valid for less than "
+            "this duration, it will be renewed. "
+            "When set to seconds=0, token will always be renewed. "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
 
     sub_mode = models.TextField(
         choices=SubModes.choices,

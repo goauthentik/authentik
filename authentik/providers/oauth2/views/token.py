@@ -3,7 +3,7 @@
 from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
 from dataclasses import InitVar, dataclass
-from datetime import datetime, timedelta
+from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
@@ -694,7 +694,11 @@ class TokenView(View):
             "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
-        if (now() - self.params.refresh_token.expires) < timedelta(hours=1):
+        refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
+        if (
+            refresh_token_threshold.total_seconds() == 0
+            or (now() - self.params.refresh_token.expires) < refresh_token_threshold
+        ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
                 user=self.params.refresh_token.user,

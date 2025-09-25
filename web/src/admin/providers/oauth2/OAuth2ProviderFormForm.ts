@@ -319,6 +319,18 @@ export function renderForm(
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
                 </ak-text-input>
+                <ak-text-input
+                    name="refreshTokenThreshold"
+                    label=${msg("Refresh Token threshold")}
+                    value="${provider?.refreshTokenThreshold ?? "hours=1"}"
+                    input-hint="code"
+                    required
+                    .bighelp=${html` <p class="pf-c-form__helper-text">
+                            ${msg("When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.")}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
+                >
+                </ak-text-input>
                 <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                     <ak-dual-select-dynamic-selected
                         .provider=${propertyMappingsProvider}
