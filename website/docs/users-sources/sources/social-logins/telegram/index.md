@@ -3,38 +3,38 @@ title: Telegram
 support_level: community
 ---
 
-Configuring Telegram as a source allows users to authenticate using their Telegram account credentials within authentik.
+Configuring Telegram as a source allows users to authenticate within authentik using their Telegram account credentials.
 
 ## Preparation
 
-Using Telegram login as a source requires that your authentik instance is served from a domain.
+Using Telegram as a source requires that your authentik instance is served from a domain.
 
-## Telegram
+## Telegram configuration
 
 To use Telegram as a source, you first need to register a Telegram bot:
 
 1. Start a chat with `@BotFather` on Telegram.
-2. Use `/newbot` command to create a new bot. Pick a username for your new bot (e.g., `my_bot`).
-   Note the username you've chosen - you'll need it when setting up the source in authentik.
-3. BotFather will provide you with a token for your bot. Make a record of the token as well.
-4. Link the bot to your authentik domain name using `/setdomain` command.
-   Please note that **the domain name must exactly match the FQDN of the authentik installation**.
+2. Use the `/newbot` command to create a new bot. Define a name and username for your new bot (e.g., `authentik_bot`).
+3. BotFather will provide you with a token for the new bot. Take note of the username and token because they will be required when setting up the source in authentik.
+4. Link the bot to your authentik domain name using the `/setdomain` command.
+
+:::note
+The domain name set in Telegram must **exactly** match the FQDN of the authentik installation.
+:::
 
 Now that the bot is configured you can proceed to creating a source in authentik.
 
-## authentik
+## authentik configuration
 
-In authentik, open the Admin interface and go to **Directory** > **Federation & Social login** and click **Create**.
-Select **Telegram source** and configure your source:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+    - **Select type**: select **Telegram** as the source type.
+    - **Create Telegram Source**: provide a name, a slug, and the following required configurations:
+        - **Bot username**: The username of your Telegram bot (e.g., `authentik_bot`).
+        - **Bot token**: The token of your Telegram bot.
+        - **Request access to send messages from your bot**: enable this to allow your bot to send messages to authentik users utilizing the Telegram source for authentication.
 
-- **Name**: Define a name.
-- **Slug**: Set a slug.
-- **Bot username**: Set the username of your Telegram bot (e.g., `my_bot`).
-- **Bot token**: Set the token of your Telegram bot.
-- **Request access to send messages from your bot**: enable this if you need your bot to be able to
-  send messages to the users who logged in to authentik with it.
-
-Save, and you now have Telegram as a source.
+3. Click **Save**.
 
 :::note
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
@@ -42,8 +42,7 @@ For instructions on how to display the new source on the authentik login page, r
 
 ## Telegram source property mappings
 
-You can use property mappings to set user properties in authentik that are based on user data provided by Telegram.
-See the [overview](../../property-mappings/index.md) for information on how property mappings work.
+[Property mappings](../../property-mappings/index.md) can be used to map Telegram user properties to authentik user properties.
 
 ### Expression data
 
@@ -56,6 +55,6 @@ The dictionary contains the following fields:
 - `last_name` - Last name of the user. Might not be present.
 - `photo_url` - URL of the user's profile photo. Might not be present.
 
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
-:::
+## Resources
+
+- [Telegram Documentation - BotFather](https://core.telegram.org/bots/features#botfather)
