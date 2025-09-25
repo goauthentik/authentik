@@ -13,7 +13,7 @@ The [technical documentation](https://docs.goauthentik.io) and our [integration 
 
 authentik documentation is deployed to different subdomains based on the git branch:
 
-| Subdomain                                             | Git Branch       | Description                      |
+| Subdomain                                          | Git Branch       | Description                      |
 | -------------------------------------------------- | ---------------- | -------------------------------- |
 | [main.goauthentik.io](https://main.goauthentik.io) | `main`           | Latest changes and features      |
 | [next.goauthentik.io](https://next.goauthentik.io) | `next`           | Upcoming release content         |
