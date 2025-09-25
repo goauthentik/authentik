@@ -37,13 +37,13 @@ type RedisConfig struct {
 }
 
 type ListenConfig struct {
-	HTTP              string   `yaml:"listen_http" env:"HTTP, overwrite"`
-	HTTPS             string   `yaml:"listen_https" env:"HTTPS, overwrite"`
-	LDAP              string   `yaml:"listen_ldap" env:"LDAP, overwrite"`
-	LDAPS             string   `yaml:"listen_ldaps" env:"LDAPS, overwrite"`
-	Radius            string   `yaml:"listen_radius" env:"RADIUS, overwrite"`
-	Metrics           string   `yaml:"listen_metrics" env:"METRICS, overwrite"`
-	Debug             string   `yaml:"listen_debug" env:"DEBUG, overwrite"`
+	HTTP              string   `yaml:"http" env:"HTTP, overwrite"`
+	HTTPS             string   `yaml:"https" env:"HTTPS, overwrite"`
+	LDAP              string   `yaml:"ldap" env:"LDAP, overwrite"`
+	LDAPS             string   `yaml:"ldaps" env:"LDAPS, overwrite"`
+	Radius            string   `yaml:"radius" env:"RADIUS, overwrite"`
+	Metrics           string   `yaml:"metrics" env:"METRICS, overwrite"`
+	Debug             string   `yaml:"debug" env:"DEBUG, overwrite"`
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"TRUSTED_PROXY_CIDRS, overwrite"`
 }
 
