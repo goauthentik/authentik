@@ -33,6 +33,10 @@
      * ensuring they share the same height.
      */
     --ak-navbar--height: 7rem;
+
+    --pf-global--disabled-color--100: GrayText;
+    --pf-global--disabled-color--200: color-mix(in srgb, GrayText 100%, CanvasText 75%);
+    --pf-global--disabled-color--300: color-mix(in srgb, GrayText 100%, CanvasText 100%);
 }
 
 .pf-c-form__group {
@@ -208,6 +212,14 @@ html > form > input {
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
 }
+
+/* #region Fields */
+
+.pf-c-switch__label {
+    user-select: none;
+}
+
+/* #endregion */
 
 /* #region Fonts */
 
