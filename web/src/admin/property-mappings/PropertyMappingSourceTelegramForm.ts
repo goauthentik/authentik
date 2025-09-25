@@ -11,9 +11,7 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-telegram-form")
 export class PropertyMappingSourceTelegramForm extends BasePropertyMappingForm<TelegramSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
     loadInstance(pk: string): Promise<TelegramSourcePropertyMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceTelegramRetrieve({
