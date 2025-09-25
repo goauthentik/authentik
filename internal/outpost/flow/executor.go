@@ -84,7 +84,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 	config.Scheme = refConfig.Scheme
 	config.Servers = api.ServerConfigurations{
 		{
-			URL: (*refConfig).Servers[0].URL,
+			URL: refConfig.Servers[0].URL,
 		},
 	}
 	config.HTTPClient = &http.Client{
