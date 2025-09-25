@@ -41307,17 +41307,6 @@ components:
       required:
       - code
       - name
-    DetailedCountryFieldRequest:
-      type: object
-      properties:
-        code:
-          $ref: '#/components/schemas/CountryCodeEnum'
-        name:
-          type: string
-          minLength: 1
-      required:
-      - code
-      - name
     Device:
       type: object
       description: Serializer for authenticator devices
@@ -49400,25 +49389,6 @@ components:
       - num_pk
       - parent_name
       - pk
-    PartialGroupRequest:
-      type: object
-      description: Partial Group Serializer, does not include child relations.
-      properties:
-        name:
-          type: string
-          minLength: 1
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
     PartialUser:
       type: object
       description: Partial User Serializer, does not include child relations.
@@ -49460,41 +49430,6 @@ components:
       - name
       - pk
       - uid
-      - username
-    PartialUserRequest:
-      type: object
-      description: Partial User Serializer, does not include child relations.
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-      required:
-      - name
       - username
     PasswordChallenge:
       type: object
@@ -57710,16 +57645,6 @@ components:
           maxLength: 16
       required:
       - token
-    StaticDeviceTokenRequest:
-      type: object
-      description: Serializer for static device's tokens
-      properties:
-        token:
-          type: string
-          minLength: 1
-          maxLength: 16
-      required:
-      - token
     SubModeEnum:
       enum:
       - hashed_user_id
@@ -59523,19 +59448,6 @@ components:
           format: uuid
         description:
           type: string
-      required:
-      - aaguid
-      - description
-    WebAuthnDeviceTypeRequest:
-      type: object
-      description: WebAuthnDeviceType Serializer
-      properties:
-        aaguid:
-          type: string
-          format: uuid
-        description:
-          type: string
-          minLength: 1
       required:
       - aaguid
       - description
