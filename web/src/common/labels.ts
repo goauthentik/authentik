@@ -57,6 +57,16 @@ export const severityEnumToLabel = new Map<SeverityEnum | null | undefined, stri
 export const severityToLabel = (severity: SeverityEnum | null | undefined) =>
     severityEnumToLabel.get(severity) ?? msg("Unknown severity");
 
+export function severityToLevel(severity?: SeverityEnum | null): string {
+    switch (severity) {
+        case SeverityEnum.Warning:
+            return "pf-m-warning";
+        case SeverityEnum.Alert:
+            return "pf-m-danger";
+    }
+    return "pf-m-info";
+}
+
 // TODO: Add verbose_name field to now vendored OTP devices
 export const deviceTypeToLabel = new Map<string, string>([
     ["authentik_stages_authenticator_static.StaticDevice", msg("Static tokens")],
