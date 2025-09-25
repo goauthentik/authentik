@@ -697,7 +697,7 @@ class TokenView(View):
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (now() - self.params.refresh_token.expires) < refresh_token_threshold
+            or (now - self.params.refresh_token.expires) > refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(

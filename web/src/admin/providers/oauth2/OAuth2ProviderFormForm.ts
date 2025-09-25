@@ -326,7 +326,9 @@ export function renderForm(
                     input-hint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
-                            ${msg("When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.")}
+                            ${msg(
+                                "When renewing a refresh token, if the existing refresh token's expiry is within this threshold, the refresh token will be renewed. Set to seconds=0 to always renew the refresh token.",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                 >
