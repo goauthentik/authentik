@@ -42,8 +42,7 @@ For instructions on how to display the new source on the authentik login page, r
 
 ## Telegram source property mappings
 
-You can set user properties in authentik based on the data about the user provided by Telegram
-using property mappings.
+You can use property mappings to set user properties in authentik that are based on user data provided by Telegram.
 See the [overview](../../property-mappings/index.md) for information on how property mappings work.
 
 ### Expression data
