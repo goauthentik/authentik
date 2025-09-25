@@ -385,7 +385,7 @@ class TestToken(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
             signing_key=self.keypair,
-            refresh_token_threshold="hours=1",
+            refresh_token_threshold="hours=1",  # nosec
         )
         provider.property_mappings.set(
             ScopeMapping.objects.filter(
