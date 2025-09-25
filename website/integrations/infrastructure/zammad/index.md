@@ -37,9 +37,9 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **ACS URL** `bd>https://zammad.company/auth/saml/callback`.
     - Set the **Issuer** to `https://zammad.company/auth/saml/metadata`.
     - Set the **Audience** to `https://zammad.company/auth/saml/metadata`.
-    - Set the **Service Provider Bi`** to `Post`.
+    - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
-- **Configure Bindings** _`onal)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -47,12 +47,11 @@ To support the integration of Zammad with authentik, you need to create an appli
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for zammad`).
-3. Under **Related objects** > **Download signing certificate **, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
+3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
-## Zammad configuration`
+## Zammad configuration
 
-`
-To configure the Zammad SAML o`s go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via SAML** toggle and change the following fields:
+To configure Zammad's integration with authentik, go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via SAML** toggle and change the following fields:
 
     - **Display name**: authentik
     - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
