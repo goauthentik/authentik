@@ -51,11 +51,13 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 			constants.OCPosixAccount,
 			constants.OCAKUser,
 		},
-		"uidNumber":     {pi.GetUserUidNumber(u)},
-		"gidNumber":     {pi.GetUserGidNumber(u)},
-		"homeDirectory": {fmt.Sprintf("/home/%s", u.Username)},
-		"sn":            {u.Name},
-		"pwdChangeTime": {u.PasswordChangeDate.In(time.UTC).Format("20060102150405Z")},
+		"uidNumber":       {pi.GetUserUidNumber(u)},
+		"gidNumber":       {pi.GetUserGidNumber(u)},
+		"homeDirectory":   {fmt.Sprintf("/home/%s", u.Username)},
+		"sn":              {u.Name},
+		"pwdChangedTime":  {u.PasswordChangeDate.In(time.UTC).Format("20060102150405Z")},
+		"createTimestamp": {u.DateJoined.In(time.UTC).Format("20060102150405Z")},
+		"modifyTimestamp": {u.LastUpdated.In(time.UTC).Format("20060102150405Z")},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
