@@ -124,4 +124,5 @@ class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = PolicyBindingSerializer
     search_fields = ["policy__name"]
     filterset_class = PolicyBindingFilter
-    ordering = ["target", "order"]
+    ordering = ["order", "pk"]
+    ordering_fields = ["order", "target__uuid", "pk"]
