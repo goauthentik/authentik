@@ -106,7 +106,7 @@ export class ModalForm extends ModalButton {
                 : nothing}
             <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+                    <h1 id="modal-title" class="pf-c-title pf-m-2xl">
                         <slot name="header"></slot>
                     </h1>
                 </div>
@@ -117,13 +117,13 @@ export class ModalForm extends ModalButton {
             </section>
             <footer class="pf-c-modal-box__footer">
                 ${this.showSubmitButton
-                    ? html`<ak-spinner-button .callAction=${this.#confirm} class="pf-m-primary">
-                              <slot name="submit"></slot> </ak-spinner-button
-                          >&nbsp;`
+                    ? html`<button @click=${this.#confirm} class="pf-c-button pf-m-primary">
+                          <slot name="submit"></slot>
+                      </button>`
                     : nothing}
-                <ak-spinner-button .callAction=${this.#cancel} class="pf-m-secondary">
+                <button @click=${this.#cancel} class="pf-c-button pf-m-secondary">
                     ${this.cancelText}
-                </ak-spinner-button>
+                </button>
             </footer>`;
     }
 }
