@@ -15,7 +15,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
@@ -37,15 +37,15 @@ class UserObjectPermissionSerializer(ModelSerializer):
         fields = ["id", "codename", "model", "app_label", "object_pk", "name"]
 
 
-class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):
+class UserAssignedObjectPermissionSerializer(PartialUserSerializer):
     """Users assigned object permission serializer"""
 
     permissions = UserObjectPermissionSerializer(many=True, source="userobjectpermission_set")
     is_superuser = BooleanField()
 
     class Meta:
-        model = GroupMemberSerializer.Meta.model
-        fields = GroupMemberSerializer.Meta.fields + ["permissions", "is_superuser"]
+        model = PartialUserSerializer.Meta.model
+        fields = PartialUserSerializer.Meta.fields + ["permissions", "is_superuser"]
 
 
 class UserAssignedPermissionFilter(FilterSet):

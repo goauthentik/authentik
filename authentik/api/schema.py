@@ -105,6 +105,8 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
 
 
 def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
+    """Optimise pagination parameters, instead of re-declaring parameters for each endpoint
+    declare them globally and refer to them"""
     to_replace = {
         "ordering": create_component(
             generator,
@@ -157,12 +159,10 @@ def postprocess_schema_pagination(result, generator: SchemaGenerator, **kwargs):
     }
     for path in result["paths"].values():
         for method in path.values():
-            # print(method["parameters"])
             for idx, param in enumerate(method.get("parameters", [])):
                 for replace_name, replace_ref in to_replace.items():
                     if param["name"] == replace_name:
                         method["parameters"][idx] = replace_ref.ref
-            # print(method["parameters"])
     return result
 
 

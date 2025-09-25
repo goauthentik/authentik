@@ -97,8 +97,8 @@ class ParamUserSerializer(PassiveSerializer):
     user = PrimaryKeyRelatedField(queryset=User.objects.all().exclude_anonymous(), required=False)
 
 
-class UserGroupSerializer(ModelSerializer):
-    """Simplified Group Serializer for user's groups"""
+class PartialGroupSerializer(ModelSerializer):
+    """Partial Group Serializer, does not include child relations."""
 
     attributes = JSONDictField(required=False)
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
@@ -143,11 +143,11 @@ class UserSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_groups", "true")).lower() == "true"
 
-    @extend_schema_field(UserGroupSerializer(many=True))
-    def get_groups_obj(self, instance: User) -> list[UserGroupSerializer] | None:
+    @extend_schema_field(PartialGroupSerializer(many=True))
+    def get_groups_obj(self, instance: User) -> list[PartialGroupSerializer] | None:
         if not self._should_include_groups:
             return None
-        return UserGroupSerializer(instance.ak_groups, many=True).data
+        return PartialGroupSerializer(instance.ak_groups, many=True).data
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -719,7 +719,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         return Response(status=204)
 
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=None,
         responses={
             "204": OpenApiResponse(description="Successfully ended impersonation"),
         },
