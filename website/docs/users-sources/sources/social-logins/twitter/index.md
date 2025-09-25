@@ -3,7 +3,7 @@ title: Twitter
 support_level: authentik
 ---
 
-Allows users to authenticate using their twitter credentials
+Allows users to authenticate using their Twitter credentials.
 
 ## Preparation
 
@@ -11,7 +11,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## Twitter
+## Twitter configuration
 
 You will need to create a new project, and OAuth credentials in the Twitter Developer console.
 
@@ -33,7 +33,7 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 10. Confirm with **Save**
 11. Copy and store **Client ID** and **Client Secret** for later
 
-## authentik
+## authentik configuration
 
 1. Under **Directory > Federation & Social login** click **Create Twitter OAuth Source**
 

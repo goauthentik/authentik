@@ -5,7 +5,7 @@ tags: [integration, saml, google]
 support_level: authentik
 ---
 
-This topic covers configuring authentik to authenticate users with their Google Workspace credentials.
+Allows users to authenticate using their Google Workspace credentials.
 
 ## What is Google Workspace?
 

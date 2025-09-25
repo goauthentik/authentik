@@ -5,7 +5,7 @@ tags: [integration, oauth, google]
 support_level: community
 ---
 
-Allows users to authenticate using their Google credentials
+Allows users to authenticate using their Google credentials.
 
 ## Preparation
 
@@ -13,7 +13,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## Google
+## Google configuration
 
 You will need to create a new project, and OAuth credentials in the Google Developer console. The developer console can be overwhelming at first.
 
@@ -64,7 +64,7 @@ _I'm only going to list the mandatory/important fields to complete._
 24. Click **Create**
 25. Copy and store _Your Client ID_ and _Your Client Secret_ for later
 
-## authentik
+## authentik configuration
 
 26. Under **Directory > Federation & Social login** click **Create Google OAuth Source**
 

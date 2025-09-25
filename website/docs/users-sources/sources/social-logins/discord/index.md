@@ -3,7 +3,7 @@ title: Discord
 support_level: authentik
 ---
 
-Allows users to authenticate using their Discord credentials
+Allows users to authenticate using their Discord credentials.
 
 ## Preparation
 
@@ -11,7 +11,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## Discord
+## Discord configuration
 
 1. Create an application in the Discord Developer Portal (This is Free) https://discord.com/developers/applications
 
@@ -33,7 +33,7 @@ Here is an example of a completed OAuth2 screen for Discord.
 
 ![](./discord3.png)
 
-## authentik
+## authentik configuration
 
 8. Under **Directory > Federation & Social login** click **Create Discord OAuth Source**
 
@@ -49,7 +49,7 @@ Here is an example of a complete authentik Discord OAuth Source
 Save, and you now have Discord as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
 ### Checking for membership of a Discord Guild
@@ -380,7 +380,3 @@ return True
 ```
 
 Now bind this policy to the chosen enrollment and authentication flows for the Discord OAuth source.
-
-:::note
-For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
-:::
