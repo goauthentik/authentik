@@ -11,7 +11,7 @@ support_level: community
 > -- https://github.com/RocketChat/Rocket.Chat
 
 :::note
-This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
+This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker Compose install](https://docs.rocket.chat/quick-start/installing-and-updating/rapid-deployment-methods/docker-and-docker-compose/docker-containers). Instructions may differ between versions.
 :::
 
 ## Preparation

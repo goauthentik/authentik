@@ -1,9 +1,12 @@
 module goauthentik.io
 
-go 1.24.0
+go 1.24.3
+
+toolchain go1.24.6
 
 require (
 	beryju.io/ldap v0.1.0
+	beryju.io/radius-eap v0.1.0
 	github.com/avast/retry-go/v4 v4.6.1
 	github.com/coreos/go-oidc/v3 v3.15.0
 	github.com/getsentry/sentry-go v0.35.3
@@ -29,12 +32,12 @@ require (
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025100.8
+	goauthentik.io/api/v3 v3.2025100.11
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.31.0
 	golang.org/x/sync v0.17.0
 	gopkg.in/yaml.v2 v2.4.0
-	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
+	layeh.com/radius v0.0.0-20231213012653-1006025d24f8
 )
 
 require (

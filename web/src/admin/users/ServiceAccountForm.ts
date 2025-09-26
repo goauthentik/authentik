@@ -54,6 +54,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     reset(): void {
         super.reset();
         this.result = null;
+        (this.parentElement as ModalForm).showSubmitButton = true;
     }
 
     renderForm(): TemplateResult {
