@@ -3,7 +3,7 @@ title: Mailcow
 support_level: community
 ---
 
-Allows users to authenticate using their Mailcow credentials
+Allows users to authenticate using their Mailcow credentials.
 
 ## Preparation
 
@@ -12,9 +12,9 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `mailcow.company` is the FQDN of the mailcow installation.
 
-## Mailcow
+## Mailcow configuration
 
-1. Log in to mailcow as an admin and navigate to the OAuth2 Apps settings
+1. Log in to mailcow as an administrator and navigate to the OAuth2 Apps settings
 
 ![OAuth2 Apps menu](./mailcow1.png)
 
@@ -28,7 +28,7 @@ The following placeholders are used in this guide:
 
 ![ClientID and Secret](./mailcow3.png)
 
-## authentik
+## authentik configuration
 
 5. Under **Directory > Federation & Social login** click **Create > Mailcow OAuth Source**
 

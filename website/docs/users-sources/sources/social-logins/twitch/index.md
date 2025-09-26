@@ -3,7 +3,7 @@ title: Twitch
 support_level: community
 ---
 
-Allows users to authenticate using their Twitch credentials
+Allows users to authenticate using their Twitch credentials.
 
 ## Preparation
 
@@ -11,7 +11,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-## Twitch
+## Twitch configuration
 
 1. Click **Register Your Application** in the Twitch Developers Console https://dev.twitch.tv/console
 
@@ -39,7 +39,7 @@ The following placeholders are used in this guide:
 
 ![Copy Keys](./twitch4.png)
 
-## authentik
+## authentik configuration
 
 10. Under _Directory > Federation & Social login_ Click **Create Twitch OAuth Source**
 

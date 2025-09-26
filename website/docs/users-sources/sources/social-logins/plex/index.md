@@ -3,7 +3,7 @@ title: Plex
 support_level: community
 ---
 
-Allows users to authenticate using their Plex credentials
+Allows users to authenticate using their Plex credentials.
 
 ## Preparation
 
