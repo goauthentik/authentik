@@ -76,27 +76,26 @@ export class MemberSelectTable extends TableModal<User> {
             this.fetch();
         };
 
-        return html`&nbsp;
-            <div class="pf-c-toolbar__group pf-m-filter-group">
-                <div class="pf-c-toolbar__item pf-m-search-filter">
-                    <div class="pf-c-input-group show-disabled-toggle-group">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${this.userListFilter === "all"}
-                                @change=${toggleShowDisabledUsers}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
+        return html` <div class="pf-c-toolbar__group pf-m-filter-group">
+            <div class="pf-c-toolbar__item pf-m-search-filter">
+                <div class="pf-c-input-group show-disabled-toggle-group">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${this.userListFilter === "all"}
+                            @change=${toggleShowDisabledUsers}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
-                        </label>
-                    </div>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
+                    </label>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     row(item: User): SlottedTemplateResult[] {
