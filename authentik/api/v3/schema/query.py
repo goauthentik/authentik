@@ -15,8 +15,8 @@ QUERY_PARAMS = {
             name="ordering",
             schema=build_basic_type(OpenApiTypes.STR),
             location="query",
-            description=_("Which field to use when ordering the results.")
-        )
+            description=_("Which field to use when ordering the results."),
+        ),
     ),
     "page": ResolvedComponent(
         name="QueryPaginationPage",
@@ -26,8 +26,8 @@ QUERY_PARAMS = {
             name="page",
             schema=build_basic_type(OpenApiTypes.INT),
             location="query",
-            description=_("A page number within the paginated result set.")
-        )
+            description=_("A page number within the paginated result set."),
+        ),
     ),
     "page_size": ResolvedComponent(
         name="QueryPaginationPageSize",
@@ -37,8 +37,8 @@ QUERY_PARAMS = {
             name="page_size",
             schema=build_basic_type(OpenApiTypes.INT),
             location="query",
-            description=_("Number of results to return per page.")
-        )
+            description=_("Number of results to return per page."),
+        ),
     ),
     "search": ResolvedComponent(
         name="QuerySearch",
@@ -48,8 +48,8 @@ QUERY_PARAMS = {
             name="search",
             schema=build_basic_type(OpenApiTypes.STR),
             location="query",
-            description=_("A search term.")
-        )
+            description=_("A search term."),
+        ),
     ),
     # Not related to pagination but a very common query param
     "name": ResolvedComponent(
@@ -60,6 +60,6 @@ QUERY_PARAMS = {
             name="name",
             schema=build_basic_type(OpenApiTypes.STR),
             location="query",
-        )
+        ),
     ),
 }

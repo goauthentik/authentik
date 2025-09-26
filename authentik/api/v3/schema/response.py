@@ -13,24 +13,20 @@ GENERIC_ERROR = ResolvedComponent(
     type=ResolvedComponent.SCHEMA,
     object="GenericError",
     schema=build_object_type(
-                    description=_("Generic API Error"),
-                    properties={
-                        "detail": build_basic_type(OpenApiTypes.STR),
-                        "code": build_basic_type(OpenApiTypes.STR),
-                    },
-                    required=["detail"],
-                ),
+        description=_("Generic API Error"),
+        properties={
+            "detail": build_basic_type(OpenApiTypes.STR),
+            "code": build_basic_type(OpenApiTypes.STR),
+        },
+        required=["detail"],
+    ),
 )
 GENERIC_ERROR_RESPONSE = ResolvedComponent(
     name="GenericErrorResponse",
     type=ResolvedComponent.RESPONSE,
     object="GenericErrorResponse",
     schema={
-        "content": {
-            "application/json": {
-                "schema": GENERIC_ERROR.ref
-            }
-        },
+        "content": {"application/json": {"schema": GENERIC_ERROR.ref}},
         "description": "",
     },
 )
