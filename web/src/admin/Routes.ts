@@ -37,6 +37,10 @@ export const ROUTES: Route[] = [
         await import("#admin/applications/ApplicationViewPage");
         return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
     }),
+    new Route(new RegExp("^/endpoints/devices$"), async () => {
+        await import("#admin/endpoints/DeviceListPage");
+        return html`<ak-endpoints-device-list></ak-endpoints-device-list>`;
+    }),
     new Route(new RegExp("^/core/sources$"), async () => {
         await import("#admin/sources/SourceListPage");
         return html`<ak-source-list></ak-source-list>`;

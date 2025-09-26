@@ -21,7 +21,7 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
             data={
                 "component": "xak-flow-frame",
                 "url": self.request.build_absolute_uri(
-                    reverse("authentik_stages_authenticator_endpoint_gdtc:chrome")
+                    reverse("authentik_endpoints_connectors_google_chrome:chrome")
                 ),
                 "loading_overlay": True,
                 "loading_text": _("Verifying your browser..."),
