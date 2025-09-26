@@ -67,7 +67,6 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 15-alpine
           - 16-alpine
           - 17-alpine
         run_id: [1, 2, 3, 4, 5]
@@ -114,7 +113,7 @@ jobs:
         run: |
           uv run make ci-test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} (${{ matrix.profiles }}) - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: test-make-seed
@@ -122,9 +121,11 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 15-alpine
           - 16-alpine
           - 17-alpine
+        profiles:
+          - ""
+          - postgres_replica
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v5
@@ -132,6 +133,7 @@ jobs:
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
+          profiles: ${{ matrix.profiles }}
       - name: run unittest
         env:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}

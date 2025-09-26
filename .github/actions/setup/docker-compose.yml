@@ -1,8 +1,17 @@
 services:
-  postgresql:
+  redis:
+    image: docker.io/library/redis:7
+    ports:
+      - 6379:6379
+    restart: always
+
+  postgres:
     image: docker.io/library/postgres:${PSQL_TAG:-16}
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./primary/00-replication.sql:/docker-entrypoint-initdb.d/00-replication.sql
+      - ./primary/01-replication-hba.sh:/docker-entrypoint-initdb.d/01-replication-hba.sh
+    command: postgres -c 'wal_level=replica' -c 'max_wal_senders=10' -c 'max_replication_slots=10' -c 'listen_addresses=*'
     environment:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
@@ -10,12 +19,34 @@ services:
     ports:
       - 5432:5432
     restart: always
-  redis:
-    image: docker.io/library/redis:7
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres_replica:
+    profiles:
+      - postgres_replica
+    image: docker.io/library/postgres:${PSQL_TAG:-16}
+    environment:
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+      POSTGRES_DB: authentik
     ports:
-      - 6379:6379
-    restart: always
+      - "5433:5432"
+    volumes:
+      - db-data-replica:/var/lib/postgresql/data
+      - ./replica:/replica
+    command: /replica/start.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:
+    driver: local
+  db-data-replica:
     driver: local
