@@ -3,7 +3,7 @@
 from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
-from typing import Any, Optional, Self
+from typing import Any, Optional
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -18,7 +18,6 @@ from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django_cte import CTE, with_cte
 from guardian.conf import settings
 from guardian.mixins import GuardianUserMixin
 from model_utils.managers import InheritanceManager
@@ -143,41 +142,15 @@ class AttributesMixin(models.Model):
 
 
 class GroupQuerySet(QuerySet):
-    def with_children_recursive(self):
-        """Recursively get all groups that have the current queryset as parents
-        or are indirectly related."""
-
-        def make_cte(cte):
-            """Build the query that ends up in WITH RECURSIVE"""
-            # Start from self, aka the current query
-            # Add a depth attribute to limit the recursion
-            return self.annotate(
-                relative_depth=models.Value(0, output_field=models.IntegerField())
-            ).union(
-                # Here is the recursive part of the query. cte refers to the previous iteration
-                # Only select groups for which the parent is part of the previous iteration
-                # and increase the depth
-                # Finally, limit the depth
-                cte.join(Group, group_uuid=cte.col.parent_id)
-                .annotate(
-                    relative_depth=models.ExpressionWrapper(
-                        cte.col.relative_depth
-                        + models.Value(1, output_field=models.IntegerField()),
-                        output_field=models.IntegerField(),
-                    )
-                )
-                .filter(relative_depth__lt=GROUP_RECURSION_LIMIT),
-                all=True,
-            )
-
-        # Build the recursive query, see above
-        cte = CTE.recursive(make_cte)
-        # Return the result, as a usable queryset for Group.
-        return with_cte(cte, select=cte.join(Group, group_uuid=cte.col.group_uuid))
+    def with_ancestors(self):
+        pks = self.values_list("pk", flat=True)
+        return Group.objects.filter(
+            Q(pk__in=pks) | Q(descendant_nodes__descendant__in=pks)
+        ).distinct()
 
 
 class Group(SerializerModel, AttributesMixin):
-    """Group model which supports a basic hierarchy and has attributes"""
+    """Group model which supports a hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
@@ -195,6 +168,13 @@ class Group(SerializerModel, AttributesMixin):
         default=None,
         on_delete=models.SET_NULL,
         related_name="children",
+    )
+    parents = models.ManyToManyField(
+        "Group",
+        blank=True,
+        symmetrical=False,
+        through="GroupParentageNode",
+        # related_name="children",
     )
 
     objects = GroupQuerySet.as_manager()
@@ -239,12 +219,41 @@ class Group(SerializerModel, AttributesMixin):
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
-    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
-        """Compatibility layer for Group.objects.with_children_recursive()"""
-        qs = self
-        if not isinstance(self, QuerySet):
-            qs = Group.objects.filter(group_uuid=self.group_uuid)
-        return qs.with_children_recursive()
+
+class GroupParentageNode(SerializerModel):
+    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    child = models.ForeignKey(Group, related_name="parent_nodes", on_delete=models.CASCADE)
+    parent = models.ForeignKey(Group, related_name="child_nodes", on_delete=models.CASCADE)
+
+    # def serializer(self) -> type[BaseSerializer]:
+
+    def __str__(self) -> str:
+        return f"Group Parentage Node #{self.child} to {self.parent}"
+
+    class Meta:
+        verbose_name = _("Group Parentage Node")
+        verbose_name_plural = _("Group Parentage Nodes")
+
+        db_table = "authentik_core_groupparentage"
+
+
+class GroupAncestryNode(models.Model):
+    descendant = models.ForeignKey(
+        Group, related_name="ancestor_nodes", on_delete=models.DO_NOTHING
+    )
+    ancestor = models.ForeignKey(
+        Group, related_name="descendant_nodes", on_delete=models.DO_NOTHING
+    )
+
+    class Meta:
+        # This is a transitive closure of authentik_core_groupparentage
+        # See https://en.wikipedia.org/wiki/Transitive_closure#In_graph_theory
+        db_table = "authentik_core_groupancestry"
+        managed = False
+
+    def __str__(self) -> str:
+        return f"Group Ancestor #{self.descendant} to {self.ancestor}"
 
 
 class UserQuerySet(models.QuerySet):
@@ -318,7 +327,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
 
     def all_groups(self) -> QuerySet[Group]:
         """Recursively get all groups this user is a member of."""
-        return self.ak_groups.all().with_children_recursive()
+        return self.ak_groups.all().with_ancestors()
 
     def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,

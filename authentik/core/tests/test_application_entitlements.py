@@ -49,7 +49,8 @@ class TestApplicationEntitlements(APITestCase):
     def test_group_indirect(self):
         """Test indirect group"""
         parent = Group.objects.create(name=generate_id())
-        group = Group.objects.create(name=generate_id(), parent=parent)
+        group = Group.objects.create(name=generate_id())
+        group.parents.add(parent)
         self.user.ak_groups.add(group)
         ent = ApplicationEntitlement.objects.create(app=self.app, name=generate_id())
         PolicyBinding.objects.create(target=ent, group=parent, order=0)

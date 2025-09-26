@@ -47,7 +47,7 @@ def rbac_group_role_m2m(
     with atomic():
         group_users = (
             Group.objects.filter(group_uuid=instance.group_uuid)
-            .with_children_recursive()
+            .with_ancestors()
             .exclude(users__isnull=True)
             .values_list("users", flat=True)
         )
