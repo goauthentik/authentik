@@ -27479,6 +27479,14 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
       - in: query
+        name: signed_assertion
+        schema:
+          type: boolean
+      - in: query
+        name: signed_response
+        schema:
+          type: boolean
+      - in: query
         name: signing_kp
         schema:
           type: string
@@ -52597,6 +52605,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
     PatchedSCIMMappingRequest:
       type: object
       description: SCIMMapping Serializer
@@ -55886,6 +55898,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
       required:
       - component
       - icon
@@ -56077,6 +56093,10 @@ components:
           description: When selected, incoming assertions are encrypted by the IdP
             using the public key of the encryption keypair. The assertion is decrypted
             by the SP using the the private key.
+        signed_assertion:
+          type: boolean
+        signed_response:
+          type: boolean
       required:
       - name
       - pre_authentication_flow
