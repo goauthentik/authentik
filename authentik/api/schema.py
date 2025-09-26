@@ -4,11 +4,7 @@ from collections.abc import Callable
 from typing import Any
 
 from drf_spectacular.generators import SchemaGenerator
-from drf_spectacular.plumbing import (
-    ResolvedComponent,
-    build_array_type,
-    build_object_type,
-)
+from drf_spectacular.plumbing import ResolvedComponent
 from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
 from structlog.stdlib import get_logger
@@ -104,47 +100,4 @@ def postprocess_schema_remove_unused(
         count += 1
     LOGGER.debug("Removing unused components", count=count)
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
-    return result
-
-
-def postprocess_schema_simplify_paginated(
-    result: dict[str, Any], generator: SchemaGenerator, **kwargs
-) -> dict[str, Any]:
-    """Not used currently, simplifies paginated responses"""
-
-    prefix = "#/components/schemas/Paginated"
-    LOGGER.debug("Simplifying paginated responses")
-    autocomplete = None
-    try:
-        from authentik.enterprise.search.schema import AUTOCOMPLETE_SCHEMA
-
-        autocomplete = AUTOCOMPLETE_SCHEMA
-    except ImportError:
-        LOGGER.debug("Enterprise not available")
-    for _path, path in result["paths"].items():
-        for _method, method in path.items():
-            for _code, response in method["responses"].items():
-                if "content" not in response:
-                    continue
-                for _content_type, content_response in response["content"].items():
-                    content_schema = content_response.get("schema", {})
-                    ref: str | None = content_schema.get("$ref", None)
-                    if not ref:
-                        continue
-                    if not ref.startswith(prefix):
-                        continue
-                    actual_component = generator.registry[
-                        (ref.replace(prefix, "").replace("List", ""), ResolvedComponent.SCHEMA)
-                    ]
-                    schema_params = {
-                        "properties": {
-                            "pagination": PAGINATION.ref,
-                            "results": build_array_type(schema=actual_component.ref),
-                        },
-                        "required": ["pagination", "results"],
-                    }
-                    if autocomplete:
-                        schema_params["properties"]["autocomplete"] = autocomplete.ref
-                        schema_params["required"].append("autocomplete")
-                    content_response["schema"] = build_object_type(**schema_params)
     return result
