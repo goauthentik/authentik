@@ -4,7 +4,6 @@ from uuid import UUID
 
 from django.db.models.query_utils import Q
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.middleware import CurrentTask
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
@@ -19,7 +18,7 @@ from authentik.events.models import (
 from authentik.lib.utils.db import chunked_queryset
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.tasks.models import Task
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
@@ -38,7 +37,7 @@ def event_trigger_dispatch(event_uuid: UUID):
 )
 def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
     if not event:
@@ -131,7 +130,7 @@ def gdpr_cleanup(user_pk: int):
 @actor(description=_("Cleanup seen notifications and notifications whose event expired."))
 def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     notifications.delete()

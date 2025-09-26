@@ -1,12 +1,11 @@
 import os
+from importlib import import_module
 from signal import pause
-
-from django.utils.module_loading import import_module
 
 from django_dramatiq_postgres.conf import Conf
 
 
-def worker_metrics():
+def worker_metrics() -> None:
     import_module(Conf().autodiscovery["setup_module"])
 
     from django_dramatiq_postgres.middleware import MetricsMiddleware
