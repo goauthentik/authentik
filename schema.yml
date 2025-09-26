@@ -52049,10 +52049,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-        promptstage_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
         placeholder_expression:
@@ -53271,21 +53267,6 @@ components:
           type: string
       required:
       - id
-    PermissionRequest:
-      type: object
-      description: Global permission
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        codename:
-          type: string
-          minLength: 1
-          maxLength: 100
-      required:
-      - codename
-      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -53717,19 +53698,6 @@ components:
       - all
       - any
       type: string
-    PolicyRequest:
-      type: object
-      description: Policy Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        execution_logging:
-          type: boolean
-          description: When this option is enabled, all executions of this policy
-            will be logged. By default, only execution errors are logged.
-      required:
-      - name
     PolicyTestRequest:
       type: object
       description: Test policy execution for a user with context
@@ -53795,10 +53763,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-        promptstage_set:
+        prompt_stages_obj:
           type: array
           items:
-            $ref: '#/components/schemas/Stage'
+            $ref: '#/components/schemas/PromptStage'
+          readOnly: true
         sub_text:
           type: string
         placeholder_expression:
@@ -53810,6 +53779,7 @@ components:
       - label
       - name
       - pk
+      - prompt_stages_obj
       - type
     PromptChallenge:
       type: object
@@ -53875,10 +53845,6 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-        promptstage_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/StageRequest'
         sub_text:
           type: string
         placeholder_expression:
@@ -54165,36 +54131,6 @@ components:
       - authentik_providers_scim.scimprovider
       - authentik_providers_ssf.ssfprovider
       type: string
-    ProviderRequest:
-      type: object
-      description: Provider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used for authentication when the associated application
-            is accessed by an un-authenticated user.
-        authorization_flow:
-          type: string
-          format: uuid
-          description: Flow used when authorizing this provider.
-        invalidation_flow:
-          type: string
-          format: uuid
-          description: Flow used ending the session from a provider.
-        property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-      required:
-      - authorization_flow
-      - invalidation_flow
-      - name
     ProviderTypeEnum:
       enum:
       - apple
@@ -57043,19 +56979,6 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
-    ServiceConnectionRequest:
-      type: object
-      description: ServiceConnection Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        local:
-          type: boolean
-          description: If enabled, use the local connection. Required Docker socket/Kubernetes
-            Integration
-      required:
-      - name
     ServiceConnectionState:
       type: object
       description: Serializer for Service connection state
@@ -57360,55 +57283,6 @@ components:
       - slug
       - verbose_name
       - verbose_name_plural
-    SourceRequest:
-      type: object
-      description: Source Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Source's display Name.
-        slug:
-          type: string
-          minLength: 1
-          description: Internal source name, used in URLs.
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
-        enabled:
-          type: boolean
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when authenticating existing users.
-        enrollment_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow to use when enrolling new users.
-        user_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        group_property_mappings:
-          type: array
-          items:
-            type: string
-            format: uuid
-        policy_engine_mode:
-          $ref: '#/components/schemas/PolicyEngineMode'
-        user_matching_mode:
-          allOf:
-          - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
-        user_path_template:
-          type: string
-          minLength: 1
-      required:
-      - name
-      - slug
     SourceStage:
       type: object
       description: SourceStage Serializer
@@ -57599,19 +57473,6 @@ components:
       - required
       - sub_text
       - type
-    StageRequest:
-      type: object
-      description: Stage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-      required:
-      - name
     StateEnum:
       enum:
       - queued

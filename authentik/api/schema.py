@@ -186,7 +186,8 @@ def postprocess_schema_remove_unused(
     # possibility that we miss something
     raw = OpenApiJsonRenderer().render(result, renderer_context={}).decode()
     for key in result["components"][ResolvedComponent.SCHEMA].keys():
-        if raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}") >= 1:
+        schema_usages = raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}")
+        if schema_usages >= 1:
             continue
         del generator.registry._components[(key, ResolvedComponent.SCHEMA)]
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
