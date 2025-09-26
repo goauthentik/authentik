@@ -81,6 +81,20 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
         this.onSearch?.("");
     };
 
+    #searchListener = (event: InputEvent) => {
+        const target = event.target;
+
+        if (!(target instanceof HTMLInputElement) || !this.onSearch) return;
+
+        // The search event is dispatched by either pressing enter
+        // or clearing the input (e.g. via the "x" button or pressing escape).
+
+        // The submit listener handles the enter key, so we only need to handle the clearing here.
+        if (target.value) return;
+
+        this.onSearch("");
+    };
+
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
 
@@ -117,6 +131,7 @@ export class TableSearchForm extends WithLicenseSummary(AKElement) {
             placeholder=${ifPresent(this.placeholder)}
             value=${ifPresent(this.defaultValue)}
             class="pf-c-form-control"
+            @search=${this.#searchListener}
         />`;
     }
 
