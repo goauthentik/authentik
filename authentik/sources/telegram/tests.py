@@ -170,10 +170,11 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
         """Test TelegramLoginView"""
         self._make_initial_request()
         self._make_start_request()
-
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.pre_auth_flow.slug})
+        get_response = self.client.get(url)
+        self.assertEqual(get_response.status_code, 200)
         form_data = self._make_valid_response()
         form_data["component"] = "ak-source-telegram"
-        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.pre_auth_flow.slug})
         response = self.client.post(url, form_data)
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(
