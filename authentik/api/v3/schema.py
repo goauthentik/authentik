@@ -9,43 +9,53 @@ from drf_spectacular.types import OpenApiTypes
 from rest_framework.settings import api_settings
 
 GENERIC_ERROR = ResolvedComponent(
-    name="GenericErrorResponse",
-    type=ResolvedComponent.RESPONSE,
-    object="GenericErrorResponse",
-    schema={
-        "content": {
-            "application/json": {
-                "schema": build_object_type(
+    name="GenericError",
+    type=ResolvedComponent.SCHEMA,
+    object="GenericError",
+    schema=build_object_type(
                     description=_("Generic API Error"),
                     properties={
                         "detail": build_basic_type(OpenApiTypes.STR),
                         "code": build_basic_type(OpenApiTypes.STR),
                     },
                     required=["detail"],
-                )
+                ),
+)
+GENERIC_ERROR_RESPONSE = ResolvedComponent(
+    name="GenericErrorResponse",
+    type=ResolvedComponent.RESPONSE,
+    object="GenericErrorResponse",
+    schema={
+        "content": {
+            "application/json": {
+                "schema": GENERIC_ERROR.ref
             }
         },
         "description": "",
     },
 )
 VALIDATION_ERROR = ResolvedComponent(
+    "ValidationError",
+    object="ValidationError",
+    type=ResolvedComponent.SCHEMA,
+    schema=build_object_type(
+        description=_("Validation Error"),
+        properties={
+            api_settings.NON_FIELD_ERRORS_KEY: build_array_type(build_basic_type(OpenApiTypes.STR)),
+            "code": build_basic_type(OpenApiTypes.STR),
+        },
+        required=[],
+        additionalProperties={},
+    ),
+)
+VALIDATION_ERROR_RESPONSE = ResolvedComponent(
     name="ValidationErrorResponse",
     type=ResolvedComponent.RESPONSE,
     object="ValidationErrorResponse",
     schema={
         "content": {
             "application/json": {
-                "schema": build_object_type(
-                    description=_("Validation Error"),
-                    properties={
-                        api_settings.NON_FIELD_ERRORS_KEY: build_array_type(
-                            build_basic_type(OpenApiTypes.STR)
-                        ),
-                        "code": build_basic_type(OpenApiTypes.STR),
-                    },
-                    required=[],
-                    additionalProperties={},
-                ),
+                "schema": VALIDATION_ERROR.ref,
             }
         },
         "description": "",

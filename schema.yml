@@ -32172,30 +32172,13 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            description: Generic API Error
-            properties:
-              detail:
-                type: string
-              code:
-                type: string
-            required:
-            - detail
+            $ref: '#/components/schemas/GenericError'
       description: ''
     ValidationErrorResponse:
       content:
         application/json:
           schema:
-            type: object
-            description: Validation Error
-            properties:
-              non_field_errors:
-                type: array
-                items:
-                  type: string
-              code:
-                type: string
-            additionalProperties: {}
+            $ref: '#/components/schemas/ValidationError'
       description: ''
   schemas:
     AccessDeniedChallenge:
@@ -36824,6 +36807,16 @@ components:
           type: string
           minLength: 1
           default: xak-flow-frame
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
     GeoIPPolicy:
       type: object
       description: GeoIP Policy Serializer
@@ -50843,6 +50836,17 @@ components:
           type: string
       required:
       - name
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
     Version:
       type: object
       description: Get running and latest version.

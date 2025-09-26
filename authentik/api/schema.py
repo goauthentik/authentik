@@ -13,7 +13,13 @@ from drf_spectacular.renderers import OpenApiJsonRenderer
 from drf_spectacular.settings import spectacular_settings
 
 from authentik.api.apps import AuthentikAPIConfig
-from authentik.api.v3.schema import GENERIC_ERROR, PAGINATION, VALIDATION_ERROR
+from authentik.api.v3.schema import (
+    GENERIC_ERROR,
+    GENERIC_ERROR_RESPONSE,
+    PAGINATION,
+    VALIDATION_ERROR,
+    VALIDATION_ERROR_RESPONSE,
+)
 
 
 def create_component(
@@ -51,12 +57,14 @@ def postprocess_schema_responses(
 
     generator.registry.register_on_missing(PAGINATION)
     generator.registry.register_on_missing(GENERIC_ERROR)
+    generator.registry.register_on_missing(GENERIC_ERROR_RESPONSE)
     generator.registry.register_on_missing(VALIDATION_ERROR)
+    generator.registry.register_on_missing(VALIDATION_ERROR_RESPONSE)
 
     for path in result["paths"].values():
         for method in path.values():
-            method["responses"].setdefault("400", VALIDATION_ERROR.ref)
-            method["responses"].setdefault("403", GENERIC_ERROR.ref)
+            method["responses"].setdefault("400", VALIDATION_ERROR_RESPONSE.ref)
+            method["responses"].setdefault("403", GENERIC_ERROR_RESPONSE.ref)
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
