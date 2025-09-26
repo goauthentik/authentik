@@ -236,6 +236,7 @@ module = [
   "authentik.sources.plex.*",
   "authentik.sources.saml.*",
   "authentik.sources.scim.*",
+  "authentik.sources.telegram.*",
   "authentik.stages.authenticator_duo.*",
   "authentik.stages.authenticator_email.*",
   "authentik.stages.authenticator_sms.*",
