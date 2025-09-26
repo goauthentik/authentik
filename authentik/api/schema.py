@@ -200,6 +200,38 @@ def postprocess_schema_remove_unused(
         schema_usages = raw.count(f"#/components/{ResolvedComponent.SCHEMA}/{key}")
         if schema_usages >= 1:
             continue
-        del generator.registry._components[(key, ResolvedComponent.SCHEMA)]
+        del generator.registry[(key, ResolvedComponent.SCHEMA)]
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
+    return result
+
+
+def postprocess_schema_simplify_paginated(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    prefix = "#/components/schemas/Paginated"
+    for _path, path in result["paths"].items():
+        for _method, method in path.items():
+            for _code, response in method["responses"].items():
+                if "content" not in response:
+                    continue
+                for _content_type, content_response in response["content"].items():
+                    content_schema = content_response.get("schema", {})
+                    ref: str | None = content_schema.get("$ref", None)
+                    if not ref:
+                        continue
+                    if not ref.startswith(prefix):
+                        continue
+                    actual_component = generator.registry[
+                        (ref.replace(prefix, "").replace("List", ""), ResolvedComponent.SCHEMA)
+                    ]
+                    content_response["schema"] = build_object_type(
+                        properties={
+                            "pagination": {
+                                "$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"
+                            },
+                            "autocomplete": {"$ref": "#/components/schemas/Autocomplete"},
+                            "results": build_array_type(schema={"$ref": actual_component.ref}),
+                        },
+                        required=["pagination", "results", "autocomplete"],
+                    )
     return result
