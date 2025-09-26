@@ -37,9 +37,10 @@ export function Timestamp(timestamp?: Date | null): TemplateResult {
     }
 
     const elapsed = formatElapsedTime(timestamp);
+    const title = timestamp.toLocaleString();
 
-    return html` <time datetime=${timestamp.toISOString()} aria-label=${elapsed}>
+    return html` <time datetime=${timestamp.toISOString()} aria-label=${elapsed} title=${title}>
         <div>${elapsed}</div>
-        <small>${timestamp.toLocaleString()}</small>
+        <small>${timestamp.toLocaleDateString()}</small>
     </time>`;
 }

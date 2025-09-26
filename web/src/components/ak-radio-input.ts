@@ -10,6 +10,8 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends HorizontalLightComponent<T> {
+    public override role = "radiogroup";
+
     @property({ type: Object })
     value!: T;
 
@@ -20,11 +22,6 @@ export class AkRadioInput<T> extends HorizontalLightComponent<T> {
         if ("detail" in ev) {
             this.value = ev.detail.value;
         }
-    }
-
-    public override connectedCallback(): void {
-        super.connectedCallback();
-        this.role = "radiogroup";
     }
 
     protected override renderHelp(): SlottedTemplateResult {

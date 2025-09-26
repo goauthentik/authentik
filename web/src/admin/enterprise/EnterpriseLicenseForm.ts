@@ -28,7 +28,7 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated license.")
-            : msg("Successfully created license.");
+            : msg("Successfully installed license.");
     }
 
     async load(): Promise<void> {

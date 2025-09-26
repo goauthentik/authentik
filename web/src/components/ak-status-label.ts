@@ -106,7 +106,7 @@ export class AkStatusLabel extends AKElement {
             "pf-m-compact": this.compact,
         };
 
-        return html`<span class="${classMap(classes)}">
+        return html`<span class="${classMap(classes)}" aria-label=${label} role="status">
             <span class="pf-c-label__content">
                 <span class="pf-c-label__icon">
                     <i class="fas fa-fw ${icon}" aria-hidden="true"></i> </span

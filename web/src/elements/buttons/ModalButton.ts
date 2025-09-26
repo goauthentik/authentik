@@ -71,6 +71,10 @@ export abstract class ModalButton extends AKElement {
             .pf-c-modal-box.pf-m-xl {
                 --pf-c-modal-box--Width: calc(1.5 * var(--pf-c-modal-box--m-lg--lg--MaxWidth));
             }
+
+            .pf-c-modal-box__footer {
+                gap: var(--pf-global--spacer--sm);
+            }
         `,
     ];
 
