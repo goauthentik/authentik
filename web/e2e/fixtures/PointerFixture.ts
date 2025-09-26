@@ -22,6 +22,10 @@ export class PointerFixture extends PageFixture {
         optionsOrRole?: ARIAOptions | ARIARole,
         context: LocatorContext = this.page,
     ): Promise<void> => {
+        // TODO: The use of `force: true` is a temporary workaround for
+        // buttons with slotted content, which are not considered visible by
+        // Playwright. This should be removed after native dialog modals are implemented.
+
         if (typeof optionsOrRole === "string") {
             return context.getByRole(optionsOrRole, { name }).click({
                 force: true,
